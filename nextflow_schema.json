@@ -74,6 +74,19 @@
                 }
             }
         },
+        "pipeline_options": {
+            "title": "Pipeline options",
+            "type": "object",
+            "description": "Options for selecting which tools should be used for certain tasks",
+            "properties": {
+                "ambient_removal": {
+                    "type": "string",
+                    "default": "decontx",
+                    "enum": ["decontx"],
+                    "description": "Specify the tool to use for ambient RNA removal"
+                }
+            }
+        },
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",

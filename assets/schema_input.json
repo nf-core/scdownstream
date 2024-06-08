@@ -10,24 +10,29 @@
             "sample": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces",
-                "meta": ["id"]
+                "errorMessage": "Dataset name must be provided and cannot contain spaces",
+                "meta": [
+                    "id"
+                ]
             },
             "fastq_1": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^\\S+\\.(h5ad|rds|RDS)$",
+                "errorMessage": "Input file must be a .h5ad or .rds file."
             },
-            "fastq_2": {
+            "batch_col": {
                 "type": "string",
-                "format": "file-path",
-                "exists": true,
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                "default": "batch",
+                "errorMessage": "Batch column needs to start with a letter and can contain letters, numbers, underlines and dashes.",
+                "meta": ["batch_col"]
             }
         },
-        "required": ["sample", "fastq_1"]
+        "required": [
+            "dataset",
+            "file"
+        ]
     }
 }

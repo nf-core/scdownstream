@@ -1,5 +1,6 @@
 include { ADATA_READRDS                } from '../../modules/local/adata/readrds'
 include { SCANPY_PLOTQC as QC_RAW      } from '../../modules/local/scanpy/plotqc'
+include { CELDA_DECONTX                } from '../../modules/local/celda/decontx'
 include { SCANPY_PLOTQC as QC_FILTERED } from '../../modules/local/scanpy/plotqc'
 
 workflow PREPROCESSING {
@@ -29,6 +30,20 @@ workflow PREPROCESSING {
     QC_RAW(ch_h5ad)
     ch_multiqc_files = ch_multiqc_files.mix(QC_RAW.out.multiqc_files)
     ch_versions = ch_versions.mix(QC_RAW.out.versions)
+
+    // Ambient RNA removal
+    if (params.ambient_removal == 'decontx') {
+        CELDA_DECONTX(ch_h5ad)
+
+        ch_versions = CELDA_DECONTX.out.versions
+        ch_h5ad = CELDA_DECONTX.out.h5ad
+    }
+
+    // Emptry droplet detection
+
+
+    // Doublet detection
+
 
     QC_FILTERED(ch_h5ad)
     ch_multiqc_files = ch_multiqc_files.mix(QC_FILTERED.out.multiqc_files)
