@@ -46,7 +46,7 @@ with open(path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
         "parent_name": "${section_name}",
         "parent_description": "${description}",
 
-        "section_name": "${prefix}",
+        "section_name": "${meta.id}",
         "plot_type": "image",
         "data": image_html,
     }
