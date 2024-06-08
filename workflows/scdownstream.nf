@@ -4,6 +4,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+include { PREPROCESSING          } from '../subworkflows/local/preprocessing'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -26,6 +27,11 @@ workflow SCDOWNSTREAM {
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
+    //
+    // Per-dataset preprocessing
+    //
+
+    PREPROCESSING(ch_samplesheet)
 
     //
     // Collate and save software versions
