@@ -32,6 +32,8 @@ workflow SCDOWNSTREAM {
     //
 
     PREPROCESSING(ch_samplesheet)
+    ch_versions = ch_versions.mix(PREPROCESSING.out.versions)
+    ch_multiqc_files = ch_multiqc_files.mix(PREPROCESSING.out.multiqc_files)
 
     //
     // Collate and save software versions
