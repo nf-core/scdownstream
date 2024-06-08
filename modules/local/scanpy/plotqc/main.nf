@@ -12,7 +12,7 @@ process SCANPY_PLOTQC {
 
     output:
     tuple val(meta), path("*.png"), emit: plots
-    path("*_mqc.png")             , emit: multiqc_files, optional: true
+    path("*_mqc.json")            , emit: multiqc_files
     path "versions.yml"           , emit: versions
 
     when:
@@ -20,6 +20,7 @@ process SCANPY_PLOTQC {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    suffix = task.ext.suffix ?: "png"
+    section_name = task.ext.section_name ?: "QC Plots"
+    description = task.ext.description ?: "Quality control plots"
     template 'plotqc.py'
 }

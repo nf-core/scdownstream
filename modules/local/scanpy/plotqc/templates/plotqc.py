@@ -4,6 +4,8 @@ import scanpy as sc
 import matplotlib
 import matplotlib.pyplot as plt
 import platform
+import base64
+import json
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
@@ -28,10 +30,29 @@ adata = sc.read_h5ad("${h5ad}")
 
 sc.pp.calculate_qc_metrics(adata, percent_top=None, log1p=False, inplace=True)
 
-print(adata)
-
 sc.pl.scatter(adata, x='total_counts', y='n_genes_by_counts', show=False)
-plt.savefig("${prefix}_total_counts_vs_n_genes_by_counts_mqc.png")
+path = "${prefix}_total_counts_vs_n_genes_by_counts.png"
+plt.savefig(path)
+
+# MultiQC
+
+with open(path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
+    image_string = base64.b64encode(f_plot.read()).decode("utf-8")
+    image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
+
+    custom_json = {
+        "id": "${prefix}",
+        "parent_id": "${section_name}".replace(" ", "_"),
+        "parent_name": "${section_name}",
+        "parent_description": "${description}",
+
+        "section_name": "${prefix}",
+        "plot_type": "image",
+        "data": image_html,
+    }
+
+    json.dump(custom_json, f_json)
+
 
 versions = {
     "${task.process}": {
