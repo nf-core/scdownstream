@@ -24,11 +24,10 @@ workflow PREPROCESSING {
 
     ADATA_READRDS(ch_datasets.rds)
     ch_h5ad = ch_datasets.h5ad.mix(ADATA_READRDS.out.h5ad)
+    ch_versions = ch_versions.mix(ADATA_READRDS.out.versions)
 
     ADATA_UNIFY(ch_h5ad)
     ch_h5ad = ADATA_UNIFY.out.h5ad
-
-    ch_versions = ch_versions.mix(ADATA_READRDS.out.versions)
     ch_versions = ch_versions.mix(ADATA_UNIFY.out.versions)
 
     QC_RAW(ch_h5ad)
@@ -38,9 +37,8 @@ workflow PREPROCESSING {
     // Ambient RNA removal
     if (params.ambient_removal == 'decontx') {
         CELDA_DECONTX(ch_h5ad)
-
-        ch_versions = CELDA_DECONTX.out.versions
         ch_h5ad = CELDA_DECONTX.out.h5ad
+        ch_versions = CELDA_DECONTX.out.versions
     }
 
     // Empty droplet detection

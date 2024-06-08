@@ -27,9 +27,14 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
     return yaml_str
 
 adata = ad.read_h5ad("${h5ad}")
-sc_experiment = anndata2ri.py2rpy(adata)
+sce = anndata2ri.py2rpy(adata)
 
-corrected = celda.decontX(sc_experiment, batch=adata.obs['${batch_col}'].tolist())
+kwargs = {}
+
+if len(adata.obs['${batch_col}'].unique()) > 1:
+    kwargs['batch'] = adata.obs['${batch_col}'].tolist()
+
+corrected = celda.decontX(sce, **kwargs)
 counts = celda.decontXcounts(corrected)
 
 adata.layers['ambient'] = anndata2ri.rpy2py(counts).T
