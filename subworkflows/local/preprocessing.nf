@@ -1,4 +1,5 @@
 include { ADATA_READRDS                } from '../../modules/local/adata/readrds'
+include { ADATA_UNIFY                  } from '../../modules/local/adata/unify'
 include { SCANPY_PLOTQC as QC_RAW      } from '../../modules/local/scanpy/plotqc'
 include { CELDA_DECONTX                } from '../../modules/local/celda/decontx'
 include { SCANPY_PLOTQC as QC_FILTERED } from '../../modules/local/scanpy/plotqc'
@@ -22,10 +23,13 @@ workflow PREPROCESSING {
         }
 
     ADATA_READRDS(ch_datasets.rds)
+    ch_h5ad = ch_datasets.h5ad.mix(ADATA_READRDS.out.h5ad)
+
+    ADATA_UNIFY(ch_h5ad)
+    ch_h5ad = ADATA_UNIFY.out.h5ad
 
     ch_versions = ch_versions.mix(ADATA_READRDS.out.versions)
-
-    ch_h5ad = ch_datasets.h5ad.mix(ADATA_READRDS.out.h5ad)
+    ch_versions = ch_versions.mix(ADATA_UNIFY.out.versions)
 
     QC_RAW(ch_h5ad)
     ch_multiqc_files = ch_multiqc_files.mix(QC_RAW.out.multiqc_files)
@@ -39,7 +43,7 @@ workflow PREPROCESSING {
         ch_h5ad = CELDA_DECONTX.out.h5ad
     }
 
-    // Emptry droplet detection
+    // Empty droplet detection
 
 
     // Doublet detection
