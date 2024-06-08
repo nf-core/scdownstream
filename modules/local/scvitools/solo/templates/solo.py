@@ -7,7 +7,9 @@ from scvi.external import SOLO
 import platform
 
 from threadpoolctl import threadpool_limits
+
 threadpool_limits(int("${task.cpus}"))
+
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
@@ -27,6 +29,7 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
         else:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
+
 
 adata = ad.read_h5ad("${h5ad}")
 
@@ -53,13 +56,18 @@ if "${meta.label_col}":
 
     n_epochs = int(min([10, max([2, round(n_epochs / 3.0)])]))
 
-    model = SCANVI.from_scvi_model(scvi_model = model, labels_key = "${meta.label_col}", unlabeled_category = "Unknown")
+    model = SCANVI.from_scvi_model(
+        scvi_model=model, labels_key="${meta.label_col}", unlabeled_category="Unknown"
+    )
     model.train(max_epochs=n_epochs, **train_kwargs)
 
 adata.obs["singlet"] = False
 
-for batch in adata.obs["${meta.batch_col}"].unique():
-    solo = SOLO.from_scvi_model(model, restrict_to_batch=batch)
+batches = adata.obs["${meta.batch_col}"].unique()
+for batch in batches:
+    solo = SOLO.from_scvi_model(
+        model, restrict_to_batch=batch if len(batches) > 1 else None
+    )
     solo.train()
     result = solo.predict(False)
 
