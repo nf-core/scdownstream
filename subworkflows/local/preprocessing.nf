@@ -1,3 +1,5 @@
+include { ADATA_READRDS } from '../../modules/local/adata/readrds'
+
 workflow PREPROCESSING {
 
     take:
@@ -15,7 +17,11 @@ workflow PREPROCESSING {
                 return [meta, file]
         }
 
-    ch_datasets.h5ad.view()
+    ADATA_READRDS(ch_datasets.rds)
+
+    ch_versions = ch_versions.mix(ADATA_READRDS.out.versions)
+
+    ch_h5ad = ch_datasets.h5ad.mix(ADATA_READRDS.out.h5ad)
 
     emit:
 
