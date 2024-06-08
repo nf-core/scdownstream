@@ -53,6 +53,7 @@ with open(path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
 
     json.dump(custom_json, f_json)
 
+# Versions
 
 versions = {
     "${task.process}": {
