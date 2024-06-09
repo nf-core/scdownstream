@@ -36,7 +36,8 @@ adata_outer.layers["counts"] = adata_outer.X
 sc.pp.filter_cells(adata_outer, min_counts=1)
 sc.pp.filter_genes(adata_outer, min_cells=1)
 
-genes_intersection = set(adata_outer.var_names).intersection(*genes)
+genes_intersection = list(set(adata_outer.var_names).intersection(*genes))
+sorted(genes_intersection)
 adata_inner = adata_outer[:, genes_intersection]
 
 adata_inner.write("${prefix}_inner.h5ad")
