@@ -5,6 +5,7 @@
 */
 
 include { PREPROCESSING          } from '../subworkflows/local/preprocessing'
+include { COMBINE                } from '../subworkflows/local/combine'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -34,9 +35,10 @@ workflow SCDOWNSTREAM {
     PREPROCESSING(ch_samplesheet)
     ch_versions = ch_versions.mix(PREPROCESSING.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(PREPROCESSING.out.multiqc_files)
-    ch_datasets = PREPROCESSING.out.h5ad
 
-    ch_datasets.view()
+    COMBINE(PREPROCESSING.out.h5ad)
+    ch_versions = ch_versions.mix(COMBINE.out.versions)
+    ch_multiqc_files = ch_multiqc_files.mix(COMBINE.out.multiqc_files)
 
     //
     // Collate and save software versions
