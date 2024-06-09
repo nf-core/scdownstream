@@ -1,5 +1,6 @@
 include { SCANPY_NEIGHBORS } from '../../modules/local/scanpy/neighbors'
 include { SCANPY_LEIDEN    } from '../../modules/local/scanpy/leiden'
+include { SCANPY_UMAP      } from '../../modules/local/scanpy/umap'
 
 workflow CLUSTER {
     take:
@@ -8,10 +9,15 @@ workflow CLUSTER {
     main:
     ch_versions = Channel.empty()
     ch_obs = Channel.empty()
+    ch_obsm = Channel.empty()
 
     SCANPY_NEIGHBORS(ch_h5ad)
     ch_versions = ch_versions.mix(SCANPY_NEIGHBORS.out.versions)
     ch_h5ad = SCANPY_NEIGHBORS.out.h5ad
+
+    SCANPY_UMAP(ch_h5ad)
+    ch_versions = ch_versions.mix(SCANPY_UMAP.out.versions)
+    ch_obsm = ch_obsm.mix(SCANPY_UMAP.out.obsm)
 
     ch_resolutions = Channel.from([0.5, 1.0])
 
