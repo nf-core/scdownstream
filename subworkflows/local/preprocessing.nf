@@ -58,6 +58,7 @@ workflow PREPROCESSING {
     ch_versions = ch_versions.mix(QC_FILTERED.out.versions)
 
     emit:
+    h5ad          = ch_h5ad
 
     multiqc_files = ch_multiqc_files
     versions      = ch_versions                     // channel: [ versions.yml ]
