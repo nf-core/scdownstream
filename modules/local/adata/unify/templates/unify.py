@@ -53,6 +53,11 @@ if label_col:
             raise ValueError("The label column already contains 'unknown' values.")
         adata.obs["label"].replace({unknown_label: "unknown"}, inplace=True)
 
+# Add "dataset" column
+if "dataset" in adata.obs:
+    raise ValueError("The dataset column already exists.")
+adata.obs["dataset"] = "${meta.id}"
+
 # Convert to CSR matrix
 adata.X = csr_matrix(adata.X)
 adata.layers["counts"] = adata.X
