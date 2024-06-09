@@ -2,7 +2,7 @@
 
 import scvi
 import anndata as ad
-from scvi.model import SCVI
+from scvi.model import SCVI, SCANVI
 import platform
 
 from threadpoolctl import threadpool_limits
@@ -28,28 +28,21 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
     return yaml_str
 
 adata = ad.read_h5ad("${h5ad}")
-
-setup_kwargs = {"layer": "counts", "batch_key": "batch"}
-
-# Defaults from SCVI github tutorials scanpy_pbmc3k and harmonization
-model_kwargs = {
-    "gene_likelihood": "nb",
-    "n_layers": 2,
-    "n_hidden": 128,
-    "n_latent": 30,
-}
-
-train_kwargs = {"train_size": 1.0}
+model = SCVI.load("${scvi_model}", adata)
 
 n_epochs = int(min([round((20000 / adata.n_obs) * 400), 400]))
+n_epochs = int(min([10, max([2, round(n_epochs / 3.0)])]))
 
-SCVI.setup_anndata(adata, **setup_kwargs)
-model = SCVI(adata, **model_kwargs)
-model.train(max_epochs=n_epochs, **train_kwargs)
+model = SCANVI.from_scvi_model(
+    scvi_model=model, labels_key="label", unlabeled_category="unknown"
+)
 
+model.train(max_epochs=n_epochs, early_stopping=True)
 adata.obsm["X_emb"] = model.get_latent_representation()
+adata.obs["label:scANVI"] = model.predict()
 
 adata.write_h5ad("${prefix}.h5ad")
+adata.obs[["label:scANVI"]].to_pickle("${prefix}.pkl")
 model.save("${prefix}_model")
 
 # Versions
@@ -64,3 +57,4 @@ versions = {
 
 with open("versions.yml", "w") as f:
     f.write(format_yaml_like(versions))
+
