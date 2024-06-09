@@ -2,6 +2,7 @@
 
 import scvi
 import anndata as ad
+import pandas as pd
 from scvi.model import SCVI
 import platform
 
@@ -52,6 +53,9 @@ adata.obsm["X_emb"] = model.get_latent_representation()
 adata.write_h5ad("${prefix}.h5ad")
 model.save("${prefix}_model")
 
+df = pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names)
+df.to_pickle("X_${prefix}.pkl")
+
 # Versions
 
 versions = {
@@ -59,6 +63,7 @@ versions = {
         "python": platform.python_version(),
         "anndata": ad.__version__,
         "scvi": scvi.__version__,
+        "pandas": pd.__version__
     }
 }
 

@@ -8,6 +8,7 @@ workflow INTEGRATE {
     main:
     ch_versions = Channel.empty()
     ch_obs = Channel.empty()
+    ch_obsm = Channel.empty()
     ch_integrations = Channel.empty()
 
     methods = params.integration_methods.split(',').collect{it.trim().toLowerCase()}
@@ -17,6 +18,7 @@ workflow INTEGRATE {
         ch_versions = ch_versions.mix(SCVITOOLS_SCVI.out.versions)
         ch_integrations = ch_integrations.mix(SCVITOOLS_SCVI.out.h5ad
             .map{meta, h5ad -> [[id: 'scvi'], h5ad]})
+        ch_obsm = ch_obsm.mix(SCVITOOLS_SCVI.out.obsm)
 
         if (methods.contains('scanvi')) {
             SCVITOOLS_SCANVI(ch_h5ad, SCVITOOLS_SCVI.out.model.collect())
@@ -24,6 +26,7 @@ workflow INTEGRATE {
             ch_integrations = ch_integrations.mix(SCVITOOLS_SCANVI.out.h5ad
                 .map{meta, h5ad -> [[id: 'scanvi'], h5ad]})
             ch_obs = ch_obs.mix(SCVITOOLS_SCANVI.out.obs)
+            ch_obsm = ch_obsm.mix(SCVITOOLS_SCANVI.out.obsm)
         }
     }
 
@@ -32,6 +35,7 @@ workflow INTEGRATE {
     emit:
     integrations = ch_integrations
     obs = ch_obs
+    obsm = ch_obsm
 
     versions = ch_versions
 }

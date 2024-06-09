@@ -13,6 +13,7 @@ process SCVITOOLS_SCVI {
     output:
     tuple val(meta), path("*.h5ad") , emit: h5ad
     tuple val(meta), path("*_model"), emit: model
+    path "*.pkl"                    , emit: obsm
     path "versions.yml"             , emit: versions
 
     when:

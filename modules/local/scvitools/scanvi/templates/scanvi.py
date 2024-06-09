@@ -2,6 +2,7 @@
 
 import scvi
 import anndata as ad
+import pandas as pd
 from scvi.model import SCVI, SCANVI
 import platform
 
@@ -44,6 +45,9 @@ adata.obs["label:scANVI"] = model.predict()
 adata.write_h5ad("${prefix}.h5ad")
 adata.obs[["label:scANVI"]].to_pickle("${prefix}.pkl")
 model.save("${prefix}_model")
+
+df = pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names)
+df.to_pickle("X_${prefix}.pkl")
 
 # Versions
 
