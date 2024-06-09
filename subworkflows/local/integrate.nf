@@ -27,6 +27,8 @@ workflow INTEGRATE {
         }
     }
 
+    ch_integrations = ch_integrations.map{meta, h5ad -> [meta + [integration: meta.id], h5ad]}
+
     emit:
     integrations = ch_integrations
     obs = ch_obs
