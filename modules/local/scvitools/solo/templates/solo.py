@@ -33,7 +33,7 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 
 adata = ad.read_h5ad("${h5ad}")
 
-setup_kwargs = {"layer": "counts", "batch_key": "${meta.batch_col}"}
+setup_kwargs = {"layer": "counts", "batch_key": "batch"}
 
 # Defaults from SCVI github tutorials scanpy_pbmc3k and harmonization
 model_kwargs = {
@@ -51,19 +51,21 @@ SCVI.setup_anndata(adata, **setup_kwargs)
 model = SCVI(adata, **model_kwargs)
 model.train(max_epochs=n_epochs, **train_kwargs)
 
-if "${meta.label_col}":
+unique_labels = set(adata.obs["label"].unique())
+unique_labels.discard("unknown")
+if len(unique_labels) > 0:
     from scvi.model import SCANVI
 
     n_epochs = int(min([10, max([2, round(n_epochs / 3.0)])]))
 
     model = SCANVI.from_scvi_model(
-        scvi_model=model, labels_key="${meta.label_col}", unlabeled_category="Unknown"
+        scvi_model=model, labels_key="label", unlabeled_category="unknown"
     )
     model.train(max_epochs=n_epochs, **train_kwargs)
 
 adata.obs["singlet"] = False
 
-batches = adata.obs["${meta.batch_col}"].unique()
+batches = adata.obs["batch"].unique()
 for batch in batches:
     solo = SOLO.from_scvi_model(
         model, restrict_to_batch=batch if len(batches) > 1 else None

@@ -19,7 +19,7 @@ process CELDA_DECONTX {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    batch_col = task.ext.batch_col ?: "${meta.batch_col}"
+    batch_col = task.ext.batch_col ?: "batch"
     template 'decontx.py'
 
     stub:

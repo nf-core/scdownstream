@@ -38,7 +38,7 @@ if batch_col != "batch":
     del adata.obs[batch_col]
 
 # Unify labels
-label_col = "${meta.label_col}"
+label_col = "${meta.label_col ?: ''}"
 unknown_label = "${meta.unknown_label}"
 
 if label_col:
@@ -52,6 +52,10 @@ if label_col:
         if "unknown" in adata.obs["label"]:
             raise ValueError("The label column already contains 'unknown' values.")
         adata.obs["label"].replace({unknown_label: "unknown"}, inplace=True)
+else:
+    if "label" in adata.obs:
+        raise ValueError("The label column already exists.")
+    adata.obs["label"] = "unknown"
 
 # Add "dataset" column
 if "dataset" in adata.obs:
