@@ -26,6 +26,7 @@ workflow SCDOWNSTREAM {
     main:
 
     ch_versions = Channel.empty()
+    ch_obs = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
     //
@@ -39,6 +40,10 @@ workflow SCDOWNSTREAM {
     COMBINE(PREPROCESS.out.h5ad)
     ch_versions = ch_versions.mix(COMBINE.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(COMBINE.out.multiqc_files)
+    ch_obs = ch_obs.mix(COMBINE.out.obs)
+    ch_integrations = COMBINE.out.integrations
+
+    ch_integrations.view()
 
     //
     // Collate and save software versions
