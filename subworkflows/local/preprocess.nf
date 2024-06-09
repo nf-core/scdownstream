@@ -5,7 +5,7 @@ include { CELDA_DECONTX                } from '../../modules/local/celda/decontx
 include { SCVITOOLS_SOLO               } from '../../modules/local/scvitools/solo'
 include { SCANPY_PLOTQC as QC_FILTERED } from '../../modules/local/scanpy/plotqc'
 
-workflow PREPROCESSING {
+workflow PREPROCESS {
 
     take:
     ch_datasets // channel: [ val(meta), file ]

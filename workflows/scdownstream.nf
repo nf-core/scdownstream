@@ -4,7 +4,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { PREPROCESSING          } from '../subworkflows/local/preprocessing'
+include { PREPROCESS          } from '../subworkflows/local/preprocess'
 include { COMBINE                } from '../subworkflows/local/combine'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { paramsSummaryMap       } from 'plugin/nf-validation'
@@ -32,11 +32,11 @@ workflow SCDOWNSTREAM {
     // Per-dataset preprocessing
     //
 
-    PREPROCESSING(ch_samplesheet)
-    ch_versions = ch_versions.mix(PREPROCESSING.out.versions)
-    ch_multiqc_files = ch_multiqc_files.mix(PREPROCESSING.out.multiqc_files)
+    PREPROCESS(ch_samplesheet)
+    ch_versions = ch_versions.mix(PREPROCESS.out.versions)
+    ch_multiqc_files = ch_multiqc_files.mix(PREPROCESS.out.multiqc_files)
 
-    COMBINE(PREPROCESSING.out.h5ad)
+    COMBINE(PREPROCESS.out.h5ad)
     ch_versions = ch_versions.mix(COMBINE.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(COMBINE.out.multiqc_files)
 
