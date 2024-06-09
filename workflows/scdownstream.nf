@@ -28,6 +28,7 @@ workflow SCDOWNSTREAM {
 
     ch_versions = Channel.empty()
     ch_obs = Channel.empty()
+    ch_obsm = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
     //
@@ -38,12 +39,23 @@ workflow SCDOWNSTREAM {
     ch_versions = ch_versions.mix(PREPROCESS.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(PREPROCESS.out.multiqc_files)
 
+    //
+    // Combine datasets and perform integration
+    //
+
     COMBINE(PREPROCESS.out.h5ad)
     ch_versions = ch_versions.mix(COMBINE.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(COMBINE.out.multiqc_files)
     ch_obs = ch_obs.mix(COMBINE.out.obs)
 
+    //
+    // Perform clustering and per-cluster analysis
+    //
+
     CLUSTER(COMBINE.out.integrations)
+    ch_versions = ch_versions.mix(CLUSTER.out.versions)
+    ch_obs = ch_obs.mix(CLUSTER.out.obs)
+    ch_obsm = ch_obsm.mix(CLUSTER.out.obsm)
 
     //
     // Collate and save software versions

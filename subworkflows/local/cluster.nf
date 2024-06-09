@@ -33,6 +33,7 @@ workflow CLUSTER {
 
     emit:
     obs = ch_obs
+    obsm = ch_obsm
 
     versions = ch_versions
 }
