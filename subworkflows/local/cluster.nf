@@ -24,7 +24,7 @@ workflow CLUSTER {
     ch_h5ad = ch_h5ad.combine(ch_resolutions)
         .map{ meta, h5ad, resolution ->
                 [meta + [resolution: resolution,
-                        id: meta.integration + ":" + resolution],
+                        id: meta.integration + "-" + resolution],
             h5ad] }
 
     SCANPY_LEIDEN(ch_h5ad)

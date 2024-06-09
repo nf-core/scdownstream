@@ -7,6 +7,7 @@
 include { PREPROCESS             } from '../subworkflows/local/preprocess'
 include { COMBINE                } from '../subworkflows/local/combine'
 include { CLUSTER                } from '../subworkflows/local/cluster'
+include { FINALIZE               } from '../subworkflows/local/finalize'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -56,6 +57,9 @@ workflow SCDOWNSTREAM {
     ch_versions = ch_versions.mix(CLUSTER.out.versions)
     ch_obs = ch_obs.mix(CLUSTER.out.obs)
     ch_obsm = ch_obsm.mix(CLUSTER.out.obsm)
+
+    FINALIZE(COMBINE.out.h5ad, ch_obs, ch_obsm)
+    ch_versions = ch_versions.mix(FINALIZE.out.versions)
 
     //
     // Collate and save software versions

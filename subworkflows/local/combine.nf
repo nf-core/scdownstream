@@ -31,6 +31,7 @@ workflow COMBINE {
     ch_obsm = ch_obsm.mix(INTEGRATE.out.obsm)
 
     emit:
+    h5ad          = ch_outer
     integrations  = ch_integrations
     obs           = ch_obs
     obsm          = ch_obsm
