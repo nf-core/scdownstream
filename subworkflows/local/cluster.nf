@@ -19,7 +19,7 @@ workflow CLUSTER {
     ch_versions = ch_versions.mix(SCANPY_UMAP.out.versions)
     ch_obsm = ch_obsm.mix(SCANPY_UMAP.out.obsm)
 
-    ch_resolutions = Channel.from([0.5, 1.0])
+    ch_resolutions = Channel.from(params.clustering_resolutions.split(","))
 
     ch_h5ad = ch_h5ad.combine(ch_resolutions)
         .map{ meta, h5ad, resolution ->

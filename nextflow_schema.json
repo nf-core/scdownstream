@@ -104,6 +104,13 @@
                     "description": "Specify the tool to use for integration",
                     "help_text": "Specify the tool to use for integration. If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi",
                     "pattern": "^((scvi|scanvi)?,?)*[^,]+$"
+                },
+                "clustering_resolutions": {
+                    "type": "string",
+                    "default": "0.5,1.0",
+                    "description": "Specify the resolutions for clustering",
+                    "help_text": "Specify the resolutions for clustering. If you want to use multiple resolutions, separate them with a comma.",
+                    "pattern": "^((\\d+\\.?\\d+)?,?)*[^,]+$"
                 }
             }
         },
