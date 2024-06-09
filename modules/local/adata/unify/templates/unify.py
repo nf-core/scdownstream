@@ -26,10 +26,32 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 
 adata = ad.read_h5ad("$h5ad")
 
-# Make sure batch column exists
+# Unify batches
 batch_col = "${meta.batch_col}"
 if batch_col not in adata.obs:
     adata.obs[batch_col] = "${meta.id}"
+
+if batch_col != "batch":
+    if "batch" in adata.obs:
+        raise ValueError("The batch column already exists.")
+    adata.obs["batch"] = adata.obs[batch_col]
+    del adata.obs[batch_col]
+
+# Unify labels
+label_col = "${meta.label_col}"
+unknown_label = "${meta.unknown_label}"
+
+if label_col:
+    if label_col != "label":
+        if "label" in adata.obs:
+            raise ValueError("The label column already exists.")
+        adata.obs["label"] = adata.obs[label_col]
+        del adata.obs[label_col]
+
+    if unknown_label != "unknown":
+        if "unknown" in adata.obs["label"]:
+            raise ValueError("The label column already contains 'unknown' values.")
+        adata.obs["label"].replace({unknown_label: "unknown"}, inplace=True)
 
 # Convert to CSR matrix
 adata.X = csr_matrix(adata.X)
