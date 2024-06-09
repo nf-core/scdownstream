@@ -26,9 +26,13 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 
 adata = ad.read_h5ad("$h5ad")
 
+# Make sure batch column exists
+batch_col = "${meta.batch_col}"
+if batch_col not in adata.obs:
+    adata.obs[batch_col] = "${meta.id}"
+
 # Convert to CSR matrix
 adata.X = csr_matrix(adata.X)
-
 adata.layers["counts"] = adata.X
 
 adata.write_h5ad("${prefix}.h5ad")
