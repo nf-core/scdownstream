@@ -90,6 +90,13 @@
                     "default": "solo",
                     "enum": ["solo"],
                     "description": "Specify the tool to use for doublet detection"
+                },
+                "integration_methods": {
+                    "type": "string",
+                    "default": "scvi",
+                    "description": "Specify the tool to use for integration",
+                    "help_text": "Specify the tool to use for integration. If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi",
+                    "pattern": "^((scvi|scanvi)?,?)*[^,]+$"
                 }
             }
         },

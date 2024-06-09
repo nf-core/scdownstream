@@ -1,5 +1,6 @@
 include { ADATA_MERGE      } from '../../modules/local/adata/merge'
 include { ADATA_UPSETGENES } from '../../modules/local/adata/upsetgenes'
+include { INTEGRATE        } from './integrate'
 
 workflow COMBINE {
 
@@ -21,7 +22,12 @@ workflow COMBINE {
     ch_versions = ch_versions.mix(ADATA_UPSETGENES.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(ADATA_UPSETGENES.out.multiqc_files)
 
+    INTEGRATE(ch_inner)
+    ch_versions = ch_versions.mix(INTEGRATE.out.versions)
+    ch_integrations = INTEGRATE.out.integrations
+
     emit:
+    integrations  = ch_integrations
 
     multiqc_files = ch_multiqc_files
     versions      = ch_versions        // channel: [ versions.yml ]
