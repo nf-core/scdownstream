@@ -11,9 +11,7 @@
                 "type": "string",
                 "pattern": "^\\S+$",
                 "errorMessage": "Dataset name must be provided and cannot contain spaces",
-                "meta": [
-                    "id"
-                ]
+                "meta": ["id"]
             },
             "file": {
                 "type": "string",
@@ -43,9 +41,6 @@
                 "meta": ["unknown_label"]
             }
         },
-        "required": [
-            "dataset",
-            "file"
-        ]
+        "required": ["dataset", "file"]
     }
 }

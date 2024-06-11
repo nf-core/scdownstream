@@ -26,22 +26,22 @@
 Not all of the steps shown in the metromap have already been implemented, as this pipeline is still under development. However, the following steps are already functional:
 
 1. Per-dataset preprocessing
-    1. Convert all RDS files to h5ad format
-    2. Present QC for raw counts ([`MultiQC`](http://multiqc.info/))
-    3. Apply user-defined QC filters
-    4. Remove ambient RNA
-        - [decontX](https://bioconductor.org/packages/release/bioc/html/decontX.html)
-    5. Doublet detection
-        - [SOLO](https://docs.scvi-tools.org/en/stable/user_guide/models/solo.html)
+   1. Convert all RDS files to h5ad format
+   2. Present QC for raw counts ([`MultiQC`](http://multiqc.info/))
+   3. Apply user-defined QC filters
+   4. Remove ambient RNA
+      - [decontX](https://bioconductor.org/packages/release/bioc/html/decontX.html)
+   5. Doublet detection
+      - [SOLO](https://docs.scvi-tools.org/en/stable/user_guide/models/solo.html)
 2. Dataset aggregation
-    1. Merge into a single h5ad file
-    2. Present QC for merged counts ([`MultiQC`](http://multiqc.info/))
-    3. Integration
-        - [scVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scvi.html)
-        - [scANVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scanvi.html)
+   1. Merge into a single h5ad file
+   2. Present QC for merged counts ([`MultiQC`](http://multiqc.info/))
+   3. Integration
+      - [scVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scvi.html)
+      - [scANVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scanvi.html)
 3. Clustering and dimensionality reduction
-    1. [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html)
-    2. [UMAP](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.umap.html)
+   1. [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html)
+   2. [UMAP](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.umap.html)
 
 ## Usage
 
