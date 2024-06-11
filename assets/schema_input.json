@@ -7,7 +7,7 @@
     "items": {
         "type": "object",
         "properties": {
-            "sample": {
+            "dataset": {
                 "type": "string",
                 "pattern": "^\\S+$",
                 "errorMessage": "Dataset name must be provided and cannot contain spaces",
@@ -15,7 +15,7 @@
                     "id"
                 ]
             },
-            "fastq_1": {
+            "file": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
