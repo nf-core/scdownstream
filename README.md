@@ -56,9 +56,11 @@ First, prepare a samplesheet with your input data that looks as follows:
 sample,file
 sample1,/absolute/path/to/sample1.h5ad
 sample2,relative/path/to/sample2.rds
+sample3,/absolute/path/to/sample3.csv
 ```
 
-Each row represents a h5ad or RDS file. RDS files may contain any object that can be converted to a SingleCellExperiment using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function.
+Each row represents a h5ad, RDS or CSV file. RDS files may contain any object that can be converted to a SingleCellExperiment using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function. 
+CSV files should contain a matrix with genes as columns and cells as rows. The first column should contain cell names/barcodes.
 
 -->
 
