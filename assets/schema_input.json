@@ -7,10 +7,10 @@
     "items": {
         "type": "object",
         "properties": {
-            "dataset": {
+            "sample": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "errorMessage": "Dataset name must be provided and cannot contain spaces",
+                "errorMessage": "Sample name must be provided and cannot contain spaces",
                 "meta": ["id"]
             },
             "file": {
@@ -41,6 +41,6 @@
                 "meta": ["unknown_label"]
             }
         },
-        "required": ["dataset", "file"]
+        "required": ["sample", "file"]
     }
 }

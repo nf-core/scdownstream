@@ -8,14 +8,14 @@ include { SCANPY_PLOTQC as QC_FILTERED } from '../../modules/local/scanpy/plotqc
 workflow PREPROCESS {
 
     take:
-    ch_datasets // channel: [ val(meta), file ]
+    ch_samples // channel: [ val(meta), file ]
 
     main:
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
-    ch_datasets = ch_datasets.map { meta, file -> [meta, file, file.extension.toLowerCase()] }
+    ch_samples = ch_samples.map { meta, file -> [meta, file, file.extension.toLowerCase()] }
         .branch { meta, file, ext ->
             h5ad: ext == "h5ad"
                 return [meta, file]
@@ -23,8 +23,8 @@ workflow PREPROCESS {
                 return [meta, file]
         }
 
-    ADATA_READRDS(ch_datasets.rds)
-    ch_h5ad = ch_datasets.h5ad.mix(ADATA_READRDS.out.h5ad)
+    ADATA_READRDS(ch_samples.rds)
+    ch_h5ad = ch_samples.h5ad.mix(ADATA_READRDS.out.h5ad)
     ch_versions = ch_versions.mix(ADATA_READRDS.out.versions)
 
     ADATA_UNIFY(ch_h5ad)

@@ -33,7 +33,7 @@ workflow SCDOWNSTREAM {
     ch_multiqc_files = Channel.empty()
 
     //
-    // Per-dataset preprocessing
+    // Per-sample preprocessing
     //
 
     PREPROCESS(ch_samplesheet)
@@ -41,7 +41,7 @@ workflow SCDOWNSTREAM {
     ch_multiqc_files = ch_multiqc_files.mix(PREPROCESS.out.multiqc_files)
 
     //
-    // Combine datasets and perform integration
+    // Combine samples and perform integration
     //
 
     COMBINE(PREPROCESS.out.h5ad)

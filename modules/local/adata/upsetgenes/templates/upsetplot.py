@@ -30,17 +30,17 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 adata = sc.read_h5ad("${h5ad}")
 split_col = "${split_col}"
 prefix = "${prefix}"
-dataset_genes = {}
+sample_genes = {}
 
-# Split into multiple adatas, based on dataset
-datasets = adata.obs[split_col].unique()
-for dataset in datasets:
-    adata_dataset = adata[adata.obs[split_col] == dataset].copy()
+# Split into multiple adatas, based on sample
+samples = adata.obs[split_col].unique()
+for sample in samples:
+    adata_sample = adata[adata.obs[split_col] == sample].copy()
     # Keep only genes with at least 1 count in at least 1 cell
-    sc.pp.filter_genes(adata_dataset, min_cells=1)
-    dataset_genes[dataset] = set(adata_dataset.var_names)
+    sc.pp.filter_genes(adata_sample, min_cells=1)
+    sample_genes[sample] = set(adata_sample.var_names)
 
-plot_data = upsetplot.from_contents(dataset_genes)
+plot_data = upsetplot.from_contents(sample_genes)
 
 upsetplot.plot(plot_data, sort_by="cardinality", show_counts=True, min_subset_size=10)
 plot_path = f"{prefix}_{split_col}_genes.png"

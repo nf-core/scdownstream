@@ -25,7 +25,7 @@
 
 Not all of the steps shown in the metromap have already been implemented, as this pipeline is still under development. However, the following steps are already functional:
 
-1. Per-dataset preprocessing
+1. Per-sample preprocessing
    1. Convert all RDS files to h5ad format
    2. Present QC for raw counts ([`MultiQC`](http://multiqc.info/))
    3. Apply user-defined QC filters
@@ -33,7 +33,7 @@ Not all of the steps shown in the metromap have already been implemented, as thi
       - [decontX](https://bioconductor.org/packages/release/bioc/html/decontX.html)
    5. Doublet detection
       - [SOLO](https://docs.scvi-tools.org/en/stable/user_guide/models/solo.html)
-2. Dataset aggregation
+2. Sample aggregation
    1. Merge into a single h5ad file
    2. Present QC for merged counts ([`MultiQC`](http://multiqc.info/))
    3. Integration
@@ -53,9 +53,9 @@ First, prepare a samplesheet with your input data that looks as follows:
 `samplesheet.csv`:
 
 ```csv
-dataset,file
-dataset1,/absolute/path/to/dataset1.h5ad
-dataset2,relative/path/to/dataset2.rds
+sample,file
+sample1,/absolute/path/to/sample1.h5ad
+sample2,relative/path/to/sample2.rds
 ```
 
 Each row represents a h5ad or RDS file. RDS files may contain any object that can be converted to a SingleCellExperiment using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function.
