@@ -20,6 +20,6 @@ process ADATA_UPSETGENES {
 
     script:
     prefix    = task.ext.prefix    ?: "${meta.id}"
-    split_col = task.ext.split_col ?: 'dataset'
+    split_col = task.ext.split_col ?: 'sample'
     template 'upsetplot.py'
 }

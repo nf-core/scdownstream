@@ -57,10 +57,10 @@ else:
         raise ValueError("The label column already exists.")
     adata.obs["label"] = "unknown"
 
-# Add "dataset" column
-if "dataset" in adata.obs:
-    raise ValueError("The dataset column already exists.")
-adata.obs["dataset"] = "${meta.id}"
+# Add "sample" column
+if "sample" in adata.obs:
+    raise ValueError("The sample column already exists.")
+adata.obs["sample"] = "${meta.id}"
 
 # Convert to CSR matrix
 adata.X = csr_matrix(adata.X)
