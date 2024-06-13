@@ -58,8 +58,8 @@ else:
     adata.obs["label"] = "unknown"
 
 # Add "sample" column
-if "sample" in adata.obs:
-    raise ValueError("The sample column already exists.")
+if "sample" in adata.obs and not adata.obs["sample"].equals("${meta.id}"):
+    adata.obs["sample_original"] = adata.obs["sample"]
 adata.obs["sample"] = "${meta.id}"
 
 # Convert to CSR matrix
