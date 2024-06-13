@@ -1,4 +1,5 @@
 include { ADATA_READRDS                } from '../../modules/local/adata/readrds'
+include { ADATA_READCSV                } from '../../modules/local/adata/readcsv'
 include { ADATA_UNIFY                  } from '../../modules/local/adata/unify'
 include { SCANPY_PLOTQC as QC_RAW      } from '../../modules/local/scanpy/plotqc'
 include { CELDA_DECONTX                } from '../../modules/local/celda/decontx'
@@ -21,11 +22,17 @@ workflow PREPROCESS {
                 return [meta, file]
             rds: ext == "rds"
                 return [meta, file]
+            csv: ext == "csv"
+                return [meta, file]
         }
 
     ADATA_READRDS(ch_samples.rds)
     ch_h5ad = ch_samples.h5ad.mix(ADATA_READRDS.out.h5ad)
     ch_versions = ch_versions.mix(ADATA_READRDS.out.versions)
+
+    ADATA_READCSV(ch_samples.csv)
+    ch_h5ad = ch_samples.h5ad.mix(ADATA_READCSV.out.h5ad)
+    ch_versions = ch_versions.mix(ADATA_READCSV.out.versions)
 
     ADATA_UNIFY(ch_h5ad)
     ch_h5ad = ADATA_UNIFY.out.h5ad
