@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import anndata as ad
+import scanpy as sc
 import scipy
 from scipy.sparse import csr_matrix
 import platform
@@ -24,7 +24,7 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
-adata = ad.read_h5ad("$h5ad")
+adata = sc.read_h5ad("$h5ad")
 
 # Unify batches
 batch_col = "${meta.batch_col}"
@@ -66,6 +66,10 @@ adata.obs["sample"] = "${meta.id}"
 adata.X = csr_matrix(adata.X)
 adata.layers["counts"] = adata.X
 
+# Perform basic filtering
+sc.pp.filter_cells(adata, min_genes=1)
+sc.pp.filter_genes(adata, min_cells=1)
+
 adata.write_h5ad("${prefix}.h5ad")
 
 # Versions
@@ -73,7 +77,7 @@ adata.write_h5ad("${prefix}.h5ad")
 versions = {
     "${task.process}": {
         "python": platform.python_version(),
-        "anndata": ad.__version__,
+        "scanpy": sc.__version__,
         "scipy": scipy.__version__
     }
 }
