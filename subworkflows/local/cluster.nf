@@ -11,9 +11,14 @@ workflow CLUSTER {
     ch_obs = Channel.empty()
     ch_obsm = Channel.empty()
 
-    SCANPY_NEIGHBORS(ch_h5ad)
+    ch_h5ad.branch{ meta, h5ad ->
+        has_neighbors: meta.integration == "bbknn"
+        needs_neighbors: true
+    }.set { ch_h5ad }
+
+    SCANPY_NEIGHBORS(ch_h5ad.needs_neighbors)
     ch_versions = ch_versions.mix(SCANPY_NEIGHBORS.out.versions)
-    ch_h5ad = SCANPY_NEIGHBORS.out.h5ad
+    ch_h5ad = SCANPY_NEIGHBORS.out.h5ad.mix(ch_h5ad.has_neighbors)
 
     SCANPY_UMAP(ch_h5ad)
     ch_versions = ch_versions.mix(SCANPY_UMAP.out.versions)
