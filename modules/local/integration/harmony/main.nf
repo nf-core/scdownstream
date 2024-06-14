@@ -1,4 +1,4 @@
-process HARMONY {
+process INTEGRATION_HARMONY {
     tag "$meta.id"
     label 'process_medium'
 

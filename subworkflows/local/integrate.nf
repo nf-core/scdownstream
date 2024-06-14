@@ -1,5 +1,6 @@
-include { SCVITOOLS_SCVI   } from '../../modules/local/scvitools/scvi'
-include { SCVITOOLS_SCANVI } from '../../modules/local/scvitools/scanvi'
+include { SCVITOOLS_SCVI      } from '../../modules/local/scvitools/scvi'
+include { SCVITOOLS_SCANVI    } from '../../modules/local/scvitools/scanvi'
+include { INTEGRATION_HARMONY } from '../../modules/local/integration/harmony'
 
 workflow INTEGRATE {
     take:
@@ -28,6 +29,14 @@ workflow INTEGRATE {
             ch_obs = ch_obs.mix(SCVITOOLS_SCANVI.out.obs)
             ch_obsm = ch_obsm.mix(SCVITOOLS_SCANVI.out.obsm)
         }
+    }
+
+    if (methods.contains('harmony')) {
+        INTEGRATION_HARMONY(ch_h5ad)
+        ch_versions = ch_versions.mix(INTEGRATION_HARMONY.out.versions)
+        ch_integrations = ch_integrations.mix(INTEGRATION_HARMONY.out.h5ad
+            .map{meta, h5ad -> [[id: 'harmony'], h5ad]})
+        ch_obsm = ch_obsm.mix(INTEGRATION_HARMONY.out.obsm)
     }
 
     ch_integrations = ch_integrations.map{meta, h5ad -> [meta + [integration: meta.id], h5ad]}
