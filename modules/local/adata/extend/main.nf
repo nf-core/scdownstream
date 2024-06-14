@@ -11,6 +11,7 @@ process ADATA_EXTEND {
     tuple val(meta), path(base)
     path(obs)
     path(obsm)
+    path(layers)
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad

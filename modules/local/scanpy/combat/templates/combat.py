@@ -2,6 +2,7 @@
 
 import scanpy as sc
 import pandas as pd
+import numpy as np
 import platform
 
 from threadpoolctl import threadpool_limits
@@ -36,6 +37,9 @@ sc.pp.pca(adata)
 adata.obsm["X_emb"] = adata.obsm["X_pca"]
 
 adata.write_h5ad(f"{prefix}.h5ad")
+
+np.save(f"{prefix}.npy", adata.X)
+
 df = pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names)
 df.to_pickle("X_${prefix}.pkl")
 
@@ -45,7 +49,8 @@ versions = {
     "${task.process}": {
         "python": platform.python_version(),
         "scanpy": sc.__version__,
-        "pandas": pd.__version__
+        "pandas": pd.__version__,
+        "numpy": np.__version__
     }
 }
 

@@ -12,6 +12,7 @@ workflow INTEGRATE {
     ch_versions = Channel.empty()
     ch_obs = Channel.empty()
     ch_obsm = Channel.empty()
+    ch_layers = Channel.empty()
     ch_integrations = Channel.empty()
 
     methods = params.integration_methods.split(',').collect{it.trim().toLowerCase()}
@@ -54,6 +55,7 @@ workflow INTEGRATE {
         ch_integrations = ch_integrations.mix(SCANPY_COMBAT.out.h5ad
             .map{meta, h5ad -> [[id: 'combat'], h5ad]})
         ch_obsm = ch_obsm.mix(SCANPY_COMBAT.out.obsm)
+        ch_layers = ch_layers.mix(SCANPY_COMBAT.out.layers)
     }
 
     ch_integrations = ch_integrations.map{meta, h5ad -> [meta + [integration: meta.id], h5ad]}
@@ -62,6 +64,7 @@ workflow INTEGRATE {
     integrations = ch_integrations
     obs = ch_obs
     obsm = ch_obsm
+    layers = ch_layers
 
     versions = ch_versions
 }
