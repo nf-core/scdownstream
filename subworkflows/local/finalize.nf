@@ -11,10 +11,12 @@ workflow FINALIZE {
     main:
     ch_versions = Channel.empty()
 
+    ch_layers.view()
+
     ADATA_EXTEND(ch_h5ad,
-        ch_obs.flatten().collect(),
-        ch_obsm.flatten().collect(),
-        ch_layers.flatten().collect())
+        ch_obs.flatten().collect().ifEmpty([]),
+        ch_obsm.flatten().collect().ifEmpty([]),
+        ch_layers.flatten().collect().ifEmpty([]))
     ch_versions = ch_versions.mix(ADATA_EXTEND.out.versions)
 
     ADATA_TORDS(ADATA_EXTEND.out.h5ad)
