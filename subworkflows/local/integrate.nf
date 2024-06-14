@@ -1,3 +1,4 @@
+include { ADATA_TORDS         } from '../../modules/local/adata/tords'
 include { SCVITOOLS_SCVI      } from '../../modules/local/scvitools/scvi'
 include { SCVITOOLS_SCANVI    } from '../../modules/local/scvitools/scanvi'
 include { INTEGRATION_HARMONY } from '../../modules/local/integration/harmony'
@@ -14,6 +15,10 @@ workflow INTEGRATE {
     ch_obsm = Channel.empty()
     ch_layers = Channel.empty()
     ch_integrations = Channel.empty()
+
+    ADATA_TORDS(ch_h5ad)
+    ch_versions = ch_versions.mix(ADATA_TORDS.out.versions)
+    ch_rds = ADATA_TORDS.out.rds
 
     methods = params.integration_methods.split(',').collect{it.trim().toLowerCase()}
 
