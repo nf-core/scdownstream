@@ -1,6 +1,7 @@
 include { SCVITOOLS_SCVI      } from '../../modules/local/scvitools/scvi'
 include { SCVITOOLS_SCANVI    } from '../../modules/local/scvitools/scanvi'
 include { INTEGRATION_HARMONY } from '../../modules/local/integration/harmony'
+include { INTEGRATION_BBKNN   } from '../../modules/local/integration/bbknn'
 
 workflow INTEGRATE {
     take:
@@ -37,6 +38,13 @@ workflow INTEGRATE {
         ch_integrations = ch_integrations.mix(INTEGRATION_HARMONY.out.h5ad
             .map{meta, h5ad -> [[id: 'harmony'], h5ad]})
         ch_obsm = ch_obsm.mix(INTEGRATION_HARMONY.out.obsm)
+    }
+
+    if (methods.contains('bbknn')) {
+        INTEGRATION_BBKNN(ch_h5ad)
+        ch_versions = ch_versions.mix(INTEGRATION_BBKNN.out.versions)
+        ch_integrations = ch_integrations.mix(INTEGRATION_BBKNN.out.h5ad
+            .map{meta, h5ad -> [[id: 'bbknn'], h5ad]})
     }
 
     ch_integrations = ch_integrations.map{meta, h5ad -> [meta + [integration: meta.id], h5ad]}
