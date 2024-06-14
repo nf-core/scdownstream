@@ -1,21 +1,19 @@
-process ADATA_EXTEND {
+process SCANPY_COMBAT {
     tag "$meta.id"
-    label 'process_single'
+    label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'oras://community.wave.seqera.io/library/anndata:0.10.7--e9840a94592528c8':
-        'community.wave.seqera.io/library/anndata:0.10.7--336c6c1921a0632b' }"
+        'oras://community.wave.seqera.io/library/scanpy:1.10.1--ea08051addf267ac':
+        'community.wave.seqera.io/library/scanpy:1.10.1--0c8c97148fc05558' }"
 
     input:
-    tuple val(meta), path(base)
-    path(obs)
-    path(obsm)
-    path(layers)
+    tuple val(meta), path(h5ad)
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    tuple val(meta), path("*.csv") , emit: metadata
+    path "*.pkl"                   , emit: obsm
+    path "*.npy"                   , emit: layers
     path "versions.yml"            , emit: versions
 
     when:
@@ -23,5 +21,5 @@ process ADATA_EXTEND {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    template 'extend.py'
+    template 'combat.py'
 }

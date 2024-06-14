@@ -12,6 +12,7 @@ workflow COMBINE {
     ch_versions = Channel.empty()
     ch_obs = Channel.empty()
     ch_obsm = Channel.empty()
+    ch_layers = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
     ADATA_MERGE(ch_h5ad.map { meta, h5ad -> h5ad }.collect()
@@ -35,6 +36,7 @@ workflow COMBINE {
     integrations  = ch_integrations
     obs           = ch_obs
     obsm          = ch_obsm
+    layers        = ch_layers
 
     multiqc_files = ch_multiqc_files
     versions      = ch_versions        // channel: [ versions.yml ]

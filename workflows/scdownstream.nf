@@ -30,6 +30,7 @@ workflow SCDOWNSTREAM {
     ch_versions = Channel.empty()
     ch_obs = Channel.empty()
     ch_obsm = Channel.empty()
+    ch_layers = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
     //
@@ -48,6 +49,7 @@ workflow SCDOWNSTREAM {
     ch_versions = ch_versions.mix(COMBINE.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(COMBINE.out.multiqc_files)
     ch_obs = ch_obs.mix(COMBINE.out.obs)
+    ch_layers = ch_layers.mix(COMBINE.out.layers)
 
     //
     // Perform clustering and per-cluster analysis
@@ -58,7 +60,7 @@ workflow SCDOWNSTREAM {
     ch_obs = ch_obs.mix(CLUSTER.out.obs)
     ch_obsm = ch_obsm.mix(CLUSTER.out.obsm)
 
-    FINALIZE(COMBINE.out.h5ad, ch_obs, ch_obsm)
+    FINALIZE(COMBINE.out.h5ad, ch_obs, ch_obsm, ch_layers)
     ch_versions = ch_versions.mix(FINALIZE.out.versions)
 
     //
