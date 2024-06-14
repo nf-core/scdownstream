@@ -2,6 +2,7 @@ include { SCVITOOLS_SCVI      } from '../../modules/local/scvitools/scvi'
 include { SCVITOOLS_SCANVI    } from '../../modules/local/scvitools/scanvi'
 include { INTEGRATION_HARMONY } from '../../modules/local/integration/harmony'
 include { INTEGRATION_BBKNN   } from '../../modules/local/integration/bbknn'
+include { SCANPY_COMBAT       } from '../../modules/local/scanpy/combat'
 
 workflow INTEGRATE {
     take:
@@ -45,6 +46,14 @@ workflow INTEGRATE {
         ch_versions = ch_versions.mix(INTEGRATION_BBKNN.out.versions)
         ch_integrations = ch_integrations.mix(INTEGRATION_BBKNN.out.h5ad
             .map{meta, h5ad -> [[id: 'bbknn'], h5ad]})
+    }
+
+    if (methods.contains('combat')) {
+        SCANPY_COMBAT(ch_h5ad)
+        ch_versions = ch_versions.mix(SCANPY_COMBAT.out.versions)
+        ch_integrations = ch_integrations.mix(SCANPY_COMBAT.out.h5ad
+            .map{meta, h5ad -> [[id: 'combat'], h5ad]})
+        ch_obsm = ch_obsm.mix(SCANPY_COMBAT.out.obsm)
     }
 
     ch_integrations = ch_integrations.map{meta, h5ad -> [meta + [integration: meta.id], h5ad]}
