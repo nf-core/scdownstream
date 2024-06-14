@@ -38,7 +38,7 @@ kwargs = {
 if adata.n_obs >= 1e5:
     kwargs["neighbors_within_batch"] = 25
 
-bbknn.bbknn(adata, **kwargs)
+adata = bbknn.bbknn(adata, **kwargs)
 
 adata.write_h5ad("${prefix}.h5ad")
 
