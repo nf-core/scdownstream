@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import upsetplot
 import matplotlib
 import platform
+import base64
+import json
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
@@ -50,6 +52,26 @@ upsetplot.plot(plot_data,
                min_subset_size=10)
 plot_path = f"{prefix}_predictions_mqc.png"
 plt.savefig(plot_path)
+
+# MultiQC
+
+with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
+    image_string = base64.b64encode(f_plot.read()).decode("utf-8")
+    image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
+
+    custom_json = {
+        "id": "${prefix}",
+        "parent_id": "doublet_predictions",
+        "parent_name": "Doublet predictions",
+        "parent_description": "Upset plots of the various doublet prediction tools for each sample.",
+
+        "section_name": "${meta.id}",
+        "plot_type": "image",
+        "data": image_html,
+    }
+
+    json.dump(custom_json, f_json)
+
 
 # Versions
 

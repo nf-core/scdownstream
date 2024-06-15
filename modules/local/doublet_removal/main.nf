@@ -13,7 +13,7 @@ process DOUBLET_REMOVAL {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    path("*_mqc.png")              , emit: multiqc_files, optional: true
+    path("*_mqc.json")             , emit: multiqc_files
     path "versions.yml"            , emit: versions
 
     when:
