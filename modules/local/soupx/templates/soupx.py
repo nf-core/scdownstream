@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import scanpy as sc
+import scanpy
 import anndata2ri
 import rpy2
 import rpy2.robjects as ro
@@ -26,16 +26,15 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
-adata = sc.read_h5ad("${h5ad}")
-adata_raw = sc.read_h5ad("${raw}")
+adata = scanpy.read_h5ad("${h5ad}")
 
 adata_pp = adata.copy()
-sc.pp.normalize_per_cell(adata_pp)
-sc.pp.log1p(adata_pp)
+scanpy.pp.normalize_per_cell(adata_pp)
+scanpy.pp.log1p(adata_pp)
 
-sc.pp.pca(adata_pp)
-sc.pp.neighbors(adata_pp)
-sc.tl.leiden(adata_pp, key_added="soupx_groups")
+scanpy.pp.pca(adata_pp)
+scanpy.pp.neighbors(adata_pp)
+scanpy.tl.leiden(adata_pp, key_added="soupx_groups")
 
 soupx_groups = adata_pp.obs["soupx_groups"]
 del adata_pp
@@ -44,7 +43,23 @@ cells = adata.obs_names
 genes = adata.var_names
 data = adata.X.T
 
-exit(0)
+adata_raw = scanpy.read_h5ad("${raw}")
+data_raw = adata_raw.X.T
+del adata_raw
+
+r_data = anndata2ri.py2rpy(data)
+r_data_raw = anndata2ri.py2rpy(data_raw)
+ro.r("function(data, genes, cells) { rownames(data) <- genes; colnames(data) <- cells }")(data, genes, cells)
+
+sc = soupx.SoupChannel(r_data_raw, r_data, calcSoupProfile = False)
+
+soupProf = ro.r("function(data) { data.frame(row.names = rownames(data), est = rowSums(data)/sum(data), counts = rowSums(data)) }")(r_data)
+sc = soupx.setSoupProfile(sc, soupProf)
+sc = soupx.setClusters(sc, soupx_groups)
+sc = soupx.autoEstCont(sc, doPlot = False)
+out = soupx.adjustCounts(sc, roundToInt = True)
+
+adata.layers["ambient"] = out.T
 
 adata.write_h5ad("${prefix}.h5ad")
 
@@ -53,7 +68,7 @@ adata.write_h5ad("${prefix}.h5ad")
 versions = {
     "${task.process}": {
         "python": platform.python_version(),
-        "scanpy": sc.__version__,
+        "scanpy": scanpy.__version__,
         "anndata2ri": anndata2ri.__version__,
         "rpy2": rpy2.__version__,
         "soupx": soupx.__version__,
