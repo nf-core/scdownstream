@@ -2,7 +2,7 @@ include { ADATA_READRDS                } from '../../modules/local/adata/readrds
 include { ADATA_READCSV                } from '../../modules/local/adata/readcsv'
 include { ADATA_UNIFY                  } from '../../modules/local/adata/unify'
 include { SCANPY_PLOTQC as QC_RAW      } from '../../modules/local/scanpy/plotqc'
-include { CELDA_DECONTX                } from '../../modules/local/celda/decontx'
+include { AMBIENT_RNA_REMOVAL          } from './ambient_rna_removal'
 include { DOUBLET_DETECTION            } from './doublet_detection'
 include { SCANPY_PLOTQC as QC_FILTERED } from '../../modules/local/scanpy/plotqc'
 
@@ -42,12 +42,9 @@ workflow PREPROCESS {
     ch_multiqc_files = ch_multiqc_files.mix(QC_RAW.out.multiqc_files)
     ch_versions = ch_versions.mix(QC_RAW.out.versions)
 
-    // Ambient RNA removal
-    if (params.ambient_removal == 'decontx') {
-        CELDA_DECONTX(ch_h5ad)
-        ch_h5ad = CELDA_DECONTX.out.h5ad
-        ch_versions = CELDA_DECONTX.out.versions
-    }
+    AMBIENT_RNA_REMOVAL(ch_h5ad)
+    ch_h5ad = AMBIENT_RNA_REMOVAL.out.h5ad
+    ch_versions = ch_versions.mix(AMBIENT_RNA_REMOVAL.out.versions)
 
     DOUBLET_DETECTION(ch_h5ad)
     ch_h5ad = DOUBLET_DETECTION.out.h5ad
