@@ -36,7 +36,7 @@ scanpy.pp.pca(adata_pp)
 scanpy.pp.neighbors(adata_pp)
 scanpy.tl.leiden(adata_pp, key_added="soupx_groups")
 
-soupx_groups = adata_pp.obs["soupx_groups"]
+soupx_groups = anndata2ri.py2rpy(adata_pp.obs["soupx_groups"])
 del adata_pp
 
 sce = anndata2ri.py2rpy(adata)
@@ -55,9 +55,9 @@ soupProf = ro.r("function(data) { data.frame(row.names = rownames(data), est = r
 sc = soupx.setSoupProfile(sc, soupProf)
 sc = soupx.setClusters(sc, soupx_groups)
 sc = soupx.autoEstCont(sc, doPlot = False)
-out = soupx.adjustCounts(sc, roundToInt = True)
+out = soupx.adjustCounts(sc, roundToInt = False)
 
-adata.layers["ambient"] = out.T
+adata.layers["ambient"] = anndata2ri.rpy2py(out).T
 
 adata.write_h5ad("${prefix}.h5ad")
 
@@ -69,7 +69,7 @@ versions = {
         "scanpy": scanpy.__version__,
         "anndata2ri": anndata2ri.__version__,
         "rpy2": rpy2.__version__,
-        "soupx": soupx.__version__,
+        "SoupX": soupx.__version__,
     }
 }
 
