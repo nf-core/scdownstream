@@ -39,7 +39,8 @@ seurat.version <- as.character(packageVersion('Seurat'))
 writeLines(
     c(
         '"${task.process}":',
-        paste('    Seurat:', seurat.version),
+        paste('    R:', r.version),
+        paste('    Seurat:', seurat.version)
     ),
 'versions.yml')
 
