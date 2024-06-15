@@ -15,6 +15,7 @@ workflow PREPROCESS {
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
+    ch_h5ad = Channel.empty()
 
     ch_samples = ch_samples.map { meta, file -> [meta, file, file.extension.toLowerCase()] }
         .branch { meta, file, ext ->
@@ -25,13 +26,15 @@ workflow PREPROCESS {
             csv: ext == "csv"
                 return [meta, file]
         }
+    
+    ch_h5ad = ch_h5ad.mix(ch_samples.h5ad)
 
     ADATA_READRDS(ch_samples.rds)
-    ch_h5ad = ch_samples.h5ad.mix(ADATA_READRDS.out.h5ad)
+    ch_h5ad = ch_h5ad.mix(ADATA_READRDS.out.h5ad)
     ch_versions = ch_versions.mix(ADATA_READRDS.out.versions)
 
     ADATA_READCSV(ch_samples.csv)
-    ch_h5ad = ch_samples.h5ad.mix(ADATA_READCSV.out.h5ad)
+    ch_h5ad = ch_h5ad.mix(ADATA_READCSV.out.h5ad)
     ch_versions = ch_versions.mix(ADATA_READCSV.out.versions)
 
     ADATA_UNIFY(ch_h5ad)
