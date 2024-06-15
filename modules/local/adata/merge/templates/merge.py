@@ -4,6 +4,7 @@ import scanpy as sc
 import anndata as ad
 from scipy.sparse import csr_matrix
 import platform
+import os
 import scipy
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
@@ -25,10 +26,10 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
-adatas = [sc.read_h5ad(f) for f in "${h5ads}".split()]
-genes = [adata.var_names for adata in adatas]
+adatas = {os.path.basename(f).split(".")[0]: sc.read_h5ad(f) for f in "${h5ads}".split()}
+genes = [adata.var_names for adata in adatas.values()]
 
-adata_outer = ad.concat(adatas, join="outer")
+adata_outer = ad.concat(adatas, join="outer", index_unique="-")
 adata_outer.X = csr_matrix(adata_outer.X)
 adata_outer.layers["counts"] = adata_outer.X
 
