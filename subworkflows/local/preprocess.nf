@@ -26,7 +26,7 @@ workflow PREPROCESS {
             csv: ext == "csv"
                 return [meta, file]
         }
-    
+
     ch_h5ad = ch_h5ad.mix(ch_samples.h5ad)
 
     ADATA_READRDS(ch_samples.rds)
