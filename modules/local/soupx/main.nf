@@ -8,7 +8,7 @@ process SOUPX {
         'community.wave.seqera.io/library/anndata2ri_r-soupx_scanpy:74bf48d9a3f8f29e' }"
 
     input:
-    tuple val(meta), path(h5ad)
+    tuple val(meta), path(h5ad), path(raw)
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad

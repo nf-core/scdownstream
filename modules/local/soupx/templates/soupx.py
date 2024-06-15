@@ -27,6 +27,7 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
     return yaml_str
 
 adata = sc.read_h5ad("${h5ad}")
+adata_raw = sc.read_h5ad("${raw}")
 
 adata_pp = adata.copy()
 sc.pp.normalize_per_cell(adata_pp)
@@ -43,6 +44,7 @@ cells = adata.obs_names
 genes = adata.var_names
 data = adata.X.T
 
+exit(0)
 
 adata.write_h5ad("${prefix}.h5ad")
 
