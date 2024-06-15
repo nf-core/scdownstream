@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+# Set numba cache to /tmp
+# This is not an ideal solution
+import os
+os.environ["NUMBA_CACHE_DIR"] = "/tmp"
+
 import anndata as ad
 import doubletdetection
 import platform
