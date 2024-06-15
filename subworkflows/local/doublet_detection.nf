@@ -31,6 +31,7 @@ workflow DOUBLET_DETECTION {
     )
 
     ch_h5ad = DOUBLET_REMOVAL.out.h5ad
+    ch_multiqc_files = ch_multiqc_files.mix(DOUBLET_REMOVAL.out.multiqc_files)
     ch_versions = ch_versions.mix(DOUBLET_REMOVAL.out.versions)
 
     emit:
