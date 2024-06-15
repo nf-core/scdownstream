@@ -3,6 +3,7 @@ include { ADATA_READCSV                } from '../../modules/local/adata/readcsv
 include { ADATA_UNIFY                  } from '../../modules/local/adata/unify'
 include { SCANPY_PLOTQC as QC_RAW      } from '../../modules/local/scanpy/plotqc'
 include { AMBIENT_RNA_REMOVAL          } from './ambient_rna_removal'
+include { SCANPY_FILTER                } from '../../modules/local/scanpy/filter'
 include { DOUBLET_DETECTION            } from './doublet_detection'
 include { SCANPY_PLOTQC as QC_FILTERED } from '../../modules/local/scanpy/plotqc'
 
@@ -57,6 +58,10 @@ workflow PREPROCESS {
     AMBIENT_RNA_REMOVAL(ch_samples, ch_raws)
     ch_samples = AMBIENT_RNA_REMOVAL.out.h5ad
     ch_versions = ch_versions.mix(AMBIENT_RNA_REMOVAL.out.versions)
+
+    SCANPY_FILTER(ch_samples)
+    ch_samples = SCANPY_FILTER.out.h5ad
+    ch_versions = ch_versions.mix(SCANPY_FILTER.out.versions)
 
     DOUBLET_DETECTION(ch_samples)
     ch_samples = DOUBLET_DETECTION.out.h5ad
