@@ -36,12 +36,18 @@ mask = predictions.sum(axis=1) >= threshold
 adata = adata[mask, :]
 adata.write_h5ad(f"{prefix}.h5ad")
 
-print(predictions.head())
-
 # Plot
-plot_data = upsetplot.from_indicators(predictions)
 
-upsetplot.plot(plot_data, sort_by="cardinality", show_counts=True, min_subset_size=10)
+contents = {column: predictions[column][predictions[column]].index.tolist()
+               for column in predictions.columns}
+
+plot_data = upsetplot.from_contents(contents)
+
+upsetplot.plot(plot_data,
+               sort_by="cardinality",
+               show_counts=True,
+               subset_size="count",
+               min_subset_size=10)
 plot_path = f"{prefix}_predictions_mqc.png"
 plt.savefig(plot_path)
 

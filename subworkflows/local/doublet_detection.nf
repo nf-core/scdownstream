@@ -25,10 +25,8 @@ workflow DOUBLET_DETECTION {
         ch_versions = SCANPY_SCRUBLET.out.versions
     }
 
-    ch_predictions = ch_predictions.groupTuple()
-
     DOUBLET_REMOVAL(
-        ch_h5ad.join(ch_predictions),
+        ch_h5ad.join(ch_predictions.groupTuple()),
         params.doublet_detection_threshold
     )
 
