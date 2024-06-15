@@ -1,6 +1,8 @@
+include { ADATA_TORDS      } from '../../modules/local/adata/tords'
 include { SCVITOOLS_SOLO   } from '../../modules/local/scvitools/solo'
 include { SCANPY_SCRUBLET  } from '../../modules/local/scanpy/scrublet'
 include { DOUBLETDETECTION } from '../../modules/local/doublet_detection/doubletdetection'
+include { SCDS             } from '../../modules/local/doublet_detection/scds'
 include { DOUBLET_REMOVAL  } from '../../modules/local/doublet_detection/doublet_removal'
 
 workflow DOUBLET_DETECTION {
@@ -11,6 +13,10 @@ workflow DOUBLET_DETECTION {
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
     ch_predictions = Channel.empty()
+
+    ADATA_TORDS(ch_h5ad)
+    ch_versions = ch_versions.mix(ADATA_TORDS.out.versions)
+    ch_rds = ADATA_TORDS.out.rds
 
     methods = params.doublet_detection.split(',').collect{it.trim().toLowerCase()}
 
@@ -30,6 +36,12 @@ workflow DOUBLET_DETECTION {
         DOUBLETDETECTION(ch_h5ad)
         ch_predictions = ch_predictions.mix(DOUBLETDETECTION.out.predictions)
         ch_versions = DOUBLETDETECTION.out.versions
+    }
+
+    if (methods.contains('scds')) {
+        SCDS(ch_rds)
+        ch_predictions = ch_predictions.mix(SCDS.out.predictions)
+        ch_versions = SCDS.out.versions
     }
 
     DOUBLET_REMOVAL(
