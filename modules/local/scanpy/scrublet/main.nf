@@ -1,11 +1,11 @@
-process SCVITOOLS_SOLO {
+process SCANPY_SCRUBLET {
     tag "$meta.id"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'oras://community.wave.seqera.io/library/anndata_scvi-tools:54d2eb2f946e0e43':
-        'community.wave.seqera.io/library/anndata_scvi-tools:fa9451a13918eae0' }"
+        'oras://community.wave.seqera.io/library/scanpy_scikit-image:185956e1b73ad93d':
+        'community.wave.seqera.io/library/scanpy_scikit-image:066cc4cb329a805c' }"
 
     input:
     tuple val(meta), path(h5ad)
@@ -20,5 +20,5 @@ process SCVITOOLS_SOLO {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    template 'solo.py'
+    template 'scrublet.py'
 }

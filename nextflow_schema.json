@@ -57,14 +57,20 @@
                 "doublet_detection": {
                     "type": "string",
                     "default": "solo",
-                    "enum": ["solo"],
-                    "description": "Specify the tool to use for doublet detection"
+                    "description": "Specify the tools to use for doublet detection.",
+                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: solo, scrublet",
+                    "pattern": "^((solo|scrublet)?,?)*[^,]+$"
+                },
+                "doublet_detection_threshold": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Number of tools that need to agree on a doublet for it to be called as such"
                 },
                 "integration_methods": {
                     "type": "string",
                     "default": "scvi",
                     "description": "Specify the tool to use for integration",
-                    "help_text": "Specify the tool to use for integration. If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi",
+                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, harmony, bbknn, combat, seurat",
                     "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat)?,?)*[^,]+$"
                 },
                 "clustering_resolutions": {
