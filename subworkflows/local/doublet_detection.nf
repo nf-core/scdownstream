@@ -1,6 +1,7 @@
-include { SCVITOOLS_SOLO  } from '../../modules/local/scvitools/solo'
-include { SCANPY_SCRUBLET } from '../../modules/local/scanpy/scrublet'
-include { DOUBLET_REMOVAL } from '../../modules/local/doublet_removal'
+include { SCVITOOLS_SOLO   } from '../../modules/local/scvitools/solo'
+include { SCANPY_SCRUBLET  } from '../../modules/local/scanpy/scrublet'
+include { DOUBLETDETECTION } from '../../modules/local/doublet_detection/doubletdetection'
+include { DOUBLET_REMOVAL  } from '../../modules/local/doublet_detection/doublet_removal'
 
 workflow DOUBLET_DETECTION {
     take:
@@ -23,6 +24,12 @@ workflow DOUBLET_DETECTION {
         SCANPY_SCRUBLET(ch_h5ad)
         ch_predictions = ch_predictions.mix(SCANPY_SCRUBLET.out.predictions)
         ch_versions = SCANPY_SCRUBLET.out.versions
+    }
+
+    if (methods.contains('doubletdetection')) {
+        DOUBLETDETECTION(ch_h5ad)
+        ch_predictions = ch_predictions.mix(DOUBLETDETECTION.out.predictions)
+        ch_versions = DOUBLETDETECTION.out.versions
     }
 
     DOUBLET_REMOVAL(
