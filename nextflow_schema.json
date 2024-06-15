@@ -57,14 +57,15 @@
                 "doublet_detection": {
                     "type": "string",
                     "default": "solo",
-                    "enum": ["solo", "scrublet"],
-                    "description": "Specify the tool to use for doublet detection"
+                    "description": "Specify the tools to use for doublet detection.",
+                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: solo, scrublet",
+                    "pattern": "^((solo|scrublet)?,?)*[^,]+$"
                 },
                 "integration_methods": {
                     "type": "string",
                     "default": "scvi",
                     "description": "Specify the tool to use for integration",
-                    "help_text": "Specify the tool to use for integration. If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi",
+                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, harmony, bbknn, combat, seurat",
                     "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat)?,?)*[^,]+$"
                 },
                 "clustering_resolutions": {

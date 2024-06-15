@@ -3,8 +3,7 @@ include { ADATA_READCSV                } from '../../modules/local/adata/readcsv
 include { ADATA_UNIFY                  } from '../../modules/local/adata/unify'
 include { SCANPY_PLOTQC as QC_RAW      } from '../../modules/local/scanpy/plotqc'
 include { CELDA_DECONTX                } from '../../modules/local/celda/decontx'
-include { SCVITOOLS_SOLO               } from '../../modules/local/scvitools/solo'
-include { SCANPY_SCRUBLET              } from '../../modules/local/scanpy/scrublet'
+include { DOUBLET_DETECTION            } from './doublet_detection'
 include { SCANPY_PLOTQC as QC_FILTERED } from '../../modules/local/scanpy/plotqc'
 
 workflow PREPROCESS {
@@ -50,19 +49,9 @@ workflow PREPROCESS {
         ch_versions = CELDA_DECONTX.out.versions
     }
 
-    // Doublet detection
-    if (params.doublet_detection == 'solo') {
-        SCVITOOLS_SOLO(ch_h5ad)
-        ch_h5ad = SCVITOOLS_SOLO.out.h5ad
-        ch_versions = SCVITOOLS_SOLO.out.versions
-    }
-
-    if (params.doublet_detection == 'scrublet') {
-        SCANPY_SCRUBLET(ch_h5ad)
-        ch_h5ad = SCANPY_SCRUBLET.out.h5ad
-        ch_versions = SCANPY_SCRUBLET.out.versions
-    }
-
+    DOUBLET_DETECTION(ch_h5ad)
+    ch_h5ad = DOUBLET_DETECTION.out.h5ad
+    ch_versions = ch_versions.mix(DOUBLET_DETECTION.out.versions)
 
     QC_FILTERED(ch_h5ad)
     ch_multiqc_files = ch_multiqc_files.mix(QC_FILTERED.out.multiqc_files)
