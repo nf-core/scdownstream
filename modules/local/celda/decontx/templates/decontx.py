@@ -38,7 +38,6 @@ corrected = celda.decontX(sce, **kwargs)
 counts = celda.decontXcounts(corrected)
 
 adata.layers['ambient'] = anndata2ri.rpy2py(counts).T
-adata.X = adata.layers['ambient']
 adata.write_h5ad("${prefix}.h5ad")
 
 # Versions

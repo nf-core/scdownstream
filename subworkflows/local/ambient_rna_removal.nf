@@ -1,6 +1,6 @@
-include { CELDA_DECONTX         } from '../../modules/local/celda/decontx'
-include { AMBIENTRNA_CELLBENDER } from '../../modules/local/ambientrna/cellbender'
-include { ADATA_ADDH5           } from '../../modules/local/adata/addh5'
+include { CELDA_DECONTX               } from '../../modules/local/celda/decontx'
+include { CELLBENDER_REMOVEBACKGROUND } from '../../modules/local/cellbender/removebackground'
+include { CELLBENDER_MERGE            } from '../../modules/local/cellbender/merge'
 
 workflow AMBIENT_RNA_REMOVAL {
     take:
@@ -16,12 +16,12 @@ workflow AMBIENT_RNA_REMOVAL {
     }
 
     if (params.ambient_removal == 'cellbender') {
-        AMBIENTRNA_CELLBENDER(ch_h5ad)
-        ch_versions = ch_versions.mix(AMBIENTRNA_CELLBENDER.out.versions)
+        CELLBENDER_REMOVEBACKGROUND(ch_h5ad)
+        ch_versions = ch_versions.mix(CELLBENDER_REMOVEBACKGROUND.out.versions)
 
-        ADATA_ADDH5(ch_h5ad.join(AMBIENTRNA_CELLBENDER.out.h5))
-        ch_h5ad = ADATA_ADDH5.out.h5ad
-        ch_versions = ch_versions.mix(ADATA_ADDH5.out.versions)
+        CELLBENDER_MERGE(ch_h5ad.join(CELLBENDER_REMOVEBACKGROUND.out.h5))
+        ch_h5ad = CELLBENDER_MERGE.out.h5ad
+        ch_versions = ch_versions.mix(CELLBENDER_MERGE.out.versions)
     }
 
     emit:

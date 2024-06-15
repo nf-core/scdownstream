@@ -1,4 +1,4 @@
-process AMBIENTRNA_CELLBENDER {
+process CELLBENDER_REMOVEBACKGROUND {
     tag "$meta.id"
     label 'process_medium'
 

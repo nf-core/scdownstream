@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 import platform
-import scanpy as sc
+import cellbender
+import anndata as ad
+from cellbender.remove_background.downstream import load_anndata_from_input_and_output
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
@@ -22,22 +24,22 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
-adata_base = sc.read_h5ad("${h5ad}")
-adata_ext = sc.read_10x_h5("${h5}")
 
-print(adata_ext)
+adata = ad.read_h5ad("${h5ad}")
 
-adata_base.layers["ambient"] = adata_ext.X
-adata_base.X = adata_base.layers["ambient"]
+adata_cellbender = load_anndata_from_input_and_output("${h5ad}", "${h5}",
+                                           analyzed_barcodes_only=False)
+adata.layers["ambient"] = adata_cellbender.layers["cellbender"]
 
-adata_base.write_h5ad("${prefix}.h5ad")
+adata.write_h5ad("${prefix}.h5ad")
 
 # Versions
 
 versions = {
     "${task.process}": {
         "python": platform.python_version(),
-        "scanpy": sc.__version__
+        "cellbender": cellbender.__version__,
+        "anndata": ad.__version__
     }
 }
 
