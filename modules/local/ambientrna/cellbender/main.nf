@@ -11,8 +11,8 @@ process AMBIENTRNA_CELLBENDER {
     tuple val(meta), path(h5ad)
 
     output:
-    tuple val(meta), path("*.h5"), emit: h5
-    path "versions.yml"          , emit: versions
+    tuple val(meta), path("${prefix}.h5"), emit: h5
+    path "versions.yml"                  , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
