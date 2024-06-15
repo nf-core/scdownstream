@@ -29,7 +29,7 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 
-sc.pp.neighbors(adata, use_rep="X_emb")
+sc.pp.neighbors(adata, use_rep="X_EMB" if "X_EMB" in adata.obsm.keys() else "X_emb")
 
 adata.write_h5ad(f"{prefix}.h5ad")
 

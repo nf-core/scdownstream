@@ -25,6 +25,8 @@ integrated <- IntegrateData(
     normalization.method = "SCT"
 )
 
+integrated <- RunPCA(integrated, reduction.name = "X_emb")
+
 saveRDS(integrated, "${prefix}.rds")
 
 ################################################
