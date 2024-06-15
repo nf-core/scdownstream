@@ -24,6 +24,10 @@ workflow AMBIENT_RNA_REMOVAL {
         ch_versions = ch_versions.mix(CELLBENDER_MERGE.out.versions)
     }
 
+    if (params.ambient_removal == 'soupx') {
+        
+    }
+
     emit:
     h5ad = ch_h5ad
 
