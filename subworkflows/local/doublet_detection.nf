@@ -5,7 +5,7 @@ include { DOUBLET_REMOVAL } from '../../modules/local/doublet_removal'
 workflow DOUBLET_DETECTION {
     take:
     ch_h5ad
-    
+
     main:
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
