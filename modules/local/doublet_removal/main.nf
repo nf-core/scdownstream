@@ -8,8 +8,7 @@ process DOUBLET_REMOVAL {
         'community.wave.seqera.io/library/anndata_upsetplot:59615c04a744efcb' }"
 
     input:
-    tuple val(meta), path(h5ad)
-    path(predictions)
+    tuple val(meta), path(h5ad), path(predictions)
     val(threshold)
 
     output:

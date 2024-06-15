@@ -14,20 +14,21 @@ workflow DOUBLET_DETECTION {
     methods = params.doublet_detection.split(',').collect{it.trim().toLowerCase()}
 
     if (methods.contains('solo')) {
-        SCVITOOLS_SOLO(ch_h5ad.map{meta, h5ad -> [[id: 'solo'], h5ad]})
+        SCVITOOLS_SOLO(ch_h5ad)
         ch_predictions = ch_predictions.mix(SCVITOOLS_SOLO.out.predictions)
         ch_versions = SCVITOOLS_SOLO.out.versions
     }
 
     if (methods.contains('scrublet')) {
-        SCANPY_SCRUBLET(ch_h5ad.map{meta, h5ad -> [[id: 'scrublet'], h5ad]})
+        SCANPY_SCRUBLET(ch_h5ad)
         ch_predictions = ch_predictions.mix(SCANPY_SCRUBLET.out.predictions)
         ch_versions = SCANPY_SCRUBLET.out.versions
     }
 
+    ch_predictions = ch_predictions.groupTuple()
+
     DOUBLET_REMOVAL(
-        ch_h5ad,
-        ch_predictions.flatten().collect(),
+        ch_h5ad.join(ch_predictions),
         params.doublet_detection_threshold
     )
 

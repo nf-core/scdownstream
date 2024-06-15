@@ -12,7 +12,7 @@ process SCANPY_SCRUBLET {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    path("*.pkl")                  , emit: predictions
+    tuple val(meta), path("*.pkl") , emit: predictions
     path "versions.yml"            , emit: versions
 
     when:
