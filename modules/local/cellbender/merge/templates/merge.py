@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
-import anndata as ad
-import anndata2ri
-import rpy2
-import rpy2.robjects as ro
 import platform
-celda = ro.packages.importr('celda')
+import cellbender
+import anndata as ad
+from cellbender.remove_background.downstream import load_anndata_from_input_and_output
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
@@ -26,18 +24,13 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
+
 adata = ad.read_h5ad("${h5ad}")
-sce = anndata2ri.py2rpy(adata)
 
-kwargs = {}
+adata_cellbender = load_anndata_from_input_and_output("${h5ad}", "${h5}",
+                                           analyzed_barcodes_only=False)
+adata.layers["ambient"] = adata_cellbender.layers["cellbender"]
 
-if len(adata.obs['${batch_col}'].unique()) > 1:
-    kwargs['batch'] = adata.obs['${batch_col}'].tolist()
-
-corrected = celda.decontX(sce, **kwargs)
-counts = celda.decontXcounts(corrected)
-
-adata.layers['ambient'] = anndata2ri.rpy2py(counts).T
 adata.write_h5ad("${prefix}.h5ad")
 
 # Versions
@@ -45,10 +38,8 @@ adata.write_h5ad("${prefix}.h5ad")
 versions = {
     "${task.process}": {
         "python": platform.python_version(),
-        "anndata": ad.__version__,
-        "anndata2ri": anndata2ri.__version__,
-        "rpy2": rpy2.__version__,
-        "celda": celda.__version__,
+        "cellbender": cellbender.__version__,
+        "anndata": ad.__version__
     }
 }
 
