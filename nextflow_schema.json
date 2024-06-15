@@ -61,6 +61,11 @@
                     "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: solo, scrublet",
                     "pattern": "^((solo|scrublet)?,?)*[^,]+$"
                 },
+                "doublet_detection_threshold": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Number of tools that need to agree on a doublet for it to be called as such"
+                },
                 "integration_methods": {
                     "type": "string",
                     "default": "scvi",

@@ -51,6 +51,7 @@ workflow PREPROCESS {
 
     DOUBLET_DETECTION(ch_h5ad)
     ch_h5ad = DOUBLET_DETECTION.out.h5ad
+    ch_multiqc_files = ch_multiqc_files.mix(DOUBLET_DETECTION.out.multiqc_files)
     ch_versions = ch_versions.mix(DOUBLET_DETECTION.out.versions)
 
     QC_FILTERED(ch_h5ad)
