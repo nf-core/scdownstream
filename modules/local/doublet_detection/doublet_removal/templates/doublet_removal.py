@@ -44,6 +44,24 @@ mask = predictions.sum(axis=1) >= threshold
 adata = adata[mask, :]
 adata.write_h5ad(f"{prefix}.h5ad")
 
+# Versions
+
+versions = {
+    "${task.process}": {
+        "python": platform.python_version(),
+        "anndata": ad.__version__,
+        "pandas": pd.__version__,
+        "matplotlib": matplotlib.__version__,
+        "upsetplot": upsetplot.__version__,
+    }
+}
+
+with open("versions.yml", "w") as f:
+    f.write(format_yaml_like(versions))
+
+if not len(predictions.columns) > 1:
+    exit(0)
+
 # Plot
 
 contents = {column: predictions[column][predictions[column]].index.tolist()
@@ -77,19 +95,3 @@ with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
     }
 
     json.dump(custom_json, f_json)
-
-
-# Versions
-
-versions = {
-    "${task.process}": {
-        "python": platform.python_version(),
-        "anndata": ad.__version__,
-        "pandas": pd.__version__,
-        "matplotlib": matplotlib.__version__,
-        "upsetplot": upsetplot.__version__,
-    }
-}
-
-with open("versions.yml", "w") as f:
-    f.write(format_yaml_like(versions))
