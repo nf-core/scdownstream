@@ -3,6 +3,7 @@
 import anndata as ad
 import anndata2ri
 import rpy2
+import pandas as pd
 import rpy2.robjects as ro
 seurat = ro.packages.importr('Seurat')
 
@@ -33,6 +34,12 @@ adata = anndata2ri.rpy2py(sce)
 adata.obs.index = adata.obs.index.astype(str)
 adata.var.index = adata.var.index.astype(str)
 
+for key in ["X_EMB", "X_emb"]:
+    if key in adata.obsm.keys():
+        df = pd.DataFrame(adata.obsm[key], index=adata.obs_names)
+        df.to_pickle("X_${prefix}.pkl")
+        break
+
 adata.write_h5ad("${prefix}.h5ad")
 
 versions = {
@@ -40,6 +47,7 @@ versions = {
         "anndata": ad.__version__,
         "anndata2ri": anndata2ri.__version__,
         "rpy2": rpy2.__version__,
+        "pandas": pd.__version__,
         "seurat": seurat.__version__
     }
 }

@@ -78,6 +78,7 @@ workflow INTEGRATE {
     ch_versions = ch_versions.mix(ADATA_READRDS.out.versions)
 
     ch_integrations = ch_integrations.h5ad.mix(ADATA_READRDS.out.h5ad)
+    ch_obsm = ch_obsm.mix(ADATA_READRDS.out.obsm)
 
     emit:
     integrations = ch_integrations
