@@ -12,6 +12,7 @@ process ADATA_READRDS {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
+    path("*.pkl")                  , emit: obsm
     path "versions.yml"            , emit: versions
 
     when:

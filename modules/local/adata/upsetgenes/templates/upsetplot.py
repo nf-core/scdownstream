@@ -27,6 +27,20 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
+# Versions
+
+versions = {
+    "${task.process}": {
+        "python": platform.python_version(),
+        "scanpy": sc.__version__,
+        "matplotlib": matplotlib.__version__,
+        "upsetplot": upsetplot.__version__,
+    }
+}
+
+with open("versions.yml", "w") as f:
+    f.write(format_yaml_like(versions))
+
 adata = sc.read_h5ad("${h5ad}")
 split_col = "${split_col}"
 prefix = "${prefix}"
@@ -34,6 +48,10 @@ sample_genes = {}
 
 # Split into multiple adatas, based on sample
 samples = adata.obs[split_col].unique()
+
+if len(samples) < 2:
+    exit(0)
+
 for sample in samples:
     adata_sample = adata[adata.obs[split_col] == sample].copy()
     # Keep only genes with at least 1 count in at least 1 cell
@@ -60,17 +78,3 @@ with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
     }
 
     json.dump(custom_json, f_json)
-
-# Versions
-
-versions = {
-    "${task.process}": {
-        "python": platform.python_version(),
-        "scanpy": sc.__version__,
-        "matplotlib": matplotlib.__version__,
-        "upsetplot": upsetplot.__version__,
-    }
-}
-
-with open("versions.yml", "w") as f:
-    f.write(format_yaml_like(versions))
