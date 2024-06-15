@@ -32,7 +32,13 @@ adata = ad.read_h5ad("${h5ad}")
 threshold = int("${threshold}")
 prefix = "${prefix}"
 
-predictions = pd.concat([pd.read_pickle(f) for f in "${predictions}".split()], axis=1)
+def load(path: str) -> pd.DataFrame:
+    if path.endswith(".pkl"):
+        return pd.read_pickle(path)
+    if path.endswith(".csv"):
+        return pd.read_csv(path, index_col=0)
+
+predictions = pd.concat([load(f) for f in "${predictions}".split()], axis=1)
 mask = predictions.sum(axis=1) >= threshold
 
 adata = adata[mask, :]
