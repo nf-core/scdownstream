@@ -31,6 +31,10 @@ prefix = "${prefix}"
 
 sc.pp.scrublet(adata, batch_key="batch")
 
+df = adata.obs[["predicted_doublet"]]
+df.columns = ["${prefix}"]
+df.to_pickle("${prefix}.pkl")
+
 adata = adata[~adata.obs["predicted_doublet"]].copy()
 
 adata.write_h5ad(f"{prefix}.h5ad")

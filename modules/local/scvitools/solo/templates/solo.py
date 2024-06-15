@@ -63,7 +63,7 @@ if len(unique_labels) > 0:
     )
     model.train(max_epochs=n_epochs, **train_kwargs)
 
-adata.obs["singlet"] = False
+adata.obs["doublet"] = True
 
 batches = adata.obs["batch"].unique()
 for batch in batches:
@@ -73,11 +73,15 @@ for batch in batches:
     solo.train()
     result = solo.predict(False)
 
-    singlets = result[result == "singlet"].index.tolist()
-    adata.obs.loc[singlets, "singlet"] = True
+    doublets = result[result == "doublet"].index.tolist()
+    adata.obs.loc[doublets, "doublet"] = False
 
-adata = adata[adata.obs["singlet"]].copy()
-adata.obs.drop("singlet", axis=1, inplace=True)
+df = adata.obs[["doublet"]]
+df.columns = ["${prefix}"]
+df.to_pickle("${prefix}.pkl")
+
+adata = adata[~adata.obs["doublet"]].copy()
+adata.obs.drop("doublet", axis=1, inplace=True)
 
 adata.write_h5ad("${prefix}.h5ad")
 
