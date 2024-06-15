@@ -15,8 +15,7 @@ workflow COMBINE {
     ch_layers = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
-    ADATA_MERGE(ch_h5ad.map { meta, h5ad -> h5ad }.collect()
-                .map{ h5ads -> [[id: "merged"], h5ads] })
+    ADATA_MERGE(ch_h5ad.map { meta, h5ad -> [[id: "merged"], meta.id, h5ad] }.groupTuple())
     ch_inner = ADATA_MERGE.out.inner
     ch_outer = ADATA_MERGE.out.outer
     ch_versions = ch_versions.mix(ADATA_MERGE.out.versions)

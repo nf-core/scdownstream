@@ -26,7 +26,7 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
-adatas = {os.path.basename(f).split(".")[0]: sc.read_h5ad(f) for f in "${h5ads}".split()}
+adatas = dict(zip("${names}".split(), [sc.read_h5ad(f) for f in "${h5ads}".split()]))
 genes = [adata.var_names for adata in adatas.values()]
 
 adata_outer = ad.concat(adatas, join="outer", index_unique="-")

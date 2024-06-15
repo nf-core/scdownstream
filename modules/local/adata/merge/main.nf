@@ -8,7 +8,7 @@ process ADATA_MERGE {
         'community.wave.seqera.io/library/scanpy:1.10.1--0c8c97148fc05558' }"
 
     input:
-    tuple val(meta), path(h5ads)
+    tuple val(meta), val(names), path(h5ads)
 
     output:
     tuple val(meta), path("*_inner.h5ad"), emit: inner
