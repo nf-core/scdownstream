@@ -11,8 +11,8 @@ process AMBIENTRNA_CELLBENDER {
     tuple val(meta), path(h5ad)
 
     output:
-    tuple val(meta), path("*.h5ad"), emit: h5ad
-    path "versions.yml"            , emit: versions
+    tuple val(meta), path("*.h5"), emit: h5
+    path "versions.yml"          , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -23,5 +23,10 @@ process AMBIENTRNA_CELLBENDER {
     cellbender remove-background \
         --input ${h5ad} \
         --output ${prefix}.h5
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        cellbender: \$(cellbender --version)
+    END_VERSIONS
     """
 }
