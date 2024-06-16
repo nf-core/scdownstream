@@ -3,7 +3,7 @@ include { CELLTYPES_CELLTYPIST } from '../../modules/local/celltypes/celltypist'
 workflow CELLTYPE_ASSIGNMENT {
     take:
     ch_h5ad
-    
+
     main:
     ch_versions = Channel.empty()
     ch_obs = Channel.empty()
