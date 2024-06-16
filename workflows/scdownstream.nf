@@ -6,6 +6,7 @@
 
 include { PREPROCESS             } from '../subworkflows/local/preprocess'
 include { COMBINE                } from '../subworkflows/local/combine'
+include { CELLTYPE_ASSIGNMENT    } from '../subworkflows/local/celltype_assignment'
 include { CLUSTER                } from '../subworkflows/local/cluster'
 include { FINALIZE               } from '../subworkflows/local/finalize'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
@@ -50,6 +51,13 @@ workflow SCDOWNSTREAM {
     ch_multiqc_files = ch_multiqc_files.mix(COMBINE.out.multiqc_files)
     ch_obs = ch_obs.mix(COMBINE.out.obs)
     ch_layers = ch_layers.mix(COMBINE.out.layers)
+
+    //
+    // Perform automated celltype assignment
+    //
+    CELLTYPE_ASSIGNMENT(COMBINE.out.h5ad)
+    ch_versions = ch_versions.mix(CELLTYPE_ASSIGNMENT.out.versions)
+    ch_obs = ch_obs.mix(CELLTYPE_ASSIGNMENT.out.obs)
 
     //
     // Perform clustering and per-cluster analysis
