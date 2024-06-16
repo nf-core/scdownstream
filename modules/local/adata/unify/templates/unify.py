@@ -66,10 +66,6 @@ adata.obs["sample"] = "${meta.id}"
 adata.X = csr_matrix(adata.X)
 adata.layers["counts"] = adata.X
 
-# Perform basic filtering
-sc.pp.filter_cells(adata, min_genes=1)
-sc.pp.filter_genes(adata, min_cells=1)
-
 adata.write_h5ad("${prefix}.h5ad")
 
 # Versions

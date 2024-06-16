@@ -3,6 +3,7 @@ include { ADATA_READCSV                } from '../../modules/local/adata/readcsv
 include { ADATA_UNIFY                  } from '../../modules/local/adata/unify'
 include { SCANPY_PLOTQC as QC_RAW      } from '../../modules/local/scanpy/plotqc'
 include { AMBIENT_RNA_REMOVAL          } from './ambient_rna_removal'
+include { SCANPY_FILTER                } from '../../modules/local/scanpy/filter'
 include { DOUBLET_DETECTION            } from './doublet_detection'
 include { SCANPY_PLOTQC as QC_FILTERED } from '../../modules/local/scanpy/plotqc'
 
@@ -17,7 +18,13 @@ workflow PREPROCESS {
     ch_multiqc_files = Channel.empty()
     ch_h5ad = Channel.empty()
 
-    ch_samples = ch_samples.map { meta, file -> [meta, file, file.extension.toLowerCase()] }
+    ch_files = ch_samples.map { meta, file, raw -> [meta + [type: 'sample'], file] }
+    ch_files = ch_files.mix(ch_samples
+            .map { meta, file, raw -> [meta + [type: 'raw'], raw] }
+            .filter { meta, raw -> raw }
+        )
+
+    ch_files = ch_files.map { meta, file -> [meta, file, file.extension.toLowerCase()] }
         .branch { meta, file, ext ->
             h5ad: ext == "h5ad"
                 return [meta, file]
@@ -27,39 +34,46 @@ workflow PREPROCESS {
                 return [meta, file]
         }
 
-    ch_h5ad = ch_h5ad.mix(ch_samples.h5ad)
+    ch_h5ad = ch_h5ad.mix(ch_files.h5ad)
 
-    ADATA_READRDS(ch_samples.rds)
+    ADATA_READRDS(ch_files.rds)
     ch_h5ad = ch_h5ad.mix(ADATA_READRDS.out.h5ad)
     ch_versions = ch_versions.mix(ADATA_READRDS.out.versions)
 
-    ADATA_READCSV(ch_samples.csv)
+    ADATA_READCSV(ch_files.csv)
     ch_h5ad = ch_h5ad.mix(ADATA_READCSV.out.h5ad)
     ch_versions = ch_versions.mix(ADATA_READCSV.out.versions)
 
-    ADATA_UNIFY(ch_h5ad)
-    ch_h5ad = ADATA_UNIFY.out.h5ad
+    ch_samples = ch_h5ad.filter { meta, h5ad -> meta.type == 'sample' }
+    ch_raws = ch_h5ad.filter { meta, h5ad -> meta.type == 'raw' }
+
+    ADATA_UNIFY(ch_samples)
+    ch_samples = ADATA_UNIFY.out.h5ad
     ch_versions = ch_versions.mix(ADATA_UNIFY.out.versions)
 
-    QC_RAW(ch_h5ad)
+    QC_RAW(ch_samples)
     ch_multiqc_files = ch_multiqc_files.mix(QC_RAW.out.multiqc_files)
     ch_versions = ch_versions.mix(QC_RAW.out.versions)
 
-    AMBIENT_RNA_REMOVAL(ch_h5ad)
-    ch_h5ad = AMBIENT_RNA_REMOVAL.out.h5ad
+    AMBIENT_RNA_REMOVAL(ch_samples, ch_raws)
+    ch_samples = AMBIENT_RNA_REMOVAL.out.h5ad
     ch_versions = ch_versions.mix(AMBIENT_RNA_REMOVAL.out.versions)
 
-    DOUBLET_DETECTION(ch_h5ad)
-    ch_h5ad = DOUBLET_DETECTION.out.h5ad
+    SCANPY_FILTER(ch_samples)
+    ch_samples = SCANPY_FILTER.out.h5ad
+    ch_versions = ch_versions.mix(SCANPY_FILTER.out.versions)
+
+    DOUBLET_DETECTION(ch_samples)
+    ch_samples = DOUBLET_DETECTION.out.h5ad
     ch_multiqc_files = ch_multiqc_files.mix(DOUBLET_DETECTION.out.multiqc_files)
     ch_versions = ch_versions.mix(DOUBLET_DETECTION.out.versions)
 
-    QC_FILTERED(ch_h5ad)
+    QC_FILTERED(ch_samples)
     ch_multiqc_files = ch_multiqc_files.mix(QC_FILTERED.out.multiqc_files)
     ch_versions = ch_versions.mix(QC_FILTERED.out.versions)
 
     emit:
-    h5ad          = ch_h5ad
+    h5ad          = ch_samples
 
     multiqc_files = ch_multiqc_files
     versions      = ch_versions                     // channel: [ versions.yml ]
