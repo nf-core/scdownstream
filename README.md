@@ -31,6 +31,9 @@ Not all of the steps shown in the metromap have already been implemented, as thi
    3. Apply user-defined QC filters
    4. Remove ambient RNA
       - [decontX](https://bioconductor.org/packages/release/bioc/html/decontX.html)
+      - [soupX](https://cran.r-project.org/web/packages/SoupX/readme/README.html)
+      - [cellbender](https://cellbender.readthedocs.io/en/latest/)
+      - [scAR](https://docs.scvi-tools.org/en/stable/user_guide/models/scar.html)
    5. Doublet detection
       - [SOLO](https://docs.scvi-tools.org/en/stable/user_guide/models/solo.html)
 2. Sample aggregation
