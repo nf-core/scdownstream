@@ -28,7 +28,7 @@ Not all of the steps shown in the metromap have already been implemented, as thi
 1. Per-sample preprocessing
    1. Convert all RDS files to h5ad format
    2. Present QC for raw counts ([`MultiQC`](http://multiqc.info/))
-   3. Apply user-defined QC filters
+   3. Apply user-defined QC filters (can be defined per sample in the samplesheet)
    4. Remove ambient RNA
       - [decontX](https://bioconductor.org/packages/release/bioc/html/decontX.html)
       - [soupX](https://cran.r-project.org/web/packages/SoupX/readme/README.html)
