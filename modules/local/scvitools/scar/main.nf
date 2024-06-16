@@ -8,7 +8,7 @@ process SCVITOOLS_SCAR {
         'community.wave.seqera.io/library/anndata_scvi-tools:fa9451a13918eae0' }"
 
     input:
-    tuple val(meta), path(h5ad)
+    tuple val(meta), path(h5ad), path(raw)
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad

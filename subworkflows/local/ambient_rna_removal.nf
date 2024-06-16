@@ -36,7 +36,9 @@ workflow AMBIENT_RNA_REMOVAL {
     }
 
     if (params.ambient_removal == 'scar') {
-        SCVITOOLS_SCAR(ch_h5ad)
+        SCVITOOLS_SCAR(ch_h5ad.map{ meta, h5ad -> [meta.id, meta, h5ad]}
+            .join(ch_raw.map{ meta, h5ad -> [meta.id, h5ad]}, failOnMismatch: true)
+            .map{ id, meta, h5ad, raw -> [meta, h5ad, raw] })
         ch_h5ad = SCVITOOLS_SCAR.out.h5ad
         ch_versions = SCVITOOLS_SCAR.out.versions
     }
