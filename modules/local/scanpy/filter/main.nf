@@ -18,8 +18,8 @@ process SCANPY_FILTER {
     task.ext.when == null || task.ext.when
 
     script:
-    args = task.ext.args ?: 'min_genes=1'
-    args2 = task.ext.args2 ?: 'min_cells=1'
+    args   = task.ext.args   ?: 'min_genes=1'
+    args2  = task.ext.args2  ?: 'min_cells=1'
     prefix = task.ext.prefix ?: "${meta.id}"
     template 'filter.py'
 }
