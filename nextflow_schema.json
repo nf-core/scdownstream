@@ -86,6 +86,13 @@
                     "description": "Specify the models to use for the celltypist cell type annotation",
                     "help_text": "If you want to use multiple models, separate them with a comma. Available models can be found [here](https://www.celltypist.org/models).",
                     "pattern": "^([a-zA-Z0-9_]*(,[a-zA-Z0-9_]*)*)?$"
+                },
+                "celldex_reference": {
+                    "type": "string",
+                    "default": "human",
+                    "description": "Specify the reference to use for the singleR cell type annotation",
+                    "help_text": "Existing references can be found using the surveyReferences function in the celldex package.",
+                    "pattern": "^([a-zA-Z0-9_]*(,[a-zA-Z0-9_]*)*)?$"
                 }
             }
         },
