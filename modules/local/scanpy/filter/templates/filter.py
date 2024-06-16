@@ -29,8 +29,11 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 
-sc.pp.filter_cells(adata, ${args})
-sc.pp.filter_genes(adata, ${args2})
+sc.pp.filter_cells(adata, min_counts=int("${min_counts_cell}"))
+sc.pp.filter_genes(adata, min_counts=int("${min_counts_gene}"))
+
+sc.pp.filter_cells(adata, min_genes=int("${min_genes}"))
+sc.pp.filter_genes(adata, min_cells=int("${min_cells}"))
 
 adata.write_h5ad(f"{prefix}.h5ad")
 
