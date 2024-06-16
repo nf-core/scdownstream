@@ -85,7 +85,7 @@
                     "default": "",
                     "description": "Specify the models to use for the celltypist cell type annotation",
                     "help_text": "If you want to use multiple models, separate them with a comma. Available models can be found [here](https://www.celltypist.org/models).",
-                    "pattern": "^((\\w+)?,?)*[^,]+$"
+                    "pattern": "^([a-zA-Z0-9_]*(,[a-zA-Z0-9_]*)*)?$"
                 }
             }
         },
