@@ -79,6 +79,13 @@
                     "description": "Specify the resolutions for clustering",
                     "help_text": "Specify the resolutions for clustering. If you want to use multiple resolutions, separate them with a comma.",
                     "pattern": "^((\\d+\\.?\\d+)?,?)*[^,]+$"
+                },
+                "celltypist_model": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Specify the models to use for the celltypist cell type annotation",
+                    "help_text": "If you want to use multiple models, separate them with a comma. Available models can be found [here](https://www.celltypist.org/models).",
+                    "pattern": "^([a-zA-Z0-9_]*(,[a-zA-Z0-9_]*)*)?$"
                 }
             }
         },
