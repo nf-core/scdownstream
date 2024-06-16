@@ -34,15 +34,24 @@ Not all of the steps shown in the metromap have already been implemented, as thi
       - [soupX](https://cran.r-project.org/web/packages/SoupX/readme/README.html)
       - [cellbender](https://cellbender.readthedocs.io/en/latest/)
       - [scAR](https://docs.scvi-tools.org/en/stable/user_guide/models/scar.html)
-   5. Doublet detection
+   5. Doublet detection (Majority vote possible)
       - [SOLO](https://docs.scvi-tools.org/en/stable/user_guide/models/solo.html)
+      - [scrublet](https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html)
+      - [DoubletDetection](https://doubletdetection.readthedocs.io/en/v2.5.2/doubletdetection.doubletdetection.html)
+      - [SCDS](https://bioconductor.org/packages/devel/bioc/vignettes/scds/inst/doc/scds.html)
 2. Sample aggregation
    1. Merge into a single h5ad file
    2. Present QC for merged counts ([`MultiQC`](http://multiqc.info/))
    3. Integration
       - [scVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scvi.html)
       - [scANVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scanvi.html)
-3. Clustering and dimensionality reduction
+      - [Harmony](https://portals.broadinstitute.org/harmony/articles/quickstart.html)
+      - [BBKNN](https://github.com/Teichlab/bbknn)
+      - [Combat](https://scanpy.readthedocs.io/en/latest/api/generated/scanpy.pp.combat.html)
+      - [Seurat](https://satijalab.org/seurat/articles/integration_introduction)
+3. Cell type annotation
+   - [celltypist](https://www.celltypist.org/)
+4. Clustering and dimensionality reduction
    1. [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html)
    2. [UMAP](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.umap.html)
 
