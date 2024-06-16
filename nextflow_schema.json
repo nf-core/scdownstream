@@ -51,12 +51,12 @@
                 "ambient_removal": {
                     "type": "string",
                     "default": "decontx",
-                    "enum": ["decontx", "cellbender", "soupx"],
+                    "enum": ["decontx", "cellbender", "soupx", "scar"],
                     "description": "Specify the tool to use for ambient RNA removal"
                 },
                 "doublet_detection": {
                     "type": "string",
-                    "default": "solo",
+                    "default": "scrublet",
                     "description": "Specify the tools to use for doublet detection.",
                     "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: solo, scrublet, doubletdetection, scds",
                     "pattern": "^((solo|scrublet|doubletdetection|scds)?,?)*[^,]+$"

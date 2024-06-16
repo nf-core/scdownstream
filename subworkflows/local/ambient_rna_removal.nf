@@ -2,6 +2,7 @@ include { CELDA_DECONTX               } from '../../modules/local/celda/decontx'
 include { CELLBENDER_REMOVEBACKGROUND } from '../../modules/local/cellbender/removebackground'
 include { CELLBENDER_MERGE            } from '../../modules/local/cellbender/merge'
 include { SOUPX                       } from '../../modules/local/soupx'
+include { SCVITOOLS_SCAR              } from '../../modules/local/scvitools/scar'
 
 workflow AMBIENT_RNA_REMOVAL {
     take:
@@ -32,6 +33,14 @@ workflow AMBIENT_RNA_REMOVAL {
             .map{ id, meta, h5ad, raw -> [meta, h5ad, raw] })
         ch_h5ad = SOUPX.out.h5ad
         ch_versions = ch_versions.mix(SOUPX.out.versions)
+    }
+
+    if (params.ambient_removal == 'scar') {
+        SCVITOOLS_SCAR(ch_h5ad.map{ meta, h5ad -> [meta.id, meta, h5ad]}
+            .join(ch_raw.map{ meta, h5ad -> [meta.id, h5ad]}, failOnMismatch: true)
+            .map{ id, meta, h5ad, raw -> [meta, h5ad, raw] })
+        ch_h5ad = SCVITOOLS_SCAR.out.h5ad
+        ch_versions = SCVITOOLS_SCAR.out.versions
     }
 
     emit:
