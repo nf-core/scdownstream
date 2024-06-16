@@ -32,11 +32,11 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 adata = ad.read_h5ad("${h5ad}")
 adata_raw = ad.read_h5ad("${raw}")
 
-SCAR.setup_anndata(adata, batch_key="batch")
+SCAR.setup_anndata(adata)
 SCAR.get_ambient_profile(adata, adata_raw)
+
 vae = SCAR(adata)
 vae.train()
-
 adata.layers["ambient"] = vae.get_denoised_counts()
 
 adata.write_h5ad("${prefix}.h5ad")
