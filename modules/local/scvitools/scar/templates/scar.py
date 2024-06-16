@@ -32,11 +32,30 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 adata = ad.read_h5ad("${h5ad}")
 adata_raw = ad.read_h5ad("${raw}")
 
+# TODO: Find out why the batch_key='batch' argument causes an error.
 SCAR.setup_anndata(adata)
 SCAR.get_ambient_profile(adata, adata_raw)
 
 vae = SCAR(adata)
-vae.train()
+
+# The training fails if the number of entries in a minibatch is 1.
+# This happens if the total number of entries modulo the batch size is 1.
+# We therefore decrease the batch size until this is not the case.
+batch_size = 128
+worked = False
+while not worked:
+    try:
+        vae.train(
+            batch_size=batch_size,
+            early_stopping=True
+        )
+        worked = True
+    except ValueError as e:
+        batch_size -= 1
+
+        if batch_size < 125:
+            raise e
+
 adata.layers["ambient"] = vae.get_denoised_counts()
 
 adata.write_h5ad("${prefix}.h5ad")
