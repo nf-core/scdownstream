@@ -119,7 +119,7 @@ We thank the following people for their extensive assistance in the development 
 - [Nurun Fancy](https://github.com/nfancy)
 - [Riley Grindle](https://github.com/Riley-Grindle)
 - Ryan Seaman
-- Wojtek Sowinski
+- [Wojtek Sowinski](https://github.com/WojtekSowinski)
 
 ## Contributions and Support
 
