@@ -21,6 +21,13 @@
 
 **nf-core/scdownstream** is a bioinformatics pipeline that can be used to process already quantified single-cell RNA-seq data. It takes a samplesheet and h5ad-, SingleCellExperiment/Seurat- or CSV files as input and performs quality control, integration, dimensionality reduction and clustering. It produces an integrated h5ad and SingleCellExperiment file and an extensive QC report.
 
+The pipeline is based on the learnings and implementations from the following pipelines (alphabetical):
+
+- [panpipes](https://github.com/DendrouLab/panpipes)
+- [scFlow](https://combiz.github.io/scFlow/)
+- [SIMBA](https://github.com/Mye-InfoBank/SIMBA)
+- [YASCP](https://github.com/wtsi-hgi/yascp)
+
 # ![nf-core/scdownstream](docs/images/metromap.png)
 
 Not all of the steps shown in the metromap have already been implemented, as this pipeline is still under development. However, the following steps are already functional:
@@ -101,10 +108,18 @@ For more details about the output files and reports, please refer to the
 
 nf-core/scdownstream was originally written by Nico Trummer.
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed
+We thank the following people for their extensive assistance in the development of this pipeline (alphabetical):
 
-We thank the following people for their extensive assistance in the development of this pipeline:
- -->
+- [Fabiola Curion](https://github.com/bio-la)
+- [Gregor Sturm](https://github.com/grst)
+- [Jonathan Talbot-Martin](https://github.com/jtalbotmartin)
+- [Lukas Heumos](https://github.com/zethson)
+- [Matiss Ozols](https://github.com/maxozo)
+- [Nathan Skene](https://github.com/NathanSkene)
+- [Nurun Fancy](https://github.com/nfancy)
+- [Riley Grindle](https://github.com/Riley-Grindle)
+- Ryan Seaman
+- Wojtek Sowinski
 
 ## Contributions and Support
 

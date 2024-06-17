@@ -8,11 +8,22 @@
 
 > Di Tommaso P, Chatzou M, Floden EW, Barja PP, Palumbo E, Notredame C. Nextflow enables reproducible computational workflows. Nat Biotechnol. 2017 Apr 11;35(4):316-319. doi: 10.1038/nbt.3820. PubMed PMID: 28398311.
 
+## Base pipeliines
+
+- [panpipes](https://doi.org/10.1101/2023.03.11.532085)
+  > Curion F, Rich-Griffin C, Agarwal D, et al. Panpipes: a pipeline for multiomic single-cell and spatial transcriptomic data analysis. Published online December 18, 2023:2023.03.11.532085. doi:10.1101/2023.03.11.532085
+
+- [scFlow](https://doi.org/10.1101/2021.08.16.456499)
+  > Khozoie C, Fancy N, Marjaneh MM, Murphy AE, Matthews PM, Skene N. scFlow: A Scalable and Reproducible Analysis Pipeline for Single-Cell RNA Sequencing Data. Published online August 19, 2021:2021.08.16.456499. doi:10.1101/2021.08.16.456499
+
+- [SIMBA](https://github.com/Mye-InfoBank/SIMBA)
+  > Trummer, N. et al. 2024. SIMBA (Single-cell Integration Methods pipeline for Big Atlases)
+
+- [YASCP](https://github.com/wtsi-hgi/yascp)
+  > Ozols, M. et al. 2023. YASCP (Yet Another Single Cell Pipeline)
+
+
 ## Pipeline tools
-
-- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
-
-  > Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online].
 
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 
