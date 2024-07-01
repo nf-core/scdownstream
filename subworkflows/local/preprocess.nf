@@ -1,4 +1,4 @@
-include { ADATA_READHDF                } from '../../modules/local/adata/readhdf'
+include { SCANPY_READH5                } from '../../modules/local/scanpy/readh5'
 include { ADATA_READRDS                } from '../../modules/local/adata/readrds'
 include { ADATA_READCSV                } from '../../modules/local/adata/readcsv'
 include { ADATA_UNIFY                  } from '../../modules/local/adata/unify'
@@ -29,7 +29,7 @@ workflow PREPROCESS {
         .branch { meta, file, ext ->
             h5ad: ext == "h5ad"
                 return [meta, file]
-            hdf: ext == "h5"
+            h5: ext == "h5"
                 return [meta, file]
             rds: ext == "rds"
                 return [meta, file]
@@ -39,9 +39,9 @@ workflow PREPROCESS {
 
     ch_h5ad = ch_h5ad.mix(ch_files.h5ad)
 
-    ADATA_READHDF(ch_files.hdf)
-    ch_h5ad = ch_h5ad.mix(ADATA_READHDF.out.h5ad)
-    ch_versions = ch_versions.mix(ADATA_READHDF.out.versions)
+    SCANPY_READH5(ch_files.h5)
+    ch_h5ad = ch_h5ad.mix(SCANPY_READH5.out.h5ad)
+    ch_versions = ch_versions.mix(SCANPY_READH5.out.versions)
 
     ADATA_READRDS(ch_files.rds)
     ch_h5ad = ch_h5ad.mix(ADATA_READRDS.out.h5ad)

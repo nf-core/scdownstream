@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import platform
-import anndata as ad
+import scanpy as sc
 import pandas as pd
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
@@ -24,7 +24,7 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
     return yaml_str
 
 df = pd.read_csv("${csv}", index_col=0)
-adata = ad.read_hdf("${hdf}")
+adata = sc.read_10x_h5("${h5}")
 adata.write_h5ad("${prefix}.h5ad")
 
 # Versions
@@ -32,7 +32,7 @@ adata.write_h5ad("${prefix}.h5ad")
 versions = {
     "${task.process}": {
         "python": platform.python_version(),
-        "anndata": ad.__version__,
+        "scanpy": sc.__version__,
         "pandas": pd.__version__
     }
 }

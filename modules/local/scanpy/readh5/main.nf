@@ -1,4 +1,4 @@
-process ADATA_READHDF {
+process SCANPY_READH5 {
     tag "$meta.id"
     label 'process_single'
 
@@ -8,7 +8,7 @@ process ADATA_READHDF {
         'community.wave.seqera.io/library/anndata:0.10.7--336c6c1921a0632b' }"
 
     input:
-    tuple val(meta), path(hdf)
+    tuple val(meta), path(h5)
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
@@ -19,5 +19,5 @@ process ADATA_READHDF {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    template 'readhdf.py'
+    template 'readh5.py'
 }
