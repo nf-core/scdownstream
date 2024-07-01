@@ -23,7 +23,6 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
-df = pd.read_csv("${csv}", index_col=0)
 adata = sc.read_10x_h5("${h5}")
 adata.write_h5ad("${prefix}.h5ad")
 
