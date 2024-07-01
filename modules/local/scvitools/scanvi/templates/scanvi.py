@@ -31,6 +31,12 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 adata = ad.read_h5ad("${h5ad}")
 model = SCVI.load("${scvi_model}", adata)
 
+unique_labels = set(adata.obs["label"].unique())
+unique_labels.discard("unknown")
+
+if not len(unique_labels) > 1:
+    raise ValueError("Not enough labels to run scANVI.")
+
 n_epochs = int(min([round((20000 / adata.n_obs) * 400), 400]))
 n_epochs = int(min([10, max([2, round(n_epochs / 3.0)])]))
 

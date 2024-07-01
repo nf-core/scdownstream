@@ -1,5 +1,9 @@
 # nf-core/scdownstream: Output
 
+:::warning
+This section is still the nf-core template output documentation. It will be updated to reflect the output of the nf-core/scdownstream pipeline soon.
+:::
+
 ## Introduction
 
 This document describes the output produced by the pipeline. Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.

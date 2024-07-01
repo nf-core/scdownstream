@@ -30,17 +30,17 @@ The pipeline is based on the learnings and implementations from the following pi
 
 # ![nf-core/scdownstream](docs/images/metromap.png)
 
-Not all of the steps shown in the metromap have already been implemented, as this pipeline is still under development. However, the following steps are already functional:
+Steps marked with the boat icon are not yet implemented. For the other steps, the pipeline uses the following tools:
 
 1. Per-sample preprocessing
    1. Convert all RDS files to h5ad format
    2. Present QC for raw counts ([`MultiQC`](http://multiqc.info/))
-   3. Apply user-defined QC filters (can be defined per sample in the samplesheet)
-   4. Remove ambient RNA
+   3. Remove ambient RNA
       - [decontX](https://bioconductor.org/packages/release/bioc/html/decontX.html)
       - [soupX](https://cran.r-project.org/web/packages/SoupX/readme/README.html)
       - [cellbender](https://cellbender.readthedocs.io/en/latest/)
       - [scAR](https://docs.scvi-tools.org/en/stable/user_guide/models/scar.html)
+   4. Apply user-defined QC filters (can be defined per sample in the samplesheet)
    5. Doublet detection (Majority vote possible)
       - [SOLO](https://docs.scvi-tools.org/en/stable/user_guide/models/solo.html)
       - [scrublet](https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html)
@@ -69,9 +69,7 @@ Not all of the steps shown in the metromap have already been implemented, as thi
 
 First, prepare a samplesheet with your input data that looks as follows:
 
-`samplesheet.csv`:
-
-```csv
+```csv title="samplesheet.csv"
 sample,file
 sample1,/absolute/path/to/sample1.h5ad
 sample2,relative/path/to/sample2.rds
