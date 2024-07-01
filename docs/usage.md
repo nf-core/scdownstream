@@ -4,10 +4,6 @@
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
-## Introduction
-
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
-
 ## Samplesheet input
 
 You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with at least 2 columns, and a header row as shown in the examples below.
@@ -47,7 +43,7 @@ For CSV input files, specifying the `batch_col`, `label_col`, and `unknown_label
 | `raw` | Same as `file`, but for the unfiltered cellranger or nf-core/scrnaseq output. Only mandatory if soupX or scAR are used for ambient RNA removal.                                                             |
 | `batch_col` | Column in the input file containing batch information. Defaults to `batch`. If the column does not exist in the input object, the pipeline will create a new column and put the sample identifier in it. If the `batch_col` is something else than `batch`, it will be renamed to `batch` during pipeline execution. |
 | `label_col` | Column in the input file containing cell type information. Defaults to `label`. If the column does not exist in the input object, the pipeline will create a new column and put `unknown` in it. If the `label_col` is something else than `label`, it will be renamed to `label` during pipeline execution. |
-| `unknown_label` | Value in the `label_col` column that should be considered as unknown. Defaults to `unknown`. If the `unknown_label` is something else than `unknown`, it will be renamed to `unknown` during pipeline execution. |
+| `unknown_label` | Value in the `label_col` column that should be considered as unknown. Defaults to `unknown`. If the `unknown_label` is something else than `unknown`, it will be renamed to `unknown` during pipeline execution. If trying to perform integration with scANVI, more than one unique label other than `unknown` must exist in the input data. |
 | `min_genes` | Minimum number of genes required for a cell to be considered. Defaults to `1`. |
 | `min_cells` | Minimum number of cells required for a gene to be considered. Defaults to `1`. |
 | `min_counts_cell` | Minimum number of counts required for a cell to be considered. Defaults to `1`. |
