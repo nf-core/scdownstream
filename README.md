@@ -25,7 +25,7 @@ The pipeline is based on the learnings and implementations from the following pi
 
 - [panpipes](https://github.com/DendrouLab/panpipes)
 - [scFlow](https://combiz.github.io/scFlow/)
-- [SIMBA](https://github.com/Mye-InfoBank/SIMBA)
+- [scRAFIKI](https://github.com/Mye-InfoBank/scRAFIKI)
 - [YASCP](https://github.com/wtsi-hgi/yascp)
 
 # ![nf-core/scdownstream](docs/images/metromap.png)
