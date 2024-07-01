@@ -69,9 +69,7 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
 
 First, prepare a samplesheet with your input data that looks as follows:
 
-`samplesheet.csv`:
-
-```csv
+```csv title="samplesheet.csv"
 sample,file
 sample1,/absolute/path/to/sample1.h5ad
 sample2,relative/path/to/sample2.rds

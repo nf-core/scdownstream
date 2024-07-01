@@ -10,45 +10,49 @@
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with at least 2 columns, and a header row as shown in the examples below.
 
 ```bash
 --input '[path to samplesheet file]'
 ```
 
-### Multiple runs of the same sample
+### Minimal samplesheet
 
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
+The samplesheet needs to contain at least two columns: `sample` and `file`:
 
 ```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
+sample,file
+sample1,/absolute/path/to/sample1.h5ad
+sample2,relative/path/to/sample2.rds
+sample3,/absolute/path/to/sample3.csv
 ```
 
 ### Full samplesheet
 
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
-
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
+There are a couple of optional columns that can be used for more advanced features:
 
 ```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+sample,file,raw,batch_col,label_col,unknown_label,min_genes,min_cells,min_counts_cell,min_counts_gene
+sample1,/absolute/path/to/sample1.h5ad,/absolute/path/to/sample1_filtered.h5ad,batch,cell_type,unknown,1,2,3,4
+sample2,relative/path/to/sample2.rds,relative/path/to/sample2_filtered.rds,batch_id,annotation,unannotated,5,6,7,8
+sample3,/absolute/path/to/sample3.csv,/absolute/path/to/sample3_filtered.csv,,,,9,10,11,12
 ```
+
+For CSV input files, specifying the `batch_col`, `label_col`, and `unknown_label` columns will not have any effect, as no additional metadata is available in the CSV file.
 
 | Column    | Description                                                                                                                                                                            |
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+| `sample`  | Unique sample identifier. Will be added to the pipeline output objects as `sample` column. |
+| `file` | May contain paths to `h5ad`, `rds`, or `csv` files. If used with cellranger or nf-core/scrnaseq, this should contain the filtered output. `rds` files may contain any object that can be converted to a `SingleCellExperiment` using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function. `csv` files should contain a matrix with genes as columns and cells as rows.                                                             |
+| `raw` | Same as `file`, but for the unfiltered cellranger or nf-core/scrnaseq output. Only mandatory if soupX or scAR are used for ambient RNA removal.                                                             |
+| `batch_col` | Column in the input file containing batch information. Defaults to `batch`. If the column does not exist in the input object, the pipeline will create a new column and put the sample identifier in it. If the `batch_col` is something else than `batch`, it will be renamed to `batch` during pipeline execution. |
+| `label_col` | Column in the input file containing cell type information. Defaults to `label`. If the column does not exist in the input object, the pipeline will create a new column and put `unknown` in it. If the `label_col` is something else than `label`, it will be renamed to `label` during pipeline execution. |
+| `unknown_label` | Value in the `label_col` column that should be considered as unknown. Defaults to `unknown`. If the `unknown_label` is something else than `unknown`, it will be renamed to `unknown` during pipeline execution. |
+| `min_genes` | Minimum number of genes required for a cell to be considered. Defaults to `1`. |
+| `min_cells` | Minimum number of cells required for a gene to be considered. Defaults to `1`. |
+| `min_counts_cell` | Minimum number of counts required for a cell to be considered. Defaults to `1`. |
+| `min_counts_gene` | Minimum number of counts required for a gene to be considered. Defaults to `1`. |
+
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
