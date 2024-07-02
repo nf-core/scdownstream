@@ -109,6 +109,7 @@ nf-core/scdownstream was originally written by [Nico Trummer](https://github.com
 
 We thank the following people for their extensive assistance in the development of this pipeline (alphabetical):
 
+- [Fabian Rost](https://github.com/fbnrst)
 - [Fabiola Curion](https://github.com/bio-la)
 - [Gregor Sturm](https://github.com/grst)
 - [Jonathan Talbot-Martin](https://github.com/jtalbotmartin)
