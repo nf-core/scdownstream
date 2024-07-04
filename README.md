@@ -62,6 +62,18 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
    1. [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html)
    2. [UMAP](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.umap.html)
 
+### Compatibility
+
+These algorithms are sensitive at times. When sequencing depths are low, too many 0s for a particular gene or cell are likely to cause runtime errors.
+That is why cells and genes can be filtered from the input that are not showing a minimal abundance. But some algorithms also explicitly demand the
+unfiltered "raw" files.
+
+The nf-core/scrnaseq pipeline offers a series of aligners, see https://nf-co.re/scrnaseq/2.7.0/parameters/ . The default --aligner "alevin" only provides raw data.
+This may cause such problems with an early step in scdownstream, the removal of ambient RNA, for which the default method "decontX" expects filtered input.
+
+The descriptions of the usage and parameters provide further guidance.
+With some confidence, over time the default parameters for the nf-core scrnaseq and scdownstream will strive for maximal robustness.
+
 ## Usage
 
 > [!NOTE]

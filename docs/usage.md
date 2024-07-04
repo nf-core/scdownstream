@@ -23,6 +23,17 @@ sample2,relative/path/to/sample2.rds
 sample3,/absolute/path/to/sample3.csv
 ```
 
+Of the file formats above, the format h5ad is very common and should be expected to be provided by most pipelines interpreting single cell data.
+See https://www.elucidata.io/blog/single-cell-rna-seq-data-analysis-beyond-h5ad for details.
+If it is missing, this may be an indication that your pipeline has not completed.
+If you find the mtx files but not the corresponding h5ad files then these may just be in another subfolder dedicated to a conversion tool.
+We then suggest to search for them.
+On a Linux machine try `find name_of_output_folder -name "*h5ad"`.
+You may find multiple h5ad files for a single sample, like `sumname_custom_emptydrops_filter_matrix.h5ad` and `somename_raw_matrix.h5ad`.
+The selection of tools that shall contribute to your downstream processing will influence what file(s) to use, see below.
+You may also decide to rerun the scrnaseq pipeline, e.g. with the --aligner=cellranger, if filtered counts are missing for a particular flavour of the scdownstream workflow.
+The "-resume" option of nextflow will then help avoiding redundant computation.
+
 ### Full samplesheet
 
 There are a couple of optional columns that can be used for more advanced features:
@@ -40,7 +51,7 @@ For CSV input files, specifying the `batch_col`, `label_col`, and `unknown_label
 | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sample`          | Unique sample identifier. Will be added to the pipeline output objects as `sample` column.                                                                                                                                                                                                                                                                                                                                               |
 | `file`            | May contain paths to `h5ad`, `h5`, `rds`, or `csv` files. If used with cellranger or nf-core/scrnaseq, this should contain the filtered output. `rds` files may contain any object that can be converted to a `SingleCellExperiment` using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function. `csv` files should contain a matrix with genes as columns and cells as rows. |
-| `raw`             | Same as `file`, but for the unfiltered cellranger or nf-core/scrnaseq output. Only mandatory if cellbender, soupX or scAR are used for ambient RNA removal.                                                                                                                                                                                                                                                                              |
+| `raw`             | Same as `file`, but for the unfiltered cellranger or nf-core/scrnaseq output. Only mandatory if soupX or scAR are used for ambient RNA removal. If only a single file is available for any given sample, use the `file` column also for unfiltered data.                                                                                                                                                                                 |
 | `batch_col`       | Column in the input file containing batch information. Defaults to `batch`. If the column does not exist in the input object, the pipeline will create a new column and put the sample identifier in it. If the `batch_col` is something else than `batch`, it will be renamed to `batch` during pipeline execution.                                                                                                                     |
 | `label_col`       | Column in the input file containing cell type information. Defaults to `label`. If the column does not exist in the input object, the pipeline will create a new column and put `unknown` in it. If the `label_col` is something else than `label`, it will be renamed to `label` during pipeline execution.                                                                                                                             |
 | `unknown_label`   | Value in the `label_col` column that should be considered as unknown. Defaults to `unknown`. If the `unknown_label` is something else than `unknown`, it will be renamed to `unknown` during pipeline execution. If trying to perform integration with scANVI, more than one unique label other than `unknown` must exist in the input data.                                                                                             |
@@ -48,6 +59,17 @@ For CSV input files, specifying the `batch_col`, `label_col`, and `unknown_label
 | `min_cells`       | Minimum number of cells required for a gene to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                                           |
 | `min_counts_cell` | Minimum number of counts required for a cell to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                                          |
 | `min_counts_gene` | Minimum number of counts required for a gene to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                                          |
+
+The apparent reduncancy of the file and raw column may be confusing. Well, it is, since if only raw data is available, that would nonetheless be in the file column. If you have only filtered or unfiltered data available, you put what you have into the file column and select among the methods for ambient RNA remoal what works with either, see the parameter descriptions:
+ - requiring filtered: decontx (the default)
+ - requiring unfiltered: cellbender
+ - requiring both (unfiltered then go to raw): soupX, scAR
+
+If you have both filtered and unfiltered data available, the aligner Cellranger as e.g. provided by the scranseq pipeline provides both filtered and unfiltered quantifications,
+then as of today you can choose the tool for ambient removal first and then decide what file reference to place.
+Changing the method may imply to also change the file referenced in the 'file' column.
+You can skip the execution of the RNA ambient removal by selecting the method 'none', which then forwards the contents of the data from the 'file' column.
+
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
