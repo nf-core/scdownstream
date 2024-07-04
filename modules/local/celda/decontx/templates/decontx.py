@@ -5,6 +5,7 @@ import anndata2ri
 import rpy2
 import rpy2.robjects as ro
 import platform
+import os
 celda = ro.packages.importr('celda')
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
@@ -33,6 +34,13 @@ kwargs = {}
 
 if len(adata.obs['${batch_col}'].unique()) > 1:
     kwargs['batch'] = adata.obs['${batch_col}'].tolist()
+
+raw_path = "${raw}"
+if os.path.exists(raw_path):
+    raw = ad.read_h5ad(raw_path)
+    if "counts" not in raw.layers:
+        raw.layers["counts"] = raw.X.copy()
+    kwargs["background"] = anndata2ri.py2rpy(raw)
 
 corrected = celda.decontX(sce, **kwargs)
 counts = celda.decontXcounts(corrected)
