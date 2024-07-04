@@ -25,10 +25,13 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
     return yaml_str
 
 
-adata = ad.read_h5ad("${h5ad}")
+adata = ad.read_h5ad("${filtered}")
+adata_raw = ad.read_h5ad("${raw}")
 
-adata_cellbender = load_anndata_from_input_and_output("${h5ad}", "${h5}",
+adata_cellbender = load_anndata_from_input_and_output("${raw}", "${cellbender_h5}",
                                            analyzed_barcodes_only=False)
+
+adata_cellbender = adata_cellbender[adata.obs_names]
 adata.layers["ambient"] = adata_cellbender.layers["cellbender"]
 
 adata.write_h5ad("${prefix}.h5ad")
