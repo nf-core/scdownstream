@@ -21,7 +21,7 @@ process CELLBENDER_REMOVEBACKGROUND {
     prefix = task.ext.prefix ?: "${meta.id}"
     args = task.ext.args ?: ""
     """
-    cellbender remove-background \
+    TMPDIR=. cellbender remove-background \
         ${args} \
         --input ${h5ad} \
         --output ${prefix}.h5
