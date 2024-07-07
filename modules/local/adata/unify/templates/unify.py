@@ -2,6 +2,7 @@
 
 import scanpy as sc
 import scipy
+import numpy as np
 from scipy.sparse import csr_matrix
 import platform
 
@@ -24,7 +25,33 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
+# Function borrowed from https://github.com/icbi-lab/luca/blob/5ffb0a4671e9c288b10e73de18d447ee176bef1d/lib/scanpy_helper_submodule/scanpy_helpers/util.py#L122C1-L135C21
+def aggregate_duplicate_var(adata, aggr_fun=np.mean):
+    retain_var = ~adata.var_names.duplicated(keep="first")
+    duplicated_var = adata.var_names[adata.var_names.duplicated()].unique()
+    if len(duplicated_var):
+        for var in duplicated_var:
+            mask = adata.var_names == var
+            var_aggr = aggr_fun(adata.X[:, mask], axis=1)[:, np.newaxis]
+            adata.X[:, mask] = np.repeat(var_aggr, np.sum(mask), axis=1)
+
+        adata_dedup = adata[:, retain_var].copy()
+        return adata_dedup
+    else:
+        return adata
+
 adata = sc.read_h5ad("$h5ad")
+
+# Aggregate duplicate genes
+method = "${params.var_aggr_method}"
+if not method in ["mean", "sum", "max"]:
+    raise ValueError(f"Invalid aggregation method: {method}")
+
+adata = aggregate_duplicate_var(adata, aggr_fun=getattr(np, method))
+
+# Prevent duplicate cells
+adata.obs_names_make_unique()
+adata.obs_names = "${meta.id}_" + adata.obs_names
 
 # Unify batches
 batch_col = "${meta.batch_col}"
@@ -74,7 +101,8 @@ versions = {
     "${task.process}": {
         "python": platform.python_version(),
         "scanpy": sc.__version__,
-        "scipy": scipy.__version__
+        "scipy": scipy.__version__,
+        "numpy": np.__version__
     }
 }
 
