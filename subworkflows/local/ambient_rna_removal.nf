@@ -20,6 +20,7 @@ workflow AMBIENT_RNA_REMOVAL {
 
     if (params.ambient_removal == 'none') {
         println "AMBIENT_RNA_REMOVAL: Not performed since 'none' selected."
+        ch_h5ad = ch_filtered
     }
     else if (params.ambient_removal == 'decontx') {
         CELDA_DECONTX(ch_combined)
