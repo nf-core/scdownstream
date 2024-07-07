@@ -91,6 +91,13 @@
                     "type": "integer",
                     "default": 150,
                     "description": "Number of epochs to train the CellBender model"
+                },
+                "var_aggr_method": {
+                    "type": "string",
+                    "default": "mean",
+                    "description": "Method to aggregate gene expression values for non-unique genes",
+                    "help_text": "Method to aggregate gene expression values for non-unique genes. Available methods are: mean, sum, max",
+                    "enum": ["mean", "sum", "max"]
                 }
             }
         },
