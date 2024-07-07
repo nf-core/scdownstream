@@ -15,8 +15,8 @@ workflow AMBIENT_RNA_REMOVAL {
     needs_raw = ['cellbender', 'soupx', 'scar'].contains(params.ambient_removal)
 
     ch_combined = ch_filtered.map{ meta, h5ad -> [meta.id, meta, h5ad]}
-            .join(ch_raw.map{ meta, h5ad -> [meta.id, h5ad]}, failOnMismatch: needs_raw)
-            .map{ id, meta, h5ad, raw -> [meta, h5ad, raw] }
+            .join(ch_raw.map{ meta, h5ad -> [meta.id, h5ad]}, failOnMismatch: needs_raw, remainder: true)
+            .map{ id, meta, h5ad, raw -> [meta, h5ad, raw ?: []] }
 
     if (params.ambient_removal == 'none') {
         println "AMBIENT_RNA_REMOVAL: Not performed since 'none' selected."
