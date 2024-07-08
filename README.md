@@ -67,17 +67,20 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 
+> [!NOTE]
+> If you are confused by the terms `filtered` and `unfiltered`, please check out the respective [documentation](https://nf-co.re/scdownstream/dev/docs/usage/#filtered-and-unfiltered-matrices).
+
 First, prepare a samplesheet with your input data that looks as follows:
 
 ```csv title="samplesheet.csv"
-sample,file
+sample,unfiltered
 sample1,/absolute/path/to/sample1.h5ad
 sample2,/absolute/path/to/sample3.h5
 sample3,relative/path/to/sample2.rds
 sample4,/absolute/path/to/sample3.csv
 ```
 
-Each row represents a h5ad, h5, RDS or CSV file. RDS files may contain any object that can be converted to a SingleCellExperiment using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function.
+Each entry represents a h5ad, h5, RDS or CSV file. RDS files may contain any object that can be converted to a SingleCellExperiment using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function.
 CSV files should contain a matrix with genes as columns and cells as rows. The first column should contain cell names/barcodes.
 
 -->
