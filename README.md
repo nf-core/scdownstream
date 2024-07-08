@@ -34,14 +34,15 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
 
 1. Per-sample preprocessing
    1. Convert all RDS files to h5ad format
-   2. Present QC for raw counts ([`MultiQC`](http://multiqc.info/))
-   3. Remove ambient RNA
+   2. Create filtered matrix (if not provided)
+   3. Present QC for raw counts ([`MultiQC`](http://multiqc.info/))
+   4. Remove ambient RNA
       - [decontX](https://bioconductor.org/packages/release/bioc/html/decontX.html)
       - [soupX](https://cran.r-project.org/web/packages/SoupX/readme/README.html)
       - [cellbender](https://cellbender.readthedocs.io/en/latest/)
       - [scAR](https://docs.scvi-tools.org/en/stable/user_guide/models/scar.html)
-   4. Apply user-defined QC filters (can be defined per sample in the samplesheet)
-   5. Doublet detection (Majority vote possible)
+   5. Apply user-defined QC filters (can be defined per sample in the samplesheet)
+   6. Doublet detection (Majority vote possible)
       - [SOLO](https://docs.scvi-tools.org/en/stable/user_guide/models/solo.html)
       - [scrublet](https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html)
       - [DoubletDetection](https://doubletdetection.readthedocs.io/en/v2.5.2/doubletdetection.doubletdetection.html)
