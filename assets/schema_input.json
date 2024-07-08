@@ -13,19 +13,19 @@
                 "errorMessage": "Sample name must be provided and cannot contain spaces",
                 "meta": ["id"]
             },
-            "file": {
+            "filtered": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^\\S+\\.(h5ad|h5|rds|RDS|csv)$",
-                "errorMessage": "Input file must be a .h5ad, .h5, .rds or .csv or file."
+                "errorMessage": "Filtered file must be a .h5ad, .h5, .rds or .csv file."
             },
-            "raw": {
+            "unfiltered": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^\\S+\\.(h5ad|h5|rds|RDS|csv)$",
-                "errorMessage": "Input file must be a .h5ad, .h5, .rds or .csv or file."
+                "errorMessage": "Unfiltered file must be a .h5ad, .h5, .rds or .csv file."
             },
             "batch_col": {
                 "type": "string",
@@ -76,6 +76,6 @@
                 "meta": ["min_counts_gene"]
             }
         },
-        "required": ["sample", "file"]
+        "required": ["sample"]
     }
 }
