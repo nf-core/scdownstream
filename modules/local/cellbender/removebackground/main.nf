@@ -26,6 +26,7 @@ process CELLBENDER_REMOVEBACKGROUND {
     TMPDIR=. cellbender remove-background \
         ${args} \
         --input ${h5ad} \
+        --low-count-threshold 2 \
         --output ${prefix}.h5
 
     cat <<-END_VERSIONS > versions.yml
