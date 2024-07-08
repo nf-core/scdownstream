@@ -72,7 +72,7 @@ workflow PREPROCESS {
                 .map{ meta, unfiltered -> [meta.id, unfiltered]},
                 failOnMismatch: false, remainder: true)
             .map{ id, meta, filtered, unfiltered -> [meta, filtered ?: [], unfiltered ?: []] }
-            .branch{ meta, filtered, unfiltered -> 
+            .branch{ meta, filtered, unfiltered ->
                 complete: filtered
                     return [meta, filtered, unfiltered]
                 needs_filtering: unfiltered
