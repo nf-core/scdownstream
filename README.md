@@ -34,14 +34,15 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
 
 1. Per-sample preprocessing
    1. Convert all RDS files to h5ad format
-   2. Present QC for raw counts ([`MultiQC`](http://multiqc.info/))
-   3. Remove ambient RNA
+   2. Create filtered matrix (if not provided)
+   3. Present QC for raw counts ([`MultiQC`](http://multiqc.info/))
+   4. Remove ambient RNA
       - [decontX](https://bioconductor.org/packages/release/bioc/html/decontX.html)
       - [soupX](https://cran.r-project.org/web/packages/SoupX/readme/README.html)
       - [cellbender](https://cellbender.readthedocs.io/en/latest/)
       - [scAR](https://docs.scvi-tools.org/en/stable/user_guide/models/scar.html)
-   4. Apply user-defined QC filters (can be defined per sample in the samplesheet)
-   5. Doublet detection (Majority vote possible)
+   5. Apply user-defined QC filters (can be defined per sample in the samplesheet)
+   6. Doublet detection (Majority vote possible)
       - [SOLO](https://docs.scvi-tools.org/en/stable/user_guide/models/solo.html)
       - [scrublet](https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html)
       - [DoubletDetection](https://doubletdetection.readthedocs.io/en/v2.5.2/doubletdetection.doubletdetection.html)
@@ -67,17 +68,20 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 
+> [!NOTE]
+> If you are confused by the terms `filtered` and `unfiltered`, please check out the respective [documentation](https://nf-co.re/scdownstream/dev/docs/usage/#filtered-and-unfiltered-matrices).
+
 First, prepare a samplesheet with your input data that looks as follows:
 
 ```csv title="samplesheet.csv"
-sample,file
+sample,unfiltered
 sample1,/absolute/path/to/sample1.h5ad
 sample2,/absolute/path/to/sample3.h5
 sample3,relative/path/to/sample2.rds
 sample4,/absolute/path/to/sample3.csv
 ```
 
-Each row represents a h5ad, h5, RDS or CSV file. RDS files may contain any object that can be converted to a SingleCellExperiment using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function.
+Each entry represents a h5ad, h5, RDS or CSV file. RDS files may contain any object that can be converted to a SingleCellExperiment using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function.
 CSV files should contain a matrix with genes as columns and cells as rows. The first column should contain cell names/barcodes.
 
 -->

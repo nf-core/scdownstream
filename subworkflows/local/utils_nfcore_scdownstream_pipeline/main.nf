@@ -148,6 +148,11 @@ def validateInputParameters() {
 // Validate channels from input samplesheet
 //
 def validateInputSamplesheet(input) {
+    def (meta, filtered, unfiltered) = input
+    if (!filtered && !unfiltered) {
+        throw new Exception("Both filtered and unfiltered files are missing for sample ${meta.id}")
+    }
+
     return input
 }
 

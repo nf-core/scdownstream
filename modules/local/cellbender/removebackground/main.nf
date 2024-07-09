@@ -11,8 +11,10 @@ process CELLBENDER_REMOVEBACKGROUND {
     tuple val(meta), path(h5ad)
 
     output:
-    tuple val(meta), path("${prefix}.h5"), emit: h5
-    path "versions.yml"                  , emit: versions
+    tuple val(meta), path("${prefix}.h5")               , emit: h5
+    tuple val(meta), path("${prefix}_cell_barcodes.csv"), emit: barcodes
+    tuple val(meta), path("${prefix}_metrics.csv")      , emit: metrics
+    path "versions.yml"                                 , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -24,6 +26,7 @@ process CELLBENDER_REMOVEBACKGROUND {
     TMPDIR=. cellbender remove-background \
         ${args} \
         --input ${h5ad} \
+        --low-count-threshold 2 \
         --output ${prefix}.h5
 
     cat <<-END_VERSIONS > versions.yml
