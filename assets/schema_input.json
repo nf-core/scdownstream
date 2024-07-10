@@ -76,6 +76,14 @@
                 "meta": ["min_counts_gene"]
             }
         },
+        "oneOf": [
+            {
+                "required": ["filtered"]
+            },
+            {
+                "required": ["unfiltered"]
+            }
+        ],
         "required": ["sample"]
     }
 }
