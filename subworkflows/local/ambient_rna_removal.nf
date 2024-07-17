@@ -21,7 +21,7 @@ workflow AMBIENT_RNA_REMOVAL {
         ch_versions = ch_versions.mix(CELDA_DECONTX.out.versions)
     }
     else if (params.ambient_removal == 'cellbender') {
-        CELLBENDER_REMOVEBACKGROUND(ch_raw)
+        CELLBENDER_REMOVEBACKGROUND(ch_pairing.map{meta, filtered, unfiltered -> [meta, unfiltered]})
         ch_versions = ch_versions.mix(CELLBENDER_REMOVEBACKGROUND.out.versions)
 
         CELLBENDER_MERGE(ch_pairing.map{ meta, filtered, raw -> [meta.id, meta, filtered, raw] }
