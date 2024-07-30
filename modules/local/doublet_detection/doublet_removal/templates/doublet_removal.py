@@ -41,7 +41,7 @@ def load(path: str) -> pd.DataFrame:
 predictions = pd.concat([load(f) for f in "${predictions}".split()], axis=1)
 mask = predictions.sum(axis=1) >= threshold
 
-adata = adata[mask, :]
+adata = adata[~mask, :]
 adata.write_h5ad(f"{prefix}.h5ad")
 
 # Versions
