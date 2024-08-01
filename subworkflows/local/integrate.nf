@@ -1,3 +1,4 @@
+include { SCANPY_HVGS         } from '../../modules/local/scanpy/hvgs'
 include { ADATA_TORDS         } from '../../modules/local/adata/tords'
 include { SCVITOOLS_SCVI      } from '../../modules/local/scvitools/scvi'
 include { SCVITOOLS_SCANVI    } from '../../modules/local/scvitools/scanvi'
@@ -17,6 +18,10 @@ workflow INTEGRATE {
     ch_obsm = Channel.empty()
     ch_layers = Channel.empty()
     ch_integrations = Channel.empty()
+
+    SCANPY_HVGS(ch_h5ad, params.integration_hvgs)
+    ch_versions = ch_versions.mix(SCANPY_HVGS.out.versions)
+    ch_h5ad = SCANPY_HVGS.out.h5ad
 
     ADATA_TORDS(ch_h5ad)
     ch_versions = ch_versions.mix(ADATA_TORDS.out.versions)
@@ -58,7 +63,7 @@ workflow INTEGRATE {
         ch_versions = ch_versions.mix(SCANPY_COMBAT.out.versions)
         ch_integrations = ch_integrations.mix(SCANPY_COMBAT.out.h5ad)
         ch_obsm = ch_obsm.mix(SCANPY_COMBAT.out.obsm)
-        ch_layers = ch_layers.mix(SCANPY_COMBAT.out.layers)
+        // ch_layers = ch_layers.mix(SCANPY_COMBAT.out.layers)
     }
 
     if (methods.contains('seurat')) {
