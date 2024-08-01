@@ -73,6 +73,12 @@
                     "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, harmony, bbknn, combat, seurat",
                     "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat)?,?)*[^,]+$"
                 },
+                "integration_hvgs": {
+                    "type": "integer",
+                    "default": 10000,
+                    "minimum": 100,
+                    "description": "Number of highly variable genes to use for integration"
+                },
                 "clustering_resolutions": {
                     "type": "string",
                     "default": "0.5,1.0",
