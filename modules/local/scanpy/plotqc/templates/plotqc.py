@@ -42,8 +42,8 @@ with open(path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
 
     custom_json = {
         "id": "${prefix}",
-        "parent_id": "${section_name}".replace(" ", "_"),
-        "parent_name": "${section_name}",
+        "parent_id": "${section_name}_qc".lower(),
+        "parent_name": "${section_name}".lower().capitalize() + " QC Plots",
         "parent_description": "${description}",
 
         "section_name": "${meta.id}",

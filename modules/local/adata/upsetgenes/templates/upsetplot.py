@@ -71,7 +71,7 @@ with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
     image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
 
     custom_json = {
-        "id": "${prefix}",
+        "id": "upset_${prefix}",
         "section_name": "Genes upset: ${prefix}",
         "plot_type": "image",
         "data": image_html,
