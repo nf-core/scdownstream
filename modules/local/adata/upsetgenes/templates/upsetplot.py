@@ -8,6 +8,7 @@ import platform
 import base64
 import json
 
+
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
 
@@ -26,6 +27,7 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
         else:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
+
 
 # Versions
 
@@ -72,6 +74,9 @@ with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
 
     custom_json = {
         "id": "upset_${prefix}",
+        "parent_id": "upset_plots",
+        "parent_name": "UpSet plots",
+        "parent_description": "Plots illustrating the distribution of genes across samples.",
         "section_name": "Genes upset: ${prefix}",
         "plot_type": "image",
         "data": image_html,
