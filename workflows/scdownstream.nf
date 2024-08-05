@@ -65,6 +65,7 @@ workflow SCDOWNSTREAM {
 
     CLUSTER(COMBINE.out.integrations)
     ch_versions = ch_versions.mix(CLUSTER.out.versions)
+    ch_multiqc_files = ch_multiqc_files.mix(CLUSTER.out.multiqc_files)
     ch_obs = ch_obs.mix(CLUSTER.out.obs)
     ch_obsm = ch_obsm.mix(CLUSTER.out.obsm)
 

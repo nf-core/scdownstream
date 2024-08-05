@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
+import base64
+import json
 import scanpy as sc
 import pandas as pd
+import matplotlib.pyplot as plt
 import platform
 from threadpoolctl import threadpool_limits
 threadpool_limits(int("${task.cpus}"))
@@ -35,6 +38,30 @@ sc.tl.umap(adata)
 adata.write_h5ad(f"{prefix}.h5ad")
 df = pd.DataFrame(adata.obsm["X_umap"], index=adata.obs_names)
 df.to_pickle(f"X_{prefix}.pkl")
+
+# Save UMAP as png, color by "batch"
+plot_path = f"{prefix}_batch.png"
+sc.pl.umap(adata, color="batch")
+plt.savefig(plot_path)
+
+# MultiQC
+
+with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
+    image_string = base64.b64encode(f_plot.read()).decode("utf-8")
+    image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
+
+    custom_json = {
+        "id": "${prefix}",
+        "parent_id": "integration_${meta.id}",
+        "parent_name": "Integration: ${meta.id}",
+        "parent_description": "Hello world",
+
+        "section_name": "UMAP (batch)",
+        "plot_type": "image",
+        "data": image_html,
+    }
+
+    json.dump(custom_json, f_json)
 
 # Versions
 

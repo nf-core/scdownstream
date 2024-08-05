@@ -8,6 +8,7 @@ workflow CLUSTER {
 
     main:
     ch_versions = Channel.empty()
+    ch_multiqc_files = Channel.empty()
     ch_obs = Channel.empty()
     ch_obsm = Channel.empty()
 
@@ -23,6 +24,7 @@ workflow CLUSTER {
     SCANPY_UMAP(ch_h5ad)
     ch_versions = ch_versions.mix(SCANPY_UMAP.out.versions)
     ch_obsm = ch_obsm.mix(SCANPY_UMAP.out.obsm)
+    ch_multiqc_files = ch_multiqc_files.mix(SCANPY_UMAP.out.multiqc_files)
 
     ch_resolutions = Channel.from(params.clustering_resolutions.split(","))
 
@@ -40,5 +42,6 @@ workflow CLUSTER {
     obs = ch_obs
     obsm = ch_obsm
 
+    multiqc_files = ch_multiqc_files
     versions = ch_versions
 }

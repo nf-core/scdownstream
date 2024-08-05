@@ -13,6 +13,8 @@ process SCANPY_UMAP {
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
     path "*.pkl"                   , emit: obsm
+    path "*.png"                   , emit: plot
+    path "*.json"                  , emit: multiqc_files
     path "versions.yml"            , emit: versions
 
     when:
