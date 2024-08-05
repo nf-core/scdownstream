@@ -7,8 +7,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import platform
 from threadpoolctl import threadpool_limits
+
 threadpool_limits(int("${task.cpus}"))
 sc.settings.n_jobs = int("${task.cpus}")
+
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
@@ -52,10 +54,9 @@ with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
 
     custom_json = {
         "id": "${prefix}",
-        "parent_id": "integration_${meta.id}",
-        "parent_name": "Integration: ${meta.id}",
-        "parent_description": "Hello world",
-
+        "parent_id": "integration_${meta.integration}",
+        "parent_name": "Integration: ${meta.integration}",
+        "parent_description": "Plots illustrating the results of the ${meta.integration} integration.",
         "section_name": "UMAP (batch)",
         "plot_type": "image",
         "data": image_html,
@@ -69,7 +70,7 @@ versions = {
     "${task.process}": {
         "python": platform.python_version(),
         "scanpy": sc.__version__,
-        "pandas": pd.__version__
+        "pandas": pd.__version__,
     }
 }
 

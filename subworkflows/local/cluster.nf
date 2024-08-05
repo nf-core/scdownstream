@@ -28,7 +28,7 @@ workflow CLUSTER {
 
     ch_resolutions = Channel.from(params.clustering_resolutions.split(","))
 
-    ch_h5ad = ch_h5ad.combine(ch_resolutions)
+    ch_h5ad = SCANPY_UMAP.out.h5ad.combine(ch_resolutions)
         .map{ meta, h5ad, resolution ->
                 [meta + [resolution: resolution,
                         id: meta.integration + "-" + resolution],
@@ -36,6 +36,7 @@ workflow CLUSTER {
 
     SCANPY_LEIDEN(ch_h5ad)
     ch_versions = ch_versions.mix(SCANPY_LEIDEN.out.versions)
+    ch_multiqc_files = ch_multiqc_files.mix(SCANPY_LEIDEN.out.multiqc_files)
     ch_obs = ch_obs.mix(SCANPY_LEIDEN.out.obs)
 
     emit:
