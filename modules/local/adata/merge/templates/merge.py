@@ -29,7 +29,7 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 adatas = dict(zip("${names}".split(), [sc.read_h5ad(f) for f in "${h5ads}".split()]))
 genes = [adata.var_names for adata in adatas.values()]
 
-adata_outer = ad.concat(adatas, join="outer", index_unique="-")
+adata_outer = ad.concat(adatas, join="outer", index_unique="-", merge="unique")
 adata_outer.X = csr_matrix(adata_outer.X)
 adata_outer.layers["counts"] = adata_outer.X
 adata_outer.layers["log1p"] = sc.pp.log1p(adata_outer.X)
