@@ -84,6 +84,20 @@ else:
         raise ValueError("The label column already exists.")
     adata.obs["label"] = "unknown"
 
+# Unify gene symbols
+symbol_col = "${meta.symbol_col ?: 'index'}"
+
+if symbol_col != "gene_symbol":
+    if "gene_symbol" in adata.var:
+        raise ValueError("The gene symbol column already exists.")
+    if symbol_col == "index":
+        adata.var["gene_symbol"] = adata.var_names
+    elif symbol_col == "none":
+        raise ValueError("Automatic gene symbol conversion is not supported yet.")
+    else:
+        adata.var["gene_symbol"] = adata.var[symbol_col]
+        del adata.var[symbol_col]
+
 # Add "sample" column
 if "sample" in adata.obs and not adata.obs["sample"].equals("${meta.id}"):
     adata.obs["sample_original"] = adata.obs["sample"]

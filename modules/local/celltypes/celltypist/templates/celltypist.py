@@ -36,6 +36,9 @@ sc.pp.normalize_per_cell(
 )  # normalize to 10,000 counts per cell
 sc.pp.log1p(adata_celltypist)  # log-transform
 
+# Set var["gene_symbol"] as var_names
+adata_celltypist.var_names = adata_celltypist.var["gene_symbol"]
+
 model = f"{model}.pkl" if not model.endswith(".pkl") else model
 models.download_models(model=model)
 model = models.Model.load(model)
