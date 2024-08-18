@@ -1,4 +1,4 @@
-include { CELLBENDER_REMOVEBACKGROUND } from '../../modules/local/cellbender/removebackground'
+include { CELLBENDER_REMOVEBACKGROUND } from '../../modules/nf-core/cellbender/removebackground'
 include { ADATA_BARCODES              } from '../../modules/local/adata/barcodes'
 
 workflow EMPTY_DROPLET_REMOVAL {
