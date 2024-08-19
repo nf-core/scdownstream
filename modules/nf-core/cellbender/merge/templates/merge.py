@@ -26,13 +26,16 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 
 
 adata = ad.read_h5ad("${filtered}")
-adata_raw = ad.read_h5ad("${raw}")
 
-adata_cellbender = load_anndata_from_input_and_output("${raw}", "${cellbender_h5}",
-                                           analyzed_barcodes_only=False)
+adata_cellbender = load_anndata_from_input_and_output("${unfiltered}", "${cellbender_h5}",
+                                            analyzed_barcodes_only=False)
 
 adata_cellbender = adata_cellbender[adata.obs_names]
-adata.layers["ambient"] = adata_cellbender.layers["cellbender"]
+
+if "${output_layer}" == "X":
+    adata.X = adata_cellbender.layers["cellbender"]
+else:
+    adata.layers["${output_layer}"] = adata_cellbender.layers["cellbender"]
 
 adata.write_h5ad("${prefix}.h5ad")
 
