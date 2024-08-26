@@ -41,6 +41,7 @@ def aggregate_duplicate_var(adata, aggr_fun=np.mean):
         return adata
 
 adata = sc.read_h5ad("$h5ad")
+adata.raw = adata.copy()
 
 # Prevent duplicate cells
 adata.obs_names_make_unique()
