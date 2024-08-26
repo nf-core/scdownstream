@@ -42,13 +42,6 @@ def aggregate_duplicate_var(adata, aggr_fun=np.mean):
 
 adata = sc.read_h5ad("$h5ad")
 
-# Aggregate duplicate genes
-method = "${params.var_aggr_method}"
-if not method in ["mean", "sum", "max"]:
-    raise ValueError(f"Invalid aggregation method: {method}")
-
-adata = aggregate_duplicate_var(adata, aggr_fun=getattr(np, method))
-
 # Prevent duplicate cells
 adata.obs_names_make_unique()
 adata.obs_names = "${meta.id}_" + adata.obs_names
@@ -87,16 +80,24 @@ else:
 # Unify gene symbols
 symbol_col = "${meta.symbol_col ?: 'index'}"
 
-if symbol_col != "gene_symbol":
-    if "gene_symbol" in adata.var:
-        raise ValueError("The gene symbol column already exists.")
-    if symbol_col == "index":
-        adata.var["gene_symbol"] = adata.var_names
-    elif symbol_col == "none":
-        raise ValueError("Automatic gene symbol conversion is not supported yet.")
+if symbol_col != "index":
+    if symbol_col == "none":
+        import mygene
+        mg = mygene.MyGeneInfo()
+        df_genes = mg.querymany(adata.var.index, scopes=["symbol", "entrezgene", "ensemblgene"], fields="symbol", species="human", as_dataframe=True) 
+        mapping = df_genes["symbol"].dropna().to_dict()
+
+        adata.var.index = adata.var.index.map(lambda x: mapping.get(x, x))
     else:
-        adata.var["gene_symbol"] = adata.var[symbol_col]
+        adata.var.index = adata.var[symbol_col]
         del adata.var[symbol_col]
+
+# Aggregate duplicate genes
+method = "${params.var_aggr_method}"
+if not method in ["mean", "sum", "max"]:
+    raise ValueError(f"Invalid aggregation method: {method}")
+
+adata = aggregate_duplicate_var(adata, aggr_fun=getattr(np, method))
 
 # Add "sample" column
 if "sample" in adata.obs and not adata.obs["sample"].equals("${meta.id}"):
