@@ -48,6 +48,13 @@
             "type": "object",
             "description": "Options for selecting which tools should be used for certain tasks",
             "properties": {
+                "memory_scale": {
+                    "type": "integer",
+                    "default": 1,
+                    "minimum": 1,
+                    "description": "Scale the memory requirements for each process by this factor. Should be increased if you have a large number of cells.",
+                    "fa_icon": "fas fa-memory"
+                },
                 "ambient_removal": {
                     "type": "string",
                     "default": "decontx",
