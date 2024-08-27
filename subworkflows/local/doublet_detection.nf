@@ -14,11 +14,20 @@ workflow DOUBLET_DETECTION {
     ch_multiqc_files = Channel.empty()
     ch_predictions = Channel.empty()
 
-    ADATA_TORDS(ch_h5ad)
-    ch_versions = ch_versions.mix(ADATA_TORDS.out.versions)
-    ch_rds = ADATA_TORDS.out.rds
-
     methods = params.doublet_detection.split(',').collect{it.trim().toLowerCase()}
+
+    // Special treatment for R-based methods
+    if (methods.intersect(['scds']).size() > 0) {
+        ADATA_TORDS(ch_h5ad)
+        ch_versions = ch_versions.mix(ADATA_TORDS.out.versions)
+        ch_rds = ADATA_TORDS.out.rds
+
+        if (methods.contains('scds')) {
+            SCDS(ch_rds)
+            ch_predictions = ch_predictions.mix(SCDS.out.predictions)
+            ch_versions = SCDS.out.versions
+        }
+    }
 
     if (methods.contains('solo')) {
         SCVITOOLS_SOLO(ch_h5ad)
@@ -36,12 +45,6 @@ workflow DOUBLET_DETECTION {
         DOUBLETDETECTION(ch_h5ad)
         ch_predictions = ch_predictions.mix(DOUBLETDETECTION.out.predictions)
         ch_versions = DOUBLETDETECTION.out.versions
-    }
-
-    if (methods.contains('scds')) {
-        SCDS(ch_rds)
-        ch_predictions = ch_predictions.mix(SCDS.out.predictions)
-        ch_versions = SCDS.out.versions
     }
 
     DOUBLET_REMOVAL(
