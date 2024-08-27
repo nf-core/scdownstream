@@ -41,7 +41,9 @@ def aggregate_duplicate_var(adata, aggr_fun=np.mean):
         return adata
 
 adata = sc.read_h5ad("$h5ad")
-adata.raw = adata.copy()
+
+# Convert to float32 CSR matrix
+adata.X = csr_matrix(adata.X.astype(np.float32))
 
 # Prevent duplicate cells
 adata.obs_names_make_unique()
@@ -105,8 +107,6 @@ if "sample" in adata.obs and not adata.obs["sample"].equals("${meta.id}"):
     adata.obs["sample_original"] = adata.obs["sample"]
 adata.obs["sample"] = "${meta.id}"
 
-# Convert to CSR matrix
-adata.X = csr_matrix(adata.X)
 adata.layers["counts"] = adata.X
 
 adata.write_h5ad("${prefix}.h5ad")
