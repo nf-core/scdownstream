@@ -23,11 +23,28 @@ workflow INTEGRATE {
     ch_versions = ch_versions.mix(SCANPY_HVGS.out.versions)
     ch_h5ad = SCANPY_HVGS.out.h5ad
 
-    ADATA_TORDS(ch_h5ad)
-    ch_versions = ch_versions.mix(ADATA_TORDS.out.versions)
-    ch_rds = ADATA_TORDS.out.rds
-
     methods = params.integration_methods.split(',').collect{it.trim().toLowerCase()}
+
+    // Special treatment for R-based methods
+    if (methods.intersect(['seurat']).size() > 0) {
+        ADATA_TORDS(ch_h5ad)
+        ch_versions = ch_versions.mix(ADATA_TORDS.out.versions)
+        ch_rds = ADATA_TORDS.out.rds
+
+        ch_rds_integrations = Channel.empty()
+
+        if (methods.contains('seurat')) {
+            SEURAT_INTEGRATION(ch_rds.map{meta, rds -> [[id: 'seurat'], rds]})
+            ch_versions = ch_versions.mix(SEURAT_INTEGRATION.out.versions)
+            ch_rds_integrations = ch_rds_integrations.mix(SEURAT_INTEGRATION.out.rds)
+        }
+
+        ADATA_READRDS(ch_rds_integrations)
+        ch_versions = ch_versions.mix(ADATA_READRDS.out.versions)
+
+        ch_integrations = ch_integrations.mix(ADATA_READRDS.out.h5ad)
+        ch_obsm = ch_obsm.mix(ADATA_READRDS.out.obsm)
+    }
 
     if (methods.contains('scvi') || methods.contains('scanvi')) {
         SCVITOOLS_SCVI(ch_h5ad.map{meta, h5ad -> [[id: 'scvi'], h5ad]})
@@ -66,24 +83,8 @@ workflow INTEGRATE {
         // ch_layers = ch_layers.mix(SCANPY_COMBAT.out.layers)
     }
 
-    if (methods.contains('seurat')) {
-        SEURAT_INTEGRATION(ch_rds.map{meta, rds -> [[id: 'seurat'], rds]})
-        ch_versions = ch_versions.mix(SEURAT_INTEGRATION.out.versions)
-        ch_integrations = ch_integrations.mix(SEURAT_INTEGRATION.out.rds)
-    }
-
     ch_integrations = ch_integrations
         .map{meta, file -> [meta + [integration: meta.id], file]}
-        .branch{ meta, file ->
-            rds: file.extension == 'rds'
-            h5ad: file.extension == 'h5ad'
-        }
-
-    ADATA_READRDS(ch_integrations.rds)
-    ch_versions = ch_versions.mix(ADATA_READRDS.out.versions)
-
-    ch_integrations = ch_integrations.h5ad.mix(ADATA_READRDS.out.h5ad)
-    ch_obsm = ch_obsm.mix(ADATA_READRDS.out.obsm)
 
     emit:
     integrations = ch_integrations
