@@ -108,10 +108,12 @@ workflow PREPROCESS {
     ch_h5ad = SCANPY_FILTER.out.h5ad
     ch_versions = ch_versions.mix(SCANPY_FILTER.out.versions)
 
-    DOUBLET_DETECTION(ch_h5ad)
-    ch_h5ad = DOUBLET_DETECTION.out.h5ad
-    ch_multiqc_files = ch_multiqc_files.mix(DOUBLET_DETECTION.out.multiqc_files)
-    ch_versions = ch_versions.mix(DOUBLET_DETECTION.out.versions)
+    if (params.doublet_detection != 'none') {
+        DOUBLET_DETECTION(ch_h5ad)
+        ch_h5ad = DOUBLET_DETECTION.out.h5ad
+        ch_multiqc_files = ch_multiqc_files.mix(DOUBLET_DETECTION.out.multiqc_files)
+        ch_versions = ch_versions.mix(DOUBLET_DETECTION.out.versions)
+    }
 
     QC_FILTERED(ch_h5ad)
     ch_multiqc_files = ch_multiqc_files.mix(QC_FILTERED.out.multiqc_files)

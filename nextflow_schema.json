@@ -64,9 +64,9 @@
                 "doublet_detection": {
                     "type": "string",
                     "default": "scrublet",
-                    "description": "Specify the tools to use for doublet detection.",
+                    "description": "Specify the tools to use for doublet detection. Setting to 'none' will skip this step",
                     "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: solo, scrublet, doubletdetection, scds",
-                    "pattern": "^((solo|scrublet|doubletdetection|scds)?,?)*[^,]+$"
+                    "pattern": "^(none|((solo|scrublet|doubletdetection|scds)?,?)*[^,]+$)"
                 },
                 "doublet_detection_threshold": {
                     "type": "integer",
