@@ -33,6 +33,8 @@ workflow PREPROCESS {
 
     ch_files = ch_files.map { meta, file -> [meta, file, file.extension.toLowerCase()] }
         .branch { meta, file, ext ->
+            unified: ext == "h5ad" && meta.unified == true
+                return [meta, file]
             h5ad: ext == "h5ad"
                 return [meta, file]
             h5: ext == "h5"
@@ -60,6 +62,8 @@ workflow PREPROCESS {
     ADATA_UNIFY(ch_h5ad)
     ch_h5ad = ADATA_UNIFY.out.h5ad
     ch_versions = ch_versions.mix(ADATA_UNIFY.out.versions)
+
+    ch_h5ad = ch_h5ad.mix(ch_files.unified)
 
     ch_samples = ch_metas.map{ meta -> [meta.id, meta]}
             .join(
