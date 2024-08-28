@@ -79,6 +79,13 @@
                     "default": 1,
                     "description": "Number of tools that need to agree on a doublet for it to be called as such"
                 },
+                "force_obs_cols": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Force keeping certain columns in the merged AnnData object, even if they are not present in all samples",
+                    "help_text": "If you want to keep certain columns in the merged AnnData object, even if they are not present in all samples, specify them here. Separate them with a comma.",
+                    "pattern": "^([a-zA-Z0-9_]*(,[a-zA-Z0-9_]*)*)?$"
+                },
                 "integration_methods": {
                     "type": "string",
                     "default": "scvi",

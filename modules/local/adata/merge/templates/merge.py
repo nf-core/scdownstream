@@ -4,7 +4,6 @@ import scanpy as sc
 import anndata as ad
 from scipy.sparse import csr_matrix
 import platform
-import os
 import scipy
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
@@ -26,10 +25,18 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
-adatas = dict(zip("${names}"[1:-1].split(", "), [sc.read_h5ad(f) for f in "${h5ads}".split()]))
+adatas = dict(zip("${names.join(' ')}".split(" "), [sc.read_h5ad(f) for f in "${h5ads}".split()]))
 genes = [adata.var_names for adata in adatas.values()]
+obs_col_intersection = set(adatas["${names[0]}"].obs.columns).intersection(*[adata.obs.columns for adata in adatas.values()])
+obs_col_intersection = list(obs_col_intersection.union("${force_obs_cols}".split()))
+sorted(obs_col_intersection)
 
-adata_outer = ad.concat(adatas, join="outer", merge="first")
+for adata in adatas.values():
+    for col in set(obs_col_intersection).difference(adata.obs.columns):
+        adata.obs[col] = None
+    adata.obs = adata.obs[obs_col_intersection]
+
+adata_outer = ad.concat(adatas, join="outer")
 adata_outer.X = csr_matrix(adata_outer.X)
 adata_outer.layers["counts"] = adata_outer.X.copy()
 adata_outer.layers["log1p"] = sc.pp.log1p(adata_outer.X)
