@@ -87,7 +87,9 @@ if symbol_col != "index":
     if symbol_col == "none":
         import mygene
         mg = mygene.MyGeneInfo()
-        df_genes = mg.querymany(adata.var.index, scopes=["symbol", "entrezgene", "ensemblgene"], fields="symbol", species="human", as_dataframe=True) 
+        df_genes = mg.querymany(adata.var.index,
+            scopes=["symbol", "entrezgene", "ensemblgene"],
+            fields="symbol", species="human", as_dataframe=True)
         mapping = df_genes["symbol"].dropna().to_dict()
 
         adata.var.index = adata.var.index.map(lambda x: mapping.get(x, x))
