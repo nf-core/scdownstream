@@ -31,12 +31,16 @@ adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 n_hvgs = int("${n_hvgs}")
 
+adata.layers["log1p"] = sc.pp.log1p(adata.X)
+
 if adata.n_vars > n_hvgs:
     sc.pp.highly_variable_genes(adata,
                                 n_top_genes=int("${n_hvgs}"),
                                 batch_key="batch",
                                 layer="log1p")
     adata = adata[:, adata.var["highly_variable"]]
+
+del adata.layers["log1p"]
 
 adata.write_h5ad(f"{prefix}.h5ad")
 
