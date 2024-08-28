@@ -1,6 +1,7 @@
 process ADATA_MERGE {
     tag "$meta.id"
-    label 'process_single'
+    label 'process_medium'
+    label 'process_high_memory'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -20,5 +21,6 @@ process ADATA_MERGE {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
+    force_obs_cols = task.ext.force_obs_cols ?: params.force_obs_cols ?: ""
     template 'merge.py'
 }

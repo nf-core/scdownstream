@@ -42,12 +42,8 @@ def aggregate_duplicate_var(adata, aggr_fun=np.mean):
 
 adata = sc.read_h5ad("$h5ad")
 
-# Aggregate duplicate genes
-method = "${params.var_aggr_method}"
-if not method in ["mean", "sum", "max"]:
-    raise ValueError(f"Invalid aggregation method: {method}")
-
-adata = aggregate_duplicate_var(adata, aggr_fun=getattr(np, method))
+# Convert to float32 CSR matrix
+adata.X = csr_matrix(adata.X.astype(np.float32))
 
 # Prevent duplicate cells
 adata.obs_names_make_unique()
@@ -84,13 +80,35 @@ else:
         raise ValueError("The label column already exists.")
     adata.obs["label"] = "unknown"
 
+# Unify gene symbols
+symbol_col = "${meta.symbol_col ?: 'index'}"
+
+if symbol_col != "index":
+    if symbol_col == "none":
+        import mygene
+        mg = mygene.MyGeneInfo()
+        df_genes = mg.querymany(adata.var.index,
+            scopes=["symbol", "entrezgene", "ensemblgene"],
+            fields="symbol", species="human", as_dataframe=True)
+        mapping = df_genes["symbol"].dropna().to_dict()
+
+        adata.var.index = adata.var.index.map(lambda x: mapping.get(x, x))
+    else:
+        adata.var.index = adata.var[symbol_col]
+        del adata.var[symbol_col]
+
+# Aggregate duplicate genes
+method = "${params.var_aggr_method}"
+if not method in ["mean", "sum", "max"]:
+    raise ValueError(f"Invalid aggregation method: {method}")
+
+adata = aggregate_duplicate_var(adata, aggr_fun=getattr(np, method))
+
 # Add "sample" column
 if "sample" in adata.obs and not adata.obs["sample"].equals("${meta.id}"):
     adata.obs["sample_original"] = adata.obs["sample"]
 adata.obs["sample"] = "${meta.id}"
 
-# Convert to CSR matrix
-adata.X = csr_matrix(adata.X)
 adata.layers["counts"] = adata.X
 
 adata.write_h5ad("${prefix}.h5ad")

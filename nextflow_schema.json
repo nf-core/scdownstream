@@ -48,6 +48,19 @@
             "type": "object",
             "description": "Options for selecting which tools should be used for certain tasks",
             "properties": {
+                "memory_scale": {
+                    "type": "integer",
+                    "default": 1,
+                    "minimum": 1,
+                    "description": "Scale the memory requirements for each process by this factor. Should be increased if you have a large number of cells.",
+                    "fa_icon": "fas fa-memory"
+                },
+                "skip_qc": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip all QC steps: Ambient RNA removal, Doublet detection and custom filtering",
+                    "fa_icon": "fas fa-times"
+                },
                 "ambient_removal": {
                     "type": "string",
                     "default": "decontx",
@@ -57,14 +70,21 @@
                 "doublet_detection": {
                     "type": "string",
                     "default": "scrublet",
-                    "description": "Specify the tools to use for doublet detection.",
+                    "description": "Specify the tools to use for doublet detection. Setting to 'none' will skip this step",
                     "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: solo, scrublet, doubletdetection, scds",
-                    "pattern": "^((solo|scrublet|doubletdetection|scds)?,?)*[^,]+$"
+                    "pattern": "^(none|((solo|scrublet|doubletdetection|scds)?,?)*[^,]+$)"
                 },
                 "doublet_detection_threshold": {
                     "type": "integer",
                     "default": 1,
                     "description": "Number of tools that need to agree on a doublet for it to be called as such"
+                },
+                "force_obs_cols": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Force keeping certain columns in the merged AnnData object, even if they are not present in all samples",
+                    "help_text": "If you want to keep certain columns in the merged AnnData object, even if they are not present in all samples, specify them here. Separate them with a comma.",
+                    "pattern": "^([a-zA-Z0-9_]*(,[a-zA-Z0-9_]*)*)?$"
                 },
                 "integration_methods": {
                     "type": "string",

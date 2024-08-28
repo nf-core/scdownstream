@@ -12,7 +12,7 @@ workflow AMBIENT_RNA_REMOVAL {
     ch_versions = Channel.empty()
 
     if (params.ambient_removal == 'none') {
-        println "AMBIENT_RNA_REMOVAL: Not performed since 'none' selected."
+        log.info "AMBIENT_RNA_REMOVAL: Not performed since 'none' selected."
         ch_h5ad = ch_pairing.map{ meta, filtered, unfiltered -> [meta, filtered] }
     }
     else if (params.ambient_removal == 'decontx') {
