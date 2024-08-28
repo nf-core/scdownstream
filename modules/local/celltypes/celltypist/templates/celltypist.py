@@ -30,7 +30,6 @@ prefix = "${prefix}"
 model = "${model}"
 
 adata_celltypist = adata.copy()  # make a copy of our adata
-adata_celltypist.X = adata.layers["counts"]  # set adata.X to raw counts
 sc.pp.normalize_per_cell(
     adata_celltypist, counts_per_cell_after=10**4
 )  # normalize to 10,000 counts per cell

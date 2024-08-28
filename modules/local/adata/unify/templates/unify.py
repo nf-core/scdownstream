@@ -49,6 +49,12 @@ adata.X = csr_matrix(adata.X.astype(np.float32))
 adata.obs_names_make_unique()
 adata.obs_names = "${meta.id}_" + adata.obs_names
 
+# Remove all obsm, varm, uns and layers
+adata.obsm = {}
+adata.varm = {}
+adata.layers = {}
+adata.uns = {}
+
 # Unify batches
 batch_col = "${meta.batch_col}"
 if batch_col not in adata.obs:
@@ -108,8 +114,6 @@ adata = aggregate_duplicate_var(adata, aggr_fun=getattr(np, method))
 if "sample" in adata.obs and not adata.obs["sample"].equals("${meta.id}"):
     adata.obs["sample_original"] = adata.obs["sample"]
 adata.obs["sample"] = "${meta.id}"
-
-adata.layers["counts"] = adata.X
 
 adata.write_h5ad("${prefix}.h5ad")
 

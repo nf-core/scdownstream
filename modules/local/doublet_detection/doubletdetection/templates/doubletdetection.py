@@ -30,10 +30,8 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 
 adata = ad.read_h5ad("${h5ad}")
 
-counts = adata.layers["counts"]
-
 clf = doubletdetection.BoostClassifier()
-doublets = clf.fit(counts).predict()
+doublets = clf.fit(adata.X).predict()
 scores = clf.doublet_score()
 
 adata.obs["doublet"] = [label == 1 for label in doublets]
