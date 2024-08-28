@@ -28,6 +28,10 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
     return yaml_str
 
 adata = ad.read_h5ad("${h5ad}")
+
+if "counts" not in adata.layers:
+    adata.layers["counts"] = adata.X
+
 sce = anndata2ri.py2rpy(adata)
 
 kwargs = {}
@@ -39,13 +43,15 @@ raw_path = "${raw}"
 if os.path.exists(raw_path):
     raw = ad.read_h5ad(raw_path)
     if "counts" not in raw.layers:
-        raw.layers["counts"] = raw.X.copy()
+        raw.layers["counts"] = raw.X
     kwargs["background"] = anndata2ri.py2rpy(raw)
 
 corrected = celda.decontX(sce, **kwargs)
 counts = celda.decontXcounts(corrected)
 
 adata.layers['ambient'] = anndata2ri.rpy2py(counts).T
+del adata.layers['counts']
+
 adata.write_h5ad("${prefix}.h5ad")
 
 # Versions

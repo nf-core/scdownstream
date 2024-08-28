@@ -47,7 +47,7 @@ n_epochs = int(min([round((20000 / adata.n_obs) * 400), 400]))
 SCVI.setup_anndata(adata, **setup_kwargs)
 model = SCVI(adata, **model_kwargs)
 
-if "${ext.use_gpu}" == "true":
+if "${task.ext.use_gpu}" == "true":
     model.to_device(0)
 
 model.train(max_epochs=n_epochs, **train_kwargs)
