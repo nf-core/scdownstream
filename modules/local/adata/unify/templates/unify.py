@@ -71,6 +71,9 @@ label_col = "${meta.label_col ?: ''}"
 unknown_label = "${meta.unknown_label}"
 
 if label_col:
+    if label_col not in adata.obs:
+        raise ValueError("The specified label column does not exist in the dataset. Existing columns: " + ", ".join(adata.obs.columns))
+
     if label_col != "label":
         if "label" in adata.obs:
             raise ValueError("The label column already exists.")
