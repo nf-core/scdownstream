@@ -40,6 +40,31 @@ def aggregate_duplicate_var(adata, aggr_fun=np.mean):
     else:
         return adata
 
+def to_Florent_case(s: str):
+    corrected = s.lower().strip()
+
+    if corrected in ["na", "nan", "null", "unknown"]:
+        return "unknown"
+
+    corrected = s \
+        .replace(" ", "_") \
+        .replace("-", "_")
+
+    corrected = "".join([c if c.isalnum() or c == "_" else "" for c in corrected])
+
+    # Make sure there is never more than one underscore
+    corrected = corrected.replace("__", "_")
+
+    if corrected.endswith("s"):
+        corrected = corrected[:-1]
+
+    corrected = corrected.strip(" _")
+
+    if not corrected:
+        return "unknown"
+
+    return corrected.capitalize()
+
 adata = sc.read_h5ad("$h5ad")
 
 # Convert to float32 CSR matrix
@@ -84,6 +109,12 @@ if label_col:
         if "unknown" in adata.obs["label"]:
             raise ValueError("The label column already contains 'unknown' values.")
         adata.obs["label"].replace({unknown_label: "unknown"}, inplace=True)
+    
+    # Replace all NaN values with "unknown"
+    adata.obs["label"] = adata.obs["label"].astype(str)
+    adata.obs["label"] = adata.obs["label"].fillna("unknown")
+    adata.obs["label"] = adata.obs["label"].map(to_Florent_case)
+    adata.obs["label"] = adata.obs["label"].astype("category")
 else:
     if "label" in adata.obs:
         raise ValueError("The label column already exists.")
