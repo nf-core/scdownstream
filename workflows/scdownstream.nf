@@ -50,6 +50,7 @@ workflow SCDOWNSTREAM {
     ch_versions = ch_versions.mix(COMBINE.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(COMBINE.out.multiqc_files)
     ch_obs = ch_obs.mix(COMBINE.out.obs)
+    ch_obsm = ch_obsm.mix(COMBINE.out.obsm)
     ch_layers = ch_layers.mix(COMBINE.out.layers)
 
     //
