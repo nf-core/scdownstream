@@ -11,7 +11,7 @@ process SCVITOOLS_SCANVI {
 
     input:
     tuple val(meta), path(h5ad)
-    tuple val(meta), path(scvi_model)
+    tuple val(meta2), path(scvi_model)
 
     output:
     tuple val(meta), path("*.h5ad") , emit: h5ad
