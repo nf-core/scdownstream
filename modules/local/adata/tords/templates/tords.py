@@ -2,6 +2,7 @@
 
 import anndata as ad
 import anndata2ri
+import scipy.sparse as sp
 import rpy2
 import rpy2.robjects as ro
 seurat = ro.packages.importr('Seurat')
@@ -28,10 +29,17 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 adata = ad.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 
-sce = anndata2ri.py2rpy(adata)
+matrices = [adata.X] + [adata.layers[key] for key in adata.layers.keys()]
 
-save_rds = ro.r('function(x, file) {saveRDS(x, file)}')
-save_rds(sce, f"{prefix}.rds")
+too_large = any(sp.issparse(matrix) and matrix.nnz > 2**31 for matrix in matrices)
+
+if not too_large:
+    sce = anndata2ri.py2rpy(adata)
+
+    save_rds = ro.r('function(x, file) {saveRDS(x, file)}')
+    save_rds(sce, f"{prefix}.rds")
+else:
+    print("Matrix too large to be saved in RDS format.")
 
 versions = {
     "${task.process}": {
