@@ -106,23 +106,23 @@ genome: 'GRCh37'
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
 
-### Using GPUs
+### GPU acceleration
 
-:::warning
+:::warning{title="Experimental feature"}
 This is an experimental feature and may produce errors. If you encounter any issues, please report them on the [nf-core/scdownstream GitHub repository](https://github.com/nf-core/scdownstream/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml).
 :::
 
-:::info
-GPU support is not available when using conda for dependency management.
+:::info{title="Using conda"}
+GPU acceleration is not available when using conda for dependency management.
 :::
 
-Tools with implemented GPU support are:
+Tools with implemented support for GPU acceleration are:
 - scVI
 - scANVI
 - scAR
 - solo
 
-To use GPUs, you need to specify the `gpu` profile. This will make the tool steps use cuda-enabled environments and it will tell the tools to use the GPU. All processes which support GPU acceleration are marked with the `process_gpu` label.
+To utilize GPU acceleration, you need to specify the `gpu` profile. This will make the tool steps use cuda-enabled environments and it will tell the tools to use the GPU. All processes which support GPU acceleration are marked with the `process_gpu` label.
 
 You also need to make sure that the tasks are run on a machine with a GPU. If all tasks are run on a machine with a GPU, no further action is needed. If you are running the pipeline on a slurm cluster, where there is dedicated queue for GPU jobs, you need additional configuration that might look like this:
 
