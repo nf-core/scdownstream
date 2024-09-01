@@ -6,10 +6,13 @@ channels:
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_gnu
+  - _sysroot_linux-64_curr_repodata_hack=3=h69a702a_16
   - absl-py=2.1.0=pyhd8ed1ab_0
   - anndata=0.10.8=pyhd8ed1ab_0
   - aom=3.9.1=hac33072_0
   - array-api-compat=1.8=pyhd8ed1ab_0
+  - binutils_impl_linux-64=2.38=h2a08ee3_1
+  - binutils_linux-64=2.38.0=hc2dff05_0
   - blas=1.0=mkl
   - blosc=1.21.5=hc2324a3_1
   - brotli=1.1.0=hd590300_1
@@ -20,20 +23,39 @@ dependencies:
   - ca-certificates=2024.7.4=hbcca054_0
   - cached-property=1.5.2=hd8ed1ab_1
   - cached_property=1.5.2=pyha770c72_1
+  - cccl=2.5.0=h7ab4013_0
   - certifi=2024.7.4=pyhd8ed1ab_0
   - charset-normalizer=3.3.2=pyhd3eb1b0_0
   - chex=0.1.86=pyhd8ed1ab_0
   - colorama=0.4.6=pyhd8ed1ab_0
   - contextlib2=21.6.0=pyhd8ed1ab_0
   - contourpy=1.2.1=py312h8572e83_0
+  - cuda-cccl=12.6.37=ha770c72_0
+  - cuda-cccl_linux-64=12.6.37=ha770c72_0
+  - cuda-crt-dev_linux-64=12.6.20=0
+  - cuda-crt-tools=12.6.20=0
   - cuda-cudart=12.4.127=0
+  - cuda-cudart-dev=12.4.127=0
+  - cuda-cudart-dev_linux-64=12.6.37=h85509e4_0
+  - cuda-cudart-static_linux-64=12.6.37=h85509e4_0
+  - cuda-cudart_linux-64=12.6.37=h85509e4_0
   - cuda-cupti=12.4.127=0
+  - cuda-driver-dev_linux-64=12.6.37=h85509e4_0
   - cuda-libraries=12.4.0=0
+  - cuda-nvcc=12.6.20=hcdd1206_0
+  - cuda-nvcc-dev_linux-64=12.6.20=0
+  - cuda-nvcc-impl=12.6.20=0
+  - cuda-nvcc-tools=12.6.20=0
+  - cuda-nvcc_linux-64=12.6.20=h8a487aa_0
   - cuda-nvrtc=12.4.127=0
   - cuda-nvtx=12.4.127=0
+  - cuda-nvvm-dev_linux-64=12.6.20=0
+  - cuda-nvvm-impl=12.6.20=0
+  - cuda-nvvm-tools=12.6.20=0
   - cuda-opencl=12.6.37=0
   - cuda-runtime=12.4.0=0
   - cuda-version=12.6=3
+  - cudnn=8.9.7.29=h092f7fd_3
   - cycler=0.12.1=pyhd8ed1ab_0
   - dav1d=1.2.1=hd590300_0
   - docrep=0.3.2=pyh44b312d_0
@@ -47,9 +69,13 @@ dependencies:
   - fonttools=4.53.1=py312h41a817b_0
   - freetype=2.12.1=h4a9f257_0
   - fsspec=2024.6.1=pyhff2d567_0
+  - gcc_impl_linux-64=11.2.0=h1234567_1
+  - gcc_linux-64=11.2.0=h5c386dc_0
   - get-annotations=0.1.2=pyhd8ed1ab_0
   - gmp=6.2.1=h295c915_3
   - gnutls=3.6.15=he1e5248_0
+  - gxx_impl_linux-64=11.2.0=h1234567_1
+  - gxx_linux-64=11.2.0=hc2dff05_0
   - h5py=3.11.0=nompi_py312hb7ab980_102
   - hdf5=1.14.3=nompi_h4f84152_101
   - idna=3.7=py312h06a4308_0
@@ -58,9 +84,10 @@ dependencies:
   - importlib_resources=6.4.4=pyhd8ed1ab_0
   - intel-openmp=2023.1.0=hdb19cb5_46306
   - jax=0.4.27=pyhd8ed1ab_0
-  - jaxlib=0.4.23=cpu_py312h8d2594f_2
+  - jaxlib=0.4.23=cuda120py312h6027bbc_202
   - jinja2=3.1.4=py312h06a4308_0
   - joblib=1.4.2=pyhd8ed1ab_0
+  - kernel-headers_linux-64=3.10.0=h4a8ded7_16
   - keyutils=1.6.1=h166bdaf_0
   - kiwisolver=1.4.5=py312h8572e83_1
   - krb5=1.21.3=h659f571_0
@@ -90,6 +117,7 @@ dependencies:
   - libexpat=2.6.2=h59595ed_0
   - libffi=3.4.4=h6a678d5_1
   - libgcc=14.1.0=h77fa898_1
+  - libgcc-devel_linux-64=11.2.0=h1234567_1
   - libgcc-ng=14.1.0=h69a702a_1
   - libgfortran=14.1.0=h69a702a_1
   - libgfortran-ng=14.1.0=h69a702a_1
@@ -113,6 +141,7 @@ dependencies:
   - libsqlite=3.46.0=hde9e2c9_0
   - libssh2=1.11.0=h0841786_0
   - libstdcxx=14.1.0=hc0a3c3a_1
+  - libstdcxx-devel_linux-64=11.2.0=h1234567_1
   - libstdcxx-ng=14.1.0=h4852527_1
   - libtasn1=4.19.0=h5eee18b_0
   - libtiff=4.6.0=h1dd3fc0_3
@@ -143,6 +172,7 @@ dependencies:
   - multipledispatch=0.6.0=pyhd8ed1ab_1
   - munkres=1.1.4=pyh9f0ad1d_0
   - natsort=8.4.0=pyhd8ed1ab_0
+  - nccl=2.22.3.1=hbc370b7_1
   - ncurses=6.4=h6a678d5_0
   - nest-asyncio=1.6.0=pyhd8ed1ab_0
   - nettle=3.7.3=hbbd107a_1
@@ -205,6 +235,7 @@ dependencies:
   - stdlib-list=0.10.0=pyhd8ed1ab_0
   - svt-av1=2.2.1=h5888daf_0
   - sympy=1.12=py312h06a4308_0
+  - sysroot_linux-64=2.17=h4a8ded7_16
   - tbb=2021.8.0=hdb19cb5_0
   - tensorstore=0.1.59=py312hf74fac6_0
   - threadpoolctl=3.5.0=pyhc1e730c_0
