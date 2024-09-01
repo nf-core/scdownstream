@@ -30,7 +30,7 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 
 adata = ad.read_h5ad("${h5ad}")
 
-setup_kwargs = {"layer": "counts", "batch_key": "batch"}
+setup_kwargs = {"batch_key": "batch"}
 
 # Defaults from SCVI github tutorials scanpy_pbmc3k and harmonization
 model_kwargs = {
@@ -46,6 +46,10 @@ n_epochs = int(min([round((20000 / adata.n_obs) * 400), 400]))
 
 SCVI.setup_anndata(adata, **setup_kwargs)
 model = SCVI(adata, **model_kwargs)
+
+if "${task.ext.use_gpu}" == "true":
+    model.to_device(0)
+
 model.train(max_epochs=n_epochs, **train_kwargs)
 
 adata.obsm["X_emb"] = model.get_latent_representation()

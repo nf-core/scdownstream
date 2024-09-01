@@ -106,6 +106,39 @@ genome: 'GRCh37'
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
 
+### GPU acceleration
+
+:::warning{title="Experimental feature"}
+This is an experimental feature and may produce errors. If you encounter any issues, please report them on the [nf-core/scdownstream GitHub repository](https://github.com/nf-core/scdownstream/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml).
+:::
+
+:::info{title="Using conda"}
+GPU acceleration is not available when using conda for dependency management.
+:::
+
+Tools with implemented support for GPU acceleration are:
+
+- cellbender
+- scVI
+- scANVI
+- scAR
+- solo
+
+To utilize GPU acceleration, you need to specify the `gpu` profile. This will make the tool steps use cuda-enabled environments and it will tell the tools to use the GPU. All processes which support GPU acceleration are marked with the `process_gpu` label.
+
+You also need to make sure that the tasks are run on a machine with a GPU. If all tasks are run on a machine with a GPU, no further action is needed. If you are running the pipeline on a slurm cluster, where there is dedicated queue for GPU jobs, you need additional configuration that might look like this:
+
+```bash
+process {
+  withLabel:process_gpu {
+    queue = '<gpu-queue>'
+    clusterOptions = '--gpus 1'
+  }
+}
+```
+
+For different executors, the configuration might look different. Once a wider range of users have tested the GPU support, we will provide more detailed instructions for different executors.
+
 ### Updating the pipeline
 
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:

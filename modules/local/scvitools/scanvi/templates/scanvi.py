@@ -44,6 +44,9 @@ model = SCANVI.from_scvi_model(
     scvi_model=model, labels_key="label", unlabeled_category="unknown"
 )
 
+if "${task.ext.use_gpu}" == "true":
+    model.to_device(0)
+
 model.train(max_epochs=n_epochs, early_stopping=True)
 adata.obsm["X_emb"] = model.get_latent_representation()
 adata.obs["label:scANVI"] = model.predict()

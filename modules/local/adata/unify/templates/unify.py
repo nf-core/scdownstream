@@ -40,6 +40,31 @@ def aggregate_duplicate_var(adata, aggr_fun=np.mean):
     else:
         return adata
 
+def to_Florent_case(s: str):
+    corrected = s.lower().strip()
+
+    if corrected in ["na", "nan", "null", "unknown"]:
+        return "unknown"
+
+    corrected = s \
+        .replace(" ", "_") \
+        .replace("-", "_")
+
+    corrected = "".join([c if c.isalnum() or c == "_" else "" for c in corrected])
+
+    # Make sure there is never more than one underscore
+    corrected = corrected.replace("__", "_")
+
+    if corrected.endswith("s"):
+        corrected = corrected[:-1]
+
+    corrected = corrected.strip(" _")
+
+    if not corrected:
+        return "unknown"
+
+    return corrected.capitalize()
+
 adata = sc.read_h5ad("$h5ad")
 
 # Convert to float32 CSR matrix
@@ -48,6 +73,12 @@ adata.X = csr_matrix(adata.X.astype(np.float32))
 # Prevent duplicate cells
 adata.obs_names_make_unique()
 adata.obs_names = "${meta.id}_" + adata.obs_names
+
+# Remove all obsm, varm, uns and layers
+adata.obsm = {}
+adata.varm = {}
+adata.layers = {}
+adata.uns = {}
 
 # Unify batches
 batch_col = "${meta.batch_col}"
@@ -65,6 +96,9 @@ label_col = "${meta.label_col ?: ''}"
 unknown_label = "${meta.unknown_label}"
 
 if label_col:
+    if label_col not in adata.obs:
+        raise ValueError("The specified label column does not exist in the dataset. Existing columns: " + ", ".join(adata.obs.columns))
+
     if label_col != "label":
         if "label" in adata.obs:
             raise ValueError("The label column already exists.")
@@ -75,6 +109,12 @@ if label_col:
         if "unknown" in adata.obs["label"]:
             raise ValueError("The label column already contains 'unknown' values.")
         adata.obs["label"].replace({unknown_label: "unknown"}, inplace=True)
+
+    # Replace all NaN values with "unknown"
+    adata.obs["label"] = adata.obs["label"].astype(str)
+    adata.obs["label"] = adata.obs["label"].fillna("unknown")
+    adata.obs["label"] = adata.obs["label"].map(to_Florent_case)
+    adata.obs["label"] = adata.obs["label"].astype("category")
 else:
     if "label" in adata.obs:
         raise ValueError("The label column already exists.")
@@ -108,8 +148,6 @@ adata = aggregate_duplicate_var(adata, aggr_fun=getattr(np, method))
 if "sample" in adata.obs and not adata.obs["sample"].equals("${meta.id}"):
     adata.obs["sample_original"] = adata.obs["sample"]
 adata.obs["sample"] = "${meta.id}"
-
-adata.layers["counts"] = adata.X
 
 adata.write_h5ad("${prefix}.h5ad")
 

@@ -38,8 +38,6 @@ for adata in adatas.values():
 
 adata_outer = ad.concat(adatas, join="outer")
 adata_outer.X = csr_matrix(adata_outer.X)
-adata_outer.layers["counts"] = adata_outer.X.copy()
-adata_outer.layers["log1p"] = sc.pp.log1p(adata_outer.X)
 
 # Make sure there are no cells and genes without any counts
 sc.pp.filter_cells(adata_outer, min_counts=1)
