@@ -117,6 +117,7 @@ GPU acceleration is not available when using conda for dependency management.
 :::
 
 Tools with implemented support for GPU acceleration are:
+
 - cellbender
 - scVI
 - scANVI
