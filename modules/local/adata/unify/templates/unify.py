@@ -109,7 +109,7 @@ if label_col:
         if "unknown" in adata.obs["label"]:
             raise ValueError("The label column already contains 'unknown' values.")
         adata.obs["label"].replace({unknown_label: "unknown"}, inplace=True)
-    
+
     # Replace all NaN values with "unknown"
     adata.obs["label"] = adata.obs["label"].astype(str)
     adata.obs["label"] = adata.obs["label"].fillna("unknown")
