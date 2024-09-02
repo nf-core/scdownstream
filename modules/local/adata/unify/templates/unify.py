@@ -98,6 +98,7 @@ if batch_col != "batch":
         raise ValueError("The batch column already exists.")
     adata.obs["batch"] = adata.obs[batch_col]
     del adata.obs[batch_col]
+adata.obs["batch"] = adata.obs["batch"].astype(str).astype("category")
 
 # Unify labels
 label_col = "${meta.label_col ?: ''}"
@@ -127,6 +128,7 @@ else:
     if "label" in adata.obs:
         raise ValueError("The label column already exists.")
     adata.obs["label"] = "unknown"
+adata.obs["label"] = adata.obs["label"].astype("category")
 
 # Unify gene symbols
 symbol_col = "${meta.symbol_col ?: 'index'}"
