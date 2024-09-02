@@ -134,7 +134,6 @@
                 "base_adata": {
                     "type": "string",
                     "format": "file-path",
-                    "default": "",
                     "description": "If you want to project new data onto an already integrated object, specify the path to the base AnnData object here",
                     "help_text": "The file should be in the .h5ad format. If specified, also the `base_scvi_model` parameter has to be set.",
                     "pattern": "^\\S+\\.h5ad$",
@@ -143,7 +142,6 @@
                 "base_scvi_model": {
                     "type": "string",
                     "format": "file-path",
-                    "default": "",
                     "description": "If you want to project new data onto an already integrated object, specify the path to the base scVI model here",
                     "help_text": "The file should be in the .pt format. If specified, also the `base_adata` parameter has to be set.",
                     "pattern": "^\\S+\\.pt$",
