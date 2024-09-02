@@ -67,6 +67,14 @@ def to_Florent_case(s: str):
 
 adata = sc.read_h5ad("$h5ad")
 
+# This fixes a problem that sometimes occurs in AnnData objects
+# that were converted from R-based objects
+# Reference: https://github.com/theislab/scvelo/issues/255#issuecomment-739995301
+if adata.__dict__["_raw"] and "_index" in adata.__dict__["_raw"].__dict__["_var"]:
+    adata.__dict__["_raw"].__dict__["_var"] = (
+        adata.__dict__["_raw"].__dict__["_var"].rename(columns={"_index": "features"})
+    )
+
 # Convert to float32 CSR matrix
 adata.X = csr_matrix(adata.X.astype(np.float32))
 
