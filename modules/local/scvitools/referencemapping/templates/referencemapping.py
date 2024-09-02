@@ -58,9 +58,12 @@ if "${task.ext.use_gpu}" == "true":
 model.train()
 model.save("${prefix}_model")
 
-embedding = model.get_latent_representation()
+adata_query.obsm["X_emb"] = model.get_latent_representation()
 adata_inner.obsm["X_emb"] = adata_inner.obsm[embedding_key]
-adata_inner.obsm.loc[adata_query.obs_names, "X_emb"] = embedding
+
+query_mask = adata_inner.obs.index.isin(adata_query.obs.index)
+ordered_embedding = adata_query[adata_inner[query_mask].obs.index].obsm["X_emb"]
+adata_inner.obsm["X_emb"][query_mask] = ordered_embedding
 
 adata_inner.write_h5ad("${prefix}.h5ad")
 adata_inner.obsm[["X_emb"]].to_pickle("${prefix}.pkl")
