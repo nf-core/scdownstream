@@ -65,6 +65,8 @@ query_mask = adata_inner.obs.index.isin(adata_query.obs.index)
 ordered_embedding = adata_query[adata_inner[query_mask].obs.index].obsm["X_emb"]
 adata_inner.obsm["X_emb"][query_mask] = ordered_embedding
 
+adata_inner.write_h5ad("${prefix}.h5ad")
+
 df = pd.DataFrame(adata_inner.obsm["X_emb"], index=adata_inner.obs_names)
 df.to_pickle("X_${prefix}.pkl")
 
