@@ -12,7 +12,7 @@ workflow TRANSFER {
     ch_obsm          = Channel.empty()
 
     SCVITOOLS_SCARCHES(
-        ch_h5ad.map{ meta, h5ad -> [[id: "scarches"], h5ad] },
+        ch_transfer.map{ meta, h5ad -> [[id: "scarches"], h5ad] },
         ch_base.map{ meta, h5ad, scvi_model -> [meta, scvi_model] },
         ch_inner
     )

@@ -78,9 +78,9 @@ workflow {
     //
     NFCORE_SCDOWNSTREAM (
         PIPELINE_INITIALISATION.out.samplesheet,
-        params.base_adata ? Channel.value[[id: "base"],
+        params.base_adata ? Channel.value([[id: "base"],
             file(params.base_adata, checkIfExists: true),
-            file(params.base_scvi_model, checkIfExists: true)]
+            file(params.base_scvi_model, checkIfExists: true)])
             : Channel.value([[], [], []])
     )
 

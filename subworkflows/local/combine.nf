@@ -1,6 +1,7 @@
 include { ADATA_MERGE      } from '../../modules/local/adata/merge'
 include { ADATA_UPSETGENES } from '../../modules/local/adata/upsetgenes'
 include { INTEGRATE        } from './integrate'
+include { TRANSFER         } from './transfer'
 
 workflow COMBINE {
 
