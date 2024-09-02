@@ -106,6 +106,18 @@ genome: 'GRCh37'
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
 
+### Reference mapping
+
+The pipeline supports mapping new samples onto an existing output of the pipeline by using the techniques described in [this tutorial](https://docs.scvi-tools.org/en/1.1.5/tutorials/notebooks/scrna/scarches_scvi_tools.html). Essentially, the newly added samples are mapped onto the existing latent space of the reference samples using a transfer learning approach ([scArches](https://doi.org/10.1038/s41587-021-01001-7)).
+
+In order to perform reference mapping, make sure to provide the following parameters:
+
+- `base_adata`: Path to the AnnData file produced by a previous run of the pipeline.
+- `base_scvi_model`: Path to the scVI/scANVI model produced by a previous run of the pipeline. Make sure to use the according integration methods in the previous run.
+- `base_model_type`: Type of the model used as `base_scvi_model`. Can be either `scvi` or `scanvi`.
+
+The pipeline will perform the preprocessing steps on the new samples as usual. During the integration step, the new samples will be mapped onto the latent space of the reference samples. The clustering, dimensionality reduction etc. will then be performed on the combined dataset.
+
 ### GPU acceleration
 
 :::warning{title="Experimental feature"}
@@ -119,8 +131,7 @@ GPU acceleration is not available when using conda for dependency management.
 Tools with implemented support for GPU acceleration are:
 
 - cellbender
-- scVI
-- scANVI
+- scVI/scANVI (including reference mapping)
 - scAR
 - solo
 
