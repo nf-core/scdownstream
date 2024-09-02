@@ -25,5 +25,5 @@ process SCVITOOLS_SCARCHES {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    template 'scvi.py'
+    template 'scarches.py'
 }

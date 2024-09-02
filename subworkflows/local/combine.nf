@@ -19,7 +19,7 @@ workflow COMBINE {
 
     ADATA_MERGE(
         ch_h5ad.map { meta, h5ad -> [[id: "merged"], meta.id, h5ad] }.groupTuple(),
-        ch_base.map { meta, h5ad, scvi_model -> [meta, h5ad] }
+        ch_base.map { meta, h5ad, scvi_model, model_type -> [meta, h5ad] }
     )
     ch_inner         = ADATA_MERGE.out.inner
     ch_outer         = ADATA_MERGE.out.outer
