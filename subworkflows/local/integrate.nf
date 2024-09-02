@@ -83,9 +83,6 @@ workflow INTEGRATE {
         // ch_layers = ch_layers.mix(SCANPY_COMBAT.out.layers)
     }
 
-    ch_integrations = ch_integrations
-        .map{meta, file -> [meta + [integration: meta.id], file]}
-
     emit:
     integrations = ch_integrations
     obs = ch_obs

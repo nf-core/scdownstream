@@ -124,6 +124,35 @@
                     "description": "Method to aggregate gene expression values for non-unique genes",
                     "help_text": "Method to aggregate gene expression values for non-unique genes. Available methods are: mean, sum, max",
                     "enum": ["mean", "sum", "max"]
+                },
+                "use_gpu": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Use GPU acceleration for tasks that support it",
+                    "hidden": true
+                },
+                "base_adata": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "If you want to project new data onto an already integrated object, specify the path to the base AnnData object here",
+                    "help_text": "The file should be in the .h5ad format. If specified, also the `base_scvi_model` parameter has to be set.",
+                    "pattern": "^\\S+\\.h5ad$",
+                    "exists": true
+                },
+                "base_scvi_model": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "If you want to project new data onto an already integrated object, specify the path to the base scVI model here",
+                    "help_text": "The file should be in the .pt format. If specified, also the `base_adata` parameter has to be set.",
+                    "pattern": "^\\S+\\.pt$",
+                    "exists": true
+                },
+                "base_model_type": {
+                    "type": "string",
+                    "default": "scvi",
+                    "description": "Specify the type of model used for the base object",
+                    "help_text": "Can be either 'scvi' or 'scanvi'.",
+                    "pattern": "^(scvi|scanvi)$"
                 }
             }
         },

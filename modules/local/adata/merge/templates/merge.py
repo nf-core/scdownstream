@@ -25,13 +25,19 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
-adatas = dict(zip("${names.join(' ')}".split(" "), [sc.read_h5ad(f) for f in "${h5ads}".split()]))
-genes = [adata.var_names for adata in adatas.values()]
-obs_col_intersection = set(adatas["${names[0]}"].obs.columns).intersection(*[adata.obs.columns for adata in adatas.values()])
+adatas = [sc.read_h5ad(f) for f in "${h5ads}".split()]
+
+base_path = "${base}"
+if base_path:
+    adata_base = sc.read_h5ad(base_path)
+    adatas = [adata_base] + adatas
+
+genes = [adata.var_names for adata in adatas]
+obs_col_intersection = set(adatas[0].obs.columns).intersection(*[adata.obs.columns for adata in adatas[1:]])
 obs_col_intersection = list(obs_col_intersection.union("${force_obs_cols}".split()))
 sorted(obs_col_intersection)
 
-for adata in adatas.values():
+for adata in adatas:
     for col in set(obs_col_intersection).difference(adata.obs.columns):
         adata.obs[col] = None
     adata.obs = adata.obs[obs_col_intersection]
@@ -49,6 +55,16 @@ adata_inner = adata_outer[:, genes_intersection]
 
 adata_inner.write("${prefix}_inner.h5ad")
 adata_outer.write("${prefix}_outer.h5ad")
+
+if base_path:
+    adata_transfer = adata_inner[~adata_inner.obs.index.isin(adata_base.obs.index)]
+
+    known_labels = adata_base.obs["label"].unique()
+    adata_transfer.obs["label"] = adata_transfer.obs["label"].map(
+        lambda x: x if x in known_labels else "unknown"
+    )
+
+    adata_transfer.write("${prefix}_transfer.h5ad")
 
 # Versions
 
