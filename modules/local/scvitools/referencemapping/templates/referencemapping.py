@@ -34,25 +34,19 @@ model_path  = "model"
 model_type  = "${model_type}"
 
 if model_type == "scvi":
-    SCVI.prepare_query_anndata(
-        adata_query,
-        model_path,
-        return_reference_var_names=True
-    )
     model_class = SCVI
     embedding_key = "X_scvi"
-
 elif model_type == "scanvi":
-    SCANVI.prepare_query_anndata(
-        adata_query,
-        model_path,
-        return_reference_var_names=True
-    )
     model_class = SCANVI
     embedding_key = "X_scanvi"
-
 else:
     raise ValueError(f"Invalid model type: {model_type}")
+
+model_class.prepare_query_anndata(
+    adata_query,
+    model_path,
+    return_reference_var_names=True
+)
 
 model = model_class.load_query_data(
     adata_query,
