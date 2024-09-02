@@ -11,7 +11,7 @@ process SCVITOOLS_REFERENCEMAPPING {
 
     input:
     tuple val(meta) , path(h5ad_transfer), path(model, stageAs: 'model/model.pt'), val(model_type)
-    tuple val(meta3), path(h5ad_inner)
+    tuple val(meta2), path(h5ad_inner)
 
     output:
     tuple val(meta), path("*.h5ad") , emit: h5ad

@@ -46,6 +46,10 @@ workflow COMBINE {
         ch_obsm         = ch_obsm.mix(TRANSFER.out.obsm)
     }
 
+    ch_integrations = ch_integrations
+        .map{meta, file -> [meta + [integration: meta.id], file]}
+
+
     emit:
     h5ad             = ch_outer
     integrations     = ch_integrations
