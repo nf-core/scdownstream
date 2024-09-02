@@ -3,7 +3,7 @@
 import scvi
 import anndata as ad
 import pandas as pd
-from scvi.model.base import ArchesMixin as sca
+from scvi.model import SCVI, SCANVI
 import platform
 
 from threadpoolctl import threadpool_limits
@@ -28,19 +28,35 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
-adata_query     = ad.read_h5ad("${h5ad_transfer}")
-adata_inner     = ad.read_h5ad("${h5ad_inner}")
-model_reference = "model"
+adata_query = ad.read_h5ad("${h5ad_transfer}")
+adata_inner = ad.read_h5ad("${h5ad_inner}")
+model_path  = "model"
+model_type  = "${model_type}"
 
-sca.prepare_query_anndata(
-    adata_query,
-    model_reference,
-    return_reference_var_names=True
-)
+if model_type == "scvi":
+    SCVI.prepare_query_anndata(
+        adata_query,
+        model_path,
+        return_reference_var_names=True
+    )
+    model_class = SCVI
+    embedding_key = "X_scvi"
 
-model = sca.load_query_data(
+elif model_type == "scanvi":
+    SCANVI.prepare_query_anndata(
+        adata_query,
+        model_path,
+        return_reference_var_names=True
+    )
+    model_class = SCANVI
+    embedding_key = "X_scanvi"
+
+else:
+    raise ValueError(f"Invalid model type: {model_type}")
+
+model = model_class.load_query_data(
     adata_query,
-    model_reference
+    model_path
 )
 
 if "${task.ext.use_gpu}" == "true":
@@ -50,7 +66,7 @@ model.train()
 model.save("${prefix}_model")
 
 embedding = model.get_latent_representation()
-adata_inner.obsm["X_emb"] = adata_inner.obsm["X_${model_type}"]
+adata_inner.obsm["X_emb"] = adata_inner.obsm[embedding_key]
 adata_inner.obsm.loc[adata_query.obs_names, "X_emb"] = embedding
 
 adata_inner.write_h5ad("${prefix}.h5ad")

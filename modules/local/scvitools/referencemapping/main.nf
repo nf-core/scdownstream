@@ -1,4 +1,4 @@
-process SCVITOOLS_SCARCHES {
+process SCVITOOLS_REFERENCEMAPPING {
     tag "$meta.id"
     label 'process_medium'
     label 'process_gpu'
@@ -10,8 +10,7 @@ process SCVITOOLS_SCARCHES {
         'community.wave.seqera.io/library/anndata_scvi-tools:fa9451a13918eae0' }"
 
     input:
-    tuple val(meta) , path(h5ad_transfer)
-    tuple val(meta2), path(model, stageAs: 'model/model.pt'), val(model_type)
+    tuple val(meta) , path(h5ad_transfer), path(model, stageAs: 'model/model.pt'), val(model_type)
     tuple val(meta3), path(h5ad_inner)
 
     output:
@@ -25,5 +24,5 @@ process SCVITOOLS_SCARCHES {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    template 'scarches.py'
+    template 'referencemapping.py'
 }
