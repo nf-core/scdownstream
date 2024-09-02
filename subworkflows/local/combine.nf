@@ -22,18 +22,28 @@ workflow COMBINE {
     )
     ch_inner         = ADATA_MERGE.out.inner
     ch_outer         = ADATA_MERGE.out.outer
-    ch_transfer      = ADATA_MERGE.out.transfer
     ch_versions      = ch_versions.mix(ADATA_MERGE.out.versions)
 
     ADATA_UPSETGENES(ch_outer)
     ch_versions      = ch_versions.mix(ADATA_UPSETGENES.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(ADATA_UPSETGENES.out.multiqc_files)
 
-    INTEGRATE(ch_inner)
-    ch_versions      = ch_versions.mix(INTEGRATE.out.versions)
-    ch_integrations  = INTEGRATE.out.integrations
-    ch_obs           = ch_obs.mix(INTEGRATE.out.obs)
-    ch_obsm          = ch_obsm.mix(INTEGRATE.out.obsm)
+    if ( !params.base_adata ) {
+        INTEGRATE(ch_inner)
+        ch_versions      = ch_versions.mix(INTEGRATE.out.versions)
+        ch_integrations  = INTEGRATE.out.integrations
+        ch_obs           = ch_obs.mix(INTEGRATE.out.obs)
+        ch_obsm          = ch_obsm.mix(INTEGRATE.out.obsm)
+    } else {
+        TRANSFER(
+            ADATA_MERGE.out.transfer,
+            ch_base,
+            ch_inner
+        )
+        ch_versions     = ch_versions.mix(TRANSFER.out.versions)
+        ch_integrations = TRANSFER.out.integrations
+        ch_obsm         = ch_obsm.mix(TRANSFER.out.obsm)
+    }
 
     emit:
     h5ad             = ch_outer
