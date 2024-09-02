@@ -5,7 +5,7 @@ workflow TRANSFER {
     ch_transfer
     ch_base
     ch_inner
-    
+
     main:
     ch_versions      = Channel.empty()
     ch_integrations  = Channel.empty()
