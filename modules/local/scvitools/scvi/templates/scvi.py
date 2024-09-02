@@ -5,6 +5,9 @@ import anndata as ad
 import pandas as pd
 from scvi.model import SCVI
 import platform
+import torch
+
+torch.set_float32_matmul_precision('medium')
 
 from threadpoolctl import threadpool_limits
 threadpool_limits(int("${task.cpus}"))
