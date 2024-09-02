@@ -34,6 +34,7 @@ workflow NFCORE_SCDOWNSTREAM {
 
     take:
     samplesheet // channel: samplesheet read in from --input
+    ch_base  // value channel: [ val(meta), h5ad, scvi_model ]
 
     main:
 
@@ -41,7 +42,8 @@ workflow NFCORE_SCDOWNSTREAM {
     // WORKFLOW: Run pipeline
     //
     SCDOWNSTREAM (
-        samplesheet
+        samplesheet,
+        ch_base
     )
 
     emit:
