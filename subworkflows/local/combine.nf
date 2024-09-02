@@ -7,7 +7,7 @@ workflow COMBINE {
 
     take:
     ch_h5ad // queue channel: [ val(meta), h5ad ]
-    ch_base // value channel: [ val(meta), h5ad, scvi_model ]
+    ch_base // value channel: [ val(meta), h5ad, scvi_model, model_type ]
 
     main:
 

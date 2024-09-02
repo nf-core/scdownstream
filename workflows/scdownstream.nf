@@ -25,7 +25,7 @@ workflow SCDOWNSTREAM {
 
     take:
     ch_samplesheet // channel: samplesheet read in from --input
-    ch_base // value channel: [ val(meta), h5ad, scvi_model ]
+    ch_base // value channel: [ val(meta), h5ad, scvi_model, model_type ]
 
     main:
 

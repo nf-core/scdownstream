@@ -148,6 +148,13 @@
                     "help_text": "The file should be in the .pt format. If specified, also the `base_adata` parameter has to be set.",
                     "pattern": "^\\S+\\.pt$",
                     "exists": true
+                },
+                "base_model_type": {
+                    "type": "string",
+                    "default": "scvi",
+                    "description": "Specify the type of model used for the base object",
+                    "help_text": "Can be either 'scvi' or 'scanvi'.",
+                    "pattern": "^(scvi|scanvi)$"
                 }
             }
         },

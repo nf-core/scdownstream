@@ -13,7 +13,7 @@ workflow TRANSFER {
 
     SCVITOOLS_SCARCHES(
         ch_transfer.map{ meta, h5ad -> [[id: "scarches"], h5ad] },
-        ch_base.map{ meta, h5ad, scvi_model -> [meta, scvi_model] },
+        ch_base.map{ meta, h5ad, scvi_model, model_type -> [meta, scvi_model, model_type] },
         ch_inner
     )
     ch_versions      = ch_versions.mix(SCVITOOLS_SCARCHES.out.versions)

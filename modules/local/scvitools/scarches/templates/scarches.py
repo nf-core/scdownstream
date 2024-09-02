@@ -50,6 +50,7 @@ model.train()
 model.save("${prefix}_model")
 
 embedding = model.get_latent_representation()
+adata_inner.obsm["X_emb"] = adata_inner.obsm["X_${model_type}"]
 adata_inner.obsm.loc[adata_query.obs_names, "X_emb"] = embedding
 
 adata_inner.write_h5ad("${prefix}.h5ad")

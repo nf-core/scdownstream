@@ -11,7 +11,7 @@ process SCVITOOLS_SCARCHES {
 
     input:
     tuple val(meta) , path(h5ad_transfer)
-    tuple val(meta2), path(model, stageAs: 'model/model.pt')
+    tuple val(meta2), path(model, stageAs: 'model/model.pt'), val(model_type)
     tuple val(meta3), path(h5ad_inner)
 
     output:
