@@ -44,8 +44,7 @@ else:
 
 model_class.prepare_query_anndata(
     adata_query,
-    model_path,
-    return_reference_var_names=True
+    model_path
 )
 
 model = model_class.load_query_data(
