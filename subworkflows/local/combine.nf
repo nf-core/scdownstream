@@ -5,7 +5,8 @@ include { INTEGRATE        } from './integrate'
 workflow COMBINE {
 
     take:
-    ch_h5ad // channel: [ val(meta), h5ad ]
+    ch_h5ad // queue channel: [ val(meta), h5ad ]
+    ch_base // value channel: [ val(meta), h5ad, scvi_model ]
 
     main:
 
@@ -15,9 +16,13 @@ workflow COMBINE {
     ch_layers = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
-    ADATA_MERGE(ch_h5ad.map { meta, h5ad -> [[id: "merged"], meta.id, h5ad] }.groupTuple())
+    ADATA_MERGE(
+        ch_h5ad.map { meta, h5ad -> [[id: "merged"], meta.id, h5ad] }.groupTuple(),
+        ch_base.map { meta, h5ad, scvi_model -> [meta, h5ad] }
+    )
     ch_inner = ADATA_MERGE.out.inner
     ch_outer = ADATA_MERGE.out.outer
+    ch_transfer = ADATA_MERGE.out.transfer
     ch_versions = ch_versions.mix(ADATA_MERGE.out.versions)
 
     ADATA_UPSETGENES(ch_outer)
