@@ -4,7 +4,7 @@ process SCANPY_SCRUBLET {
     label 'process_gpu'
 
     conda "${moduleDir}/environment.yml"
-    container "${ ext.use_gpu ? 'docker.io/nicotru/rapids-singlecell:0.0.1'
+    container "${ ext.use_gpu ? 'docker.io/nicotru/rapids-singlecell:0.0.1' :
         workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'oras://community.wave.seqera.io/library/scanpy_scikit-image:185956e1b73ad93d':
         'community.wave.seqera.io/library/scanpy_scikit-image:066cc4cb329a805c' }"
