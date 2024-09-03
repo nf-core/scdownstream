@@ -1,4 +1,4 @@
-process ADATA_EXTEND {
+process ADATA_PREPCELLXGENE {
     tag "$meta.id"
     label 'process_medium'
 
@@ -8,14 +8,10 @@ process ADATA_EXTEND {
         'community.wave.seqera.io/library/anndata:0.10.7--336c6c1921a0632b' }"
 
     input:
-    tuple val(meta), path(base)
-    path(obs)
-    path(obsm)
-    path(layers)
+    tuple val(meta), path(h5ad)
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    tuple val(meta), path("*.csv") , emit: metadata
     path "versions.yml"            , emit: versions
 
     when:
@@ -23,5 +19,5 @@ process ADATA_EXTEND {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    template 'extend.py'
+    template 'prepcellxgene.py'
 }
