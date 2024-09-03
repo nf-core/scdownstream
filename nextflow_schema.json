@@ -153,6 +153,12 @@
                     "description": "Specify the type of model used for the base object",
                     "help_text": "Can be either 'scvi' or 'scanvi'.",
                     "pattern": "^(scvi|scanvi)$"
+                },
+                "prep_cellxgene": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Prepare the output for visualisation in cellxgene",
+                    "fa_icon": "fas fa-chart-line"
                 }
             }
         },
