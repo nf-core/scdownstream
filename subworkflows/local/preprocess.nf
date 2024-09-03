@@ -65,61 +65,57 @@ workflow PREPROCESS {
 
     ch_h5ad = ch_h5ad.mix(ch_files.unified)
 
-    if (params.skip_qc) {
-        log.warn "PREPROCESS: Skipping QC steps since 'skip_qc' is set to true."
-    } else {
-        ch_samples = ch_metas.map{ meta -> [meta.id, meta]}
-                .join(
-                    ch_h5ad.filter { meta, h5ad -> meta.type == 'filtered' }
-                    .map{ meta, filtered -> [meta.id, filtered]},
-                    failOnMismatch: false, remainder: true
-                )
-                .join(ch_h5ad
-                    .filter { meta, h5ad -> meta.type == 'unfiltered' }
-                    .map{ meta, unfiltered -> [meta.id, unfiltered]},
-                    failOnMismatch: false, remainder: true)
-                .map{ id, meta, filtered, unfiltered -> [meta, filtered ?: [], unfiltered ?: []] }
-                .branch{ meta, filtered, unfiltered ->
-                    complete: filtered
-                        return [meta, filtered, unfiltered]
-                    needs_filtering: unfiltered
-                        return [meta, filtered, unfiltered]
-                    problematic: true
-                        return [meta, filtered, unfiltered]
-                }
+    ch_samples = ch_metas.map{ meta -> [meta.id, meta]}
+            .join(
+                ch_h5ad.filter { meta, h5ad -> meta.type == 'filtered' }
+                .map{ meta, filtered -> [meta.id, filtered]},
+                failOnMismatch: false, remainder: true
+            )
+            .join(ch_h5ad
+                .filter { meta, h5ad -> meta.type == 'unfiltered' }
+                .map{ meta, unfiltered -> [meta.id, unfiltered]},
+                failOnMismatch: false, remainder: true)
+            .map{ id, meta, filtered, unfiltered -> [meta, filtered ?: [], unfiltered ?: []] }
+            .branch{ meta, filtered, unfiltered ->
+                complete: filtered
+                    return [meta, filtered, unfiltered]
+                needs_filtering: unfiltered
+                    return [meta, filtered, unfiltered]
+                problematic: true
+                    return [meta, filtered, unfiltered]
+            }
 
-        ch_complete = ch_samples.complete
-        ch_needs_filtering = ch_samples.needs_filtering
+    ch_complete = ch_samples.complete
+    ch_needs_filtering = ch_samples.needs_filtering
 
-        EMPTY_DROPLET_REMOVAL(ch_needs_filtering.map{ meta, filtered, unfiltered -> [meta, unfiltered] })
-        ch_versions = ch_versions.mix(EMPTY_DROPLET_REMOVAL.out.versions)
+    EMPTY_DROPLET_REMOVAL(ch_needs_filtering.map{ meta, filtered, unfiltered -> [meta, unfiltered] })
+    ch_versions = ch_versions.mix(EMPTY_DROPLET_REMOVAL.out.versions)
 
-        ch_complete = ch_complete.mix(ch_needs_filtering
-            .join(EMPTY_DROPLET_REMOVAL.out.h5ad)
-            .map{ meta, empty, unfiltered, filtered -> [meta, filtered, unfiltered] }
-        )
+    ch_complete = ch_complete.mix(ch_needs_filtering
+        .join(EMPTY_DROPLET_REMOVAL.out.h5ad)
+        .map{ meta, empty, unfiltered, filtered -> [meta, filtered, unfiltered] }
+    )
 
-        QC_RAW(ch_complete.map{ meta, filtered, unfiltered -> [meta, filtered] })
-        ch_multiqc_files = ch_multiqc_files.mix(QC_RAW.out.multiqc_files)
-        ch_versions = ch_versions.mix(QC_RAW.out.versions)
+    QC_RAW(ch_complete.map{ meta, filtered, unfiltered -> [meta, filtered] })
+    ch_multiqc_files = ch_multiqc_files.mix(QC_RAW.out.multiqc_files)
+    ch_versions = ch_versions.mix(QC_RAW.out.versions)
 
-        AMBIENT_RNA_REMOVAL(ch_complete)
-        ch_h5ad = AMBIENT_RNA_REMOVAL.out.h5ad
-        ch_versions = ch_versions.mix(AMBIENT_RNA_REMOVAL.out.versions)
+    AMBIENT_RNA_REMOVAL(ch_complete)
+    ch_h5ad = AMBIENT_RNA_REMOVAL.out.h5ad
+    ch_versions = ch_versions.mix(AMBIENT_RNA_REMOVAL.out.versions)
 
-        SCANPY_FILTER(ch_h5ad)
-        ch_h5ad = SCANPY_FILTER.out.h5ad
-        ch_versions = ch_versions.mix(SCANPY_FILTER.out.versions)
+    SCANPY_FILTER(ch_h5ad)
+    ch_h5ad = SCANPY_FILTER.out.h5ad
+    ch_versions = ch_versions.mix(SCANPY_FILTER.out.versions)
 
-        DOUBLET_DETECTION(ch_h5ad)
-        ch_h5ad = DOUBLET_DETECTION.out.h5ad
-        ch_multiqc_files = ch_multiqc_files.mix(DOUBLET_DETECTION.out.multiqc_files)
-        ch_versions = ch_versions.mix(DOUBLET_DETECTION.out.versions)
+    DOUBLET_DETECTION(ch_h5ad)
+    ch_h5ad = DOUBLET_DETECTION.out.h5ad
+    ch_multiqc_files = ch_multiqc_files.mix(DOUBLET_DETECTION.out.multiqc_files)
+    ch_versions = ch_versions.mix(DOUBLET_DETECTION.out.versions)
 
-        QC_FILTERED(ch_h5ad)
-        ch_multiqc_files = ch_multiqc_files.mix(QC_FILTERED.out.multiqc_files)
-        ch_versions = ch_versions.mix(QC_FILTERED.out.versions)
-    }
+    QC_FILTERED(ch_h5ad)
+    ch_multiqc_files = ch_multiqc_files.mix(QC_FILTERED.out.multiqc_files)
+    ch_versions = ch_versions.mix(QC_FILTERED.out.versions)
 
     emit:
     h5ad          = ch_h5ad
