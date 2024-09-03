@@ -1,0 +1,25 @@
+Changes in module 'nf-core/cellbender/merge'
+--- modules/nf-core/cellbender/merge/main.nf
++++ modules/nf-core/cellbender/merge/main.nf
+@@ -4,8 +4,8 @@
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+-        'oras://community.wave.seqera.io/library/cellbender:0.3.0--c4addb97ab2d83fe':
+-        'community.wave.seqera.io/library/cellbender:0.3.0--41318a055fc3aacb' }"
++        'oras://community.wave.seqera.io/library/cellbender:0.3.2--fb391e8f14529730':
++        'community.wave.seqera.io/library/cellbender:0.3.2--4729ff8c1d1ba0c5' }"
+ 
+     input:
+     tuple val(meta), path(filtered), path(unfiltered), path(cellbender_h5)
+
+--- modules/nf-core/cellbender/merge/environment.yml
++++ modules/nf-core/cellbender/merge/environment.yml
+@@ -4,4 +4,4 @@
+   - bioconda
+   - defaults
+ dependencies:
+-  - bioconda::cellbender=0.3.0
++  - bioconda::cellbender=0.3.2
+
+************************************************************
