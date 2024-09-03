@@ -22,7 +22,7 @@ workflow FINALIZE {
     ch_versions = ch_versions.mix(ADATA_TORDS.out.versions)
 
     if (params.prep_cellxgene) {
-        ADATA_PREPCELLXGENE(ADATA_TORDS.out.h5ad)
+        ADATA_PREPCELLXGENE(ADATA_EXTEND.out.h5ad)
         ch_versions = ch_versions.mix(ADATA_PREPCELLXGENE.out.versions)
     }
 
