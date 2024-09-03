@@ -1,13 +1,17 @@
-include { SCANPY_READH5                } from '../../modules/local/scanpy/readh5'
-include { ADATA_READRDS                } from '../../modules/local/adata/readrds'
-include { ADATA_READCSV                } from '../../modules/local/adata/readcsv'
-include { EMPTY_DROPLET_REMOVAL        } from './empty_droplet_removal'
-include { ADATA_UNIFY                  } from '../../modules/local/adata/unify'
-include { SCANPY_PLOTQC as QC_RAW      } from '../../modules/local/scanpy/plotqc'
-include { AMBIENT_RNA_REMOVAL          } from './ambient_rna_removal'
-include { SCANPY_FILTER                } from '../../modules/local/scanpy/filter'
-include { DOUBLET_DETECTION            } from './doublet_detection'
-include { SCANPY_PLOTQC as QC_FILTERED } from '../../modules/local/scanpy/plotqc'
+include { SCANPY_READH5                         } from '../../modules/local/scanpy/readh5'
+include { ADATA_READRDS                         } from '../../modules/local/adata/readrds'
+include { ADATA_READCSV                         } from '../../modules/local/adata/readcsv'
+include { EMPTY_DROPLET_REMOVAL                 } from './empty_droplet_removal'
+include { ADATA_UNIFY                           } from '../../modules/local/adata/unify'
+include { ADATA_GETSIZE as GET_UNFILTERED_SIZE  } from '../../modules/local/adata/getsize'
+include { ADATA_GETSIZE as GET_FILTERED_SIZE    } from '../../modules/local/adata/getsize'
+include { ADATA_GETSIZE as GET_THRESHOLDED_SIZE } from '../../modules/local/adata/getsize'
+include { ADATA_GETSIZE as GET_DEDOUBLETED_SIZE } from '../../modules/local/adata/getsize'
+include { SCANPY_PLOTQC as QC_RAW               } from '../../modules/local/scanpy/plotqc'
+include { AMBIENT_RNA_REMOVAL                   } from './ambient_rna_removal'
+include { SCANPY_FILTER                         } from '../../modules/local/scanpy/filter'
+include { DOUBLET_DETECTION                     } from './doublet_detection'
+include { SCANPY_PLOTQC as QC_FILTERED          } from '../../modules/local/scanpy/plotqc'
 
 workflow PREPROCESS {
 
@@ -20,6 +24,7 @@ workflow PREPROCESS {
     ch_multiqc_files = Channel.empty()
     ch_h5ad = Channel.empty()
     ch_files = Channel.empty()
+    ch_sizes = Channel.empty()
 
     ch_files = ch_files.mix(ch_samples
         .map { meta, filtered, unfiltered -> [meta + [type: 'filtered'], filtered] }
@@ -63,6 +68,11 @@ workflow PREPROCESS {
     ch_h5ad = ADATA_UNIFY.out.h5ad
     ch_versions = ch_versions.mix(ADATA_UNIFY.out.versions)
 
+    GET_UNFILTERED_SIZE(ch_h5ad.filter{ meta, h5ad -> meta.type == 'unfiltered' })
+    ch_versions = ch_versions.mix(GET_UNFILTERED_SIZE.out.versions)
+    ch_sizes = ch_sizes.mix(GET_UNFILTERED_SIZE.out.txt
+        .map{ meta, txt -> [[id: meta.id, state: 'unfiltered'], txt.text.toInteger()] })
+
     ch_h5ad = ch_h5ad.mix(ch_files.unified)
 
     ch_samples = ch_metas.map{ meta -> [meta.id, meta]}
@@ -96,6 +106,11 @@ workflow PREPROCESS {
         .map{ meta, empty, unfiltered, filtered -> [meta, filtered, unfiltered] }
     )
 
+    GET_FILTERED_SIZE(ch_complete.map{ meta, filtered, unfiltered -> [meta, filtered] })
+    ch_versions = ch_versions.mix(GET_FILTERED_SIZE.out.versions)
+    ch_sizes = ch_sizes.mix(GET_FILTERED_SIZE.out.txt
+        .map{ meta, txt -> [[id: meta.id, state: 'filtered'], txt.text.toInteger()] })
+
     QC_RAW(ch_complete.map{ meta, filtered, unfiltered -> [meta, filtered] })
     ch_multiqc_files = ch_multiqc_files.mix(QC_RAW.out.multiqc_files)
     ch_versions = ch_versions.mix(QC_RAW.out.versions)
@@ -108,14 +123,26 @@ workflow PREPROCESS {
     ch_h5ad = SCANPY_FILTER.out.h5ad
     ch_versions = ch_versions.mix(SCANPY_FILTER.out.versions)
 
+    GET_THRESHOLDED_SIZE(ch_h5ad)
+    ch_versions = ch_versions.mix(GET_THRESHOLDED_SIZE.out.versions)
+    ch_sizes = ch_sizes.mix(GET_THRESHOLDED_SIZE.out.txt
+        .map{ meta, txt -> [[id: meta.id, state: 'thresholded'], txt.text.toInteger()] })
+
     DOUBLET_DETECTION(ch_h5ad)
     ch_h5ad = DOUBLET_DETECTION.out.h5ad
     ch_multiqc_files = ch_multiqc_files.mix(DOUBLET_DETECTION.out.multiqc_files)
     ch_versions = ch_versions.mix(DOUBLET_DETECTION.out.versions)
 
+    GET_DEDOUBLETED_SIZE(ch_h5ad)
+    ch_versions = ch_versions.mix(GET_DEDOUBLETED_SIZE.out.versions)
+    ch_sizes = ch_sizes.mix(GET_DEDOUBLETED_SIZE.out.txt
+        .map{ meta, txt -> [[id: meta.id, state: 'dedoubleted'], txt.text.toInteger()] })
+
     QC_FILTERED(ch_h5ad)
     ch_multiqc_files = ch_multiqc_files.mix(QC_FILTERED.out.multiqc_files)
     ch_versions = ch_versions.mix(QC_FILTERED.out.versions)
+
+    ch_sizes.view()
 
     emit:
     h5ad          = ch_h5ad
