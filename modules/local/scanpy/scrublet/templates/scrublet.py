@@ -32,6 +32,15 @@ use_gpu = "${task.ext.use_gpu}" == "true"
 
 if use_gpu:
     import rapids_singlecell as rsc
+    import rmm
+    from rmm.allocators.cupy import rmm_cupy_allocator
+    import cupy as cp
+
+    rmm.reinitialize(
+        managed_memory=True,
+        pool_allocator=False,
+    )
+    cp.cuda.set_allocator(rmm_cupy_allocator)
 
     rsc.get.anndata_to_GPU(adata)
     rsc.pp.scrublet(adata, batch_key="batch")
