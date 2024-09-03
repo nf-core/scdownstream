@@ -131,9 +131,12 @@ GPU acceleration is not available when using conda for dependency management.
 Tools with implemented support for GPU acceleration are:
 
 - cellbender
-- scVI/scANVI (including reference mapping)
-- scAR
-- solo
+- scvi-tools
+  - scVI/scANVI (including reference mapping)
+  - scAR
+  - solo
+- rapids-singlecell
+  - scrublet
 
 To utilize GPU acceleration, you need to specify the `gpu` profile. This will make the tool steps use cuda-enabled environments and it will tell the tools to use the GPU. All processes which support GPU acceleration are marked with the `process_gpu` label.
 
