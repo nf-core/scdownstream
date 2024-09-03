@@ -30,17 +30,39 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 n_hvgs = int("${n_hvgs}")
-
-adata.layers["log1p"] = sc.pp.log1p(adata.X)
+use_gpu = "${task.ext.use_gpu}" == "true"
 
 if adata.n_vars > n_hvgs:
-    sc.pp.highly_variable_genes(adata,
-                                n_top_genes=int("${n_hvgs}"),
-                                batch_key="batch",
-                                layer="log1p")
-    adata = adata[:, adata.var["highly_variable"]]
+    kwargs = {
+        "n_top_genes": n_hvgs,
+        "batch_key": "batch"
+    }
 
-del adata.layers["log1p"]
+    raw_counts = adata.X.copy()
+
+    if use_gpu:
+        import rapids_singlecell as rsc
+        import rmm
+        from rmm.allocators.cupy import rmm_cupy_allocator
+        import cupy as cp
+        rmm.reinitialize(
+            managed_memory=True,
+            pool_allocator=False,
+        )
+        cp.cuda.set_allocator(rmm_cupy_allocator)
+
+        rsc.get.anndata_to_GPU(adata)
+
+        rsc.pp.log1p(adata)
+        rsc.pp.highly_variable_genes(adata, **kwargs)
+
+        rsc.get.anndata_to_CPU(adata)
+    else:
+        sc.pp.log1p(adata)
+        sc.pp.highly_variable_genes(adata, **kwargs)
+
+    adata.X = raw_counts
+    adata = adata[:, adata.var["highly_variable"]]
 
 adata.write_h5ad(f"{prefix}.h5ad")
 

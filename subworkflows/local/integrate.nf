@@ -2,7 +2,7 @@ include { SCANPY_HVGS         } from '../../modules/local/scanpy/hvgs'
 include { ADATA_TORDS         } from '../../modules/local/adata/tords'
 include { SCVITOOLS_SCVI      } from '../../modules/local/scvitools/scvi'
 include { SCVITOOLS_SCANVI    } from '../../modules/local/scvitools/scanvi'
-include { INTEGRATION_HARMONY } from '../../modules/local/integration/harmony'
+include { SCANPY_HARMONY      } from '../../modules/local/scanpy/harmony'
 include { INTEGRATION_BBKNN   } from '../../modules/local/integration/bbknn'
 include { SCANPY_COMBAT       } from '../../modules/local/scanpy/combat'
 include { SEURAT_INTEGRATION  } from '../../modules/local/seurat/integration'
@@ -63,10 +63,10 @@ workflow INTEGRATE {
     }
 
     if (methods.contains('harmony')) {
-        INTEGRATION_HARMONY(ch_h5ad.map{meta, h5ad -> [[id: 'harmony'], h5ad]})
-        ch_versions = ch_versions.mix(INTEGRATION_HARMONY.out.versions)
-        ch_integrations = ch_integrations.mix(INTEGRATION_HARMONY.out.h5ad)
-        ch_obsm = ch_obsm.mix(INTEGRATION_HARMONY.out.obsm)
+        SCANPY_HARMONY(ch_h5ad.map{meta, h5ad -> [[id: 'harmony'], h5ad]})
+        ch_versions = ch_versions.mix(SCANPY_HARMONY.out.versions)
+        ch_integrations = ch_integrations.mix(SCANPY_HARMONY.out.h5ad)
+        ch_obsm = ch_obsm.mix(SCANPY_HARMONY.out.obsm)
     }
 
     if (methods.contains('bbknn')) {
