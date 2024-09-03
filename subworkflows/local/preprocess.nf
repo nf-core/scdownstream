@@ -12,6 +12,7 @@ include { AMBIENT_RNA_REMOVAL                   } from './ambient_rna_removal'
 include { SCANPY_FILTER                         } from '../../modules/local/scanpy/filter'
 include { DOUBLET_DETECTION                     } from './doublet_detection'
 include { SCANPY_PLOTQC as QC_FILTERED          } from '../../modules/local/scanpy/plotqc'
+include { CUSTOM_COLLECTSIZES as COLLECT_SIZES  } from '../../modules/local/custom/collectsizes'
 
 workflow PREPROCESS {
 
@@ -71,7 +72,7 @@ workflow PREPROCESS {
     GET_UNFILTERED_SIZE(ch_h5ad.filter{ meta, h5ad -> meta.type == 'unfiltered' })
     ch_versions = ch_versions.mix(GET_UNFILTERED_SIZE.out.versions)
     ch_sizes = ch_sizes.mix(GET_UNFILTERED_SIZE.out.txt
-        .map{ meta, txt -> [[id: meta.id, state: 'unfiltered'], txt.text.toInteger()] })
+        .map{ meta, txt -> [meta.id, 'unfiltered', txt.text.toInteger()] })
 
     ch_h5ad = ch_h5ad.mix(ch_files.unified)
 
@@ -109,7 +110,7 @@ workflow PREPROCESS {
     GET_FILTERED_SIZE(ch_complete.map{ meta, filtered, unfiltered -> [meta, filtered] })
     ch_versions = ch_versions.mix(GET_FILTERED_SIZE.out.versions)
     ch_sizes = ch_sizes.mix(GET_FILTERED_SIZE.out.txt
-        .map{ meta, txt -> [[id: meta.id, state: 'filtered'], txt.text.toInteger()] })
+        .map{ meta, txt -> [meta.id, 'filtered', txt.text.toInteger()] })
 
     QC_RAW(ch_complete.map{ meta, filtered, unfiltered -> [meta, filtered] })
     ch_multiqc_files = ch_multiqc_files.mix(QC_RAW.out.multiqc_files)
@@ -126,7 +127,7 @@ workflow PREPROCESS {
     GET_THRESHOLDED_SIZE(ch_h5ad)
     ch_versions = ch_versions.mix(GET_THRESHOLDED_SIZE.out.versions)
     ch_sizes = ch_sizes.mix(GET_THRESHOLDED_SIZE.out.txt
-        .map{ meta, txt -> [[id: meta.id, state: 'thresholded'], txt.text.toInteger()] })
+        .map{ meta, txt -> [meta.id, 'thresholded', txt.text.toInteger()] })
 
     DOUBLET_DETECTION(ch_h5ad)
     ch_h5ad = DOUBLET_DETECTION.out.h5ad
@@ -136,13 +137,21 @@ workflow PREPROCESS {
     GET_DEDOUBLETED_SIZE(ch_h5ad)
     ch_versions = ch_versions.mix(GET_DEDOUBLETED_SIZE.out.versions)
     ch_sizes = ch_sizes.mix(GET_DEDOUBLETED_SIZE.out.txt
-        .map{ meta, txt -> [[id: meta.id, state: 'dedoubleted'], txt.text.toInteger()] })
+        .map{ meta, txt -> [meta.id, 'dedoubleted', txt.text.toInteger()] })
 
     QC_FILTERED(ch_h5ad)
     ch_multiqc_files = ch_multiqc_files.mix(QC_FILTERED.out.multiqc_files)
     ch_versions = ch_versions.mix(QC_FILTERED.out.versions)
 
-    ch_sizes.view()
+    ch_sizes = ch_sizes.collectFile(
+        seed: "sample\tstate\tsize",
+        newLine: true,
+        name: "size_list.tsv"
+    ){ sample, state, size -> "${sample}\t${state}\t${size}" }
+    .map{ file -> [[id: 'sizes'], file] }
+
+    COLLECT_SIZES(ch_sizes)
+    ch_versions = ch_versions.mix(COLLECT_SIZES.out.versions)
 
     emit:
     h5ad          = ch_h5ad
