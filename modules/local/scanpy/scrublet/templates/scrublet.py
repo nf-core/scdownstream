@@ -28,8 +28,16 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
+use_gpu = "${task.ext.use_gpu}" == "true"
 
-sc.pp.scrublet(adata, batch_key="batch")
+if use_gpu:
+    import rapids_singlecell as rsc
+
+    rsc.get.anndata_to_GPU(adata)
+    rsc.pp.scrublet(adata, batch_key="batch")
+    rsc.get.anndata_to_CPU(adata)
+else:
+    sc.pp.scrublet(adata, batch_key="batch")
 
 df = adata.obs[["predicted_doublet"]]
 df.columns = ["${prefix}"]
