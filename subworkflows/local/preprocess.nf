@@ -152,6 +152,7 @@ workflow PREPROCESS {
 
     COLLECT_SIZES(ch_sizes)
     ch_versions = ch_versions.mix(COLLECT_SIZES.out.versions)
+    ch_multiqc_files = ch_multiqc_files.mix(COLLECT_SIZES.out.multiqc_files)
 
     emit:
     h5ad          = ch_h5ad

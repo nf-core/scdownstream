@@ -2,6 +2,7 @@
 
 import pandas as pd
 import platform
+import json
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
@@ -38,6 +39,18 @@ df = df[state_order].T
 df["total"] = df.sum(axis=1)
 
 df.to_csv("${prefix}.tsv", sep="\\t")
+
+# MultiQC
+
+with open("${prefix}_mqc.json", "w") as f_json:
+    json.dump({
+        "id": "${prefix}",
+        "plot_type": "table",
+        "section_name": "Number of cells",
+        "description": "The number of cells present in each sample at different pipeline stages.",
+        "data": df.to_dict()
+    },
+    f_json)
 
 # Versions
 
