@@ -1,9 +1,11 @@
 process SCANPY_LEIDEN {
     tag "$meta.id"
     label 'process_medium'
+    label 'process_gpu'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ task.ext.use_gpu ? 'docker.io/nicotru/rapids-singlecell:0.0.1' :
+        workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'oras://community.wave.seqera.io/library/leidenalg_python-igraph_scanpy:4c35b8e384d7de2d':
         'community.wave.seqera.io/library/leidenalg_python-igraph_scanpy:ba212a162d290cb6' }"
 
