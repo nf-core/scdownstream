@@ -28,8 +28,29 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
+use_gpu = "${task.ext.use_gpu}" == "true"
 
-sc.pp.neighbors(adata, use_rep="X_EMB" if "X_EMB" in adata.obsm.keys() else "X_emb")
+kwargs = {
+    "use_rep": "X_EMB" if "X_EMB" in adata.obsm.keys() else "X_emb"
+}
+
+if use_gpu:
+    import rapids_singlecell as rsc
+    import rmm
+    from rmm.allocators.cupy import rmm_cupy_allocator
+    import cupy as cp
+    rmm.reinitialize(
+        managed_memory=True,
+        pool_allocator=False,
+    )
+    cp.cuda.set_allocator(rmm_cupy_allocator)
+
+    rsc.get.anndata_to_GPU(adata)
+    rsc.pp.neighbors(adata, **kwargs)
+
+    rsc.get.anndata_to_CPU(adata)
+else:
+    sc.pp.neighbors(adata, **kwargs)
 
 adata.write_h5ad(f"{prefix}.h5ad")
 
