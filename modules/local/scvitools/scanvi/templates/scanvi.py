@@ -41,9 +41,6 @@ unique_labels.discard("unknown")
 if not len(unique_labels) > 1:
     raise ValueError("Not enough labels to run scANVI.")
 
-n_epochs = int(min([round((20000 / adata.n_obs) * 400), 400]))
-n_epochs = int(min([10, max([2, round(n_epochs / 3.0)])]))
-
 model = SCANVI.from_scvi_model(
     scvi_model=model, labels_key="label", unlabeled_category="unknown"
 )
@@ -51,7 +48,7 @@ model = SCANVI.from_scvi_model(
 if "${task.ext.use_gpu}" == "true":
     model.to_device(0)
 
-model.train(max_epochs=n_epochs, early_stopping=True)
+model.train(early_stopping=True)
 adata.obsm["X_emb"] = model.get_latent_representation()
 adata.obs["label:scANVI"] = model.predict()
 

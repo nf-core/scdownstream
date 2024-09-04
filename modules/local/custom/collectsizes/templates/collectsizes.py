@@ -1,17 +1,8 @@
 #!/usr/bin/env python3
 
-import scvi
-import anndata as ad
 import pandas as pd
-from scvi.model import SCVI
 import platform
-import torch
-
-torch.set_float32_matmul_precision('medium')
-
-from threadpoolctl import threadpool_limits
-threadpool_limits(int("${task.cpus}"))
-scvi.settings.num_threads = int("${task.cpus}")
+import json
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
@@ -32,37 +23,40 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
-adata = ad.read_h5ad("${h5ad}")
 
-model_kwargs = {
-    "n_layers": 2,
-    "n_hidden": 128,
-    "n_latent": 30,
-}
+sizes_path = "${sizes}"
 
-SCVI.setup_anndata(adata, batch_key = "batch")
-model = SCVI(adata, **model_kwargs)
+df = pd.read_csv(sizes_path, sep="\\t")
 
-if "${task.ext.use_gpu}" == "true":
-    model.to_device(0)
+df = df.pivot(columns="state", index="sample", values="size")
 
-model.train(early_stopping=True)
+state_order = ["unfiltered", "filtered", "thresholded", "dedoubleted"]
+state_order = [col for col in state_order if col in df.columns]
 
-adata.obsm["X_emb"] = model.get_latent_representation()
+df = df[state_order].T
 
-adata.write_h5ad("${prefix}.h5ad")
-model.save("${prefix}_model")
+# Add a total column
+df["total"] = df.sum(axis=1)
 
-df = pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names)
-df.to_pickle("X_${prefix}.pkl")
+df.to_csv("${prefix}.tsv", sep="\\t")
+
+# MultiQC
+
+with open("${prefix}_mqc.json", "w") as f_json:
+    json.dump({
+        "id": "${prefix}",
+        "plot_type": "table",
+        "section_name": "Number of cells",
+        "description": "The number of cells present in each sample at different pipeline stages.",
+        "data": df.to_dict()
+    },
+    f_json)
 
 # Versions
 
 versions = {
     "${task.process}": {
         "python": platform.python_version(),
-        "anndata": ad.__version__,
-        "scvi": scvi.__version__,
         "pandas": pd.__version__
     }
 }

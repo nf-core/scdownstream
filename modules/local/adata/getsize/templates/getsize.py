@@ -1,17 +1,8 @@
 #!/usr/bin/env python3
 
-import scvi
+import platform
 import anndata as ad
 import pandas as pd
-from scvi.model import SCVI
-import platform
-import torch
-
-torch.set_float32_matmul_precision('medium')
-
-from threadpoolctl import threadpool_limits
-threadpool_limits(int("${task.cpus}"))
-scvi.settings.num_threads = int("${task.cpus}")
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
@@ -32,29 +23,10 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
-adata = ad.read_h5ad("${h5ad}")
+adata = ad.read_h5ad("${h5ad}", backed='r')
 
-model_kwargs = {
-    "n_layers": 2,
-    "n_hidden": 128,
-    "n_latent": 30,
-}
-
-SCVI.setup_anndata(adata, batch_key = "batch")
-model = SCVI(adata, **model_kwargs)
-
-if "${task.ext.use_gpu}" == "true":
-    model.to_device(0)
-
-model.train(early_stopping=True)
-
-adata.obsm["X_emb"] = model.get_latent_representation()
-
-adata.write_h5ad("${prefix}.h5ad")
-model.save("${prefix}_model")
-
-df = pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names)
-df.to_pickle("X_${prefix}.pkl")
+with open("${prefix}.txt", "w") as f:
+    f.write(f"{adata.n_obs}")
 
 # Versions
 
@@ -62,7 +34,6 @@ versions = {
     "${task.process}": {
         "python": platform.python_version(),
         "anndata": ad.__version__,
-        "scvi": scvi.__version__,
         "pandas": pd.__version__
     }
 }
