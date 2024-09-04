@@ -139,6 +139,7 @@ Tools with implemented support for GPU acceleration are:
   - scrublet
   - harmony
   - HVG identification
+  - Neighbor identification, UMAP and Leiden clustering
 
 To utilize GPU acceleration, you need to specify the `gpu` profile. This will make the tool steps use cuda-enabled environments and it will tell the tools to use the GPU. All processes which support GPU acceleration are marked with the `process_gpu` label.
 
