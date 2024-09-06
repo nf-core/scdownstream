@@ -87,6 +87,13 @@
                 "default": 1,
                 "errorMessage": "Minimum number of counts per gene must be an integer greater than 0.",
                 "meta": ["min_counts_gene"]
+            },
+            "expected_cells": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 0,
+                "errorMessage": "Number of cells expected from the experimental design, used as input to cellbender.",
+                "meta": ["expected_cells"]
             }
         },
         "anyOf": [
