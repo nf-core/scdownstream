@@ -29,6 +29,12 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 
+adata.var["mt"] = adata.var_names.str.startswith(("MT-", "mt-"))
+sc.pp.calculate_qc_metrics(
+    adata, qc_vars=["mt"], percent_top=None, log1p=False, inplace=True
+)
+adata = adata[adata.obs.pct_counts_mt < float("${mito_fraction}"), :].copy()
+
 sc.pp.filter_cells(adata, min_counts=int("${min_counts_cell}"))
 sc.pp.filter_genes(adata, min_counts=int("${min_counts_gene}"))
 
