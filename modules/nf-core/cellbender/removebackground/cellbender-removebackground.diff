@@ -10,19 +10,20 @@ Changes in module 'nf-core/cellbender/removebackground'
 -        'community.wave.seqera.io/library/cellbender:0.3.0--41318a055fc3aacb' }"
 +    container "${ task.ext.use_gpu ? 'us.gcr.io/broad-dsde-methods/cellbender:0.3.2' :
 +        workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-+        'oras://community.wave.seqera.io/library/cellbender:0.3.2--fb391e8f14529730':
-+        'community.wave.seqera.io/library/cellbender:0.3.2--4729ff8c1d1ba0c5' }"
++        'oras://community.wave.seqera.io/library/cellbender_webcolors:25a137ec5e8341f2':
++        'community.wave.seqera.io/library/cellbender_webcolors:9cfb55914fc5dcea' }"
  
      input:
      tuple val(meta), path(h5ad)
 
 --- modules/nf-core/cellbender/removebackground/environment.yml
 +++ modules/nf-core/cellbender/removebackground/environment.yml
-@@ -4,4 +4,4 @@
+@@ -4,4 +4,5 @@
    - bioconda
    - defaults
  dependencies:
 -  - bioconda::cellbender=0.3.0
 +  - bioconda::cellbender=0.3.2
++  - conda-forge::webcolors=1.13
 
 ************************************************************
