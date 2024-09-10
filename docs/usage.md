@@ -59,7 +59,7 @@ For CSV input files, specifying the `batch_col`, `label_col`, and `unknown_label
 | `min_cells`       | Minimum number of cells required for a gene to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                       |
 | `min_counts_cell` | Minimum number of counts required for a cell to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                      |
 | `min_counts_gene` | Minimum number of counts required for a gene to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                      |
-| `expected_cells` | Number of expected cell, used as input to Cellbender. |
+| `expected_cells` | Number of expected cells, used as input to Cellbender. |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
