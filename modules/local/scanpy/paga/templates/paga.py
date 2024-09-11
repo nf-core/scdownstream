@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import scanpy as sc
+import numpy as np
 import platform
 import matplotlib.pyplot as plt
 from threadpoolctl import threadpool_limits
@@ -32,6 +33,8 @@ prefix = "${prefix}"
 obs_key = "${obs_key}"
 
 sc.tl.paga(adata, groups=obs_key if obs_key else None)
+
+np.save(f"{prefix}_connectivities.npy", adata.obsp["connectivities"])
 
 sc.pl.paga(adata, title="${meta.id} PAGA", show=False)
 plt.savefig(f"{prefix}.png")
