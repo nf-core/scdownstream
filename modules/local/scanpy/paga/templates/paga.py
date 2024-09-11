@@ -2,6 +2,7 @@
 
 import scanpy as sc
 import platform
+import matplotlib.pyplot as plt
 from threadpoolctl import threadpool_limits
 threadpool_limits(int("${task.cpus}"))
 sc.settings.n_jobs = int("${task.cpus}")
@@ -31,6 +32,9 @@ prefix = "${prefix}"
 obs_key = "${obs_key}"
 
 sc.tl.paga(adata, groups=obs_key if obs_key else None)
+
+sc.pl.paga(adata)
+plt.savefig(f"{prefix}.png")
 
 adata.write_h5ad(f"{prefix}.h5ad")
 

@@ -12,6 +12,7 @@ process SCANPY_PAGA {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
+    tuple val(meta), path("*.png") , emit: plot
     path "versions.yml"            , emit: versions
 
     when:
