@@ -1,6 +1,7 @@
 include { SCANPY_NEIGHBORS } from '../../modules/local/scanpy/neighbors'
 include { SCANPY_LEIDEN    } from '../../modules/local/scanpy/leiden'
 include { SCANPY_UMAP      } from '../../modules/local/scanpy/umap'
+include { SCANPY_PAGA      } from '../../modules/local/scanpy/paga'
 
 workflow CLUSTER {
     take:
@@ -35,6 +36,9 @@ workflow CLUSTER {
     SCANPY_LEIDEN(ch_h5ad)
     ch_versions = ch_versions.mix(SCANPY_LEIDEN.out.versions)
     ch_obs = ch_obs.mix(SCANPY_LEIDEN.out.obs)
+
+    SCANPY_PAGA(SCANPY_LEIDEN.out.h5ad.map{ meta, h5ad -> [meta, h5ad, meta.id] })
+    ch_versions = ch_versions.mix(SCANPY_PAGA.out.versions)
 
     emit:
     obs = ch_obs
