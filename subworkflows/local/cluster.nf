@@ -37,7 +37,7 @@ workflow CLUSTER {
     ch_versions = ch_versions.mix(SCANPY_LEIDEN.out.versions)
     ch_obs = ch_obs.mix(SCANPY_LEIDEN.out.obs)
 
-    SCANPY_PAGA(SCANPY_LEIDEN.out.h5ad.map{ meta, h5ad -> [meta, h5ad, meta.id] })
+    SCANPY_PAGA(SCANPY_LEIDEN.out.h5ad)
     ch_versions = ch_versions.mix(SCANPY_PAGA.out.versions)
 
     emit:
