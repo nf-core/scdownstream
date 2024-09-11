@@ -33,7 +33,7 @@ obs_key = "${obs_key}"
 
 sc.tl.paga(adata, groups=obs_key if obs_key else None)
 
-sc.pl.paga(adata)
+sc.pl.paga(adata, title="${meta.id} PAGA", show=False)
 plt.savefig(f"{prefix}.png")
 
 adata.write_h5ad(f"{prefix}.h5ad")
