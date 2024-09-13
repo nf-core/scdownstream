@@ -34,7 +34,7 @@ if base_path:
 
 genes = [adata.var_names for adata in adatas]
 obs_col_intersection = set(adatas[0].obs.columns).intersection(*[adata.obs.columns for adata in adatas[1:]])
-obs_col_intersection = list(obs_col_intersection.union("${force_obs_cols}".split()))
+obs_col_intersection = list(obs_col_intersection.union("${force_obs_cols}".split(",")))
 sorted(obs_col_intersection)
 
 for adata in adatas:
