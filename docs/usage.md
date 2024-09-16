@@ -140,7 +140,7 @@ Tools with implemented support for GPU acceleration are:
   - scrublet
   - harmony
   - HVG identification
-  - Neighbor identification, UMAP and Leiden clustering
+  - Neighborhood graph calculation, UMAP and Leiden clustering
 
 To utilize GPU acceleration, you need to specify the `gpu` profile. This will make the tool steps use cuda-enabled environments and it will tell the tools to use the GPU. All processes which support GPU acceleration are marked with the `process_gpu` label.
 
@@ -154,6 +154,20 @@ process {
   }
 }
 ```
+
+:::tip
+More information on how to configure Slurm in Nextflow can be found [here](https://www.nextflow.io/docs/latest/executor.html#slurm). Depending on your cluster configuration, you might need to adjust the `clusterOptions` to one of the following:
+- `--gpus 1` (as in the example above)
+- `--gpus-per-node=1`
+- `--gres=gpu:1`
+:::
+
+:::tip
+If your jobs get assigned to the correct nodes, but the GPU is not utilized, you might need to add the following configuration:
+`singularity.runOptions = '--no-mount tmp --writable-tmpfs --nv --env CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES --env ROCR_VISIBLE_DEVICES=$ROCR_VISIBLE_DEVICES --env ZE_AFFINITY_MASK=$ZE_AFFINITY_MASK --env NVIDIA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES`
+
+The first part (`--no-mount tmp --writable-tmpfs --nv`) is set by default in the `gpu` profile. The rest of this configuration is needed in some cases to make the GPU visible to the container.
+:::
 
 For different executors, the configuration might look different. Once a wider range of users have tested the GPU support, we will provide more detailed instructions for different executors.
 
