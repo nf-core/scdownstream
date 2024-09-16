@@ -157,9 +157,11 @@ process {
 
 :::tip
 More information on how to configure Slurm in Nextflow can be found [here](https://www.nextflow.io/docs/latest/executor.html#slurm). Depending on your cluster configuration, you might need to adjust the `clusterOptions` to one of the following:
+
 - `--gpus 1` (as in the example above)
 - `--gpus-per-node=1`
 - `--gres=gpu:1`
+
 :::
 
 :::tip
