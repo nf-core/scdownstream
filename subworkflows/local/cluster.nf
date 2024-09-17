@@ -12,6 +12,7 @@ workflow CLUSTER {
     ch_obs = Channel.empty()
     ch_obsm = Channel.empty()
     ch_obsp = Channel.empty()
+    ch_multiqc_files = Channel.empty()
 
     ch_h5ad.branch{ meta, h5ad ->
         has_neighbors: meta.integration == "bbknn"
@@ -25,6 +26,7 @@ workflow CLUSTER {
     SCANPY_UMAP(ch_h5ad)
     ch_versions = ch_versions.mix(SCANPY_UMAP.out.versions)
     ch_obsm = ch_obsm.mix(SCANPY_UMAP.out.obsm)
+    ch_multiqc_files = ch_multiqc_files.mix(SCANPY_UMAP.out.multiqc_files)
 
     ch_resolutions = Channel.from(params.clustering_resolutions.split(","))
 
@@ -47,5 +49,6 @@ workflow CLUSTER {
     obsm = ch_obsm
     obsp = ch_obsp
 
+    multiqc_files = ch_multiqc_files
     versions = ch_versions
 }

@@ -71,6 +71,7 @@ workflow SCDOWNSTREAM {
     ch_obs = ch_obs.mix(CLUSTER.out.obs)
     ch_obsm = ch_obsm.mix(CLUSTER.out.obsm)
     ch_obsp = ch_obsp.mix(CLUSTER.out.obsp)
+    ch_multiqc_files = ch_multiqc_files.mix(CLUSTER.out.multiqc_files)
 
     FINALIZE(COMBINE.out.h5ad, ch_obs, ch_obsm, ch_obsp, ch_layers)
     ch_versions = ch_versions.mix(FINALIZE.out.versions)
