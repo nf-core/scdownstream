@@ -45,7 +45,7 @@ for path in obsm_paths:
     adata.obsm[simple_name(path)] = np.float32(df.to_numpy())
 
 for path in obsp_paths:
-    adata.obsp[simple_name(path)] = np.load(path, allow_pickle=True)
+    adata.obsp[simple_name(path)] = np.load(path, allow_pickle=True).item()
 
 for path in layers_paths:
     adata.layers[simple_name(path)] = np.float32(np.load(path))
