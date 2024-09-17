@@ -40,7 +40,7 @@ if not too_large:
     save_rds = ro.r('function(x, file) {saveRDS(x, file)}')
     save_rds(sce, f"{prefix}.rds")
 else:
-    print("Matrix too large to be saved in RDS format.")
+    raise ValueError("Matrix too large to be saved in RDS format. Sparse matrices with more than 2^31 explicit elements are not supported in R.")
 
 versions = {
     "${task.process}": {

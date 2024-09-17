@@ -1,6 +1,7 @@
 process ADATA_TORDS {
     tag "$meta.id"
     label 'process_medium'
+    errorStrategy ''
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -11,7 +12,7 @@ process ADATA_TORDS {
     tuple val(meta), path(h5ad)
 
     output:
-    tuple val(meta), path("*.rds"), emit: rds, optional: true
+    tuple val(meta), path("*.rds"), emit: rds
     path "versions.yml"           , emit: versions
 
     when:
