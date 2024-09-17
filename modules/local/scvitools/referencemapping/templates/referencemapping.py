@@ -33,7 +33,7 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
     return yaml_str
 
 adata_query = ad.read_h5ad("${h5ad_transfer}")
-adata_inner = ad.read_h5ad("${h5ad_inner}")
+adata_combined = ad.read_h5ad("${h5ad_inner}")
 model_path  = "model"
 model_type  = "${model_type}"
 
@@ -63,15 +63,15 @@ model.train()
 model.save("${prefix}_model")
 
 adata_query.obsm["X_emb"] = model.get_latent_representation()
-adata_inner.obsm["X_emb"] = adata_inner.obsm[embedding_key]
+adata_combined.obsm["X_emb"] = adata_combined.obsm[embedding_key]
 
-query_mask = adata_inner.obs.index.isin(adata_query.obs.index)
-ordered_embedding = adata_query[adata_inner[query_mask].obs.index].obsm["X_emb"]
-adata_inner.obsm["X_emb"][query_mask] = ordered_embedding
+query_mask = adata_combined.obs.index.isin(adata_query.obs.index)
+ordered_embedding = adata_query[adata_combined[query_mask].obs.index].obsm["X_emb"]
+adata_combined.obsm["X_emb"][query_mask] = ordered_embedding
 
-adata_inner.write_h5ad("${prefix}.h5ad")
+adata_combined.write_h5ad("${prefix}.h5ad")
 
-df = pd.DataFrame(adata_inner.obsm["X_emb"], index=adata_inner.obs_names)
+df = pd.DataFrame(adata_combined.obsm["X_emb"], index=adata_combined.obs_names)
 df.to_pickle("X_${prefix}.pkl")
 
 # Versions
