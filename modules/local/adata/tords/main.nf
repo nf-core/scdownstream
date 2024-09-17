@@ -1,7 +1,6 @@
 process ADATA_TORDS {
     tag "$meta.id"
     label 'process_medium'
-    errorStrategy ''
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
