@@ -34,6 +34,7 @@ matrices = [adata.X] + [adata.layers[key] for key in adata.layers.keys()]
 too_large = any(sp.issparse(matrix) and matrix.nnz > 2**31 for matrix in matrices)
 
 if not too_large:
+    adata.layers["counts"] = adata.X if "${counts_layer}" == "X" else adata.layers["${counts_layer}"]
     sce = anndata2ri.py2rpy(adata)
 
     save_rds = ro.r('function(x, file) {saveRDS(x, file)}')
