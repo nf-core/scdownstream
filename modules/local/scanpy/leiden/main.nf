@@ -4,7 +4,7 @@ process SCANPY_LEIDEN {
     label 'process_gpu'
 
     conda "${moduleDir}/environment.yml"
-    container "${ task.ext.use_gpu ? 'ghcr.io/scverse/rapids_singlecell:0.10.8' :
+    container "${ task.ext.use_gpu ? 'ghcr.io/scverse/rapids_singlecell:v0.10.8' :
         workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'oras://community.wave.seqera.io/library/leidenalg_python-igraph_scanpy:4c35b8e384d7de2d':
         'community.wave.seqera.io/library/leidenalg_python-igraph_scanpy:ba212a162d290cb6' }"
