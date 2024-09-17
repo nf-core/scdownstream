@@ -58,7 +58,7 @@ df = pd.DataFrame(adata.obsm["X_umap"], index=adata.obs_names)
 df.to_pickle(f"X_{prefix}.pkl")
 
 # Plot
-sc.pl.umap(adata, title="${meta.id} UMAP", show=False)
+sc.pl.umap(adata, title="${meta.id} UMAP", color="batch", show=False)
 path = f"{prefix}.png"
 plt.savefig(path)
 
