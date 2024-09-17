@@ -8,6 +8,7 @@ workflow FINALIZE {
     ch_obs
     ch_obsm
     ch_obsp
+    ch_uns
     ch_layers
 
     main:
@@ -17,6 +18,7 @@ workflow FINALIZE {
         ch_obs.flatten().collect().ifEmpty([]),
         ch_obsm.flatten().collect().ifEmpty([]),
         ch_obsp.flatten().collect().ifEmpty([]),
+        ch_uns.flatten().collect().ifEmpty([]),
         ch_layers.flatten().collect().ifEmpty([]))
     ch_versions = ch_versions.mix(ADATA_EXTEND.out.versions)
 

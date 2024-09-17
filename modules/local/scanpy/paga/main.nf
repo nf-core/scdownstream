@@ -12,6 +12,7 @@ process SCANPY_PAGA {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
+    path("*.pkl")                  , emit: uns
     path("*.npy")                  , emit: obsp
     path("*.png")                  , emit: plot
     path("*_mqc.json")             , emit: multiqc_files

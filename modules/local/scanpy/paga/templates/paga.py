@@ -3,6 +3,7 @@
 import platform
 import json
 import base64
+import pickle
 
 import scanpy as sc
 import numpy as np
@@ -37,6 +38,11 @@ prefix = "${prefix}"
 obs_key = "${obs_key}"
 
 sc.tl.paga(adata, groups=obs_key if obs_key else None)
+
+paga_dict = adata.uns["paga"]
+
+# Save PAGA data
+pickle.dump(paga_dict, open(f"{prefix}.pkl", "wb"))
 
 np.save(f"{prefix}_connectivities.npy", adata.obsp["connectivities"])
 adata.write_h5ad(f"{prefix}.h5ad")

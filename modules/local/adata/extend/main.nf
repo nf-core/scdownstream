@@ -12,6 +12,7 @@ process ADATA_EXTEND {
     path(obs)
     path(obsm)
     path(obsp)
+    path(uns)
     path(layers)
 
     output:
