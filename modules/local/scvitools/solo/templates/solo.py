@@ -32,48 +32,40 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
+def train_model(model):
+    def generate_batch_sizes():
+        attempts=0
+        while True:
+            yield 128 + 32 * attempts
+            attempts += 1
+
+    if "${task.ext.use_gpu}" == "true":
+        model.to_device(0)
+
+    for batch_size in generate_batch_sizes():
+        try:
+            model.train(batch_size=batch_size)
+            break
+        except Exception as e:
+            print(f"Failed with batch size {batch_size}: {e}")
 
 adata = ad.read_h5ad("${h5ad}")
 
-setup_kwargs = {"layer": "counts", "batch_key": "batch"}
+SCVI.setup_anndata(adata, batch_key="batch")
+model = SCVI(adata)
 
-# Defaults from SCVI github tutorials scanpy_pbmc3k and harmonization
-model_kwargs = {
-    "gene_likelihood": "nb",
-    "n_layers": 2,
-    "n_hidden": 128,
-    "n_latent": 30,
-}
-
-train_kwargs = {"train_size": 1.0}
-
-n_epochs = int(min([round((20000 / adata.n_obs) * 400), 400]))
-
-SCVI.setup_anndata(adata, **setup_kwargs)
-model = SCVI(adata, **model_kwargs)
-model.train(max_epochs=n_epochs, **train_kwargs)
-
-unique_labels = set(adata.obs["label"].unique())
-unique_labels.discard("unknown")
-if len(unique_labels) > 0:
-    from scvi.model import SCANVI
-
-    n_epochs = int(min([10, max([2, round(n_epochs / 3.0)])]))
-
-    model = SCANVI.from_scvi_model(
-        scvi_model=model, labels_key="label", unlabeled_category="unknown"
-    )
-    model.train(max_epochs=n_epochs, **train_kwargs)
+train_model(model)
 
 adata.obs["doublet"] = True
 
 batches = adata.obs["batch"].unique()
 for batch in batches:
-    solo = SOLO.from_scvi_model(
+    model = SOLO.from_scvi_model(
         model, restrict_to_batch=batch if len(batches) > 1 else None
     )
-    solo.train()
-    result = solo.predict(False)
+
+    train_model(model)
+    result = model.predict(False)
 
     doublets = result[result == "doublet"].index.tolist()
     adata.obs.loc[doublets, "doublet"] = False

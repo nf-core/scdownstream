@@ -11,13 +11,14 @@ process ADATA_TORDS {
     tuple val(meta), path(h5ad)
 
     output:
-    tuple val(meta), path("*.rds"), emit: rds, optional: true
+    tuple val(meta), path("*.rds"), emit: rds
     path "versions.yml"           , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
+    counts_layer = task.ext.counts_layer ?: 'X'
     prefix = task.ext.prefix ?: "${meta.id}"
     template 'tords.py'
 }
