@@ -3,8 +3,10 @@
 import platform
 import json
 import base64
+import pickle
 
 import scanpy as sc
+import numpy as np
 import matplotlib.pyplot as plt
 
 from threadpoolctl import threadpool_limits
@@ -32,36 +34,21 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 
 
 adata = sc.read_h5ad("${h5ad}")
-use_gpu = "${task.ext.use_gpu}" == "true"
 prefix = "${prefix}"
+obs_key = "${obs_key}"
 
-kwargs = {
-    "resolution": float("${resolution}"),
-    "key_added": prefix
-}
+sc.tl.paga(adata, groups=obs_key if obs_key else None)
 
-if use_gpu:
-    import rapids_singlecell as rsc
-    import rmm
-    from rmm.allocators.cupy import rmm_cupy_allocator
-    import cupy as cp
-    rmm.reinitialize(
-        managed_memory=True,
-        pool_allocator=False,
-    )
-    cp.cuda.set_allocator(rmm_cupy_allocator)
+paga_dict = adata.uns["paga"]
 
-    rsc.get.anndata_to_GPU(adata)
-    rsc.tl.leiden(adata, **kwargs)
-    rsc.get.anndata_to_CPU(adata)
-else:
-    sc.tl.leiden(adata, **kwargs)
+# Save PAGA data
+pickle.dump(paga_dict, open(f"{prefix}.pkl", "wb"))
 
-adata.obs[[prefix]].to_pickle(f"{prefix}.pkl")
+np.save(f"{prefix}_connectivities.npy", adata.obsp["connectivities"])
 adata.write_h5ad(f"{prefix}.h5ad")
 
 # Plot
-sc.pl.umap(adata, title="${meta.id} Leiden", color=prefix, show=False)
+sc.pl.paga(adata, title="${meta.id} PAGA", show=False)
 path = f"{prefix}.png"
 plt.savefig(path)
 
@@ -76,7 +63,7 @@ with open(path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
         "parent_name": "${meta.integration}",
         "parent_description": "Results of the ${meta.integration} integration.",
 
-        "section_name": "${meta.id} Leiden",
+        "section_name": "${meta.id} PAGA",
         "plot_type": "image",
         "data": image_html,
     }

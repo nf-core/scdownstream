@@ -5,6 +5,8 @@ import anndata as ad
 from scipy.sparse import csr_matrix
 import platform
 import scipy
+from collections import defaultdict
+import numpy as np
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
@@ -34,12 +36,31 @@ if base_path:
 
 genes = [adata.var_names for adata in adatas]
 obs_col_intersection = set(adatas[0].obs.columns).intersection(*[adata.obs.columns for adata in adatas[1:]])
-obs_col_intersection = list(obs_col_intersection.union("${force_obs_cols}".split()))
+force_obs_cols = "${force_obs_cols}"
+obs_col_intersection = list(obs_col_intersection.union(force_obs_cols.split(",") if force_obs_cols else []))
 sorted(obs_col_intersection)
+
+def get_columns(adata):
+    return {dtype: adata.obs.select_dtypes(include=dtype).columns for dtype in ["object", "category", "number"]}
+
+column_dtypes = defaultdict(set)
+
+for adata in adatas:
+    for dtype, columns in get_columns(adata).items():
+        for column in columns:
+            column_dtypes[column].add(dtype)
+
+column_defaults = {}
+
+for column, dtypes in column_dtypes.items():
+    if len(dtypes) > 1:
+        raise ValueError(f"Column {column} has multiple dtypes: {dtypes}")
+
+    column_defaults[column] = np.nan if dtypes.pop() == "number" else "unknown"
 
 for adata in adatas:
     for col in set(obs_col_intersection).difference(adata.obs.columns):
-        adata.obs[col] = None
+        adata.obs[col] = column_defaults[col]
     adata.obs = adata.obs[obs_col_intersection]
 
 adata_outer = ad.concat(adatas, join="outer")
