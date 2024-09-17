@@ -29,6 +29,7 @@ adata = ad.read_h5ad("${base}")
 prefix = "${prefix}"
 obs_paths = "${obs}".split()
 obsm_paths = "${obsm}".split()
+obsp_paths = "${obsp}".split()
 layers_paths = "${layers}".split()
 
 for path in obs_paths:
@@ -39,6 +40,11 @@ for path in obsm_paths:
     df = pd.read_pickle(path).reindex(adata.obs_names)
     name = os.path.basename(path).split(".")[0]
     adata.obsm[name] = np.float32(df.to_numpy())
+
+for path in obsp_paths:
+    array = np.load(path)
+    name = os.path.basename(path).split(".")[0]
+    adata.obsp[name] = np.float32(array)
 
 for path in layers_paths:
     array = np.load(path)

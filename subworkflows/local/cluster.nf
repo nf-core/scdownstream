@@ -11,6 +11,7 @@ workflow CLUSTER {
     ch_versions = Channel.empty()
     ch_obs = Channel.empty()
     ch_obsm = Channel.empty()
+    ch_obsp = Channel.empty()
 
     ch_h5ad.branch{ meta, h5ad ->
         has_neighbors: meta.integration == "bbknn"
@@ -39,10 +40,12 @@ workflow CLUSTER {
 
     SCANPY_PAGA(SCANPY_LEIDEN.out.h5ad)
     ch_versions = ch_versions.mix(SCANPY_PAGA.out.versions)
+    ch_obsp = ch_obsp.mix(SCANPY_PAGA.out.obsp)
 
     emit:
     obs = ch_obs
     obsm = ch_obsm
+    obsp = ch_obsp
 
     versions = ch_versions
 }

@@ -12,8 +12,8 @@ process SCANPY_PAGA {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    tuple val(meta), path("*.npy") , emit: obsp
     tuple val(meta), path("*.png") , emit: plot
+    path("*.npy")                  , emit: obsp
     path "versions.yml"            , emit: versions
 
     when:

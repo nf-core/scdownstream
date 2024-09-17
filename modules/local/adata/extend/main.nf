@@ -11,6 +11,7 @@ process ADATA_EXTEND {
     tuple val(meta), path(base)
     path(obs)
     path(obsm)
+    path(obsp)
     path(layers)
 
     output:
