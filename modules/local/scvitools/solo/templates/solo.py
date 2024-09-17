@@ -34,9 +34,13 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 
 def train_model(model):
     def generate_batch_sizes():
-        attempts = 0
+        attempts=0
         while True:
             yield 128 + 32 * attempts
+            attempts += 1
+
+    if "${task.ext.use_gpu}" == "true":
+        model.to_device(0)
 
     for batch_size in generate_batch_sizes():
         try:
@@ -44,15 +48,11 @@ def train_model(model):
             break
         except Exception as e:
             print(f"Failed with batch size {batch_size}: {e}")
-            attempts += 1
 
 adata = ad.read_h5ad("${h5ad}")
 
 SCVI.setup_anndata(adata, batch_key="batch")
 model = SCVI(adata)
-
-if "${task.ext.use_gpu}" == "true":
-    model.to_device(0)
 
 train_model(model)
 
@@ -63,9 +63,6 @@ for batch in batches:
     model = SOLO.from_scvi_model(
         model, restrict_to_batch=batch if len(batches) > 1 else None
     )
-
-    if "${task.ext.use_gpu}" == "true":
-        model.to_device(0)
 
     train_model(model)
     result = model.predict(False)
