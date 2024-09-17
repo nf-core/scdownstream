@@ -32,6 +32,19 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
+def train_model(model):
+    def generate_batch_sizes():
+        attempts = 0
+        while True:
+            yield 128 + 32 * attempts
+
+    for batch_size in generate_batch_sizes():
+        try:
+            model.train(batch_size=batch_size)
+            break
+        except Exception as e:
+            print(f"Failed with batch size {batch_size}: {e}")
+            attempts += 1
 
 adata = ad.read_h5ad("${h5ad}")
 
@@ -41,7 +54,7 @@ model = SCVI(adata)
 if "${task.ext.use_gpu}" == "true":
     model.to_device(0)
 
-model.train()
+train_model(model)
 
 adata.obs["doublet"] = True
 
@@ -54,7 +67,7 @@ for batch in batches:
     if "${task.ext.use_gpu}" == "true":
         model.to_device(0)
 
-    model.train()
+    train_model(model)
     result = model.predict(False)
 
     doublets = result[result == "doublet"].index.tolist()
