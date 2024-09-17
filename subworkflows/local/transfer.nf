@@ -3,7 +3,7 @@ include { SCVITOOLS_REFERENCEMAPPING } from '../../modules/local/scvitools/refer
 workflow TRANSFER {
     take:
     ch_transfer
-    ch_base
+    ch_reference_model
     ch_inner
 
     main:
@@ -13,7 +13,7 @@ workflow TRANSFER {
 
     SCVITOOLS_REFERENCEMAPPING(
         ch_transfer.map{ meta, h5ad -> h5ad }
-            .combine(ch_base.map{ meta, h5ad, scvi_model, model_type -> [scvi_model, model_type] })
+            .combine(ch_reference_model)
             .map{ h5ad, model, model_type -> [[id: model_type], h5ad, model, model_type]},
         ch_inner
     )

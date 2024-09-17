@@ -129,22 +129,22 @@
                     "type": "string",
                     "format": "file-path",
                     "description": "If you want to project new data onto an already integrated object, specify the path to the base AnnData object here",
-                    "help_text": "The file should be in the .h5ad format. If specified, also the `base_scvi_model` parameter has to be set.",
+                    "help_text": "The file should be in the .h5ad format. If specified, make sure to also provide the `reference_model` parameter.",
                     "pattern": "^\\S+\\.h5ad$",
                     "exists": true
                 },
-                "base_scvi_model": {
+                "reference_model": {
                     "type": "string",
                     "format": "file-path",
-                    "description": "If you want to project new data onto an already integrated object, specify the path to the base scVI model here",
-                    "help_text": "The file should be in the .pt format. If specified, also the `base_adata` parameter has to be set.",
+                    "description": "If you want to use a pre-trained scVI/scANVI model as a reference for integration, specify the path to the model `.pt` file here",
+                    "help_text": "The file should be in the .pt format.",
                     "pattern": "^\\S+\\.pt$",
                     "exists": true
                 },
-                "base_model_type": {
+                "reference_model_type": {
                     "type": "string",
                     "default": "scvi",
-                    "description": "Specify the type of model used for the base object",
+                    "description": "Specify the type of model provided in the `reference_model` parameter",
                     "help_text": "Can be either 'scvi' or 'scanvi'.",
                     "pattern": "^(scvi|scanvi)$"
                 },

@@ -6,8 +6,9 @@ include { TRANSFER         } from './transfer'
 workflow COMBINE {
 
     take:
-    ch_h5ad // queue channel: [ val(meta), h5ad ]
-    ch_base // value channel: [ val(meta), h5ad, scvi_model, model_type ]
+    ch_h5ad // queue channel: [ val(meta), path(h5ad) ]
+    ch_base  // value channel: [ val(meta), path(h5ad) ]
+    ch_reference_model // value channel: [ path(model), str(model_type) ]
 
     main:
 
@@ -19,7 +20,7 @@ workflow COMBINE {
 
     ADATA_MERGE(
         ch_h5ad.map { meta, h5ad -> [[id: "merged"], meta.id, h5ad] }.groupTuple(),
-        ch_base.map { meta, h5ad, scvi_model, model_type -> [meta, h5ad] }
+        ch_base
     )
     ch_inner         = ADATA_MERGE.out.inner
     ch_outer         = ADATA_MERGE.out.outer
@@ -38,7 +39,7 @@ workflow COMBINE {
     } else {
         TRANSFER(
             ADATA_MERGE.out.transfer,
-            ch_base,
+            ch_reference_model,
             ch_inner
         )
         ch_versions     = ch_versions.mix(TRANSFER.out.versions)

@@ -142,8 +142,12 @@ workflow PIPELINE_COMPLETION {
 // Check and validate pipeline parameters
 //
 def validateInputParameters() {
-    if (!params.base_adata != !params.base_scvi_model) {
-        throw new Exception("Both or neither of base_adata and base_scvi_model must be provided")
+    if (params.base_adata && !params.reference_model) {
+        throw new Exception("If a base adata file is provided, a reference model must also be provided")
+    }
+
+    if (params.reference_model && !params.reference_model_type) {
+        throw new Exception("If a reference model is provided, a reference model type must also be provided")
     }
 }
 
