@@ -83,7 +83,7 @@ with open(path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
         "parent_name": "${meta.integration}",
         "parent_description": "Results of the ${meta.integration} integration.",
 
-        "section_name": "${meta.integration} characteristic genes",
+        "section_name": "${meta.id} characteristic genes",
         "plot_type": "image",
         "data": image_html,
     }
