@@ -4,7 +4,7 @@ process SCANPY_NEIGHBORS {
     label 'process_gpu'
 
     conda "${moduleDir}/environment.yml"
-    container "${ task.ext.use_gpu ? 'docker.io/nicotru/rapids-singlecell:0.0.1' :
+    container "${ task.ext.use_gpu ? 'ghcr.io/scverse/rapids_singlecell:v0.10.8' :
         workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'oras://community.wave.seqera.io/library/python-igraph_scanpy:a7114d55b0af3893':
         'community.wave.seqera.io/library/python-igraph_scanpy:5f677450e42211ef' }"
