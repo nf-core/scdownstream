@@ -22,7 +22,7 @@ process SCANPY_PAGA {
     task.ext.when == null || task.ext.when
 
     script:
-    obs_key = task.ext.obs_key ?: ""
+    obs_key = task.ext.obs_key ?: "leiden"
     prefix = task.ext.prefix ?: "${meta.id}"
     template 'paga.py'
 }
