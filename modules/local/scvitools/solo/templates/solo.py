@@ -43,33 +43,19 @@ if "${task.ext.use_gpu}" == "true":
 
 model.train()
 
-unique_labels = set(adata.obs["label"].unique())
-unique_labels.discard("unknown")
-if len(unique_labels) > 0:
-    from scvi.model import SCANVI
-
-    model = SCANVI.from_scvi_model(
-        scvi_model=model, labels_key="label", unlabeled_category="unknown"
-    )
-
-    if "${task.ext.use_gpu}" == "true":
-        model.to_device(0)
-
-    model.train()
-
 adata.obs["doublet"] = True
 
 batches = adata.obs["batch"].unique()
 for batch in batches:
-    solo = SOLO.from_scvi_model(
+    model = SOLO.from_scvi_model(
         model, restrict_to_batch=batch if len(batches) > 1 else None
     )
 
     if "${task.ext.use_gpu}" == "true":
         model.to_device(0)
 
-    solo.train()
-    result = solo.predict(False)
+    model.train()
+    result = model.predict(False)
 
     doublets = result[result == "doublet"].index.tolist()
     adata.obs.loc[doublets, "doublet"] = False
