@@ -38,6 +38,9 @@ adata = ad.read_h5ad("${h5ad}")
 SCVI.setup_anndata(adata, batch_key="batch")
 model = SCVI(adata)
 
+if "${task.ext.use_gpu}" == "true":
+    model.to_device(0)
+
 model.train()
 
 unique_labels = set(adata.obs["label"].unique())
@@ -48,6 +51,10 @@ if len(unique_labels) > 0:
     model = SCANVI.from_scvi_model(
         scvi_model=model, labels_key="label", unlabeled_category="unknown"
     )
+
+    if "${task.ext.use_gpu}" == "true":
+        model.to_device(0)
+
     model.train()
 
 adata.obs["doublet"] = True
@@ -57,6 +64,10 @@ for batch in batches:
     solo = SOLO.from_scvi_model(
         model, restrict_to_batch=batch if len(batches) > 1 else None
     )
+
+    if "${task.ext.use_gpu}" == "true":
+        model.to_device(0)
+
     solo.train()
     result = solo.predict(False)
 

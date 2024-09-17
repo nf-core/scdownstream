@@ -1,6 +1,7 @@
 process SCVITOOLS_SOLO {
     tag "$meta.id"
     label 'process_medium'
+    label 'process_gpu'
 
     conda "${moduleDir}/environment.yml"
     container "${ task.ext.use_gpu ? 'docker.io/nicotru/scvitools-gpu:cuda-12' :
