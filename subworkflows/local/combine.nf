@@ -43,8 +43,8 @@ workflow COMBINE {
         )
         ch_versions      = ch_versions.mix(ADATA_MERGEEMBEDDINGS.out.versions)
         ch_integrations  = ADATA_MERGEEMBEDDINGS.out.h5ad
-        ch_obs           = ADATA_MERGEEMBEDDINGS.out.obs
-        ch_obsm          = ADATA_MERGEEMBEDDINGS.out.obsm
+        ch_obs           = ch_obs.mix(ADATA_MERGEEMBEDDINGS.out.obs)
+        ch_obsm          = ch_obsm.mix(ADATA_MERGEEMBEDDINGS.out.obsm)
     } else {
         ch_integrations  = INTEGRATE.out.integrations
         ch_obs           = ch_obs.mix(INTEGRATE.out.obs)
