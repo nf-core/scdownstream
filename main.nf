@@ -85,7 +85,7 @@ workflow {
             : Channel.value([[], []]),
         params.reference_model
             ? Channel.value([[id: params.reference_model_type], file(params.reference_model, checkIfExists: true)])
-            : Channel.value([[], ''])
+            : Channel.value([[], []])
     )
 
     //
