@@ -48,7 +48,7 @@ else:
 
     if reference_model_type == "scvi":
         SCVI.prepare_query_anndata(adata, reference_model_path)
-        model = SCVI.load("${scvi_model}", adata)
+        model = SCVI.load(reference_model_path, adata)
         model = SCANVI.from_scvi_model(
             scvi_model=model, labels_key="label", unlabeled_category="unknown"
         )

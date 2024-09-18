@@ -39,7 +39,7 @@ reference_model_type = "${meta2.id}"
 if reference_model_type == "scanvi":
     raise ValueError("scVI does not support scANVI models.")
 elif reference_model_type == "scvi":
-    SCVI.prepary_query_anndata(adata, reference_model_path)
+    SCVI.prepare_query_anndata(adata, reference_model_path)
     model = SCVI.load_query_data(adata, reference_model_path)
 else:
     SCVI.setup_anndata(adata, batch_key = "batch")
