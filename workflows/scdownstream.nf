@@ -9,6 +9,7 @@ include { COMBINE                } from '../subworkflows/local/combine'
 include { CELLTYPE_ASSIGNMENT    } from '../subworkflows/local/celltype_assignment'
 include { CLUSTER                } from '../subworkflows/local/cluster'
 include { FINALIZE               } from '../subworkflows/local/finalize'
+include { GRN                    } from '../subworkflows/local/grn'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -75,6 +76,9 @@ workflow SCDOWNSTREAM {
     ch_obsp = ch_obsp.mix(CLUSTER.out.obsp)
     ch_uns = ch_uns.mix(CLUSTER.out.uns)
     ch_multiqc_files = ch_multiqc_files.mix(CLUSTER.out.multiqc_files)
+
+    GRN(COMBINE.out.h5ad)
+    ch_versions = ch_versions.mix(GRN.out.versions)
 
     FINALIZE(COMBINE.out.h5ad, ch_obs, ch_obsm, ch_obsp, ch_uns, ch_layers)
     ch_versions = ch_versions.mix(FINALIZE.out.versions)

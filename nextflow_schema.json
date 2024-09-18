@@ -153,6 +153,13 @@
                     "default": false,
                     "description": "Prepare the output for visualisation in cellxgene",
                     "fa_icon": "fas fa-chart-line"
+                },
+                "grn_methods": {
+                    "type": "string",
+                    "default": "none",
+                    "description": "Specify the methods to use for gene regulatory network inference",
+                    "help_text": "If you want to use multiple methods, separate them with a comma. Available methods are: boostdiff, zscores, diffcoex, grnboost2",
+                    "pattern": "^(none|((boostdiff|zscores|diffcoex|grnboost2)?,?)*[^,]+$)"
                 }
             }
         },
