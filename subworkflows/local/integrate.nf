@@ -62,7 +62,9 @@ workflow INTEGRATE {
             ch_h5ad.map{meta, h5ad -> [[id: 'scanvi'], h5ad]},
             params.reference_model_type == "scanvi"
                 ? ch_reference_model
-                : SCVITOOLS_SCVI.out.model
+                : methods.contains('scvi')
+                    ? SCVITOOLS_SCVI.out.model
+                    : [[], []]
         )
         ch_versions = ch_versions.mix(SCVITOOLS_SCANVI.out.versions)
         ch_integrations = ch_integrations.mix(SCVITOOLS_SCANVI.out.h5ad)
