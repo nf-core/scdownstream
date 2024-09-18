@@ -11,6 +11,7 @@ include { ADATA_READRDS       } from '../../modules/local/adata/readrds'
 workflow INTEGRATE {
     take:
     ch_h5ad
+    ch_reference_model
 
     main:
     ch_versions = Channel.empty()
@@ -19,9 +20,13 @@ workflow INTEGRATE {
     ch_layers = Channel.empty()
     ch_integrations = Channel.empty()
 
-    SCANPY_HVGS(ch_h5ad, params.integration_hvgs)
-    ch_versions = ch_versions.mix(SCANPY_HVGS.out.versions)
-    ch_h5ad = SCANPY_HVGS.out.h5ad
+    // If a reference model is provided, only the genes in the reference model are used
+    // Otherwise, we would intersect the HVGs, which is not what we want
+    if (!params.reference_model) {
+        SCANPY_HVGS(ch_h5ad, params.integration_hvgs)
+        ch_versions = ch_versions.mix(SCANPY_HVGS.out.versions)
+        ch_h5ad = SCANPY_HVGS.out.h5ad
+    }
 
     methods = params.integration_methods.split(',').collect{it.trim().toLowerCase()}
 
@@ -46,20 +51,29 @@ workflow INTEGRATE {
         ch_obsm = ch_obsm.mix(ADATA_READRDS.out.obsm)
     }
 
-    if (methods.contains('scvi') || methods.contains('scanvi')) {
-        SCVITOOLS_SCVI(ch_h5ad.map{meta, h5ad -> [[id: 'scvi'], h5ad]})
+    if (methods.contains('scvi')) {
+        SCVITOOLS_SCVI(
+            ch_h5ad.map{meta, h5ad -> [[id: 'scvi'], h5ad]},
+            ch_reference_model // The reference model can only be scvi or undefined here
+        )
         ch_versions = ch_versions.mix(SCVITOOLS_SCVI.out.versions)
         ch_integrations = ch_integrations.mix(SCVITOOLS_SCVI.out.h5ad)
         ch_obsm = ch_obsm.mix(SCVITOOLS_SCVI.out.obsm)
+    }
 
-        if (methods.contains('scanvi')) {
-            SCVITOOLS_SCANVI(ch_h5ad.map{meta, h5ad -> [[id: 'scanvi'], h5ad]},
-                SCVITOOLS_SCVI.out.model.collect())
-            ch_versions = ch_versions.mix(SCVITOOLS_SCANVI.out.versions)
-            ch_integrations = ch_integrations.mix(SCVITOOLS_SCANVI.out.h5ad)
-            ch_obs = ch_obs.mix(SCVITOOLS_SCANVI.out.obs)
-            ch_obsm = ch_obsm.mix(SCVITOOLS_SCANVI.out.obsm)
-        }
+    if (methods.contains('scanvi')) {
+        SCVITOOLS_SCANVI(
+            ch_h5ad.map{meta, h5ad -> [[id: 'scanvi'], h5ad]},
+            params.reference_model_type == "scanvi"
+                ? ch_reference_model
+                : methods.contains('scvi')
+                    ? SCVITOOLS_SCVI.out.model
+                    : [[], []]
+        )
+        ch_versions = ch_versions.mix(SCVITOOLS_SCANVI.out.versions)
+        ch_integrations = ch_integrations.mix(SCVITOOLS_SCANVI.out.h5ad)
+        ch_obs = ch_obs.mix(SCVITOOLS_SCANVI.out.obs)
+        ch_obsm = ch_obsm.mix(SCVITOOLS_SCANVI.out.obsm)
     }
 
     if (methods.contains('harmony')) {

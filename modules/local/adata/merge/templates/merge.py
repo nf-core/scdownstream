@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
-import scanpy as sc
-import anndata as ad
-from scipy.sparse import csr_matrix
+import os
 import platform
-import scipy
 from collections import defaultdict
+
 import numpy as np
+import scipy
+from scipy.sparse import csr_matrix
+import anndata as ad
+import scanpy as sc
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
@@ -74,18 +76,21 @@ genes_intersection = list(set(adata_outer.var_names).intersection(*genes))
 sorted(genes_intersection)
 adata_inner = adata_outer[:, genes_intersection]
 
-adata_inner.write("${prefix}_inner.h5ad")
 adata_outer.write("${prefix}_outer.h5ad")
+adata_inner.write("${prefix}_inner.h5ad")
 
 if base_path:
-    adata_transfer = adata_inner[~adata_inner.obs.index.isin(adata_base.obs.index)]
+    adata_integrate = adata_inner[~adata_inner.obs.index.isin(adata_base.obs.index)]
 
     known_labels = adata_base.obs["label"].unique()
-    adata_transfer.obs["label"] = adata_transfer.obs["label"].map(
+    adata_integrate.obs["label"] = adata_integrate.obs["label"].map(
         lambda x: x if x in known_labels else "unknown"
     )
+    adata_integrate.write("${prefix}_integrate.h5ad")
+else:
+    # Create symlink to the inner dataset
+    os.symlink("${prefix}_inner.h5ad", "${prefix}_integrate.h5ad")
 
-    adata_transfer.write("${prefix}_transfer.h5ad")
 
 # Versions
 

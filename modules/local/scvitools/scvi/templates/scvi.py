@@ -33,15 +33,17 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
     return yaml_str
 
 adata = ad.read_h5ad("${h5ad}")
+reference_model_path = "reference_model"
+reference_model_type = "${meta2.id}"
 
-model_kwargs = {
-    "n_layers": 2,
-    "n_hidden": 128,
-    "n_latent": 30,
-}
-
-SCVI.setup_anndata(adata, batch_key = "batch")
-model = SCVI(adata, **model_kwargs)
+if reference_model_type == "scanvi":
+    raise ValueError("scVI does not support scANVI models.")
+elif reference_model_type == "scvi":
+    SCVI.prepare_query_anndata(adata, reference_model_path)
+    model = SCVI.load_query_data(adata, reference_model_path)
+else:
+    SCVI.setup_anndata(adata, batch_key = "batch")
+    model = SCVI(adata)
 
 if "${task.ext.use_gpu}" == "true":
     model.to_device(0)
