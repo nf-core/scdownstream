@@ -33,17 +33,28 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
     return yaml_str
 
 adata = ad.read_h5ad("${h5ad}")
-model = SCVI.load("${scvi_model}", adata)
+reference_model_path = "${reference_model}"
+reference_model_type = "${meta2.id}"
 
-unique_labels = set(adata.obs["label"].unique())
-unique_labels.discard("unknown")
+if reference_model_type == "scanvi":
+    SCANVI.prepare_query_anndata(adata, reference_model_path)
+    model = SCANVI.load_query_data(adata, reference_model_path)
+else:
+    unique_labels = set(adata.obs["label"].unique())
+    unique_labels.discard("unknown")
 
-if not len(unique_labels) > 1:
-    raise ValueError("Not enough labels to run scANVI.")
+    if not len(unique_labels) > 1:
+        raise ValueError("Not enough labels to run scANVI.")
 
-model = SCANVI.from_scvi_model(
-    scvi_model=model, labels_key="label", unlabeled_category="unknown"
-)
+    if reference_model_type == "scvi":
+        SCVI.prepare_query_anndata(adata, reference_model_path)
+        model = SCVI.load("${scvi_model}", adata)
+        model = SCANVI.from_scvi_model(
+            scvi_model=model, labels_key="label", unlabeled_category="unknown"
+        )
+    else:
+        SCANVI.setup_anndata(adata, batch_key="batch", labels_key="label", unlabeled_category="unknown")
+        model = SCANVI(adata)
 
 if "${task.ext.use_gpu}" == "true":
     model.to_device(0)
