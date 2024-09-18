@@ -30,7 +30,7 @@ adata_combined = ad.read_h5ad("${combined}")
 integration = "${meta.id}"
 
 emb = pd.concat([
-    pd.DataFrame(adata_base.obsm[f"X_{integration}"], index=adata_base.obs_names), 
+    pd.DataFrame(adata_base.obsm[f"X_{integration}"], index=adata_base.obs_names),
     pd.DataFrame(adata_integrated.obsm["X_emb"], index=adata_integrated.obs_names)
 ], axis=0)
 
