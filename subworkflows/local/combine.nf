@@ -1,7 +1,7 @@
-include { ADATA_MERGE      } from '../../modules/local/adata/merge'
-include { ADATA_UPSETGENES } from '../../modules/local/adata/upsetgenes'
-include { INTEGRATE        } from './integrate'
-include { TRANSFER         } from './transfer'
+include { ADATA_MERGE           } from '../../modules/local/adata/merge'
+include { ADATA_UPSETGENES      } from '../../modules/local/adata/upsetgenes'
+include { INTEGRATE             } from './integrate'
+include { ADATA_MERGEEMBEDDINGS } from '../../modules/local/adata/mergeembeddings'
 
 workflow COMBINE {
 
@@ -19,7 +19,7 @@ workflow COMBINE {
     ch_multiqc_files = Channel.empty()
 
     ADATA_MERGE(
-        ch_h5ad.map { meta, h5ad -> [[id: "merged"], meta.id, h5ad] }.groupTuple(),
+        ch_h5ad.map { meta, h5ad -> [[id: "merged"], h5ad] }.groupTuple(),
         ch_base
     )
     ch_outer         = ADATA_MERGE.out.outer
@@ -29,19 +29,30 @@ workflow COMBINE {
     ch_versions      = ch_versions.mix(ADATA_UPSETGENES.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(ADATA_UPSETGENES.out.multiqc_files)
 
-    INTEGRATE( params.base_adata
-        ? ADATA_MERGE.out.transfer
-        : ADATA_MERGE.out.inner,
-        ch_reference_model
-    )
+    INTEGRATE( ADATA_MERGE.out.integrate, ch_reference_model )
     ch_versions      = ch_versions.mix(INTEGRATE.out.versions)
-    ch_integrations  = INTEGRATE.out.integrations
-    ch_obs           = ch_obs.mix(INTEGRATE.out.obs)
-    ch_obsm          = ch_obsm.mix(INTEGRATE.out.obsm)
+
+    if (params.base_adata) {
+        ADATA_MERGEEMBEDDINGS(
+            INTEGRATE.out.integrations
+            .combine(
+                ch_base.map{meta, base -> base}
+            ).combine(
+                ADATA_MERGE.out.inner.map{meta, inner -> inner}
+            )
+        )
+        ch_versions      = ch_versions.mix(ADATA_MERGEEMBEDDINGS.out.versions)
+        ch_integrations  = ADATA_MERGEEMBEDDINGS.out.integrations
+        ch_obs           = ADATA_MERGEEMBEDDINGS.out.obs
+        ch_obsm          = ADATA_MERGEEMBEDDINGS.out.obsm
+    } else {
+        ch_integrations  = INTEGRATE.out.integrations
+        ch_obs           = ch_obs.mix(INTEGRATE.out.obs)
+        ch_obsm          = ch_obsm.mix(INTEGRATE.out.obsm)
+    }
 
     ch_integrations = ch_integrations
         .map{meta, file -> [meta + [integration: meta.id], file]}
-
 
     emit:
     h5ad             = ch_outer
