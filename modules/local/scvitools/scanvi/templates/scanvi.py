@@ -33,7 +33,7 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
     return yaml_str
 
 adata = ad.read_h5ad("${h5ad}")
-reference_model_path = "${reference_model}"
+reference_model_path = "reference_model"
 reference_model_type = "${meta2.id}"
 
 if reference_model_type == "scanvi":

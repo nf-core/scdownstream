@@ -11,14 +11,14 @@ process SCVITOOLS_SCANVI {
 
     input:
     tuple val(meta), path(h5ad)
-    tuple val(meta2), path(reference_model)
+    tuple val(meta2), path(reference_model, stageAs: 'reference_model/model.pt')
 
     output:
-    tuple val(meta), path("*.h5ad") , emit: h5ad
-    tuple val(meta), path("*_model"), emit: model
-    path "${prefix}.pkl"            , emit: obs
-    path "X_${prefix}.pkl"          , emit: obsm
-    path "versions.yml"             , emit: versions
+    tuple val(meta), path("${prefix}.h5ad") , emit: h5ad
+    tuple val(meta), path("${prefix}_model"), emit: model
+    path "${prefix}.pkl"                    , emit: obs
+    path "X_${prefix}.pkl"                  , emit: obsm
+    path "versions.yml"                     , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
