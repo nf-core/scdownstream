@@ -32,7 +32,7 @@ integration = "${meta.id}"
 emb = pd.concat([
     pd.DataFrame(adata_base.obsm[f"X_{integration}"], index=adata_base.obs_names), 
     pd.DataFrame(adata_integrated.obsm["X_emb"], index=adata_integrated.obs_names)
-], axis=1)
+], axis=0)
 
 adata_combined.obsm["X_emb"] = emb.loc[adata_combined.obs_names].to_numpy()
 
@@ -40,7 +40,7 @@ if integration == "scanvi":
     labels = pd.concat([
         pd.DataFrame(adata_base.obs["label:scANVI"], index=adata_base.obs_names),
         pd.DataFrame(adata_integrated.obs["label:scANVI"], index=adata_integrated.obs_names)
-    ], axis=1)
+    ], axis=0)
 
     adata_combined.obs["label:scANVI"] = labels.loc[adata_combined.obs_names]
 
