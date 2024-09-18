@@ -8,13 +8,13 @@ process ADATA_MERGEEMBEDDINGS {
         'community.wave.seqera.io/library/scanpy:1.10.1--0c8c97148fc05558' }"
 
     input:
-    tuple val(meta), path(integrated), path(base), path(combined)
+    tuple val(meta), path(integrated, stageAs: 'integrated.h5ad'), path(base), path(combined)
 
     output:
-    tuple val(meta), path("*.h5ad"), emit: h5ad
-    path("${prefix}.pkl")          , emit: obs, optional: true
-    path("X_${prefix}.pkl")        , emit: obsm
-    path "versions.yml"            , emit: versions
+    tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
+    path("${prefix}.pkl")                  , emit: obs, optional: true
+    path("X_${prefix}.pkl")                , emit: obsm
+    path "versions.yml"                    , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
