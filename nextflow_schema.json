@@ -129,7 +129,7 @@
                     "type": "string",
                     "format": "file-path",
                     "description": "If you want to project new data onto an already integrated object, specify the path to the base AnnData object here",
-                    "help_text": "The file should be in the .h5ad format. If specified, make sure to also provide the `reference_model` parameter.",
+                    "help_text": "The file should be in the .h5ad format. If specified, make sure to also provide the `reference_model` parameter. If provided, only `scvi` and `scanvi` are available as integration methods.",
                     "pattern": "^\\S+\\.h5ad$",
                     "exists": true
                 },

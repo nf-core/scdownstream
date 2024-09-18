@@ -35,7 +35,7 @@ workflow NFCORE_SCDOWNSTREAM {
     take:
     samplesheet // channel: samplesheet read in from --input
     ch_base  // value channel: [ val(meta), path(h5ad) ]
-    ch_reference_model // value channel: [ path(model), str(model_type) ]
+    ch_reference_model // value channel: [ val(meta), path(model) ]
 
     main:
 
@@ -84,7 +84,7 @@ workflow {
             ? Channel.value([[id: "base"], file(params.base_adata, checkIfExists: true)])
             : Channel.value([[], []]),
         params.reference_model
-            ? Channel.value([file(params.reference_model, checkIfExists: true), params.reference_model_type])
+            ? Channel.value([[id: params.reference_model_type], file(params.reference_model, checkIfExists: true)])
             : Channel.value([[], ''])
     )
 
