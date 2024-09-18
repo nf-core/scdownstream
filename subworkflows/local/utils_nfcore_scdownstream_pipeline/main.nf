@@ -151,15 +151,15 @@ def validateInputParameters() {
     }
 
     integration_methods = params.integration_methods.split(',').collect{it.trim().toLowerCase()}
-    if (params.base_adata && integration_methods.subtract(['scvi', 'scanvi']).size() > 0) {
+    if (params.base_adata && (integration_methods - ['scvi', 'scanvi']).size() > 0) {
         throw new Exception("Only scvi and scanvi integration methods are supported if base_adata is provided")
     }
 
-    if (params.reference_model_type == "scanvi" && integration_methods.subtract(['scanvi']).size() > 0) {
+    if (params.reference_model_type == "scanvi" && (integration_methods - ['scanvi']).size() > 0) {
         throw new Exception("If the reference model type is scanvi, only the scanvi integration method is supported")
     }
 
-    if (params.reference_model_type == "scvi" && integration_methods.subtract(['scvi', 'scanvi']).size() > 0) {
+    if (params.reference_model_type == "scvi" && (integration_methods - ['scvi', 'scanvi']).size() > 0) {
         throw new Exception("If the reference model type is scvi, only the scvi and scanvi integration methods are supported")
     }
 }
