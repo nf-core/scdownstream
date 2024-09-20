@@ -7,7 +7,7 @@ workflow GRN {
     main:
     ch_versions = Channel.empty()
 
-    if (prams.grn_methods == 'none') {
+    if (params.grn_methods == 'none') {
         log.info "GRN: Not performed since 'none' selected."
     } else {
         ADATA_TORDS(ch_h5ad)
