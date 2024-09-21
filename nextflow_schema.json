@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": ["outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -40,6 +40,47 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
+                }
+            }
+        },
+        "reference_mapping_options": {
+            "title": "Reference mapping options",
+            "type": "object",
+            "fa_icon": "fas fa-map-marked-alt",
+            "description": "Options for mapping new data to a reference. Check the [section in the usage docs](https://nf-co.re/scdownstream/docs/usage/#reference-mapping) for more information.",
+            "properties": {
+                "base_adata": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "If you want to project new data onto an already integrated object, specify the path to the base AnnData object here",
+                    "help_text": "The file should be in the .h5ad format. If provided, only `scvi` and `scanvi` are available as integration methods.",
+                    "pattern": "^\\S+\\.h5ad$",
+                    "exists": true
+                },
+                "base_label_col": {
+                    "type": "string",
+                    "default": "label",
+                    "description": "The column in the base AnnData object that contains the cell type information. If this is not `none` and the `reference_model` parameter is not provided or the `reference_model_type` is `scvi`, the pipeline will train an scANVI model."
+                },
+                "base_embeddings": {
+                    "type": "string",
+                    "description": "The keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`). Required if `input` is not provided.",
+                    "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat)(,(scvi|scanvi|harmony|bbknn|combat|seurat))*)?$"
+                },
+                "reference_model": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "If you want to use a pre-trained scVI/scANVI model as a reference for integration, specify the path to the model `.pt` file here",
+                    "help_text": "The file should be in the .pt format.",
+                    "pattern": "^\\S+\\.pt$",
+                    "exists": true
+                },
+                "reference_model_type": {
+                    "type": "string",
+                    "default": "scvi",
+                    "description": "Specify the type of model provided in the `reference_model` parameter",
+                    "help_text": "Can be either 'scvi' or 'scanvi'.",
+                    "pattern": "^(scvi|scanvi)$"
                 }
             }
         },
@@ -85,7 +126,7 @@
                     "default": "scvi",
                     "description": "Specify the tool to use for integration",
                     "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, harmony, bbknn, combat, seurat",
-                    "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat)?,?)*[^,]+$"
+                    "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat)(,(scvi|scanvi|harmony|bbknn|combat|seurat))*)?$"
                 },
                 "integration_hvgs": {
                     "type": "integer",
@@ -124,29 +165,6 @@
                     "default": false,
                     "description": "Use GPU acceleration for tasks that support it",
                     "hidden": true
-                },
-                "base_adata": {
-                    "type": "string",
-                    "format": "file-path",
-                    "description": "If you want to project new data onto an already integrated object, specify the path to the base AnnData object here",
-                    "help_text": "The file should be in the .h5ad format. If specified, make sure to also provide the `reference_model` parameter. If provided, only `scvi` and `scanvi` are available as integration methods.",
-                    "pattern": "^\\S+\\.h5ad$",
-                    "exists": true
-                },
-                "reference_model": {
-                    "type": "string",
-                    "format": "file-path",
-                    "description": "If you want to use a pre-trained scVI/scANVI model as a reference for integration, specify the path to the model `.pt` file here",
-                    "help_text": "The file should be in the .pt format.",
-                    "pattern": "^\\S+\\.pt$",
-                    "exists": true
-                },
-                "reference_model_type": {
-                    "type": "string",
-                    "default": "scvi",
-                    "description": "Specify the type of model provided in the `reference_model` parameter",
-                    "help_text": "Can be either 'scvi' or 'scanvi'.",
-                    "pattern": "^(scvi|scanvi)$"
                 },
                 "prep_cellxgene": {
                     "type": "boolean",
@@ -361,6 +379,9 @@
     "allOf": [
         {
             "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/reference_mapping_options"
         },
         {
             "$ref": "#/definitions/pipeline_options"

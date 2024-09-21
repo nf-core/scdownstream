@@ -80,12 +80,13 @@ workflow PIPELINE_INITIALISATION {
     //
     // Create channel from input file provided through params.input
     //
-    Channel
-        .fromSamplesheet("input")
-        .map {
-            validateInputSamplesheet(it)
-        }
-        .set { ch_samplesheet }
+    ch_samplesheet = params.input
+        ? Channel
+            .fromSamplesheet("input")
+            .map {
+                validateInputSamplesheet(it)
+            }
+        : Channel.empty()
 
     emit:
     samplesheet = ch_samplesheet
@@ -142,6 +143,10 @@ workflow PIPELINE_COMPLETION {
 // Check and validate pipeline parameters
 //
 def validateInputParameters() {
+    if (!params.input && !(params.base_adata && params.base_embeddings && params.base_label_col)) {
+        throw new Exception("Either an input samplesheet or (base_adata && base_embeddings && base_label_col) must be provided")
+    }
+
     if (params.base_adata && !params.reference_model) {
         throw new Exception("If a base adata file is provided, a reference model must also be provided")
     }
