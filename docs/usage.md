@@ -125,7 +125,7 @@ The pipeline will perform the preprocessing steps on the new samples as usual. D
 
 ### Skipping integration
 
-:::info
+:::tip
 This can be useful if you have assigned cell type annotations to the integrated object and want to perform further analysis based on these annotations.
 :::
 
