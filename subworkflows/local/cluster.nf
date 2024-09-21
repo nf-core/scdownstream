@@ -1,3 +1,4 @@
+include { ADATA_SPLITCOL         } from '../../modules/local/adata/splitcol'
 include { SCANPY_NEIGHBORS       } from '../../modules/local/scanpy/neighbors'
 include { SCANPY_LEIDEN          } from '../../modules/local/scanpy/leiden'
 include { SCANPY_UMAP            } from '../../modules/local/scanpy/umap'
@@ -6,7 +7,7 @@ include { SCANPY_RANKGENESGROUPS } from '../../modules/local/scanpy/rankgenesgro
 
 workflow CLUSTER {
     take:
-    ch_h5ad
+    ch_input
 
     main:
     ch_versions = Channel.empty()
@@ -15,6 +16,24 @@ workflow CLUSTER {
     ch_obsp = Channel.empty()
     ch_uns = Channel.empty()
     ch_multiqc_files = Channel.empty()
+
+    ch_h5ad = Channel.empty()
+
+    if (params.cluster_global) {
+        ch_h5ad = ch_h5ad.mix(ch_input.map{meta, h5ad -> [meta + [subset: "global"], h5ad]})
+    }
+
+    if (params.cluster_per_label) {
+        ADATA_SPLITCOL(ch_input, params.input ? "label" : params.base_label_col)
+        ch_versions = ch_versions.mix(ADATA_SPLITCOL.out.versions)
+
+        ch_h5ad = ch_h5ad.mix(
+            ADATA_SPLITCOL.out.h5ad
+                .map{meta, h5ad -> [meta + [subset: h5ad.simpleName], h5ad]}
+        )
+    }
+
+    ch_h5ad = ch_h5ad.map{meta, h5ad -> [meta + [id: meta.integration + "-" + meta.subset], h5ad]}
 
     ch_h5ad.branch{ meta, h5ad ->
         has_neighbors: meta.integration == "bbknn"
@@ -35,7 +54,7 @@ workflow CLUSTER {
     ch_h5ad = SCANPY_UMAP.out.h5ad.combine(ch_resolutions)
         .map{ meta, h5ad, resolution ->
                 [meta + [resolution: resolution,
-                        id: meta.integration + "-" + resolution],
+                        id: meta.integration + "-" + meta.subset + "-" + resolution],
             h5ad] }
 
     SCANPY_LEIDEN(ch_h5ad)

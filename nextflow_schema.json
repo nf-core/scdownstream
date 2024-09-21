@@ -141,6 +141,16 @@
                     "help_text": "Specify the resolutions for clustering. If you want to use multiple resolutions, separate them with a comma.",
                     "pattern": "^((\\d+\\.?\\d+)?,?)*[^,]+$"
                 },
+                "cluster_per_label": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Create a UMAP and a clustering for each unique value in the label column"
+                },
+                "cluster_global": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Create a global UMAP and clustering"
+                },
                 "celltypist_model": {
                     "type": "string",
                     "default": "",
