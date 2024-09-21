@@ -53,25 +53,26 @@
                     "type": "string",
                     "format": "file-path",
                     "description": "If you want to project new data onto an already integrated object, specify the path to the base AnnData object here",
-                    "help_text": "The file should be in the .h5ad format. If provided, only `scvi` and `scanvi` are available as integration methods.",
+                    "help_text": "The file should be in the .h5ad format. If provided, you also need to provide a `reference_model`. If provided, only `scvi` and `scanvi` are available as integration methods.",
                     "pattern": "^\\S+\\.h5ad$",
                     "exists": true
                 },
                 "base_label_col": {
                     "type": "string",
                     "default": "label",
-                    "description": "The column in the base AnnData object that contains the cell type information. If this is not `none` and the `reference_model` parameter is not provided or the `reference_model_type` is `scvi`, the pipeline will train an scANVI model."
+                    "description": "The column in the base AnnData object that contains the label (e.g. cell type) information."
                 },
                 "base_embeddings": {
                     "type": "string",
                     "description": "The keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`). Required if `input` is not provided - otherwise it is ignored.",
+                    "help_text": "If the `input` parameter is not provided (no new data to add), integration will not be performed. In order to be able to utilize existing integration results, you need to provide the keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`).",
                     "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat)(,(scvi|scanvi|harmony|bbknn|combat|seurat))*)?$"
                 },
                 "reference_model": {
                     "type": "string",
                     "format": "file-path",
                     "description": "If you want to use a pre-trained scVI/scANVI model as a reference for integration, specify the path to the model `.pt` file here",
-                    "help_text": "The file should be in the .pt format.",
+                    "help_text": "The file should be in the .pt format. If provided, you also need to provide a `reference_model_type`.",
                     "pattern": "^\\S+\\.pt$",
                     "exists": true
                 },
