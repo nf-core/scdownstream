@@ -1,19 +1,18 @@
-process CELLTYPES_CELLTYPIST {
+process ADATA_SPLITCOL {
     tag "$meta.id"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'oras://community.wave.seqera.io/library/celltypist_scanpy:ade3fa2252062a50':
-        'community.wave.seqera.io/library/celltypist_scanpy:6aa0dd8de0c12fae' }"
+        'oras://community.wave.seqera.io/library/scanpy:1.10.1--ea08051addf267ac':
+        'community.wave.seqera.io/library/scanpy:1.10.1--0c8c97148fc05558' }"
 
     input:
     tuple val(meta), path(h5ad)
-    val(models)
+    val(column)
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    path "*.pkl"                   , emit: obs
     path "versions.yml"            , emit: versions
 
     when:
@@ -21,5 +20,5 @@ process CELLTYPES_CELLTYPIST {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    template 'celltypist.py'
+    template 'split_column.py'
 }

@@ -5,8 +5,9 @@
 */
 
 include { PREPROCESS             } from '../subworkflows/local/preprocess'
-include { COMBINE                } from '../subworkflows/local/combine'
 include { CELLTYPE_ASSIGNMENT    } from '../subworkflows/local/celltype_assignment'
+include { COMBINE                } from '../subworkflows/local/combine'
+include { ADATA_SPLITEMBEDDINGS  } from '../modules/local/adata/splitembeddings'
 include { CLUSTER                } from '../subworkflows/local/cluster'
 include { FINALIZE               } from '../subworkflows/local/finalize'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
@@ -31,6 +32,7 @@ workflow SCDOWNSTREAM {
     main:
 
     ch_versions = Channel.empty()
+    ch_integrations = Channel.empty()
     ch_obs = Channel.empty()
     ch_obsm = Channel.empty()
     ch_obsp = Channel.empty()
@@ -38,37 +40,57 @@ workflow SCDOWNSTREAM {
     ch_layers = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
-    //
-    // Per-sample preprocessing
-    //
+    if (params.input) {
+        //
+        // Per-sample preprocessing
+        //
 
-    PREPROCESS(ch_samplesheet)
-    ch_versions = ch_versions.mix(PREPROCESS.out.versions)
-    ch_multiqc_files = ch_multiqc_files.mix(PREPROCESS.out.multiqc_files)
+        PREPROCESS(ch_samplesheet)
+        ch_versions = ch_versions.mix(PREPROCESS.out.versions)
+        ch_multiqc_files = ch_multiqc_files.mix(PREPROCESS.out.multiqc_files)
+        ch_h5ad = PREPROCESS.out.h5ad
 
-    //
-    // Combine samples and perform integration
-    //
+        //
+        // Perform automated celltype assignment
+        //
 
-    COMBINE(PREPROCESS.out.h5ad, ch_base, ch_reference_model)
-    ch_versions = ch_versions.mix(COMBINE.out.versions)
-    ch_multiqc_files = ch_multiqc_files.mix(COMBINE.out.multiqc_files)
-    ch_obs = ch_obs.mix(COMBINE.out.obs)
-    ch_obsm = ch_obsm.mix(COMBINE.out.obsm)
-    ch_layers = ch_layers.mix(COMBINE.out.layers)
+        CELLTYPE_ASSIGNMENT(ch_h5ad)
+        ch_versions = ch_versions.mix(CELLTYPE_ASSIGNMENT.out.versions)
+        ch_h5ad = CELLTYPE_ASSIGNMENT.out.h5ad
 
-    //
-    // Perform automated celltype assignment
-    //
-    CELLTYPE_ASSIGNMENT(COMBINE.out.h5ad)
-    ch_versions = ch_versions.mix(CELLTYPE_ASSIGNMENT.out.versions)
-    ch_obs = ch_obs.mix(CELLTYPE_ASSIGNMENT.out.obs)
+        //
+        // Combine samples and perform integration
+        //
+
+        COMBINE(ch_h5ad, ch_base, ch_reference_model)
+        ch_versions      = ch_versions.mix(COMBINE.out.versions)
+        ch_multiqc_files = ch_multiqc_files.mix(COMBINE.out.multiqc_files)
+        ch_obs           = ch_obs.mix(COMBINE.out.obs)
+        ch_obsm          = ch_obsm.mix(COMBINE.out.obsm)
+        ch_layers        = ch_layers.mix(COMBINE.out.layers)
+        ch_integrations  = ch_integrations.mix(COMBINE.out.integrations)
+
+        ch_finalization_base = COMBINE.out.h5ad
+    } else {
+        ch_embeddings = Channel.value(params.base_embeddings.split(',').collect{it.trim()})
+
+        ADATA_SPLITEMBEDDINGS(ch_base, ch_embeddings)
+        ch_versions = ch_versions.mix(ADATA_SPLITEMBEDDINGS.out.versions)
+        ch_integrations = ch_integrations.mix(
+            ADATA_SPLITEMBEDDINGS.out.h5ad
+                .map{meta, h5ads -> h5ads}
+                .flatten()
+                .map{h5ad -> [[id: h5ad.simpleName, integration: h5ad.simpleName], h5ad]}
+        )
+
+        ch_finalization_base = ch_base
+    }
 
     //
     // Perform clustering and per-cluster analysis
     //
 
-    CLUSTER(COMBINE.out.integrations)
+    CLUSTER(ch_integrations)
     ch_versions = ch_versions.mix(CLUSTER.out.versions)
     ch_obs = ch_obs.mix(CLUSTER.out.obs)
     ch_obsm = ch_obsm.mix(CLUSTER.out.obsm)
@@ -76,7 +98,7 @@ workflow SCDOWNSTREAM {
     ch_uns = ch_uns.mix(CLUSTER.out.uns)
     ch_multiqc_files = ch_multiqc_files.mix(CLUSTER.out.multiqc_files)
 
-    FINALIZE(COMBINE.out.h5ad, ch_obs, ch_obsm, ch_obsp, ch_uns, ch_layers)
+    FINALIZE(ch_finalization_base, ch_obs, ch_obsm, ch_obsp, ch_uns, ch_layers)
     ch_versions = ch_versions.mix(FINALIZE.out.versions)
 
     //
