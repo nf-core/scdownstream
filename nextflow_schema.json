@@ -64,7 +64,7 @@
                 },
                 "base_embeddings": {
                     "type": "string",
-                    "description": "The keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`). Required if `input` is not provided.",
+                    "description": "The keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`). Required if `input` is not provided - otherwise it is ignored.",
                     "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat)(,(scvi|scanvi|harmony|bbknn|combat|seurat))*)?$"
                 },
                 "reference_model": {
@@ -144,12 +144,12 @@
                 "cluster_per_label": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Create a UMAP and a clustering for each unique value in the label column"
+                    "description": "Create a UMAP and a clustering for each unique value in the label column (and for each integration method)"
                 },
                 "cluster_global": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Create a global UMAP and clustering"
+                    "description": "Create a global UMAP and clustering (for each integration method)"
                 },
                 "celltypist_model": {
                     "type": "string",
