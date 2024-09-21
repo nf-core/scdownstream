@@ -9,7 +9,7 @@ workflow CELLTYPE_ASSIGNMENT {
     ch_obs = Channel.empty()
 
     if (params.celltypist_model) {
-        celltypist_models = Channel.value(params.celltypist_model.split(',').collect{it.trim().toLowerCase()})
+        celltypist_models = Channel.value(params.celltypist_model.split(',').collect{it.trim()})
 
         CELLTYPES_CELLTYPIST(ch_h5ad, celltypist_models)
         ch_obs = ch_obs.mix(CELLTYPES_CELLTYPIST.out.obs)

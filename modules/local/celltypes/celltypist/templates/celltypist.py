@@ -5,7 +5,7 @@ import platform
 import pandas as pd
 import scanpy as sc
 import celltypist
-from celltypist import models
+from celltypist import models as ct_models
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
@@ -43,11 +43,11 @@ df_list = []
 for model in models:
     model_file = f"{model}.pkl" if not model.endswith(".pkl") else model
     model_name = model_file[:-4]
-    models.download_models(model=model_file)
-    model_obj = models.Model.load(model_file)
+    ct_models.download_models(model=model_file)
+    model_obj = ct_models.Model.load(model_file)
 
     predictions = celltypist.annotate(
-        adata_celltypist, model=model
+        adata_celltypist, model=model_obj
     )
     predictions_adata = predictions.to_adata()
 
