@@ -29,6 +29,7 @@ workflow CLUSTER {
 
         ch_h5ad = ch_h5ad.mix(
             ADATA_SPLITCOL.out.h5ad
+                .transpose()
                 .map{meta, h5ad -> [meta + [subset: h5ad.simpleName], h5ad]}
         )
     }

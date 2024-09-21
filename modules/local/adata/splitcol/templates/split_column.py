@@ -24,7 +24,7 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
-adata = ad.read_h5ad("${h5ad}", backed="r")
+adata = ad.read_h5ad("${h5ad}")
 column = "${column}"
 
 assert column in adata.obs.columns, f"Column {column} not found in adata."
