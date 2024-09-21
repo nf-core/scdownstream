@@ -123,6 +123,13 @@ The following scenarious can be distinguished:
 
 The pipeline will perform the preprocessing steps on the new samples as usual. During the integration step, the new samples will be mapped onto the latent space of the reference model. If `base_adata` is provided, the new samples will then be aggregated onto the base file. The clustering, dimensionality reduction etc. will then be performed on the integrated object.
 
+### Skipping integration
+
+This can be useful if you have assigned cell type annotations to the integrated object and want to perform further analysis based on these annotations.
+
+If you want to run tasks after the integration step without performing integration, you can provide a previous result of the pipeline as the `base_adata` parameter. You do not need to provide a samplesheet via the `input` parameter in this case. In order to let the pipeline know which integration embeddings should be used, you need to provide the `base_embeddings` parameter.
+The pipeline will then re-execute the tasks after the integration step without performing integration again. 
+
 ### GPU acceleration
 
 :::warning{title="Experimental feature"}
