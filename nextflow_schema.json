@@ -152,6 +152,11 @@
                     "default": true,
                     "description": "Create a global UMAP and clustering (for each integration method)"
                 },
+                "skip_rankgenesgroups": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip the rank_genes_groups step. For large datasets, the pipeline might fail due to high memory usage in this step. Use this option to skip it."
+                },
                 "celltypist_model": {
                     "type": "string",
                     "default": "",
