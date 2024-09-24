@@ -107,6 +107,10 @@ genome: 'GRCh37'
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
 
+### Cell type annotation
+
+Automated cell type annotation using [Celltypist](https://github.com/Teichlab/celltypist) is supported. You can specify the models to use with the `celltypist_model` parameter. If no models are specified, no cell type annotation will be performed. You can also specify a map file to convert gene symbols from the model to the gene symbols in your data with the `celltypist_map_file` parameter, see [here](https://celltypist.readthedocs.io/en/latest/celltypist.models.Model.html#celltypist.models.Model.convert) for more information.
+
 ### Reference mapping
 
 The pipeline supports mapping new samples into the latent space of an existing scVI/scANVI model.

@@ -164,6 +164,14 @@
                     "help_text": "If you want to use multiple models, separate them with a comma. Available models can be found [here](https://www.celltypist.org/models).",
                     "pattern": "^([a-zA-Z0-9_]*(,[a-zA-Z0-9_]*)*)?$"
                 },
+                "celltypist_map_file": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "default": "",
+                    "description": "Specify the map file for celltypist gene id conversion.",
+                    "pattern": "^\\S+\\.csv$"
+                },
                 "cellbender_epochs": {
                     "type": "integer",
                     "default": 150,
