@@ -9,7 +9,7 @@ process CELLTYPES_CELLTYPIST {
 
     input:
     tuple val(meta), path(h5ad)
-    val(model)
+    val(models)
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad

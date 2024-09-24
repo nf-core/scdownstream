@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": ["outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -40,6 +40,48 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
+                }
+            }
+        },
+        "reference_mapping_options": {
+            "title": "Reference mapping options",
+            "type": "object",
+            "fa_icon": "fas fa-map-marked-alt",
+            "description": "Options for mapping new data to a reference. Check the [section in the usage docs](https://nf-co.re/scdownstream/docs/usage/#reference-mapping) for more information.",
+            "properties": {
+                "base_adata": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "If you want to project new data onto an already integrated object, specify the path to the base AnnData object here",
+                    "help_text": "The file should be in the .h5ad format.",
+                    "pattern": "^\\S+\\.h5ad$",
+                    "exists": true
+                },
+                "base_label_col": {
+                    "type": "string",
+                    "default": "label",
+                    "description": "The column in the base AnnData object that contains the label (e.g. cell type) information."
+                },
+                "base_embeddings": {
+                    "type": "string",
+                    "description": "The keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`). Required if `input` is not provided - otherwise it is ignored.",
+                    "help_text": "If the `input` parameter is not provided (no new data to add), integration will not be performed. In order to be able to utilize existing integration results, you need to provide the keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`).",
+                    "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat)(,(scvi|scanvi|harmony|bbknn|combat|seurat))*)?$"
+                },
+                "reference_model": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "If you want to use a pre-trained scVI/scANVI model as a reference for integration, specify the path to the model `.pt` file here",
+                    "help_text": "The file should be in the .pt format. If provided, you also need to provide a `reference_model_type`.",
+                    "pattern": "^\\S+\\.pt$",
+                    "exists": true
+                },
+                "reference_model_type": {
+                    "type": "string",
+                    "default": "scvi",
+                    "description": "Specify the type of model provided in the `reference_model` parameter",
+                    "help_text": "Can be either 'scvi' or 'scanvi'.",
+                    "pattern": "^(scvi|scanvi)$"
                 }
             }
         },
@@ -85,7 +127,7 @@
                     "default": "scvi",
                     "description": "Specify the tool to use for integration",
                     "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, harmony, bbknn, combat, seurat",
-                    "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat)?,?)*[^,]+$"
+                    "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat)(,(scvi|scanvi|harmony|bbknn|combat|seurat))*)?$"
                 },
                 "integration_hvgs": {
                     "type": "integer",
@@ -100,12 +142,35 @@
                     "help_text": "Specify the resolutions for clustering. If you want to use multiple resolutions, separate them with a comma.",
                     "pattern": "^((\\d+\\.?\\d+)?,?)*[^,]+$"
                 },
+                "cluster_per_label": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Create a UMAP and a clustering for each unique value in the label column (and for each integration method)"
+                },
+                "cluster_global": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Create a global UMAP and clustering (for each integration method)"
+                },
+                "skip_rankgenesgroups": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip the rank_genes_groups step. For large datasets, the pipeline might fail due to high memory usage in this step. Use this option to skip it."
+                },
                 "celltypist_model": {
                     "type": "string",
                     "default": "",
                     "description": "Specify the models to use for the celltypist cell type annotation",
                     "help_text": "If you want to use multiple models, separate them with a comma. Available models can be found [here](https://www.celltypist.org/models).",
                     "pattern": "^([a-zA-Z0-9_]*(,[a-zA-Z0-9_]*)*)?$"
+                },
+                "celltypist_map_file": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "default": "",
+                    "description": "Specify the map file for celltypist gene id conversion.",
+                    "pattern": "^\\S+\\.csv$"
                 },
                 "cellbender_epochs": {
                     "type": "integer",
@@ -124,29 +189,6 @@
                     "default": false,
                     "description": "Use GPU acceleration for tasks that support it",
                     "hidden": true
-                },
-                "base_adata": {
-                    "type": "string",
-                    "format": "file-path",
-                    "description": "If you want to project new data onto an already integrated object, specify the path to the base AnnData object here",
-                    "help_text": "The file should be in the .h5ad format. If specified, also the `base_scvi_model` parameter has to be set.",
-                    "pattern": "^\\S+\\.h5ad$",
-                    "exists": true
-                },
-                "base_scvi_model": {
-                    "type": "string",
-                    "format": "file-path",
-                    "description": "If you want to project new data onto an already integrated object, specify the path to the base scVI model here",
-                    "help_text": "The file should be in the .pt format. If specified, also the `base_adata` parameter has to be set.",
-                    "pattern": "^\\S+\\.pt$",
-                    "exists": true
-                },
-                "base_model_type": {
-                    "type": "string",
-                    "default": "scvi",
-                    "description": "Specify the type of model used for the base object",
-                    "help_text": "Can be either 'scvi' or 'scanvi'.",
-                    "pattern": "^(scvi|scanvi)$"
                 },
                 "prep_cellxgene": {
                     "type": "boolean",
@@ -361,6 +403,9 @@
     "allOf": [
         {
             "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/reference_mapping_options"
         },
         {
             "$ref": "#/definitions/pipeline_options"

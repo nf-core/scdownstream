@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
-import platform
 import json
+import platform
 import base64
+import pickle
 
 import scanpy as sc
+import pandas as pd
 import matplotlib.pyplot as plt
 
 from threadpoolctl import threadpool_limits
@@ -32,13 +34,14 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
 
 
 adata = sc.read_h5ad("${h5ad}")
-use_gpu = "${task.ext.use_gpu}" == "true"
 prefix = "${prefix}"
+use_gpu = "${task.ext.use_gpu}" == "true"
 
 kwargs = {
-    "resolution": float("${resolution}"),
-    "key_added": prefix
+    "groupby": "${obs_key}",
+    "pts": True
 }
+
 
 if use_gpu:
     import rapids_singlecell as rsc
@@ -52,16 +55,20 @@ if use_gpu:
     cp.cuda.set_allocator(rmm_cupy_allocator)
 
     rsc.get.anndata_to_GPU(adata)
-    rsc.tl.leiden(adata, **kwargs)
+    rsc.pp.log1p(adata)
+    rsc.tl.rank_genes_groups_logreg(adata, **kwargs)
     rsc.get.anndata_to_CPU(adata)
 else:
-    sc.tl.leiden(adata, **kwargs)
+    sc.pp.log1p(adata)
+    sc.tl.rank_genes_groups(adata, **kwargs)
 
-adata.obs[[prefix]].to_pickle(f"{prefix}.pkl")
+rgg_dict = adata.uns["rank_genes_groups"]
+
+pickle.dump(rgg_dict, open(f"{prefix}.pkl", "wb"))
 adata.write_h5ad(f"{prefix}.h5ad")
 
 # Plot
-sc.pl.umap(adata, title="${meta.id} Leiden", color=prefix, show=False)
+sc.pl.rank_genes_groups(adata, show=False)
 path = f"{prefix}.png"
 plt.savefig(path)
 
@@ -76,7 +83,7 @@ with open(path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
         "parent_name": "${meta.integration}",
         "parent_description": "Results of the ${meta.integration} integration.",
 
-        "section_name": "${meta.id} Leiden",
+        "section_name": "${meta.id} characteristic genes",
         "plot_type": "image",
         "data": image_html,
     }
@@ -88,7 +95,8 @@ with open(path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
 versions = {
     "${task.process}": {
         "python": platform.python_version(),
-        "scanpy": sc.__version__
+        "scanpy": sc.__version__,
+        "pandas": pd.__version__
     }
 }
 

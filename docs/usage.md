@@ -59,6 +59,7 @@ For CSV input files, specifying the `batch_col`, `label_col`, and `unknown_label
 | `min_cells`       | Minimum number of cells required for a gene to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                       |
 | `min_counts_cell` | Minimum number of counts required for a cell to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                      |
 | `min_counts_gene` | Minimum number of counts required for a gene to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                      |
+| `expected_cells`  | Number of expected cells, used as input to Cellbender.                                                                                                                                                                                                                                                                                                                                                               |
 | `mito_fraction` | Maximum fraction of mitochondrial reads for a cell to be considered. Defaults to `1.0`.                                                                                                                                                                                                                                             |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
@@ -107,17 +108,35 @@ genome: 'GRCh37'
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
 
+### Cell type annotation
+
+Automated cell type annotation using [Celltypist](https://github.com/Teichlab/celltypist) is supported. You can specify the models to use with the `celltypist_model` parameter. If no models are specified, no cell type annotation will be performed. You can also specify a map file to convert gene symbols from the model to the gene symbols in your data with the `celltypist_map_file` parameter, see [here](https://celltypist.readthedocs.io/en/latest/celltypist.models.Model.html#celltypist.models.Model.convert) for more information.
+
 ### Reference mapping
 
-The pipeline supports mapping new samples onto an existing output of the pipeline by using the techniques described in [this tutorial](https://docs.scvi-tools.org/en/1.1.5/tutorials/notebooks/scrna/scarches_scvi_tools.html). Essentially, the newly added samples are mapped onto the existing latent space of the reference samples using a transfer learning approach ([scArches](https://doi.org/10.1038/s41587-021-01001-7)).
+The pipeline supports mapping new samples into the latent space of an existing scVI/scANVI model.
+If it is an scANVI model, this approach allows transferring cell type annotations to new samples.
+If the scVI/scANVI model was built during a previous run of the pipeline,
+you can also use the previous output AnnData file as a base,
+and the pipeline will aggregate the new samples onto the base AnnData.
 
-In order to perform reference mapping, make sure to provide the following parameters:
+The following scenarious can be distinguished:
 
-- `base_adata`: Path to the AnnData file produced by a previous run of the pipeline.
-- `base_scvi_model`: Path to the scVI/scANVI model produced by a previous run of the pipeline. Make sure to use the according integration methods in the previous run.
-- `base_model_type`: Type of the model used as `base_scvi_model`. Can be either `scvi` or `scanvi`.
+- **You have a reference scVI model from an arbitrary source (e.g. from a publication) and you want to map new data into the latent space described by the model.** In this case, you need to provide the path to the reference model via the `reference_model` parameter and set the `reference_model_type` parameter to `scvi`. Only `scvi` and `scanvi` may be used in the `integration_methods` parameter in this case. `scanvi` will only work if he input data in the samplesheet contains at least some cell type annotations. Using `scanvi` in addition to `scvi` as an integration method will extend the model so that it can be used for label transfer in future.
+- **You have a reference scANVI model from an arbitrary source (e.g. from a publication) and you want to map new data into the latent space described by the model and transfer cell type annotations to the new data.** In this case, you need to provide the path to the reference model via the `reference_model` parameter and set the `reference_model_type` parameter to `scanvi`. Only `scanvi` may be used in the `integration_methods` parameter in this case.
+- **You have a reference scVI/scANVI model as well as an output AnnData file from a previous run of the pipeline and you want to add more samples to the existing AnnData file.** In this case, you need to provide the path to the reference model via the `reference_model` parameter and set the `reference_model_type` parameter to either `scvi` or `scanvi`, depending on the type of the reference model. If an scANVI model is used, existing cell type annotations will be transferred to the new samples. The existing AnnData file should be provided via the `base_adata` parameter.
 
-The pipeline will perform the preprocessing steps on the new samples as usual. During the integration step, the new samples will be mapped onto the latent space of the reference samples. The clustering, dimensionality reduction etc. will then be performed on the combined dataset.
+The pipeline will perform the preprocessing steps on the new samples as usual. During the integration step, the new samples will be mapped onto the latent space of the reference model. If `base_adata` is provided, the new samples will then be aggregated onto the base file. The clustering, dimensionality reduction etc. will then be performed on the integrated object.
+
+### Skipping integration
+
+:::tip
+This can be useful if you have assigned cell type annotations to the integrated object and want to perform further analysis based on these annotations.
+:::
+
+If you want to run tasks after the integration step without performing integration, you can provide a previous result of the pipeline as the `base_adata` parameter. You do not need to provide a samplesheet via the `input` parameter in this case. In order to let the pipeline know which integration embeddings should be used, you need to provide the `base_embeddings` parameter. If you stored the labels (e.g. cell type annotations) in a column other than `label`, you can provide the column name via the `base_label_col` parameter.
+
+The pipeline will then re-execute the tasks after the integration step without performing integration again. Most interestingly, the pipeline will generate cell type specific UMAPs, clusterings, and PAGA graphs, if the `clustering_per_label` parameter is set to `true`.
 
 ### GPU acceleration
 
@@ -125,22 +144,29 @@ The pipeline will perform the preprocessing steps on the new samples as usual. D
 This is an experimental feature and may produce errors. If you encounter any issues, please report them on the [nf-core/scdownstream GitHub repository](https://github.com/nf-core/scdownstream/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml).
 :::
 
-:::info{title="Using conda"}
-GPU acceleration is not available when using conda for dependency management.
+:::info{title="Prerequisites"}
+
+- GPU acceleration has only been tested with Docker, Singularity and Apptainer.
+  - Other container technologies might work, but have not been tested.
+  - Conda is not supported.
+- CUDA 12.0 or later is required.
+- The GPUs must have a [Compute Capability](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#compute-capabilities) of 7.0 or higher.
+
 :::
 
 Tools with implemented support for GPU acceleration are:
 
 - cellbender
 - scvi-tools
-  - scVI/scANVI (including reference mapping)
+  - scVI/scANVI
   - scAR
   - solo
 - rapids-singlecell
   - scrublet
   - harmony
   - HVG identification
-  - Neighbor identification, UMAP and Leiden clustering
+  - Neighborhood graph calculation, UMAP and Leiden clustering
+  - Identification of characteristic genes (`rank_genes_groups`)
 
 To utilize GPU acceleration, you need to specify the `gpu` profile. This will make the tool steps use cuda-enabled environments and it will tell the tools to use the GPU. All processes which support GPU acceleration are marked with the `process_gpu` label.
 
@@ -154,6 +180,22 @@ process {
   }
 }
 ```
+
+:::tip
+More information on how to configure Slurm in Nextflow can be found [here](https://www.nextflow.io/docs/latest/executor.html#slurm). Depending on your cluster configuration, you might need to adjust the `clusterOptions` to one of the following:
+
+- `--gpus 1` (as in the example above)
+- `--gpus-per-node=1`
+- `--gres=gpu:1`
+
+:::
+
+:::tip
+If your jobs get assigned to the correct nodes, but the GPU is not utilized, you might need to add the following configuration:
+`singularity.runOptions = '--no-mount tmp --writable-tmpfs --nv --env CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES --env ROCR_VISIBLE_DEVICES=$ROCR_VISIBLE_DEVICES --env ZE_AFFINITY_MASK=$ZE_AFFINITY_MASK --env NVIDIA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES`
+
+The first part (`--no-mount tmp --writable-tmpfs --nv`) is set by default in the `gpu` profile. The rest of this configuration is needed in some cases to make the GPU visible to the container.
+:::
 
 For different executors, the configuration might look different. Once a wider range of users have tested the GPU support, we will provide more detailed instructions for different executors.
 

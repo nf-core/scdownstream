@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
 import platform
+import os
+import pickle
+
 import anndata as ad
 import pandas as pd
 import numpy as np
-import os
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
@@ -29,7 +31,13 @@ adata = ad.read_h5ad("${base}")
 prefix = "${prefix}"
 obs_paths = "${obs}".split()
 obsm_paths = "${obsm}".split()
+obsp_paths = "${obsp}".split()
+uns_paths = "${uns}".split()
 layers_paths = "${layers}".split()
+
+def simple_name(path):
+    basename = os.path.basename(path)
+    return basename[:basename.rfind(".")]
 
 for path in obs_paths:
     df = pd.read_pickle(path).reindex(adata.obs_names)
@@ -37,13 +45,16 @@ for path in obs_paths:
 
 for path in obsm_paths:
     df = pd.read_pickle(path).reindex(adata.obs_names)
-    name = os.path.basename(path).split(".")[0]
-    adata.obsm[name] = np.float32(df.to_numpy())
+    adata.obsm[simple_name(path)] = np.float32(df.to_numpy())
+
+for path in obsp_paths:
+    adata.obsp[simple_name(path)] = np.load(path, allow_pickle=True).item()
+
+for path in uns_paths:
+    adata.uns[simple_name(path)] = pickle.load(open(path, "rb"))
 
 for path in layers_paths:
-    array = np.load(path)
-    name = os.path.basename(path).split(".")[0]
-    adata.layers[name] = np.float32(array)
+    adata.layers[simple_name(path)] = np.float32(np.load(path))
 
 adata.write_h5ad(f"{prefix}.h5ad")
 adata.obs.to_csv(f"{prefix}_metadata.csv")

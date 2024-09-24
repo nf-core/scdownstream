@@ -95,6 +95,13 @@
                 "default": 1.00,
                 "errorMessage": "Mitochondrial fraction must be a number between 0 and 1.",
                 "meta": ["mito_fraction"]
+            },
+            "expected_cells": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 0,
+                "errorMessage": "Number of cells expected from the experimental design, used as input to cellbender.",
+                "meta": ["expected_cells"]
             }
         },
         "anyOf": [

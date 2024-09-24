@@ -34,12 +34,13 @@ matrices = [adata.X] + [adata.layers[key] for key in adata.layers.keys()]
 too_large = any(sp.issparse(matrix) and matrix.nnz > 2**31 for matrix in matrices)
 
 if not too_large:
+    adata.layers["counts"] = adata.X if "${counts_layer}" == "X" else adata.layers["${counts_layer}"]
     sce = anndata2ri.py2rpy(adata)
 
     save_rds = ro.r('function(x, file) {saveRDS(x, file)}')
     save_rds(sce, f"{prefix}.rds")
 else:
-    print("Matrix too large to be saved in RDS format.")
+    raise ValueError("Matrix too large to be saved in RDS format. Sparse matrices with more than 2^31 explicit elements are not supported in R.")
 
 versions = {
     "${task.process}": {
