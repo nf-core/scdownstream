@@ -45,8 +45,6 @@ for model in models:
     model_name = model_file[:-4]
     ct_models.download_models(model=model_file)
     model_obj = ct_models.Model.load(model_file)
-    if "${celltypist_map_file}":
-        model_obj.convert(map_file="${celltypist_map_file}")
 
     predictions = celltypist.annotate(
         adata_celltypist, model=model_obj
