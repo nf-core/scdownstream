@@ -88,6 +88,14 @@
                 "errorMessage": "Minimum number of counts per gene must be an integer greater than 0.",
                 "meta": ["min_counts_gene"]
             },
+            "max_mito_fraction": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "default": 100,
+                "errorMessage": "Max mitochondrial fraction must be an integer between 0 and 100.",
+                "meta": ["max_mito_fraction"]
+            },
             "expected_cells": {
                 "type": "integer",
                 "minimum": 1,

@@ -22,6 +22,7 @@ process SCANPY_FILTER {
     min_cells       = meta.min_cells ?: 1
     min_counts_gene = meta.min_counts_gene ?: 1
     min_counts_cell = meta.min_counts_cell ?: 1
+    max_mito_fraction   = meta.max_mito_fraction ?: 100
     prefix = task.ext.prefix ?: "${meta.id}"
     template 'filter.py'
 }
