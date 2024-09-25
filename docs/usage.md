@@ -110,7 +110,7 @@ You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-c
 
 ### Cell type annotation
 
-Automated cell type annotation using [Celltypist](https://github.com/Teichlab/celltypist) is supported. You can specify the models to use with the `celltypist_model` parameter. If no models are specified, no cell type annotation will be performed.
+Automated cell type annotation using [Celltypist](https://github.com/Teichlab/celltypist) is supported. You can specify the models to use with the [`celltypist_model` parameter](https://nf-co.re/scdownstream/dev/parameters/#celltypist_model). If no models are specified, no cell type annotation will be performed.
 
 ### Reference mapping
 
