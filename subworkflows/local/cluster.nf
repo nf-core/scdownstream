@@ -2,8 +2,6 @@ include { ADATA_SPLITCOL         } from '../../modules/local/adata/splitcol'
 include { SCANPY_NEIGHBORS       } from '../../modules/local/scanpy/neighbors'
 include { SCANPY_LEIDEN          } from '../../modules/local/scanpy/leiden'
 include { SCANPY_UMAP            } from '../../modules/local/scanpy/umap'
-include { SCANPY_PAGA            } from '../../modules/local/scanpy/paga'
-include { SCANPY_RANKGENESGROUPS } from '../../modules/local/scanpy/rankgenesgroups'
 
 workflow CLUSTER {
     take:
@@ -63,24 +61,12 @@ workflow CLUSTER {
     ch_obs = ch_obs.mix(SCANPY_LEIDEN.out.obs)
     ch_multiqc_files = ch_multiqc_files.mix(SCANPY_LEIDEN.out.multiqc_files)
 
-    SCANPY_PAGA(SCANPY_LEIDEN.out.h5ad)
-    ch_versions = ch_versions.mix(SCANPY_PAGA.out.versions)
-    // ch_obsp = ch_obsp.mix(SCANPY_PAGA.out.obsp)
-    ch_uns = ch_uns.mix(SCANPY_PAGA.out.uns)
-    ch_multiqc_files = ch_multiqc_files.mix(SCANPY_PAGA.out.multiqc_files)
-
-    if (!params.skip_rankgenesgroups) {
-        SCANPY_RANKGENESGROUPS(SCANPY_LEIDEN.out.h5ad)
-        ch_versions = ch_versions.mix(SCANPY_RANKGENESGROUPS.out.versions)
-        ch_uns = ch_uns.mix(SCANPY_RANKGENESGROUPS.out.uns)
-        ch_multiqc_files = ch_multiqc_files.mix(SCANPY_RANKGENESGROUPS.out.multiqc_files)
-    }
-
     emit:
     obs = ch_obs
     obsm = ch_obsm
     obsp = ch_obsp
     uns = ch_uns
+    h5ad = SCANPY_LEIDEN.out.h5ad
 
     multiqc_files = ch_multiqc_files
     versions = ch_versions

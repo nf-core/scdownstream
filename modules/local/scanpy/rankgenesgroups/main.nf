@@ -23,7 +23,7 @@ process SCANPY_RANKGENESGROUPS {
     task.ext.when == null || task.ext.when
 
     script:
-    obs_key = task.ext.obs_key ?: "leiden"
+    obs_key = meta.obs_key ?: "leiden"
     prefix = task.ext.prefix ?: "${meta.id}"
     template 'rank_genes_groups.py'
 }

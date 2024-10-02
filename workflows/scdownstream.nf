@@ -9,6 +9,7 @@ include { CELLTYPE_ASSIGNMENT    } from '../subworkflows/local/celltype_assignme
 include { COMBINE                } from '../subworkflows/local/combine'
 include { ADATA_SPLITEMBEDDINGS  } from '../modules/local/adata/splitembeddings'
 include { CLUSTER                } from '../subworkflows/local/cluster'
+include { PER_GROUP              } from '../subworkflows/local/per_group'
 include { FINALIZE               } from '../subworkflows/local/finalize'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { paramsSummaryMap       } from 'plugin/nf-validation'
@@ -100,6 +101,16 @@ workflow SCDOWNSTREAM {
         ch_obsp = ch_obsp.mix(CLUSTER.out.obsp)
         ch_uns = ch_uns.mix(CLUSTER.out.uns)
         ch_multiqc_files = ch_multiqc_files.mix(CLUSTER.out.multiqc_files)
+
+        PER_GROUP(CLUSTER.out.h5ad
+            .map{meta, h5ad -> [meta + [obs_key: "${meta.id}_leiden"], h5ad]}
+            // .mix(
+            //     COMBINE.out.h5ad_inner.map{meta, h5ad -> [meta + [obs_key: 'label'], h5ad]}
+            // )
+        )
+        ch_versions = ch_versions.mix(PER_GROUP.out.versions)
+        ch_uns = ch_uns.mix(PER_GROUP.out.uns)
+        ch_multiqc_files = ch_multiqc_files.mix(PER_GROUP.out.multiqc_files)
 
         FINALIZE(ch_finalization_base, ch_obs, ch_obsm, ch_obsp, ch_uns, ch_layers)
         ch_versions = ch_versions.mix(FINALIZE.out.versions)

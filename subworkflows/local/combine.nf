@@ -56,6 +56,7 @@ workflow COMBINE {
 
     emit:
     h5ad             = ch_outer
+    h5ad_inner       = ADATA_MERGE.out.inner
     integrations     = ch_integrations
     obs              = ch_obs
     obsm             = ch_obsm
