@@ -54,23 +54,25 @@ workflow SCDOWNSTREAM {
         // Perform automated celltype assignment
         //
 
-        CELLTYPE_ASSIGNMENT(ch_h5ad)
-        ch_versions = ch_versions.mix(CELLTYPE_ASSIGNMENT.out.versions)
-        ch_h5ad = CELLTYPE_ASSIGNMENT.out.h5ad
+        if (!params.preprocess_only) {
+            CELLTYPE_ASSIGNMENT(ch_h5ad)
+            ch_versions = ch_versions.mix(CELLTYPE_ASSIGNMENT.out.versions)
+            ch_h5ad = CELLTYPE_ASSIGNMENT.out.h5ad
 
-        //
-        // Combine samples and perform integration
-        //
+            //
+            // Combine samples and perform integration
+            //
 
-        COMBINE(ch_h5ad, ch_base, ch_reference_model)
-        ch_versions      = ch_versions.mix(COMBINE.out.versions)
-        ch_multiqc_files = ch_multiqc_files.mix(COMBINE.out.multiqc_files)
-        ch_obs           = ch_obs.mix(COMBINE.out.obs)
-        ch_obsm          = ch_obsm.mix(COMBINE.out.obsm)
-        ch_layers        = ch_layers.mix(COMBINE.out.layers)
-        ch_integrations  = ch_integrations.mix(COMBINE.out.integrations)
+            COMBINE(ch_h5ad, ch_base, ch_reference_model)
+            ch_versions      = ch_versions.mix(COMBINE.out.versions)
+            ch_multiqc_files = ch_multiqc_files.mix(COMBINE.out.multiqc_files)
+            ch_obs           = ch_obs.mix(COMBINE.out.obs)
+            ch_obsm          = ch_obsm.mix(COMBINE.out.obsm)
+            ch_layers        = ch_layers.mix(COMBINE.out.layers)
+            ch_integrations  = ch_integrations.mix(COMBINE.out.integrations)
 
-        ch_finalization_base = COMBINE.out.h5ad
+            ch_finalization_base = COMBINE.out.h5ad
+        }
     } else {
         ch_embeddings = Channel.value(params.base_embeddings.split(',').collect{it.trim()})
 
@@ -90,16 +92,18 @@ workflow SCDOWNSTREAM {
     // Perform clustering and per-cluster analysis
     //
 
-    CLUSTER(ch_integrations)
-    ch_versions = ch_versions.mix(CLUSTER.out.versions)
-    ch_obs = ch_obs.mix(CLUSTER.out.obs)
-    ch_obsm = ch_obsm.mix(CLUSTER.out.obsm)
-    ch_obsp = ch_obsp.mix(CLUSTER.out.obsp)
-    ch_uns = ch_uns.mix(CLUSTER.out.uns)
-    ch_multiqc_files = ch_multiqc_files.mix(CLUSTER.out.multiqc_files)
+    if (!params.preprocess_only) {
+        CLUSTER(ch_integrations)
+        ch_versions = ch_versions.mix(CLUSTER.out.versions)
+        ch_obs = ch_obs.mix(CLUSTER.out.obs)
+        ch_obsm = ch_obsm.mix(CLUSTER.out.obsm)
+        ch_obsp = ch_obsp.mix(CLUSTER.out.obsp)
+        ch_uns = ch_uns.mix(CLUSTER.out.uns)
+        ch_multiqc_files = ch_multiqc_files.mix(CLUSTER.out.multiqc_files)
 
-    FINALIZE(ch_finalization_base, ch_obs, ch_obsm, ch_obsp, ch_uns, ch_layers)
-    ch_versions = ch_versions.mix(FINALIZE.out.versions)
+        FINALIZE(ch_finalization_base, ch_obs, ch_obsm, ch_obsp, ch_uns, ch_layers)
+        ch_versions = ch_versions.mix(FINALIZE.out.versions)
+    }
 
     //
     // Collate and save software versions
