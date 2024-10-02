@@ -147,6 +147,10 @@ def validateInputParameters() {
         throw new Exception("Either an input samplesheet or (base_adata && base_embeddings && base_label_col) must be provided")
     }
 
+    if (params.preprocess_only && !params.input) {
+        throw new Exception("If preprocess_only is set to true, an input samplesheet must be provided")
+    }
+
     if (params.base_adata && params.input && !params.reference_model) {
         throw new Exception("If a base adata file is provided and a samplesheet is provided, a reference model must also be provided")
     }

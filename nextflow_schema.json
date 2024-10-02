@@ -90,6 +90,11 @@
             "type": "object",
             "description": "Options for selecting which tools should be used for certain tasks",
             "properties": {
+                "preprocess_only": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Only run the preprocessing steps, skip the integration and clustering steps"
+                },
                 "memory_scale": {
                     "type": "integer",
                     "default": 1,
