@@ -102,11 +102,10 @@ workflow SCDOWNSTREAM {
         ch_uns = ch_uns.mix(CLUSTER.out.uns)
         ch_multiqc_files = ch_multiqc_files.mix(CLUSTER.out.multiqc_files)
 
-        PER_GROUP(CLUSTER.out.h5ad
-            .map{meta, h5ad -> [meta + [obs_key: "${meta.id}_leiden"], h5ad]}
-            // .mix(
-            //     COMBINE.out.h5ad_inner.map{meta, h5ad -> [meta + [obs_key: 'label'], h5ad]}
-            // )
+        PER_GROUP(
+            CLUSTER.out.h5ad_clustering.map{meta, h5ad -> [meta + [obs_key: "${meta.id}_leiden"], h5ad]},
+            CLUSTER.out.h5ad_neighbors.map{meta, h5ad -> [meta + [obs_key: "label"], h5ad]},
+            COMBINE.out.h5ad_inner.map{meta, h5ad -> [meta + [obs_key: 'label'], h5ad]}
         )
         ch_versions = ch_versions.mix(PER_GROUP.out.versions)
         ch_uns = ch_uns.mix(PER_GROUP.out.uns)

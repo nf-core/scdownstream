@@ -11,11 +11,11 @@ process SCANPY_PAGA {
     tuple val(meta), path(h5ad)
 
     output:
-    tuple val(meta), path("*.h5ad"), emit: h5ad
-    path("*.pkl")                  , emit: uns
-    path("*.npy")                  , emit: obsp
-    path("*.png")                  , emit: plot
-    path("*_mqc.json")             , emit: multiqc_files
+    tuple val(meta), path("*.h5ad"), emit: h5ad, optional: true
+    path("*.pkl")                  , emit: uns, optional: true
+    path("*.npy")                  , emit: obsp, optional: true
+    path("*.png")                  , emit: plot, optional: true
+    path("*_mqc.json")             , emit: multiqc_files, optional: true
     path "versions.yml"            , emit: versions
 
     when:

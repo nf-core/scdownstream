@@ -62,11 +62,12 @@ workflow CLUSTER {
     ch_multiqc_files = ch_multiqc_files.mix(SCANPY_LEIDEN.out.multiqc_files)
 
     emit:
-    obs = ch_obs
-    obsm = ch_obsm
-    obsp = ch_obsp
-    uns = ch_uns
-    h5ad = SCANPY_LEIDEN.out.h5ad
+    obs             = ch_obs
+    obsm            = ch_obsm
+    obsp            = ch_obsp
+    uns             = ch_uns
+    h5ad_clustering = SCANPY_LEIDEN.out.h5ad
+    h5ad_neighbors  = SCANPY_NEIGHBORS.out.h5ad
 
     multiqc_files = ch_multiqc_files
     versions = ch_versions
