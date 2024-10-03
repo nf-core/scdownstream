@@ -147,6 +147,9 @@ if symbol_col != "index":
         adata.var.index = adata.var[symbol_col]
         del adata.var[symbol_col]
 
+# Replace all underlines and dots with dashes
+adata.var.index = adata.var.index.str.replace(r"[\._]", "-")
+
 # Aggregate duplicate genes
 method = "${params.var_aggr_method}"
 if not method in ["mean", "sum", "max"]:
