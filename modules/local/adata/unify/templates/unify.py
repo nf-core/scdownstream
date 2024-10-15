@@ -132,20 +132,22 @@ adata.obs["label"] = adata.obs["label"].astype("category")
 
 # Unify gene symbols
 symbol_col = "${meta.symbol_col ?: 'index'}"
+unify_gene_symbols = "${unify_gene_symbols}" == "true"
 
-if symbol_col != "index":
-    if symbol_col == "none":
-        import mygene
-        mg = mygene.MyGeneInfo()
-        df_genes = mg.querymany(adata.var.index,
-            scopes=["symbol", "entrezgene", "ensemblgene"],
-            fields="symbol", species="human", as_dataframe=True)
-        mapping = df_genes["symbol"].dropna().to_dict()
+if symbol_col != "index" and symbol_col != "none":
+    adata.var.index = adata.var[symbol_col]
+    del adata.var[symbol_col]
 
-        adata.var.index = adata.var.index.map(lambda x: mapping.get(x, x))
-    else:
-        adata.var.index = adata.var[symbol_col]
-        del adata.var[symbol_col]
+if unify_gene_symbols or symbol_col == "none":
+    import mygene
+
+    mg = mygene.MyGeneInfo()
+    df_genes = mg.querymany(adata.var.index,
+        scopes=["symbol", "entrezgene", "ensemblgene"],
+        fields="symbol", species="human", as_dataframe=True)
+    mapping = df_genes["symbol"].dropna().to_dict()
+
+    adata.var.index = adata.var.index.map(lambda x: mapping.get(x, x))
 
 # Aggregate duplicate genes
 method = "${params.var_aggr_method}"

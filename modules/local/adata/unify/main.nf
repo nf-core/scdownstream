@@ -19,5 +19,6 @@ process ADATA_UNIFY {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
+    unify_gene_sambols = task.ext.unify_gene_sambols ?: false
     template 'unify.py'
 }
