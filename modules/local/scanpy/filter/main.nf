@@ -18,11 +18,11 @@ process SCANPY_FILTER {
     task.ext.when == null || task.ext.when
 
     script:
-    min_genes       = meta.min_genes ?: 1
-    min_cells       = meta.min_cells ?: 1
-    min_counts_gene = meta.min_counts_gene ?: 1
-    min_counts_cell = meta.min_counts_cell ?: 1
-    max_mito_fraction   = meta.max_mito_fraction ?: 100
+    min_genes           = meta.min_genes ?: 1
+    min_cells           = meta.min_cells ?: 1
+    min_counts_gene     = meta.min_counts_gene ?: 1
+    min_counts_cell     = meta.min_counts_cell ?: 1
+    max_mito_percentage = meta.max_mito_percentage ?: 100
     prefix = task.ext.prefix ?: "${meta.id}"
     template 'filter.py'
 }
