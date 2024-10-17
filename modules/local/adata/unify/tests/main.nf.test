@@ -1,0 +1,50 @@
+nextflow_process {
+    name 'Test Process ADATA_UNIFY'
+    script '../main.nf'
+    process 'ADATA_UNIFY'
+
+    tag "modules"
+    tag "adata/unify"
+    tag "adata"
+
+    test("test_adata_unify") {
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    file("https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/samples/SAMN14430799_custom_emptydrops_filter_matrix.h5ad", checkIfExists: true)
+                ]
+                """
+            }
+        }
+        then {
+            assertAll(
+                {assert process.success},
+                {assert snapshot(process.out.h5ad).match("adata_unify_h5ad")},
+                {assert snapshot(process.out.versions).match("adata_unify_versions")}
+            )
+        }
+    }
+
+    test("test_adata_unify - stub") {
+        options '-stub'
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    file("https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/samples/SAMN14430799_custom_emptydrops_filter_matrix.h5ad", checkIfExists: true),
+                ]
+                """
+            }
+        }
+        then {
+            assertAll(
+                {assert process.success},
+                {assert snapshot(process.out.h5ad).match("adata_unify_h5ad_stub")},
+                {assert snapshot(process.out.versions).match("adata_unify_versions_stub")}
+            )
+        }
+    }
+}
