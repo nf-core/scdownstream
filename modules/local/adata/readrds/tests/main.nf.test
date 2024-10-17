@@ -1,0 +1,51 @@
+nextflow_process {
+    name 'Test Process ADATA_READRDS'
+    script '../main.nf'
+    process 'ADATA_READRDS'
+
+    tag "modules"
+    tag "modules/local"
+    tag "adata/readrds"
+    tag "adata"
+
+    test("test_adata_readrds") {
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    file("https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/samples/SAMN14430801_custom_emptydrops_filter_matrix.rds", checkIfExists: true)
+                ]
+                """
+            }
+        }
+        then {
+            assertAll(
+                {assert process.success},
+                {assert snapshot(process.out.h5ad).match("adata_readrds_h5ad")},
+                {assert snapshot(process.out.versions).match("adata_readrds_versions")}
+            )
+        }
+    }
+
+    test("test_adata_readrds - stub") {
+        options '-stub'
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    file("https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/samples/SAMN14430801_custom_emptydrops_filter_matrix.rds", checkIfExists: true),
+                ]
+                """
+            }
+        }
+        then {
+            assertAll(
+                {assert process.success},
+                {assert snapshot(process.out.h5ad).match("adata_readrds_h5ad_stub")},
+                {assert snapshot(process.out.versions).match("adata_readrds_versions_stub")}
+            )
+        }
+    }
+}
