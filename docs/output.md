@@ -40,6 +40,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 4. Clustering and dimensionality reduction
    1. [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html)
    2. [UMAP](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.umap.html)
+5. Create report ([`MultiQC`](http://multiqc.info/))
 
 ### Per-sample preprocessing
 
