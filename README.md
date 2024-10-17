@@ -19,44 +19,75 @@
 
 ## Introduction
 
-**nf-core/scdownstream** is a bioinformatics pipeline that ...
+**nf-core/scdownstream** is a bioinformatics pipeline that can be used to process already quantified single-cell RNA-seq data. It takes a samplesheet and h5ad-, SingleCellExperiment/Seurat- or CSV files as input and performs quality control, integration, dimensionality reduction and clustering. It produces an integrated h5ad and SingleCellExperiment file and an extensive QC report.
 
-<!-- TODO nf-core:
-   Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
-   major pipeline sections and the types of output it produces. You're giving an overview to someone new
-   to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
--->
+The pipeline is based on the learnings and implementations from the following pipelines (alphabetical):
 
-<!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
-     workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
+- [panpipes](https://github.com/DendrouLab/panpipes)
+- [scFlow](https://combiz.github.io/scFlow/)
+- [scRAFIKI](https://github.com/Mye-InfoBank/scRAFIKI)
+- [YASCP](https://github.com/wtsi-hgi/yascp)
 
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+# ![nf-core/scdownstream](docs/images/metromap.png)
+
+Steps marked with the boat icon are not yet implemented. For the other steps, the pipeline uses the following tools:
+
+1. Per-sample preprocessing
+   1. Convert all RDS files to h5ad format
+   2. Create filtered matrix (if not provided)
+   3. Present QC for raw counts ([`MultiQC`](http://multiqc.info/))
+   4. Remove ambient RNA
+      - [decontX](https://bioconductor.org/packages/release/bioc/html/decontX.html)
+      - [soupX](https://cran.r-project.org/web/packages/SoupX/readme/README.html)
+      - [cellbender](https://cellbender.readthedocs.io/en/latest/)
+      - [scAR](https://docs.scvi-tools.org/en/stable/user_guide/models/scar.html)
+   5. Apply user-defined QC filters (can be defined per sample in the samplesheet)
+   6. Doublet detection (Majority vote possible)
+      - [SOLO](https://docs.scvi-tools.org/en/stable/user_guide/models/solo.html)
+      - [scrublet](https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html)
+      - [DoubletDetection](https://doubletdetection.readthedocs.io/en/v2.5.2/doubletdetection.doubletdetection.html)
+      - [SCDS](https://bioconductor.org/packages/devel/bioc/vignettes/scds/inst/doc/scds.html)
+2. Sample aggregation
+   1. Merge into a single h5ad file
+   2. Present QC for merged counts ([`MultiQC`](http://multiqc.info/))
+   3. Integration
+      - [scVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scvi.html)
+      - [scANVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scanvi.html)
+      - [Harmony](https://portals.broadinstitute.org/harmony/articles/quickstart.html)
+      - [BBKNN](https://github.com/Teichlab/bbknn)
+      - [Combat](https://scanpy.readthedocs.io/en/latest/api/generated/scanpy.pp.combat.html)
+      - [Seurat](https://satijalab.org/seurat/articles/integration_introduction)
+3. Cell type annotation
+   - [celltypist](https://www.celltypist.org/)
+4. Clustering and dimensionality reduction
+   1. [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html)
+   2. [UMAP](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.umap.html)
+5. Create report ([`MultiQC`](http://multiqc.info/))
 
 ## Usage
 
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
+> [!NOTE]
+> If you are confused by the terms `filtered` and `unfiltered`, please check out the respective [documentation](https://nf-co.re/scdownstream/dev/docs/usage/#filtered-and-unfiltered-matrices).
 
 First, prepare a samplesheet with your input data that looks as follows:
 
-`samplesheet.csv`:
-
-```csv
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+```csv title="samplesheet.csv"
+sample,unfiltered
+sample1,/absolute/path/to/sample1.h5ad
+sample2,/absolute/path/to/sample3.h5
+sample3,relative/path/to/sample2.rds
+sample4,/absolute/path/to/sample3.csv
 ```
 
-Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
+Each entry represents a h5ad, h5, RDS or CSV file. RDS files may contain any object that can be converted to a SingleCellExperiment using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function.
+CSV files should contain a matrix with genes as columns and cells as rows. The first column should contain cell names/barcodes.
 
 -->
 
 Now, you can run the pipeline using:
-
-<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
 
 ```bash
 nextflow run nf-core/scdownstream \
@@ -78,11 +109,22 @@ For more details about the output files and reports, please refer to the
 
 ## Credits
 
-nf-core/scdownstream was originally written by Nico Trummer.
+nf-core/scdownstream was originally written by [Nico Trummer](https://github.com/nictru).
 
-We thank the following people for their extensive assistance in the development of this pipeline:
+We thank the following people for their extensive assistance in the development of this pipeline (alphabetical):
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+- [Fabian Rost](https://github.com/fbnrst)
+- [Fabiola Curion](https://github.com/bio-la)
+- [Gregor Sturm](https://github.com/grst)
+- [Jonathan Talbot-Martin](https://github.com/jtalbotmartin)
+- [Lukas Heumos](https://github.com/zethson)
+- [Matiss Ozols](https://github.com/maxozo)
+- [Nathan Skene](https://github.com/NathanSkene)
+- [Nurun Fancy](https://github.com/nfancy)
+- [Riley Grindle](https://github.com/Riley-Grindle)
+- [Ryan Seaman](https://github.com/RPSeaman)
+- [Steffen Möller](https://github.com/smoe)
+- [Wojtek Sowinski](https://github.com/WojtekSowinski)
 
 ## Contributions and Support
 

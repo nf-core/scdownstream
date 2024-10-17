@@ -13,21 +13,105 @@
                 "errorMessage": "Sample name must be provided and cannot contain spaces",
                 "meta": ["id"]
             },
-            "fastq_1": {
+            "filtered": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^\\S+\\.(h5ad|h5|rds|RDS|csv)$",
+                "errorMessage": "Filtered file must be a .h5ad, .h5, .rds or .csv file."
             },
-            "fastq_2": {
+            "unfiltered": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^\\S+\\.(h5ad|h5|rds|RDS|csv)$",
+                "errorMessage": "Unfiltered file must be a .h5ad, .h5, .rds or .csv file."
+            },
+            "unified": {
+                "type": "boolean",
+                "default": false,
+                "errorMessage": "Unified must be a boolean.",
+                "meta": ["unified"]
+            },
+            "batch_col": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                "default": "batch",
+                "errorMessage": "Batch column needs to start with a letter and can contain letters, numbers, underlines and dashes.",
+                "meta": ["batch_col"]
+            },
+            "symbol_col": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                "default": "index",
+                "errorMessage": "Symbol column needs to start with a letter and can contain letters, numbers, underlines and dashes.",
+                "meta": ["symbol_col"]
+            },
+            "label_col": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                "errorMessage": "Label column needs to start with a letter and can contain letters, numbers, underlines and dashes.",
+                "meta": ["label_col"]
+            },
+            "unknown_label": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                "default": "unknown",
+                "errorMessage": "Unknown label needs to start with a letter and can contain letters, numbers, underlines and dashes.",
+                "meta": ["unknown_label"]
+            },
+            "min_genes": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 1,
+                "errorMessage": "Minimum number of genes must be an integer greater than 0.",
+                "meta": ["min_genes"]
+            },
+            "min_cells": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 1,
+                "errorMessage": "Minimum number of cells must be an integer greater than 0.",
+                "meta": ["min_cells"]
+            },
+            "min_counts_cell": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 1,
+                "errorMessage": "Minimum number of counts per cell must be an integer greater than 0.",
+                "meta": ["min_counts_cell"]
+            },
+            "min_counts_gene": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 1,
+                "errorMessage": "Minimum number of counts per gene must be an integer greater than 0.",
+                "meta": ["min_counts_gene"]
+            },
+            "max_mito_fraction": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "default": 100,
+                "errorMessage": "Max mitochondrial fraction must be an integer between 0 and 100.",
+                "meta": ["max_mito_fraction"]
+            },
+            "expected_cells": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 0,
+                "errorMessage": "Number of cells expected from the experimental design, used as input to cellbender.",
+                "meta": ["expected_cells"]
             }
         },
-        "required": ["sample", "fastq_1"]
+        "anyOf": [
+            {
+                "required": ["filtered"]
+            },
+            {
+                "required": ["unfiltered"]
+            }
+        ],
+        "required": ["sample"]
     }
 }
