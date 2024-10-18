@@ -1,0 +1,38 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+
+    test("test-build") {
+
+        when {
+            // the rest is taken from shared config
+            params {
+                outdir     = "$outputDir"
+            }
+        }
+
+        then {
+
+            assertAll(
+
+                //
+                // General assertions
+                //
+
+                // Did it finish successfully?
+                {assert workflow.success},
+                {assert workflow.trace.tasks().size() == 14},
+
+                // Check if files are the same
+                {assert snapshot(
+                    path( "${outputDir}/finalized/merged_metadata.csv" ),
+                    path( "${outputDir}/finalized/merged.h5ad" ),
+                    path( "${outputDir}/finalized/merged.rds" )
+                ).match()}
+            ) // end of assertAll()
+
+        }
+    }
+
+}
