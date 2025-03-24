@@ -16,6 +16,7 @@ include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_scdownstream_pipeline'
+include { LIANA_RANKAGGREGATE    } from '../modules/local/liana/rankaggregate/main.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,6 +122,18 @@ workflow SCDOWNSTREAM {
         FINALIZE(ch_finalization_base, ch_obs, ch_var, ch_obsm, ch_obsp, ch_uns, ch_layers)
         ch_versions = ch_versions.mix(FINALIZE.out.versions)
     }
+
+    //
+    // MODULE: MultiQC
+    //
+    // Add channel creation for LIANA_RANKAGGREGATE
+    ch_liana_input = CLUSTER.out.h5ad_clustering.map { meta, h5ad -> [meta, h5ad] }
+
+    // Perform LIANA Rank Aggregation
+    LIANA_RANKAGGREGATE(ch_liana_input)
+    ch_versions = ch_versions.mix(LIANA_RANKAGGREGATE.out.versions)
+    ch_h5ad = ch_h5ad.mix(LIANA_RANKAGGREGATE.out.h5ad)
+    ch_uns = ch_uns.mix(LIANA_RANKAGGREGATE.out.uns)
 
     //
     // Collate and save software versions
