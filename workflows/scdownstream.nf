@@ -16,6 +16,7 @@ include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_scdownstream_pipeline'
+include { CREATE_PSEUDOBULKS     } from '../subworkflows/local/pseudobulking'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -120,6 +121,14 @@ workflow SCDOWNSTREAM {
 
         FINALIZE(ch_finalization_base, ch_obs, ch_var, ch_obsm, ch_obsp, ch_uns, ch_layers)
         ch_versions = ch_versions.mix(FINALIZE.out.versions)
+    }
+
+    //
+    // Perform pseudobulking
+    //
+
+    if(params.perform_pseudobulking){
+        CREATE_PSEUDOBULKS(CELLTYPE_ASSIGNMENT.out.h5ad)
     }
 
     //
