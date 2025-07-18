@@ -38,7 +38,7 @@ workflow INTEGRATE {
         ch_var = ch_var.mix(SCANPY_HVGS.out.var)
 
         // Filter out empty cells from the AnnData object
-        SCANPY_FILTER(ch_h5ad_hvg, 1, 0, 0, 0, 100)
+        SCANPY_FILTER(ch_h5ad_hvg, 1, 0, 0, 0, 100, params.dynamic_filtering)
         ch_h5ad_hvg = SCANPY_FILTER.out.h5ad
         ch_versions = ch_versions.mix(SCANPY_FILTER.out.versions)
     }

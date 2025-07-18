@@ -14,6 +14,7 @@ process SCANPY_FILTER {
     val(min_counts_gene)
     val(min_counts_cell)
     val(max_mito_percentage)
+    val dynamic_filtering
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
