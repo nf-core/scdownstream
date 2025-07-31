@@ -4,6 +4,8 @@ import os
 
 os.environ["TMPDIR"] = "."
 
+import importlib.metadata
+
 import anndata as ad
 import anndata2ri
 import rpy2
@@ -53,10 +55,10 @@ adata.var.index = adata.var.index.astype(str)
 adata.write_h5ad("${prefix}.h5ad")
 
 versions = {
-    "${task.process}": {
+    "NFCORE_SCDOWNSTREAM:SCDOWNSTREAM:LOAD_H5AD:ADATA_READRDS": {
         "anndata": ad.__version__,
         "anndata2ri": anndata2ri.__version__,
-        "rpy2": rpy2.__version__,
+        "rpy2": importlib.metadata.version("rpy2"),
         "pandas": pd.__version__,
         "seurat": seurat.__version__
     }
