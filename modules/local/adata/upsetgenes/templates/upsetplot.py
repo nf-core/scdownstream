@@ -1,4 +1,4 @@
-#!/opt/conda/bin/python
+#!/usr/bin/env python
 
 import os
 import platform
