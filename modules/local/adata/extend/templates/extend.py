@@ -38,6 +38,10 @@ for path in var_paths:
     df = load_pickle_or_csv(path).reindex(adata.var_names)
     adata.var = pd.concat([adata.var, df], axis=1)
 
+# Ensure 'highly_variable' is boolean if present
+if "highly_variable" in adata.var:
+    adata.var["highly_variable"] = adata.var["highly_variable"].astype(bool)
+
 for path in obsm_paths:
     df = pd.read_pickle(path).reindex(adata.obs_names)
     adata.obsm[simple_name(path)] = np.float32(df.to_numpy())
