@@ -2,6 +2,7 @@ process SCDS {
     tag "${meta.id}"
     label 'process_medium'
 
+    conda "${moduleDir}/environment.yml"
     container "docker.io/nicotru/scds:7788dbeb87bc7eec"
 
     input:

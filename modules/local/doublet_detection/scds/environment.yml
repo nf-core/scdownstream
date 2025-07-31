@@ -1,0 +1,17 @@
+name: scds_r_env
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - r-base=4.4.0
+  - bioconductor-scds=1.22.0
+  - bioconductor-singlecellexperiment=1.28.0
+  - bioconductor-summarizedexperiment=1.36.0
+  - bioconductor-s4vectors=0.44.0
+  - r-anndata=0.7.5.6-0  # 0.8.0 and 0.7.5.6-1 not available on bioconda, use 0.7.5.6-0 instead
+  - r-dplyr
+  - r-matrix
+  - r-proc
+  - r-xgboost
+  
