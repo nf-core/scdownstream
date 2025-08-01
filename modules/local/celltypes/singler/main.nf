@@ -2,6 +2,7 @@ process CELLTYPES_SINGLER {
     tag "$meta.id"
     label 'process_medium'
 
+    conda "${moduleDir}/environment.yml"
     container 'docker.io/saditya88/singler:0.0.1'
 
 
@@ -21,16 +22,16 @@ process CELLTYPES_SINGLER {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        error "SINGLER module does not support Conda. Please use Docker / Singularity / Podman instead."
-    }
-    template 'singleR.R'
+    // if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+    //     error "SINGLER module does not support Conda. Please use Docker / Singularity / Podman instead."
+    // }
+    // template 'singleR.R'
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        error "SINGLER module does not support Conda. Please use Docker / Singularity / Podman instead."
-    }
+    // if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+    //     error "SINGLER module does not support Conda. Please use Docker / Singularity / Podman instead."
+    // }
     """
     touch ${prefix}_distribution.pdf
     touch ${prefix}_heatmap.pdf
