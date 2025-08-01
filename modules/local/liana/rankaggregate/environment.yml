@@ -2,8 +2,9 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
+  - python=3.10
   - bioconda::liana=1.4.0
   - scanpy
   - pandas
   - threadpoolctl
-  - anndata>=0.12.0 # latest for linux64
+  - anndata>=0.7.4,<=0.10.8
