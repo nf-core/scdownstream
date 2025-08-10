@@ -145,10 +145,19 @@ workflow SCDOWNSTREAM {
             ch_versions = ch_versions.mix(PSEUDOBULKING.out.versions)
         }
 
+        ch_h5ad_both = CLUSTER.out.h5ad_clustering.map { meta, h5ad -> [meta + [obs_key: "${meta.id}_leiden"], h5ad] }
+
         PER_GROUP(
-            CLUSTER.out.h5ad_clustering.map { meta, h5ad -> [meta + [obs_key: "${meta.id}_leiden"], h5ad] },
-            CLUSTER.out.h5ad_neighbors.map { meta, h5ad -> [meta + [obs_key: grouping_col], h5ad] },
-            ch_label_grouping.map { meta, h5ad -> [meta + [obs_key: grouping_col], h5ad] },
+            // Run on each clustering resolution for each embedding
+            ch_h5ad_both.mix(
+                // And on the label column for each embedding
+                CLUSTER.out.h5ad_neighbors.map { meta, h5ad -> [meta + [obs_key: grouping_col], h5ad] }
+            ),
+            // Run on each clustering (there is one clustering per embedding and resolution)
+            ch_h5ad_both.mix(
+                // And on the label column
+                ch_label_grouping.map { meta, h5ad -> [meta + [obs_key: grouping_col], h5ad] }
+            ),
         )
         ch_versions = ch_versions.mix(PER_GROUP.out.versions)
         ch_uns = ch_uns.mix(PER_GROUP.out.uns)
