@@ -62,7 +62,7 @@ for (ref_idx in seq_along(references)) {
     reflabel %in% colnames(colData(reference))
   )
   predictions <- SingleR(
-    test = assay(sce, 'counts'),
+    test = assay(sce, 'decontXcounts'),
     ref = reference,
     labels = colData(reference)[[reflabel]]
   )
@@ -101,10 +101,13 @@ for (ref_idx in seq_along(references)) {
     height = 12
   )
 
+  # change columns names
+  label_col <- which(colnames(predictions) == "pruned.labels")
   colnames(predictions) <- paste0(
-    colnames(predictions), "_", prefix, "_", ref_name
+    "singler__", ref_name, "__", colnames(predictions)
   )
-  prediction_results[[ref]] <- predictions
+  colnames(predictions)[label_col] <- paste0("celltypes__singler__", ref_name)
+  prediction_results[[ref_name]] <- predictions
 }
 
 prediction_nrows <- lapply(prediction_results, nrow)
@@ -118,13 +121,26 @@ stopifnot(
 
 # This is predicated in the assumption that all prediction data frames have exactly
 # the same rows ... see the stopifnot clause above
+# Remove names from the list to prevent them being added as column prefixes
+# we handled name collision in the previous loop explicitly
+names(prediction_results) <- NULL
 predictions <- do.call(cbind, prediction_results)
 
+# we write the actual cell type columns to a csv file
 write.csv(
-  predictions,
+  predictions[, grepl("celltypes__singler__", colnames(predictions))],
   file = paste0(prefix, "_predictions.csv"),
   row.names = TRUE
 )
+
+# write all confidence scores to a csv file
+write.csv(
+  predictions[, !grepl("celltypes__singler__", colnames(predictions))],
+  file = paste0(prefix, "_predictions_conf.csv"),
+  row.names = TRUE
+)
+
+
 
 # Capturing version information, as before
 versions <- list(

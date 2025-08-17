@@ -15,6 +15,7 @@ process SCANPY_LEIDEN {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
+    tuple val(meta), path("${prefix}.csv"), emit: clusters
     path "${prefix}.pkl", emit: obs
     path "${prefix}.png", emit: plots, optional: true
     path "${prefix}_mqc.json", emit: multiqc_files, optional: true

@@ -73,6 +73,20 @@ intersection_mask.to_pickle("gene_intersection.pkl")
 adata_outer.write("${prefix}_outer.h5ad")
 adata_inner.write("${prefix}_inner.h5ad")
 
+# we write the cell type predictions to csv files
+os.makedirs("celltype_predictions", exist_ok=True)
+for col in adata_outer.obs.columns:
+    if col.startswith("celltypes__"):
+        # split the column names into three parts
+        tool_name = col.split("__")[1]
+        model_name = "__".join(col.split("__")[2:])
+        adata_outer.obs[col].to_csv(f"celltype_predictions/{tool_name}_{model_name}.csv")
+
+# we have one more column that is the label column
+# if there are multiple values, we write it to a csv file
+if adata_outer.obs["label"].nunique() > 1:
+    adata_outer.obs["label"].to_csv("celltype_predictions/label.csv")
+
 if base_path:
     adata_integrate = adata_inner[~adata_inner.obs.index.isin(adata_base.obs.index)]
 

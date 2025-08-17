@@ -19,6 +19,7 @@ include { paramsSummaryMap                     } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc                 } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML               } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText               } from '../subworkflows/local/utils_nfcore_scdownstream_pipeline'
+include { DIFFERENTIAL_EXPRESSION              } from '../subworkflows/local/differential_expression'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,6 +43,8 @@ workflow SCDOWNSTREAM {
     ch_uns = channel.empty()
     ch_layers = channel.empty()
     ch_multiqc_files = channel.empty()
+    ch_clusters = channel.empty()
+    ch_celltypes = channel.empty()
 
     if (params.input) {
         ch_obs_per_sample = channel.empty()
@@ -98,6 +101,7 @@ workflow SCDOWNSTREAM {
             ch_obsm = ch_obsm.mix(COMBINE.out.obsm)
             ch_integrations = ch_integrations.mix(COMBINE.out.integrations)
             ch_finalization_base = COMBINE.out.h5ad
+            ch_celltypes = ch_celltypes.mix(COMBINE.out.celltypes)
 
             ch_label_grouping = COMBINE.out.h5ad_inner
             grouping_col = "label"
@@ -134,6 +138,7 @@ workflow SCDOWNSTREAM {
         ch_obs = ch_obs.mix(CLUSTER.out.obs)
         ch_obsm = ch_obsm.mix(CLUSTER.out.obsm)
         ch_multiqc_files = ch_multiqc_files.mix(CLUSTER.out.multiqc_files)
+        ch_clusters = ch_clusters.mix(CLUSTER.out.clusters)
 
         if (params.pseudobulk) {
             PSEUDOBULKING(
@@ -148,20 +153,25 @@ workflow SCDOWNSTREAM {
         ch_h5ad_both = CLUSTER.out.h5ad_clustering.map { meta, h5ad -> [meta + [obs_key: "${meta.id}_leiden"], h5ad] }
 
         PER_GROUP(
-            // Run on each clustering resolution for each embedding
-            ch_h5ad_both.mix(
-                // And on the label column for each embedding
-                CLUSTER.out.h5ad_neighbors.map { meta, h5ad -> [meta + [obs_key: grouping_col], h5ad] }
-            ),
-            // Run on each clustering (there is one clustering per embedding and resolution)
-            ch_h5ad_both.mix(
-                // And on the label column
-                ch_label_grouping.map { meta, h5ad -> [meta + [obs_key: grouping_col], h5ad] }
-            ),
+            CLUSTER.out.h5ad_clustering.map { meta, h5ad -> [meta + [obs_key: "${meta.id}_leiden"], h5ad] },
+            CLUSTER.out.h5ad_neighbors.map { meta, h5ad -> [meta + [obs_key: grouping_col], h5ad] },
+            ch_label_grouping.map { meta, h5ad -> [meta + [obs_key: grouping_col], h5ad] },
         )
         ch_versions = ch_versions.mix(PER_GROUP.out.versions)
         ch_uns = ch_uns.mix(PER_GROUP.out.uns)
         ch_multiqc_files = ch_multiqc_files.mix(PER_GROUP.out.multiqc_files)
+
+
+        if (!params.skip_rankgenesgroups) {
+            DIFFERENTIAL_EXPRESSION(
+                ch_integrations,
+                ch_celltypes,
+                ch_clusters,
+            )
+            ch_versions = ch_versions.mix(DIFFERENTIAL_EXPRESSION.out.versions)
+            ch_uns = ch_uns.mix(DIFFERENTIAL_EXPRESSION.out.uns)
+            ch_multiqc_files = ch_multiqc_files.mix(DIFFERENTIAL_EXPRESSION.out.multiqc_files)
+        }
 
         FINALIZE(ch_finalization_base, ch_obs, ch_var, ch_obsm, ch_obsp, ch_uns, ch_layers)
         ch_versions = ch_versions.mix(FINALIZE.out.versions)

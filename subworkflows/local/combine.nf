@@ -14,6 +14,7 @@ workflow COMBINE {
     ch_obs           = channel.empty()
     ch_var           = channel.empty()
     ch_obsm          = channel.empty()
+    ch_celltypes     = channel.empty()
 
     ADATA_MERGE(
         ch_h5ad.map { _meta, h5ad -> [[id: "merged"], h5ad] }.groupTuple(),
@@ -23,6 +24,7 @@ workflow COMBINE {
     ch_outer = ADATA_MERGE.out.outer
     ch_inner = ADATA_MERGE.out.inner
     ch_versions = ch_versions.mix(ADATA_MERGE.out.versions)
+    ch_celltypes = ADATA_MERGE.out.celltypes
 
     INTEGRATE(
         ADATA_MERGE.out.integrate,
@@ -64,6 +66,7 @@ workflow COMBINE {
     emit:
     h5ad             = ch_outer         // channel: [ merged, h5ad ]
     h5ad_inner       = ch_inner         // channel: [ merged, h5ad ]
+    celltypes        = ch_celltypes     // channel: [ csv ]
     integrations     = ch_integrations  // channel: [ integration, h5ad ]
     var              = ch_var           // channel: [ pkl ]
     obs              = ch_obs           // channel: [ pkl ]

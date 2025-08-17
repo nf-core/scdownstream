@@ -8,9 +8,10 @@ process SCANPY_RANKGENESGROUPS {
         : 'community.wave.seqera.io/library/pyyaml_scanpy:3c9e9f631f45553d'}"
 
     input:
-    tuple val(meta), path(h5ad)
+    tuple val(meta), path(h5ad), path(cluster_csv)
 
     output:
+    path prefix, emit: outdir
     tuple val(meta), path("*.h5ad"), emit: h5ad, optional: true
     path "*.pkl", emit: uns, optional: true
     path "*.png", emit: plots, optional: true
@@ -21,7 +22,7 @@ process SCANPY_RANKGENESGROUPS {
     task.ext.when == null || task.ext.when
 
     script:
-    obs_key = meta.obs_key ?: "leiden"
-    prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = task.ext.prefix ?: cluster_csv.baseName
+    sample_group_col = task.ext.sample_group_col ?: null
     template('rank_genes_groups.py')
 }

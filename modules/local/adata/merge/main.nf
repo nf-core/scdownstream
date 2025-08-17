@@ -16,6 +16,7 @@ process ADATA_MERGE {
     tuple val(meta), path("*_outer.h5ad")    , emit: outer
     tuple val(meta), path("*_inner.h5ad")    , emit: inner
     tuple val(meta), path("*_integrate.h5ad"), emit: integrate
+    path("celltype_predictions/*.csv")       , emit: celltypes
     path "gene_intersection.pkl"             , emit: intersect_genes
     path "versions.yml"                      , emit: versions
 
