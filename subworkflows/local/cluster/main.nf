@@ -19,6 +19,7 @@ workflow CLUSTER {
     ch_obsm = Channel.empty()
     ch_multiqc_files = Channel.empty()
     ch_h5ad = Channel.empty()
+    ch_clusters = Channel.empty()
 
     if (global) {
         ch_h5ad = ch_h5ad.mix(ch_input.map { meta, h5ad -> [meta + [subset: "global"], h5ad] })
@@ -71,7 +72,7 @@ workflow CLUSTER {
     ch_obs = ch_obs.mix(LEIDEN.out.obs)
     ch_h5ad_clustering = LEIDEN.out.h5ad
     ch_multiqc_files = ch_multiqc_files.mix(LEIDEN.out.multiqc_files)
-
+    ch_clusters = ch_clusters.mix(LEIDEN.out.clusters)
     ch_entropy = LEIDEN.out.h5ad.multiMap { meta, h5ad ->
         h5ad: [meta, h5ad]
         group_col: meta.id + "_leiden"
@@ -87,6 +88,7 @@ workflow CLUSTER {
     obsm            = ch_obsm // channel: [ pkl ]
     h5ad_neighbors  = ch_h5ad_neighbours // channel: [ integration, h5ad ]
     h5ad_clustering = ch_h5ad_clustering // channel: [ integration, h5ad ]
+    clusters        = ch_clusters // channel: [ csv ]
     multiqc_files   = ch_multiqc_files // channel: [ json ]
     versions        = ch_versions // channel: [ versions.yml ]
 }

@@ -66,11 +66,19 @@ for model in models:
         adata.obs.index, ["predicted_labels", "conf_score"]
     ]
 
-    df_celltypist.columns = [f"celltypist:{model_name}", f"celltypist:{model_name}:conf"]
+    df_celltypist.columns = [f"celltypes__celltypist__{model_name}", f"celltypist__{model_name}__conf"]
     df_list.append(df_celltypist)
 
 df_celltypist = pd.concat(df_list, axis=1)
 df_celltypist.to_pickle("${prefix}.pkl")
+
+# cell type columns starting with celltypes__celltypist__ to a csv file,
+df_celltypist.loc[:, df_celltypist.columns.str.startswith("celltypes__celltypist__")].to_csv(f"{prefix}_predictions.csv")
+
+# confidence scores to a csv file,
+df_celltypist.loc[:, df_celltypist.columns.str.startswith("celltypist__")].to_csv(f"{prefix}_predictions_conf.csv")
+
+df_celltypist = df_celltypist.loc[:, df_celltypist.columns.str.startswith("celltypes__celltypist__")]
 
 adata.obs = pd.concat([adata.obs, df_celltypist], axis=1)
 adata.write_h5ad(f"{prefix}.h5ad")

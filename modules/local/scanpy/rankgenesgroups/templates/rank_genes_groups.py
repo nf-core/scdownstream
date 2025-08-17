@@ -18,49 +18,123 @@ from threadpoolctl import threadpool_limits
 threadpool_limits(int("${task.cpus}"))
 sc.settings.n_jobs = int("${task.cpus}")
 
+def sanitize_filename(filename):
+    """
+    Sanitize filename by replacing special characters with underscores.
+    Keeps alphanumeric characters and underscores, replaces everything else.
+    """
+    if not filename:
+        return "unknown"
+    
+    # Replace spaces and hyphens with underscores first
+    sanitized = filename.replace(" ", "_").replace("-", "_")
+    
+    # Keep only alphanumeric characters and underscores
+    sanitized = "".join([c if c.isalnum() or c == "_" else "_" for c in sanitized])
+    
+    # Remove multiple consecutive underscores
+    while "__" in sanitized:
+        sanitized = sanitized.replace("__", "_")
+    
+    # Remove leading/trailing underscores
+    sanitized = sanitized.strip("_")
+    
+    # If empty after sanitization, return default
+    if not sanitized:
+        return "unknown"
+    
+    return sanitized
+
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
+sample_group_col = "${sample_group_col}"
+sample_col = "sample" # always
 
-kwargs = {
-    "groupby": "${obs_key}",
-    "pts": True
-}
+# read the cluster csv files
+cluster_csv = "${cluster_csv}"
+cluster_df = pd.read_csv(cluster_csv, index_col=0)
+cluster_col = cluster_df.columns[0]
+outdir = prefix
+os.makedirs(outdir, exist_ok=True)
 
-if adata.obs["${obs_key}"].value_counts().size > 1:
-    sc.pp.log1p(adata)
-    sc.tl.rank_genes_groups(adata, **kwargs)
+# check if adata and cluster_df have the same index
+if not adata.obs.index.sort_values().equals(cluster_df.index.sort_values()):
+    print(f"warning: adata has {adata.obs.index.nunique()} cells, cluster_df has {cluster_df.index.nunique()} cells")
 
-    rgg_dict = adata.uns["rank_genes_groups"]
+# ensure they match
+cluster_df = cluster_df[cluster_df.index.isin(adata.obs.index)]
+adata = adata[adata.obs.index.isin(cluster_df.index)]
+cluster_df = cluster_df.reindex(adata.obs.index)
+adata.obs[cluster_col] = cluster_df[cluster_col].astype("str").astype("category")
 
-    pickle.dump(rgg_dict, open(f"{prefix}.pkl", "wb"))
-    adata.write_h5ad(f"{prefix}.h5ad")
+# Differential analysis #1: pair-wise cell type comparisons
+print("Differential analysis #1: pair-wise cell type comparisons")
 
-    # Plot
-    sc.pl.rank_genes_groups(adata, show=False)
-    path = f"{prefix}.png"
-    plt.savefig(path)
+# keep groups that have at least 3 cells
+cluster_cell_counts = adata.obs[cluster_col].value_counts()
+cluster_groups = cluster_cell_counts[cluster_cell_counts >= 3].index.astype("str").tolist()
 
-    # MultiQC
-    with open(path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
-        image_string = base64.b64encode(f_plot.read()).decode("utf-8")
-        image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
+sc.tl.rank_genes_groups(adata, groupby = cluster_col, groups = cluster_groups, pts=True)
+rgg_dict = adata.uns["rank_genes_groups"]
+rgg_df = sc.get.rank_genes_groups_df(adata, group = None)
 
-        custom_json = {
-            "id": "${prefix}",
-            "parent_id": "${meta.integration}",
-            "parent_name": "${meta.integration}",
-            "parent_description": "Results of the ${meta.integration} integration.",
+# save the rgg_df to a csv file
+rgg_df.to_csv(f"{outdir}/pairwise_comparisons.csv")
 
-            "section_name": "${meta.id} characteristic genes",
-            "plot_type": "image",
-            "data": image_html,
-        }
+# plot the rank genes groups
+sc.pl.rank_genes_groups(adata, show=False)
+path = f"{outdir}/pairwise_comparisons.png"
+plt.savefig(path)
 
-        json.dump(custom_json, f_json)
+# Differential analysis #2: within each cluster group, compare samples
+print("Differential analysis #2: within each cluster group, compare samples")
+cluster_sample_col = "cluster_sample"
+os.makedirs(f"{outdir}/{cluster_sample_col}", exist_ok=True)
+adata.obs[cluster_sample_col] = (adata.obs[cluster_col].astype(str) + "_" + adata.obs[sample_col].astype(str)).astype("category")
+
+cluster_sample_value_counts_all = adata.obs[cluster_sample_col].astype(str).value_counts()
+
+for cluster in cluster_groups:
+    cluster_sanitized = sanitize_filename(str(cluster))
+    os.makedirs(f"{outdir}/{cluster_sanitized}", exist_ok=True)
+    # we define the `groups` argument to include only the current cluster
+    cluster_sample_groups = cluster_sample_value_counts_all[cluster_sample_value_counts_all.index.str.startswith(str(cluster)+'_')]
+    cluster_sample_groups = cluster_sample_groups[cluster_sample_groups >= 3].index.astype("str").tolist()
+    
+    if len(cluster_sample_groups) >= 2:
+        sc.tl.rank_genes_groups(adata, groupby = cluster_sample_col, groups = cluster_sample_groups, pts=True)
+        rgg_df = sc.get.rank_genes_groups_df(adata, group = None)
+
+        rgg_df.to_csv(f"{outdir}/{cluster_sample_col}/{cluster_sanitized}.csv")
+
+        sc.pl.rank_genes_groups(adata, show=False)
+        path = f"{outdir}/{cluster_sample_col}/{cluster_sanitized}.png"
+        plt.savefig(path)
+
+# Differential analysis #3: within each cluster group, compare sample groups
+if sample_group_col != "null":
+    print("Differential analysis #3: within each cluster group, compare sample groups")
+    cluster_sample_group_col = "cluster_samplegroup"
+    os.makedirs(f"{outdir}/{cluster_sample_group_col}", exist_ok=True)
+    adata.obs[cluster_sample_group_col] = (adata.obs[cluster_col].astype(str) + "_" + adata.obs[sample_group_col].astype(str)).astype("category")
+    
+    cluster_sample_group_groups_value_counts_all = adata.obs[cluster_sample_group_col].astype(str).value_counts()
+
+    for cluster_sample_group in cluster_sample_group_groups_value_counts_all.index:
+        cluster_sample_group_sanitized = sanitize_filename(str(cluster_sample_group))
+        os.makedirs(f"{outdir}/{cluster_sample_group_sanitized}", exist_ok=True)
+        cluster_sample_group_groups = cluster_sample_group_groups_value_counts_all[cluster_sample_group_groups_value_counts_all.index.str.startswith(str(cluster_sample_group)+'_')]
+        cluster_sample_group_groups = cluster_sample_group_groups[cluster_sample_group_groups >= 3].index.astype("str").tolist()
+        if len(cluster_sample_group_groups) >= 2:
+            sc.tl.rank_genes_groups(adata, groupby = cluster_sample_group_col, groups = cluster_sample_group_groups, pts=True)
+            rgg_df = sc.get.rank_genes_groups_df(adata, group = None)
+            rgg_df.to_csv(f"{outdir}/{cluster_sample_group_col}/{cluster_sample_group_sanitized}.csv")
+
+            sc.pl.rank_genes_groups(adata, show=False)
+            path = f"{outdir}/{cluster_sample_group_col}/{cluster_sample_group_sanitized}.png"
+            plt.savefig(path)
 else:
-    print("Skipping rank_genes_groups computation as the group has less than 2 unique values.")
-
-# Versions
+    print("Skipping sample group comparison as sample_group_col is 'none'")
 
 versions = {
     "${task.process}": {

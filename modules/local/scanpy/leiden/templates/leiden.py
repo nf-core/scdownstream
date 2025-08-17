@@ -47,6 +47,7 @@ kwargs = {
 sc.tl.leiden(adata, **kwargs)
 
 adata.obs[[key_added]].to_pickle(f"{prefix}.pkl")
+adata.obs[[key_added]].to_csv(f"{prefix}.csv")
 adata.write_h5ad(f"{prefix}.h5ad")
 
 if "${plot_umap}" == "true":
