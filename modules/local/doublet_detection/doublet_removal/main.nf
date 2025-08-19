@@ -4,8 +4,8 @@ process DOUBLET_REMOVAL {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'oras://community.wave.seqera.io/library/anndata_upsetplot:922f36ea0326a629':
-        'community.wave.seqera.io/library/anndata_upsetplot:784e0f450da10178' }"
+        'oras://community.wave.seqera.io/library/anndata_matplotlib_pandas_upsetplot:36786be0ea252945':
+        'community.wave.seqera.io/library/anndata_matplotlib_pandas_upsetplot:f826c7c054eeef6d' }"
 
     input:
     tuple val(meta), path(h5ad), path(predictions)
