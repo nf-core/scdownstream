@@ -39,6 +39,11 @@ adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 obs_key = "${obs_key}"
 
+# Ensure that var_names are strings (not categorical) and unique
+# For some reason this happens when coming from scanvi, maybe also given the other changes
+adata.var_names = adata.var_names.astype(str)
+adata.var_names_make_unique()
+
 if adata.obs[obs_key].nunique() > 1:
     if (adata.X < 0).nnz == 0:
         sc.pp.log1p(adata)
