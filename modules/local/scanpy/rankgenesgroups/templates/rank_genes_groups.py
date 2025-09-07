@@ -72,6 +72,7 @@ def run_and_save_de(adata_obj: sc.AnnData, groupby: str, group: str, reference, 
         groups=[group],
         reference=reference,
         pts=True,
+        method='wilcoxon',
     )
     # Get the results of the differential expression analysis
     rgg_df = sc.get.rank_genes_groups_df(adata_obj, group=None)
@@ -79,7 +80,6 @@ def run_and_save_de(adata_obj: sc.AnnData, groupby: str, group: str, reference, 
     ref_name = reference if isinstance(reference, str) else str(reference)
     basename = f"{sanitize_filename(group)}_vs_{sanitize_filename(ref_name)}"
     rgg_df.to_csv(out_dir / f"{basename}.csv", index=False)
-    # Save the results of the differential expression analysis to a png file
     sc.pl.rank_genes_groups(adata_obj, show=False)
     plt.savefig(out_dir / f"{basename}.png")
     plt.close()
