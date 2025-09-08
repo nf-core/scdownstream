@@ -13,6 +13,9 @@ import os
 import platform
 import re
 from pathlib import Path
+import warnings
+
+warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
