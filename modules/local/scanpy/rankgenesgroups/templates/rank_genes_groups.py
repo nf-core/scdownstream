@@ -62,7 +62,7 @@ def valid_groups(adata_obj: sc.AnnData, column: str, min_cells: int = 3):
     return vc[vc >= min_cells].index.astype("str").tolist()
 
 
-def run_and_save_de(adata_obj: sc.AnnData, groupby: str, group: str, reference, out_dir: Path) -> None:
+def run_and_save_de(adata_obj: sc.AnnData, groupby: str, group: str, reference, out_dir: Path, method: str) -> None:
     """
     Runs differential expression analysis for the specified group and reference group, and saves the results to the specified output directory.
     """
@@ -75,7 +75,7 @@ def run_and_save_de(adata_obj: sc.AnnData, groupby: str, group: str, reference, 
         groups=[group],
         reference=reference,
         pts=True,
-        method='wilcoxon',
+        method=method,
     )
     # Get the results of the differential expression analysis
     rgg_df = sc.get.rank_genes_groups_df(adata_obj, group=None)
@@ -89,6 +89,7 @@ def run_and_save_de(adata_obj: sc.AnnData, groupby: str, group: str, reference, 
 
 adata = sc.read_h5ad("${h5ad}")
 sample_group_col = "${sample_group_col}"
+method = "${method}"
 
 cell_groups_csv = "${cluster_csv}"
 cell_groups_df = pd.read_csv(cell_groups_csv, index_col=0)
@@ -144,11 +145,11 @@ for cell_group_col in cell_group_cols:
         # Pairwise comparisons
         for other in [g for g in groups if g != group]:
             print(f"\t\t- {group} vs {other}")
-            run_and_save_de(adata, cell_group_col, group, other, group_outdir)
+            run_and_save_de(adata, cell_group_col, group, other, group_outdir, method)
         # Versus rest (only meaningful if >2 groups)
         if len(groups) > 2:
             print(f"\t\t- {group} vs rest")
-            run_and_save_de(adata, cell_group_col, group, "rest", group_outdir)
+            run_and_save_de(adata, cell_group_col, group, "rest", group_outdir, method)
 
         # ------------------------------------------------------------
         # 2) For each cell group column: per-sample group DE vs each other sample group and vs rest
@@ -168,10 +169,10 @@ for cell_group_col in cell_group_cols:
                 sg_outdir = group_outdir / sanitize_filename(sg)
                 for other in [x for x in sample_groups if x != sg]:
                     print(f"\t\t\t- {sg} vs {other}")
-                    run_and_save_de(subset, sample_group_col, sg, other, sg_outdir)
+                    run_and_save_de(subset, sample_group_col, sg, other, sg_outdir, method)
                 if len(sample_groups) > 2:
                     print(f"\t\t\t- {sg} vs rest")
-                    run_and_save_de(subset, sample_group_col, sg, "rest", sg_outdir)
+                    run_and_save_de(subset, sample_group_col, sg, "rest", sg_outdir, method)
 
     # ------------------------------------------------------------
     # 3) For each sample group: subset, then compare cell groups within that subset (for this cell_group_col)
@@ -192,10 +193,10 @@ for cell_group_col in cell_group_cols:
                 g_dir = cg_sample_dir / sanitize_filename(g)
                 for other in [x for x in groups_in_subset if x != g]:
                     print(f"\t\t\t- {g} vs {other} within sample '{sg}'")
-                    run_and_save_de(subset, cell_group_col, g, other, g_dir)
+                    run_and_save_de(subset, cell_group_col, g, other, g_dir, method)
                 if len(groups_in_subset) > 2:
                     print(f"\t\t\t- {g} vs rest within sample '{sg}'")
-                    run_and_save_de(subset, cell_group_col, g, "rest", g_dir)
+                    run_and_save_de(subset, cell_group_col, g, "rest", g_dir, method)
 
 
 versions = {
