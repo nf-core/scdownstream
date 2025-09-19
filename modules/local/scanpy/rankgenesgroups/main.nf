@@ -24,5 +24,6 @@ process SCANPY_RANKGENESGROUPS {
     script:
     prefix = task.ext.prefix ?: cluster_csv.baseName
     sample_group_col = task.ext.sample_group_col ?: null
+    method = task.ext.method ?: 'wilcoxon'
     template('rank_genes_groups.py')
 }
