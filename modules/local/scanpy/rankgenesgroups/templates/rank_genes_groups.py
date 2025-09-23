@@ -14,6 +14,8 @@ import platform
 import re
 from pathlib import Path
 import warnings
+import json
+from typing import Tuple
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
@@ -54,7 +56,7 @@ def ensure_categorical_str(adata_obj: sc.AnnData, column: str) -> None:
     adata_obj.obs[column] = adata_obj.obs[column].astype(str).astype("category")
 
 
-def valid_groups(adata_obj: sc.AnnData, column: str, min_cells: int = 3):
+def valid_groups(adata_obj: sc.AnnData, column: str, min_cells: int = 3) -> list[str]:
     """
     Returns the valid groups in the specified column of the AnnData object that have at least min_cells cells
     """
@@ -62,7 +64,11 @@ def valid_groups(adata_obj: sc.AnnData, column: str, min_cells: int = 3):
     return vc[vc >= min_cells].index.astype("str").tolist()
 
 
-def run_and_save_de(adata_obj: sc.AnnData, groupby: str, group: str, reference, out_dir: Path, method: str) -> None:
+# (No JSON loading/saving helpers; we keep results in-memory and write a single
+# combined JSON file at the start and end of the run.)
+
+
+def run_and_save_de(adata_obj: sc.AnnData, groupby: str, group: str, reference, out_dir: Path, method: str) -> Tuple[str, str]:
     """
     Runs differential expression analysis for the specified group and reference group, and saves the results to the specified output directory.
     """
@@ -81,11 +87,15 @@ def run_and_save_de(adata_obj: sc.AnnData, groupby: str, group: str, reference, 
     rgg_df = sc.get.rank_genes_groups_df(adata_obj, group=None)
     # Create a standardized filename for the output files
     ref_name = reference if isinstance(reference, str) else str(reference)
-    basename = f"{sanitize_filename(group)}_vs_{sanitize_filename(ref_name)}"
-    rgg_df.to_csv(out_dir / f"{basename}.csv", index=False)
+    basename = f"{sanitize_filename(group)}_vs_{sanitize_filename(ref_name)}.csv"
+    csv_path = out_dir / f"{basename}.csv"
+    png_path = out_dir / f"{basename}.png"
+    rgg_df.to_csv(csv_path, index=False)
     sc.pl.rank_genes_groups(adata_obj, show=False)
-    plt.savefig(out_dir / f"{basename}.png")
+    plt.savefig(png_path)
     plt.close()
+    
+    return (csv_path, png_path)
 
 adata = sc.read_h5ad("${h5ad}")
 sample_group_col = "${sample_group_col}"
@@ -104,7 +114,7 @@ cell_group_cols = list(cell_groups_df.columns)
 
 # ensure there are cells left
 if adata.n_obs == 0 or cell_groups_df.shape[0] == 0:
-    ValueError(f"No cells left after aligning adata and cluster_csv")
+    raise ValueError(f"No cells left after aligning adata and cluster_csv")
 
 # Add grouping columns to adata.obs
 for cell_group_col in cell_group_cols:
@@ -118,11 +128,18 @@ if has_sample_groups:
     # if all cells have the same sample group, we skip the sample group comparisons
     if adata.obs[sample_group_col].nunique() == 1:
         has_sample_groups = False
-        print(f"All cells have the same sample group")
+        print(f"All cells are in the same sample group.")
 else:
-    print(f"No sample group column provided")
+    print(f"No sample group column provided.")
 if not has_sample_groups:
     print(f"Skipping sample group comparisons.")
+
+# Maintain three in-memory dictionaries for results; we will emit a single JSON
+# file that contains them all at the beginning and end of the run.
+results_all_cells: dict = {c: {} for c in cell_group_cols}
+# only initialize the sample group within cell group dictionary if sample groups are provided
+results_sample_within_cell = ({c: {} for c in cell_group_cols} if has_sample_groups else None)
+results_cell_within_sample = ({c: {} for c in cell_group_cols} if has_sample_groups else None)
 
 for cell_group_col in cell_group_cols:
     print(f"Differential analysis for cell group column: {cell_group_col}")
@@ -142,14 +159,24 @@ for cell_group_col in cell_group_cols:
         # ------------------------------------------------------------
         print(f"\t- Processing cell group '{group}'")
         group_outdir = col_outdir / "cell_groups" / sanitize_filename(group)
+        
         # Pairwise comparisons
         for other in [g for g in groups if g != group]:
             print(f"\t\t- {group} vs {other}")
-            run_and_save_de(adata, cell_group_col, group, other, group_outdir, method)
+            csv_path, png_path = run_and_save_de(adata, cell_group_col, group, other, group_outdir, method)
+            results_all_cells.setdefault(cell_group_col, {}).setdefault(group, {})[other] = {
+                "csv_path": str(csv_path),
+                "png_path": str(png_path),
+            }
         # Versus rest (only meaningful if >2 groups)
         if len(groups) > 2:
-            print(f"\t\t- {group} vs rest")
-            run_and_save_de(adata, cell_group_col, group, "rest", group_outdir, method)
+            other = "rest"
+            print(f"\t\t- {group} vs {other}")
+            csv_path, png_path = run_and_save_de(adata, cell_group_col, group, other, group_outdir, method)
+            results_all_cells.setdefault(cell_group_col, {}).setdefault(group, {})[other] = {
+                "csv_path": str(csv_path),
+                "png_path": str(png_path),
+            }
 
         # ------------------------------------------------------------
         # 2) For each cell group column: per-sample group DE vs each other sample group and vs rest
@@ -169,10 +196,19 @@ for cell_group_col in cell_group_cols:
                 sg_outdir = group_outdir / sanitize_filename(sg)
                 for other in [x for x in sample_groups if x != sg]:
                     print(f"\t\t\t- {sg} vs {other}")
-                    run_and_save_de(subset, sample_group_col, sg, other, sg_outdir, method)
+                    csv_path, png_path = run_and_save_de(subset, sample_group_col, sg, other, sg_outdir, method)
+                    results_sample_within_cell.setdefault(cell_group_col, {}).setdefault(group, {}).setdefault(sg, {})[other] = {
+                        "csv_path": str(csv_path),
+                        "png_path": str(png_path),
+                    }
                 if len(sample_groups) > 2:
-                    print(f"\t\t\t- {sg} vs rest")
-                    run_and_save_de(subset, sample_group_col, sg, "rest", sg_outdir, method)
+                    other = "rest"
+                    print(f"\t\t\t- {sg} vs {other}")
+                    csv_path, png_path = run_and_save_de(subset, sample_group_col, sg, other, sg_outdir, method)
+                    results_sample_within_cell.setdefault(cell_group_col, {}).setdefault(group, {}).setdefault(sg, {})[other] = {
+                        "csv_path": str(csv_path),
+                        "png_path": str(png_path),
+                        }
 
     # ------------------------------------------------------------
     # 3) For each sample group: subset, then compare cell groups within that subset (for this cell_group_col)
@@ -193,11 +229,35 @@ for cell_group_col in cell_group_cols:
                 g_dir = cg_sample_dir / sanitize_filename(g)
                 for other in [x for x in groups_in_subset if x != g]:
                     print(f"\t\t\t- {g} vs {other} within sample '{sg}'")
-                    run_and_save_de(subset, cell_group_col, g, other, g_dir, method)
+                    csv_path, png_path = run_and_save_de(subset, cell_group_col, g, other, g_dir, method)
+                    results_cell_within_sample.setdefault(cell_group_col, {}).setdefault(sg, {}).setdefault(g, {})[other] = {
+                        "csv_path": str(csv_path),
+                        "png_path": str(png_path),
+                    }
                 if len(groups_in_subset) > 2:
                     print(f"\t\t\t- {g} vs rest within sample '{sg}'")
-                    run_and_save_de(subset, cell_group_col, g, "rest", g_dir, method)
+                    csv_path, png_path = run_and_save_de(subset, cell_group_col, g, "rest", g_dir, method)
+                    results_cell_within_sample.setdefault(cell_group_col, {}).setdefault(sg, {}).setdefault(g, {})["rest"] = {
+                        "csv_path": str(csv_path),
+                        "png_path": str(png_path),
+                    }
 
+# Write an initial combined JSON snapshot
+combined_results = {
+    "cell_groups_all_cells": results_all_cells,
+    "sample_groups_within_each_cell_group": results_sample_within_cell,
+    "cell_groups_within_each_sample_group": results_cell_within_sample,
+}
+with open(outdir / "cell_groups_all_cells.json", "w") as f:
+    json.dump(combined_results, f, indent=2)
+
+if results_sample_within_cell is not None:
+    with open(outdir / "sample_groups_within_each_cell_group.json", "w") as f:
+        json.dump(results_sample_within_cell, f, indent=2)
+if results_cell_within_sample is not None:
+    with open(outdir / "cell_groups_within_each_sample_group.json", "w") as f:
+        json.dump(results_cell_within_sample, f, indent=2)
+    
 
 versions = {
     "${task.process}": {
@@ -209,3 +269,10 @@ versions = {
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)
+
+# Write final combined JSON snapshot at end of script
+final_combined_results = {
+    "cell_group_all_cells": results_all_cells,
+    "sample_group_within_cell_group": results_sample_within_cell,
+    "cell_group_within_sample_group": results_cell_within_sample,
+}
