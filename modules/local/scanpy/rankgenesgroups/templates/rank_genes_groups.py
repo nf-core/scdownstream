@@ -248,16 +248,8 @@ combined_results = {
     "sample_groups_within_each_cell_group": results_sample_within_cell,
     "cell_groups_within_each_sample_group": results_cell_within_sample,
 }
-with open(outdir / "cell_groups_all_cells.json", "w") as f:
+with open(outdir / "differential_expression_results.json", "w") as f:
     json.dump(combined_results, f, indent=2)
-
-if results_sample_within_cell is not None:
-    with open(outdir / "sample_groups_within_each_cell_group.json", "w") as f:
-        json.dump(results_sample_within_cell, f, indent=2)
-if results_cell_within_sample is not None:
-    with open(outdir / "cell_groups_within_each_sample_group.json", "w") as f:
-        json.dump(results_cell_within_sample, f, indent=2)
-    
 
 versions = {
     "${task.process}": {
