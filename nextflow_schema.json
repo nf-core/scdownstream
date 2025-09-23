@@ -221,6 +221,28 @@
                 }
             }
         },
+
+        "differential_expression_options": {
+            "title": "Tool options",
+            "type": "object",
+            "fa_icon": "fas fa-tools",
+            "description": "Options for various tools used in the pipeline.",
+            "properties": {
+                "sample_group_col": {
+                    "type": "string",
+                    "description": "The column in the AnnData object that contains the sample group information",
+                    "help_text": "The column in the AnnData object that contains the sample group information",
+                    "pattern": "^([a-zA-Z0-9_]*(,[a-zA-Z0-9_]*)*)?$"
+                },
+                "rankgenesgroups_method": {
+                    "type": "string",
+                    "default": "wilcoxon",
+                    "description": "Method to use for the rank_genes_groups step",
+                    "help_text": "Method to use for the rank_genes_groups step. Available methods are: 'logreg', 't-test', 'wilcoxon', 't-test_overestim_var'",
+                    "enum": ["logreg", "t-test", "wilcoxon", "t-test_overestim_var"]
+                }
+            }
+        },
         "tool_options": {
             "title": "Tool options",
             "type": "object",
