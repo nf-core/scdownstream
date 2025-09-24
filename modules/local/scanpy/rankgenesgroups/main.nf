@@ -11,7 +11,7 @@ process SCANPY_RANKGENESGROUPS {
     tuple val(meta), path(h5ad), path(cluster_csv)
 
     output:
-    path prefix, emit: outdir
+    tuple val(meta), path(prefix), emit: outdir
     tuple val(meta), path("*.h5ad"), emit: h5ad, optional: true
     path "*.pkl", emit: uns, optional: true
     path "*.png", emit: plots, optional: true
