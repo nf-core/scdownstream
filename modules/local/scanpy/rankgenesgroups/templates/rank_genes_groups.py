@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # In this script, we do the following:
-# For each cell group column, 
+# For each cell group column,
 # 1. we do the following fr each cell group recorded in the cell group column:
 #    - per-group DE vs each other group and vs rest
 #    - if sample groups are provided, we take out the cells with the cell group, and do per-sample group DE vs each other sample group and vs rest
@@ -94,7 +94,7 @@ def run_and_save_de(adata_obj: sc.AnnData, groupby: str, group: str, reference, 
     sc.pl.rank_genes_groups(adata_obj, show=False)
     plt.savefig(png_path)
     plt.close()
-    
+
     return (csv_path, png_path)
 
 adata = sc.read_h5ad("${h5ad}")
@@ -159,7 +159,7 @@ for cell_group_col in cell_group_cols:
         # ------------------------------------------------------------
         print(f"\t- Processing cell group '{group}'")
         group_outdir = col_outdir / "cell_groups" / sanitize_filename(group)
-        
+
         # Pairwise comparisons
         for other in [g for g in groups if g != group]:
             print(f"\t\t- {group} vs {other}")
