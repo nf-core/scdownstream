@@ -4,21 +4,24 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { LOAD_H5AD                            } from '../subworkflows/local/load_h5ad'
-include { QUALITY_CONTROL                      } from '../subworkflows/local/quality_control'
-include { CELLTYPE_ASSIGNMENT                  } from '../subworkflows/local/celltype_assignment'
+include { LOAD_H5AD                       } from '../subworkflows/local/load_h5ad'
+include { QUALITY_CONTROL                 } from '../subworkflows/local/quality_control'
+include { CELLTYPE_ASSIGNMENT             } from '../subworkflows/local/celltype_assignment'
 include { ADATA_EXTEND as FINALIZE_QC_ANNDATAS } from '../modules/local/adata/extend'
-include { COMBINE                              } from '../subworkflows/local/combine'
-include { ADATA_SPLITEMBEDDINGS                } from '../modules/local/adata/splitembeddings'
-include { CLUSTER                              } from '../subworkflows/local/cluster'
-include { PSEUDOBULKING                        } from '../subworkflows/local/pseudobulking'
-include { PER_GROUP                            } from '../subworkflows/local/per_group'
-include { FINALIZE                             } from '../subworkflows/local/finalize'
-include { MULTIQC                              } from '../modules/nf-core/multiqc/main'
-include { paramsSummaryMap                     } from 'plugin/nf-schema'
-include { paramsSummaryMultiqc                 } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML               } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText               } from '../subworkflows/local/utils_nfcore_scdownstream_pipeline'
+include { COMBINE                         } from '../subworkflows/local/combine'
+include { ADATA_SPLITEMBEDDINGS           } from '../modules/local/adata/splitembeddings'
+include { CLUSTER                         } from '../subworkflows/local/cluster'
+include { PSEUDOBULKING                   } from '../subworkflows/local/pseudobulking'
+include { PER_GROUP                       } from '../subworkflows/local/per_group'
+include { FINALIZE                        } from '../subworkflows/local/finalize'
+include { MULTIQC                         } from '../modules/nf-core/multiqc/main'
+include { paramsSummaryMap                } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML          } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText          } from '../subworkflows/local/utils_nfcore_scdownstream_pipeline'
+
+// Added by Miguel
+include { MANIFOLD_LEARNING               } from '../subworkflows/local/manifold_learning'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -30,45 +33,45 @@ workflow SCDOWNSTREAM {
     take:
     ch_samplesheet                // channel: samplesheet read in from --input
     ch_base                       // channel: [ val(meta), path(h5ad) ]
-    is_extension                  //   value: boolean
-    ch_input                      //    file: samplesheet.csv
-    ambient_correction            //   value: string
-    ambient_corrected_integration //   value: boolean
-    doublet_detection             //   value: string
-    doublet_detection_threshold   //   value: integer
-    scvi_max_epochs               //   value: integer
-    mito_genes                    //   value: string
-    sample_n                      //   value: string
-    sample_fraction               //   value: string
-    qc_only                       //   value: boolean
-    celldex_reference             //   value: string
-    celltypist_model              //   value: string
-    unify_gene_symbols            //   value: boolean
-    duplicate_var_resolution      //   value: string
-    aggregate_isoforms            //   value: boolean
-    integration_hvgs              //   value: integer
-    integration_methods           //   value: string
-    integration_excluded_genes    //   value: string
-    scvi_model                    //   value: string
-    scanvi_model                  //   value: string
-    scvi_categorical_covariates   //   value: string
-    scvi_continuous_covariates    //   value: string
-    scimilarity_model             //   value: string
-    skip_liana                    //   value: boolean
-    skip_rankgenesgroups          //   value: boolean
-    base_embeddings               //   value: string
-    base_label_col                //   value: string
-    cluster_per_label             //   value: boolean
-    cluster_global                //   value: boolean
-    clustering_resolutions        //   value: string
-    pseudobulk                    //   value: boolean
-    pseudobulk_groupby_labels     //   value: string
-    pseudobulk_min_num_cells      //   value: integer
-    prep_cellxgene                //   value: boolean
-    outdir                        //   value: string
-    multiqc_config                //   value: string
-    multiqc_logo                  //   value: string
-    multiqc_methods_description   //   value: string
+    is_extension                  //    value: boolean
+    ch_input                      //     file: samplesheet.csv
+    ambient_correction            //    value: string
+    ambient_corrected_integration //    value: boolean
+    doublet_detection             //    value: string
+    doublet_detection_threshold   //    value: integer
+    scvi_max_epochs               //    value: integer
+    mito_genes                    //    value: string
+    sample_n                      //    value: string
+    sample_fraction               //    value: string
+    qc_only                       //    value: boolean
+    celldex_reference             //    value: string
+    celltypist_model              //    value: string
+    unify_gene_symbols            //    value: boolean
+    duplicate_var_resolution      //    value: string
+    aggregate_isoforms            //    value: boolean
+    integration_hvgs              //    value: integer
+    integration_methods           //    value: string
+    integration_excluded_genes    //    value: string
+    scvi_model                    //    value: string
+    scanvi_model                  //    value: string
+    scvi_categorical_covariates   //    value: string
+    scvi_continuous_covariates    //    value: string
+    scimilarity_model             //    value: string
+    skip_liana                    //    value: boolean
+    skip_rankgenesgroups          //    value: boolean
+    base_embeddings               //    value: string
+    base_label_col                //    value: string
+    cluster_per_label             //    value: boolean
+    cluster_global                //    value: boolean
+    clustering_resolutions        //    value: string
+    pseudobulk                    //    value: boolean
+    pseudobulk_groupby_labels     //    value: string
+    pseudobulk_min_num_cells      //    value: integer
+    prep_cellxgene                //    value: boolean
+    outdir                        //    value: string
+    multiqc_config                //    value: string
+    multiqc_logo                  //    value: string
+    multiqc_methods_description   //    value: string
 
     main:
 
@@ -278,6 +281,15 @@ workflow SCDOWNSTREAM {
             prep_cellxgene
         )
         ch_versions = ch_versions.mix(FINALIZE.out.versions)
+
+        //
+        // Added by miguel: Manifold Learning & TDA Subworkflow
+        //
+        MANIFOLD_LEARNING (
+            FINALIZE.out.h5ad,         // we use the h5ad from the previous process
+            params.manifold_methods    // 'phate,diffmap' (defined in nextflow.config)
+        )
+        ch_versions = ch_versions.mix(MANIFOLD_LEARNING.out.versions)
     }
 
     //
