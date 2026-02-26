@@ -35,7 +35,7 @@ def main():
     # 3. Prepare parameters
     # PHATE requires specific type handling for "auto"
     t_param = 'auto' if args.t == 'auto' else int(args.t)
-    
+
     print(f"Running PHATE with k={args.k}, a={args.a}, t={t_param} on X_pca...")
 
     # 4. Run PHATE
@@ -50,7 +50,7 @@ def main():
         verbose=1,
         random_state=42 # Ensure reproducibility
     )
-    
+
     # Fit and transform the PCA data
     # Note: We pass X_pca directly to avoid recomputation
     X_phate = phate_op.fit_transform(adata.obsm['X_pca'])
@@ -63,7 +63,7 @@ def main():
     adata.uns['phate_params'] = {
         'k': args.k,
         'a': args.a,
-        't': t_param, 
+        't': t_param,
         'gamma': args.gamma,
         'diff_potential': phate_op.diff_potential # Crucial for Potential Distance
     }

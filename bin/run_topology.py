@@ -31,7 +31,7 @@ def main():
     # 2. Select Embedding
     # Priority: PHATE -> Diffmap -> PCA
     # We check which embeddings are available in the object
-    embedding_key = 'X_phate' 
+    embedding_key = 'X_phate'
     if embedding_key not in adata.obsm:
         if 'X_diffmap' in adata.obsm:
             embedding_key = 'X_diffmap'
@@ -41,7 +41,7 @@ def main():
             sys.exit("Error: No valid embedding found (requires X_phate, X_diffmap, or X_pca).")
 
     print(f"Running Ripser TDA on {embedding_key}...")
-    
+
     # 3. Subsampling cause TDA is computationally expensive
     # If the dataset is large, we subsample to make sure the pipeline doesn't hang.
     matrix = adata.obsm[embedding_key]
@@ -64,9 +64,9 @@ def main():
         diagrams_dict[f'dim_{i}'] = dgm
 
     adata.uns['tda_results'] = {
-        'max_homology_dim': 1, 
+        'max_homology_dim': 1,
         'embedding_used': embedding_key,
-        'diagrams': diagrams_dict 
+        'diagrams': diagrams_dict
     }
 
     # 6. Save output
@@ -75,7 +75,7 @@ def main():
         adata.write_h5ad(args.output)
     except Exception as e:
         sys.exit(f"Error saving h5ad file: {e}")
-    
+
     # 7. Generate versions
     import ripser as r
     with open("versions.yml", "w") as f:

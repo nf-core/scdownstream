@@ -1,0 +1,26 @@
+nextflow_process {
+
+    name "Test Process PHATE"
+    script "modules/local/phate.nf"
+    process "PHATE"
+
+    test("Should run successfully on test dataset") {
+
+        when {
+            process {
+                """
+                // Input: tuple(meta, file)
+                input[0] = [ [id:'test_sample'], file("${projectDir}/test_dataset.h5ad") ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.h5ad != null
+            assert snapshot(process.out.versions).match()
+        }
+
+    }
+
+}

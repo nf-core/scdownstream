@@ -51,7 +51,7 @@ def main():
 
     # 6. Generate versions.yml
     import scanpy as s_lib
-    
+
     with open("versions.yml", "w") as f:
         f.write('process:\n')
         f.write(f'  scanpy: "{s_lib.__version__}"\n')

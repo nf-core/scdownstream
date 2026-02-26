@@ -1,0 +1,25 @@
+nextflow_process {
+
+    name "Test Process TOPOLOGY"
+    script "modules/local/topology.nf"
+    process "TOPOLOGY"
+
+    test("Should run successfully on test dataset") {
+
+        when {
+            process {
+                """
+                input[0] = [ [id:'test_sample'], file("${projectDir}/test_dataset.h5ad") ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.h5ad != null
+            assert snapshot(process.out.versions).match()
+        }
+
+    }
+
+}

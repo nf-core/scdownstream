@@ -24,7 +24,7 @@ def main():
     # Logic: We compute Gene Rank based on centrality in the manifold graph
     # This simulates finding "driver genes"
     print("Computing causal graph metrics...")
-    
+
     if 'connectivities' not in adata.obsp:
         print("Computing neighbors first...")
         sc.pp.neighbors(adata, use_rep='X_pca')
@@ -37,7 +37,7 @@ def main():
 
     print("Running PAGA for trajectory inference...")
     sc.tl.paga(adata, groups='leiden')
-    
+
     # Store "causal" results (Pseudotime / PAGA connectivity)
     adata.uns['causal_inference'] = {
         'method': 'PAGA_Trajectory',

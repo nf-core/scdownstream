@@ -283,8 +283,6 @@ workflow SCDOWNSTREAM {
         ch_versions = ch_versions.mix(FINALIZE.out.versions)
 
         //
-        // Added by miguel: Manifold Learning & TDA Subworkflow
-        //
         MANIFOLD_LEARNING (
             FINALIZE.out.h5ad,         // we use the h5ad from the previous process
             params.manifold_methods    // 'phate,diffmap' (defined in nextflow.config)
