@@ -19,7 +19,7 @@ process TOPOLOGY {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    
+
     """
     mkdir -p ./tmp
     export MPLCONFIGDIR="./tmp"

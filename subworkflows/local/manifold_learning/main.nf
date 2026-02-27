@@ -18,7 +18,7 @@ workflow MANIFOLD_LEARNING {
     // ------------------------------------------------
     // 1. GEOMETRY STEP (PHATE / DIFFMAP)
     // ------------------------------------------------
-    
+
     ch_geometry_out = Channel.empty()
 
     // Run PHATE if requested
@@ -37,7 +37,7 @@ workflow MANIFOLD_LEARNING {
 
     // If no geometry method ran (user error?), pass input through (fallback)
     // But ideally, we continue with the output of geometry
-    
+
     // ------------------------------------------------
     // 2. TOPOLOGY & CAUSALITY STEPS
     // ------------------------------------------------
@@ -47,7 +47,7 @@ workflow MANIFOLD_LEARNING {
     // Run Topology
     TOPOLOGY ( ch_geometry_out )
     ch_versions = ch_versions.mix( TOPOLOGY.out.versions )
-    
+
     // Run Causality (Using Topology output to chain the information)
     CAUSALITY ( TOPOLOGY.out.h5ad )
     ch_versions = ch_versions.mix( CAUSALITY.out.versions )
