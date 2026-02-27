@@ -32,7 +32,7 @@ process CAUSALITY {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        scanpy: \$(python -c "import scanpy; print(scanpy.__version__)")
+        scanpy: \$(python -c "import importlib.metadata; print(importlib.metadata.version('scanpy'))")
     END_VERSIONS
     """
 }

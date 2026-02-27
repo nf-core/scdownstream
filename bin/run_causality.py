@@ -47,10 +47,5 @@ def main():
     print(f"Saving results to {args.output}...")
     adata.write_h5ad(args.output)
 
-    # Versions
-    with open("versions.yml", "w") as f:
-        f.write('process:\n')
-        f.write(f'  scanpy: "{sc.__version__}"\n')
-
 if __name__ == "__main__":
     main()

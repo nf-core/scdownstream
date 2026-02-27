@@ -76,14 +76,6 @@ def main():
     except Exception as e:
         sys.exit(f"Error saving h5ad file: {e}")
 
-    # 7. Generate versions
-    import ripser as r
-    with open("versions.yml", "w") as f:
-        f.write(f'process:\n')
-        f.write(f'  ripser: "{r.__version__}"\n')
-        f.write(f'  scanpy: "{sc.__version__}"\n')
-        f.write(f'  numpy: "{np.__version__}"\n')
-
     print("TDA computation completed successfully.")
 
 if __name__ == "__main__":

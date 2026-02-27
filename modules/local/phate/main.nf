@@ -33,8 +33,8 @@ process PHATE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        phate: \$(python -c "import phate; print(phate.__version__)")
-        scanpy: \$(python -c "import scanpy; print(scanpy.__version__)")
+        phate: \$(python -c "import importlib.metadata; print(importlib.metadata.version('phate'))")
+        scanpy: \$(python -c "import importlib.metadata; print(importlib.metadata.version('scanpy'))")
     END_VERSIONS
     """
 }

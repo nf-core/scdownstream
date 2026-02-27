@@ -52,11 +52,6 @@ def main():
     # 6. Generate versions.yml
     import scanpy as s_lib
 
-    with open("versions.yml", "w") as f:
-        f.write('process:\n')
-        f.write(f'  scanpy: "{s_lib.__version__}"\n')
-        f.write(f'  numpy: "{np.__version__}"\n')
-
     print("Diffmap computation completed successfully.")
 
 if __name__ == "__main__":

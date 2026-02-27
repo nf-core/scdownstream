@@ -32,7 +32,7 @@ process TOPOLOGY {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        ripser: \$(python -c "import ripser; print(ripser.__version__)")
+        ripser: \$(python -c "import importlib.metadata; print(importlib.metadata.version('ripser'))")
     END_VERSIONS
     """
 }
