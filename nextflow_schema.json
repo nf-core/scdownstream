@@ -303,6 +303,12 @@
                     "type": "boolean",
                     "description": "Prepare the output for visualisation in cellxgene",
                     "fa_icon": "fas fa-chart-line"
+                },
+                "manifold_methods": {
+                    "type": "string",
+                    "description": "Specify the manifold learning methods to run (e.g., 'phate,diffmap').",
+                    "default": "phate,diffmap",
+                    "fa_icon": "fas fa-project-diagram"
                 }
             }
         },

@@ -1,7 +1,7 @@
 nextflow_process {
 
     name "Test Process TOPOLOGY"
-    script "modules/local/topology.nf"
+    script "../main.nf"
     process "TOPOLOGY"
 
     test("Should run successfully on test dataset") {

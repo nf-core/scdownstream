@@ -1,7 +1,7 @@
 nextflow_process {
 
     name "Test Process PHATE"
-    script "modules/local/phate.nf"
+    script "../main.nf"
     process "PHATE"
 
     test("Should run successfully on test dataset") {

@@ -1,7 +1,7 @@
 nextflow_process {
 
     name "Test Process CAUSALITY"
-    script "modules/local/causality.nf"
+    script "../main.nf"
     process "CAUSALITY"
 
     test("Should run successfully on test dataset") {
