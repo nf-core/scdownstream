@@ -19,8 +19,6 @@ include { paramsSummaryMap                } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML          } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText          } from '../subworkflows/local/utils_nfcore_scdownstream_pipeline'
-
-// Added by Miguel
 include { MANIFOLD_LEARNING               } from '../subworkflows/local/manifold_learning'
 
 /*
@@ -283,11 +281,11 @@ workflow SCDOWNSTREAM {
         ch_versions = ch_versions.mix(FINALIZE.out.versions)
 
         //
-        MANIFOLD_LEARNING (
-            FINALIZE.out.h5ad,         // we use the h5ad from the previous process
-            params.manifold_methods    // 'phate,diffmap' (defined in nextflow.config)
-        )
-        ch_versions = ch_versions.mix(MANIFOLD_LEARNING.out.versions)
+        // MANIFOLD_LEARNING (
+        //    FINALIZE.out.h5ad,         // we use the h5ad from the previous process
+        //    params.manifold_methods    // 'phate,diffmap' (defined in nextflow.config)
+        // )
+        // ch_versions = ch_versions.mix(MANIFOLD_LEARNING.out.versions)
     }
 
     //
