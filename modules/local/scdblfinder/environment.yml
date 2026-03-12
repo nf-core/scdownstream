@@ -4,7 +4,8 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  # TODO nf-core: List required Conda package(s).
-  #               Software MUST be pinned to channel (i.e. "bioconda"), version (i.e. "1.10").
-  #               For Conda, the build (i.e. "h9402c20_2") must be EXCLUDED to support installation on different operating systems.
   - "bioconda::bioconductor-scdblfinder=1.24.0"
+  - "bioconda::bioconductor-singlecellexperiment=1.26.0"
+  - "bioconda::bioconductor-biocparallel=1.38.0"
+  - "conda-forge::r-anndatar=0.3.2"
+  - "conda-forge::r-tidyverse=2.0.0"

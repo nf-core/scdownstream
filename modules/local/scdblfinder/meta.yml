@@ -1,76 +1,67 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
-# # TODO nf-core: Add a description of the module and list keywords
 name: "scdblfinder"
-description: write your description here
+description: Detect doublets in single-cell RNA-seq data using scDblFinder
 keywords:
-  - sort
-  - example
-  - genomics
+  - doublet-detection
+  - single-cell
+  - scrnaseq
+  - quality-control
 tools:
-  ## TODO nf-core: Add a description and other details for the software below
   - "scdblfinder":
-      description: "scDblFinder"
-      homepage: "None"
-      documentation: "None"
-      tool_dev_url: "None"
-      doi: ""
-      licence: ["GPL v3 + file LICENSE"]
-      identifier: null
+      description: "scDblFinder: Computational identification of doublets in single-cell transcriptomics data"
+      homepage: "https://bioconductor.org/packages/scDblFinder"
+      documentation: "https://bioconductor.org/packages/release/bioc/vignettes/scDblFinder/inst/doc/scDblFinder.html"
+      tool_dev_url: "https://github.com/plger/scDblFinder"
+      doi: "10.12688/f1000research.73600.2"
+      licence: ["GPL-3.0"]
+      identifier: biotools:scdblfinder
 
 input:
-  ### TODO nf-core: Add a description of all of the variables used as input
   - - meta:
         type: map
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1' ]`
-    - bam:
+    - h5ad:
         type: file
-        description: Sorted BAM/CRAM/SAM file
-        pattern: "*.{bam,cram,sam}"
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
         ontologies:
-          - edam: "http://edamontology.org/format_2572" # BAM
-          - edam: "http://edamontology.org/format_2573" # CRAM
-          - edam: "http://edamontology.org/format_3462" # SAM
+          - edam: "http://edamontology.org/format_3590" # HDF5 format
 
 output:
-  ### TODO nf-core: Add a description of all of the variables used as output
-  bam:
+  h5ad:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.bam":
+      - "*.h5ad":
           type: file
-          description: Sorted BAM/CRAM/SAM file
-          pattern: "*.{bam,cram,sam}"
+          description: AnnData object with doublet annotations
+          pattern: "*.h5ad"
           ontologies:
-            - edam: "http://edamontology.org/format_2572" # BAM
-            - edam: "http://edamontology.org/format_2573" # CRAM
-            - edam: "http://edamontology.org/format_3462" # SAM
-  versions_scdblfinder:
-    - - "${task.process}":
-          type: string
-          description: The name of the process
-      - "scdblfinder":
-          type: string
-          description: The name of the tool
-      - "scdblfinder --version":
-          type: eval
-          description: The expression to obtain the version of the tool
-
-topics:
+            - edam: "http://edamontology.org/format_3590" # HDF5 format
+  predictions:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.csv":
+          type: file
+          description: CSV file containing doublet predictions (boolean)
+          pattern: "*.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752" # CSV
   versions:
-    - - ${task.process}:
-          type: string
-          description: The name of the process
-      - scdblfinder:
-          type: string
-          description: The name of the tool
-      - scdblfinder --version:
-          type: eval
-          description: The expression to obtain the version of the tool
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+
 authors:
   - "@KurayiChawatama"
 maintainers:
