@@ -4,8 +4,8 @@ process SCANPY_PCA {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/16/168ecbbe27ccef766741ccbf937b0d2675be2e19b0565035e0719f1e9ea5ee95/data'
-        : 'community.wave.seqera.io/library/python_pyyaml_scanpy:b5509a698e9aae25'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/fd/fd27aeaf160eaba9a58c029e08f1da74051aa292c2fb043a5dd68fddcde3af93/data'
+        : 'community.wave.seqera.io/library/pyyaml_scanpy:3c9e9f631f45553d'}"
 
     input:
     tuple val(meta), path(h5ad)
