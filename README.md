@@ -121,6 +121,7 @@ We thank the following people for their extensive assistance in the development 
 - [Jonathan Talbot-Martin](https://github.com/jtalbotmartin)
 - [Lukas Heumos](https://github.com/zethson)
 - [Matiss Ozols](https://github.com/maxozo)
+- [Miguel Rosell](https://github.com/miguelrosell)
 - [Nathan Skene](https://github.com/NathanSkene)
 - [Nurun Fancy](https://github.com/nfancy)
 - [Riley Grindle](https://github.com/Riley-Grindle)
