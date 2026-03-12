@@ -2,6 +2,7 @@ include { SCVITOOLS_SOLO   } from '../../../modules/nf-core/scvitools/solo'
 include { SCANPY_SCRUBLET  } from '../../../modules/nf-core/scanpy/scrublet'
 include { DOUBLETDETECTION } from '../../../modules/nf-core/doubletdetection'
 include { SCDS             } from '../../../modules/local/doublet_detection/scds'
+include { SCDBLFINDER      } from '../../../modules/local/scdblfinder'
 include { DOUBLET_REMOVAL  } from '../../../modules/local/doublet_detection/doublet_removal'
 
 workflow DOUBLET_DETECTION {
@@ -54,6 +55,14 @@ workflow DOUBLET_DETECTION {
             )
             ch_predictions = ch_predictions.mix(DOUBLETDETECTION.out.predictions)
             ch_versions = DOUBLETDETECTION.out.versions
+        }
+
+        if (methods.contains('scdblfinder')) {
+            SCDBLFINDER (
+                ch_h5ad
+            )
+            ch_predictions = ch_predictions.mix(SCDBLFINDER.out.predictions)
+            ch_versions = ch_versions.mix(SCDBLFINDER.out.versions)
         }
 
         DOUBLET_REMOVAL (
