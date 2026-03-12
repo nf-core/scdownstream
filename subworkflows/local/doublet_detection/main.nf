@@ -2,7 +2,7 @@ include { SCVITOOLS_SOLO   } from '../../../modules/nf-core/scvitools/solo'
 include { SCANPY_SCRUBLET  } from '../../../modules/nf-core/scanpy/scrublet'
 include { DOUBLETDETECTION } from '../../../modules/nf-core/doubletdetection'
 include { SCDS             } from '../../../modules/local/doublet_detection/scds'
-include { SCDBLFINDER      } from '../../../modules/local/scdblfinder'
+include { SCDBLFINDER      } from '../../../modules/local/doublet_detection/scdblfinder'
 include { DOUBLET_REMOVAL  } from '../../../modules/local/doublet_detection/doublet_removal'
 
 workflow DOUBLET_DETECTION {
