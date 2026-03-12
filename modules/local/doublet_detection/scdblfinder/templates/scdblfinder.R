@@ -10,7 +10,11 @@ adata <- read_h5ad("${h5ad}")
 sce <- adata\$as_SingleCellExperiment()
 
 # Set the param to a specified RNG seed for reproducibility
-bp <- MulticoreParam(workers = multicoreWorkers(), RNGseed=123)
+nxf_task_cpus <- as.integer(Sys.getenv("NXF_TASK_CPUS", unset = "1"))
+if (is.na(nxf_task_cpus) || nxf_task_cpus < 1L) {
+    nxf_task_cpus <- 1L
+}
+bp <- MulticoreParam(workers = nxf_task_cpus, RNGseed=123)
 
 
 # 10 Genomics Doublet Rate calculator used to get multiplet rate if not provided
