@@ -47,6 +47,10 @@
 
   > Cannoodt R, Zappia L, Morgan M, Deconinck L (2025). anndataR: AnnData interoperability in R. R package version 0.99.0
 
+- [scDblFinder](https://pubmed.ncbi.nlm.nih.gov/35118618/)
+
+  > Germain P, Lun A, Garcia Meixide C, Macnair W, Robinson M. Doublet identification in single-cell sequencing data using scDblFinder. F1000Res. 2022;11:979. doi: 10.12688/f1000research.73600.2.
+  
 ## Software packaging/containerisation tools
 
 - [Anaconda](https://anaconda.com)
