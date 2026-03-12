@@ -58,7 +58,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - `custom_thresholds/`: Results of applying user-defined QC thresholds.
   - `doublet_detection/`: Directories related to doublet detection.
     - `input_rds/`: RDS version of the h5ad file that is used as input to the doublet detection tools.
-    - `(doubletdetection|scds|scrublet|solo)/`: Results of doublet detection. Each directory contains a filtered `h5ad`/`rds` and a `csv`/`pkl` file with the doublet annotations.
+    - `(doubletdetection|scdblfinder|scds|scrublet|solo)/`: Results of doublet detection. Each directory contains a filtered `h5ad`/`rds` and a `csv`/`pkl` file with the doublet annotations.
     - `${sample_id}.h5ad`: The h5ad without doublets.
   - `qc_preprocessed/`: QC plots for the preprocessed data.
   - `cell_cycle/`: Cell cycle scoring results.
