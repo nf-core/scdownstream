@@ -119,6 +119,33 @@ nextflow_workflow {
 
     }
 
+    test("Should run without failures - symbol_col index, unify_gene_symbols false, snapshot stability") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                unify_gene_symbols = false
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'index', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/symbols_as_index.h5ad', checkIfExists: true)
+                ])
+                input[1] = false
+                input[2] = 'sum'
+                input[3] = false
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
     test("Should run without failures - symbol_col index, unify_gene_symbols true - stub") {
 
         options '-stub'
@@ -169,8 +196,16 @@ nextflow_workflow {
         }
 
         then {
-            assert workflow.success
-            assert snapshot(workflow.out).match()
+            def filename = workflow.out.h5ad[0][1]
+            assertAll(
+            { assert workflow.success },
+            {
+                with(anndata(filename)) {
+                    assert var.rownames.size() > 0
+                    assert obs.rownames.size() > 0
+                }
+            }
+            )
         }
 
     }

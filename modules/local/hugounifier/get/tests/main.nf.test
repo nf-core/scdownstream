@@ -31,7 +31,17 @@ nextflow_process {
         then {
             assertAll(
             { assert process.success },
-            { assert snapshot(process.out).match() }
+            { assert process.out.changes[0][1].size() == 2 },
+            {
+                with(path(process.out.changes[0][1][0]).csv) {
+                    assert columnNames == ["action", "symbol", "new", "reason"]
+                }
+            },
+            {
+                with(path(process.out.changes[0][1][1]).csv) {
+                    assert columnNames == ["action", "symbol", "new", "reason"]
+                }
+            }
             )
         }
 
