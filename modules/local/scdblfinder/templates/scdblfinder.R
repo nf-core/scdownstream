@@ -7,7 +7,7 @@ library(BiocParallel)
 library(anndataR)
 
 adata <- read_h5ad("${h5ad}")
-sce <- adata$as_SingleCellExperiment()
+sce <- adata\$as_SingleCellExperiment()
 
 # Set the param to a specified RNG seed for reproducibility
 bp <- MulticoreParam(workers = multicoreWorkers(), RNGseed=123)
@@ -33,15 +33,24 @@ multiplet_rate <- multiplet_rates_10x %>%
 
 message(paste0("Setting multiplet rate to ", multiplet_rate, " for ", ncol(sce), " cells"))
 
-# Run scDblFinder on the REAL data (not mock data!)
-# scDblFinder creates artificial doublets internally
+# Save original cell names and count before overwriting sce
+original_cell_names <- colnames(sce)
+n_cells <- ncol(sce)
+
+# Run scDblFinder on the counts matrix (first assay)
+# scDblFinder creates artificial doublets internally and returns a new SCE
 set.seed(123)
 sce <- scDblFinder(
-    sce,
+    assays(sce)[[1]],
     BPPARAM = bp,
     dbr = multiplet_rate,
-    artificialDoublets = ncol(sce)
+    artificialDoublets = n_cells
 )
+
+# Restore original cell names
+if (!is.null(original_cell_names) && length(original_cell_names) == ncol(sce)) {
+    colnames(sce) <- original_cell_names
+}
 
 # Generate a summary table
 message("scDblFinder results summary:")
@@ -49,12 +58,17 @@ print(table(sce\$scDblFinder.class))
 
 # Rename scDblFinder.* columns for consistency with other doublet methods
 scdbl_cols <- grep("^scDblFinder\\\\.", colnames(colData(sce)), value = TRUE)
-new_scdbl_cols <- paste0("scdblfinder_", gsub("^scDblFinder\\\\.", "", gsub("\\\\.", "_", scdbl_cols)))
 
-# Rename columns in colData(sce)
+# First remove "scDblFinder." prefix, THEN replace remaining dots with underscores
+new_scdbl_cols <- paste0("scdblfinder_", gsub("\\\\.", "_", gsub("^scDblFinder\\\\.", "", scdbl_cols)))
+
+# Rename columns in colData(sce) - create new columns first, then delete old ones
 for (i in seq_along(scdbl_cols)) {
   colData(sce)[[new_scdbl_cols[i]]] <- colData(sce)[[scdbl_cols[i]]]
-  colData(sce)[[scdbl_cols[i]]] <- NULL  # Remove the original column
+}
+# Now delete old columns
+for (col in scdbl_cols) {
+  colData(sce)[[col]] <- NULL
 }
 
 # Convert back to AnnData and save
@@ -63,10 +77,18 @@ write_h5ad(adata_processed, "${prefix}.h5ad")
 
 # Extract predictions for doublet removal step
 # Create a binary doublet call based on class
-predictions <- data.frame(
-    doublet = colData(sce)\$scdblfinder_class == "doublet",
-    row.names = colnames(sce)
-)
+# Ensure we have valid row names
+if (is.null(colnames(sce)) || length(colnames(sce)) != ncol(sce)) {
+    colnames(sce) <- paste0("cell_", seq_len(ncol(sce)))
+}
+
+# Create predictions vector
+doublet_calls <- colData(sce)\$scdblfinder_class == "doublet"
+
+# Create data frame without row.names first, then add them
+predictions <- data.frame(doublet = doublet_calls)
+row.names(predictions) <- colnames(sce)
+
 colnames(predictions) <- "${prefix}"
 
 # Save predictions to CSV
