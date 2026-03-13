@@ -21,6 +21,7 @@ workflow DOUBLET_DETECTION {
         log.info("DOUBLET_DETECTION: Not performed since no methods selected.")
     } else {
         ch_batch_col = ch_h5ad.map { meta, _h5ad -> meta.batch_col }
+        ch_h5ad_doublet_rate = ch_h5ad.map { meta, h5ad -> [meta, h5ad, meta.doublet_rate] }
 
         if (methods.contains('scds')) {
             SCDS (
@@ -59,7 +60,7 @@ workflow DOUBLET_DETECTION {
 
         if (methods.contains('scdblfinder')) {
             SCDBLFINDER (
-                ch_h5ad
+                ch_h5ad_doublet_rate
             )
             ch_predictions = ch_predictions.mix(SCDBLFINDER.out.predictions)
             ch_versions = ch_versions.mix(SCDBLFINDER.out.versions)

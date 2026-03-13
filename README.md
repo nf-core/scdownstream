@@ -89,6 +89,8 @@ sample4,/absolute/path/to/sample3.csv
 Each entry represents a h5ad, h5, RDS or CSV file. RDS files may contain any object that can be converted to a SingleCellExperiment using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function.
 CSV files should contain a matrix with genes as columns and cells as rows. The first column should contain cell names/barcodes.
 
+For `scDblFinder`, you can optionally add a `doublet_rate` column (values between `0` and `1`) to the samplesheet. If omitted, `scDblFinder` estimates the doublet rate internally.
+
 -->
 
 Now, you can run the pipeline using:

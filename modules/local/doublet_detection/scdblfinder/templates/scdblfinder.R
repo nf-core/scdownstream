@@ -13,37 +13,31 @@ sce <- adata\$as_SingleCellExperiment()
 num_threads <- max(1L, as.integer("${task.cpus}"))
 bp <- MulticoreParam(workers = num_threads, RNGseed = 123)
 
-# 10 Genomics Doublet Rate calculator used to get multiplet rate if not provided
-# 10X multiplet rate table(https://rpubs.com/kenneditodd/doublet_finder_example)
-multiplet_rates_10x <- data.frame(
-  "Multiplet_rate" = c(0.004, 0.008, 0.0160, 0.023, 0.031,
-                        0.039, 0.046, 0.054, 0.061, 0.069, 0.076),
-  "Loaded_cells" = c(800, 1600, 3200, 4800, 6400, 8000, 9600,
-                     11200, 12800, 14400, 16000),
-  "Recovered_cells" = c(500, 1000, 2000, 3000, 4000, 5000, 6000,
-                        7000, 8000, 9000, 10000)
-)
-
-# Adjust to use the number of cells in the SCE object
-idx <- findInterval(ncol(sce), multiplet_rates_10x\$Recovered_cells)
-if (idx < 1L) idx <- 1L
-if (idx > nrow(multiplet_rates_10x)) idx <- nrow(multiplet_rates_10x)
-
-multiplet_rate <- as.numeric(multiplet_rates_10x\$Multiplet_rate[idx])
-message(paste0("Setting multiplet rate to ", multiplet_rate, " for ", ncol(sce), " cells"))
-
 # Save original cell names and count before overwriting sce
 original_cell_names <- colnames(sce)
-n_cells <- ncol(sce)
+
+# Parse per-sample doublet rate from Nextflow input. If unavailable, let
+# scDblFinder estimate dbr internally (recommended default for 10X data).
+dbr_raw <- trimws("${dbr}")
+dbr <- suppressWarnings(as.numeric(dbr_raw))
 
 # Run scDblFinder on the counts matrix (first assay)
 # scDblFinder creates artificial doublets internally and returns a new SCE
 set.seed(123)
-sce <- scDblFinder(
+if (!is.na(dbr)) {
+  message(paste0("Using provided doublet_rate (dbr): ", dbr))
+  sce <- scDblFinder(
     assays(sce)[[1]],
     BPPARAM = bp,
-    dbr = multiplet_rate
-)
+    dbr = dbr
+  )
+} else {
+  message("No valid doublet_rate provided; using scDblFinder internal dbr estimation")
+  sce <- scDblFinder(
+    assays(sce)[[1]],
+    BPPARAM = bp
+  )
+}
 
 # Restore the input barcodes because running scDblFinder on the just the assay matrix above can
 # return a new SCE whose column names no longer match the original AnnData cell IDs.

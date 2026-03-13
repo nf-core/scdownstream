@@ -27,6 +27,11 @@ input:
         pattern: "*.{h5ad}"
         ontologies:
           - edam: "http://edamontology.org/format_3590" # HDF5 format
+    - dbr:
+        type: number
+        description: |
+          Optional expected doublet rate (0-1). If null, scDblFinder estimates
+          the doublet rate internally.
 
 output:
   h5ad:
