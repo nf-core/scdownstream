@@ -10,12 +10,8 @@ adata <- read_h5ad("${h5ad}")
 sce <- adata\$as_SingleCellExperiment()
 
 # Set the param to a specified RNG seed for reproducibility
-nxf_task_cpus <- as.integer(Sys.getenv("NXF_TASK_CPUS", unset = "1"))
-if (is.na(nxf_task_cpus) || nxf_task_cpus < 1L) {
-    nxf_task_cpus <- 1L
-}
-bp <- MulticoreParam(workers = nxf_task_cpus, RNGseed=123)
-
+num_threads <- max(1L, as.integer("${task.cpus}"))
+bp <- MulticoreParam(workers = num_threads, RNGseed = 123)
 
 # 10 Genomics Doublet Rate calculator used to get multiplet rate if not provided
 # 10X multiplet rate table(https://rpubs.com/kenneditodd/doublet_finder_example)
@@ -50,7 +46,10 @@ sce <- scDblFinder(
     artificialDoublets = n_cells
 )
 
-# Restore original cell names
+# Restore the input barcodes because running scDblFinder on the just the assay matrix above can
+# return a new SCE whose column names no longer match the original AnnData cell IDs.
+# Keeping the original names is required so the output h5ad obs_names and CSV rows
+# still map back to the same cells seen by downstream steps.
 if (!is.null(original_cell_names) && length(original_cell_names) == ncol(sce)) {
     colnames(sce) <- original_cell_names
 }
