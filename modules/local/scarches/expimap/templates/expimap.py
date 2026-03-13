@@ -32,7 +32,7 @@ else:
 # Initialization of the model with the reference network
 intr_cvae = sca.models.EXPIMAP(
     adata=adata_processing,
-    condition_key="${batch_col}",
+    condition_key="${condition_col}",
     hidden_layer_sizes=[256, 256, 256],
     recon_loss="nb"
 )

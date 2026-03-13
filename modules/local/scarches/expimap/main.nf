@@ -10,7 +10,7 @@ process SCARCHES_EXPIMAP {
     input:
     tuple val(meta), path(h5ad, arity: 1)
     tuple val(meta2), path(reference_model)
-    val(batch_col)
+    val(condition_col)
     val(counts_layer)
 
     output:

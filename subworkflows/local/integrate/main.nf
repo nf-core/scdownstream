@@ -25,6 +25,7 @@ workflow INTEGRATE {
     scvi_continuous_covariates  // list of string
     scimilarity_model           // path
     expimap_gmt                 // path
+    condition_col               // string
 
     main:
     ch_versions = channel.empty()
@@ -155,7 +156,7 @@ workflow INTEGRATE {
             expimap_gmt
             ? channel.value([[id: 'expimap'], file(expimap_gmt, checkIfExists: true)])
             : channel.value([[id: 'expimap'], file("${projectDir}/assets/databases/expimap/pathways.gmt", checkIfExists: true)]),
-            "batch",
+            condition_col,
             "X"
         )
         ch_versions = ch_versions.mix(SCARCHES_EXPIMAP.out.versions)
