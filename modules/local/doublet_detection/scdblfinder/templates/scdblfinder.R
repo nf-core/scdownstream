@@ -42,8 +42,7 @@ set.seed(123)
 sce <- scDblFinder(
     assays(sce)[[1]],
     BPPARAM = bp,
-    dbr = multiplet_rate,
-    artificialDoublets = n_cells
+    dbr = multiplet_rate
 )
 
 # Restore the input barcodes because running scDblFinder on the just the assay matrix above can
