@@ -28,7 +28,7 @@ workflow DOUBLET_DETECTION {
                 ch_h5ad
             )
             ch_predictions = ch_predictions.mix(SCDS.out.predictions)
-            ch_versions = SCDS.out.versions
+            ch_versions = ch_versions.mix(SCDS.out.versions)
         }
 
         if (methods.contains('solo')) {
@@ -38,7 +38,7 @@ workflow DOUBLET_DETECTION {
                 scvi_max_epochs ?: []
             )
             ch_predictions = ch_predictions.mix(SCVITOOLS_SOLO.out.predictions)
-            ch_versions = SCVITOOLS_SOLO.out.versions
+            ch_versions = ch_versions.mix(SCVITOOLS_SOLO.out.versions)
         }
 
         if (methods.contains('scrublet')) {
@@ -47,7 +47,7 @@ workflow DOUBLET_DETECTION {
                 ch_batch_col
             )
             ch_predictions = ch_predictions.mix(SCANPY_SCRUBLET.out.predictions)
-            ch_versions = SCANPY_SCRUBLET.out.versions
+            ch_versions = ch_versions.mix(SCANPY_SCRUBLET.out.versions)
         }
 
         if (methods.contains('doubletdetection')) {
@@ -55,7 +55,7 @@ workflow DOUBLET_DETECTION {
                 ch_h5ad
             )
             ch_predictions = ch_predictions.mix(DOUBLETDETECTION.out.predictions)
-            ch_versions = DOUBLETDETECTION.out.versions
+            ch_versions = ch_versions.mix(DOUBLETDETECTION.out.versions)
         }
 
         if (methods.contains('scdblfinder')) {
