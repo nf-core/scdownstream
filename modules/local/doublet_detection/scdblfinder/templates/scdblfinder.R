@@ -9,7 +9,6 @@ library(anndataR)
 adata <- read_h5ad("${h5ad}")
 sce <- adata\$as_SingleCellExperiment()
 
-# Set the param to a specified RNG seed for reproducibility
 num_threads <- max(1L, as.integer("${task.cpus}"))
 bp <- MulticoreParam(workers = num_threads, RNGseed = 123)
 
