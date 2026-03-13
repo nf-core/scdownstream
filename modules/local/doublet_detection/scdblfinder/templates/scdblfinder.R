@@ -58,20 +58,14 @@ if (!is.null(original_cell_names) && length(original_cell_names) == ncol(sce)) {
 message("scDblFinder results summary:")
 print(table(sce\$scDblFinder.class))
 
-# Rename scDblFinder.* columns for consistency with other doublet methods
-scdbl_cols <- grep("^scDblFinder\\\\.", colnames(colData(sce)), value = TRUE)
-
-# First remove "scDblFinder." prefix, THEN replace remaining dots with underscores
-new_scdbl_cols <- paste0("scdblfinder_", gsub("\\\\.", "_", gsub("^scDblFinder\\\\.", "", scdbl_cols)))
-
-# Rename columns in colData(sce) - create new columns first, then delete old ones
-for (i in seq_along(scdbl_cols)) {
-  colData(sce)[[new_scdbl_cols[i]]] <- colData(sce)[[scdbl_cols[i]]]
-}
-# Now delete old columns
-for (col in scdbl_cols) {
-  colData(sce)[[col]] <- NULL
-}
+# Rename scDblFinder.* columns for consistency with other doublet methods.
+# Replace prefix first, then replace any remaining dots with underscores.
+idx <- grep("^scDblFinder\\\\.", colnames(colData(sce)))
+colnames(colData(sce))[idx] <- gsub(
+  "\\\\.",
+  "_",
+  sub("^scDblFinder\\\\.", "scdblfinder_", colnames(colData(sce))[idx])
+)
 
 # The doublet calls must stay keyed by the original cell barcodes. If they are not
 # present here, something went wrong during conversion or scDblFinder processing and
