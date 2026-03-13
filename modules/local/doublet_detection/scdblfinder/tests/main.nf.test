@@ -29,12 +29,11 @@ nextflow_process {
             { assert process.success },
             { assert snapshot(
                 process.out.versions,
-                process.out.predictions,
-                // Hashing does not work due to this issue:
-                // https://github.com/scverse/anndataR/issues/272
-                file(process.out.h5ad.get(0).get(1)).exists(),
-                file(process.out.h5ad.get(0).get(1)).size()
+                process.out.predictions
             ).match() }
+            ,
+            { assert file(process.out.h5ad.get(0).get(1)).exists() },
+            { assert file(process.out.h5ad.get(0).get(1)).size() > 0 }
             )
         }
 

@@ -73,15 +73,23 @@ for (col in scdbl_cols) {
   colData(sce)[[col]] <- NULL
 }
 
-# Write the updated SingleCellExperiment directly as h5ad
-write_h5ad(sce, "${prefix}.h5ad")
+# The doublet calls must stay keyed by the original cell barcodes. If they are not
+# present here, something went wrong during conversion or scDblFinder processing and
+# we should fail instead of inventing replacement identifiers.
+if (is.null(colnames(sce)) || length(colnames(sce)) != ncol(sce)) {
+  stop("scDblFinder output is missing valid cell barcodes; cannot write aligned h5ad and prediction outputs.")
+}
+
+# Write the updated SingleCellExperiment directly as h5ad, explicitly mapping the
+# primary assay to AnnData X so downstream readers see a valid matrix field.
+primary_assay <- assayNames(sce)[1]
+if (is.na(primary_assay) || primary_assay == "") {
+  stop("scDblFinder output is missing a primary assay; cannot write h5ad output.")
+}
+write_h5ad(sce, "${prefix}.h5ad", x_mapping = primary_assay)
 
 # Extract predictions for doublet removal step
 # Create a binary doublet call based on class
-# Ensure we have valid row names
-if (is.null(colnames(sce)) || length(colnames(sce)) != ncol(sce)) {
-    colnames(sce) <- paste0("cell_", seq_len(ncol(sce)))
-}
 
 # Create predictions vector
 doublet_calls <- colData(sce)\$scdblfinder_class == "doublet"
