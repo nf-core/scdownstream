@@ -1,0 +1,69 @@
+name: "scarches_expimap"
+description: "Train EXPIMAP model from scArches for interpretable embedding and pathway analysis"
+keywords:
+  - scarches
+  - expimap
+  - interpretable embeddings
+  - pathway analysis
+  - single-cell
+tools:
+  - "scarches":
+      description: "Transfer learning for single-cell genomics"
+      homepage: "https://github.com/theislab/scarches"
+      documentation: "https://scarches.readthedocs.io"
+      tool_dev_url: "https://github.com/theislab/scarches"
+      doi: "10.1038/s41592-021-01232-1"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample metadata
+        e.g. `[ id:'sample1' ]`
+
+  - h5ad:
+      type: file
+      pattern: "*.{h5ad}"
+      description: "Annotated data matrix (h5ad format)"
+
+  - meta2:
+      type: map
+      description: |
+        Groovy Map for optional reference model metadata
+        e.g. `[ id:'reference' ]`
+
+  - reference_model:
+      type: file
+      pattern: "*.{gmt,gmx}"
+      description: "Optional gene module reference file (GMD/GMT format) for biological knowledge"
+      required: false
+
+  - batch_col:
+      type: string
+      description: "Column name in adata.obs containing batch/condition information"
+
+  - counts_layer:
+      type: string
+      description: "Layer name containing count data. Default uses 'X' (expression matrix)"
+
+output:
+  - h5ad:
+      type: file
+      pattern: "*.h5ad"
+      description: "Output h5ad file with EXPIMAP embedding in obsm['X_expimap_latent']"
+
+  - obsm:
+      type: file
+      pattern: "X_*.pkl"
+      description: "Pickle file containing EXPIMAP latent embedding matrix"
+
+  - versions:
+      type: file
+      pattern: "versions.yml"
+      description: "File containing software versions"
+
+authors:
+  - "@your_github_username"
+maintainers:
+  - "@your_github_username"

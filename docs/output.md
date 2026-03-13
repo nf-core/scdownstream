@@ -36,6 +36,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
       - [Combat](https://scanpy.readthedocs.io/en/latest/api/generated/scanpy.pp.combat.html)
       - [Seurat](https://satijalab.org/seurat/articles/integration_introduction)
       - [PCA](https://scanpy.readthedocs.io/en/stable/generated/scanpy.pp.pca.html)
+      - [Expimap](https://docs.scarches.org/en/latest/api/models.html#scarches.models.EXPIMAP)
 3. Cell type annotation
    - [celltypist](https://www.celltypist.org/)
    - [singleR](https://www.bioconductor.org/packages/release/bioc/html/SingleR.html)

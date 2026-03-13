@@ -130,8 +130,8 @@
                     "type": "string",
                     "default": "scvi",
                     "description": "Specify the tool to use for integration",
-                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, harmony, bbknn, combat, seurat, scimilarity, pca",
-                    "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat|scimilarity|pca)(,(scvi|scanvi|harmony|bbknn|combat|seurat|scimilarity|pca))*)?$"
+                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, harmony, bbknn, combat, seurat, scimilarity, pca, expimap",
+                    "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat|scimilarity|pca|expimap)(,(scvi|scanvi|harmony|bbknn|combat|seurat|scimilarity|pca|expimap))*)?$"
                 },
                 "integration_hvgs": {
                     "type": "integer",
@@ -166,6 +166,13 @@
                     "default": "https://zenodo.org/records/10685499/files/model_v1.1.tar.gz",
                     "description": "Path to a pre-trained scimilarity model, only relevant if scimilarity is selected in `integration_methods`. If provided, the model will be used for integration. Otherwise, a new model will be trained.",
                     "help_text": "The file can be a .tar.gz file or the corresponding unzipped directory. The official models are shared via [Zenodo](https://zenodo.org/record/10685499).",
+                    "exists": true
+                },
+                "expimap_gmt": {
+                    "type": "string",
+                    "description": "Path to pathway database file (GMT format) for EXPIMAP, only relevant if expimap is selected in `integration_methods`. If not provided, the default Reactome pathways will be used.",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.gmt$",
                     "exists": true
                 }
             }

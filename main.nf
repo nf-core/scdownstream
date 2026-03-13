@@ -56,6 +56,7 @@ workflow NFCORE_SCDOWNSTREAM {
     scvi_categorical_covariates   //   value: string
     scvi_continuous_covariates    //   value: string
     scimilarity_model             //   value: string
+    expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
     skip_rankgenesgroups          //   value: boolean
     base_embeddings               //   value: string
@@ -104,6 +105,7 @@ workflow NFCORE_SCDOWNSTREAM {
         scvi_categorical_covariates,
         scvi_continuous_covariates,
         scimilarity_model,
+        expimap_gmt,
         skip_liana,
         skip_rankgenesgroups,
         base_embeddings,
@@ -179,6 +181,7 @@ workflow {
         params.scvi_categorical_covariates,
         params.scvi_continuous_covariates,
         params.scimilarity_model,
+        params.expimap_gmt,
         params.skip_liana,
         params.skip_rankgenesgroups,
         params.base_embeddings,
