@@ -29,12 +29,11 @@ multiplet_rates_10x <- data.frame(
 )
 
 # Adjust to use the number of cells in the SCE object
-multiplet_rate <- multiplet_rates_10x %>%
-  dplyr::filter(Recovered_cells < ncol(sce)) %>%
-  dplyr::slice(which.max(Recovered_cells)) %>%
-  dplyr::pull(Multiplet_rate) %>%
-  as.numeric()
+idx <- findInterval(ncol(sce), multiplet_rates_10x\$Recovered_cells)
+if (idx < 1L) idx <- 1L
+if (idx > nrow(multiplet_rates_10x)) idx <- nrow(multiplet_rates_10x)
 
+multiplet_rate <- as.numeric(multiplet_rates_10x\$Multiplet_rate[idx])
 message(paste0("Setting multiplet rate to ", multiplet_rate, " for ", ncol(sce), " cells"))
 
 # Save original cell names and count before overwriting sce
