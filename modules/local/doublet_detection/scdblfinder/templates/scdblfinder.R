@@ -73,9 +73,8 @@ for (col in scdbl_cols) {
   colData(sce)[[col]] <- NULL
 }
 
-# Convert back to AnnData and save
-adata_processed <- as_AnnData(sce)
-write_h5ad(adata_processed, "${prefix}.h5ad")
+# Write the updated SingleCellExperiment directly as h5ad
+write_h5ad(sce, "${prefix}.h5ad")
 
 # Extract predictions for doublet removal step
 # Create a binary doublet call based on class
