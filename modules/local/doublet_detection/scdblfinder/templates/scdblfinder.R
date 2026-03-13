@@ -23,20 +23,18 @@ dbr <- suppressWarnings(as.numeric(dbr_raw))
 # Run scDblFinder on the counts matrix (first assay)
 # scDblFinder creates artificial doublets internally and returns a new SCE
 set.seed(123)
-if (!is.na(dbr)) {
-  message(paste0("Using provided doublet_rate (dbr): ", dbr))
-  sce <- scDblFinder(
-    assays(sce)[[1]],
-    BPPARAM = bp,
-    dbr = dbr
-  )
-} else {
+if (is.na(dbr)) {
   message("No valid doublet_rate provided; using scDblFinder internal dbr estimation")
-  sce <- scDblFinder(
-    assays(sce)[[1]],
-    BPPARAM = bp
-  )
+  dbr <- NULL
+} else {
+  message(paste0("Using provided doublet_rate (dbr): ", dbr))
 }
+
+sce <- scDblFinder(
+  assays(sce)[[1]],
+  BPPARAM = bp,
+  dbr = dbr
+)
 
 # Generate a summary table
 message("scDblFinder results summary:")
