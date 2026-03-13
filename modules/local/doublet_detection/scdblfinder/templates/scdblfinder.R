@@ -39,14 +39,6 @@ if (!is.na(dbr)) {
   )
 }
 
-# Restore the input barcodes because running scDblFinder on the just the assay matrix above can
-# return a new SCE whose column names no longer match the original AnnData cell IDs.
-# Keeping the original names is required so the output h5ad obs_names and CSV rows
-# still map back to the same cells seen by downstream steps.
-if (!is.null(original_cell_names) && length(original_cell_names) == ncol(sce)) {
-    colnames(sce) <- original_cell_names
-}
-
 # Generate a summary table
 message("scDblFinder results summary:")
 print(table(sce\$scDblFinder.class))
