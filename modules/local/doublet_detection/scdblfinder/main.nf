@@ -1,6 +1,6 @@
 process SCDBLFINDER {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_low'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -8,7 +8,7 @@ process SCDBLFINDER {
         'community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-biocparallel_bioconductor-rhdf5_bioconductor-scdblfinder_pruned:0f9db6b0855861de' }"
 
     input:
-    tuple val(meta), path(h5ad), val(dbr)
+    tuple val(meta), path(h5ad), val(dbr), val(batch_col)
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad

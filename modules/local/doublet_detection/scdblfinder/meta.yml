@@ -32,6 +32,11 @@ input:
         description: |
           Optional expected doublet rate (0-1). If null, scDblFinder estimates
           the doublet rate internally.
+    - batch_col:
+        type: string
+        description: |
+          Optional column in the AnnData obs / SingleCellExperiment colData used
+          to split cells by capture or batch via scDblFinder's samples argument.
 
 output:
   h5ad:

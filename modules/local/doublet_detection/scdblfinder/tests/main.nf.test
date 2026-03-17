@@ -18,7 +18,8 @@ nextflow_process {
                 input[0] = channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
-                        null
+                        null,
+                        ''
                     ]
                 )
                 """
@@ -51,7 +52,8 @@ nextflow_process {
                 input[0] = channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
-                        0.08
+                        0.08,
+                        ''
                     ]
                 )
                 """
@@ -72,6 +74,64 @@ nextflow_process {
 
     }
 
+    test("Should run with valid batch_col") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        null,
+                        'sample'
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assertAll(
+            { assert process.success },
+            { assert file(process.out.h5ad.get(0).get(1)).exists() },
+            { assert file(process.out.h5ad.get(0).get(1)).size() > 0 },
+            { assert file(process.out.predictions.get(0).get(1)).exists() },
+            { assert file(process.out.predictions.get(0).get(1)).size() > 0 }
+            )
+        }
+
+    }
+
+    test("Should fail with non-existing batch_col") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        null,
+                        'non_existing_col'
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assertAll(
+            { assert process.failed }
+            )
+        }
+
+    }
+
     test("Should run without failures - stub") {
 
         options '-stub'
@@ -85,7 +145,8 @@ nextflow_process {
                 input[0] = channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
-                        null
+                        null,
+                        ''
                     ]
                 )
                 """

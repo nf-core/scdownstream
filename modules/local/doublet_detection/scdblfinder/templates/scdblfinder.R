@@ -19,6 +19,27 @@ original_cell_names <- colnames(sce)
 # scDblFinder estimate dbr internally (recommended default for 10X data).
 dbr_raw <- trimws("${dbr}")
 dbr <- suppressWarnings(as.numeric(dbr_raw))
+batch_col <- trimws("${batch_col ?: ''}")
+
+samples <- NULL
+if (nzchar(batch_col)) {
+  if (!(batch_col %in% colnames(colData(sce)))) {
+    stop(
+      "Batch column '",
+      batch_col,
+      "' was requested for scDblFinder samples but is not present in the input data. Available columns: ",
+      paste(colnames(colData(sce)), collapse = ", ")
+    )
+  }
+
+  samples <- colData(sce)[[batch_col]]
+  if (any(is.na(samples))) {
+    stop("Batch column '", batch_col, "' contains NA values; cannot split scDblFinder by sample.")
+  }
+
+  samples <- as.vector(samples)
+  message(paste0("Using batch column for scDblFinder samples: ", batch_col))
+}
 
 # Run scDblFinder on the counts matrix (first assay)
 # scDblFinder creates artificial doublets internally and returns a new SCE
@@ -30,11 +51,17 @@ if (is.na(dbr)) {
   message(paste0("Using provided doublet_rate (dbr): ", dbr))
 }
 
-sce <- scDblFinder(
+scdblfinder_args <- list(
   assays(sce)[[1]],
   BPPARAM = bp,
   dbr = dbr
 )
+
+if (!is.null(samples)) {
+  scdblfinder_args\$samples <- samples
+}
+
+sce <- do.call(scDblFinder, scdblfinder_args)
 
 # Generate a summary table
 message("scDblFinder results summary:")
