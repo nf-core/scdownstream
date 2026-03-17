@@ -23,6 +23,11 @@ adata_processing = adata.copy()
 if "${counts_layer}" != "X":
     adata_processing.X = adata.layers["${counts_layer}"]
 
+# Ensure condition column exists
+condition_col = "${condition_col}"
+if condition_col not in adata_processing.obs.columns:
+    adata_processing.obs[condition_col] = "condition"
+
 # Prior biological knowledge in form of gene programs
 if "${reference_model}":
     sca.utils.add_annotations(adata_processing, "${reference_model}", min_genes=12, clean=True)
@@ -33,17 +38,18 @@ else:
 intr_cvae = sca.models.EXPIMAP(
     adata=adata_processing,
     condition_key="${condition_col}",
-    hidden_layer_sizes=[256, 256, 256],
-    recon_loss="nb"
+    hidden_layer_sizes=${hidden_layer_sizes},
+    recon_loss="${recon_loss}"
 )
 
 # Train the model
+use_early_stopping = "${use_early_stopping}".lower() == 'true'
 intr_cvae.train(
-    n_epochs=400,
-    alpha_epoch_anneal=100,
-    alpha=0.7,
-    alpha_kl=0.5,
-    use_early_stopping=True
+    n_epochs=${n_epochs},
+    alpha_epoch_anneal=${alpha_epoch_anneal},
+    alpha=${alpha},
+    alpha_kl=${alpha_kl},
+    use_early_stopping=use_early_stopping
 )
 
 # Extract the interpretable latent representation

@@ -383,6 +383,54 @@
                 }
             }
         },
+        "expimap_options": {
+            "title": "EXPIMAP options",
+            "type": "object",
+            "fa_icon": "fas fa-microscope",
+            "description": "Options for the EXPIMAP integration method",
+            "properties": {
+                "expimap_hidden_layer_sizes": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "default": [256, 256, 256],
+                    "description": "Hidden layer sizes for EXPIMAP neural network"
+                },
+                "expimap_recon_loss": {
+                    "type": "string",
+                    "default": "nb",
+                    "enum": ["nb", "zinb", "poisson", "normal"],
+                    "description": "Reconstruction loss for EXPIMAP",
+                    "help_text": "Reconstruction loss for EXPIMAP. Can be 'nb', 'zinb', 'poisson', or 'normal'."
+                },
+                "expimap_n_epochs": {
+                    "type": "integer",
+                    "default": 400,
+                    "description": "Number of epochs for training EXPIMAP"
+                },
+                "expimap_alpha_epoch_anneal": {
+                    "type": "integer",
+                    "default": 100,
+                    "description": "Epoch for alpha annealing in EXPIMAP"
+                },
+                "expimap_alpha": {
+                    "type": "number",
+                    "default": 0.7,
+                    "description": "Alpha parameter for EXPIMAP"
+                },
+                "expimap_alpha_kl": {
+                    "type": "number",
+                    "default": 0.5,
+                    "description": "KL divergence alpha parameter for EXPIMAP"
+                },
+                "expimap_use_early_stopping": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Whether to use early stopping for EXPIMAP training"
+                }
+            }
+        },
         "pseudobulking_options": {
             "title": "Pseudobulking options",
             "type": "object",
@@ -592,6 +640,9 @@
         },
         {
             "$ref": "#/$defs/scVI_options"
+        },
+        {
+            "$ref": "#/$defs/expimap_options"
         },
         {
             "$ref": "#/$defs/pseudobulking_options"
