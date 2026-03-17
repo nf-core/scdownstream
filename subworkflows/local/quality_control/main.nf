@@ -1,3 +1,4 @@
+include { SCANPY_CELLCYCLE                                                           } from '../../../modules/local/scanpy/cellcycle'
 include { H5AD_REMOVEBACKGROUND_BARCODES_CELLBENDER_ANNDATA as EMPTY_DROPLET_REMOVAL } from '../../nf-core/h5ad_removebackground_barcodes_cellbender_anndata'
 include { ANNDATA_GETSIZE as GET_UNFILTERED_SIZE                                     } from '../../../modules/nf-core/anndata/getsize'
 include { ANNDATA_GETSIZE as GET_FILTERED_SIZE                                       } from '../../../modules/nf-core/anndata/getsize'
@@ -27,11 +28,15 @@ workflow QUALITY_CONTROL {
     mito_genes                    //   value: string (path) or null
     sample_n                      //   value: string (integer > 1 or null)
     sample_fraction               //   value: string (float between 0-1 or null)
+    cell_cycle_scoring            //   value: boolean
+    s_genes                       //    path: file or []
+    g2m_genes                     //    path: file or []
 
     main:
     ch_versions = channel.empty()
     ch_multiqc_files = channel.empty()
     ch_sizes = channel.empty()
+    ch_obs_per_sample = channel.empty()
 
     GET_UNFILTERED_SIZE (
         ch_h5ad
@@ -216,6 +221,22 @@ workflow QUALITY_CONTROL {
     ch_multiqc_files = ch_multiqc_files.mix(QC_FILTERED.out.multiqc_files)
     ch_versions = ch_versions.mix(QC_FILTERED.out.versions)
 
+    if (cell_cycle_scoring) {
+        ch_cellcycle = ch_h5ad.multiMap {
+            meta, h5ad ->
+            h5ad:       [meta, h5ad]
+            symbol_col: meta.symbol_col ?: "index"
+        }
+        SCANPY_CELLCYCLE (
+            ch_cellcycle.h5ad,
+            s_genes,
+            g2m_genes,
+            ch_cellcycle.symbol_col
+        )
+        ch_obs_per_sample = ch_obs_per_sample.mix(SCANPY_CELLCYCLE.out.obs)
+        ch_versions = ch_versions.mix(SCANPY_CELLCYCLE.out.versions)
+    }
+
     ch_sizes = ch_sizes
         .collectFile(
             seed: "sample\tstate\tsize",
@@ -232,6 +253,7 @@ workflow QUALITY_CONTROL {
 
     emit:
     h5ad          = ch_h5ad          // channel: [ meta, h5ad ]
+    obs           = ch_obs_per_sample // channel: [ meta, pkl ]
     multiqc_files = ch_multiqc_files // channel: [ json ]
     versions      = ch_versions      // channel: [ versions.yml ]
 }

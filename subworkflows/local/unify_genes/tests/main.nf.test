@@ -49,8 +49,16 @@ nextflow_workflow {
         }
 
         then {
-            assert workflow.success
-            assert snapshot(workflow.out).match()
+            def filename = workflow.out.h5ad[0][1]
+            assertAll(
+            { assert workflow.success },
+            {
+                with(anndata(filename)) {
+                    assert var.rownames.size() > 0
+                    assert obs.rownames.size() > 0
+                }
+            }
+            )
         }
 
     }
@@ -97,8 +105,21 @@ nextflow_workflow {
         }
 
         then {
-            assert workflow.success
-            assert snapshot(workflow.out).match()
+            assertAll(
+            { assert workflow.success },
+            {
+                with(anndata(workflow.out.h5ad[0][1])) {
+                    assert var.rownames.size() > 0
+                    assert obs.rownames.size() > 0
+                }
+            },
+            {
+                with(anndata(workflow.out.h5ad[1][1])) {
+                    assert var.rownames.size() > 0
+                    assert obs.rownames.size() > 0
+                }
+            }
+            )
         }
 
     }

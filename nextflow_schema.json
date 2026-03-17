@@ -83,6 +83,28 @@
             "fa_icon": "fas fa-check-circle",
             "description": "Options for quality control of the input data.",
             "properties": {
+                "species": {
+                    "type": "string",
+                    "default": "human",
+                    "description": "Species of the input data. Used to auto-select bundled cell cycle gene lists (assets/cell_cycle_genes/<species>_s_genes.txt and _g2m_genes.txt). Bundled lists are provided for 'human' and 'mouse'. Ignored when --s_genes and --g2m_genes are set explicitly."
+                },
+                "cell_cycle_scoring": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Whether to perform cell cycle scoring. If true, S and G2M phase scores and a predicted phase label are added to each cell in adata.obs. Requires the gene index (or symbol_col) to use standard gene symbols matching the selected species."
+                },
+                "s_genes": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Optional path to a plain-text file of S phase gene symbols (one per line, # lines ignored). Overrides the species-derived default from assets/cell_cycle_genes/. Only used when cell_cycle_scoring is true.",
+                    "exists": true
+                },
+                "g2m_genes": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Optional path to a plain-text file of G2M phase gene symbols (one per line, # lines ignored). Overrides the species-derived default from assets/cell_cycle_genes/. Only used when cell_cycle_scoring is true.",
+                    "exists": true
+                },
                 "mito_genes": {
                     "type": "string",
                     "format": "file-path",

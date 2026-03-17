@@ -1,5 +1,7 @@
 #!/usr/bin/env Rscript
 
+options(future.globals.maxSize = 8 * 1024^3)
+
 library(Seurat)
 library(anndataR)
 

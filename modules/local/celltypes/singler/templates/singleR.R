@@ -37,6 +37,7 @@ if (symbol_col != "index") {
 
 # Split the references by comma and loop over each
 prefix <- "${prefix}"
+num_threads <- max(1L, as.integer("${task.cpus}"))
 references <- strsplit("${references.join(',')}", ",")[[1]]
 reference_names <- strsplit("${names.join(',')}", ",")[[1]]
 reference_labels <- strsplit("${labels.join(',')}", ",")[[1]]
@@ -64,7 +65,8 @@ for (ref_idx in seq_along(references)) {
   predictions <- SingleR(
     test = assay(sce, 'counts'),
     ref = reference,
-    labels = colData(reference)[[reflabel]]
+    labels = colData(reference)[[reflabel]],
+    num.threads = num_threads
   )
 
   # Plot and save heatmap

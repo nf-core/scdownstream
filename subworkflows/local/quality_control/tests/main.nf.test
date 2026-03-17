@@ -32,6 +32,9 @@ nextflow_workflow {
                 input[9] = null
                 input[10] = null
                 input[11] = null
+                input[12] = false
+                input[13] = []
+                input[14] = []
                 """
             }
         }
@@ -69,6 +72,9 @@ nextflow_workflow {
                     .collectFile(name: 'mito_genes.txt')
                 input[10] = null
                 input[11] = null
+                input[12] = false
+                input[13] = []
+                input[14] = []
                 """
             }
         }
@@ -105,6 +111,9 @@ nextflow_workflow {
                 input[9] = null
                 input[10] = null
                 input[11] = null
+                input[12] = false
+                input[13] = []
+                input[14] = []
                 """
             }
         }
@@ -148,6 +157,48 @@ nextflow_workflow {
                 input[9] = null
                 input[10] = null
                 input[11] = null
+                input[12] = false
+                input[13] = []
+                input[14] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run with cell cycle scoring") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', batch_col: 'sample', counts_layer: 'X' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'none'
+                input[2] = false
+                input[3] = false
+                input[4] = 'sum'
+                input[5] = false
+                input[6] = 'none'
+                input[7] = 1
+                input[8] = null
+                input[9] = null
+                input[10] = null
+                input[11] = null
+                input[12] = true
+                input[13] = file("${projectDir}/assets/cell_cycle_genes/human_s_genes.txt")
+                input[14] = file("${projectDir}/assets/cell_cycle_genes/human_g2m_genes.txt")
                 """
             }
         }

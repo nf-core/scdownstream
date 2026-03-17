@@ -6,10 +6,13 @@
                     
                 ],
                 "1": [
+                    
+                ],
+                "2": [
                     "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
                     "test_raw_mqc.json:md5,55fb1251be8f5e17f0ff337d94f7f3f8"
                 ],
-                "2": [
+                "3": [
                     "versions.yml:md5,0382a117d804c2d9a33fbfafadc0e848",
                     "versions.yml:md5,42c1abd6c5e1c373ee37d53bcdcedd13",
                     "versions.yml:md5,53938cd26fe63616cc4524da4b6062c5",
@@ -26,6 +29,9 @@
                     "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
                     "test_raw_mqc.json:md5,55fb1251be8f5e17f0ff337d94f7f3f8"
                 ],
+                "obs": [
+                    
+                ],
                 "versions": [
                     "versions.yml:md5,0382a117d804c2d9a33fbfafadc0e848",
                     "versions.yml:md5,42c1abd6c5e1c373ee37d53bcdcedd13",
@@ -38,11 +44,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-03-13T17:19:20.399806",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-25T17:40:29.952105012"
+        }
     },
     "Should run without ambient RNA removal and doublet detection, but with custom mito genes": {
         "content": [
@@ -51,10 +57,13 @@
                     
                 ],
                 "1": [
+                    
+                ],
+                "2": [
                     "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
                     "test_raw_mqc.json:md5,55fb1251be8f5e17f0ff337d94f7f3f8"
                 ],
-                "2": [
+                "3": [
                     "versions.yml:md5,0382a117d804c2d9a33fbfafadc0e848",
                     "versions.yml:md5,42c1abd6c5e1c373ee37d53bcdcedd13",
                     "versions.yml:md5,53938cd26fe63616cc4524da4b6062c5",
@@ -71,6 +80,9 @@
                     "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
                     "test_raw_mqc.json:md5,55fb1251be8f5e17f0ff337d94f7f3f8"
                 ],
+                "obs": [
+                    
+                ],
                 "versions": [
                     "versions.yml:md5,0382a117d804c2d9a33fbfafadc0e848",
                     "versions.yml:md5,42c1abd6c5e1c373ee37d53bcdcedd13",
@@ -83,11 +95,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-03-13T17:19:47.095611",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-25T17:41:07.74831289"
+        }
     },
     "Should run with ambient RNA removal and doublet detection - stub": {
         "content": [
@@ -107,13 +119,16 @@
                     ]
                 ],
                 "1": [
+                    
+                ],
+                "2": [
                     "sizes_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "test_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "test_preprocessed_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "test_raw_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "upset_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "2": [
+                "3": [
                     "versions.yml:md5,3c7417bff601859a86cdcb86fa6bfcb3",
                     "versions.yml:md5,53938cd26fe63616cc4524da4b6062c5",
                     "versions.yml:md5,77789821b488f540f44bd4802394a948",
@@ -149,6 +164,9 @@
                     "test_raw_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "upset_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
+                "obs": [
+                    
+                ],
                 "versions": [
                     "versions.yml:md5,3c7417bff601859a86cdcb86fa6bfcb3",
                     "versions.yml:md5,53938cd26fe63616cc4524da4b6062c5",
@@ -166,11 +184,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-03-13T17:31:11.866715",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-18T17:46:19.643717134"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run with ambient RNA removal and doublet detection": {
         "content": [
@@ -197,10 +215,61 @@
             12939,
             9887
         ],
+        "timestamp": "2026-03-13T17:30:48.205648",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-02T14:59:07.417645609"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run with cell cycle scoring": {
+        "content": [
+            {
+                "0": [
+                    
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
+                    "test_raw_mqc.json:md5,55fb1251be8f5e17f0ff337d94f7f3f8"
+                ],
+                "3": [
+                    "versions.yml:md5,0382a117d804c2d9a33fbfafadc0e848",
+                    "versions.yml:md5,42c1abd6c5e1c373ee37d53bcdcedd13",
+                    "versions.yml:md5,53938cd26fe63616cc4524da4b6062c5",
+                    "versions.yml:md5,6a3ffc8a47600e0ebd907bb979d5d859",
+                    "versions.yml:md5,88b8f8687e69ee5ccecf75b7e6845176",
+                    "versions.yml:md5,c4bcd7799f794fb7a2ab6b9a32d346f9",
+                    "versions.yml:md5,e62a158b9954a569d2a6c7e931d8c641",
+                    "versions.yml:md5,ee155a7aaf701755e53d5e752bc95f8e"
+                ],
+                "h5ad": [
+                    
+                ],
+                "multiqc_files": [
+                    "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
+                    "test_raw_mqc.json:md5,55fb1251be8f5e17f0ff337d94f7f3f8"
+                ],
+                "obs": [
+                    
+                ],
+                "versions": [
+                    "versions.yml:md5,0382a117d804c2d9a33fbfafadc0e848",
+                    "versions.yml:md5,42c1abd6c5e1c373ee37d53bcdcedd13",
+                    "versions.yml:md5,53938cd26fe63616cc4524da4b6062c5",
+                    "versions.yml:md5,6a3ffc8a47600e0ebd907bb979d5d859",
+                    "versions.yml:md5,88b8f8687e69ee5ccecf75b7e6845176",
+                    "versions.yml:md5,c4bcd7799f794fb7a2ab6b9a32d346f9",
+                    "versions.yml:md5,e62a158b9954a569d2a6c7e931d8c641",
+                    "versions.yml:md5,ee155a7aaf701755e53d5e752bc95f8e"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-13T17:31:35.797427",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     }
 }

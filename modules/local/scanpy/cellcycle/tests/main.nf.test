@@ -1,13 +1,13 @@
 nextflow_process {
 
-    name "Test Process ADATA_TORDS"
-    script "modules/local/adata/tords/main.nf"
-    process "ADATA_TORDS"
+    name "Test Process SCANPY_CELLCYCLE"
+    script "modules/local/scanpy/cellcycle/main.nf"
+    process "SCANPY_CELLCYCLE"
 
     tag "modules"
     tag "modules_local"
 
-    test("Should run without failures") {
+    test("Should run without failures - human") {
 
         when {
             params {
@@ -16,11 +16,13 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                        [id: 'test'],
+                        [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
-                input[1] = 'X'
+                input[1] = file("${projectDir}/assets/cell_cycle_genes/human_s_genes.txt")
+                input[2] = file("${projectDir}/assets/cell_cycle_genes/human_g2m_genes.txt")
+                input[3] = 'index'
                 """
             }
         }
@@ -45,11 +47,13 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                        [id: 'test'],
+                        [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
-                input[1] = 'X'
+                input[1] = file("${projectDir}/assets/cell_cycle_genes/human_s_genes.txt")
+                input[2] = file("${projectDir}/assets/cell_cycle_genes/human_g2m_genes.txt")
+                input[3] = 'index'
                 """
             }
         }

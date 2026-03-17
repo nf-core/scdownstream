@@ -138,6 +138,46 @@ monaco_immune,label.fine,/path/to/monaco_immune.tar
 
 Example tar archives can be found [here](https://github.com/nf-core/test-datasets/tree/scdownstream/singleR).
 
+### Cell cycle scoring
+
+Cell cycle scoring assigns each cell an S-phase score, G2M-phase score, and a predicted cell cycle phase (`S`, `G2M`, or `G1`) based on the expression of curated marker genes (Tirosh et al. 2015, same gene sets as Seurat). The scores are stored in `adata.obs` as `S_score`, `G2M_score`, and `phase`, and are available as covariates in downstream integration steps.
+
+Cell cycle scoring is enabled by default. To skip it:
+
+```bash
+nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results --cell_cycle_scoring false
+```
+
+#### Species
+
+Bundled gene lists are provided for human and mouse. Select the appropriate species with `--species`:
+
+```bash
+# mouse
+nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results --species mouse
+```
+
+#### Custom gene lists
+
+For other organisms (e.g. rat, zebrafish), you can provide your own gene lists — one gene symbol per line — via `--s_genes` and `--g2m_genes`:
+
+```bash
+nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
+    --s_genes /path/to/my_s_genes.txt \
+    --g2m_genes /path/to/my_g2m_genes.txt
+```
+
+The bundled gene lists can be found in [`assets/cell_cycle_genes/`](../assets/cell_cycle_genes/) and serve as templates for custom lists.
+
+#### Using scores in downstream analysis
+
+The `S_score` and `G2M_score` columns can be passed to integration tools as continuous covariates to regress out cell cycle effects:
+
+```bash
+nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
+    --scvi_continuous_covariates S_score,G2M_score
+```
+
 ### Reference mapping
 
 The pipeline supports mapping new samples into the latent space of an existing scVI/scANVI model.

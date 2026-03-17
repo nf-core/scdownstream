@@ -27,7 +27,8 @@ workflow FINALIZE {
     ch_versions = ch_versions.mix(ADATA_EXTEND.out.versions)
 
     ADATA_TORDS (
-        ADATA_EXTEND.out.h5ad
+        ADATA_EXTEND.out.h5ad,
+        'X'
     )
     ch_versions = ch_versions.mix(ADATA_TORDS.out.versions)
 

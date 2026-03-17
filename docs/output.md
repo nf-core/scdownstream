@@ -25,6 +25,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
       - [scrublet](https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html)
       - [DoubletDetection](https://doubletdetection.readthedocs.io/en/v2.5.2/doubletdetection.doubletdetection.html)
       - [SCDS](https://bioconductor.org/packages/devel/bioc/vignettes/scds/inst/doc/scds.html)
+   7. Cell cycle scoring ([Tirosh et al. 2015](https://doi.org/10.1038/nature14590))
 2. Sample aggregation
    1. Merge into a single h5ad file
    2. Present QC for merged counts ([`MultiQC`](http://multiqc.info/))
@@ -62,6 +63,9 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
     - `(doubletdetection|scds|scrublet|solo)/`: Results of doublet detection. Each directory contains a filtered `h5ad`/`rds` and a `csv`/`pkl` file with the doublet annotations.
     - `${sample_id}.h5ad`: The h5ad without doublets.
   - `qc_preprocessed/`: QC plots for the preprocessed data.
+  - `cell_cycle/`: Cell cycle scoring results.
+    - `${sample_id}_cellcycle.pkl`: `S_score`, `G2M_score`, and `phase` columns for each cell. Merged into the final h5ad via `FINALIZE_QC_ANNDATAS`.
+    - `${sample_id}_cellcycle.h5ad`: Intermediate h5ad with cell cycle scores added, available for inspection.
 
 </details>
 

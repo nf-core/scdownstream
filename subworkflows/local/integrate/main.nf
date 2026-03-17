@@ -1,6 +1,5 @@
 include { SCANPY_HVGS        } from '../../../modules/local/scanpy/hvgs'
 include { SCANPY_FILTER      } from '../../../modules/local/scanpy/filter'
-include { ADATA_TORDS        } from '../../../modules/local/adata/tords'
 include { SCVITOOLS_SCVI     } from '../../../modules/local/scvitools/scvi'
 include { SCVITOOLS_SCANVI   } from '../../../modules/local/scvitools/scanvi'
 include { SCANPY_HARMONY     } from '../../../modules/local/scanpy/harmony'
