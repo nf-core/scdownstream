@@ -26,6 +26,8 @@ dbr <- suppressWarnings(as.numeric(dbr_raw))
 # Fetch sample batch information from nextflow metadata
 batch_col <- trimws("${batch_col ?: ''}")
 
+# Initialize sample groups(batches) variable to NULL to prevent object not found error
+sample_groups <- NULL
 
 # Check that the specified batch information exists in the analysis object
 if (nzchar(batch_col)) {
@@ -38,19 +40,17 @@ if (nzchar(batch_col)) {
     )
   }
 
-samples <- NULL # Initialize samples variable to NULL to prevent object not found error
-
 # Check that the batch column does not contain NAs
-  samples <- colData(sce)[[batch_col]]
-  if (any(is.na(samples))) {
+  sample_groups <- colData(sce)[[batch_col]]
+  if (any(is.na(sample_groups))) {
     stop("Batch column '", batch_col, "' contains NA values; cannot split scDblFinder by sample.")
   }
 
 # Assign the batch column from as the 'samples'
-  samples <- as.vector(samples)
+  sample_groups <- as.vector(sample_groups)
   message(paste0("Using batch column for scDblFinder samples: ", batch_col))
 }
-# Check for presence of metadata (doublet rate and batch annotation)
+# Check for presence of metadata (doublet rate and batch annotation for sample groups)
 if (is.na(dbr)) {
   message("No valid doublet_rate provided; using scDblFinder internal dbr estimation")
   dbr <- NULL
@@ -64,8 +64,8 @@ scdblfinder_args <- list(
   dbr = dbr
 )
 
-if (!is.null(samples)) {
-  scdblfinder_args\$samples <- samples
+if (!is.null(sample_groups)) {
+  scdblfinder_args\$samples <- sample_groups
 }
 
 # Run scDblFinder on the counts matrix (first assay)
