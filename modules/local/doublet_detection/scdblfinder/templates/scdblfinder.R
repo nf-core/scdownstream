@@ -15,9 +15,6 @@ sce <- adata\$as_SingleCellExperiment()
 num_threads <- max(1L, as.integer("${task.cpus}"))
 bp <- MulticoreParam(workers = num_threads, RNGseed = 123)
 
-# Save original cell names and count before overwriting sce
-original_cell_names <- colnames(sce)
-
 # Parse per-sample doublet rate from Nextflow input. If unavailable, let
 # scDblFinder estimate dbr internally (recommended default for 10X data).
 dbr_raw <- trimws("${dbr}")
