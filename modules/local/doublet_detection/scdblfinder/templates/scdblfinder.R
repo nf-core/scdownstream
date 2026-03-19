@@ -6,6 +6,9 @@ library(SingleCellExperiment)
 library(BiocParallel)
 library(anndataR)
 
+# Set random seed for reproducibility
+set.seed(123)
+
 adata <- read_h5ad("${h5ad}")
 sce <- adata\$as_SingleCellExperiment()
 
@@ -19,9 +22,12 @@ original_cell_names <- colnames(sce)
 # scDblFinder estimate dbr internally (recommended default for 10X data).
 dbr_raw <- trimws("${dbr}")
 dbr <- suppressWarnings(as.numeric(dbr_raw))
+
+# Fetch sample batch information from nextflow metadata
 batch_col <- trimws("${batch_col ?: ''}")
 
-samples <- NULL
+
+# Check that the specified batch information exists in the analysis object
 if (nzchar(batch_col)) {
   if (!(batch_col %in% colnames(colData(sce)))) {
     stop(
@@ -32,18 +38,19 @@ if (nzchar(batch_col)) {
     )
   }
 
+samples <- NULL # Initialize samples variable to NULL to prevent object not found error
+
+# Check that the batch column does not contain NAs
   samples <- colData(sce)[[batch_col]]
   if (any(is.na(samples))) {
     stop("Batch column '", batch_col, "' contains NA values; cannot split scDblFinder by sample.")
   }
 
+# Assign the batch column from as the 'samples'
   samples <- as.vector(samples)
   message(paste0("Using batch column for scDblFinder samples: ", batch_col))
 }
-
-# Run scDblFinder on the counts matrix (first assay)
-# scDblFinder creates artificial doublets internally and returns a new SCE
-set.seed(123)
+# Check for presence of metadata (doublet rate and batch annotation)
 if (is.na(dbr)) {
   message("No valid doublet_rate provided; using scDblFinder internal dbr estimation")
   dbr <- NULL
@@ -61,6 +68,8 @@ if (!is.null(samples)) {
   scdblfinder_args\$samples <- samples
 }
 
+# Run scDblFinder on the counts matrix (first assay)
+# scDblFinder creates artificial doublets internally and returns a new SCE object
 sce <- do.call(scDblFinder, scdblfinder_args)
 
 # Generate a summary table
