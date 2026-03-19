@@ -92,13 +92,8 @@ if (is.null(colnames(sce)) || length(colnames(sce)) != ncol(sce)) {
   stop("scDblFinder output is missing valid cell barcodes; cannot write aligned h5ad and prediction outputs.")
 }
 
-# Write the updated SingleCellExperiment directly as h5ad, explicitly mapping the
-# primary assay to AnnData X so downstream readers see a valid matrix field.
-primary_assay <- assayNames(sce)[1]
-if (is.na(primary_assay) || primary_assay == "") {
-  stop("scDblFinder output is missing a primary assay; cannot write h5ad output.")
-}
-write_h5ad(sce, "${prefix}.h5ad", x_mapping = primary_assay)
+# Write the updated SingleCellExperiment directly as h5ad.
+write_h5ad(sce, "${prefix}.h5ad")
 
 # Extract predictions for doublet removal step
 # Create a binary doublet call based on class
