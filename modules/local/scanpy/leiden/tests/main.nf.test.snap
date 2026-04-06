@@ -44,61 +44,63 @@
                 ]
             }
         ],
+        "timestamp": "2026-03-22T15:00:14.862039556",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.3"
-        },
-        "timestamp": "2025-06-22T16:15:11.414904265"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures": {
         "content": [
             {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_leiden.h5ad:md5,e43bff67601224ced26f293e95adecea"
+                "SCANPY_LEIDEN": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                }
+            },
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "leiden",
+                        "sample"
                     ]
-                ],
-                "1": [
-                    "test_leiden.pkl:md5,4bae38751fb04b86d6c0d6fd2c0d9fc7"
-                ],
-                "2": [
-                    
-                ],
-                "3": [
-                    
-                ],
-                "4": [
-                    "versions.yml:md5,33a224d2c3ddf18c03987f4a40ea668c"
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_leiden.h5ad:md5,e43bff67601224ced26f293e95adecea"
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
                     ]
-                ],
-                "multiqc_files": [
+                },
+                "layers": [
                     
                 ],
-                "obs": [
-                    "test_leiden.pkl:md5,4bae38751fb04b86d6c0d6fd2c0d9fc7"
+                "obsm": [
+                    "X_pca"
                 ],
-                "plots": [
+                "varm": [
+                    "X_pca"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
                     
                 ],
-                "versions": [
-                    "versions.yml:md5,33a224d2c3ddf18c03987f4a40ea668c"
+                "uns": [
+                    "X_pca",
+                    "leiden",
+                    "neighbors"
                 ]
             }
         ],
+        "timestamp": "2026-03-29T11:17:20.376586064",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-25T17:14:25.399193291"
+        }
     }
 }

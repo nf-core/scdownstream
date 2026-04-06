@@ -133,7 +133,7 @@ workflow SCDOWNSTREAM {
         // Perform automated celltype assignment
         //
         CELLTYPE_ASSIGNMENT (
-            ch_h5ad.map { meta, h5ad -> [meta, h5ad, meta.symbol_col] },
+            ch_h5ad.map { meta, h5ad -> [meta, h5ad, meta.symbol_col, meta.counts_layer ?: "X"] },
             celldex_reference,
             celltypist_model
         )
@@ -320,16 +320,9 @@ workflow SCDOWNSTREAM {
     //
     // MODULE: MultiQC
     //
-    ch_multiqc_config = channel.fromPath(
-        "${projectDir}/assets/multiqc_config.yml",
-        checkIfExists: true
-    )
-    ch_multiqc_custom_config = multiqc_config
-        ? channel.fromPath(multiqc_config, checkIfExists: true)
-        : channel.empty()
-    ch_multiqc_logo = multiqc_logo
-        ? channel.fromPath(multiqc_logo, checkIfExists: true)
-        : channel.empty()
+    def mqc_config  = file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true)
+    def mqc_configs = multiqc_config ? [mqc_config, file(multiqc_config, checkIfExists: true)] : [mqc_config]
+    def mqc_logo    = multiqc_logo   ? file(multiqc_logo, checkIfExists: true) : []
 
     summary_params      = paramsSummaryMap(
         workflow,
@@ -353,14 +346,11 @@ workflow SCDOWNSTREAM {
     )
 
     MULTIQC (
-        ch_multiqc_files.collect(),
-        ch_multiqc_config.toList(),
-        ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList(),
-        [],
-        [],
+        ch_multiqc_files
+            .collect()
+            .map { files -> [[id: 'multiqc'], files, mqc_configs, mqc_logo, [], []] }
     )
-    ch_multiqc_report = MULTIQC.out.report.toList()
+    ch_multiqc_report = MULTIQC.out.report.map { _meta, report -> report }.toList()
 
     emit:
     multiqc_report = ch_multiqc_report // channel: [ path(multiqc_report.html) ]

@@ -1,13 +1,14 @@
-name: singler
 channels:
   - conda-forge
   - bioconda
 dependencies:
-  - bioconductor-singler
-  - bioconductor-celldex=1.16.0
-  - r-seurat
-  - bioconductor-singlecellexperiment
-  - r-yaml
-  - r-devtools
-  - r-ggplot2
-  - r-viridis
+  - bioconda::bioconductor-anndatar=1.0.2
+  - bioconda::bioconductor-celldex=1.20.0
+  - bioconda::bioconductor-hdf5array=1.38.0
+  - bioconda::bioconductor-rhdf5=2.54.1
+  - bioconda::bioconductor-singlecellexperiment=1.32.0
+  - bioconda::bioconductor-singler=2.12.0
+  - conda-forge::r-ggplot2=4.0.2
+  - conda-forge::r-pheatmap=1.0.13
+  - conda-forge::r-viridis=0.6.5
+  - conda-forge::r-yaml=2.3.12

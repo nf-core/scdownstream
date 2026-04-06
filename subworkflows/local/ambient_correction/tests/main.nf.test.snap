@@ -1,262 +1,446 @@
 {
     "Should run with 'none' ambient correction": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "/nf-core/test-datasets/modules/data/genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad"
-                    ]
-                ],
-                "1": [
-                    
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "/nf-core/test-datasets/modules/data/genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad"
-                    ]
-                ],
-                "versions": [
-                    
-                ]
-            }
+            [
+                
+            ],
+            1
         ],
+        "timestamp": "2026-03-25T15:46:16.218237575",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2025-08-29T14:24:32.042514038"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run with 'decontx' ambient correction to 'X'": {
         "content": [
             [
-                "versions.yml:md5,0df227098fc7a061a6c8ba36dd3ef859"
+                "versions.yml:md5,f9ea95abb10a7769d50d14fcaa5734ee"
             ],
-            "test_decontx.h5ad",
-            [
-                "ambient_corrected_decontx"
-            ]
-        ],
-        "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2025-08-31T12:48:20.216479462"
-    },
-    "Should run with 'cellbender' ambient correction to 'X'": {
-        "content": [
             {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,4d8d0d4474873c89db514aabe8628d56"
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
                     ]
-                ],
-                "1": [
-                    "versions.yml:md5,1d70371b0f0ca5e50f7ba70335f8946f",
-                    "versions.yml:md5,e6e98e83cbc9a2924c66e901445bbc4f"
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,4d8d0d4474873c89db514aabe8628d56"
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
                     ]
+                },
+                "layers": [
+                    
                 ],
-                "versions": [
-                    "versions.yml:md5,1d70371b0f0ca5e50f7ba70335f8946f",
-                    "versions.yml:md5,e6e98e83cbc9a2924c66e901445bbc4f"
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
                 ]
-            },
-            [
-                "ambient_corrected_cellbender"
-            ]
+            }
         ],
+        "timestamp": "2026-03-29T11:28:03.511988284",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-01T10:37:31.070458556"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run with 'decontx' ambient correction and no batch column": {
         "content": [
             [
-                "versions.yml:md5,0df227098fc7a061a6c8ba36dd3ef859"
+                "versions.yml:md5,f9ea95abb10a7769d50d14fcaa5734ee"
             ],
-            "test_decontx.h5ad",
-            [
-                "ambient_corrected_decontx"
-            ]
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_decontx"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
         ],
+        "timestamp": "2026-03-29T11:21:35.00820843",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-10T13:56:49.20957065"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run with 'cellbender' ambient correction to 'X'": {
+        "content": [
+            [
+                
+            ],
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-03-30T08:50:28.315741473",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run with 'decontx' ambient correction": {
         "content": [
             [
-                "versions.yml:md5,0df227098fc7a061a6c8ba36dd3ef859"
+                "versions.yml:md5,f9ea95abb10a7769d50d14fcaa5734ee"
             ],
-            "test_decontx.h5ad",
-            [
-                "ambient_corrected_decontx"
-            ]
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_decontx"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
         ],
+        "timestamp": "2026-03-29T11:18:56.290966056",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2025-08-31T12:44:02.240487935"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run with 'soupx' ambient correction to 'X'": {
         "content": [
             [
-                "versions.yml:md5,0c67966bf597df322244bee055ece6b1"
+                "versions.yml:md5,0266faf0b40a7b86ec9f2b1948f8c7aa"
             ],
-            "test_soupX.h5ad",
-            [
-                "ambient_corrected_soupx"
-            ]
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
         ],
+        "timestamp": "2026-03-29T11:28:48.515147711",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2025-08-31T12:49:04.708836272"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should not do anything if ambient correction is disabled in meta": {
+        "content": [
+            [
+                
+            ],
+            1
+        ],
+        "timestamp": "2026-03-25T15:46:46.64367644",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run with 'scar' ambient correction": {
         "content": [
             [
                 "versions.yml:md5,2717cb5f250a65aec0a76a456f7028ba"
             ],
-            "test.h5ad",
-            [
-                "ambient_corrected_scar"
-            ]
-        ],
-        "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-01T10:22:52.74217591"
-    },
-    "Should not do anything if ambient correction is disabled in meta": {
-        "content": [
             {
-                "0": [
-                    [
-                        {
-                            "id": "test",
-                            "batch_col": "sample",
-                            "counts_layer": "X",
-                            "ambient_correction": false
-                        },
-                        "/nf-core/test-datasets/modules/data/genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad"
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "_scvi_batch",
+                        "_scvi_labels",
+                        "sample"
                     ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_scar"
                 ],
-                "1": [
+                "obsm": [
                     
                 ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test",
-                            "batch_col": "sample",
-                            "counts_layer": "X",
-                            "ambient_correction": false
-                        },
-                        "/nf-core/test-datasets/modules/data/genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad"
-                    ]
+                "varm": [
+                    "ambient_profile"
                 ],
-                "versions": [
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
                     
                 ]
             }
         ],
+        "timestamp": "2026-03-29T11:24:02.851605031",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2025-08-29T14:34:48.871481933"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run with 'cellbender' ambient correction": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,4d8d0d4474873c89db514aabe8628d56"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,1d70371b0f0ca5e50f7ba70335f8946f",
-                    "versions.yml:md5,e6e98e83cbc9a2924c66e901445bbc4f"
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,4d8d0d4474873c89db514aabe8628d56"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,1d70371b0f0ca5e50f7ba70335f8946f",
-                    "versions.yml:md5,e6e98e83cbc9a2924c66e901445bbc4f"
-                ]
-            },
             [
-                "ambient_corrected_cellbender"
-            ]
+                
+            ],
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_cellbender"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
         ],
+        "timestamp": "2026-03-30T08:42:11.218749814",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-01T10:32:08.996381393"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run with 'soupx' ambient correction": {
         "content": [
             [
-                "versions.yml:md5,0c67966bf597df322244bee055ece6b1"
+                "versions.yml:md5,0266faf0b40a7b86ec9f2b1948f8c7aa"
             ],
-            "test_soupX.h5ad",
-            [
-                "ambient_corrected_soupx"
-            ]
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_soupx"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
         ],
+        "timestamp": "2026-03-29T11:22:41.092799679",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2025-08-31T12:44:43.696601933"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run with 'scar' ambient correction to 'X'": {
         "content": [
             [
                 "versions.yml:md5,2717cb5f250a65aec0a76a456f7028ba"
             ],
-            "test.h5ad",
-            [
-                "ambient_corrected_scar"
-            ]
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "_scvi_batch",
+                        "_scvi_labels",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    "ambient_profile"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
         ],
+        "timestamp": "2026-03-29T11:29:53.928496596",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-01T10:35:20.300691163"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     }
 }

@@ -21,7 +21,7 @@ nextflow_workflow {
                     [[id: 'test1'], file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)],
                     [[id: 'test2'], file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)]
                 )
-                input[1]  = channel.empty()
+                input[1]  = channel.value([[], []])
                 input[2]  = false
                 input[3]  = 0
                 input[4]  = 'scvi'
@@ -54,7 +54,7 @@ nextflow_workflow {
                     [[id: 'test1'], file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)],
                     [[id: 'test2'], file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)]
                 )
-                input[1]  = channel.empty()
+                input[1]  = channel.value([[], []])
                 input[2]  = false
                 input[3]  = 0
                 input[4]  = 'scvi'
@@ -69,8 +69,13 @@ nextflow_workflow {
         }
 
         then {
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
-            assert snapshot(workflow.out).match()
+            assert "batch" in adata.obs.colnames
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml },
+                adata.yaml
+            ).match()
         }
 
     }

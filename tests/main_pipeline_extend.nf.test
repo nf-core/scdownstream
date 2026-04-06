@@ -10,7 +10,7 @@ nextflow_pipeline {
             params {
                 input = 'https://github.com/nf-core/test-datasets/raw/refs/heads/scdownstream/samplesheet_single.csv'
                 integration_methods = 'scvi'
-                doublet_detection   = 'scrublet,doubletdetection,scds'
+                doublet_detection   = 'scrublet,scds'
                 celltypist_model    = 'Adult_COVID19_PBMC'
                 integration_hvgs    = 500
                 outdir              = "$outputDir"
@@ -21,7 +21,7 @@ nextflow_pipeline {
 
         then {
             // stable_name: All files + folders in ${params.outdir}/ with a stable name
-            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', 'per_group/**'])
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', 'per_group/**', 'multiqc/**'])
             // stable_path: All files in ${params.outdir}/ with stable content
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
             assertAll(

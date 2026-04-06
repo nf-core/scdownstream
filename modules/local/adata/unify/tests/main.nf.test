@@ -36,20 +36,20 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "batch" in obs.colnames
-                        assert "label" in obs.colnames
-                        assert "sample" in obs.colnames
-                        assert !("counts" in layers)
-                        assert layers.size() == 0
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "batch" in obs.colnames
+                assert "label" in obs.colnames
+                assert "sample" in obs.colnames
+                assert !("counts" in layers)
+                assert layers.size() == 0
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -78,19 +78,19 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "batch" in obs.colnames
-                        assert "label" in obs.colnames
-                        assert "sample" in obs.colnames
-                        assert layers.size() == 0
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "batch" in obs.colnames
+                assert "label" in obs.colnames
+                assert "sample" in obs.colnames
+                assert layers.size() == 0
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -123,10 +123,13 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -155,16 +158,16 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "original_index" in var.colnames
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "original_index" in var.colnames
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -197,11 +200,14 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert adata.var.rownames.toUnique().size() == adata.var.rownames.size()
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -230,11 +236,14 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert adata.var.rownames.toUnique().size() == adata.var.rownames.size()
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -263,11 +272,14 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert adata.var.rownames.toUnique().size() == adata.var.rownames.size()
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -296,11 +308,15 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            // make_unique adds numeric suffixes — var names are unique but not aggregated
+            assert adata.var.rownames.toUnique().size() == adata.var.rownames.size()
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -333,17 +349,17 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        // After isoform aggregation, numeric suffixes should be removed
-                        assert var.rownames.every { !it.matches(/.*\\.\\d+$/) }
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                // After isoform aggregation, numeric suffixes should be removed
+                assert var.rownames.every { !it.matches(/.*\\.\\d+$/) }
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -376,18 +392,18 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "batch" in obs.colnames
-                        assert !("batch_id" in obs.colnames)
-                        assert obs.get("batch").unique.every { it.contains("_test") }
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "batch" in obs.colnames
+                assert !("batch_id" in obs.colnames)
+                assert obs.get("batch").unique().every { it.contains("_test") }
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -416,17 +432,17 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "batch" in obs.colnames
-                        assert obs.get("batch").unique.every { it.contains("_test") }
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "batch" in obs.colnames
+                assert obs.get("batch").unique().every { it.contains("_test") }
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -455,17 +471,17 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "batch" in obs.colnames
-                        assert obs.get("batch").unique.every { it == "test_test" }
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "batch" in obs.colnames
+                assert obs.get("batch").unique().every { it == "test_test" }
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -528,18 +544,18 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "label" in obs.colnames
-                        assert !("cell_type" in obs.colnames)
-                        assert obs.get("label").unique.size() > 0
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "label" in obs.colnames
+                assert !("cell_type" in obs.colnames)
+                assert obs.get("label").unique().size() > 0
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -568,17 +584,17 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "label" in obs.colnames
-                        assert obs.get("label").unique.size() > 0
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "label" in obs.colnames
+                assert obs.get("label").unique().size() > 0
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -607,17 +623,17 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "label" in obs.colnames
-                        assert obs.get("label").unique.every { it == "Unknown" }
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "label" in obs.colnames
+                assert obs.get("label").unique().every { it == "Unknown" }
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -646,17 +662,17 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "label" in obs.colnames
-                        assert "Unknown" in obs.get("label").unique
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "label" in obs.colnames
+                assert "Unknown" in obs.get("label").unique()
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -685,17 +701,17 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "label" in obs.colnames
-                        assert "Unknown" in obs.get("label").unique
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "label" in obs.colnames
+                assert "Unknown" in obs.get("label").unique()
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -724,18 +740,18 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "label" in obs.colnames
-                        // Labels should be normalized (no spaces, dashes, special chars)
-                        assert obs.get("label").unique.every { !it.contains(" ") && !it.contains("-") && !it.contains("+") }
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "label" in obs.colnames
+                // Labels should be normalized (no spaces, dashes, special chars)
+                assert obs.get("label").unique().every { !it.contains(" ") && !it.contains("-") && !it.contains("+") }
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -798,18 +814,18 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "condition" in obs.colnames
-                        assert !("disease_state" in obs.colnames)
-                        assert obs.get("condition").unique.size() > 0
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "condition" in obs.colnames
+                assert !("disease_state" in obs.colnames)
+                assert obs.get("condition").unique().size() > 0
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -838,17 +854,17 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "condition" in obs.colnames
-                        assert obs.get("condition").unique.size() > 0
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "condition" in obs.colnames
+                assert obs.get("condition").unique().size() > 0
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -877,17 +893,17 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "condition" in obs.colnames
-                        assert obs.get("condition").unique.every { it == "Unknown" }
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "condition" in obs.colnames
+                assert obs.get("condition").unique().every { it == "Unknown" }
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -950,10 +966,13 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -982,10 +1001,13 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -1018,17 +1040,17 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        // All cell names should be prefixed
-                        assert obs.rownames.every { it.startsWith("test_") }
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                // All cell names should be prefixed
+                assert obs.rownames.every { it.startsWith("test_") }
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -1057,18 +1079,18 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "sample" in obs.colnames
-                        assert "sample_original" in obs.colnames
-                        assert obs.get("sample").unique.every { it == "test" }
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "sample" in obs.colnames
+                assert "sample_original" in obs.colnames
+                assert obs.get("sample").unique().every { it == "test" }
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -1097,17 +1119,17 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "sample" in obs.colnames
-                        assert obs.get("sample").unique.every { it == "test" }
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "sample" in obs.colnames
+                assert obs.get("sample").unique().every { it == "test" }
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -1140,19 +1162,19 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert obsm.size() == 0
-                        assert varm.size() == 0
-                        assert uns.size() == 0
-                        assert layers.size() == 0
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert obsm.size() == 0
+                assert varm.size() == 0
+                assert uns.size() == 0
+                assert layers.size() == 0
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -1185,22 +1207,22 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "batch" in obs.colnames
-                        assert "label" in obs.colnames
-                        assert "sample" in obs.colnames
-                        assert obsm.size() == 0
-                        assert varm.size() == 0
-                        assert uns.size() == 0
-                        assert layers.size() == 0
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "batch" in obs.colnames
+                assert "label" in obs.colnames
+                assert "sample" in obs.colnames
+                assert obsm.size() == 0
+                assert varm.size() == 0
+                assert uns.size() == 0
+                assert layers.size() == 0
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -1229,22 +1251,22 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "batch" in obs.colnames
-                        assert "label" in obs.colnames
-                        assert "sample" in obs.colnames
-                        assert obsm.size() == 0
-                        assert varm.size() == 0
-                        assert uns.size() == 0
-                        assert layers.size() == 0
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "batch" in obs.colnames
+                assert "label" in obs.colnames
+                assert "sample" in obs.colnames
+                assert obsm.size() == 0
+                assert varm.size() == 0
+                assert uns.size() == 0
+                assert layers.size() == 0
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
     }
 
@@ -1279,10 +1301,8 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() }
-            )
+            assert process.success
+            assert snapshot(process.out).match()
         }
     }
 

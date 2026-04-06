@@ -40,5 +40,6 @@ workflow FINALIZE {
     }
 
     emit:
-    versions = ch_versions // channel: [ versions.yml ]
+    h5ad     = ADATA_EXTEND.out.h5ad // channel: [ meta, h5ad ]
+    versions = ch_versions            // channel: [ versions.yml ]
 }

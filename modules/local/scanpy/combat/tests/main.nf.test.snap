@@ -38,55 +38,67 @@
                 ]
             }
         ],
+        "timestamp": "2026-03-25T15:44:57.270966951",
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.2"
-        },
-        "timestamp": "2025-06-03T07:48:07.847500785"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures": {
         "content": [
             {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,ff8f8271da3d713fbd0977132c1a4805"
+                "SCANPY_COMBAT": {
+                    "numpy": "2.3.5",
+                    "pandas": "2.3.3",
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 100,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
                     ]
-                ],
-                "1": [
-                    "X_test.pkl:md5,7234c439af3502c337b358726e2c7612"
-                ],
-                "2": [
-                    "test.npy:md5,9db3ab44bc60f68d28a35505394864a2"
-                ],
-                "3": [
-                    "versions.yml:md5,0491c44b3314ea1fab189270db6dfd8d"
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,ff8f8271da3d713fbd0977132c1a4805"
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "highly_variable",
+                        "means"
                     ]
-                ],
+                },
                 "layers": [
-                    "test.npy:md5,9db3ab44bc60f68d28a35505394864a2"
+                    
                 ],
                 "obsm": [
-                    "X_test.pkl:md5,7234c439af3502c337b358726e2c7612"
+                    "X_emb",
+                    "X_pca"
                 ],
-                "versions": [
-                    "versions.yml:md5,0491c44b3314ea1fab189270db6dfd8d"
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "log1p",
+                    "pca"
                 ]
             }
         ],
+        "timestamp": "2026-03-29T11:17:34.118271552",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-25T17:15:50.561076769"
+        }
     }
 }

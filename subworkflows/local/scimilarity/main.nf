@@ -28,7 +28,6 @@ workflow SCIMILARITY {
         UNTAR (
             ch_scimilarity_model
         )
-        ch_versions = ch_versions.mix(UNTAR.out.versions)
         ch_scimilarity_model = UNTAR.out.untar
     }
 

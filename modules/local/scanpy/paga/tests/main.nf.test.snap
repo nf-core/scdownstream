@@ -50,11 +50,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-01-10T22:22:14.395891088",
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-10T22:22:14.395891088"
+        }
     },
     "Should run without failures": {
         "content": [
@@ -64,53 +64,99 @@
                         {
                             "id": "test"
                         },
-                        "test_paga.h5ad:md5,edaa8a6fa44a68c91692e8304c9ab078"
+                        "test_paga.h5ad:md5,7a142fee9bf3547a5116b86d5b2ea0bf"
                     ]
                 ],
                 "1": [
-                    "test_paga.pkl:md5,8052c42ecf93568c201d2dc983d2842e"
+                    "test_paga.pkl:md5,be4a96dcfb43fa22c2d2434ead197dc7"
                 ],
                 "2": [
-                    "test_paga_connectivities.npy:md5,8d91d6372e5328a981e8a3146a634ac7"
+                    "test_paga_connectivities.npy:md5,2e82cf3df20614e1fbcf55196c9f80a8"
                 ],
                 "3": [
-                    "test_paga.png:md5,28a2ac3ae39ce894bc12462c36a7081f"
+                    "test_paga.png:md5,983446530143c3d928dfe3e19731b5ec"
                 ],
                 "4": [
-                    "test_paga_mqc.json:md5,f8d739437aafd45f0463cdf0a5b3dda2"
+                    "test_paga_mqc.json:md5,ab9b9db8e3a4d458d0dfe366175c64f8"
                 ],
                 "5": [
-                    "versions.yml:md5,7d089d9c448b243744079651f98821b5"
+                    "versions.yml:md5,a87c0e3b4494aaca112a02c554da3084"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_paga.h5ad:md5,edaa8a6fa44a68c91692e8304c9ab078"
+                        "test_paga.h5ad:md5,7a142fee9bf3547a5116b86d5b2ea0bf"
                     ]
                 ],
                 "multiqc_files": [
-                    "test_paga_mqc.json:md5,f8d739437aafd45f0463cdf0a5b3dda2"
+                    "test_paga_mqc.json:md5,ab9b9db8e3a4d458d0dfe366175c64f8"
                 ],
                 "obsp": [
-                    "test_paga_connectivities.npy:md5,8d91d6372e5328a981e8a3146a634ac7"
+                    "test_paga_connectivities.npy:md5,2e82cf3df20614e1fbcf55196c9f80a8"
                 ],
                 "plot": [
-                    "test_paga.png:md5,28a2ac3ae39ce894bc12462c36a7081f"
+                    "test_paga.png:md5,983446530143c3d928dfe3e19731b5ec"
                 ],
                 "uns": [
-                    "test_paga.pkl:md5,8052c42ecf93568c201d2dc983d2842e"
+                    "test_paga.pkl:md5,be4a96dcfb43fa22c2d2434ead197dc7"
                 ],
                 "versions": [
-                    "versions.yml:md5,7d089d9c448b243744079651f98821b5"
+                    "versions.yml:md5,a87c0e3b4494aaca112a02c554da3084"
+                ]
+            },
+            {
+                "SCANPY_PAGA": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                }
+            },
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "leiden",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "X_pca"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_pca",
+                    "leiden",
+                    "leiden_sizes",
+                    "neighbors",
+                    "paga"
                 ]
             }
         ],
+        "timestamp": "2026-03-29T11:17:22.514762435",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-25T17:04:45.756137198"
+        }
     }
 }

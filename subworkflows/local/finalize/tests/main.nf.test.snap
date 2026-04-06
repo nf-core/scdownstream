@@ -1,50 +1,189 @@
 {
     "Should run without failures - with fragments": {
         "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test.h5ad:md5,88250dce39d3ebc42b13639bb9a9bc81"
+                ]
+            ],
+            [
+                {
+                    "FINALIZE:ADATA_EXTEND": {
+                        "anndata": "0.12.10",
+                        "numpy": "2.3.5",
+                        "pandas": "2.3.3",
+                        "python": "3.13.12"
+                    }
+                },
+                {
+                    "FINALIZE:ADATA_TORDS": {
+                        "anndataR": "1.0.2"
+                    }
+                }
+            ],
             {
-                "0": [
-                    "versions.yml:md5,7ba666bc6ed2cdf769b817fc0aeafe9e",
-                    "versions.yml:md5,fe9c91eed91a74cf24e85fd6f7c3932c"
+                "n_obs": 23373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "celltypist:Adult_Human_Skin",
+                        "celltypist:Adult_Human_Skin:conf",
+                        "label",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "sample_original",
+                        "scvi-global-1.0_leiden",
+                        "total_counts",
+                        "total_counts_mt"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
                 ],
-                "versions": [
-                    "versions.yml:md5,7ba666bc6ed2cdf769b817fc0aeafe9e",
-                    "versions.yml:md5,fe9c91eed91a74cf24e85fd6f7c3932c"
+                "obsm": [
+                    "X_scvi"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "scvi-global-1.0_paga"
                 ]
             }
         ],
-        "timestamp": "2026-03-14T21:20:19.824257801",
+        "timestamp": "2026-03-29T11:12:29.040402189",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "25.10.2"
         }
     },
     "Should run without failures - with prep_cellxgene": {
         "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test.h5ad:md5,f1586170686d73b8143e95aad0f331ce"
+                ]
+            ],
+            [
+                {
+                    "FINALIZE:ADATA_PREPCELLXGENE": {
+                        "anndata": "0.12.10",
+                        "numpy": "2.3.5",
+                        "python": "3.13.12",
+                        "scipy": "1.17.1"
+                    }
+                },
+                {
+                    "FINALIZE:ADATA_EXTEND": {
+                        "anndata": "0.12.10",
+                        "numpy": "2.3.5",
+                        "pandas": "2.3.3",
+                        "python": "3.13.12"
+                    }
+                },
+                {
+                    "FINALIZE:ADATA_TORDS": {
+                        "anndataR": "1.0.2"
+                    }
+                }
+            ],
             {
-                "0": [
-                    "versions.yml:md5,39eec024aa1949f3403d7765bd739413",
-                    "versions.yml:md5,7ba666bc6ed2cdf769b817fc0aeafe9e",
-                    "versions.yml:md5,fe9c91eed91a74cf24e85fd6f7c3932c"
+                "n_obs": 23373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "celltypist:Adult_Human_Skin",
+                        "celltypist:Adult_Human_Skin:conf",
+                        "label",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "sample_original",
+                        "total_counts",
+                        "total_counts_mt"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
                 ],
-                "versions": [
-                    "versions.yml:md5,39eec024aa1949f3403d7765bd739413",
-                    "versions.yml:md5,7ba666bc6ed2cdf769b817fc0aeafe9e",
-                    "versions.yml:md5,fe9c91eed91a74cf24e85fd6f7c3932c"
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
                 ]
             }
         ],
-        "timestamp": "2026-03-14T21:21:40.228136309",
+        "timestamp": "2026-03-29T11:13:56.762622049",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "25.10.2"
         }
     },
     "Should run without failures - with fragments - stub": {
         "content": [
             {
                 "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
                 ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -52,18 +191,34 @@
                 ]
             }
         ],
-        "timestamp": "2026-01-16T22:46:55.506826803",
+        "timestamp": "2026-03-28T18:21:21.411777638",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
         }
     },
     "Should run without failures - no fragments - stub": {
         "content": [
             {
                 "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
                 ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -71,29 +226,87 @@
                 ]
             }
         ],
-        "timestamp": "2026-01-16T22:47:50.084502894",
+        "timestamp": "2026-03-28T18:22:08.331764694",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
         }
     },
     "Should run without failures - no fragments": {
         "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test.h5ad:md5,f1586170686d73b8143e95aad0f331ce"
+                ]
+            ],
+            [
+                {
+                    "FINALIZE:ADATA_EXTEND": {
+                        "anndata": "0.12.10",
+                        "numpy": "2.3.5",
+                        "pandas": "2.3.3",
+                        "python": "3.13.12"
+                    }
+                },
+                {
+                    "FINALIZE:ADATA_TORDS": {
+                        "anndataR": "1.0.2"
+                    }
+                }
+            ],
             {
-                "0": [
-                    "versions.yml:md5,7ba666bc6ed2cdf769b817fc0aeafe9e",
-                    "versions.yml:md5,fe9c91eed91a74cf24e85fd6f7c3932c"
+                "n_obs": 23373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "celltypist:Adult_Human_Skin",
+                        "celltypist:Adult_Human_Skin:conf",
+                        "label",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "sample_original",
+                        "total_counts",
+                        "total_counts_mt"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
                 ],
-                "versions": [
-                    "versions.yml:md5,7ba666bc6ed2cdf769b817fc0aeafe9e",
-                    "versions.yml:md5,fe9c91eed91a74cf24e85fd6f7c3932c"
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
                 ]
             }
         ],
-        "timestamp": "2026-03-14T21:20:58.985947798",
+        "timestamp": "2026-03-29T11:13:12.249331199",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "25.10.2"
         }
     }
 }

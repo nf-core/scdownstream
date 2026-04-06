@@ -1,0 +1,35 @@
+---
+description: Never directly edit nf-test snapshot files; always use nftu to regenerate them
+globs: "**/*.nf.test.snap"
+alwaysApply: false
+---
+
+# nf-test Snapshot Files
+
+**Never manually edit `.nf.test.snap` files.**
+
+Directly editing snapshots cannot guarantee that the written content matches what the pipeline would actually produce. Always regenerate them using the `--update-snapshot` flag of `nf-test`:
+
+```bash
+nf-test test --update-snapshot <path/to/test.nf.test>
+```
+
+The exact invocation depends on the environment (profiles, container engine, etc.). Check local aliases or project documentation for the recommended command on the current machine.
+
+## Example
+
+```bash
+# ✅ GOOD — regenerate snapshots from actual test output
+nf-test test --update-snapshot modules/local/scanpy/filter/tests/main.nf.test
+
+# ❌ BAD — manually editing the snap file
+# vim modules/local/scanpy/filter/tests/main.nf.test.snap
+```
+
+You can pass multiple test files in one invocation:
+
+```bash
+nf-test test --update-snapshot \
+  modules/local/scanpy/filter/tests/main.nf.test \
+  modules/local/scanpy/leiden/tests/main.nf.test
+```

@@ -26,43 +26,63 @@
                 ]
             }
         ],
+        "timestamp": "2026-03-25T15:44:42.434469309",
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.2"
-        },
-        "timestamp": "2025-06-03T07:44:27.274185863"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures": {
         "content": [
             {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,c2462b0c788a3b814f085372b2d4364b"
+                "SCANPY_BBKNN": {
+                    "bbknn": "1.6.0",
+                    "pandas": "2.3.3",
+                    "python": "3.12.12",
+                    "scanpy": "1.11.5"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
                     ]
-                ],
-                "1": [
-                    "versions.yml:md5,0e8d49948d318a0226fecc9b8d3372bb"
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,c2462b0c788a3b814f085372b2d4364b"
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
                     ]
+                },
+                "layers": [
+                    
                 ],
-                "versions": [
-                    "versions.yml:md5,0e8d49948d318a0226fecc9b8d3372bb"
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "neighbors",
+                    "pca"
                 ]
             }
         ],
+        "timestamp": "2026-03-29T11:17:44.928430046",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-25T17:14:21.702291847"
+        }
     }
 }

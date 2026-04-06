@@ -18,7 +18,8 @@ nextflow_workflow {
                 input[0] = channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
-                        "index"
+                        "index",
+                        "X"
                     ]
                 )
                 input[1] = "https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/singleR/references.csv"
@@ -29,6 +30,7 @@ nextflow_workflow {
 
         then {
             assert workflow.success
+            assert workflow.out.obs.size() >= 1
             assert snapshot(
                 workflow.out.versions,
                 workflow.out.obs.size()
@@ -50,7 +52,8 @@ nextflow_workflow {
                 input[0] = channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
-                        "index"
+                        "index",
+                        "X"
                     ]
                 )
                 input[1] = "https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/singleR/references.csv"

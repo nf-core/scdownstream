@@ -26,22 +26,19 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "X_emb" in obsm
-                        // Should have cells from both base (50) and integrated (30)
-                        assert obs.rownames.size() == 80
-                    }
-                },
-                // obsm pickle should be created
-                { assert file(process.out.obsm[0]).name == "X_scvi.pkl" },
-                // obs pickle should NOT be created for non-scanvi
-                { assert process.out.obs.size() == 0 }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "X_emb" in obsm
+                assert obs.rownames.size() == 80
+            }
+            assert file(process.out.obsm[0]).name == "X_scvi.pkl"
+            assert process.out.obs.size() == 0
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
 
     }
@@ -65,22 +62,20 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "X_emb" in obsm
-                        assert "label:scANVI" in obs.colnames
-                        assert obs.rownames.size() == 80
-                    }
-                },
-                // obsm pickle should be created
-                { assert file(process.out.obsm[0]).name == "X_scanvi.pkl" },
-                // obs pickle SHOULD be created for scanvi
-                { assert file(process.out.obs[0]).name == "scanvi.pkl" }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "X_emb" in obsm
+                assert "label:scANVI" in obs.colnames
+                assert obs.rownames.size() == 80
+            }
+            assert file(process.out.obsm[0]).name == "X_scanvi.pkl"
+            assert file(process.out.obs[0]).name == "scanvi.pkl"
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
 
     }
@@ -106,10 +101,8 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() }
-            )
+            assert process.success
+            assert snapshot(process.out).match()
         }
 
     }

@@ -48,11 +48,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-03-28T23:05:37.694952307",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-16T22:34:13.677132566"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures - bbknn - stub": {
         "content": [
@@ -103,66 +103,79 @@
                 ]
             }
         ],
+        "timestamp": "2026-03-25T15:47:40.215608271",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-16T22:35:18.22501323"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures - combat": {
         "content": [
+            [
+                "versions.yml:md5,20020d8c9cf585aaa75dd5a14aa5d3ae",
+                "versions.yml:md5,a6c1e0a77e0d31423a9d77edba85127d",
+                "versions.yml:md5,d28b65c4c18c54e1abc34040b584b823"
+            ],
             {
-                "0": [
-                    [
-                        {
-                            "id": "combat"
-                        },
-                        "combat.h5ad:md5,762415b735d85d184f3f7d81cffb358a"
+                "n_obs": 12940,
+                "n_vars": 2077,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "total_counts",
+                        "total_counts_mt"
                     ]
-                ],
-                "1": [
-                    
-                ],
-                "2": [
-                    
-                ],
-                "3": [
-                    "X_combat.pkl:md5,80d49487b43b698b44379a2aeb8f82e1"
-                ],
-                "4": [
-                    "versions.yml:md5,8e1ae3c302dd3f79802dc83ea737b5b8",
-                    "versions.yml:md5,c6cc33ab196c4813daa444e549091e86",
-                    "versions.yml:md5,f6640b7c41fc54aafc0a8ef8ab3d698f"
-                ],
-                "integrations": [
-                    [
-                        {
-                            "id": "combat"
-                        },
-                        "combat.h5ad:md5,762415b735d85d184f3f7d81cffb358a"
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "highly_variable",
+                        "mean_counts",
+                        "means",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "symbols",
+                        "total_counts"
                     ]
-                ],
-                "obs": [
-                    
+                },
+                "layers": [
+                    "counts"
                 ],
                 "obsm": [
-                    "X_combat.pkl:md5,80d49487b43b698b44379a2aeb8f82e1"
+                    "X_emb",
+                    "X_pca"
                 ],
-                "var": [
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
                     
                 ],
-                "versions": [
-                    "versions.yml:md5,8e1ae3c302dd3f79802dc83ea737b5b8",
-                    "versions.yml:md5,c6cc33ab196c4813daa444e549091e86",
-                    "versions.yml:md5,f6640b7c41fc54aafc0a8ef8ab3d698f"
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "log1p",
+                    "pca"
                 ]
             }
         ],
+        "timestamp": "2026-03-29T11:24:13.787124189",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-25T17:09:14.675731494"
+        }
     },
     "Should run without failures - extension mode - stub": {
         "content": [
@@ -209,11 +222,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-03-28T23:09:49.392744851",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-16T22:37:23.996766665"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures - combat - stub": {
         "content": [
@@ -264,120 +277,145 @@
                 ]
             }
         ],
+        "timestamp": "2026-03-25T15:49:26.334091777",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-16T22:36:29.062441577"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures - harmony": {
         "content": [
+            [
+                "versions.yml:md5,20020d8c9cf585aaa75dd5a14aa5d3ae",
+                "versions.yml:md5,d28b65c4c18c54e1abc34040b584b823",
+                "versions.yml:md5,f838f281f13db0dd578a991df1d8b57c"
+            ],
             {
-                "0": [
-                    [
-                        {
-                            "id": "harmony"
-                        },
-                        "harmony.h5ad:md5,a890bbc3d45865f13121894888e102d2"
+                "n_obs": 12940,
+                "n_vars": 2077,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "total_counts",
+                        "total_counts_mt"
                     ]
-                ],
-                "1": [
-                    
-                ],
-                "2": [
-                    
-                ],
-                "3": [
-                    "X_harmony.pkl:md5,e628033ec42e630c32f7cd2f877993f5"
-                ],
-                "4": [
-                    "versions.yml:md5,8fade3fe571d5fe72445301e5c1894d3",
-                    "versions.yml:md5,c6cc33ab196c4813daa444e549091e86",
-                    "versions.yml:md5,f6640b7c41fc54aafc0a8ef8ab3d698f"
-                ],
-                "integrations": [
-                    [
-                        {
-                            "id": "harmony"
-                        },
-                        "harmony.h5ad:md5,a890bbc3d45865f13121894888e102d2"
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "highly_variable",
+                        "mean_counts",
+                        "means",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "symbols",
+                        "total_counts"
                     ]
-                ],
-                "obs": [
-                    
+                },
+                "layers": [
+                    "counts"
                 ],
                 "obsm": [
-                    "X_harmony.pkl:md5,e628033ec42e630c32f7cd2f877993f5"
+                    "X_emb"
                 ],
-                "var": [
+                "varm": [
                     
                 ],
-                "versions": [
-                    "versions.yml:md5,8fade3fe571d5fe72445301e5c1894d3",
-                    "versions.yml:md5,c6cc33ab196c4813daa444e549091e86",
-                    "versions.yml:md5,f6640b7c41fc54aafc0a8ef8ab3d698f"
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "log1p"
                 ]
             }
         ],
+        "timestamp": "2026-03-29T11:19:08.193313955",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-25T17:06:30.833696459"
+        }
     },
     "Should run without failures - bbknn": {
         "content": [
+            [
+                "versions.yml:md5,20020d8c9cf585aaa75dd5a14aa5d3ae",
+                "versions.yml:md5,ccf730637c4c61a84ac4a002bf9832e0",
+                "versions.yml:md5,d28b65c4c18c54e1abc34040b584b823"
+            ],
             {
-                "0": [
-                    [
-                        {
-                            "id": "bbknn"
-                        },
-                        "bbknn.h5ad:md5,e3970227a1e62781eb9ab14044854556"
+                "n_obs": 12940,
+                "n_vars": 2077,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "total_counts",
+                        "total_counts_mt"
                     ]
-                ],
-                "1": [
-                    
-                ],
-                "2": [
-                    
-                ],
-                "3": [
-                    
-                ],
-                "4": [
-                    "versions.yml:md5,c6cc33ab196c4813daa444e549091e86",
-                    "versions.yml:md5,ccf730637c4c61a84ac4a002bf9832e0",
-                    "versions.yml:md5,f6640b7c41fc54aafc0a8ef8ab3d698f"
-                ],
-                "integrations": [
-                    [
-                        {
-                            "id": "bbknn"
-                        },
-                        "bbknn.h5ad:md5,e3970227a1e62781eb9ab14044854556"
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "highly_variable",
+                        "mean_counts",
+                        "means",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "symbols",
+                        "total_counts"
                     ]
-                ],
-                "obs": [
-                    
+                },
+                "layers": [
+                    "counts"
                 ],
                 "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
                     
                 ],
-                "var": [
-                    
-                ],
-                "versions": [
-                    "versions.yml:md5,c6cc33ab196c4813daa444e549091e86",
-                    "versions.yml:md5,ccf730637c4c61a84ac4a002bf9832e0",
-                    "versions.yml:md5,f6640b7c41fc54aafc0a8ef8ab3d698f"
+                "uns": [
+                    "hvg",
+                    "log1p",
+                    "neighbors",
+                    "pca"
                 ]
             }
         ],
+        "timestamp": "2026-03-29T11:22:31.479708062",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-25T17:07:47.855483349"
+        }
     }
 }

@@ -1,50 +1,67 @@
 {
     "Should run without ambient RNA removal and doublet detection": {
         "content": [
-            {
-                "0": [
-                    
-                ],
-                "1": [
-                    
-                ],
-                "2": [
-                    "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
-                    "test_raw_mqc.json:md5,55fb1251be8f5e17f0ff337d94f7f3f8"
-                ],
-                "3": [
-                    "versions.yml:md5,0382a117d804c2d9a33fbfafadc0e848",
-                    "versions.yml:md5,42c1abd6c5e1c373ee37d53bcdcedd13",
-                    "versions.yml:md5,53938cd26fe63616cc4524da4b6062c5",
-                    "versions.yml:md5,6a3ffc8a47600e0ebd907bb979d5d859",
-                    "versions.yml:md5,88b8f8687e69ee5ccecf75b7e6845176",
-                    "versions.yml:md5,c4bcd7799f794fb7a2ab6b9a32d346f9",
-                    "versions.yml:md5,e62a158b9954a569d2a6c7e931d8c641",
-                    "versions.yml:md5,ee155a7aaf701755e53d5e752bc95f8e"
-                ],
-                "h5ad": [
-                    
-                ],
-                "multiqc_files": [
-                    "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
-                    "test_raw_mqc.json:md5,55fb1251be8f5e17f0ff337d94f7f3f8"
-                ],
-                "obs": [
-                    
-                ],
-                "versions": [
-                    "versions.yml:md5,0382a117d804c2d9a33fbfafadc0e848",
-                    "versions.yml:md5,42c1abd6c5e1c373ee37d53bcdcedd13",
-                    "versions.yml:md5,53938cd26fe63616cc4524da4b6062c5",
-                    "versions.yml:md5,6a3ffc8a47600e0ebd907bb979d5d859",
-                    "versions.yml:md5,88b8f8687e69ee5ccecf75b7e6845176",
-                    "versions.yml:md5,c4bcd7799f794fb7a2ab6b9a32d346f9",
-                    "versions.yml:md5,e62a158b9954a569d2a6c7e931d8c641",
-                    "versions.yml:md5,ee155a7aaf701755e53d5e752bc95f8e"
-                ]
-            }
+            [
+                "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
+                "test_raw_mqc.json:md5,1892d1a9408417050623e6bc2c2480a3"
+            ],
+            [
+                {
+                    "QUALITY_CONTROL:SCANPY_FILTER": {
+                        "python": "3.13.12",
+                        "scanpy": "1.12"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:GET_UNFILTERED_SIZE": {
+                        "python": "3.13.0",
+                        "anndata": "0.10.9"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:QC_RAW": {
+                        "matplotlib": "3.10.8",
+                        "python": "3.13.12",
+                        "scanpy": "1.12"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:GET_FILTERED_SIZE": {
+                        "python": "3.13.0",
+                        "anndata": "0.10.9"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:GET_THRESHOLDED_SIZE": {
+                        "python": "3.13.0",
+                        "anndata": "0.10.9"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:UNIFY:ADATA_UNIFY": {
+                        "anndata": "0.12.10",
+                        "numpy": "2.3.5",
+                        "python": "3.13.12",
+                        "scipy": "1.17.1"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:UNIFY:UPSET_GENES": {
+                        "anndata": "0.12.10",
+                        "matplotlib": "3.10.8",
+                        "python": "3.13.12",
+                        "upsetplot": "0.9.0"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:COLLECT_SIZES": {
+                        "pandas": "2.3.3",
+                        "python": "3.13.12"
+                    }
+                }
+            ]
         ],
-        "timestamp": "2026-03-13T17:19:20.399806",
+        "timestamp": "2026-03-28T19:42:23.484650804",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.2"
@@ -52,50 +69,67 @@
     },
     "Should run without ambient RNA removal and doublet detection, but with custom mito genes": {
         "content": [
-            {
-                "0": [
-                    
-                ],
-                "1": [
-                    
-                ],
-                "2": [
-                    "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
-                    "test_raw_mqc.json:md5,55fb1251be8f5e17f0ff337d94f7f3f8"
-                ],
-                "3": [
-                    "versions.yml:md5,0382a117d804c2d9a33fbfafadc0e848",
-                    "versions.yml:md5,42c1abd6c5e1c373ee37d53bcdcedd13",
-                    "versions.yml:md5,53938cd26fe63616cc4524da4b6062c5",
-                    "versions.yml:md5,6a3ffc8a47600e0ebd907bb979d5d859",
-                    "versions.yml:md5,88b8f8687e69ee5ccecf75b7e6845176",
-                    "versions.yml:md5,c4bcd7799f794fb7a2ab6b9a32d346f9",
-                    "versions.yml:md5,e62a158b9954a569d2a6c7e931d8c641",
-                    "versions.yml:md5,ee155a7aaf701755e53d5e752bc95f8e"
-                ],
-                "h5ad": [
-                    
-                ],
-                "multiqc_files": [
-                    "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
-                    "test_raw_mqc.json:md5,55fb1251be8f5e17f0ff337d94f7f3f8"
-                ],
-                "obs": [
-                    
-                ],
-                "versions": [
-                    "versions.yml:md5,0382a117d804c2d9a33fbfafadc0e848",
-                    "versions.yml:md5,42c1abd6c5e1c373ee37d53bcdcedd13",
-                    "versions.yml:md5,53938cd26fe63616cc4524da4b6062c5",
-                    "versions.yml:md5,6a3ffc8a47600e0ebd907bb979d5d859",
-                    "versions.yml:md5,88b8f8687e69ee5ccecf75b7e6845176",
-                    "versions.yml:md5,c4bcd7799f794fb7a2ab6b9a32d346f9",
-                    "versions.yml:md5,e62a158b9954a569d2a6c7e931d8c641",
-                    "versions.yml:md5,ee155a7aaf701755e53d5e752bc95f8e"
-                ]
-            }
+            [
+                "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
+                "test_raw_mqc.json:md5,1892d1a9408417050623e6bc2c2480a3"
+            ],
+            [
+                {
+                    "QUALITY_CONTROL:SCANPY_FILTER": {
+                        "python": "3.13.12",
+                        "scanpy": "1.12"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:GET_UNFILTERED_SIZE": {
+                        "python": "3.13.0",
+                        "anndata": "0.10.9"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:QC_RAW": {
+                        "matplotlib": "3.10.8",
+                        "python": "3.13.12",
+                        "scanpy": "1.12"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:GET_FILTERED_SIZE": {
+                        "python": "3.13.0",
+                        "anndata": "0.10.9"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:GET_THRESHOLDED_SIZE": {
+                        "python": "3.13.0",
+                        "anndata": "0.10.9"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:UNIFY:ADATA_UNIFY": {
+                        "anndata": "0.12.10",
+                        "numpy": "2.3.5",
+                        "python": "3.13.12",
+                        "scipy": "1.17.1"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:UNIFY:UPSET_GENES": {
+                        "anndata": "0.12.10",
+                        "matplotlib": "3.10.8",
+                        "python": "3.13.12",
+                        "upsetplot": "0.9.0"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:COLLECT_SIZES": {
+                        "pandas": "2.3.3",
+                        "python": "3.13.12"
+                    }
+                }
+            ]
         ],
-        "timestamp": "2026-03-13T17:19:47.095611",
+        "timestamp": "2026-03-28T19:43:09.6069317",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.2"
@@ -184,7 +218,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-13T17:31:11.866715",
+        "timestamp": "2026-03-22T17:58:03.346618166",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.2"
@@ -194,28 +228,154 @@
         "content": [
             [
                 "sizes_mqc.json:md5,1793ebee5833403df06e38d4c73f25c5",
-                "test_preprocessed_mqc.json:md5,4c8417244d88ae69bce71cca086d1d75",
-                "test_raw_mqc.json:md5,55fb1251be8f5e17f0ff337d94f7f3f8"
+                "test_preprocessed_mqc.json:md5,1a7a9ee44915cbdcb7905e55def48d5c",
+                "test_raw_mqc.json:md5,1892d1a9408417050623e6bc2c2480a3"
             ],
             [
-                "versions.yml:md5,0382a117d804c2d9a33fbfafadc0e848",
-                "versions.yml:md5,3c7417bff601859a86cdcb86fa6bfcb3",
-                "versions.yml:md5,42c1abd6c5e1c373ee37d53bcdcedd13",
-                "versions.yml:md5,53938cd26fe63616cc4524da4b6062c5",
-                "versions.yml:md5,6a3ffc8a47600e0ebd907bb979d5d859",
-                "versions.yml:md5,88b8f8687e69ee5ccecf75b7e6845176",
-                "versions.yml:md5,8a904ed120b0307240c5a2ebe6dc34f8",
-                "versions.yml:md5,8d42b8eebbd3b215d93707b3e14dba8d",
-                "versions.yml:md5,c4bcd7799f794fb7a2ab6b9a32d346f9",
-                "versions.yml:md5,cd352ddaeb3e286706b51d74fe15d655",
-                "versions.yml:md5,e61165f42026015d85d0eb1c40ba58ca",
-                "versions.yml:md5,e62a158b9954a569d2a6c7e931d8c641",
-                "versions.yml:md5,ee155a7aaf701755e53d5e752bc95f8e"
+                {
+                    "QUALITY_CONTROL:SCANPY_FILTER": {
+                        "python": "3.13.12",
+                        "scanpy": "1.12"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:AMBIENT_CORRECTION:CELDA_DECONTX": {
+                        "r": "4.5.3",
+                        "anndataR": "1.0.2",
+                        "celda": "1.26.0"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:DOUBLET_DETECTION:DOUBLET_REMOVAL": {
+                        "anndata": "0.12.10",
+                        "matplotlib": "3.10.8",
+                        "pandas": "2.3.3",
+                        "python": "3.13.12",
+                        "upsetplot": "0.9.0"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:GET_DEDOUBLETED_SIZE": {
+                        "python": "3.13.0",
+                        "anndata": "0.10.9"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:GET_UNFILTERED_SIZE": {
+                        "python": "3.13.0",
+                        "anndata": "0.10.9"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:QC_RAW": {
+                        "matplotlib": "3.10.8",
+                        "python": "3.13.12",
+                        "scanpy": "1.12"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:GET_FILTERED_SIZE": {
+                        "python": "3.13.0",
+                        "anndata": "0.10.9"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:DOUBLET_DETECTION:SCANPY_SCRUBLET": {
+                        "python": "3.12.11",
+                        "scanpy": "1.11.2"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:QC_FILTERED": {
+                        "matplotlib": "3.10.8",
+                        "python": "3.13.12",
+                        "scanpy": "1.12"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:GET_THRESHOLDED_SIZE": {
+                        "python": "3.13.0",
+                        "anndata": "0.10.9"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:UNIFY:ADATA_UNIFY": {
+                        "anndata": "0.12.10",
+                        "numpy": "2.3.5",
+                        "python": "3.13.12",
+                        "scipy": "1.17.1"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:UNIFY:UPSET_GENES": {
+                        "anndata": "0.12.10",
+                        "matplotlib": "3.10.8",
+                        "python": "3.13.12",
+                        "upsetplot": "0.9.0"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:COLLECT_SIZES": {
+                        "pandas": "2.3.3",
+                        "python": "3.13.12"
+                    }
+                }
             ],
             12939,
-            9887
+            9887,
+            {
+                "n_obs": 12939,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "condition",
+                        "label",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "sample_original",
+                        "total_counts",
+                        "total_counts_mt"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "mean_counts",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
         ],
-        "timestamp": "2026-03-13T17:30:48.205648",
+        "timestamp": "2026-03-29T11:24:39.776574078",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.2"
@@ -223,50 +383,67 @@
     },
     "Should run with cell cycle scoring": {
         "content": [
-            {
-                "0": [
-                    
-                ],
-                "1": [
-                    
-                ],
-                "2": [
-                    "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
-                    "test_raw_mqc.json:md5,55fb1251be8f5e17f0ff337d94f7f3f8"
-                ],
-                "3": [
-                    "versions.yml:md5,0382a117d804c2d9a33fbfafadc0e848",
-                    "versions.yml:md5,42c1abd6c5e1c373ee37d53bcdcedd13",
-                    "versions.yml:md5,53938cd26fe63616cc4524da4b6062c5",
-                    "versions.yml:md5,6a3ffc8a47600e0ebd907bb979d5d859",
-                    "versions.yml:md5,88b8f8687e69ee5ccecf75b7e6845176",
-                    "versions.yml:md5,c4bcd7799f794fb7a2ab6b9a32d346f9",
-                    "versions.yml:md5,e62a158b9954a569d2a6c7e931d8c641",
-                    "versions.yml:md5,ee155a7aaf701755e53d5e752bc95f8e"
-                ],
-                "h5ad": [
-                    
-                ],
-                "multiqc_files": [
-                    "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
-                    "test_raw_mqc.json:md5,55fb1251be8f5e17f0ff337d94f7f3f8"
-                ],
-                "obs": [
-                    
-                ],
-                "versions": [
-                    "versions.yml:md5,0382a117d804c2d9a33fbfafadc0e848",
-                    "versions.yml:md5,42c1abd6c5e1c373ee37d53bcdcedd13",
-                    "versions.yml:md5,53938cd26fe63616cc4524da4b6062c5",
-                    "versions.yml:md5,6a3ffc8a47600e0ebd907bb979d5d859",
-                    "versions.yml:md5,88b8f8687e69ee5ccecf75b7e6845176",
-                    "versions.yml:md5,c4bcd7799f794fb7a2ab6b9a32d346f9",
-                    "versions.yml:md5,e62a158b9954a569d2a6c7e931d8c641",
-                    "versions.yml:md5,ee155a7aaf701755e53d5e752bc95f8e"
-                ]
-            }
+            [
+                "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
+                "test_raw_mqc.json:md5,1892d1a9408417050623e6bc2c2480a3"
+            ],
+            [
+                {
+                    "QUALITY_CONTROL:SCANPY_FILTER": {
+                        "python": "3.13.12",
+                        "scanpy": "1.12"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:GET_UNFILTERED_SIZE": {
+                        "python": "3.13.0",
+                        "anndata": "0.10.9"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:QC_RAW": {
+                        "matplotlib": "3.10.8",
+                        "python": "3.13.12",
+                        "scanpy": "1.12"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:GET_FILTERED_SIZE": {
+                        "python": "3.13.0",
+                        "anndata": "0.10.9"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:GET_THRESHOLDED_SIZE": {
+                        "python": "3.13.0",
+                        "anndata": "0.10.9"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:UNIFY:ADATA_UNIFY": {
+                        "anndata": "0.12.10",
+                        "numpy": "2.3.5",
+                        "python": "3.13.12",
+                        "scipy": "1.17.1"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:UNIFY:UPSET_GENES": {
+                        "anndata": "0.12.10",
+                        "matplotlib": "3.10.8",
+                        "python": "3.13.12",
+                        "upsetplot": "0.9.0"
+                    }
+                },
+                {
+                    "QUALITY_CONTROL:COLLECT_SIZES": {
+                        "pandas": "2.3.3",
+                        "python": "3.13.12"
+                    }
+                }
+            ]
         ],
-        "timestamp": "2026-03-13T17:31:35.797427",
+        "timestamp": "2026-03-28T19:47:47.258742454",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.2"

@@ -29,17 +29,16 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-            { assert process.success },
-            { assert snapshot(
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "X_emb" in obsm
+            }
+            assert snapshot(
                     // Hashes are not stable due to floating point inaccuracies
-                    file(process.out.h5ad.get(0).get(1)).size(),
-                    file(process.out.model.get(0).get(1)).size(),
-                    file(process.out.obsm.get(0)).size(),
-                    process.out.versions
+                    path(process.out.versions[0]).yaml,
+                    adata.yaml
                 ).match()
-            },
-            )
         }
 
     }
@@ -68,10 +67,8 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-            { assert process.success },
-            { assert snapshot(process.out).match() }
-            )
+            assert process.success
+            assert snapshot(process.out).match()
         }
 
     }

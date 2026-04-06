@@ -1,43 +1,204 @@
 {
     "Should run without failures without batch column": {
         "content": [
-            [
-                "versions.yml:md5,c546ef8ddb5673ef5f14e733d02de1d1"
-            ],
-            "test_decontx.h5ad"
+            {
+                "CELDA_DECONTX": {
+                    "r": "4.5.3",
+                    "anndataR": "1.0.2",
+                    "celda": "1.26.0"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
         ],
+        "timestamp": "2026-03-29T11:18:08.048436803",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-10T14:01:12.972105721"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures without raw - single batch": {
         "content": [
-            [
-                "versions.yml:md5,c546ef8ddb5673ef5f14e733d02de1d1"
-            ],
-            "test_decontx.h5ad"
+            {
+                "CELDA_DECONTX": {
+                    "r": "4.5.3",
+                    "anndataR": "1.0.2",
+                    "celda": "1.26.0"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
         ],
+        "timestamp": "2026-03-29T11:21:17.900019258",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2025-07-13T21:45:05.085755826"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures with raw": {
         "content": [
-            [
-                "versions.yml:md5,c546ef8ddb5673ef5f14e733d02de1d1"
-            ],
-            true,
-            14391284
+            {
+                "CELDA_DECONTX": {
+                    "r": "4.5.3",
+                    "anndataR": "1.0.2",
+                    "celda": "1.26.0"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
         ],
+        "timestamp": "2026-03-29T11:24:51.060377162",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2025-08-31T13:29:55.8622939"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should write to a custom output layer": {
+        "content": [
+            {
+                "CELDA_DECONTX": {
+                    "r": "4.5.3",
+                    "anndataR": "1.0.2",
+                    "celda": "1.26.0"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_decontx",
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-03-29T11:25:48.190196709",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures with raw - stub": {
         "content": [
@@ -66,24 +227,61 @@
                 ]
             }
         ],
+        "timestamp": "2026-03-25T16:08:49.849468757",
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.2"
-        },
-        "timestamp": "2025-06-04T16:57:29.758824525"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures without raw - multi-batch": {
         "content": [
-            [
-                "versions.yml:md5,c546ef8ddb5673ef5f14e733d02de1d1"
-            ],
-            true
+            {
+                "CELDA_DECONTX": {
+                    "r": "4.5.3",
+                    "anndataR": "1.0.2",
+                    "celda": "1.26.0"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
         ],
+        "timestamp": "2026-03-29T11:23:38.441578672",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.2"
-        },
-        "timestamp": "2025-06-07T11:32:01.363438724"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures without raw - stub": {
         "content": [
@@ -112,10 +310,10 @@
                 ]
             }
         ],
+        "timestamp": "2026-03-25T16:06:07.366572356",
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.2"
-        },
-        "timestamp": "2025-06-04T16:56:16.349565714"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     }
 }

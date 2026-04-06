@@ -28,10 +28,8 @@ nextflow_workflow {
         }
 
         then {
-            assertAll(
-            { assert workflow.success },
-            { assert workflow.trace.tasks().size() == 0 }
-            )
+            assert workflow.success
+            assert workflow.trace.tasks().size() == 0
         }
 
     }
@@ -58,14 +56,15 @@ nextflow_workflow {
         }
 
         then {
-            assertAll(
-            { assert workflow.success },
-            { assert anndata(workflow.out.h5ad[0][1]).n_obs > 5960 },
-            { assert anndata(workflow.out.h5ad[0][1]).n_obs < 5985 },
-            { assert snapshot(
-                    workflow.out.versions,
-                ).match() }
-            )
+            def adata = anndata(workflow.out.h5ad[0][1])
+
+            assert workflow.success
+            assert adata.n_obs > 5960
+            assert adata.n_obs < 5985
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml },
+                adata.yaml
+            ).match()
         }
 
     }
@@ -93,10 +92,8 @@ nextflow_workflow {
         }
 
         then {
-            assertAll(
-            { assert workflow.success },
-            { assert snapshot(workflow.out).match() }
-            )
+            assert workflow.success
+            assert snapshot(workflow.out).match()
         }
 
     }

@@ -75,7 +75,6 @@ workflow QUALITY_CONTROL {
             [meta, unfiltered]
         }
     )
-    ch_versions = ch_versions.mix(EMPTY_DROPLET_REMOVAL.out.versions)
 
     ch_complete = ch_complete.mix(
         ch_needs_filtering

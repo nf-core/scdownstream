@@ -1,6 +1,9 @@
 #!/opt/conda/bin/python
 
+# Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
 import platform
 import base64
 import json
@@ -8,49 +11,38 @@ import json
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
-import scanpy as sc
+import anndata as ad
 import matplotlib.pyplot as plt
 import upsetplot
 import matplotlib
-
-def format_yaml_like(data: dict, indent: int = 0) -> str:
-    """Formats a dictionary to a YAML-like string.
-
-    Args:
-        data (dict): The dictionary to format.
-        indent (int): The current indentation level.
-
-    Returns:
-        str: A string formatted as YAML.
-    """
-    yaml_str = ""
-    for key, value in data.items():
-        spaces = "  " * indent
-        if isinstance(value, dict):
-            yaml_str += f"{spaces}{key}:\\n{format_yaml_like(value, indent + 1)}"
-        else:
-            yaml_str += f"{spaces}{key}: {value}\\n"
-    return yaml_str
+import yaml
 
 # Versions
 
 versions = {
     "${task.process}": {
         "python": platform.python_version(),
-        "scanpy": sc.__version__,
+        "anndata": ad.__version__,
         "matplotlib": matplotlib.__version__,
         "upsetplot": upsetplot.__version__,
     }
 }
 
 with open("versions.yml", "w") as f:
-    f.write(format_yaml_like(versions))
+    yaml.dump(versions, f)
 
 prefix = "${prefix}"
 
+def load_gene_names(path: str) -> list[str]:
+    adata = ad.read_h5ad(path, backed="r")
+    try:
+        return adata.var_names.unique().tolist()
+    finally:
+        adata.file.close()
+
 adata_genes = dict(zip(
     "${names.join(' ')}".split(),
-    [sc.read_h5ad(path, backed='r').var.index.unique().to_list() for path in "${h5ads}".split()]
+    [load_gene_names(path) for path in "${h5ads}".split()]
 ))
 
 if len(adata_genes) < 2:

@@ -32,11 +32,11 @@
                 ]
             }
         ],
+        "timestamp": "2025-06-05T12:04:06.632822892",
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.04.2"
-        },
-        "timestamp": "2025-06-05T12:04:06.632822892"
+        }
     },
     "Should run without failures": {
         "content": [
@@ -50,10 +50,10 @@
                     ]
                 ],
                 "1": [
-                    "test_mqc.json:md5,fce5b12f14e886ac4611d80e135452ae"
+                    "test_mqc.json:md5,14b7cb1a46cf7fb0bf836663c112d874"
                 ],
                 "2": [
-                    "versions.yml:md5,996bec8ae70529e27798f97c4e95ffc7"
+                    "versions.yml:md5,893433c90a0287b3000a0ccf2e680fec"
                 ],
                 "h5ad": [
                     [
@@ -64,17 +64,60 @@
                     ]
                 ],
                 "multiqc_files": [
-                    "test_mqc.json:md5,fce5b12f14e886ac4611d80e135452ae"
+                    "test_mqc.json:md5,14b7cb1a46cf7fb0bf836663c112d874"
                 ],
                 "versions": [
-                    "versions.yml:md5,996bec8ae70529e27798f97c4e95ffc7"
+                    "versions.yml:md5,893433c90a0287b3000a0ccf2e680fec"
+                ]
+            },
+            {
+                "DOUBLET_REMOVAL": {
+                    "anndata": "0.12.10",
+                    "matplotlib": "3.10.8",
+                    "pandas": "2.3.3",
+                    "python": "3.13.12",
+                    "upsetplot": "0.9.0"
+                }
+            },
+            {
+                "n_obs": 5901,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
                 ]
             }
         ],
+        "timestamp": "2026-03-29T12:57:40.009249885",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.2"
-        },
-        "timestamp": "2025-06-05T12:03:55.676451971"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     }
 }

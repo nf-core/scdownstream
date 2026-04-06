@@ -41,15 +41,24 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = ADATA_UNIFY.out.h5ad.map{ _meta, h5ad -> [[id: 'combined'], h5ad] }.groupTuple()
+                input[0] = ADATA_UNIFY.out.h5ad.map{ _meta, h5ad -> [[id: 'combined'], h5ad] }.groupTuple().map{ meta, h5ads -> [meta, h5ads.sort{ a, b -> a.name <=> b.name }] }
                 input[1] = [[], []]
                 """
             }
         }
 
         then {
+            def adata_outer = anndata(process.out.outer[0][1])
+            def adata_inner = anndata(process.out.inner[0][1])
+            def adata_integrate = anndata(process.out.integrate[0][1])
             assert process.success
-            assert snapshot(process.out).match()
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata_outer.yaml,
+                adata_inner.yaml,
+                adata_integrate.yaml
+            ).match()
         }
 
     }
@@ -64,7 +73,7 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = ADATA_UNIFY.out.h5ad.map{ _meta, h5ad -> [[id: 'combined'], h5ad] }.groupTuple()
+                input[0] = ADATA_UNIFY.out.h5ad.map{ _meta, h5ad -> [[id: 'combined'], h5ad] }.groupTuple().map{ meta, h5ads -> [meta, h5ads.sort{ it.name }] }
                 input[1] = [[], []]
                 """
             }
@@ -96,8 +105,17 @@ nextflow_process {
         }
 
         then {
+            def adata_outer = anndata(process.out.outer[0][1])
+            def adata_inner = anndata(process.out.inner[0][1])
+            def adata_integrate = anndata(process.out.integrate[0][1])
             assert process.success
-            assert snapshot(process.out).match()
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata_outer.yaml,
+                adata_inner.yaml,
+                adata_integrate.yaml
+            ).match()
         }
 
     }

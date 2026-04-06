@@ -4,7 +4,7 @@ include { CELLTYPES_CELLTYPIST } from '../../../modules/local/celltypes/celltypi
 
 workflow CELLTYPE_ASSIGNMENT {
     take:
-    ch_h5ad           // channel: [ meta, h5ad, symbol_col ]
+    ch_h5ad           // channel: [ meta, h5ad, symbol_col, counts_layer ]
     celldex_reference //   value: string
     celltypist_model  //   value: string
 
@@ -31,7 +31,7 @@ workflow CELLTYPE_ASSIGNMENT {
         )
 
         CELLTYPES_CELLTYPIST (
-            ch_h5ad,
+            ch_h5ad.map { meta, h5ad, symbol_col, _counts_layer -> [meta, h5ad, symbol_col] },
             celltypist_models
         )
         ch_obs = ch_obs.mix(CELLTYPES_CELLTYPIST.out.obs)

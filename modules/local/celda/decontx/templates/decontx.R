@@ -6,12 +6,18 @@ library(celda)
 # Read the AnnData object
 adata <- read_h5ad("${h5ad}")
 
-# Convert to SingleCellExperiment
-sce <- adata\$as_SingleCellExperiment()
+# Convert to SingleCellExperiment, mapping only the target input to "counts"
+# assays_mapping = FALSE avoids duplicate name conflicts when a "counts" layer already exists
+input_layer <- "${input_layer}"
+if (input_layer == "X") {
+    sce <- adata\$as_SingleCellExperiment(x_mapping = "counts", assays_mapping = FALSE)
+} else {
+    sce <- adata\$as_SingleCellExperiment(x_mapping = FALSE, assays_mapping = c(counts = input_layer))
+}
 
 # Prepare parameters for decontX
 params <- list()
-params\$assayName <- "${input_layer == 'X' ? 'counts' : input_layer}"
+params\$assayName <- "counts"
 
 # Handle batch information if available
 batch_col <- "${batch_col ?: ''}"
@@ -43,7 +49,7 @@ if (batch_col != "") {
 raw_path <- "${raw}"
 if (file.exists(raw_path)) {
     raw <- read_h5ad(raw_path)
-    raw_sce <- raw\$as_SingleCellExperiment()
+    raw_sce <- raw\$as_SingleCellExperiment(x_mapping = "counts", assays_mapping = FALSE)
     params\$background <- raw_sce
 
     # If a batch column is provided, we also need to add it to the background data

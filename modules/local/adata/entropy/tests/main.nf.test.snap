@@ -44,11 +44,11 @@
                 ]
             }
         ],
+        "timestamp": "2025-06-22T15:55:46.390569411",
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.04.3"
-        },
-        "timestamp": "2025-06-22T15:55:46.390569411"
+        }
     },
     "Should run without failures": {
         "content": [
@@ -58,11 +58,11 @@
                         {
                             "id": "test"
                         },
-                        "test_entropy.h5ad:md5,0ddf3491267da3afcd7d49bfb601bc39"
+                        "test_entropy.h5ad:md5,f874063c56014bfe710f56e18e52b74f"
                     ]
                 ],
                 "1": [
-                    "test_entropy.pkl:md5,0cce150308d3fd0a6b08795a68fea389"
+                    "test_entropy.pkl:md5,43f99ffbaf5232c2a0841c2b3888bfd9"
                 ],
                 "2": [
                     
@@ -71,34 +71,80 @@
                     
                 ],
                 "4": [
-                    "versions.yml:md5,fec1a6bc52548627507fb8d06e60da52"
+                    "versions.yml:md5,06c3be8b97dfd251b6aef3221b56d5fc"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_entropy.h5ad:md5,0ddf3491267da3afcd7d49bfb601bc39"
+                        "test_entropy.h5ad:md5,f874063c56014bfe710f56e18e52b74f"
                     ]
                 ],
                 "multiqc_files": [
                     
                 ],
                 "obs": [
-                    "test_entropy.pkl:md5,0cce150308d3fd0a6b08795a68fea389"
+                    "test_entropy.pkl:md5,43f99ffbaf5232c2a0841c2b3888bfd9"
                 ],
                 "plots": [
                     
                 ],
                 "versions": [
-                    "versions.yml:md5,fec1a6bc52548627507fb8d06e60da52"
+                    "versions.yml:md5,06c3be8b97dfd251b6aef3221b56d5fc"
+                ]
+            },
+            {
+                "ADATA_ENTROPY": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12",
+                    "scipy": "1.17.1"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "leiden",
+                        "sample",
+                        "test:entropy"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "leiden",
+                    "neighbors",
+                    "pca"
                 ]
             }
         ],
+        "timestamp": "2026-03-29T12:57:45.425691493",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-25T17:05:22.295034358"
+        }
     }
 }

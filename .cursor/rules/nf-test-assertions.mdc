@@ -1,0 +1,216 @@
+---
+description: nf-test assertion patterns for scdownstream — how to write platform-independent, targeted tests
+globs: "**/*.nf.test"
+alwaysApply: false
+---
+
+# nf-test Assertion Patterns
+
+## Core principle
+
+Omit **platform-sensitive** content from snapshots when outputs are **non-deterministic** (randomised ML, unstable floats in matrices, live APIs): use **`structural`** snapshots (`versions` YAML + `adata.yaml`, no `process.out` MD5s).
+
+When a module is **deterministic** (see [`docs/reproducibility.md`](../docs/reproducibility.md)) and **emits H5AD**, **`hash`** snapshots **include** `process.out` file MD5s plus `adata.yaml` — that is intentional regression coverage, not “raw float arrays” in the snap.
+
+## Assertion order — sequential, no `assertAll`
+
+All `then {}` blocks use **plain sequential `assert` statements** in this fixed order:
+
+1. `assert process.success` / `assert workflow.success` — bare, so the real failure mode is visible before deeper checks
+2. `def adata = anndata(...)` — when an output H5AD (or similar) is used in field checks or in `adata.yaml` inside `snapshot()`; extract once if referenced **2+** times
+3. **Field checks** — specific assertions before the snapshot (e.g. `assert "X_pca" in adata.obsm`)
+4. `assert snapshot(...).match()` — last
+
+**Why this order**: missing fields fail in step 3 with a short message; the snapshot is the final regression net.
+
+If a test **must** open AnnData only after success and you keep `def adata` before `assert success` for historical reasons, treat **success before field checks and snapshot** as the hard rule when refactoring.
+
+**Never use `assertAll`** — it groups all failures into one report which makes CI output harder to read when a process fails.
+
+## Stub tests
+
+Stub tests always use the simple pattern:
+
+```groovy
+test("Should run without failures - stub") {
+    options '-stub'
+    then {
+        assert process.success
+        assert snapshot(process.out).match()
+    }
+}
+```
+
+## Non-stub tests — full example
+
+```groovy
+then {
+    assert process.success
+    def adata = anndata(process.out.h5ad[0][1])
+    assert "X_pca" in adata.obsm          // field checks BEFORE snapshot
+    assert "X_pca" in adata.uns
+    assert snapshot(
+        process.out,
+        path(process.out.versions[0]).yaml,
+        adata.yaml
+    ).match()                              // snapshot LAST — comprehensive regression
+}
+```
+
+## `def adata` variable
+
+When `anndata(path)` would appear more than once in the same `then {}` block, always extract it:
+
+```groovy
+def adata = anndata(process.out.h5ad[0][1])
+// then use adata.obsm, adata.yaml, with(adata) { ... }
+```
+
+For subworkflow tests, the path comes from `workflow.out`:
+
+```groovy
+def adata = anndata(workflow.out.h5ad[0][1])
+// or workflow.out.integrations[0][1] etc.
+```
+
+## `with(adata)` for grouped checks
+
+When asserting multiple properties of the same AnnData object, use `with(adata)`:
+
+```groovy
+assert process.success
+def adata = anndata(process.out.h5ad[0][1])
+with(adata) {
+    assert "batch" in obs.colnames
+    assert "label" in obs.colnames
+    assert !("counts" in layers)
+}
+assert snapshot(process.out, path(process.out.versions[0]).yaml, adata.yaml).match()
+```
+
+## What to include in `snapshot()`
+
+Strategy names are **identical** to [`docs/reproducibility.md`](../docs/reproducibility.md) → **Test strategy (this branch)**. The doc assigns each module/subworkflow to a strategy; this table is the **default `snapshot(...)` shape per strategy** (modules use `process.*`; subworkflows use `workflow.out.*` as in the examples below).
+
+### Module strategies — default snapshot contents
+
+| Strategy | Typical `snapshot(...)` arguments |
+|----------|----------------------------------|
+| `hash` | `process.out`, `path(process.out.versions[0]).yaml`, `adata.yaml` — module **emits H5AD** |
+| `hash (no H5AD output)` | `process.out`, `path(process.out.versions[0]).yaml` — **no** `adata.yaml` |
+| `hash + structural` | Same as **`hash`** (label in doc marks modules like `scanpy/filter` with multiple scenarios) |
+| `structural` | `path(process.out.versions[0]).yaml`, `adata.yaml` — **omit** `process.out` |
+| `column names` | e.g. `path(process.out.versions[0]).yaml`, `adata.obs.colnames` — **omit** `process.out` MD5s |
+| `column names only` | Same as **`column names`** (shorthand in `docs/reproducibility.md` module tables only) |
+| `obs CSV + file names` | Per module row in doc (obs artefacts + versions; not full H5AD hash) |
+| `range assertion` | Imperative range checks **plus** the snapshot mix given in that doc row |
+| `stub only` | No non-stub test; stub only: `snapshot(process.out).match()` |
+
+### Subworkflow tests
+
+Patterns vary by workflow. Use the **Subworkflows** table in `docs/reproducibility.md` as the source of truth. Common building blocks:
+
+```groovy
+// Versions as YAML (often + adata.yaml); omit full workflow.out when unstable
+assert snapshot(
+    workflow.out.versions.collect { path(it).yaml },
+    adata.yaml
+).match()
+```
+
+```groovy
+// Deterministic outputs + versions + schema
+assert snapshot(
+    workflow.out,
+    workflow.out.versions.collect { path(it).yaml },
+    adata.yaml
+).match()
+```
+
+**Passthrough / unstaged H5AD paths:** `snapshot(workflow.out)` only — see later section.
+
+## Common mistake — dropping `process.out` from **`hash`** modules that emit H5AD
+
+For modules whose strategy is **`hash`** (H5AD output) in `docs/reproducibility.md`, **`process.out` must stay** in the snapshot.
+
+Do **not** apply this to **`structural`**, **`column names`**, **`hash (no H5AD output)`**, or other strategies that intentionally omit output MD5s.
+
+```groovy
+// ❌ WRONG for strategy `hash` (H5AD) — drops output file hashes
+assert snapshot(path(process.out.versions[0]).yaml, adata.yaml).match()
+
+// ✅ CORRECT for strategy `hash` (H5AD)
+assert snapshot(process.out, path(process.out.versions[0]).yaml, adata.yaml).match()
+```
+
+## Versions channel
+
+- **Module tests**: `path(process.out.versions[0]).yaml` — reads the single `versions.yml` as YAML
+- **Subworkflow tests**: `workflow.out.versions.collect { path(it).yaml }` — parses each file for human-readable version names
+
+The versions channel should never include `meta`. In module tests, `process.out.versions[0]` is a plain path (no tuple).
+
+## Spread multi-argument snapshots over multiple lines
+
+```groovy
+// ✅ readable
+assert snapshot(
+    process.out,
+    path(process.out.versions[0]).yaml,
+    adata.yaml
+).match()
+
+// ❌ hard to read
+assert snapshot(process.out, path(process.out.versions[0]).yaml, adata.yaml).match()
+```
+
+## One snapshot call per test
+
+Each test can only have **one** `snapshot(...).match()` call — nf-test keys snapshots by test name. Always combine into one call.
+
+## Explicit field checks — always assert created fields
+
+Every test should explicitly assert the key outputs/fields that the module creates:
+- `assert "X_pca" in adata.obsm` for new embeddings
+- `assert "leiden" in adata.obs.colnames` for new obs columns
+- `assert "rank_genes_groups" in adata.uns` for uns keys
+- `assert "ambient_corrected" in adata.layers` for new layers
+
+## Known nft-anndata limitation: `uns` is top-level keys only
+
+`adata.uns` (and `uns` inside a `with(adata)` block) is a `Set<String>` — it exposes only the **top-level key names**, not the nested values. This means:
+
+```groovy
+assert "paga" in adata.uns          // ✅ works — checks key presence
+assert "connectivities" in adata.uns["paga"]  // ❌ fails — cannot navigate into nested uns
+```
+
+Sub-key structure of nested `uns` entries (e.g. `uns["paga"]["connectivities"]`) is only verifiable via `adata.yaml` in the snapshot.
+
+## Known nft-anndata limitation: passthrough h5ad files
+
+`nft-anndata 0.4.0` tries to open `.h5ad` files when they appear as **staged** files in snapshot serialisation. It does **NOT** open files that were never staged into the Nextflow work directory (e.g., direct references to `/nf-core/test-datasets/...`).
+
+**What triggers HDF5 read** (fails on unstaged files):
+- `workflow.out.h5ad.toList()` inside a snapshot
+- Explicit `anndata(path).yaml` where path is a passthrough/unstaged file
+
+**What does NOT trigger HDF5 read** (safe for passthrough):
+- `snapshot(workflow.out)` — passthrough paths are serialised as raw strings
+- `workflow.out.h5ad.size()` — only counts elements
+
+For **load_h5ad** (which passes through files from test datasets), use:
+
+```groovy
+then {
+    assert workflow.success
+    assert snapshot(workflow.out).match()
+}
+```
+
+Do NOT use `anndata(workflow.out.h5ad[0][1]).yaml` for passthrough files.
+
+## API references
+
+- **nft-anndata**: [github.com/nictru/nft-anndata](https://github.com/nictru/nft-anndata)
+- **nf-test path API** (yaml, json, md5, linesGzip): [nf-test.com/docs/assertions/files](https://www.nf-test.com/docs/assertions/files/)

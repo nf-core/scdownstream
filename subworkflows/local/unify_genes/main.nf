@@ -6,14 +6,12 @@ workflow UNIFY_GENES {
     ch_h5ad // channel: [ meta, h5ad ]
 
     main:
-    ch_versions = channel.empty()
 
     HUGOUNIFIER_GET(
         ch_h5ad
             .map { meta, h5ad -> [[id: 'hugo-unifier'], meta.id, h5ad] }
             .groupTuple()
     )
-    ch_versions = ch_versions.mix(HUGOUNIFIER_GET.out.versions)
 
     ch_changes = HUGOUNIFIER_GET.out.changes
         .map { _meta, changes -> [changes] }
@@ -32,10 +30,8 @@ workflow UNIFY_GENES {
     HUGOUNIFIER_APPLY (
         ch_changes
     )
-    ch_versions = ch_versions.mix(HUGOUNIFIER_APPLY.out.versions)
     ch_h5ad = HUGOUNIFIER_APPLY.out.h5ad
 
     emit:
-    h5ad     = ch_h5ad     // channel: [ meta, h5ad ]
-    versions = ch_versions // channel: [ versions.yml ]
+    h5ad = ch_h5ad // channel: [ meta, h5ad ]
 }

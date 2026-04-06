@@ -22,8 +22,13 @@ nextflow_process {
         }
 
         then {
+            def adatas = process.out.h5ad[0][1].collect { anndata(it) }
             assert process.success
-            assert snapshot(process.out).match()
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adatas.collect { it.yaml }
+            ).match()
         }
 
     }

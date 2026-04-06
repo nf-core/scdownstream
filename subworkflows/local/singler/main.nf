@@ -3,7 +3,7 @@ include { CELLTYPES_SINGLER      } from '../../../modules/local/celltypes/single
 
 workflow SINGLER {
     take:
-    ch_h5ad      // channel: [ meta, h5ad, symbol_col ]
+    ch_h5ad      // channel: [ meta, h5ad, symbol_col, counts_layer ]
     ch_reference // channel: [ meta, reference ]
 
     main:
@@ -17,13 +17,11 @@ workflow SINGLER {
 
     CELLDEX_FETCHREFERENCE (
         ch_reference.names
-            .map {
-                meta, ref -> {
+            .map { meta, ref ->
                 if (!meta.version) {
                     error "If you specify a celldex reference, you also need to specify a version"
                 }
-                return [meta, ref, meta.version]
-                }
+                [meta, ref, meta.version]
             }
     )
     ch_versions = ch_versions.mix(CELLDEX_FETCHREFERENCE.out.versions)

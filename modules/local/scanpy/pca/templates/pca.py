@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 
+# Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
 import platform
+import argparse
+import shlex
 
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
@@ -18,13 +23,16 @@ sc.settings.n_jobs = int("${task.cpus}")
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 key_added = "${key_added}"
+args = "${args}"
+parser = argparse.ArgumentParser()
+parser.add_argument("--decimals", type=int, default=None)
+params = parser.parse_args(shlex.split(args))
 
 # Run PCA
 sc.pp.pca(adata, random_state=0, key_added=key_added)
 
-# Round to 8 decimal places
-# This ensures hashes are stable
-adata.obsm[key_added] = np.round(adata.obsm[key_added], 8)
+if params.decimals is not None:
+    adata.obsm[key_added] = np.round(adata.obsm[key_added].astype(np.float64), params.decimals)
 
 adata.write_h5ad(f"{prefix}.h5ad")
 df = pd.DataFrame(adata.obsm[key_added], index=adata.obs_names)

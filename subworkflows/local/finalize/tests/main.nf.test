@@ -63,8 +63,18 @@ nextflow_workflow {
         }
 
         then {
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
-            assert snapshot(workflow.out).match()
+            with(adata) {
+                assert "scvi-global-1.0_leiden" in obs.colnames
+                assert "X_scvi" in obsm
+                assert "scvi-global-1.0_paga" in uns
+            }
+            assert snapshot(
+                workflow.out.h5ad,
+                workflow.out.versions.collect { path(it).yaml },
+                adata.yaml
+            ).match()
         }
 
     }
@@ -125,8 +135,13 @@ nextflow_workflow {
         }
 
         then {
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
-            assert snapshot(workflow.out).match()
+            assert snapshot(
+                workflow.out.h5ad,
+                workflow.out.versions.collect { path(it).yaml },
+                adata.yaml
+            ).match()
         }
 
     }
@@ -193,8 +208,13 @@ nextflow_workflow {
         }
 
         then {
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
-            assert snapshot(workflow.out).match()
+            assert snapshot(
+                workflow.out.h5ad,
+                workflow.out.versions.collect { path(it).yaml },
+                adata.yaml
+            ).match()
         }
 
     }

@@ -32,49 +32,64 @@
                 ]
             }
         ],
+        "timestamp": "2026-03-25T15:47:27.037482832",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-10T22:29:55.568090889"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures": {
         "content": [
             {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_liana.h5ad:md5,a1db1b498ec91a03d770887f40624ddf"
+                "liana": "1.6.1",
+                "python": "3.12.12",
+                "scanpy": "1.11.5"
+            },
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "leiden",
+                        "sample"
                     ]
-                ],
-                "1": [
-                    "test_liana.pkl:md5,14582f2e14dcc08038f2bd67241ae5a4"
-                ],
-                "2": [
-                    "versions.yml:md5,44f181a9b2e8bebcda641e7400af14cd"
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_liana.h5ad:md5,a1db1b498ec91a03d770887f40624ddf"
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
                     ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "X_pca"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
                 ],
                 "uns": [
-                    "test_liana.pkl:md5,14582f2e14dcc08038f2bd67241ae5a4"
-                ],
-                "versions": [
-                    "versions.yml:md5,44f181a9b2e8bebcda641e7400af14cd"
+                    "X_pca",
+                    "leiden",
+                    "liana_res",
+                    "log1p",
+                    "neighbors"
                 ]
             }
         ],
+        "timestamp": "2026-03-30T09:51:34.987832204",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-25T17:12:18.187944227"
+        }
     }
 }

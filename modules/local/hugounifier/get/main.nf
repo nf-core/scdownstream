@@ -12,18 +12,13 @@ process HUGOUNIFIER_GET {
 
     output:
     tuple val(meta), path("${meta.id}/*.csv"), emit: changes
-    path ("versions.yml")                    , emit: versions
+    tuple val("${task.process}"), val('hugo-unifier'), eval('hugo-unifier --version | grep -oP "(?<=version )[\\d.]+"'), emit: versions_hugo_unifier, topic: versions
 
     script:
     def namedFiles = [[names].flatten(), [h5ads].flatten()].transpose()
     def input = namedFiles.collect { name, h5ad -> "-i ${name}:${h5ad}" }.join(' ')
     """
     hugo-unifier get -o ${meta.id} ${input}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        hugo-unifier: \$(hugo-unifier --version | grep -oP '(?<=version )[\\d.]+')
-    END_VERSIONS
     """
 
     stub:
@@ -33,7 +28,5 @@ process HUGOUNIFIER_GET {
     for name in ${names.join(' ')}; do
         touch ${meta.id}/\${name}.csv
     done
-
-    touch versions.yml
     """
 }

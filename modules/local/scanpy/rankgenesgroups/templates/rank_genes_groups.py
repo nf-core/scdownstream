@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
 
+# Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
 import json
 import platform
 import base64
 import pickle
+import argparse
+import shlex
+
+import numpy as np
 
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
@@ -21,6 +28,10 @@ sc.settings.n_jobs = int("${task.cpus}")
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 method = "${method}"
+args = "${args}"
+parser = argparse.ArgumentParser()
+parser.add_argument("--decimals", type=int, default=None)
+params = parser.parse_args(shlex.split(args))
 
 filter_col = "${filter_col ?: ''}"
 filter_val = "${filter_val ?: ''}"
@@ -55,6 +66,38 @@ if len(valid_groups) >= 2:
     sc.tl.rank_genes_groups(adata, **kwargs)
 
     rgg_dict = adata.uns["rank_genes_groups"]
+
+    if params.decimals is not None:
+        for key, arr in rgg_dict.items():
+            if not hasattr(arr, 'dtype'):
+                continue
+            if np.issubdtype(arr.dtype, np.floating):
+                rgg_dict[key] = arr.round(params.decimals)
+            elif arr.dtype.names:
+                rounded = np.empty_like(arr)
+                for field in arr.dtype.names:
+                    if np.issubdtype(arr.dtype[field], np.floating):
+                        rounded[field] = np.round(arr[field], params.decimals)
+                    else:
+                        rounded[field] = arr[field]
+                rgg_dict[key] = rounded
+
+        # Re-sort deterministically: score desc, gene name asc to break ties
+        groups = rgg_dict['names'].dtype.names
+        sort_indices = {
+            g: np.lexsort((
+                np.array(rgg_dict['names'][g], dtype=str),
+                -rgg_dict['scores'][g].astype(float)
+            ))
+            for g in groups
+        }
+        for key, arr in rgg_dict.items():
+            if not hasattr(arr, 'dtype') or not arr.dtype.names:
+                continue
+            reordered = np.empty_like(arr)
+            for g in arr.dtype.names:
+                reordered[g] = arr[g][sort_indices[g]]
+            rgg_dict[key] = reordered
 
     pickle.dump(rgg_dict, open(f"{prefix}.pkl", "wb"))
     adata.write_h5ad(f"{prefix}.h5ad")
@@ -96,7 +139,7 @@ else:
     elif len(valid_groups) == 1:
         print(f"Skipping rank_genes_groups computation: only one group has >= 2 samples (group: {valid_groups[0]}).")
     else:
-        print(f"Skipping rank_genes_groups computation: less than 2 valid groups remaining after filtering.")
+        print("Skipping rank_genes_groups computation: less than 2 valid groups remaining after filtering.")
 
 # Versions
 

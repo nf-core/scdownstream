@@ -41,7 +41,12 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            assert snapshot(workflow.out).match()
+            // sample is fully filtered out by SCANPY_FILTER quality thresholds
+            assert workflow.out.h5ad.size() == 0
+            assert snapshot(
+                workflow.out.multiqc_files,
+                workflow.out.versions.collect { path(it).yaml }
+            ).match()
         }
 
     }
@@ -81,7 +86,12 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            assert snapshot(workflow.out).match()
+            // sample is fully filtered out by SCANPY_FILTER quality thresholds
+            assert workflow.out.h5ad.size() == 0
+            assert snapshot(
+                workflow.out.multiqc_files,
+                workflow.out.versions.collect { path(it).yaml }
+            ).match()
         }
 
     }
@@ -119,12 +129,22 @@ nextflow_workflow {
         }
 
         then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+
             assert workflow.success
+            with(adata) {
+                assert "pct_counts_mt" in obs.colnames
+                assert "batch" in obs.colnames
+                assert "label" in obs.colnames
+                assert "condition" in obs.colnames
+                assert "sample" in obs.colnames
+            }
             assert snapshot(
                 workflow.out.multiqc_files,
-                workflow.out.versions,
-                anndata(workflow.out.h5ad[0][1]).n_obs,
-                anndata(workflow.out.h5ad[0][1]).n_vars
+                workflow.out.versions.collect { path(it).yaml },
+                adata.n_obs,
+                adata.n_vars,
+                adata.yaml
             ).match()
         }
 
@@ -205,7 +225,12 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            assert snapshot(workflow.out).match()
+            // sample is fully filtered out by SCANPY_FILTER quality thresholds
+            assert workflow.out.h5ad.size() == 0
+            assert snapshot(
+                workflow.out.multiqc_files,
+                workflow.out.versions.collect { path(it).yaml }
+            ).match()
         }
 
     }

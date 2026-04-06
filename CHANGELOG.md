@@ -9,6 +9,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Added`
 
+- Use topics for software versioning [[#252](https://github.com/nf-core/scdownstream/pull/252)]
 - Added `singleR` module for automated cell type annotation.
 - Added `scDblFinder` module for doublet detection.
 - Added optional `doublet_rate` column in input samplesheet to provide per-sample expected doublet rate for `scDblFinder`.

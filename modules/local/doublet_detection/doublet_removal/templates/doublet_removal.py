@@ -1,6 +1,9 @@
 #!/opt/conda/bin/python
 
+# Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
 import platform
 import base64
 import json
@@ -12,25 +15,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import upsetplot
 import matplotlib
-
-def format_yaml_like(data: dict, indent: int = 0) -> str:
-    """Formats a dictionary to a YAML-like string.
-
-    Args:
-        data (dict): The dictionary to format.
-        indent (int): The current indentation level.
-
-    Returns:
-        str: A string formatted as YAML.
-    """
-    yaml_str = ""
-    for key, value in data.items():
-        spaces = "  " * indent
-        if isinstance(value, dict):
-            yaml_str += f"{spaces}{key}:\\n{format_yaml_like(value, indent + 1)}"
-        else:
-            yaml_str += f"{spaces}{key}: {value}\\n"
-    return yaml_str
+import yaml
 
 adata = ad.read_h5ad("${h5ad}")
 threshold = int("${threshold}")
@@ -61,7 +46,7 @@ versions = {
 }
 
 with open("versions.yml", "w") as f:
-    f.write(format_yaml_like(versions))
+    yaml.dump(versions, f)
 
 if not len(predictions.columns) > 1:
     exit(0)

@@ -26,11 +26,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-01-11T00:11:06.866423309",
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-11T00:11:06.866423309"
+        }
     },
     "Should run without failures": {
         "content": [
@@ -44,7 +44,7 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,58c017cfefdbf98f64f7c76c4592a60d"
+                    "versions.yml:md5,374fc58d78d5ecc45ac7cd4b1c5a4012"
                 ],
                 "h5ad": [
                     [
@@ -55,14 +55,108 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,58c017cfefdbf98f64f7c76c4592a60d"
+                    "versions.yml:md5,374fc58d78d5ecc45ac7cd4b1c5a4012"
+                ]
+            },
+            {
+                "ADATA_PREPCELLXGENE": {
+                    "anndata": "0.12.10",
+                    "numpy": "2.3.5",
+                    "python": "3.13.12",
+                    "scipy": "1.17.1"
+                }
+            },
+            {
+                "n_obs": 23364,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "bbknn-global-0.5:entropy",
+                        "bbknn-global-0.5_leiden",
+                        "bbknn-global-1.0:entropy",
+                        "bbknn-global-1.0_leiden",
+                        "celltypist:Adult_Human_Skin",
+                        "celltypist:Adult_Human_Skin:conf",
+                        "combat-global-0.5:entropy",
+                        "combat-global-0.5_leiden",
+                        "combat-global-1.0:entropy",
+                        "combat-global-1.0_leiden",
+                        "condition",
+                        "harmony-global-0.5:entropy",
+                        "harmony-global-0.5_leiden",
+                        "harmony-global-1.0:entropy",
+                        "harmony-global-1.0_leiden",
+                        "label",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "sample_original",
+                        "scvi-global-0.5:entropy",
+                        "scvi-global-0.5_leiden",
+                        "scvi-global-1.0:entropy",
+                        "scvi-global-1.0_leiden",
+                        "total_counts",
+                        "total_counts_mt"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "intersection"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_bbknn-global_umap",
+                    "X_combat-global_umap",
+                    "X_harmony-global_umap",
+                    "X_scvi-global_umap",
+                    "combat",
+                    "harmony",
+                    "scvi"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "bbknn-global-0.5_characteristic_genes",
+                    "bbknn-global-0.5_paga",
+                    "bbknn-global-1.0_characteristic_genes",
+                    "bbknn-global-1.0_paga",
+                    "combat-global-0.5_characteristic_genes",
+                    "combat-global-0.5_liana",
+                    "combat-global-0.5_paga",
+                    "combat-global-1.0_characteristic_genes",
+                    "combat-global-1.0_liana",
+                    "combat-global-1.0_paga",
+                    "harmony-global-0.5_characteristic_genes",
+                    "harmony-global-0.5_paga",
+                    "harmony-global-1.0_characteristic_genes",
+                    "harmony-global-1.0_paga",
+                    "log1p",
+                    "scvi-global-0.5_characteristic_genes",
+                    "scvi-global-0.5_paga",
+                    "scvi-global-1.0_characteristic_genes",
+                    "scvi-global-1.0_paga"
                 ]
             }
         ],
+        "timestamp": "2026-03-29T12:57:46.020211425",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-20T07:53:16.812111453"
+        }
     }
 }
