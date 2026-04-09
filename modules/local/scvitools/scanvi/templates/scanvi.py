@@ -36,8 +36,9 @@ if reference_model_type == "scanvi":
     model = SCANVI.load_query_data(adata, reference_model_path)
     plan_kwargs['weight_decay'] = 0.0
 else:
+    unlabeled_category = "${unlabeled_category}"
     unique_labels = set(adata.obs["${label_col}"].unique())
-    unique_labels.discard("unknown")
+    unique_labels.discard(unlabeled_category)
 
     if not len(unique_labels) > 1:
         raise ValueError("Not enough labels to run scANVI.")
@@ -46,7 +47,7 @@ else:
         SCVI.prepare_query_anndata(adata, reference_model_path)
         model = SCVI.load(reference_model_path, adata)
         model = SCANVI.from_scvi_model(
-            scvi_model=model, labels_key="${label_col}", unlabeled_category="unknown"
+            scvi_model=model, labels_key="${label_col}", unlabeled_category=unlabeled_category
         )
         plan_kwargs['weight_decay'] = 0.0
     else:
@@ -56,7 +57,7 @@ else:
         categorical_covariates = categorical_covariates.split(",") if categorical_covariates else None
         continuous_covariates = continuous_covariates.split(",") if continuous_covariates else None
 
-        SCANVI.setup_anndata(adata, batch_key="${batch_col}", labels_key="${label_col}", unlabeled_category="${unlabeled_category}",
+        SCANVI.setup_anndata(adata, batch_key="${batch_col}", labels_key="${label_col}", unlabeled_category=unlabeled_category,
                                 categorical_covariate_keys = categorical_covariates,
                                 continuous_covariate_keys = continuous_covariates)
 

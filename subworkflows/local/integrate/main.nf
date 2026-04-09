@@ -94,7 +94,7 @@ workflow INTEGRATE {
                 : methods.contains('scvi')
                     ? SCVITOOLS_SCVI.out.model
                     : [[], []],
-            ["label", "unknown"],
+            ["label", "Unknown"],
             "batch",
             scvi_categorical_covariates,
             scvi_continuous_covariates,

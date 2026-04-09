@@ -14,7 +14,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'test' ],
-                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = 100
@@ -36,7 +36,7 @@ nextflow_process {
                 """
                 input[0] = SCANPY_HVGS.out.h5ad
                 input[1] = [[], []]
-                input[2] = ['leiden', 'unknown']
+                input[2] = ['label', 'Unknown']
                 input[3] = 'sample'
                 input[4] = ''
                 input[5] = ''
@@ -45,19 +45,18 @@ nextflow_process {
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
             assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
             with(adata) {
                 assert "X_emb" in obsm
             }
             assert snapshot(
-                    // Hashes are not stable due to floating point inaccuracies
-                    file(process.out.h5ad[0][1]).name,
-                    file(process.out.model[0][1]).name,
-                    file(process.out.obsm[0]).name,
-                    path(process.out.versions[0]).yaml,
-                    adata.yaml
-                ).match()
+                file(process.out.h5ad[0][1]).name,
+                file(process.out.model[0][1]).name,
+                file(process.out.obsm[0]).name,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
 
     }
@@ -75,7 +74,7 @@ nextflow_process {
                 """
                 input[0] = SCANPY_HVGS.out.h5ad
                 input[1] = [[], []]
-                input[2] = ['leiden', 'unknown']
+                input[2] = ['label', 'Unknown']
                 input[3] = 'sample'
                 input[4] = ''
                 input[5] = ''
@@ -86,6 +85,44 @@ nextflow_process {
         then {
             assert process.success
             assert snapshot(process.out).match()
+        }
+
+    }
+
+    test("Should write label predictions to obs") {
+
+        config './nextflow.config'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_HVGS.out.h5ad
+                input[1] = [[], []]
+                input[2] = ['label', 'Unknown']
+                input[3] = 'batch'
+                input[4] = ''
+                input[5] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "label:scANVI" in obs.colnames
+                assert obs.get("label:scANVI").unique().size() > 1
+            }
+            assert snapshot(
+                file(process.out.h5ad[0][1]).name,
+                file(process.out.model[0][1]).name,
+                file(process.out.obsm[0]).name,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
 
     }

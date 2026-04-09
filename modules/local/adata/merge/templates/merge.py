@@ -51,6 +51,8 @@ for column, dtypes in column_dtypes.items():
     else:
         column_defaults[column] = np.nan if dtypes.copy().pop() == "number" else "unknown"
 
+column_defaults["label"] = "Unknown"
+
 for adata in adatas:
     for col in set(obs_col_intersection).difference(adata.obs.columns):
         adata.obs[col] = column_defaults[col]
@@ -81,7 +83,7 @@ if base_path:
 
     known_labels = adata_base.obs["label"].unique()
     adata_integrate.obs["label"] = adata_integrate.obs["label"].map(
-        lambda x: x if x in known_labels else "unknown"
+        lambda x: x if x in known_labels else "Unknown"
     )
     adata_integrate.write("${prefix}_integrate.h5ad")
 else:

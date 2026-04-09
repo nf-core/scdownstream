@@ -34,9 +34,9 @@ nextflow_pipeline {
                     stable_name,
                     // All files with stable contents
                     stable_path
-                ).match() }
+                ).match() },
+                { assert file("$outputDir/reports/qc-report.html").text.contains("Each integration method run by the pipeline") }
             )
         }
     }
-
 }

@@ -21,7 +21,7 @@
 
 ## Introduction
 
-**nf-core/scdownstream** is a bioinformatics pipeline that can be used to process already quantified single-cell RNA-seq data. It takes a samplesheet and h5ad-, SingleCellExperiment/Seurat- or CSV files as input and performs quality control, integration, dimensionality reduction and clustering. It produces an integrated h5ad and SingleCellExperiment file and an extensive QC report.
+**nf-core/scdownstream** is a bioinformatics pipeline that can be used to process already quantified single-cell RNA-seq data. It takes a samplesheet and H5AD-, SingleCellExperiment/Seurat- or CSV files as input and performs quality control, integration, dimensionality reduction and clustering. It produces an integrated H5AD and SingleCellExperiment file and an extensive QC report.
 
 The pipeline is based on the learnings and implementations from the following pipelines (alphabetical):
 
@@ -35,24 +35,24 @@ The pipeline is based on the learnings and implementations from the following pi
 Steps marked with the boat icon are not yet implemented. For the other steps, the pipeline uses the following tools:
 
 1. Per-sample preprocessing
-   1. Convert all RDS files to h5ad format
+   1. Convert all RDS files to H5AD format
    2. Create filtered matrix (if not provided)
    3. Present QC for raw counts ([`MultiQC`](http://multiqc.info/))
    4. Remove ambient RNA
-      - [decontX](https://bioconductor.org/packages/release/bioc/html/decontX.html)
-      - [soupX](https://cran.r-project.org/web/packages/SoupX/readme/README.html)
-      - [cellbender](https://cellbender.readthedocs.io/en/latest/)
+      - [DecontX](https://bioconductor.org/packages/release/bioc/html/decontX.html)
+      - [SoupX](https://cran.r-project.org/web/packages/SoupX/readme/README.html)
+      - [CellBender](https://cellbender.readthedocs.io/en/latest/)
       - [scAR](https://docs.scvi-tools.org/en/stable/user_guide/models/scar.html)
    5. Apply user-defined QC filters (can be defined per sample in the samplesheet)
    6. Doublet detection (Majority vote possible)
       - [SOLO](https://docs.scvi-tools.org/en/stable/user_guide/models/solo.html)
-      - [scrublet](https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html)
+      - [Scrublet](https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html)
       - [DoubletDetection](https://doubletdetection.readthedocs.io/en/v2.5.2/doubletdetection.doubletdetection.html)
       - [SCDS](https://bioconductor.org/packages/devel/bioc/vignettes/scds/inst/doc/scds.html)
       - [scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html)
    7. Cell cycle scoring ([Tirosh et al. 2015](https://doi.org/10.1038/nature14590))
 2. Sample aggregation
-   1. Merge into a single h5ad file
+   1. Merge into a single H5AD file
    2. Present QC for merged counts ([`MultiQC`](http://multiqc.info/))
    3. Integration
       - [scVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scvi.html)
@@ -62,11 +62,13 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
       - [Combat](https://scanpy.readthedocs.io/en/latest/api/generated/scanpy.pp.combat.html)
       - [Seurat](https://satijalab.org/seurat/articles/integration_introduction)
 3. Cell type annotation
-   - [celltypist](https://www.celltypist.org/)
+   - [CellTypist](https://www.celltypist.org/)
+   - [SingleR](https://www.bioconductor.org/packages/release/bioc/html/SingleR.html)
 4. Clustering and dimensionality reduction
    1. [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html)
    2. [UMAP](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.umap.html)
-5. Create report ([`MultiQC`](http://multiqc.info/))
+5. Create [Quarto](https://quarto.org/) and ([`MultiQC`](http://multiqc.info/))
+   reports
 
 ## Usage
 
@@ -86,7 +88,7 @@ sample3,relative/path/to/sample2.rds
 sample4,/absolute/path/to/sample3.csv
 ```
 
-Each entry represents a h5ad, h5, RDS or CSV file. RDS files may contain any object that can be converted to a SingleCellExperiment using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function.
+Each entry represents a H5AD, H5, RDS or CSV file. RDS files may contain any object that can be converted to a SingleCellExperiment using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function.
 CSV files should contain a matrix with genes as columns and cells as rows. The first column should contain cell names/barcodes.
 
 For `scDblFinder`, you can optionally add a `doublet_rate` column (values between `0` and `1`) to the samplesheet. If omitted, `scDblFinder` estimates the doublet rate internally.
@@ -119,6 +121,7 @@ nf-core/scdownstream was originally written by [Nico Trummer](https://github.com
 
 We thank the following people for their extensive assistance in the development of this pipeline (alphabetical):
 
+- [Erik Fasterius](https://github.com/fasterius)
 - [Fabian Rost](https://github.com/fbnrst)
 - [Fabiola Curion](https://github.com/bio-la)
 - [Gregor Sturm](https://github.com/grst)

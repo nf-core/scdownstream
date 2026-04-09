@@ -62,6 +62,7 @@ workflow NFCORE_SCDOWNSTREAM {
     skip_liana                    //   value: boolean
     skip_rankgenesgroups          //   value: boolean
     base_embeddings               //   value: string
+    base_condition_col            //   value: string
     base_label_col                //   value: string
     cluster_per_label             //   value: boolean
     cluster_global                //   value: boolean
@@ -114,6 +115,7 @@ workflow NFCORE_SCDOWNSTREAM {
         skip_rankgenesgroups,
         base_embeddings,
         base_label_col,
+        base_condition_col,
         cluster_per_label,
         cluster_global,
         clustering_resolutions,
@@ -200,6 +202,7 @@ workflow {
         params.skip_rankgenesgroups,
         params.base_embeddings,
         params.base_label_col,
+        params.base_condition_col,
         params.cluster_per_label,
         params.cluster_global,
         params.clustering_resolutions,

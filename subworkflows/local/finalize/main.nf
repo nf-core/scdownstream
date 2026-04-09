@@ -32,14 +32,17 @@ workflow FINALIZE {
     )
     ch_versions = ch_versions.mix(ADATA_TORDS.out.versions)
 
+    ch_h5ad_cellxgene = channel.empty()
     if (prep_cellxgene) {
         ADATA_PREPCELLXGENE (
             ADATA_EXTEND.out.h5ad
         )
+        ch_h5ad_cellxgene = ADATA_PREPCELLXGENE.out.h5ad
         ch_versions = ch_versions.mix(ADATA_PREPCELLXGENE.out.versions)
     }
 
     emit:
-    h5ad     = ADATA_EXTEND.out.h5ad // channel: [ meta, h5ad ]
-    versions = ch_versions            // channel: [ versions.yml ]
+    h5ad     = ADATA_EXTEND.out.h5ad   // channel: [ meta, h5ad ]
+    h5ad_cellxgene = ch_h5ad_cellxgene // channel : [ meta, h5ad ]
+    versions = ch_versions             // channel: [ versions.yml ]
 }

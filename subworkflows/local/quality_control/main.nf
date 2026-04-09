@@ -251,8 +251,9 @@ workflow QUALITY_CONTROL {
     ch_multiqc_files = ch_multiqc_files.mix(COLLECT_SIZES.out.multiqc_files)
 
     emit:
-    h5ad          = ch_h5ad          // channel: [ meta, h5ad ]
+    h5ad          = ch_h5ad           // channel: [ meta, h5ad ]
+    sizes         = ch_sizes          // channel: [ tsv ]
     obs           = ch_obs_per_sample // channel: [ meta, pkl ]
-    multiqc_files = ch_multiqc_files // channel: [ json ]
-    versions      = ch_versions      // channel: [ versions.yml ]
+    multiqc_files = ch_multiqc_files  // channel: [ json ]
+    versions      = ch_versions       // channel: [ versions.yml ]
 }

@@ -51,14 +51,24 @@ nextflow_process {
             def adata_outer = anndata(process.out.outer[0][1])
             def adata_inner = anndata(process.out.inner[0][1])
             def adata_integrate = anndata(process.out.integrate[0][1])
-            assert process.success
-            assert snapshot(
-                process.out,
-                path(process.out.versions[0]).yaml,
-                adata_outer.yaml,
-                adata_inner.yaml,
-                adata_integrate.yaml
-            ).match()
+            assertAll(
+                { assert process.success },
+                {
+                    assert snapshot(
+                        process.out,
+                        path(process.out.versions[0]).yaml,
+                        adata_outer.yaml,
+                        adata_inner.yaml,
+                        adata_integrate.yaml
+                    ).match()
+                },
+                {
+                    with(adata_inner) {
+                        assert "label" in obs.colnames
+                        assert obs.get("label").unique().every { it == "Unknown" }
+                    }
+                }
+            )
         }
 
     }
@@ -108,14 +118,24 @@ nextflow_process {
             def adata_outer = anndata(process.out.outer[0][1])
             def adata_inner = anndata(process.out.inner[0][1])
             def adata_integrate = anndata(process.out.integrate[0][1])
-            assert process.success
-            assert snapshot(
-                process.out,
-                path(process.out.versions[0]).yaml,
-                adata_outer.yaml,
-                adata_inner.yaml,
-                adata_integrate.yaml
-            ).match()
+            assertAll(
+                { assert process.success },
+                {
+                    assert snapshot(
+                        process.out,
+                        path(process.out.versions[0]).yaml,
+                        adata_outer.yaml,
+                        adata_inner.yaml,
+                        adata_integrate.yaml
+                    ).match()
+                },
+                {
+                    with(adata_integrate) {
+                        assert "label" in obs.colnames
+                        assert obs.get("label").unique().every { it == "Unknown" }
+                    }
+                }
+            )
         }
 
     }

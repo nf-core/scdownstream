@@ -111,6 +111,10 @@
                     "python": "3.13.12",
                     "scanpy": "1.12"
                 },
+                "QC_REPORT": {
+                    "papermill": "2.7.0",
+                    "quarto": "1.8.27"
+                },
                 "SCANPY_BBKNN": {
                     "bbknn": "1.6.0",
                     "pandas": "2.3.3",
@@ -280,13 +284,30 @@
                 "quality_control/qc_raw/SRR28679757_raw_total_counts_vs_n_genes_by_counts.png",
                 "quality_control/qc_raw/SRR28679758_raw_total_counts_vs_n_genes_by_counts.png",
                 "quality_control/sizes",
-                "quality_control/sizes/sizes.tsv"
+                "quality_control/sizes/sizes.tsv",
+                "reports",
+                "reports/_extensions",
+                "reports/_extensions/nf-core",
+                "reports/_extensions/nf-core/_extension.yml",
+                "reports/_extensions/nf-core/nf-core-scdownstream_logo_light.png",
+                "reports/_extensions/nf-core/nf-core.scss",
+                "reports/_extensions/nf-core/nf-core.theme",
+                "reports/_extensions/nf-core/toc.html",
+                "reports/params.yml",
+                "reports/qc-report.html",
+                "reports/qc-report.qmd"
             ],
             [
-                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
+                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
+                "_extension.yml:md5,1771443b5d44c88feb54a56c5a9a2319",
+                "nf-core.scss:md5,b9826d146ce24fe3d3c51bfd4e450baa",
+                "nf-core.theme:md5,ac9559ae18b3f513cf7a5419e4a69c24",
+                "toc.html:md5,fe6831ffaecfb53058310943d42942ca",
+                "params.yml:md5,1b2f06e328f9635998c2401a89c501ec",
+                "qc-report.qmd:md5,1f56aafa1a5ca0b10d27f0db34a5c2ff"
             ]
         ],
-        "timestamp": "2026-04-01T23:42:09.08374",
+        "timestamp": "2026-04-09T18:54:44.847487",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
