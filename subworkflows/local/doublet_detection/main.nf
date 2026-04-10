@@ -17,12 +17,6 @@ workflow DOUBLET_DETECTION {
     ch_multiqc_files = channel.empty()
     ch_predictions = channel.empty()
 
-    valid_methods = ['scds', 'solo', 'scrublet', 'doubletdetection', 'scdblfinder']
-    unknown_methods = methods.findAll { method -> !(method in valid_methods) }
-    if (unknown_methods) {
-        error "DOUBLET_DETECTION: Unsupported methods '${unknown_methods.join(', ')}'. Valid methods: ${valid_methods.join(', ')}."
-    }
-
     if (methods.size() == 0) {
         log.info("DOUBLET_DETECTION: Not performed since no methods selected.")
     } else {
