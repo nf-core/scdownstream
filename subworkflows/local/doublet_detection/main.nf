@@ -21,7 +21,7 @@ workflow DOUBLET_DETECTION {
         log.info("DOUBLET_DETECTION: Not performed since no methods selected.")
     } else {
         ch_batch_col = ch_h5ad.map { meta, _h5ad -> meta.batch_col }
-        ch_h5ad_scdblfinder = ch_h5ad.map { meta, h5ad -> [meta, h5ad, meta.doublet_rate, meta.batch_col ?: []] }
+        ch_h5ad_scdblfinder = ch_h5ad.map { meta, h5ad -> [meta, h5ad, meta.doublet_rate, meta.batch_col] }
 
         if (methods.contains('scds')) {
             SCDS (
