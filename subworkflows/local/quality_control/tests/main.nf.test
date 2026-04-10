@@ -41,8 +41,7 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            // sample is fully filtered out by SCANPY_FILTER quality thresholds
-            assert workflow.out.h5ad.size() == 0
+            assert workflow.out.h5ad.size() == 1
             assert snapshot(
                 workflow.out.multiqc_files,
                 workflow.out.versions.collect { path(it).yaml }
@@ -86,8 +85,7 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            // sample is fully filtered out by SCANPY_FILTER quality thresholds
-            assert workflow.out.h5ad.size() == 0
+            assert workflow.out.h5ad.size() == 1
             assert snapshot(
                 workflow.out.multiqc_files,
                 workflow.out.versions.collect { path(it).yaml }
@@ -225,8 +223,7 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            // sample is fully filtered out by SCANPY_FILTER quality thresholds
-            assert workflow.out.h5ad.size() == 0
+            assert workflow.out.h5ad.size() == 1
             assert snapshot(
                 workflow.out.multiqc_files,
                 workflow.out.versions.collect { path(it).yaml }
