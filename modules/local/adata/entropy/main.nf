@@ -4,8 +4,8 @@ process ADATA_ENTROPY {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/fd/fd27aeaf160eaba9a58c029e08f1da74051aa292c2fb043a5dd68fddcde3af93/data':
-        'community.wave.seqera.io/library/pyyaml_scanpy:3c9e9f631f45553d' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/45/45339bf761a2cf0cdb058492bc37f3df8b05b363731d491d1d3a14e9ba0b8f55/data':
+        'community.wave.seqera.io/library/harmonypy_anndata_leidenalg_numpy_pruned:43066d5f86f18261' }"
 
     input:
     tuple val(meta), path(h5ad)
@@ -17,11 +17,12 @@ process ADATA_ENTROPY {
     path "${prefix}.pkl"                   , emit: obs
     path "${prefix}.png"                   , emit: plots, optional: true
     path "${prefix}_mqc.json"              , emit: multiqc_files, optional: true
-    path "versions.yml"                    , emit: versions
+    path "versions.yml"                    , emit: versions, topic: versions
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}_entropy"
     plot_basis = task.ext.plot_basis ?: null
+    args = task.ext.args ?: ''
     template 'entropy.py'
 
     stub:

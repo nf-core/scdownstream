@@ -69,7 +69,6 @@ workflow AMBIENT_CORRECTION {
         CELLBENDER_REMOVEBACKGROUND (
             ch_multi.input
                 .map { meta, _filtered, unfiltered -> [meta, unfiltered] })
-        ch_versions = ch_versions.mix(CELLBENDER_REMOVEBACKGROUND.out.versions)
 
         CELLBENDER_MERGE (
             ch_multi.input
@@ -86,7 +85,6 @@ workflow AMBIENT_CORRECTION {
             ch_multi.output_layer
         )
         ch_h5ad = ch_h5ad.mix(CELLBENDER_MERGE.out.h5ad)
-        ch_versions = ch_versions.mix(CELLBENDER_MERGE.out.versions)
     }
     else if (method == 'soupx') {
         SOUPX (

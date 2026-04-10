@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import argparse
+import shlex
 import os
 import platform
 import yaml
@@ -7,6 +9,7 @@ import yaml
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
+import numpy as np
 import pandas as pd
 import scanpy as sc
 import liana as li
@@ -14,6 +17,11 @@ import liana as li
 from threadpoolctl import threadpool_limits
 
 threadpool_limits(int("${task.cpus}"))
+
+args = "${args}"
+parser = argparse.ArgumentParser()
+parser.add_argument("--decimals", type=int, default=None)
+params = parser.parse_args(shlex.split(args))
 
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
@@ -27,6 +35,10 @@ if adata.obs[obs_key].nunique() > 1:
             adata, obs_key, use_raw=False, verbose=True, n_jobs=int("${task.cpus}")
         )
         df: pd.DataFrame = adata.uns["liana_res"]
+
+        if params.decimals is not None:
+            float_cols = df.select_dtypes(include=np.floating).columns
+            df[float_cols] = df[float_cols].round(params.decimals)
 
         df.to_pickle(f"{prefix}.pkl")
         adata.write_h5ad(f"{prefix}.h5ad")

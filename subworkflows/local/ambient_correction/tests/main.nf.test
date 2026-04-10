@@ -29,7 +29,11 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            assert snapshot(workflow.out).match()
+            assert workflow.out.h5ad.size() == 1
+            assert snapshot(
+                workflow.out.versions,
+                workflow.out.h5ad.size()
+            ).match()
         }
 
     }
@@ -82,7 +86,11 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            assert snapshot(workflow.out).match()
+            assert workflow.out.h5ad.size() == 1
+            assert snapshot(
+                workflow.out.versions,
+                workflow.out.h5ad.size()
+            ).match()
         }
 
     }
@@ -108,13 +116,14 @@ nextflow_workflow {
         }
 
         then {
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
+
+            assert "ambient_corrected_decontx" in adata.layers
+
             assert snapshot(
-                // Hashing does not work due to this issue:
-                // https://github.com/scverse/anndataR/issues/272
                 workflow.out.versions,
-                file(workflow.out.h5ad.get(0).get(1)).name,
-                anndata(workflow.out.h5ad[0][1]).layers
+                adata.yaml
             ).match()
         }
 
@@ -141,13 +150,14 @@ nextflow_workflow {
         }
 
         then {
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
+
+            assert "ambient_corrected_decontx" in adata.layers
+
             assert snapshot(
-                // Hashing does not work due to this issue:
-                // https://github.com/scverse/anndataR/issues/272
                 workflow.out.versions,
-                file(workflow.out.h5ad.get(0).get(1)).name,
-                anndata(workflow.out.h5ad[0][1]).layers
+                adata.yaml
             ).match()
         }
 
@@ -174,13 +184,14 @@ nextflow_workflow {
         }
 
         then {
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
+
+            assert "ambient_corrected_soupx" in adata.layers
+
             assert snapshot(
-                // Hashing does not work due to this issue:
-                // https://github.com/scverse/anndataR/issues/272
                 workflow.out.versions,
-                file(workflow.out.h5ad.get(0).get(1)).name,
-                anndata(workflow.out.h5ad[0][1]).layers
+                adata.yaml
             ).match()
         }
 
@@ -208,11 +219,14 @@ nextflow_workflow {
         }
 
         then {
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
+
+            assert "ambient_corrected_scar" in adata.layers
+
             assert snapshot(
                 workflow.out.versions,
-                file(workflow.out.h5ad.get(0).get(1)).name,
-                anndata(workflow.out.h5ad[0][1]).layers
+                adata.yaml
             ).match()
         }
 
@@ -239,10 +253,14 @@ nextflow_workflow {
         }
 
         then {
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
+
+            assert "ambient_corrected_cellbender" in adata.layers
+
             assert snapshot(
-                workflow.out,
-                anndata(workflow.out.h5ad[0][1]).layers
+                workflow.out.versions,
+                adata.yaml
             ).match()
         }
 
@@ -263,19 +281,19 @@ nextflow_workflow {
                     ]
                 )
                 input[1] = 'decontx'
-                input[2] = false
+                input[2] = true
                 """
             }
         }
 
         then {
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
+            // output written to X, so no named decontx layer
+            assert !("ambient_corrected_decontx" in adata.layers)
             assert snapshot(
-                // Hashing does not work due to this issue:
-                // https://github.com/scverse/anndataR/issues/272
                 workflow.out.versions,
-                file(workflow.out.h5ad.get(0).get(1)).name,
-                anndata(workflow.out.h5ad[0][1]).layers
+                adata.yaml
             ).match()
         }
 
@@ -296,19 +314,19 @@ nextflow_workflow {
                     ]
                 )
                 input[1] = 'soupx'
-                input[2] = false
+                input[2] = true
                 """
             }
         }
 
         then {
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
+            // output written to X, so no named soupx layer
+            assert !("ambient_corrected_soupx" in adata.layers)
             assert snapshot(
-                // Hashing does not work due to this issue:
-                // https://github.com/scverse/anndataR/issues/272
                 workflow.out.versions,
-                file(workflow.out.h5ad.get(0).get(1)).name,
-                anndata(workflow.out.h5ad[0][1]).layers
+                adata.yaml
             ).match()
         }
 
@@ -330,17 +348,19 @@ nextflow_workflow {
                     ]
                 )
                 input[1] = 'scar'
-                input[2] = false
+                input[2] = true
                 """
             }
         }
 
         then {
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
+            // output written to X, so no named scar layer
+            assert !("ambient_corrected_scar" in adata.layers)
             assert snapshot(
                 workflow.out.versions,
-                file(workflow.out.h5ad.get(0).get(1)).name,
-                anndata(workflow.out.h5ad[0][1]).layers
+                adata.yaml
             ).match()
         }
 
@@ -361,16 +381,19 @@ nextflow_workflow {
                     ]
                 )
                 input[1] = 'cellbender'
-                input[2] = false
+                input[2] = true
                 """
             }
         }
 
         then {
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
+            // output written to X, so no named cellbender layer
+            assert !("ambient_corrected_cellbender" in adata.layers)
             assert snapshot(
-                workflow.out,
-                anndata(workflow.out.h5ad[0][1]).layers
+                workflow.out.versions,
+                adata.yaml
             ).match()
         }
 

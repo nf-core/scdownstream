@@ -67,8 +67,13 @@ nextflow_workflow {
         }
 
         then {
+            def adata = anndata(workflow.out.integrations[0][1])
             assert workflow.success
-            assert snapshot(workflow.out).match()
+            assert "X_emb" in adata.obsm
+            assert snapshot(
+                workflow.out.versions,
+                adata.yaml
+            ).match()
         }
 
     }
@@ -133,8 +138,17 @@ nextflow_workflow {
         }
 
         then {
+            def adata = anndata(workflow.out.integrations[0][1])
             assert workflow.success
-            assert snapshot(workflow.out).match()
+            with(adata) {
+                assert "X_pca" in obsm
+                assert "connectivities" in obsp
+                assert "distances" in obsp
+            }
+            assert snapshot(
+                workflow.out.versions,
+                adata.yaml
+            ).match()
         }
 
     }
@@ -199,8 +213,13 @@ nextflow_workflow {
         }
 
         then {
+            def adata = anndata(workflow.out.integrations[0][1])
             assert workflow.success
-            assert snapshot(workflow.out).match()
+            assert "X_emb" in adata.obsm
+            assert snapshot(
+                workflow.out.versions,
+                adata.yaml
+            ).match()
         }
 
     }

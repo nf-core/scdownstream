@@ -6,11 +6,11 @@ library(Seurat)
 
 # Read the AnnData objects and convert directly to Seurat
 adata <- read_h5ad("${h5ad}")
-seu <- adata\$as_Seurat()
+seu <- adata\$as_Seurat(x_mapping = "counts")
 
 # Read the raw AnnData object
 adata_raw <- read_h5ad("${raw}")
-seu_raw <- adata_raw\$as_Seurat()
+seu_raw <- adata_raw\$as_Seurat(x_mapping = "counts")
 
 # Get layer to use (default to "X" if not specified)
 use_layer <- "${input_layer}"
@@ -27,7 +27,6 @@ if (use_layer != "X") {
 }
 
 # Preprocessing with Seurat workflow
-seu <- seu
 seu <- NormalizeData(seu)
 seu <- FindVariableFeatures(seu)
 seu <- ScaleData(seu)
@@ -37,8 +36,8 @@ seu <- FindClusters(seu, resolution = ${cluster_resolution})
 soupx_groups <- Idents(seu)
 
 # Create SoupChannel
-data <- GetAssayData(seu, slot = "counts")
-data_raw <- GetAssayData(seu_raw, slot = "counts")
+data <- GetAssayData(seu, layer = "counts")
+data_raw <- GetAssayData(seu_raw, layer = "counts")
 sc <- SoupChannel(data_raw, data, calcSoupProfile = FALSE)
 
 # Set soup profile - following SoupX vignette approach

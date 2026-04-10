@@ -30,7 +30,8 @@ nextflow_process {
                 input[0] = channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        "index"
+                        "index",
+                        "X"
                     ]
                 )
                 input[1] = CELLDEX_FETCHREFERENCE.out.tar.map { meta, ref -> [[id: "test"], [meta.id], [meta.label], [ref]] }
@@ -39,12 +40,20 @@ nextflow_process {
         }
 
         then {
+            def predictions = path(process.out.obs[0][1]).csv
             assert process.success
+            with(predictions) {
+                assert rowCount > 0
+                assert columnNames.any { it.endsWith("labels_test") }
+                assert columnNames.any { it.endsWith("pruned.labels_test") }
+            }
+            assert process.out.distribution.size() == 1
+            assert process.out.heatmap.size() == 1
             assert snapshot(
                 process.out.obs,
                 file(process.out.distribution[0][1]).name,
                 file(process.out.heatmap[0][1]).name,
-                process.out.versions
+                path(process.out.versions[0]).yaml
             ).match()
         }
 
@@ -61,7 +70,8 @@ nextflow_process {
                 input[0] = channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        "index"
+                        "index",
+                        "X"
                     ]
                 )
                 input[1] = [
@@ -77,12 +87,20 @@ nextflow_process {
         }
 
         then {
+            def predictions = path(process.out.obs[0][1]).csv
             assert process.success
+            with(predictions) {
+                assert rowCount > 0
+                assert columnNames.any { it.endsWith("labels_hpca") }
+                assert columnNames.any { it.endsWith("pruned.labels_hpca") }
+            }
+            assert process.out.distribution.size() == 1
+            assert process.out.heatmap.size() == 1
             assert snapshot(
                 process.out.obs,
                 file(process.out.distribution[0][1]).name,
                 file(process.out.heatmap[0][1]).name,
-                process.out.versions
+                path(process.out.versions[0]).yaml
             ).match()
         }
 
@@ -99,7 +117,8 @@ nextflow_process {
                 input[0] = channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        "symbols"
+                        "symbols",
+                        "X"
                     ]
                 )
                 input[1] = [
@@ -115,12 +134,20 @@ nextflow_process {
         }
 
         then {
+            def predictions = path(process.out.obs[0][1]).csv
             assert process.success
+            with(predictions) {
+                assert rowCount > 0
+                assert columnNames.any { it.endsWith("labels_hpca") }
+                assert columnNames.any { it.endsWith("pruned.labels_hpca") }
+            }
+            assert process.out.distribution.size() == 1
+            assert process.out.heatmap.size() == 1
             assert snapshot(
                 process.out.obs,
                 file(process.out.distribution[0][1]).name,
                 file(process.out.heatmap[0][1]).name,
-                process.out.versions
+                path(process.out.versions[0]).yaml
             ).match()
         }
 
@@ -137,7 +164,8 @@ nextflow_process {
                 input[0] = channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        "not_a_column"
+                        "not_a_column",
+                        "X"
                     ]
                 )
                 input[1] = [
@@ -169,7 +197,8 @@ nextflow_process {
                 input[0] = channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        "index"
+                        "index",
+                        "X"
                     ]
                 )
                 input[1] = [
@@ -186,13 +215,22 @@ nextflow_process {
         }
 
         then {
+            def predictions = path(process.out.obs[0][1]).csv
             assert process.success
+            with(predictions) {
+                assert rowCount > 0
+                // one set of label columns per reference
+                assert columnNames.any { it.endsWith("labels_hpca") }
+                assert columnNames.any { it.endsWith("pruned.labels_hpca") }
+                assert columnNames.any { it.endsWith("labels_monaco_immune") }
+                assert columnNames.any { it.endsWith("pruned.labels_monaco_immune") }
+            }
+            // one distribution and heatmap pdf per reference
+            assert process.out.distribution[0][1].size() == 2
+            assert process.out.heatmap[0][1].size() == 2
             assert snapshot(
                 process.out.obs,
-                // Cannot capture names because there are multiple files
-                // file(process.out.distribution[0][1]).name,
-                // file(process.out.heatmap[0][1]).name,
-                process.out.versions
+                path(process.out.versions[0]).yaml
             ).match()
         }
 
@@ -211,7 +249,8 @@ nextflow_process {
                 input[0] = channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        "index"
+                        "index",
+                        "X"
                     ]
                 )
                 input[1] = [

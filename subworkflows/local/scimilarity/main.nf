@@ -16,7 +16,7 @@ workflow SCIMILARITY {
     ch_scimilarity_model = channel.value(
         [
             [id: 'scimilarity_model'],
-            file(scimilarity_model),
+            file(scimilarity_model, checkIfExists: true),
         ]
     )
 
@@ -28,7 +28,6 @@ workflow SCIMILARITY {
         UNTAR (
             ch_scimilarity_model
         )
-        ch_versions = ch_versions.mix(UNTAR.out.versions)
         ch_scimilarity_model = UNTAR.out.untar
     }
 

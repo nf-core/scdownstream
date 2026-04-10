@@ -9,6 +9,8 @@ nextflow_process {
 
     test("Should run without failures") {
 
+        config './nextflow.config'
+
         when {
             params {
                 outdir = "$outputDir"
@@ -26,11 +28,16 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-            { assert process.success },
-            { assert snapshot(process.out).match() },
-            { assert "X_pca" in anndata(process.out.h5ad[0][1]).obsm }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+
+            assert process.success
+            assert "X_pca" in adata.obsm
+            assert "X_pca" in adata.uns
+
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
 
     }
@@ -56,10 +63,9 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-            { assert process.success },
-            { assert snapshot(process.out).match() }
-            )
+            assert process.success
+
+            assert snapshot(process.out).match()
         }
 
     }

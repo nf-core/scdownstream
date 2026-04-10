@@ -4,16 +4,16 @@ process ADATA_UPSETGENES {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'oras://community.wave.seqera.io/library/scanpy_upsetplot:962fb86ff4f03aa4'
-        : 'community.wave.seqera.io/library/scanpy_upsetplot:1ce883f3ff369ca8'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/45/45339bf761a2cf0cdb058492bc37f3df8b05b363731d491d1d3a14e9ba0b8f55/data'
+        : 'community.wave.seqera.io/library/harmonypy_anndata_leidenalg_numpy_pruned:43066d5f86f18261'}"
 
     input:
     tuple val(meta), val(names), path(h5ads)
 
     output:
     tuple val(meta), path("*.png"), emit: plot, optional: true
-    path ("*_mqc.json"), emit: multiqc_files, optional: true
-    path "versions.yml", emit: versions
+    path ("*_mqc.json")           , emit: multiqc_files, optional: true
+    path "versions.yml"           , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when

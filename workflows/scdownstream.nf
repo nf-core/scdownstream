@@ -8,6 +8,7 @@ include { LOAD_H5AD                            } from '../subworkflows/local/loa
 include { QUALITY_CONTROL                      } from '../subworkflows/local/quality_control'
 include { CELLTYPE_ASSIGNMENT                  } from '../subworkflows/local/celltype_assignment'
 include { ADATA_EXTEND as FINALIZE_QC_ANNDATAS } from '../modules/local/adata/extend'
+include { QUARTONOTEBOOK as QC_REPORT          } from '../modules/nf-core/quartonotebook'
 include { COMBINE                              } from '../subworkflows/local/combine'
 include { ADATA_SPLITEMBEDDINGS                } from '../modules/local/adata/splitembeddings'
 include { CLUSTER                              } from '../subworkflows/local/cluster'
@@ -62,6 +63,7 @@ workflow SCDOWNSTREAM {
     skip_rankgenesgroups          //   value: boolean
     base_embeddings               //   value: string
     base_label_col                //   value: string
+    base_condition_col            //   value: string
     cluster_per_label             //   value: boolean
     cluster_global                //   value: boolean
     clustering_resolutions        //   value: string
@@ -134,7 +136,7 @@ workflow SCDOWNSTREAM {
         // Perform automated celltype assignment
         //
         CELLTYPE_ASSIGNMENT (
-            ch_h5ad.map { meta, h5ad -> [meta, h5ad, meta.symbol_col] },
+            ch_h5ad.map { meta, h5ad -> [meta, h5ad, meta.symbol_col, meta.counts_layer ?: "X"] },
             celldex_reference,
             celltypist_model
         )
@@ -213,8 +215,8 @@ workflow SCDOWNSTREAM {
 
         ch_finalization_base = ch_base
         ch_label_grouping = ch_base
-        grouping_col = params.base_label_col
-        condition_col = params.base_condition_col
+        grouping_col = base_label_col
+        condition_col = base_condition_col
     }
 
     //
@@ -292,6 +294,36 @@ workflow SCDOWNSTREAM {
     }
 
     //
+    // Render quality control report
+    //
+    qc_report_notebook = file("${projectDir}/bin/qc-report.qmd", checkIfExists: true)
+    extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
+    if (!qc_only) {
+        ch_qc_report_input_base = FINALIZE.out.h5ad
+    } else {
+        ch_qc_report_input_base = ch_h5ad
+    }
+    if (ch_input) {
+        ch_sizes = QUALITY_CONTROL.out.sizes.map { _meta, tsv -> tsv }
+    } else {
+        ch_sizes = channel.empty()
+    }
+    ch_qc_report_input_data = ch_qc_report_input_base
+        .map { _meta, h5ad -> h5ad }
+        .mix ( ch_sizes )
+        .collect()
+    qc_report_params = [
+        qc_only: qc_only,
+        has_input: ch_input != null
+    ]
+    QC_REPORT (
+        [[id: 'qc-report'], qc_report_notebook],
+        qc_report_params,
+        ch_qc_report_input_data,
+        extensions
+    )
+
+    //
     // Collate and save software versions
     //
     def topic_versions = channel.topic("versions")
@@ -324,16 +356,9 @@ workflow SCDOWNSTREAM {
     //
     // MODULE: MultiQC
     //
-    ch_multiqc_config = channel.fromPath(
-        "${projectDir}/assets/multiqc_config.yml",
-        checkIfExists: true
-    )
-    ch_multiqc_custom_config = multiqc_config
-        ? channel.fromPath(multiqc_config, checkIfExists: true)
-        : channel.empty()
-    ch_multiqc_logo = multiqc_logo
-        ? channel.fromPath(multiqc_logo, checkIfExists: true)
-        : channel.empty()
+    def mqc_config  = file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true)
+    def mqc_configs = multiqc_config ? [mqc_config, file(multiqc_config, checkIfExists: true)] : [mqc_config]
+    def mqc_logo    = multiqc_logo   ? file(multiqc_logo, checkIfExists: true) : []
 
     summary_params      = paramsSummaryMap(
         workflow,
@@ -357,14 +382,11 @@ workflow SCDOWNSTREAM {
     )
 
     MULTIQC (
-        ch_multiqc_files.collect(),
-        ch_multiqc_config.toList(),
-        ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList(),
-        [],
-        [],
+        ch_multiqc_files
+            .collect()
+            .map { files -> [[id: 'multiqc'], files, mqc_configs, mqc_logo, [], []] }
     )
-    ch_multiqc_report = MULTIQC.out.report.toList()
+    ch_multiqc_report = MULTIQC.out.report.map { _meta, report -> report }.toList()
 
     emit:
     multiqc_report = ch_multiqc_report // channel: [ path(multiqc_report.html) ]

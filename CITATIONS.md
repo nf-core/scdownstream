@@ -52,7 +52,12 @@
   > Wolf, F. A., Angerer, P., & Theis, F. J. (2018). SCANPY: large-scale single-cell gene expression data analysis. Genome biology, 19(1), 15. https://doi.org/10.1186/s13059-017-1382-0
 
 - [scarches](https://pypi.org/project/scArches/)
+
   > Lotfollahi, M., Naghipourfar, M., Luecken, M.D. et al. Mapping single-cell data to reference atlases by transfer learning. Nat Biotechnol 40, 121–130 (2022). https://doi.org/10.1038/s41587-021-01001-7
+
+- [scDblFinder](https://pubmed.ncbi.nlm.nih.gov/35118618/)
+
+  > Germain P, Lun A, Garcia Meixide C, Macnair W, Robinson M. Doublet identification in single-cell sequencing data using scDblFinder. F1000Res. 2022;11:979. doi: 10.12688/f1000research.73600.2.
 
 ## Software packaging/containerisation tools
 

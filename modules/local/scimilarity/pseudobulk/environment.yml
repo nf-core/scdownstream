@@ -2,10 +2,12 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - conda-forge::gcc=14.2.0
-  - conda-forge::gxx=14.2.0
-  - conda-forge::pyyaml=6.0.2
-  - conda-forge::zarr=2.18.4
+  - conda-forge::python==3.12
+  - conda-forge::anndata==0.12.10
+  - conda-forge::pyyaml==6.0.3
+  - conda-forge::zarr==2.18.7
+  - conda-forge::numcodecs==0.15.1
+  - conda-forge::hnswlib==0.8.0
   - pip
   - pip:
-      - scimilarity==0.3.0
+      - scimilarity==0.4.1

@@ -9,8 +9,8 @@ process SCDS {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    tuple val(meta), path("${prefix}.csv"), emit: predictions
-    path "versions.yml", emit: versions
+    tuple val(meta), path("${prefix}.csv") , emit: predictions
+    path "versions.yml"                    , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when

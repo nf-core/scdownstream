@@ -29,15 +29,47 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-            { assert process.success },
-            { assert snapshot(
-                // Hashing does not work due to this issue:
-                // https://github.com/scverse/anndataR/issues/272
-                process.out.versions,
-                file(process.out.h5ad.get(0).get(1)).exists()
-            ).match() }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            // output written to X, so no named soupx layer
+            assert !("ambient_corrected_soupx" in adata.layers)
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should write to a custom output layer") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 0.8
+                input[2] = "X"
+                input[3] = "ambient_corrected_soupx"
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert "ambient_corrected_soupx" in adata.layers
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
 
     }
@@ -66,10 +98,8 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-            { assert process.success },
-            { assert snapshot(process.out).match() }
-            )
+            assert process.success
+            assert snapshot(process.out).match()
         }
 
     }

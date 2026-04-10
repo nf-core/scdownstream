@@ -5,8 +5,8 @@ process SCIMILARITY_ANNOTATE {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'oras://community.wave.seqera.io/library/gcc_gxx_pyyaml_zarr_pruned:049c63c0e0a999fa'
-        : 'community.wave.seqera.io/library/gcc_gxx_pyyaml_zarr_pruned:8912afd95c57731a'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0b/0b07b44946319f0a77889ca315e4a48bef70c67bae06ce2603039a4995c75f0a/data'
+        : 'community.wave.seqera.io/library/anndata_hnswlib_numcodecs_python_pruned:3f8ef15250e4fea7'}"
 
     input:
     tuple val(meta), path(h5ad)
@@ -14,8 +14,8 @@ process SCIMILARITY_ANNOTATE {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path ("${prefix}.pkl"), emit: obs
-    path "versions.yml", emit: versions
+    path ("${prefix}.pkl")                 , emit: obs
+    path "versions.yml"                    , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when

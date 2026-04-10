@@ -1,7 +1,6 @@
 {
     "Should process data from scratch": {
         "content": [
-            60,
             {
                 "ADATA_READRDS": {
                     "anndata": "0.11.1",
@@ -11,15 +10,15 @@
                     "seurat": "5.1.0"
                 },
                 "ADATA_UNIFY": {
-                    "anndata": "0.12.7",
-                    "numpy": "2.4.0",
-                    "python": "3.13.11",
-                    "scipy": "1.16.3"
+                    "anndata": "0.12.10",
+                    "numpy": "2.3.5",
+                    "python": "3.13.12",
+                    "scipy": "1.17.1"
                 },
                 "CELDA_DECONTX": {
-                    "r": "4.4.3",
-                    "anndataR": "0.99.0",
-                    "celda": "1.22.0"
+                    "r": "4.5.3",
+                    "anndataR": "1.0.2",
+                    "celda": "1.26.0"
                 },
                 "CELLDEX_FETCHREFERENCE": {
                     "R": "R version 4.4.1 (2024-06-14)",
@@ -35,35 +34,28 @@
                     "celltypist": "1.6.3"
                 },
                 "CELLTYPES_SINGLER": {
-                    "R": "R version 4.4.1 (2024-06-14)",
-                    "SingleR": "2.8.0",
-                    "celldex": "1.16.0",
-                    "anndataR": "0.99.0",
-                    "yaml": "2.3.10",
-                    "Seurat": "5.1.0",
-                    "ggplot2": "3.5.2"
+                    "R": "R version 4.5.3 (2026-03-11)",
+                    "SingleR": "2.12.0",
+                    "celldex": "1.20.0",
+                    "anndataR": "1.0.2",
+                    "ggplot2": "4.0.2"
                 },
                 "COLLECT_SIZES": {
-                    "python": "3.13.0",
-                    "pandas": "2.2.3"
-                },
-                "DOUBLETDETECTION": {
-                    "anndata": "0.11.4",
-                    "doubletdetection": "4.3.0.post1",
-                    "python": "3.13.3"
+                    "pandas": "2.3.3",
+                    "python": "3.13.12"
                 },
                 "DOUBLET_REMOVAL": {
-                    "python": "3.13.1",
-                    "anndata": "0.11.1",
-                    "pandas": "2.2.3",
-                    "matplotlib": "3.10.0",
+                    "anndata": "0.12.10",
+                    "matplotlib": "3.10.8",
+                    "pandas": "2.3.3",
+                    "python": "3.13.12",
                     "upsetplot": "0.9.0"
                 },
                 "FINALIZE_QC_ANNDATAS": {
-                    "anndata": "0.12.7",
-                    "numpy": "2.4.0",
+                    "anndata": "0.12.10",
+                    "numpy": "2.3.5",
                     "pandas": "2.3.3",
-                    "python": "3.13.11"
+                    "python": "3.13.12"
                 },
                 "GET_DEDOUBLETED_SIZE": {
                     "python": "3.13.0",
@@ -82,27 +74,39 @@
                     "anndata": "0.10.9"
                 },
                 "QC_FILTERED": {
-                    "matplotlib": "3.10.3",
-                    "python": "3.13.3",
-                    "scanpy": "1.11.2"
+                    "matplotlib": "3.10.8",
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
                 },
                 "QC_RAW": {
-                    "matplotlib": "3.10.3",
-                    "python": "3.13.3",
-                    "scanpy": "1.11.2"
+                    "matplotlib": "3.10.8",
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                },
+                "QC_REPORT": {
+                    "papermill": "2.7.0",
+                    "quarto": "1.8.27"
                 },
                 "SCANPY_CELLCYCLE": {
-                    "python": "3.13.11",
-                    "scanpy": "1.11.5"
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
                 },
                 "SCANPY_FILTER": {
-                    "python": "3.13.11",
-                    "scanpy": "1.11.5"
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                },
+                "SCANPY_SCRUBLET": {
+                    "python": "3.12.11",
+                    "scanpy": "1.11.2"
+                },
+                "SCDS": {
+                    "R": "4.3.3",
+                    "scds": "1.18.0"
                 },
                 "UPSET_GENES": {
-                    "python": "3.12.8",
-                    "scanpy": "1.10.4",
-                    "matplotlib": "3.10.0",
+                    "anndata": "0.12.10",
+                    "matplotlib": "3.10.8",
+                    "python": "3.13.12",
                     "upsetplot": "0.9.0"
                 },
                 "Workflow": {
@@ -143,23 +147,6 @@
                 "combine/merge",
                 "combine/merge/upset_genes.png",
                 "multiqc",
-                "multiqc/multiqc_data",
-                "multiqc/multiqc_data/llms-full.txt",
-                "multiqc/multiqc_data/multiqc.log",
-                "multiqc/multiqc_data/multiqc.parquet",
-                "multiqc/multiqc_data/multiqc_citations.txt",
-                "multiqc/multiqc_data/multiqc_data.json",
-                "multiqc/multiqc_data/multiqc_sizes.txt",
-                "multiqc/multiqc_data/multiqc_software_versions.txt",
-                "multiqc/multiqc_data/multiqc_sources.txt",
-                "multiqc/multiqc_plots",
-                "multiqc/multiqc_plots/pdf",
-                "multiqc/multiqc_plots/pdf/sizes.pdf",
-                "multiqc/multiqc_plots/png",
-                "multiqc/multiqc_plots/png/sizes.png",
-                "multiqc/multiqc_plots/svg",
-                "multiqc/multiqc_plots/svg/sizes.svg",
-                "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_scdownstream_software_mqc_versions.yml",
                 "quality_control",
@@ -172,16 +159,35 @@
                 "quality_control/qc_raw/SRR28679757_raw_total_counts_vs_n_genes_by_counts.png",
                 "quality_control/qc_raw/SRR28679758_raw_total_counts_vs_n_genes_by_counts.png",
                 "quality_control/sizes",
-                "quality_control/sizes/sizes.tsv"
+                "quality_control/sizes/sizes.tsv",
+                "reports",
+                "reports/_extensions",
+                "reports/_extensions/nf-core",
+                "reports/_extensions/nf-core/_extension.yml",
+                "reports/_extensions/nf-core/nf-core-scdownstream_logo_light.png",
+                "reports/_extensions/nf-core/nf-core.scss",
+                "reports/_extensions/nf-core/nf-core.theme",
+                "reports/_extensions/nf-core/toc.html",
+                "reports/artifacts",
+                "reports/artifacts/concatenated.h5ad",
+                "reports/params.yml",
+                "reports/qc-report.html",
+                "reports/qc-report.qmd"
             ],
             [
-                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
+                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
+                "_extension.yml:md5,1771443b5d44c88feb54a56c5a9a2319",
+                "nf-core.scss:md5,b9826d146ce24fe3d3c51bfd4e450baa",
+                "nf-core.theme:md5,ac9559ae18b3f513cf7a5419e4a69c24",
+                "toc.html:md5,fe6831ffaecfb53058310943d42942ca",
+                "params.yml:md5,cd7fb3f941b1b5ad10a8e413ad70623c",
+                "qc-report.qmd:md5,1f56aafa1a5ca0b10d27f0db34a5c2ff"
             ]
         ],
-        "timestamp": "2026-03-14T19:44:58.451928",
+        "timestamp": "2026-04-09T19:07:55.691884",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
         }
     }
 }

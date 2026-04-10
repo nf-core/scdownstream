@@ -31,16 +31,16 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "scvi-global-1.0_leiden" in obs.colnames
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "scvi-global-1.0_leiden" in obs.colnames
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
 
     }
@@ -69,16 +69,16 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "X_scvi" in obsm
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "X_scvi" in obsm
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
 
     }
@@ -113,19 +113,19 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "scvi-global-1.0_leiden" in obs.colnames
-                        assert "scvi-global-1.0:entropy" in obs.colnames
-                        assert "X_scvi" in obsm
-                        assert "X_scvi-global_umap" in obsm
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "scvi-global-1.0_leiden" in obs.colnames
+                assert "scvi-global-1.0:entropy" in obs.colnames
+                assert "X_scvi" in obsm
+                assert "X_scvi-global_umap" in obsm
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
 
     }
@@ -154,16 +154,16 @@ nextflow_process {
         }
 
         then {
-            def filename = process.out.h5ad[0][1]
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() },
-                {
-                    with(anndata(filename)) {
-                        assert "scvi-global-1.0_paga" in uns
-                    }
-                }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "scvi-global-1.0_paga" in uns
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
 
     }
@@ -192,10 +192,13 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
 
     }
@@ -226,10 +229,8 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() }
-            )
+            assert process.success
+            assert snapshot(process.out).match()
         }
 
     }

@@ -13,7 +13,7 @@ process CELLDEX_FETCHREFERENCE {
 
     output:
     tuple val(meta), path("${prefix}.tar"), emit: tar
-    path "versions.yml", emit: versions
+    path "versions.yml"                   , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when

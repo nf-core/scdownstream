@@ -7,108 +7,9 @@ nextflow_process {
     tag "modules"
     tag "modules_local"
 
-    setup {
-        run("ADATA_UNIFY", alias: "ADATA_UNIFY_SIMPLE") {
-            script "modules/local/adata/unify/main.nf"
-            process {
-                """
-                input[0] = channel.of([
-                        [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
-                    ]
-                )
-                input[1] = "sample"
-                input[2] = ""
-                input[3] = ""
-                input[4] = "unknown"
-                input[5] = "index"
-                input[6] = "X"
-                input[7] = "sum"
-                input[8] = false
-                """
-            }
-        }
-        run("ADATA_UNIFY", alias: "ADATA_UNIFY_WITH_CONDITION") {
-            script "modules/local/adata/unify/main.nf"
-            process {
-                """
-                input[0] = channel.of([
-                        [ id: 'test' ],
-                        file(params.pipelines_testdata_base_path + '/anndata-variations/with_label_and_condition.h5ad', checkIfExists: true)
-                    ]
-                )
-                input[1] = "sample"
-                input[2] = "label"
-                input[3] = "condition"
-                input[4] = "unknown"
-                input[5] = "index"
-                input[6] = "X"
-                input[7] = "sum"
-                input[8] = false
-                """
-            }
-        }
-        run("SCANPY_PCA", alias: "SCANPY_PCA_SIMPLE") {
-            script "modules/local/scanpy/pca/main.nf"
-            process {
-                """
-                input[0] = ADATA_UNIFY_SIMPLE.out.h5ad
-                input[1] = "X_pca"
-                """
-            }
-        }
-        run("SCANPY_PCA", alias: "SCANPY_PCA_WITH_CONDITION") {
-            script "modules/local/scanpy/pca/main.nf"
-            process {
-                """
-                input[0] = ADATA_UNIFY_WITH_CONDITION.out.h5ad
-                input[1] = "X_pca"
-                """
-            }
-        }
-        run("SCANPY_NEIGHBORS", alias: "SCANPY_NEIGHBORS_SIMPLE") {
-            script "modules/local/scanpy/neighbors/main.nf"
-            process {
-                """
-                input[0] = SCANPY_PCA_SIMPLE.out.h5ad
-                input[1] = "X_pca"
-                """
-            }
-        }
-        run("SCANPY_NEIGHBORS", alias: "SCANPY_NEIGHBORS_WITH_CONDITION") {
-            script "modules/local/scanpy/neighbors/main.nf"
-            process {
-                """
-                input[0] = SCANPY_PCA_WITH_CONDITION.out.h5ad
-                input[1] = "X_pca"
-                """
-            }
-        }
-        run("SCANPY_LEIDEN", alias: "SCANPY_LEIDEN_SIMPLE") {
-            script "modules/local/scanpy/leiden/main.nf"
-            process {
-                """
-                input[0] = SCANPY_NEIGHBORS_SIMPLE.out.h5ad
-                input[1] = 1.0
-                input[2] = "leiden"
-                input[3] = false
-                """
-            }
-        }
-        run("SCANPY_LEIDEN", alias: "SCANPY_LEIDEN_WITH_CONDITION") {
-            script "modules/local/scanpy/leiden/main.nf"
-            process {
-                """
-                input[0] = SCANPY_NEIGHBORS_WITH_CONDITION.out.h5ad
-                input[1] = 1.0
-                input[2] = "leiden"
-                input[3] = false
-                """
-            }
-        }
-    }
-
     test("Should run without failures") {
+
+        config './nextflow.config'
 
         when {
             params {
@@ -116,7 +17,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = SCANPY_LEIDEN_SIMPLE.out.h5ad
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true)
+                    ]
+                )
                 input[1] = "leiden"
                 input[2] = [[], []]
                 input[3] = "wilcoxon"
@@ -125,10 +30,13 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-            { assert process.success },
-            { assert snapshot(process.out).match() }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert "rank_genes_groups" in adata.uns
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
 
     }
@@ -143,7 +51,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = SCANPY_LEIDEN_SIMPLE.out.h5ad
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true)
+                    ]
+                )
                 input[1] = "leiden"
                 input[2] = [[], []]
                 input[3] = "wilcoxon"
@@ -152,15 +64,15 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-            { assert process.success },
-            { assert snapshot(process.out).match() }
-            )
+            assert process.success
+            assert snapshot(process.out).match()
         }
 
     }
 
     test("Should run with condition subsetting") {
+
+        config './nextflow.config'
 
         when {
             params {
@@ -168,7 +80,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = SCANPY_LEIDEN_WITH_CONDITION.out.h5ad
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    ]
+                )
                 input[1] = "leiden"
                 input[2] = ["condition", "Healthy"]
                 input[3] = "wilcoxon"
@@ -177,15 +93,20 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-            { assert process.success },
-            { assert snapshot(process.out).match() }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert "rank_genes_groups" in adata.uns
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
 
     }
 
     test("Should run with label subsetting") {
+
+        config './nextflow.config'
 
         when {
             params {
@@ -193,7 +114,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = SCANPY_LEIDEN_WITH_CONDITION.out.h5ad
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    ]
+                )
                 input[1] = "condition"
                 input[2] = ["label", "Tcell"]
                 input[3] = "wilcoxon"
@@ -202,10 +127,11 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-            { assert process.success },
-            { assert snapshot(process.out).match() }
-            )
+            assert process.success
+            assert process.out.h5ad.size() == 0
+            assert snapshot(
+                path(process.out.versions[0]).yaml
+            ).match()
         }
 
     }

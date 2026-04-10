@@ -16,11 +16,11 @@
                 ]
             }
         ],
+        "timestamp": "2025-09-10T19:19:53.484559762",
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
-        },
-        "timestamp": "2025-09-10T19:19:53.484559762"
+        }
     },
     "Should run without failures - with custom symbol column": {
         "content": [
@@ -30,30 +30,83 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,5e4f50b4961a1d67a1091056868f34a0"
+                        "test_filtered.h5ad:md5,3ddef0332886d22405ed7878a6da13aa"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,f6e85d34a74da9fd206ca5cb662bf658"
+                    "versions.yml:md5,b522587d103606ffd4959a6297fb9476"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,5e4f50b4961a1d67a1091056868f34a0"
+                        "test_filtered.h5ad:md5,3ddef0332886d22405ed7878a6da13aa"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,f6e85d34a74da9fd206ca5cb662bf658"
+                    "versions.yml:md5,b522587d103606ffd4959a6297fb9476"
+                ]
+            },
+            {
+                "SCANPY_FILTER": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                }
+            },
+            {
+                "n_obs": 5719,
+                "n_vars": 992,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "total_counts",
+                        "total_counts_mt"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "mean_counts",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
                 ]
             }
         ],
+        "timestamp": "2026-03-29T11:18:14.694442933",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2025-12-29T22:43:57.383928272"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures - stub": {
         "content": [
@@ -82,11 +135,11 @@
                 ]
             }
         ],
+        "timestamp": "2025-06-02T07:54:56.268511541",
         "meta": {
             "nf-test": "0.9.0",
             "nextflow": "25.04.2"
-        },
-        "timestamp": "2025-06-02T07:54:56.268511541"
+        }
     },
     "Should run without failures": {
         "content": [
@@ -96,30 +149,83 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,5e4f50b4961a1d67a1091056868f34a0"
+                        "test_filtered.h5ad:md5,3ddef0332886d22405ed7878a6da13aa"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,f6e85d34a74da9fd206ca5cb662bf658"
+                    "versions.yml:md5,b522587d103606ffd4959a6297fb9476"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,5e4f50b4961a1d67a1091056868f34a0"
+                        "test_filtered.h5ad:md5,3ddef0332886d22405ed7878a6da13aa"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,f6e85d34a74da9fd206ca5cb662bf658"
+                    "versions.yml:md5,b522587d103606ffd4959a6297fb9476"
+                ]
+            },
+            {
+                "SCANPY_FILTER": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                }
+            },
+            {
+                "n_obs": 5719,
+                "n_vars": 992,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "total_counts",
+                        "total_counts_mt"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "mean_counts",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
                 ]
             }
         ],
+        "timestamp": "2026-03-29T11:17:17.630245843",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2025-12-29T22:43:31.075895043"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures - with custom mito genes": {
         "content": [
@@ -129,29 +235,82 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,5e4f50b4961a1d67a1091056868f34a0"
+                        "test_filtered.h5ad:md5,3ddef0332886d22405ed7878a6da13aa"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,f6e85d34a74da9fd206ca5cb662bf658"
+                    "versions.yml:md5,b522587d103606ffd4959a6297fb9476"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,5e4f50b4961a1d67a1091056868f34a0"
+                        "test_filtered.h5ad:md5,3ddef0332886d22405ed7878a6da13aa"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,f6e85d34a74da9fd206ca5cb662bf658"
+                    "versions.yml:md5,b522587d103606ffd4959a6297fb9476"
+                ]
+            },
+            {
+                "SCANPY_FILTER": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                }
+            },
+            {
+                "n_obs": 5719,
+                "n_vars": 992,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "total_counts",
+                        "total_counts_mt"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "mean_counts",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
                 ]
             }
         ],
+        "timestamp": "2026-03-29T11:20:39.503874531",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2025-12-29T22:44:40.389904121"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     }
 }

@@ -26,11 +26,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-01-11T09:35:04.271371584",
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-11T09:35:04.271371584"
+        }
     },
     "Should run without failures": {
         "content": [
@@ -44,7 +44,7 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,91294e4768c59500543d8fa2aeb0b578"
+                    "versions.yml:md5,c19d8adf68e8f111100a334d06042be0"
                 ],
                 "h5ad": [
                     [
@@ -55,14 +55,99 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,91294e4768c59500543d8fa2aeb0b578"
+                    "versions.yml:md5,c19d8adf68e8f111100a334d06042be0"
+                ]
+            },
+            {
+                "ADATA_SPLITEMBEDDINGS": {
+                    "anndata": "0.12.10",
+                    "python": "3.13.12"
+                }
+            },
+            {
+                "n_obs": 23364,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "bbknn-global-0.5:entropy",
+                        "bbknn-global-0.5_leiden",
+                        "bbknn-global-1.0:entropy",
+                        "bbknn-global-1.0_leiden",
+                        "celltypist:Adult_Human_Skin",
+                        "celltypist:Adult_Human_Skin:conf",
+                        "combat-global-0.5:entropy",
+                        "combat-global-0.5_leiden",
+                        "combat-global-1.0:entropy",
+                        "combat-global-1.0_leiden",
+                        "condition",
+                        "harmony-global-0.5:entropy",
+                        "harmony-global-0.5_leiden",
+                        "harmony-global-1.0:entropy",
+                        "harmony-global-1.0_leiden",
+                        "label",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "sample_original",
+                        "scvi-global-0.5:entropy",
+                        "scvi-global-0.5_leiden",
+                        "scvi-global-1.0:entropy",
+                        "scvi-global-1.0_leiden",
+                        "total_counts",
+                        "total_counts_mt"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "intersection"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "bbknn-global-0.5_characteristic_genes",
+                    "bbknn-global-0.5_paga",
+                    "bbknn-global-1.0_characteristic_genes",
+                    "bbknn-global-1.0_paga",
+                    "combat-global-0.5_characteristic_genes",
+                    "combat-global-0.5_liana",
+                    "combat-global-0.5_paga",
+                    "combat-global-1.0_characteristic_genes",
+                    "combat-global-1.0_liana",
+                    "combat-global-1.0_paga",
+                    "harmony-global-0.5_characteristic_genes",
+                    "harmony-global-0.5_paga",
+                    "harmony-global-1.0_characteristic_genes",
+                    "harmony-global-1.0_paga",
+                    "scvi-global-0.5_characteristic_genes",
+                    "scvi-global-0.5_paga",
+                    "scvi-global-1.0_characteristic_genes",
+                    "scvi-global-1.0_paga"
                 ]
             }
         ],
+        "timestamp": "2026-03-29T14:55:42.179483745",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-19T23:21:02.945913021"
+        }
     }
 }

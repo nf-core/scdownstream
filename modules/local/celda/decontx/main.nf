@@ -2,7 +2,10 @@ process CELDA_DECONTX {
     tag "$meta.id"
     label 'process_medium'
 
-    container "docker.io/nicotru/celda:1d48a68e9d534b2b"
+    conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b6/b65d7d3f33b0423a970eb858e15996b12c901f8277b70ae3feeb7eb3e5e3d868/data':
+        'community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-celda_bioconductor-rhdf5_bioconductor-singlecellexperiment:ae94f059bb2c3e7f' }"
 
     input:
     tuple val(meta), path(h5ad), path(raw)
@@ -11,8 +14,8 @@ process CELDA_DECONTX {
     val(output_layer)
 
     output:
-    tuple val(meta), path("*.h5ad"), emit: h5ad
-    path "versions.yml"            , emit: versions
+    tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
+    path "versions.yml"                    , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when

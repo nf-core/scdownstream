@@ -7,55 +7,34 @@ nextflow_workflow {
     tag "subworkflows"
     tag "subworkflows_local"
 
-    setup {
-        run("ADATA_UNIFY") {
-            script "modules/local/adata/unify/main.nf"
-            process {
+    test("Should run without failures - PAGA only - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+                skip_rankgenesgroups = true
+            }
+            workflow {
                 """
                 input[0] = channel.of([
-                    [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_label_and_condition.h5ad', checkIfExists: true)
+                    [id: 'test', obs_key: 'leiden', condition_col: 'condition'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                 ])
-                input[1] = "sample"
-                input[2] = "label"
-                input[3] = "condition"
-                input[4] = "unknown"
-                input[5] = "index"
-                input[6] = "X"
-                input[7] = "sum"
-                input[8] = false
+                input[1] = channel.empty()
+                input[2] = true
+                input[3] = true
                 """
             }
         }
-        run("SCANPY_PCA") {
-            script "modules/local/scanpy/pca/main.nf"
-            process {
-                """
-                input[0] = ADATA_UNIFY.out.h5ad
-                input[1] = "X_pca"
-                """
-            }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
         }
-        run("SCANPY_NEIGHBORS") {
-            script "modules/local/scanpy/neighbors/main.nf"
-            process {
-                """
-                input[0] = SCANPY_PCA.out.h5ad
-                input[1] = "X_pca"
-                """
-            }
-        }
-        run("SCANPY_LEIDEN") {
-            script "modules/local/scanpy/leiden/main.nf"
-            process {
-                """
-                input[0] = SCANPY_NEIGHBORS.out.h5ad
-                input[1] = 1.0
-                input[2] = "leiden"
-                input[3] = false
-                """
-            }
-        }
+
     }
 
     test("Should run without failures - PAGA only") {
@@ -68,10 +47,50 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = SCANPY_LEIDEN.out.h5ad.map { meta, h5ad -> [meta + [obs_key: 'leiden', condition_col: 'condition'], h5ad] }
+                input[0] = channel.of([
+                    [id: 'test', obs_key: 'leiden', condition_col: 'condition'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
                 input[1] = channel.empty()
                 input[2] = true
                 input[3] = true
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            // PAGA produces exactly one uns pkl
+            assert workflow.out.uns.size() == 1
+            assert workflow.out.uns.any { file(it).name == "test_paga.pkl" }
+            assert workflow.out.multiqc_files.size() == 1
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml }
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - full run - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = false
+                skip_rankgenesgroups = false
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [id: 'test', obs_key: 'leiden', condition_col: 'condition'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = false
+                input[3] = false
                 """
             }
         }
@@ -93,8 +112,12 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = SCANPY_LEIDEN.out.h5ad.map { meta, h5ad -> [meta + [obs_key: 'leiden', condition_col: 'condition'], h5ad] }
-                input[1] = SCANPY_LEIDEN.out.h5ad.map { meta, h5ad -> [meta + [obs_key: 'leiden', condition_col: 'condition'], h5ad] }
+                def h5ad = channel.of([
+                    [id: 'test', obs_key: 'leiden', condition_col: 'condition'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
                 input[2] = false
                 input[3] = false
                 """
@@ -103,7 +126,14 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            assert snapshot(workflow.out).match()
+            // PAGA + LIANA + RANKGENESGROUPS all produce uns pkls
+            assert workflow.out.uns.size() >= 1
+            assert workflow.out.uns.any { file(it).name == "test_paga.pkl" }
+            assert workflow.out.uns.any { file(it).name == "test_liana.pkl" }
+            assert workflow.out.multiqc_files.size() >= 1
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml }
+            ).match()
         }
 
     }

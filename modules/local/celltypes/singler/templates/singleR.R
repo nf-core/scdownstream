@@ -3,30 +3,24 @@
 library(SingleR)
 library(celldex)
 library(yaml)
-library(Seurat)
 library(ggplot2)
 library(anndataR)
 library(HDF5Array)
 
-# Function to convert a list to a YAML-like structure, as before
-format_yaml_like <- function(data, indent = 0) {
-  yaml_str <- ""
-  for (key in names(data)) {
-    spaces <- strrep("  ", indent)
-    value <- data[[key]]
-    if (is.list(value)) {
-      yaml_str <- paste0(yaml_str, spaces, key, ":\n",
-                        format_yaml_like(value, indent + 1))
-    } else {
-      yaml_str <- paste0(yaml_str, spaces, key, ": ", value, "\n")
-    }
-  }
-  return(yaml_str)
+symbol_col   <- "${symbol_col}"
+counts_layer <- "${counts_layer}"
+h5ad_file    <- "${h5ad}"
+adata <- read_h5ad(h5ad_file)
+
+if (counts_layer == "X") {
+  x_mapping <- "counts"
+  assays_mapping <- FALSE
+} else {
+  x_mapping <- FALSE
+  assays_mapping <- c(counts = counts_layer)
 }
-# Read .h5ad file using zellkonverter
-symbol_col <- "${symbol_col}"
-h5ad_file <- "${h5ad}" # Get the filename from environment variable
-sce <- read_h5ad(h5ad_file, as = "SingleCellExperiment") # Converts .h5ad to a SingleCellExperiment object
+
+sce <- adata\$as_SingleCellExperiment(x_mapping = x_mapping, assays_mapping = assays_mapping)
 
 if (symbol_col != "index") {
   if (!symbol_col %in% colnames(rowData(sce))) {
@@ -58,15 +52,19 @@ for (ref_idx in seq_along(references)) {
   ref_dir <- gsub(".tar", "", ref)
   untar(ref, exdir = "./")
   # Read the SummarizedExperiment object from the provided path
+  # Realize the HDF5-backed assay into a sparse matrix to avoid
+  # multi-threaded HDF5 file locking inside SingleR's C++ thread pool
   reference <- loadHDF5SummarizedExperiment(dir = ref_dir)
+  assay(reference) <- as(assay(reference), "dgCMatrix")
   stopifnot(
     reflabel %in% colnames(colData(reference))
   )
   predictions <- SingleR(
-    test = assay(sce, 'counts'),
-    ref = reference,
-    labels = colData(reference)[[reflabel]],
-    num.threads = num_threads
+    test            = sce,
+    assay.type.test = 1,
+    ref             = reference,
+    labels          = colData(reference)[[reflabel]],
+    num.threads     = num_threads
   )
 
   # Plot and save heatmap
@@ -131,13 +129,11 @@ write.csv(
 # Capturing version information, as before
 versions <- list(
   "${task.process}" = list(
-    R = R.version.string,
-    SingleR = as.character(packageVersion("SingleR")),
-    celldex = as.character(packageVersion("celldex")),
+    R        = R.version.string,
+    SingleR  = as.character(packageVersion("SingleR")),
+    celldex  = as.character(packageVersion("celldex")),
     anndataR = as.character(packageVersion("anndataR")),
-    yaml = as.character(packageVersion("yaml")),
-    Seurat = as.character(packageVersion("Seurat")),
-    ggplot2 = as.character(packageVersion("ggplot2"))
+    ggplot2  = as.character(packageVersion("ggplot2"))
   )
 )
 
@@ -146,5 +142,4 @@ if (file.exists("Rplots.pdf")) {
   file.remove("Rplots.pdf")
 }
 
-# Write versions info into a YAML file, as before
-write(format_yaml_like(versions), file = "versions.yml")
+write(yaml::as.yaml(versions), file = "versions.yml")

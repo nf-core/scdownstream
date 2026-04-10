@@ -23,7 +23,7 @@ workflow QUALITY_CONTROL {
     duplicate_var_resolution      //   value: string
     aggregate_isoforms            //   value: boolean
     doublet_detection_methods     //   value: list of strings
-    doublet_detection_threshold   //   value: float
+    doublet_detection_threshold   //   value: integer
     scvi_max_epochs               //   value: integer
     mito_genes                    //   value: string (path) or null
     sample_n                      //   value: string (integer > 1 or null)
@@ -75,7 +75,6 @@ workflow QUALITY_CONTROL {
             [meta, unfiltered]
         }
     )
-    ch_versions = ch_versions.mix(EMPTY_DROPLET_REMOVAL.out.versions)
 
     ch_complete = ch_complete.mix(
         ch_needs_filtering
@@ -252,8 +251,9 @@ workflow QUALITY_CONTROL {
     ch_multiqc_files = ch_multiqc_files.mix(COLLECT_SIZES.out.multiqc_files)
 
     emit:
-    h5ad          = ch_h5ad          // channel: [ meta, h5ad ]
+    h5ad          = ch_h5ad           // channel: [ meta, h5ad ]
+    sizes         = ch_sizes          // channel: [ tsv ]
     obs           = ch_obs_per_sample // channel: [ meta, pkl ]
-    multiqc_files = ch_multiqc_files // channel: [ json ]
-    versions      = ch_versions      // channel: [ versions.yml ]
+    multiqc_files = ch_multiqc_files  // channel: [ json ]
+    versions      = ch_versions       // channel: [ versions.yml ]
 }

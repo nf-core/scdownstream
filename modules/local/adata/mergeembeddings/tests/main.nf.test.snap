@@ -17,7 +17,7 @@
                     "X_scanvi.pkl:md5,08ee35399644eec4525c1ca8b5b5100f"
                 ],
                 "3": [
-                    "versions.yml:md5,33fef2961f0e9f357e9b990b96481c96"
+                    "versions.yml:md5,3d07e17bd07e6c00aca3a44b734c7932"
                 ],
                 "h5ad": [
                     [
@@ -34,15 +34,55 @@
                     "X_scanvi.pkl:md5,08ee35399644eec4525c1ca8b5b5100f"
                 ],
                 "versions": [
-                    "versions.yml:md5,33fef2961f0e9f357e9b990b96481c96"
+                    "versions.yml:md5,3d07e17bd07e6c00aca3a44b734c7932"
+                ]
+            },
+            {
+                "ADATA_MERGEEMBEDDINGS": {
+                    "anndata": "0.12.10",
+                    "python": "3.13.12"
+                }
+            },
+            {
+                "n_obs": 80,
+                "n_vars": 100,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "label:scANVI"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
                 ]
             }
         ],
+        "timestamp": "2026-03-29T14:52:29.252580895",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-16T22:15:50.402815924"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures - stub": {
         "content": [
@@ -83,11 +123,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-01-16T22:16:01.692890265",
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-16T22:16:01.692890265"
+        }
     },
     "Should merge scvi embeddings": {
         "content": [
@@ -107,7 +147,7 @@
                     "X_scvi.pkl:md5,3458f8a6253838620764a7d5705891ab"
                 ],
                 "3": [
-                    "versions.yml:md5,33fef2961f0e9f357e9b990b96481c96"
+                    "versions.yml:md5,3d07e17bd07e6c00aca3a44b734c7932"
                 ],
                 "h5ad": [
                     [
@@ -124,14 +164,54 @@
                     "X_scvi.pkl:md5,3458f8a6253838620764a7d5705891ab"
                 ],
                 "versions": [
-                    "versions.yml:md5,33fef2961f0e9f357e9b990b96481c96"
+                    "versions.yml:md5,3d07e17bd07e6c00aca3a44b734c7932"
+                ]
+            },
+            {
+                "ADATA_MERGEEMBEDDINGS": {
+                    "anndata": "0.12.10",
+                    "python": "3.13.12"
+                }
+            },
+            {
+                "n_obs": 80,
+                "n_vars": 100,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
                 ]
             }
         ],
+        "timestamp": "2026-03-29T14:52:09.297927484",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-16T22:15:35.923090452"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     }
 }

@@ -45,15 +45,16 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-            { assert process.success },
-            {
-                with(anndata(process.out.h5ad[0][1])) {
-                    assert var.rownames.size() > 0
-                    assert obs.rownames.size() > 0
-                }
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert var.rownames.size() > 0
+                assert obs.rownames.size() > 0
             }
-            )
+            assert snapshot(
+                process.out.versions,
+                adata.yaml
+            ).match()
         }
 
     }
@@ -79,10 +80,9 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-            { assert process.success },
-            { assert snapshot(process.out).match() }
-            )
+            assert process.success
+
+            assert snapshot(process.out).match()
         }
 
     }

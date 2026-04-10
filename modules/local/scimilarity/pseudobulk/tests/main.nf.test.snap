@@ -7,30 +7,73 @@
                         {
                             "id": "test"
                         },
-                        "test_pseudobulk.h5ad:md5,3017c24481a4f4b36325b70e6ededbfa"
+                        "test_pseudobulk.h5ad:md5,34fab270f99105fdf5a5be051117b24f"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,c9b1b2e4a4757d1c8957ea7cc09318cd"
+                    "versions.yml:md5,85681d93adbb062a90bb197b31eea879"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_pseudobulk.h5ad:md5,3017c24481a4f4b36325b70e6ededbfa"
+                        "test_pseudobulk.h5ad:md5,34fab270f99105fdf5a5be051117b24f"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,c9b1b2e4a4757d1c8957ea7cc09318cd"
+                    "versions.yml:md5,85681d93adbb062a90bb197b31eea879"
+                ]
+            },
+            {
+                "SCIMILARITY_PSEUDOBULK": {
+                    "anndata": "0.12.10",
+                    "python": "3.12.13",
+                    "scimilarity": "0.4.1"
+                }
+            },
+            {
+                "n_obs": 3,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "cells",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "count_nonzero",
+                    "sum"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
                 ]
             }
         ],
+        "timestamp": "2026-03-29T11:18:26.581328121",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-25T17:06:30.124225653"
+        }
     },
     "Should run without failures with groupby sample and clustering": {
         "content": [
@@ -40,30 +83,74 @@
                         {
                             "id": "test"
                         },
-                        "test_pseudobulk.h5ad:md5,a0a171255c7fc7a3dab46230ee44be14"
+                        "test_pseudobulk.h5ad:md5,987e3407ef1dc6799aba3b3b7583f850"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,c9b1b2e4a4757d1c8957ea7cc09318cd"
+                    "versions.yml:md5,85681d93adbb062a90bb197b31eea879"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_pseudobulk.h5ad:md5,a0a171255c7fc7a3dab46230ee44be14"
+                        "test_pseudobulk.h5ad:md5,987e3407ef1dc6799aba3b3b7583f850"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,c9b1b2e4a4757d1c8957ea7cc09318cd"
+                    "versions.yml:md5,85681d93adbb062a90bb197b31eea879"
+                ]
+            },
+            {
+                "SCIMILARITY_PSEUDOBULK": {
+                    "anndata": "0.12.10",
+                    "python": "3.12.13",
+                    "scimilarity": "0.4.1"
+                }
+            },
+            {
+                "n_obs": 43,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "cells",
+                        "leiden",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "count_nonzero",
+                    "sum"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
                 ]
             }
         ],
+        "timestamp": "2026-03-29T11:20:35.310554907",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-25T17:08:29.434397344"
+        }
     },
     "Should run without failures - stub": {
         "content": [
@@ -92,10 +179,10 @@
                 ]
             }
         ],
+        "timestamp": "2026-01-25T17:08:56.798614076",
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-25T17:08:56.798614076"
+        }
     }
 }

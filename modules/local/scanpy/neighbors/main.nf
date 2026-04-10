@@ -4,8 +4,8 @@ process SCANPY_NEIGHBORS {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7e/7e8ccc771255d161988a15931fdc64fb637e43d65946a78697c5aceffa395902/data'
-        : 'community.wave.seqera.io/library/python-igraph_pyyaml_scanpy:cc0304f4731f72f9'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/45/45339bf761a2cf0cdb058492bc37f3df8b05b363731d491d1d3a14e9ba0b8f55/data'
+        : 'community.wave.seqera.io/library/harmonypy_anndata_leidenalg_numpy_pruned:43066d5f86f18261'}"
 
     input:
     tuple val(meta), path(h5ad, arity: 1)
@@ -13,13 +13,14 @@ process SCANPY_NEIGHBORS {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path "versions.yml", emit: versions
+    path "versions.yml"                    , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}_neighbors"
+    args   = task.ext.args ?: ''
     template('neighbors.py')
 
     stub:

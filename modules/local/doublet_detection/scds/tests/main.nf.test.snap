@@ -42,32 +42,34 @@
                 ]
             }
         ],
+        "timestamp": "2026-03-25T15:44:42.961362081",
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.2"
-        },
-        "timestamp": "2025-05-30T16:52:57.673676107"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     },
     "Should run without failures": {
         "content": [
+            {
+                "SCDS": {
+                    "R": "4.3.3",
+                    "scds": "1.18.0"
+                }
+            },
             [
-                "versions.yml:md5,c8683fe6c044ab53b908d2fd7c38f8f7"
-            ],
-            [
-                [
-                    {
-                        "id": "test"
-                    },
-                    "test_scds.csv:md5,6bedc66c5fc2517cea4808a72c29e17f"
-                ]
-            ],
-            true,
-            7541879
+                "bcds_call",
+                "bcds_score",
+                "cxds_call",
+                "cxds_score",
+                "hybrid_call",
+                "hybrid_score",
+                "sample"
+            ]
         ],
+        "timestamp": "2026-03-25T15:44:28.452040006",
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.2"
-        },
-        "timestamp": "2025-05-30T16:52:47.324747683"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     }
 }

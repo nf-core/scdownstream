@@ -1,0 +1,444 @@
+---
+title: "Pre-processing and quality control"
+date: today
+format:
+    nf-core-html: default
+echo: false
+lightbox: true
+jupyter: python3
+---
+
+```{python parameters}
+#| tags: [parameters]
+qc_only = False
+has_input = ''
+```
+
+```{python load-libraries}
+import pandas as pd
+import matplotlib.pyplot as plt
+import scanpy as sc
+import anndata as ad
+import glob
+import sys
+from textwrap import dedent
+from IPython.display import display, Markdown
+```
+
+```{python common-functions}
+def rotate_x_labels(ax, label_size=8):
+    """
+    Rotate the x axis labels of a figure.
+
+    Arguments:
+        ax (Axes): The figure axes to change
+        label_size (int): The desired label size
+    """
+    ax.tick_params(axis='x', labelrotation=45, labelsize=label_size)
+    for lab in ax.get_xticklabels():
+        lab.set_ha("right")
+
+
+def create_tabset(content):
+    """
+    Programmatically create tabsets with headers and plots.
+
+    Arguments:
+        content (list): A list of (str, Figure) tuples
+    """
+    display(Markdown('::: {.panel-tabset}'))
+    for name, fig in content:
+        display(Markdown(f"#### {name}"))
+        display(fig)
+        plt.close()
+        display(Markdown(f" "))
+    display(Markdown(':::'))
+
+
+def display_table(table, hide_index=True, format_dict=None):
+    """
+    Display a data frame as a table with default styling with optional removal
+    of the axis and the functionality to supply formatting dictionary.
+
+    Arguments:
+        table (DataFrame): The data frame to be displayed
+        hide_index (boolean): Whether to hide the data frame index or not
+        format_dict (dict): A dictionary with column-specific formatting
+    """
+
+    # Default style with nf-core green hover and right alignment for all columns
+    # except the first one
+    styles = [
+        {'selector': 'tbody tr:hover', 'props': [('background-color', '#D5F6E4')]},
+        {'selector': 'td, th', 'props': [
+            ('text-align', 'right')
+        ]},
+        {'selector': 'td:first-child, th:first-child', 'props': [
+            ('text-align', 'left')
+        ]}
+    ]
+    styled = table.style.set_table_styles(styles)
+
+    if hide_index:
+        styled = styled.hide(axis='index')
+
+    if format_dict:
+        styled = styled.format(format_dict)
+
+    display(styled)
+```
+
+# Introduction
+
+This report summarises and visualises the results of the `nf-core/scdownstream`
+pipeline, including both assessments of data quality metrics, filtering
+outcomes, cell type annotations, dimensionality reductions and integrations. You
+can navigate to the report's different sections using the sidebar to the left.
+
+```{python read-data}
+input_files = glob.glob("*.h5ad")
+if qc_only:
+    # Input data comes with multiple files, one per sample
+    adata_all = {}
+    for file in input_files:
+        adata_all[file] = sc.read_h5ad(file)
+        adata_all[file].obs['file'] = file
+    adata = ad.concat(adata_all)
+    # Save to artefacts directory so that the user may further analyse the data
+    adata.write_h5ad('artifacts/concatenated.h5ad')
+else:
+    # Input data is integrated into a single `merged.h5ad` file
+    adata = sc.read_h5ad(input_files[0])
+
+# Get all samples
+samples = adata.obs['sample'].cat.categories.to_list()
+
+# Define QC groups and metrics
+qc_groups = ["sample", "batch", "label"]
+qc_metrics = ['n_genes_by_counts', 'total_counts', 'pct_counts_mt']
+```
+
+# Quality controls
+
+Quality control is a critical step in scRNA-seq analysis to identify and remove
+low-quality cells that may arise from dying cells, empty droplets, or doublets.
+Poor-quality cells can introduce noise and confound biological interpretations.
+There are several different quality metrics that are normally computed for
+scRNA-seq data. Common metrics include the number of genes with a least 1 count,
+counts per spot  as well as the percentage of counts from mitochondrial genes;
+the following sections include tables and plots related to these QC metrics.
+
+## Filtering results
+
+This table summarizes the number of cells retained at each filtering step of the
+pipeline:
+
+ - **Unfiltered:** Total number of cells detected before any filtering
+ - **Filtered:** Cells remaining after removing empty cells
+ - **Thresholded:** Cells remaining after applying QC thresholds (_e.g._,
+   minimum number of genes, maximum mitochondrial percentage, _etc._)
+ - **De-doubled:** Final cell count after doublet removal
+
+```{python filtering-table}
+if has_input:
+    sizes = pd.read_csv("size_list.tsv", sep="\t")
+
+    # Set order of final data frame with prettified names
+    sizes_order = {
+        "sample": "Sample",
+        "unfiltered": "Unfiltered",
+        "filtered": "Filtered",
+        "thresholded": "Thresholded",
+        "dedoubleted": "De-doubled"
+    }
+
+    # Convert sizes to wide format with final column names
+    sizes_wide = (
+        sizes
+        .pivot(index="sample", columns="state", values="size")
+        .rename_axis(columns=None)
+        .reset_index()
+    )
+    sizes_wide = (
+        sizes_wide
+        [[col for col in sizes_order.keys() if col in sizes_wide.columns]]
+        .rename(columns=sizes_order)
+    )
+    display_table(sizes_wide)
+```
+
+## Violin plots
+
+The following violin plots show the distribution of the number of genes per
+counts and counts per spot, as well as the percentage of counts from
+mitochondrial genes, grouped across different metadata categories; click the
+different metadata categories to show their respective plots.
+
+```{python violin-plots}
+#| output: false
+def plot_qc_violin(adata, group):
+    """Function to create QC violin plots for a given grouping variable."""
+    fig, axs = plt.subplots(1, 3, figsize=(7.25, 2.5), constrained_layout=True)
+    for stat, ax in zip(qc_metrics, axs.flatten()):
+        sc.pl.violin(adata, keys=stat, groupby = group, jitter=0.4, size=0.1,
+            ax=ax, show=False)
+        rotate_x_labels(ax)
+        ax.title.set_text(stat)
+        ax.set_xlabel("")
+    return fig
+
+# Store plots in list for plotting inside a tabset
+violin_plots = []
+for group in qc_groups:
+    fig = plot_qc_violin(adata, group)
+    violin_plots.append((group, fig))
+```
+
+```{python violin-plots-tabset}
+#| output: asis
+create_tabset(violin_plots)
+```
+
+## Scatter plots
+
+The following scatter plots show the relationship between total counts and the
+number of detected genes for each cell, displayed per sample; click on the
+different sample names to show their respective plot.
+
+```{python scatter-plots}
+#| output: false
+def plot_qc_scatter(adata):
+    fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+    sc.pl.scatter(adata, x='total_counts', y='n_genes_by_counts', ax=ax,
+        show=False)
+    ax.set_xscale("log")
+    ax.set_yscale("log")
+    return fig
+
+# Store plots in a list for plotting inside a tabset
+scatter_plots = []
+for sample in samples:
+    adata_sample = adata[adata.obs['sample'] == sample]
+    fig = plot_qc_scatter(adata_sample)
+    scatter_plots.append((sample, fig))
+```
+
+```{python scatter-plots-tabset}
+#| output: asis
+create_tabset(scatter_plots)
+```
+
+## Top expressed genes
+
+The following plots displays the most highly expressed genes per sample, ranked
+by the fraction of total counts they represent; click on each sample name to
+show their respective plots.
+
+```{python top-genes}
+#| output: false
+top_genes_plots = []
+for sample in samples:
+    fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+    sc.pl.highest_expr_genes(adata[adata.obs['sample'] == sample, :], n_top=20,
+        ax=ax, show=False)
+    ax.title.set_text(sample)
+    top_genes_plots.append((sample, fig))
+```
+
+```{python top-genes-tabsets}
+#| output: asis
+create_tabset(top_genes_plots)
+```
+
+## Cell cycle scores
+
+The following plots show the cell cycle scores for each sample as well as the
+predicted cell cycle phase for each cell; click the different tabs to see their
+respective plot.
+
+```{python cell-cycle}
+#| output: false
+cell_cycle_plots = []
+if 'S_score' and 'G2M_score' in adata.obs:
+
+    # Cell cycle score violin plots
+    for score in ['S_score', 'G2M_score']:
+        fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+        sc.pl.violin(adata, score, groupby='sample', jitter=0.4, size=1, ax=ax,
+            show=False)
+        rotate_x_labels(ax)
+        ax.title.set_text('')
+        ax.set_xlabel('')
+        cell_cycle_plots.append((score, fig))
+
+    # Cell cycle phase scatterplot
+    fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+    sc.pl.scatter(adata, x='S_score', y='G2M_score', color='phase', ax=ax,
+        show=False)
+    ax.title.set_text('')
+    cell_cycle_plots.append(('Phase', fig))
+else:
+    display(Markdown('Cell cycle scores not present in data.'))
+```
+
+```{python cell-cycle-tabset}
+#| output: asis
+if cell_cycle_plots:
+    create_tabset(cell_cycle_plots)
+```
+
+# Cell types
+
+This section presents automated cell type annotations generated using
+reference-based methods. Bar plots show the proportion of each cell type across
+samples, with the most abundant cell types highlighted and remaining types
+grouped as `Other`; click each reference name to show the cell type distribution
+for that reference.
+
+```{python cell-types}
+#| output: false
+def calculate_ct_stats(adata, ct_col, sample_col="sample"):
+    """
+    Calculate per-sample cell type proportions, sorted by mean.
+    """
+    ct_stats = (
+        adata.obs
+        .groupby(sample_col)[ct_col]
+        .value_counts(normalize=True)
+        .unstack(level=0, fill_value=0)
+    )
+    ct_stats['mean'] = ct_stats.mean(axis=1)
+    ct_stats = ct_stats.sort_values(by="mean", ascending=False)
+    return ct_stats
+
+def plot_qc_celltype(stats):
+    fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+    palette = list(sc.pl.palettes.default_20[: 10]) + ['#c0c0c0']
+    stats.plot.bar(stacked=True, ax=ax, color=palette)
+    ax.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
+    rotate_x_labels(ax)
+    ax.set_ylabel("Percentage (%)")
+    ax.set_xlabel("")
+    return fig
+
+# Get column names
+ct_columns = [col for col in adata.obs.columns if '.pruned.labels' in col]
+
+# Loop over cell type columns
+ct_plots = []
+ct_names = []
+for ct_col in ct_columns:
+
+    # Convert to data frame and order by mean
+    ct_stats = calculate_ct_stats(adata, ct_col)
+
+    # Create obs column with only top cell types for UMAPs
+    top_celltypes = ct_stats.head(10).index.to_list()
+    adata.obs[f'{ct_col}_top10'] = adata.obs[ct_col].astype(str).where(
+        adata.obs[ct_col].isin(top_celltypes), other='Other')
+    adata.obs[f'{ct_col}_top10'] = pd.Categorical(
+        adata.obs[f'{ct_col}_top10'], categories=top_celltypes + ['Other'])
+
+    # Truncate column name and store for conversion table
+    ct_name = ct_col.split('__')[0].split('.')[0]
+    ct_names.append((ct_name, ct_col))
+
+    # Calculate proportion of non-top cell types
+    ct_stats_top = ct_stats.head(10)
+    other = 1 - ct_stats_top.sum(axis=0)
+    other.name = 'Other'
+    ct_stats_top = pd.concat([ct_stats_top, other.to_frame().T]) * 100
+    ct_stats_top = ct_stats_top.T
+
+    # Plot top cell types
+    fig = plot_qc_celltype(ct_stats_top)
+    ct_plots.append((ct_name, fig))
+```
+
+```{python cell-types-tabset}
+#| output: asis
+if ct_plots:
+    create_tabset(ct_plots)
+```
+
+`{python} Markdown("::: {.callout-tip collapse='true' title='Expand to see full reference names'}") if ct_names else Markdown(" ")`
+```{python cell-types-table}
+if ct_names:
+    display_table(
+        pd.DataFrame(ct_names, columns=['Truncated name', 'Full name'])
+    )
+```
+`{python} Markdown(":::") if ct_names else Markdown(" ")`
+
+# UMAPs
+
+_Uniform Manifold Approximation and Projection_ (UMAP) provides a
+two-dimensional visualization of the high-dimensional single-cell data, allowing
+visual assessment of cell populations and batch effects. Each integration method
+run by the pipeline has its own section with its own UMAP, where the UMAP is
+coloured by the following:
+
+ - **Sample, batch, and label:** To assess batch effects and sample mixing
+ - **QC metrics:** To identify technical artefacts in the embedding
+ - **Cell type annotations:** To visualize the distribution of annotated populations
+ - **Cluster assignments:** To examine unsupervised clustering results
+
+```{python qc-only-callout}
+if qc_only:
+    display(Markdown(dedent(
+        """
+        ::: {.callout-tip title='Missing UMAPs'}
+        The pipeline was run with the `--qc_only` parameter, which does not run any
+        integration, dimensionality reduction or clustering on the data. Thus, only
+        the QC-related plots above are shown, as there are no UMAPs available; you
+        will find the final `concatenated.h5ad` file in the `reports/artifacts/`
+        directory.
+        :::
+        """
+    )))
+```
+
+```{python umaps}
+#| output: false
+def plot_qc_umap(adata, basis, group):
+    palette = list(sc.pl.palettes.default_20[: 10]) + ['#c0c0c0']
+    fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+    sc.pl.embedding(adata, basis=basis, color=group, ax=ax, show=False,
+        title="", palette=palette)
+    return fig
+
+# Loop over existing UMAPs
+umaps = [obsm for obsm in adata.obsm if 'umap' in obsm]
+umap_dict = {}
+for umap in umaps:
+
+    # Find all performed clusterings
+    umap_pattern = umap.split('_')[1]
+    umap_name = umap_pattern.split('-')[0]
+    clusterings = [col for col in adata.obs.columns if umap_pattern in col]
+
+    # Define grouping parameters
+    ct_columns_top10 = [col + '_top10' for col in ct_columns]
+    groups = qc_groups + qc_metrics + ct_columns_top10 + clusterings
+
+    # Store plots in a list
+    umap_plots = []
+    for group in groups:
+        # Truncate long cell type column names and subset to top 10 cell types
+        if '.pruned.labels' in group:
+            group_name = group.split('__')[0].split('.')[0]
+        else:
+            group_name = group
+        fig = plot_qc_umap(adata, umap, group)
+        umap_plots.append((group_name, fig))
+
+    # Store plot list inside dictionary for programmatic header/tabset creation
+    umap_dict[umap_name] = umap_plots
+```
+
+```{python umaps-integration-tabset}
+#| output: asis
+for integration_method in umap_dict.keys():
+    display(Markdown(f"## {integration_method}"))
+    create_tabset(umap_dict[integration_method])
+```

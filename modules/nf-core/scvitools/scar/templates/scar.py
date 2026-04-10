@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+# Disable OpenMP CPU topology detection for MacOS compatibility
+import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
 import anndata as ad
 import scvi
 import yaml

@@ -4,16 +4,16 @@ process SCANPY_PLOTQC {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ba/baee2c1ee0f6cd0b6a18a6c71bad03370139a77e53cad06464b065f795d52cd0/data'
-        : 'community.wave.seqera.io/library/pyyaml_scanpy:a3a797e09552fddc'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/45/45339bf761a2cf0cdb058492bc37f3df8b05b363731d491d1d3a14e9ba0b8f55/data'
+        : 'community.wave.seqera.io/library/harmonypy_anndata_leidenalg_numpy_pruned:43066d5f86f18261'}"
 
     input:
     tuple val(meta), path(h5ad)
 
     output:
     tuple val(meta), path("*.png"), emit: plots
-    path ("*_mqc.json"), emit: multiqc_files
-    path "versions.yml", emit: versions
+    path ("*_mqc.json")           , emit: multiqc_files
+    path "versions.yml"           , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when

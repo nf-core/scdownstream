@@ -25,17 +25,16 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-            { assert process.success },
-            { assert snapshot(
-                process.out.versions,
-                process.out.predictions,
-                // Hashing does not work due to this issue:
-                // https://github.com/scverse/anndataR/issues/272
-                file(process.out.h5ad.get(0).get(1)).exists(),
-                file(process.out.h5ad.get(0).get(1)).size()
-            ).match() }
-            )
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "hybrid_call" in obs.colnames
+                assert "hybrid_score" in obs.colnames
+            }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.obs.colnames
+            ).match()
         }
 
     }
@@ -60,10 +59,9 @@ nextflow_process {
         }
 
         then {
-            assertAll(
-            { assert process.success },
-            { assert snapshot(process.out).match() }
-            )
+            assert process.success
+
+            assert snapshot(process.out).match()
         }
 
     }
