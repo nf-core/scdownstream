@@ -33,7 +33,7 @@ if "${reference_model}":
     sca.utils.add_annotations(adata_processing, "${reference_model}", min_genes=12, clean=True)
 else:
     raise ValueError("Reference model is required for EXPIMAP. Please provide a path to the reference model.")
-    
+
 # Initialization of the model with the reference network
 intr_cvae = sca.models.EXPIMAP(
     adata=adata_processing,
@@ -54,7 +54,7 @@ intr_cvae.train(
 
 # Extract the interpretable latent representation
 emb = intr_cvae.get_latent(only_active=True)
-adata.obsm['X_emb'] = emb  
+adata.obsm['X_emb'] = emb
 
 adata.write_h5ad("${prefix}.h5ad")
 df = pd.DataFrame(emb, index=adata.obs_names)
@@ -72,4 +72,3 @@ versions = {
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)
-

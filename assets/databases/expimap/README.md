@@ -1,11 +1,13 @@
 # EXPIMAP Pathway Database
 
 ## Overview
+
 This directory contains pathway databases used by the EXPIMAP module for interpretable embedding and pathway analysis.
 
 ## Files
 
 ### pathways.gmt
+
 - **Format**: Gene Matrix Transposed (GMT)
 - **Content**: Reactome pathway gene sets
 - **Description**: Contains biological pathway gene sets from the Reactome database that are used to construct the latent space in EXPIMAP models. Each row represents a pathway with its associated genes.
@@ -18,6 +20,7 @@ This directory contains pathway databases used by the EXPIMAP module for interpr
 The pathway file is automatically used by the EXPIMAP integration method. Users can specify a custom pathway file via the `expimap_gmt` parameter in the pipeline parameters, or use the default provided in this directory.
 
 Example:
+
 ```bash
 nextflow run nf-core/scdownstream \
   --input samplesheet.csv \
