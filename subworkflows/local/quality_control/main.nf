@@ -23,7 +23,7 @@ workflow QUALITY_CONTROL {
     duplicate_var_resolution      //   value: string
     aggregate_isoforms            //   value: boolean
     doublet_detection_methods     //   value: list of strings
-    doublet_detection_threshold   //   value: float
+    doublet_detection_threshold   //   value: integer
     scvi_max_epochs               //   value: integer
     mito_genes                    //   value: string (path) or null
     sample_n                      //   value: string (integer > 1 or null)
