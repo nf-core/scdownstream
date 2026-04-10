@@ -30,6 +30,8 @@ nextflow_workflow {
                 input[7] = []
                 input[8] = []
                 input[9] = null
+                input[10] = null
+                input[11] = 'condition'
                 """
             }
         }
@@ -62,6 +64,8 @@ nextflow_workflow {
                 input[7] = []
                 input[8] = []
                 input[9] = null
+                input[10] = null
+                input[11] = 'condition'
                 """
             }
         }
@@ -101,6 +105,8 @@ nextflow_workflow {
                 input[7] = []
                 input[8] = []
                 input[9] = null
+                input[10] = null
+                input[11] = 'condition'
                 """
             }
         }
@@ -133,6 +139,8 @@ nextflow_workflow {
                 input[7] = []
                 input[8] = []
                 input[9] = null
+                input[10] = null
+                input[11] = 'condition'
                 """
             }
         }
@@ -176,6 +184,8 @@ nextflow_workflow {
                 input[7] = []
                 input[8] = []
                 input[9] = null
+                input[10] = null
+                input[11] = 'condition'
                 """
             }
         }
@@ -208,6 +218,8 @@ nextflow_workflow {
                 input[7] = []
                 input[8] = []
                 input[9] = null
+                input[10] = null
+                input[11] = 'condition'
                 """
             }
         }
@@ -247,6 +259,8 @@ nextflow_workflow {
                 input[7] = []
                 input[8] = []
                 input[9] = null
+                input[10] = null
+                input[11] = 'condition'
                 """
             }
         }
@@ -254,6 +268,81 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - pca - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                ])
+                input[1] = false
+                input[2] = 2000
+                input[3] = []
+                input[4] = ['pca']
+                input[5] = null
+                input[6] = null
+                input[7] = []
+                input[8] = []
+                input[9] = null
+                input[10] = null
+                input[11] = 'condition'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - pca") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                ])
+                input[1] = false
+                input[2] = 2000
+                input[3] = []
+                input[4] = ['pca']
+                input[5] = null
+                input[6] = null
+                input[7] = []
+                input[8] = []
+                input[9] = null
+                input[10] = null
+                input[11] = 'condition'
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.integrations[0][1])
+            assert workflow.success
+            assert "X_emb" in adata.obsm
+            assert snapshot(
+                workflow.out.versions,
+                adata.yaml
+            ).match()
         }
 
     }
