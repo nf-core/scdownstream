@@ -127,8 +127,8 @@
                     "type": "string",
                     "default": "scrublet",
                     "description": "Specify the tools to use for doublet detection. Setting to 'none' will skip this step",
-                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: solo, scrublet, doubletdetection, scds",
-                    "pattern": "^(none|((solo|scrublet|doubletdetection|scds)?,?)*[^,]+$)"
+                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: solo, scrublet, doubletdetection, scds, scdblfinder",
+                    "pattern": "^(none|(solo|scrublet|doubletdetection|scds|scdblfinder)(,(solo|scrublet|doubletdetection|scds|scdblfinder))*)$"
                 },
                 "doublet_detection_threshold": {
                     "type": "integer",
@@ -187,8 +187,7 @@
                     "type": "string",
                     "default": "https://zenodo.org/records/10685499/files/model_v1.1.tar.gz",
                     "description": "Path to a pre-trained scimilarity model, only relevant if scimilarity is selected in `integration_methods`. If provided, the model will be used for integration. Otherwise, a new model will be trained.",
-                    "help_text": "The file can be a .tar.gz file or the corresponding unzipped directory. The official models are shared via [Zenodo](https://zenodo.org/record/10685499).",
-                    "exists": true
+                    "help_text": "The file can be a .tar.gz file or the corresponding unzipped directory. The official models are shared via [Zenodo](https://zenodo.org/record/10685499)."
                 }
             }
         },

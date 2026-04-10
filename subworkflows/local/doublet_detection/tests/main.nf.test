@@ -48,7 +48,7 @@ nextflow_workflow {
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
-                input[1] = ['scds', 'solo', 'scrublet']
+                input[1] = ['scds', 'solo', 'scrublet', 'scdblfinder']
                 input[2] = 2
                 input[3] = 1
                 """
@@ -59,8 +59,8 @@ nextflow_workflow {
             def adata = anndata(workflow.out.h5ad[0][1])
 
             assert workflow.success
-            assert adata.n_obs > 5960
-            assert adata.n_obs < 5985
+            assert adata.n_obs > 5800
+            assert adata.n_obs < 5900
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml },
                 adata.yaml

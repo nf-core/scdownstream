@@ -122,6 +122,13 @@
                 "errorMessage": "Number of cells expected from the experimental design, used as input to cellbender.",
                 "meta": ["expected_cells"]
             },
+            "doublet_rate": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "errorMessage": "doublet_rate must be a number between 0 and 1.",
+                "meta": ["doublet_rate"]
+            },
             "ambient_correction": {
                 "type": "boolean",
                 "default": true,

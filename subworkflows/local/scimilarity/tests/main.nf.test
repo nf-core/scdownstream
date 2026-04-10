@@ -26,7 +26,9 @@ nextflow_workflow {
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
-                input[1] = 'model.tar.gz'
+                // NOTE: This is a workaround to avoid the test failing because the model file is too large
+                // But for stub tests, any file can be used
+                input[1] = params.modules_testdata_base_path + 'generic/tar/hello.tar.gz'
                 """
             }
         }
@@ -53,7 +55,9 @@ nextflow_workflow {
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
-                input[1] = 'model'
+                // NOTE: This is a workaround to avoid the test failing because the model file is too large
+                // But for stub tests, any file can be used
+                input[1] = params.modules_testdata_base_path + 'generic/txt/hello.txt'
                 """
             }
         }

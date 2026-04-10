@@ -16,7 +16,7 @@ workflow SCIMILARITY {
     ch_scimilarity_model = channel.value(
         [
             [id: 'scimilarity_model'],
-            file(scimilarity_model),
+            file(scimilarity_model, checkIfExists: true),
         ]
     )
 
