@@ -5,6 +5,8 @@ include { SCVITOOLS_SCANVI   } from '../../../modules/local/scvitools/scanvi'
 include { SCANPY_HARMONY     } from '../../../modules/local/scanpy/harmony'
 include { SCANPY_BBKNN       } from '../../../modules/local/scanpy/bbknn'
 include { SCANPY_COMBAT      } from '../../../modules/local/scanpy/combat'
+include { SCANPY_PCA         } from '../../../modules/local/scanpy/pca'
+include { SCARCHES_EXPIMAP   } from '../../../modules/local/scarches/expimap'
 include { SEURAT_INTEGRATION } from '../../../modules/local/seurat/integration'
 include { ADATA_READRDS      } from '../../../modules/local/adata/readrds'
 include { SCIMILARITY        } from '../scimilarity'
@@ -21,6 +23,8 @@ workflow INTEGRATE {
     scvi_categorical_covariates // list of string
     scvi_continuous_covariates  // list of string
     scimilarity_model           // path
+    expimap_gmt                 // path
+    condition_col               // string
 
     main:
     ch_versions = channel.empty()
@@ -133,6 +137,30 @@ workflow INTEGRATE {
         ch_versions = ch_versions.mix(SCANPY_COMBAT.out.versions)
         ch_integrations = ch_integrations.mix(SCANPY_COMBAT.out.h5ad)
         ch_obsm = ch_obsm.mix(SCANPY_COMBAT.out.obsm)
+    }
+
+    if (methods.contains('pca')) {
+        SCANPY_PCA (
+            ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'pca'], h5ad] },
+            "X_emb"
+        )
+        ch_versions = ch_versions.mix(SCANPY_PCA.out.versions)
+        ch_integrations = ch_integrations.mix(SCANPY_PCA.out.h5ad)
+        ch_obsm = ch_obsm.mix(SCANPY_PCA.out.obsm)
+    }
+
+    if (methods.contains('expimap')) {
+        SCARCHES_EXPIMAP (
+            ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'expimap'], h5ad] },
+            expimap_gmt
+            ? channel.value([[id: 'expimap'], file(expimap_gmt, checkIfExists: true)])
+            : channel.value([[id: 'expimap'], file("${projectDir}/assets/databases/expimap/pathways.gmt", checkIfExists: true)]),
+            condition_col,
+            "X"
+        )
+        ch_versions = ch_versions.mix(SCARCHES_EXPIMAP.out.versions)
+        ch_integrations = ch_integrations.mix(SCARCHES_EXPIMAP.out.h5ad)
+        ch_obsm = ch_obsm.mix(SCARCHES_EXPIMAP.out.obsm)
     }
 
     if (methods.contains('scimilarity')) {

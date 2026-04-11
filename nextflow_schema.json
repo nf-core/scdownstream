@@ -152,8 +152,8 @@
                     "type": "string",
                     "default": "scvi",
                     "description": "Specify the tool to use for integration",
-                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, harmony, bbknn, combat, seurat",
-                    "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat|scimilarity)(,(scvi|scanvi|harmony|bbknn|combat|seurat|scimilarity))*)?$"
+                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, harmony, bbknn, combat, seurat, scimilarity, pca, expimap",
+                    "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat|scimilarity|pca|expimap)(,(scvi|scanvi|harmony|bbknn|combat|seurat|scimilarity|pca|expimap))*)?$"
                 },
                 "integration_hvgs": {
                     "type": "integer",
@@ -185,9 +185,18 @@
                 },
                 "scimilarity_model": {
                     "type": "string",
+                    "format": "file-path",
                     "default": "https://zenodo.org/records/10685499/files/model_v1.1.tar.gz",
                     "description": "Path to a pre-trained scimilarity model, only relevant if scimilarity is selected in `integration_methods`. If provided, the model will be used for integration. Otherwise, a new model will be trained.",
                     "help_text": "The file can be a .tar.gz file or the corresponding unzipped directory. The official models are shared via [Zenodo](https://zenodo.org/record/10685499)."
+                },
+                "expimap_gmt": {
+                    "type": "string",
+                    "description": "Path to pathway database file (GMT format) for EXPIMAP, only relevant if expimap is selected in `integration_methods`. If not provided, the default Reactome pathways will be used.",
+                    "help_text": "Other EXPIMAP training options are not pipeline parameters. Set them with `process.withName: SCARCHES_EXPIMAP { ext.args = '...' }` in a custom config (see the module Python template for flags).",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.gmt$",
+                    "exists": true
                 }
             }
         },

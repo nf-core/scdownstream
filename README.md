@@ -61,6 +61,7 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
       - [BBKNN](https://github.com/Teichlab/bbknn)
       - [Combat](https://scanpy.readthedocs.io/en/latest/api/generated/scanpy.pp.combat.html)
       - [Seurat](https://satijalab.org/seurat/articles/integration_introduction)
+      - [PCA](https://scanpy.readthedocs.io/en/stable/generated/scanpy.pp.pca.html)
 3. Cell type annotation
    - [CellTypist](https://www.celltypist.org/)
    - [SingleR](https://www.bioconductor.org/packages/release/bioc/html/SingleR.html)

@@ -16,6 +16,8 @@ workflow COMBINE {
     scvi_categorical_covariates //   value: string
     scvi_continuous_covariates  //   value: string
     scimilarity_model           //   value: string
+    expimap_gmt                 //   value: string
+    condition_col               //   value: string
 
     main:
 
@@ -48,7 +50,9 @@ workflow COMBINE {
         scanvi_model,
         scvi_categorical_covariates,
         scvi_continuous_covariates,
-        scimilarity_model
+        scimilarity_model,
+        expimap_gmt,
+        condition_col
     )
     ch_versions      = ch_versions.mix(INTEGRATE.out.versions)
     ch_var           = ch_var.mix(INTEGRATE.out.var)

@@ -147,52 +147,32 @@
     },
     "Should run without failures - symbol_col index, unify_gene_symbols true": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test",
-                            "symbol_col": "index",
-                            "batch_col": "batch",
-                            "label_col": "label",
-                            "condition_col": "condition",
-                            "unknown_label": "unknown",
-                            "counts_layer": "X"
-                        },
-                        "test_unified.h5ad:md5,95eaecd7513a2cec94ff17aa626d11cd"
-                    ]
-                ],
-                "1": [
-                    
-                ],
-                "2": [
-                    "versions.yml:md5,36bf3fb866d0085291382bf6713f7698",
-                    "versions.yml:md5,56975dcf8aab71705ad7f822233409b8",
-                    "versions.yml:md5,f4baeb211a033b2534fb83ba7ec2cd86"
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test",
-                            "symbol_col": "index",
-                            "batch_col": "batch",
-                            "label_col": "label",
-                            "condition_col": "condition",
-                            "unknown_label": "unknown",
-                            "counts_layer": "X"
-                        },
-                        "test_unified.h5ad:md5,95eaecd7513a2cec94ff17aa626d11cd"
-                    ]
-                ],
-                "multiqc_files": [
-                    
-                ],
-                "versions": [
-                    "versions.yml:md5,36bf3fb866d0085291382bf6713f7698",
-                    "versions.yml:md5,56975dcf8aab71705ad7f822233409b8",
-                    "versions.yml:md5,f4baeb211a033b2534fb83ba7ec2cd86"
-                ]
-            },
+            [
+                {
+                    "UNIFY:UPSET_GENES_RAW": {
+                        "anndata": "0.12.10",
+                        "matplotlib": "3.10.8",
+                        "python": "3.13.12",
+                        "upsetplot": "0.9.0"
+                    }
+                },
+                {
+                    "UNIFY:UPSET_GENES": {
+                        "anndata": "0.12.10",
+                        "matplotlib": "3.10.8",
+                        "python": "3.13.12",
+                        "upsetplot": "0.9.0"
+                    }
+                },
+                {
+                    "UNIFY:ADATA_UNIFY": {
+                        "anndata": "0.12.10",
+                        "numpy": "2.3.5",
+                        "python": "3.13.12",
+                        "scipy": "1.17.1"
+                    }
+                }
+            ],
             {
                 "n_obs": 12940,
                 "n_vars": 9887,
@@ -232,10 +212,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-04-01T23:09:51.012417",
+        "timestamp": "2026-04-10T22:40:41.990546048",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
         }
     },
     "Should run without failures - symbol_col index, unify_gene_symbols false - stub": {
@@ -350,52 +330,31 @@
     },
     "Should run without failures - symbol_col none, unify_gene_symbols false": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test",
-                            "symbol_col": "index",
-                            "batch_col": "batch",
-                            "label_col": "label",
-                            "condition_col": "condition",
-                            "unknown_label": "unknown",
-                            "counts_layer": "X"
-                        },
-                        "test_unified.h5ad:md5,c8f361ead8a279fe83ed22aae65ad769"
-                    ]
-                ],
-                "1": [
-                    
-                ],
-                "2": [
-                    "versions.yml:md5,56975dcf8aab71705ad7f822233409b8",
-                    "versions.yml:md5,d206caf8bf0d007a1c248652300a3834",
-                    "versions.yml:md5,f4baeb211a033b2534fb83ba7ec2cd86"
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test",
-                            "symbol_col": "index",
-                            "batch_col": "batch",
-                            "label_col": "label",
-                            "condition_col": "condition",
-                            "unknown_label": "unknown",
-                            "counts_layer": "X"
-                        },
-                        "test_unified.h5ad:md5,c8f361ead8a279fe83ed22aae65ad769"
-                    ]
-                ],
-                "multiqc_files": [
-                    
-                ],
-                "versions": [
-                    "versions.yml:md5,56975dcf8aab71705ad7f822233409b8",
-                    "versions.yml:md5,d206caf8bf0d007a1c248652300a3834",
-                    "versions.yml:md5,f4baeb211a033b2534fb83ba7ec2cd86"
-                ]
-            },
+            [
+                {
+                    "UNIFY:UPSET_GENES": {
+                        "anndata": "0.12.10",
+                        "matplotlib": "3.10.8",
+                        "python": "3.13.12",
+                        "upsetplot": "0.9.0"
+                    }
+                },
+                {
+                    "UNIFY:MYGENE": {
+                        "anndata": "0.12.7",
+                        "mygene": "3.2.2",
+                        "python": "3.13.11"
+                    }
+                },
+                {
+                    "UNIFY:ADATA_UNIFY": {
+                        "anndata": "0.12.10",
+                        "numpy": "2.3.5",
+                        "python": "3.13.12",
+                        "scipy": "1.17.1"
+                    }
+                }
+            ],
             {
                 "n_obs": 12940,
                 "n_vars": 9887,
@@ -435,7 +394,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-29T11:19:53.355480172",
+        "timestamp": "2026-04-10T22:39:18.670580545",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.2"

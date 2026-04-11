@@ -58,6 +58,7 @@ workflow SCDOWNSTREAM {
     scvi_categorical_covariates   //   value: string
     scvi_continuous_covariates    //   value: string
     scimilarity_model             //   value: string
+    expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
     skip_rankgenesgroups          //   value: boolean
     base_embeddings               //   value: string
@@ -163,6 +164,9 @@ workflow SCDOWNSTREAM {
             //
             // Combine samples and perform integration
             //
+            grouping_col = "label"
+            condition_col = "condition"
+
             COMBINE (
                 ch_h5ad,
                 ch_base,
@@ -175,6 +179,8 @@ workflow SCDOWNSTREAM {
                 scvi_categorical_covariates,
                 scvi_continuous_covariates,
                 scimilarity_model,
+                expimap_gmt,
+                condition_col,
             )
             ch_versions = ch_versions.mix(COMBINE.out.versions)
             ch_obs = ch_obs.mix(COMBINE.out.obs)
@@ -184,8 +190,6 @@ workflow SCDOWNSTREAM {
             ch_finalization_base = COMBINE.out.h5ad
 
             ch_label_grouping = COMBINE.out.h5ad_inner
-            grouping_col = "label"
-            condition_col = "condition"
         }
     }
     else {
