@@ -36,12 +36,13 @@ input:
   - reference_model:
       type: file
       pattern: "*.{gmt,gmx}"
-      description: "Optional gene module reference file (GMD/GMT format) for biological knowledge"
-      required: false
+      description: "Gene module reference file (GMT/GMX) for biological knowledge"
 
-  - batch_col:
+  - condition_col:
       type: string
-      description: "Column name in adata.obs containing batch/condition information"
+      description: |
+        Required: column name in adata.obs passed to EXPIMAP as `condition_key` (must exist; no silent creation).
+        Empty or none/null is rejected — scArches EXPIMAP cannot train without a condition column.
 
   - counts_layer:
       type: string
@@ -51,7 +52,7 @@ output:
   - h5ad:
       type: file
       pattern: "*.h5ad"
-      description: "Output h5ad file with EXPIMAP embedding in obsm['X_expimap_latent']"
+      description: "Output h5ad with EXPIMAP embedding in obsm['X_emb']"
 
   - obsm:
       type: file
@@ -64,6 +65,6 @@ output:
       description: "File containing software versions"
 
 authors:
-  - "@your_github_username"
+  - "@nf-core"
 maintainers:
-  - "@your_github_username"
+  - "@nf-core"

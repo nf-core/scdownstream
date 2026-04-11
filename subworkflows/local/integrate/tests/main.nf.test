@@ -347,4 +347,79 @@ nextflow_workflow {
 
     }
 
+    test("Should run without failures - expimap - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                ])
+                input[1] = true
+                input[2] = -1
+                input[3] = []
+                input[4] = ['expimap']
+                input[5] = null
+                input[6] = null
+                input[7] = []
+                input[8] = []
+                input[9] = null
+                input[10] = null
+                input[11] = 'batch'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - expimap") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                ])
+                input[1] = true
+                input[2] = -1
+                input[3] = []
+                input[4] = ['expimap']
+                input[5] = null
+                input[6] = null
+                input[7] = []
+                input[8] = []
+                input[9] = null
+                input[10] = null
+                input[11] = 'batch'
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.integrations[0][1])
+            assert workflow.success
+            assert "X_emb" in adata.obsm
+            assert snapshot(
+                workflow.out.versions,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
 }

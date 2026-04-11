@@ -40,16 +40,50 @@
     },
     "Should run without failures": {
         "content": [
-            36984802,
-            24776608,
-            [
-                "versions.yml:md5,b70dc00692171c2b140da84cca2e8be2"
-            ]
+            {
+                "SCARCHES_EXPIMAP": {
+                    "scarches": "0.6.1"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
         ],
-        "timestamp": "2026-03-17T01:26:54.147983034",
+        "timestamp": "2026-04-11T15:26:20.104434109",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "25.10.2"
         }
     }
 }

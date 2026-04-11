@@ -539,5 +539,102 @@
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
         }
+    },
+    "Should run without failures - expimap": {
+        "content": [
+            [
+                "versions.yml:md5,d64f7e69031a652fb54edb32c6a0b948"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-04-11T09:15:35.018217162",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run without failures - expimap - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "expimap"
+                        },
+                        "expimap.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    "X_expimap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "expimap"
+                        },
+                        "expimap.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_expimap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-04-11T09:14:13.34716941",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
     }
 }
