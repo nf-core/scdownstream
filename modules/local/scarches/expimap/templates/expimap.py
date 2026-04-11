@@ -32,23 +32,32 @@ parser.add_argument(
     "--hidden-layer-sizes",
     nargs="+",
     type=int,
-    default=[256, 256, 256],
+    default=None,
 )
 parser.add_argument(
     "--recon-loss",
-    default="nb",
+    default=None,
     choices=["nb", "zinb", "poisson", "normal"],
 )
-parser.add_argument("--n-epochs", type=int, default=400)
-parser.add_argument("--alpha-epoch-anneal", type=int, default=100)
-parser.add_argument("--alpha", type=float, default=0.7)
-parser.add_argument("--alpha-kl", type=float, default=0.5)
-parser.add_argument(
+parser.add_argument("--n-epochs", type=int, default=None)
+parser.add_argument("--alpha-epoch-anneal", type=int, default=None)
+parser.add_argument("--alpha", type=float, default=None)
+parser.add_argument("--alpha-kl", type=float, default=None)
+early = parser.add_mutually_exclusive_group()
+early.add_argument(
+    "--use-early-stopping",
+    dest="use_early_stopping",
+    action="store_const",
+    const=True,
+    default=None,
+)
+early.add_argument(
     "--no-use-early-stopping",
     dest="use_early_stopping",
-    action="store_false",
+    action="store_const",
+    const=False,
+    default=None,
 )
-parser.set_defaults(use_early_stopping=True)
 cli = parser.parse_args(shlex.split(args_str) if args_str.strip() else [])
 
 adata_processing = adata.copy()
@@ -77,20 +86,28 @@ else:
         "Reference model is required for EXPIMAP. Please provide a path to the reference model."
     )
 
-intr_cvae = sca.models.EXPIMAP(
-    adata=adata_processing,
-    condition_key=condition_key,
-    hidden_layer_sizes=list(cli.hidden_layer_sizes),
-    recon_loss=cli.recon_loss,
-)
+expimap_kw = {
+    "adata": adata_processing,
+    "condition_key": condition_key,
+}
+if cli.hidden_layer_sizes is not None:
+    expimap_kw["hidden_layer_sizes"] = list(cli.hidden_layer_sizes)
+if cli.recon_loss is not None:
+    expimap_kw["recon_loss"] = cli.recon_loss
+intr_cvae = sca.models.EXPIMAP(**expimap_kw)
 
-intr_cvae.train(
-    n_epochs=cli.n_epochs,
-    alpha_epoch_anneal=cli.alpha_epoch_anneal,
-    alpha=cli.alpha,
-    alpha_kl=cli.alpha_kl,
-    use_early_stopping=cli.use_early_stopping,
-)
+train_kw = {}
+for name in (
+    "n_epochs",
+    "alpha_epoch_anneal",
+    "alpha",
+    "alpha_kl",
+    "use_early_stopping",
+):
+    val = getattr(cli, name)
+    if val is not None:
+        train_kw[name] = val
+intr_cvae.train(**train_kw)
 
 emb = intr_cvae.get_latent(only_active=True)
 adata.obsm["X_emb"] = emb
