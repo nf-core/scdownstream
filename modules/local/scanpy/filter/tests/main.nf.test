@@ -36,7 +36,11 @@ nextflow_process {
             assert process.success
             with(adata) {
                 assert "mt" in var.colnames
+                assert "ribo" in var.colnames
+                assert "hb" in var.colnames
                 assert "pct_counts_mt" in obs.colnames
+                assert "pct_counts_ribo" in obs.colnames
+                assert "pct_counts_hb" in obs.colnames
             }
             assert snapshot(
                 process.out,
@@ -77,7 +81,11 @@ nextflow_process {
             assert process.success
             with(adata) {
                 assert "mt" in var.colnames
+                assert "ribo" in var.colnames
+                assert "hb" in var.colnames
                 assert "pct_counts_mt" in obs.colnames
+                assert "pct_counts_ribo" in obs.colnames
+                assert "pct_counts_hb" in obs.colnames
             }
             assert snapshot(
                 process.out,
@@ -150,7 +158,11 @@ nextflow_process {
             assert process.success
             with(adata) {
                 assert "mt" in var.colnames
+                assert "ribo" in var.colnames
+                assert "hb" in var.colnames
                 assert "pct_counts_mt" in obs.colnames
+                assert "pct_counts_ribo" in obs.colnames
+                assert "pct_counts_hb" in obs.colnames
             }
             assert snapshot(
                 process.out,

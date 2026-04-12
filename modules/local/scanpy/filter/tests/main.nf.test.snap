@@ -30,7 +30,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,3ddef0332886d22405ed7878a6da13aa"
+                        "test_filtered.h5ad:md5,e4f0b8248a4c8bfd9653879432a52c40"
                     ]
                 ],
                 "1": [
@@ -41,7 +41,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,3ddef0332886d22405ed7878a6da13aa"
+                        "test_filtered.h5ad:md5,e4f0b8248a4c8bfd9653879432a52c40"
                     ]
                 ],
                 "versions": [
@@ -63,21 +63,27 @@
                         "n_counts",
                         "n_genes",
                         "n_genes_by_counts",
+                        "pct_counts_hb",
                         "pct_counts_mt",
+                        "pct_counts_ribo",
                         "sample",
                         "total_counts",
-                        "total_counts_mt"
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
+                        "hb",
                         "mean_counts",
                         "mt",
                         "n_cells",
                         "n_cells_by_counts",
                         "n_counts",
                         "pct_dropout_by_counts",
+                        "ribo",
                         "symbols",
                         "total_counts"
                     ]
@@ -102,10 +108,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-29T11:18:14.694442933",
+        "timestamp": "2026-04-12T07:36:49.081504",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - stub": {
@@ -149,7 +155,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,3ddef0332886d22405ed7878a6da13aa"
+                        "test_filtered.h5ad:md5,e4f0b8248a4c8bfd9653879432a52c40"
                     ]
                 ],
                 "1": [
@@ -160,7 +166,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,3ddef0332886d22405ed7878a6da13aa"
+                        "test_filtered.h5ad:md5,e4f0b8248a4c8bfd9653879432a52c40"
                     ]
                 ],
                 "versions": [
@@ -182,21 +188,27 @@
                         "n_counts",
                         "n_genes",
                         "n_genes_by_counts",
+                        "pct_counts_hb",
                         "pct_counts_mt",
+                        "pct_counts_ribo",
                         "sample",
                         "total_counts",
-                        "total_counts_mt"
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
+                        "hb",
                         "mean_counts",
                         "mt",
                         "n_cells",
                         "n_cells_by_counts",
                         "n_counts",
                         "pct_dropout_by_counts",
+                        "ribo",
                         "symbols",
                         "total_counts"
                     ]
@@ -221,10 +233,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-29T11:17:17.630245843",
+        "timestamp": "2026-04-12T07:36:37.608578",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - with custom mito genes": {
@@ -235,7 +247,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,3ddef0332886d22405ed7878a6da13aa"
+                        "test_filtered.h5ad:md5,e4f0b8248a4c8bfd9653879432a52c40"
                     ]
                 ],
                 "1": [
@@ -246,7 +258,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,3ddef0332886d22405ed7878a6da13aa"
+                        "test_filtered.h5ad:md5,e4f0b8248a4c8bfd9653879432a52c40"
                     ]
                 ],
                 "versions": [
@@ -268,21 +280,27 @@
                         "n_counts",
                         "n_genes",
                         "n_genes_by_counts",
+                        "pct_counts_hb",
                         "pct_counts_mt",
+                        "pct_counts_ribo",
                         "sample",
                         "total_counts",
-                        "total_counts_mt"
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
+                        "hb",
                         "mean_counts",
                         "mt",
                         "n_cells",
                         "n_cells_by_counts",
                         "n_counts",
                         "pct_dropout_by_counts",
+                        "ribo",
                         "symbols",
                         "total_counts"
                     ]
@@ -307,10 +325,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-29T11:20:39.503874531",
+        "timestamp": "2026-04-12T07:37:10.024007",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
         }
     }
 }
