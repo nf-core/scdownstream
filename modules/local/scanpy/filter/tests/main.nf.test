@@ -36,6 +36,7 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
+            assert adata.n_obs > 0
             with(adata) {
                 assert "mt" in var.colnames
                 assert "ribo" in var.colnames
@@ -83,6 +84,7 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
+            assert adata.n_obs > 0
             with(adata) {
                 assert "mt" in var.colnames
                 assert "ribo" in var.colnames
@@ -164,6 +166,7 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
+            assert adata.n_obs > 0
             with(adata) {
                 assert "mt" in var.colnames
                 assert "ribo" in var.colnames
