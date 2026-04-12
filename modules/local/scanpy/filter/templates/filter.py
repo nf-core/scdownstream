@@ -46,6 +46,8 @@ sc.pp.calculate_qc_metrics(
     inplace=True
 )
 adata = adata[adata.obs.pct_counts_mt < int("${max_mito_percentage}"), :].copy()
+adata = adata[adata.obs.pct_counts_ribo >= int("${min_ribo_percentage}"), :].copy()
+adata = adata[adata.obs.pct_counts_hb < int("${max_hb_percentage}"), :].copy()
 
 sc.pp.filter_cells(adata, min_counts=int("${min_counts_cell}"))
 sc.pp.filter_genes(adata, min_counts=int("${min_counts_gene}"))

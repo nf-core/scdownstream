@@ -26,7 +26,9 @@ nextflow_process {
                 input[4] = 50
                 input[5] = 50
                 input[6] = 50
-                input[7] = []
+                input[7] = 0
+                input[8] = 100
+                input[9] = []
                 """
             }
         }
@@ -71,7 +73,9 @@ nextflow_process {
                 input[4] = 50
                 input[5] = 50
                 input[6] = 50
-                input[7] = []
+                input[7] = 0
+                input[8] = 100
+                input[9] = []
                 """
             }
         }
@@ -115,7 +119,9 @@ nextflow_process {
                 input[4] = 50
                 input[5] = 50
                 input[6] = 50
-                input[7] = []
+                input[7] = 0
+                input[8] = 100
+                input[9] = []
                 """
             }
         }
@@ -147,7 +153,9 @@ nextflow_process {
                 input[4] = 50
                 input[5] = 50
                 input[6] = 50
-                input[7] = channel.of('POMP', 'DLG2')
+                input[7] = 0
+                input[8] = 100
+                input[9] = channel.of('POMP', 'DLG2')
                     .collectFile(name: 'mito_genes.txt')
                 """
             }
@@ -194,7 +202,9 @@ nextflow_process {
                 input[4] = 50
                 input[5] = 50
                 input[6] = 50
-                input[7] = []
+                input[7] = 0
+                input[8] = 100
+                input[9] = []
                 """
             }
         }

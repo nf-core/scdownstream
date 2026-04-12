@@ -138,6 +138,8 @@ workflow QUALITY_CONTROL {
             min_counts_gene: meta.min_counts_gene ?: 0
             min_counts_cell: meta.min_counts_cell ?: 0
             max_mito_percentage: meta.max_mito_percentage ?: 100
+            min_ribo_percentage: meta.min_ribo_percentage ?: 0
+            max_hb_percentage: meta.max_hb_percentage ?: 100
         }
     SCANPY_FILTER (
         ch_filtering.h5ad,
@@ -147,6 +149,8 @@ workflow QUALITY_CONTROL {
         ch_filtering.min_counts_gene,
         ch_filtering.min_counts_cell,
         ch_filtering.max_mito_percentage,
+        ch_filtering.min_ribo_percentage,
+        ch_filtering.max_hb_percentage,
         mito_genes ?: []
     )
     ch_h5ad = SCANPY_FILTER.out.h5ad
