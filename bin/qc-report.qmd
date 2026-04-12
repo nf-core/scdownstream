@@ -115,7 +115,13 @@ samples = adata.obs['sample'].cat.categories.to_list()
 
 # Define QC groups and metrics
 qc_groups = ["sample", "batch", "label"]
-qc_metrics = ['n_genes_by_counts', 'total_counts', 'pct_counts_mt']
+qc_metrics = [
+    "n_genes_by_counts",
+    "total_counts",
+    "pct_counts_mt",
+    "pct_counts_ribo",
+    "pct_counts_hb",
+]
 ```
 
 # Quality controls
@@ -178,13 +184,21 @@ different metadata categories to show their respective plots.
 #| output: false
 def plot_qc_violin(adata, group):
     """Function to create QC violin plots for a given grouping variable."""
-    fig, axs = plt.subplots(1, 3, figsize=(7.25, 2.5), constrained_layout=True)
-    for stat, ax in zip(qc_metrics, axs.flatten()):
+    fig, axs = plt.subplots(2, 3, figsize=(7.25, 5), constrained_layout=True)
+    axs_flat = axs.flatten()
+
+    # Plot for each metric
+    for stat, ax in zip(qc_metrics, axs_flat):
         sc.pl.violin(adata, keys=stat, groupby = group, jitter=0.4, size=0.1,
             ax=ax, show=False)
         rotate_x_labels(ax)
         ax.title.set_text(stat)
         ax.set_xlabel("")
+
+    # Hide any unused axes
+    for ax in axs_flat[len(qc_metrics):]:
+        ax.set_visible(False)
+
     return fig
 
 # Store plots in list for plotting inside a tabset
