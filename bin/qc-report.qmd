@@ -20,7 +20,6 @@ import matplotlib.pyplot as plt
 import scanpy as sc
 import anndata as ad
 import glob
-import sys
 from textwrap import dedent
 from IPython.display import display, Markdown
 ```
@@ -115,6 +114,7 @@ samples = adata.obs['sample'].cat.categories.to_list()
 
 # Define QC groups and metrics
 qc_groups = ["sample", "batch", "label"]
+qc_groups = [col for col in qc_groups if col in adata.obs.columns]
 qc_metrics = [
     "n_genes_by_counts",
     "total_counts",
@@ -122,6 +122,7 @@ qc_metrics = [
     "pct_counts_ribo",
     "pct_counts_hb",
 ]
+qc_metrics = [col for col in qc_metrics if col in adata.obs.columns]
 ```
 
 # Quality controls
