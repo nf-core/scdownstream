@@ -189,13 +189,29 @@ If the scVI/scANVI model was built during a previous run of the pipeline,
 you can also use the previous output AnnData file as a base,
 and the pipeline will aggregate the new samples onto the base AnnData.
 
-The following scenarious can be distinguished:
+Reference checkpoints are passed with two separate parameters: `scvi_model` (scVI `.pt`) and `scanvi_model` (scANVI `.pt`). Depending on the scenario you may need only one **or both**—for example, if `integration_methods` includes both `scvi` and `scanvi` while extending with `base_adata`, you must supply matching checkpoints for each.
 
-- **You have a reference scVI model from an arbitrary source (e.g. from a publication) and you want to map new data into the latent space described by the model.** In this case, you need to provide the path to the reference model via the `reference_model` parameter and set the `reference_model_type` parameter to `scvi`. Only `scvi` and `scanvi` may be used in the `integration_methods` parameter in this case. `scanvi` will only work if he input data in the samplesheet contains at least some cell type annotations. Using `scanvi` in addition to `scvi` as an integration method will extend the model so that it can be used for label transfer in future.
-- **You have a reference scANVI model from an arbitrary source (e.g. from a publication) and you want to map new data into the latent space described by the model and transfer cell type annotations to the new data.** In this case, you need to provide the path to the reference model via the `reference_model` parameter and set the `reference_model_type` parameter to `scanvi`. Only `scanvi` may be used in the `integration_methods` parameter in this case.
-- **You have a reference scVI/scANVI model as well as an output AnnData file from a previous run of the pipeline and you want to add more samples to the existing AnnData file.** In this case, you need to provide the path to the reference model via the `reference_model` parameter and set the `reference_model_type` parameter to either `scvi` or `scanvi`, depending on the type of the reference model. If an scANVI model is used, existing cell type annotations will be transferred to the new samples. The existing AnnData file should be provided via the `base_adata` parameter.
+The following scenarios can be distinguished:
 
-The pipeline will perform the preprocessing steps on the new samples as usual. During the integration step, the new samples will be mapped onto the latent space of the reference model. If `base_adata` is provided, the new samples will then be aggregated onto the base file. The clustering, dimensionality reduction etc. will then be performed on the integrated object.
+- **You have a reference scVI model from an arbitrary source (e.g. from a publication) and you want to map new data into the latent space described by the model.** Provide the path to the pre-trained scVI checkpoint (`.pt`) with the `scvi_model` parameter and include `scvi` in `integration_methods`. Only `scvi` and `scanvi` may be used in `integration_methods` in this case. `scanvi` will only work if the input data in the samplesheet contains at least some cell type annotations. Using `scanvi` in addition to `scvi` as an integration method will extend the model so that it can be used for label transfer in future.
+
+  ```bash
+  nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
+      --integration_methods scvi \
+      --scvi_model /path/to/scvi_model.pt
+  ```
+
+- **You have a reference scANVI model from an arbitrary source (e.g. from a publication) and you want to map new data into the latent space described by the model and transfer cell type annotations to the new data.** Provide the path to the pre-trained scANVI checkpoint (`.pt`) with the `scanvi_model` parameter and use only `scanvi` in `integration_methods`.
+
+  ```bash
+  nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
+      --integration_methods scanvi \
+      --scanvi_model /path/to/scanvi_model.pt
+  ```
+
+- **You have a reference scVI or scANVI model as well as an output AnnData file from a previous run of the pipeline and you want to add more samples to the existing AnnData file.** Provide the previous integrated object with `base_adata`. If `scvi` is in `integration_methods`, you must set `scvi_model` to the matching scVI checkpoint; if `scanvi` is in `integration_methods`, you must set `scanvi_model` to the matching scANVI checkpoint. If **both** methods are listed, provide **both** checkpoints. If an scANVI model is used, existing cell type annotations will be transferred to the new samples.
+
+The pipeline will perform the preprocessing steps on the new samples as usual. During the integration step, the new samples will be mapped using the provided model(s). If `base_adata` is provided, the new samples will then be aggregated onto the base file. The clustering, dimensionality reduction etc. will then be performed on the integrated object.
 
 ### Skipping integration
 
