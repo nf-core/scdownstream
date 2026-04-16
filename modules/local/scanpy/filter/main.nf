@@ -15,6 +15,8 @@ process SCANPY_FILTER {
     val min_counts_gene
     val min_counts_cell
     val max_mito_percentage
+    val min_ribo_percentage
+    val max_hb_percentage
     path mito_genes
 
     output:

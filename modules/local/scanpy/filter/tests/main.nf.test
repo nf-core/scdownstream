@@ -26,7 +26,9 @@ nextflow_process {
                 input[4] = 50
                 input[5] = 50
                 input[6] = 50
-                input[7] = []
+                input[7] = 0
+                input[8] = 100
+                input[9] = []
                 """
             }
         }
@@ -34,9 +36,14 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
+            assert adata.n_obs > 0
             with(adata) {
                 assert "mt" in var.colnames
+                assert "ribo" in var.colnames
+                assert "hb" in var.colnames
                 assert "pct_counts_mt" in obs.colnames
+                assert "pct_counts_ribo" in obs.colnames
+                assert "pct_counts_hb" in obs.colnames
             }
             assert snapshot(
                 process.out,
@@ -67,7 +74,9 @@ nextflow_process {
                 input[4] = 50
                 input[5] = 50
                 input[6] = 50
-                input[7] = []
+                input[7] = 0
+                input[8] = 100
+                input[9] = []
                 """
             }
         }
@@ -75,9 +84,14 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
+            assert adata.n_obs > 0
             with(adata) {
                 assert "mt" in var.colnames
+                assert "ribo" in var.colnames
+                assert "hb" in var.colnames
                 assert "pct_counts_mt" in obs.colnames
+                assert "pct_counts_ribo" in obs.colnames
+                assert "pct_counts_hb" in obs.colnames
             }
             assert snapshot(
                 process.out,
@@ -107,7 +121,9 @@ nextflow_process {
                 input[4] = 50
                 input[5] = 50
                 input[6] = 50
-                input[7] = []
+                input[7] = 0
+                input[8] = 100
+                input[9] = []
                 """
             }
         }
@@ -139,7 +155,9 @@ nextflow_process {
                 input[4] = 50
                 input[5] = 50
                 input[6] = 50
-                input[7] = channel.of('POMP', 'DLG2')
+                input[7] = 0
+                input[8] = 100
+                input[9] = channel.of('POMP', 'DLG2')
                     .collectFile(name: 'mito_genes.txt')
                 """
             }
@@ -148,9 +166,14 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
+            assert adata.n_obs > 0
             with(adata) {
                 assert "mt" in var.colnames
+                assert "ribo" in var.colnames
+                assert "hb" in var.colnames
                 assert "pct_counts_mt" in obs.colnames
+                assert "pct_counts_ribo" in obs.colnames
+                assert "pct_counts_hb" in obs.colnames
             }
             assert snapshot(
                 process.out,
@@ -182,7 +205,9 @@ nextflow_process {
                 input[4] = 50
                 input[5] = 50
                 input[6] = 50
-                input[7] = []
+                input[7] = 0
+                input[8] = 100
+                input[9] = []
                 """
             }
         }

@@ -115,6 +115,22 @@
                 "errorMessage": "Max mitochondrial percentage must be an integer between 0 and 100.",
                 "meta": ["max_mito_percentage"]
             },
+            "min_ribo_percentage": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "default": 0,
+                "errorMessage": "Min ribosomal percentage must be an integer between 0 and 100.",
+                "meta": ["min_ribo_percentage"]
+            },
+            "max_hb_percentage": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "default": 100,
+                "errorMessage": "Max haemoglobin percentage must be an integer between 0 and 100.",
+                "meta": ["max_hb_percentage"]
+            },
             "expected_cells": {
                 "type": "integer",
                 "minimum": 1,

@@ -35,10 +35,19 @@ if mito_genes:
 else:
     adata.var["mt"] = symbols.str.lower().str.startswith("mt-")
 
+adata.var["ribo"] = adata.var_names.str.lower().str.match(r"^rp[sl]")
+adata.var["hb"] = adata.var_names.str.lower().str.match(r"^hb[^p]")
+
 sc.pp.calculate_qc_metrics(
-    adata, qc_vars=["mt"], percent_top=None, log1p=False, inplace=True
+    adata,
+    qc_vars=["mt", "ribo", "hb"],
+    percent_top=None,
+    log1p=False,
+    inplace=True
 )
 adata = adata[adata.obs.pct_counts_mt < int("${max_mito_percentage}"), :].copy()
+adata = adata[adata.obs.pct_counts_ribo >= int("${min_ribo_percentage}"), :].copy()
+adata = adata[adata.obs.pct_counts_hb < int("${max_hb_percentage}"), :].copy()
 
 sc.pp.filter_cells(adata, min_counts=int("${min_counts_cell}"))
 sc.pp.filter_genes(adata, min_counts=int("${min_counts_gene}"))
