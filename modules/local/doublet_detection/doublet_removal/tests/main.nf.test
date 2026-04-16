@@ -20,7 +20,6 @@ nextflow_process {
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
                         [
                             file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_doubletdetection.pkl', checkIfExists: true),
-                            file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_scds.csv', checkIfExists: true),
                             file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_scrublet.pkl', checkIfExists: true),
                             file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_solo.pkl', checkIfExists: true)
                         ]
@@ -58,7 +57,6 @@ nextflow_process {
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
                         [
                             file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_doubletdetection.pkl', checkIfExists: true),
-                            file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_scds.csv', checkIfExists: true),
                             file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_scrublet.pkl', checkIfExists: true),
                             file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_solo.pkl', checkIfExists: true)
                         ]
