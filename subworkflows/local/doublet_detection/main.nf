@@ -1,7 +1,6 @@
 include { SCVITOOLS_SOLO   } from '../../../modules/nf-core/scvitools/solo'
 include { SCANPY_SCRUBLET  } from '../../../modules/nf-core/scanpy/scrublet'
 include { DOUBLETDETECTION } from '../../../modules/nf-core/doubletdetection'
-include { SCDS             } from '../../../modules/local/doublet_detection/scds'
 include { SCDBLFINDER      } from '../../../modules/local/doublet_detection/scdblfinder'
 include { DOUBLET_REMOVAL  } from '../../../modules/local/doublet_detection/doublet_removal'
 
@@ -22,14 +21,6 @@ workflow DOUBLET_DETECTION {
     } else {
         ch_batch_col = ch_h5ad.map { meta, _h5ad -> meta.batch_col }
         ch_h5ad_scdblfinder = ch_h5ad.map { meta, h5ad -> [meta, h5ad, meta.doublet_rate, meta.batch_col] }
-
-        if (methods.contains('scds')) {
-            SCDS (
-                ch_h5ad
-            )
-            ch_predictions = ch_predictions.mix(SCDS.out.predictions)
-            ch_versions = ch_versions.mix(SCDS.out.versions)
-        }
 
         if (methods.contains('solo')) {
             SCVITOOLS_SOLO (

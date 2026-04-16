@@ -10,7 +10,7 @@ nextflow_pipeline {
             params {
                 input = 'https://github.com/nf-core/test-datasets/raw/refs/heads/scdownstream/samplesheet.csv'
                 integration_methods = 'scvi,harmony,bbknn,combat,seurat'
-                doublet_detection   = 'scrublet,scds'
+                doublet_detection   = 'scrublet,scdblfinder'
                 celltypist_model    = 'Adult_COVID19_PBMC'
                 integration_hvgs    = 500
                 outdir              = "$outputDir"

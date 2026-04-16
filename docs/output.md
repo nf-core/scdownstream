@@ -24,7 +24,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
       - [SOLO](https://docs.scvi-tools.org/en/stable/user_guide/models/solo.html)
       - [Scrublet](https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html)
       - [DoubletDetection](https://doubletdetection.readthedocs.io/en/v2.5.2/doubletdetection.doubletdetection.html)
-      - [SCDS](https://bioconductor.org/packages/devel/bioc/vignettes/scds/inst/doc/scds.html)
       - [scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html)
    7. Cell cycle scoring ([Tirosh et al. 2015](https://doi.org/10.1038/nature14590))
 2. Sample aggregation
@@ -63,7 +62,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - `custom_thresholds/`: Results of applying user-defined QC thresholds.
   - `doublet_detection/`: Directories related to doublet detection.
     - `input_rds/`: RDS version of the H5AD file that is used as input to the doublet detection tools.
-    - `(doubletdetection|scdblfinder|scds|scrublet|solo)/`: Results of doublet detection.
+    - `(doubletdetection|scdblfinder|scrublet|solo)/`: Results of doublet detection.
       Each directory contains a filtered `h5ad`/`rds` and a `csv`/`pkl` file
       with the doublet annotations.
     - `${sample_id}.h5ad`: The H5AD without doublets.

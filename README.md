@@ -48,7 +48,6 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
       - [SOLO](https://docs.scvi-tools.org/en/stable/user_guide/models/solo.html)
       - [Scrublet](https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html)
       - [DoubletDetection](https://doubletdetection.readthedocs.io/en/v2.5.2/doubletdetection.doubletdetection.html)
-      - [SCDS](https://bioconductor.org/packages/devel/bioc/vignettes/scds/inst/doc/scds.html)
       - [scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html)
    7. Cell cycle scoring ([Tirosh et al. 2015](https://doi.org/10.1038/nature14590))
 2. Sample aggregation

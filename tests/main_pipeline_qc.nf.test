@@ -9,7 +9,7 @@ nextflow_pipeline {
         when {
             params {
                 input = 'https://github.com/nf-core/test-datasets/raw/refs/heads/scdownstream/samplesheet.csv'
-                doublet_detection   = 'scrublet,scds'
+                doublet_detection   = 'scrublet,scdblfinder'
                 celltypist_model    = 'Adult_COVID19_PBMC'
                 qc_only             = true
                 outdir              = "$outputDir"
