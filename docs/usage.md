@@ -181,37 +181,14 @@ nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
     --scvi_continuous_covariates S_score,G2M_score
 ```
 
-### Reference mapping
+### Reference mapping and extension
 
-The pipeline supports mapping new samples into the latent space of an existing scVI/scANVI model.
-If it is an scANVI model, this approach allows transferring cell type annotations to new samples.
-If the scVI/scANVI model was built during a previous run of the pipeline,
-you can also use the previous output AnnData file as a base,
-and the pipeline will aggregate the new samples onto the base AnnData.
+**Reference mapping** means **mapping new cells into a latent space using a pre-trained model** instead of training that integration step only on the query data. In this pipeline this can be done using **scVI**, **scANVI**, and **scimilarity**. To enable it, add the corresponding method to [`integration_methods`](https://nf-co.re/scdownstream/parameters#integration_methods) (`scvi`, `scanvi`, and/or `scimilarity`) and set the matching model parameters for each method you use: [`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), and [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model) (see the [parameter reference](https://nf-co.re/scdownstream/parameters) for file types, defaults, and help text).
 
-Reference checkpoints are passed with two separate parameters: `scvi_model` (scVI `.pt`) and `scanvi_model` (scANVI `.pt`). Depending on the scenario you may need only one **or both**—for example, if `integration_methods` includes both `scvi` and `scanvi` while extending with `base_adata`, you must supply matching checkpoints for each.
+**Extension** is for users that have outputs of a previous run of `nf-core/scdownstream` and want to extend it with new data, without re-running the integration from scratch. It only works if `scvi`, `scanvi` and/or `scimilarity` have been enabled in `integration_methods` in the original pipeline run. Other integration methods than the three mentioned before are not supported for this.
+In simple terms, in this setup the workflow is: (1) project new data into the latent space learned from the data in the original run, and then (2) combine the datasets. For (1), provide the same checkpoints as for reference mapping ([`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model)). For (2), pass the integrated `.h5ad` from the original run as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata).
 
-The following scenarios can be distinguished:
-
-- **You have a reference scVI model from an arbitrary source (e.g. from a publication) and you want to map new data into the latent space described by the model.** Provide the path to the pre-trained scVI checkpoint (`.pt`) with the `scvi_model` parameter and include `scvi` in `integration_methods`. Only `scvi` and `scanvi` may be used in `integration_methods` in this case. `scanvi` will only work if the input data in the samplesheet contains at least some cell type annotations. Using `scanvi` in addition to `scvi` as an integration method will extend the model so that it can be used for label transfer in future.
-
-  ```bash
-  nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
-      --integration_methods scvi \
-      --scvi_model /path/to/scvi_model.pt
-  ```
-
-- **You have a reference scANVI model from an arbitrary source (e.g. from a publication) and you want to map new data into the latent space described by the model and transfer cell type annotations to the new data.** Provide the path to the pre-trained scANVI checkpoint (`.pt`) with the `scanvi_model` parameter and use only `scanvi` in `integration_methods`.
-
-  ```bash
-  nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
-      --integration_methods scanvi \
-      --scanvi_model /path/to/scanvi_model.pt
-  ```
-
-- **You have a reference scVI or scANVI model as well as an output AnnData file from a previous run of the pipeline and you want to add more samples to the existing AnnData file.** Provide the previous integrated object with `base_adata`. If `scvi` is in `integration_methods`, you must set `scvi_model` to the matching scVI checkpoint; if `scanvi` is in `integration_methods`, you must set `scanvi_model` to the matching scANVI checkpoint. If **both** methods are listed, provide **both** checkpoints. If an scANVI model is used, existing cell type annotations will be transferred to the new samples.
-
-The pipeline will perform the preprocessing steps on the new samples as usual. During the integration step, the new samples will be mapped using the provided model(s). If `base_adata` is provided, the new samples will then be aggregated onto the base file. The clustering, dimensionality reduction etc. will then be performed on the integrated object.
+Pre-trained scVI models are also shared on [scvi-hub](https://huggingface.co/scvi-tools).
 
 ### Skipping integration
 
@@ -219,9 +196,9 @@ The pipeline will perform the preprocessing steps on the new samples as usual. D
 This can be useful if you have assigned cell type annotations to the integrated object and want to perform further analysis based on these annotations.
 :::
 
-If you want to run tasks after the integration step without performing integration, you can provide a previous result of the pipeline as the `base_adata` parameter. You do not need to provide a samplesheet via the `input` parameter in this case. In order to let the pipeline know which integration embeddings should be used, you need to provide the `base_embeddings` parameter. If you stored the labels (e.g. cell type annotations) in a column other than `label`, you can provide the column name via the `base_label_col` parameter. Similarly, if you stored the condition information in a column other than `condition`, you can provide the column name via the `base_condition_col` parameter.
+If you want to run tasks after the integration step without performing integration, you can provide a previous result of the pipeline as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata). You do not need to provide a samplesheet via the [`input`](https://nf-co.re/scdownstream/parameters#input) parameter in this case. You also need [`base_embeddings`](https://nf-co.re/scdownstream/parameters#base_embeddings), and optionally [`base_label_col`](https://nf-co.re/scdownstream/parameters#base_label_col) and [`base_condition_col`](https://nf-co.re/scdownstream/parameters#base_condition_col) if your label or condition columns are not named `label` and `condition`.
 
-The pipeline will then re-execute the tasks after the integration step without performing integration again. Most interestingly, the pipeline will generate cell type specific UMAPs, clusterings, and PAGA graphs, if the `clustering_per_label` parameter is set to `true`.
+The pipeline will then re-execute the tasks after the integration step without performing integration again. Most interestingly, the pipeline will generate cell type specific UMAPs, clusterings, and PAGA graphs, if [`clustering_per_label`](https://nf-co.re/scdownstream/parameters#clustering_per_label) is set to `true`.
 
 ### GPU acceleration
 
