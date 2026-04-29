@@ -1,0 +1,42 @@
+// NOTE: CyteType calls the remote Nygen API (LLM-based annotation). A full
+// functional test is not suitable for default CI. Only stub tests are provided.
+
+nextflow_process {
+
+    name "Test Process CELLTYPES_CYTETYPE"
+    script "modules/local/celltypes/cytetype/main.nf"
+    process "CELLTYPES_CYTETYPE"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index"
+                    ]
+                )
+                input[1] = "Human PBMC test context (nf-test stub)"
+                """
+            }
+        }
+
+        then {
+            assert process.success
+
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

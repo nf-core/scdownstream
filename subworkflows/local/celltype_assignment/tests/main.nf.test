@@ -24,6 +24,7 @@ nextflow_workflow {
                 )
                 input[1] = "https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/singleR/references.csv"
                 input[2] = "Adult_COVID19_PBMC"
+                input[3] = ""
                 """
             }
         }
@@ -58,6 +59,38 @@ nextflow_workflow {
                 )
                 input[1] = "https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/singleR/references.csv"
                 input[2] = "Adult_COVID19_PBMC"
+                input[3] = ""
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run with cytetype - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                input[1] = ""
+                input[2] = ""
+                input[3] = "Human PBMC test context (nf-test stub)"
                 """
             }
         }

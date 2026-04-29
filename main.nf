@@ -48,6 +48,7 @@ workflow NFCORE_SCDOWNSTREAM {
     qc_only                       //   value: boolean
     celldex_reference             //   value: string
     celltypist_model              //   value: string
+    cytetype_study_context        //   value: string
     unify_gene_symbols            //   value: boolean
     duplicate_var_resolution      //   value: string
     aggregate_isoforms            //   value: boolean
@@ -101,6 +102,7 @@ workflow NFCORE_SCDOWNSTREAM {
         qc_only,
         celldex_reference,
         celltypist_model,
+        cytetype_study_context,
         unify_gene_symbols,
         duplicate_var_resolution,
         aggregate_isoforms,
@@ -189,6 +191,7 @@ workflow {
         params.qc_only,
         params.celldex_reference,
         params.celltypist_model,
+        params.cytetype_study_context,
         params.unify_gene_symbols,
         params.duplicate_var_resolution,
         params.aggregate_isoforms,

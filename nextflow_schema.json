@@ -278,6 +278,28 @@
                     "description": "Path to comma-separated file containing information about the celldex references to use for the singleR cell type annotation.",
                     "help_text": "You will need to create a design file with information about the celldex references to use for the singleR cell type annotation before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 or 4 columns, and a header row. See [usage docs](https://nf-co.re/scdownstream/usage#cell-type-annotation).",
                     "fa_icon": "fas fa-file-csv"
+                },
+                "cytetype_study_context": {
+                    "type": "string",
+                    "description": "Study description passed to CyteType for LLM-based cell type annotation (per-sample, after QC).",
+                    "help_text": "When set, the pipeline runs [CyteType](https://github.com/NygenAnalytics/cytetype) on each QC-filtered sample. The module clusters cells, runs differential expression, and calls the CyteType API — **internet access is required**. Example: `Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq`. Leave empty to skip."
+                },
+                "cytetype_auth_token": {
+                    "type": "string",
+                    "description": "Optional CyteType API authentication token",
+                    "help_text": "Only needed if using a Nygen CyteType deployment that requires authentication. Prefer setting via `NXF_PARAMS` / secrets so the token is not committed to VCS.",
+                    "fa_icon": "fas fa-key"
+                },
+                "cytetype_leiden_resolution": {
+                    "type": "number",
+                    "default": 0.5,
+                    "description": "Leiden resolution used internally before CyteType (per-sample Scanpy workflow)."
+                },
+                "cytetype_n_top_genes": {
+                    "type": "integer",
+                    "default": 50,
+                    "minimum": 5,
+                    "description": "Number of top marker genes per cluster passed to CyteType."
                 }
             }
         },

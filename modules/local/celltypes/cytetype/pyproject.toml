@@ -1,0 +1,20 @@
+# Local development only: match runtime deps from environment.yml for editing
+# or running `templates/cytetype.py` outside Nextflow. Pipeline execution uses conda.
+#
+#   cd modules/local/celltypes/cytetype && uv sync && uv run python ...
+#
+[project]
+name = "celltypes-cytetype-dev"
+version = "0.0.0"
+description = "Dev environment for the nf-core CyteType module (uv)"
+readme = false
+requires-python = ">=3.12"
+dependencies = [
+    "scanpy==1.10.4",
+    "cytetype==0.19.3",
+    "pyyaml==6.0.2",
+    "threadpoolctl==3.5.0",
+
+
+
+]

@@ -118,7 +118,7 @@ You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-c
 
 #### Celltypist
 
-Automated cell type annotation using [Celltypist](https://github.com/Teichlab/celltypist) and [singleR](https://bioconductor.org/packages/release/bioc/html/SingleR.html) are supported. For `Celltypist`, you can specify the models to use with the [`celltypist_model` parameter](https://nf-co.re/scdownstream/dev/parameters/#celltypist_model).
+Automated cell type annotation using [Celltypist](https://github.com/Teichlab/celltypist), [singleR](https://bioconductor.org/packages/release/bioc/html/SingleR.html), and [CyteType](https://github.com/NygenAnalytics/cytetype) is supported. For `Celltypist`, you can specify the models to use with the [`celltypist_model` parameter](https://nf-co.re/scdownstream/dev/parameters/#celltypist_model).
 
 #### singleR
 
@@ -140,6 +140,24 @@ monaco_immune,label.fine,/path/to/monaco_immune.tar
 ```
 
 Example tar archives can be found [here](https://github.com/nf-core/test-datasets/tree/scdownstream/singleR).
+
+#### CyteType
+
+[CyteType](https://github.com/NygenAnalytics/cytetype) is a multi-agent LLM-driven annotator that takes per-cluster marker genes and a free-text study description and returns predicted cell type labels. The pipeline runs CyteType per QC-filtered sample: a lightweight Scanpy clustering and `rank_genes_groups` are computed inside the module, then the markers are submitted to the CyteType API.
+
+To enable CyteType, set [`cytetype_study_context`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_study_context) to a short free-text description of your study (the more specific, the better). When this parameter is empty (the default), CyteType is skipped.
+
+```bash
+nextflow run nf-core/scdownstream \
+    --input samplesheet.csv \
+    --outdir results \
+    --cytetype_study_context "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq"
+```
+
+> [!IMPORTANT]
+> CyteType calls the remote `https://cytetype.nygen.io` API and therefore **requires internet access** from the compute node running the `CELLTYPES_CYTETYPE` task.
+
+If your CyteType deployment requires authentication, pass the token via `--cytetype_auth_token`. Prefer providing this via a Nextflow secret or environment variable rather than committing it to a params file. The Leiden resolution and the number of marker genes per cluster passed to CyteType can be tuned with `--cytetype_leiden_resolution` and `--cytetype_n_top_genes`.
 
 ### Cell cycle scoring
 
