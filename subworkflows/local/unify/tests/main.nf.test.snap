@@ -1,0 +1,403 @@
+{
+    "Should run without failures - symbol_col none, unify_gene_symbols false - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "upset_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "upset_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-01-18T17:39:58.741250963",
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        }
+    },
+    "Should run without failures - symbol_col index, unify_gene_symbols false": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X"
+                        },
+                        "test_unified.h5ad:md5,634cda43f3cc2ce7ffeddcd8cb0a1e76"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "versions.yml:md5,56975dcf8aab71705ad7f822233409b8",
+                    "versions.yml:md5,f4baeb211a033b2534fb83ba7ec2cd86"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X"
+                        },
+                        "test_unified.h5ad:md5,634cda43f3cc2ce7ffeddcd8cb0a1e76"
+                    ]
+                ],
+                "multiqc_files": [
+                    
+                ],
+                "versions": [
+                    "versions.yml:md5,56975dcf8aab71705ad7f822233409b8",
+                    "versions.yml:md5,f4baeb211a033b2534fb83ba7ec2cd86"
+                ]
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "condition",
+                        "label",
+                        "sample",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-03-29T11:17:31.315941656",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run without failures - symbol_col index, unify_gene_symbols true": {
+        "content": [
+            [
+                {
+                    "UNIFY:UPSET_GENES_RAW": {
+                        "anndata": "0.12.10",
+                        "matplotlib": "3.10.8",
+                        "python": "3.13.12",
+                        "upsetplot": "0.9.0"
+                    }
+                },
+                {
+                    "UNIFY:UPSET_GENES": {
+                        "anndata": "0.12.10",
+                        "matplotlib": "3.10.8",
+                        "python": "3.13.12",
+                        "upsetplot": "0.9.0"
+                    }
+                },
+                {
+                    "UNIFY:ADATA_UNIFY": {
+                        "anndata": "0.12.10",
+                        "numpy": "2.3.5",
+                        "python": "3.13.12",
+                        "scipy": "1.17.1"
+                    }
+                }
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "condition",
+                        "label",
+                        "sample",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-04-10T22:40:41.990546048",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run without failures - symbol_col index, unify_gene_symbols false - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "upset_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "upset_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-01-18T17:39:11.758025979",
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        }
+    },
+    "Should run without failures - symbol_col index, unify_gene_symbols true - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "upset_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "upset_raw_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "upset_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "upset_raw_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-04-01T23:09:23.763996",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run without failures - symbol_col none, unify_gene_symbols false": {
+        "content": [
+            [
+                {
+                    "UNIFY:UPSET_GENES": {
+                        "anndata": "0.12.10",
+                        "matplotlib": "3.10.8",
+                        "python": "3.13.12",
+                        "upsetplot": "0.9.0"
+                    }
+                },
+                {
+                    "UNIFY:MYGENE": {
+                        "anndata": "0.12.7",
+                        "mygene": "3.2.2",
+                        "python": "3.13.11"
+                    }
+                },
+                {
+                    "UNIFY:ADATA_UNIFY": {
+                        "anndata": "0.12.10",
+                        "numpy": "2.3.5",
+                        "python": "3.13.12",
+                        "scipy": "1.17.1"
+                    }
+                }
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "condition",
+                        "label",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "original_index",
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-04-10T22:39:18.670580545",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    }
+}

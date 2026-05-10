@@ -1,0 +1,78 @@
+nextflow_process {
+
+    name "Test Process HUGOUNIFIER_GET"
+    script "modules/local/hugounifier/get/main.nf"
+    process "HUGOUNIFIER_GET"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        ['sample1', 'sample2'],
+                        [
+                            file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                            file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                        ]
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.changes[0][1].size() == 2
+            with(path(process.out.changes[0][1][0]).csv) {
+                assert columnNames == ["action", "symbol", "new", "reason"]
+            }
+            with(path(process.out.changes[0][1][1]).csv) {
+                assert columnNames == ["action", "symbol", "new", "reason"]
+            }
+            assert snapshot(
+                process.out.versions
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        ['sample1', 'sample2'],
+                        [
+                            file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                            file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                        ]
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assert process.success
+
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

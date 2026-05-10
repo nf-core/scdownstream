@@ -1,0 +1,104 @@
+{
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "test.npy:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "layers": [
+                    "test.npy:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "obsm": [
+                    "test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-25T15:44:57.270966951",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run without failures": {
+        "content": [
+            {
+                "SCANPY_COMBAT": {
+                    "numpy": "2.3.5",
+                    "pandas": "2.3.3",
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 100,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "highly_variable",
+                        "means"
+                    ]
+                },
+                "layers": [
+
+                ],
+                "obsm": [
+                    "X_emb",
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+
+                ],
+                "varp": [
+
+                ],
+                "uns": [
+                    "hvg",
+                    "log1p",
+                    "pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-29T11:17:34.118271552",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    }
+}

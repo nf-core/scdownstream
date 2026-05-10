@@ -1,0 +1,565 @@
+{
+    "Should extend with multiple obs and obsm data": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,87f1389e0cfa0ef0bc6dc5848ec15192"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,257b7f30c4a1e950d64967cd7a8590d9"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,b2a073150918c118c3858cf4e82145f7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,87f1389e0cfa0ef0bc6dc5848ec15192"
+                    ]
+                ],
+                "metadata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,257b7f30c4a1e950d64967cd7a8590d9"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,b2a073150918c118c3858cf4e82145f7"
+                ]
+            },
+            {
+                "ADATA_EXTEND": {
+                    "anndata": "0.12.10",
+                    "numpy": "2.3.5",
+                    "pandas": "2.3.3",
+                    "python": "3.13.12"
+                }
+            },
+            {
+                "n_obs": 23373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "celltypist:Adult_Human_Skin",
+                        "celltypist:Adult_Human_Skin:conf",
+                        "label",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "sample_original",
+                        "scvi-global-1.0:entropy",
+                        "scvi-global-1.0_leiden",
+                        "total_counts",
+                        "total_counts_mt"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_scvi",
+                    "X_scvi-global_umap"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-03-29T14:30:06.774357979",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should extend with obsm data": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d7ff73ab3b5900bc9531d5c5a362b552"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,720bbb657de845eb6b8a41287f4fd458"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,b2a073150918c118c3858cf4e82145f7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d7ff73ab3b5900bc9531d5c5a362b552"
+                    ]
+                ],
+                "metadata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,720bbb657de845eb6b8a41287f4fd458"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,b2a073150918c118c3858cf4e82145f7"
+                ]
+            },
+            {
+                "ADATA_EXTEND": {
+                    "anndata": "0.12.10",
+                    "numpy": "2.3.5",
+                    "pandas": "2.3.3",
+                    "python": "3.13.12"
+                }
+            },
+            {
+                "n_obs": 23373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "celltypist:Adult_Human_Skin",
+                        "celltypist:Adult_Human_Skin:conf",
+                        "label",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "sample_original",
+                        "total_counts",
+                        "total_counts_mt"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_scvi"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-03-29T14:29:47.492628938",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should extend with uns data": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,1752ea71c104e54d97bcef0eb62e0327"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,720bbb657de845eb6b8a41287f4fd458"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,b2a073150918c118c3858cf4e82145f7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,1752ea71c104e54d97bcef0eb62e0327"
+                    ]
+                ],
+                "metadata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,720bbb657de845eb6b8a41287f4fd458"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,b2a073150918c118c3858cf4e82145f7"
+                ]
+            },
+            {
+                "ADATA_EXTEND": {
+                    "anndata": "0.12.10",
+                    "numpy": "2.3.5",
+                    "pandas": "2.3.3",
+                    "python": "3.13.12"
+                }
+            },
+            {
+                "n_obs": 23373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "celltypist:Adult_Human_Skin",
+                        "celltypist:Adult_Human_Skin:conf",
+                        "label",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "sample_original",
+                        "total_counts",
+                        "total_counts_mt"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "scvi-global-1.0_paga"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-29T14:30:26.284065573",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should extend with obs data": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,3286a295e58d6cd86c4ccbebe52fd7ac"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,af753255e9b2d3b2d8164abee67b65d0"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,b2a073150918c118c3858cf4e82145f7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,3286a295e58d6cd86c4ccbebe52fd7ac"
+                    ]
+                ],
+                "metadata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,af753255e9b2d3b2d8164abee67b65d0"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,b2a073150918c118c3858cf4e82145f7"
+                ]
+            },
+            {
+                "ADATA_EXTEND": {
+                    "anndata": "0.12.10",
+                    "numpy": "2.3.5",
+                    "pandas": "2.3.3",
+                    "python": "3.13.12"
+                }
+            },
+            {
+                "n_obs": 23373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "celltypist:Adult_Human_Skin",
+                        "celltypist:Adult_Human_Skin:conf",
+                        "label",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "sample_original",
+                        "scvi-global-1.0_leiden",
+                        "total_counts",
+                        "total_counts_mt"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-03-29T14:29:26.551795343",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "metadata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-01-16T22:01:11.948835963",
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        }
+    },
+    "Should run with no extensions": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,f1586170686d73b8143e95aad0f331ce"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,720bbb657de845eb6b8a41287f4fd458"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,b2a073150918c118c3858cf4e82145f7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,f1586170686d73b8143e95aad0f331ce"
+                    ]
+                ],
+                "metadata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,720bbb657de845eb6b8a41287f4fd458"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,b2a073150918c118c3858cf4e82145f7"
+                ]
+            },
+            {
+                "ADATA_EXTEND": {
+                    "anndata": "0.12.10",
+                    "numpy": "2.3.5",
+                    "pandas": "2.3.3",
+                    "python": "3.13.12"
+                }
+            },
+            {
+                "n_obs": 23373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "celltypist:Adult_Human_Skin",
+                        "celltypist:Adult_Human_Skin:conf",
+                        "label",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "sample_original",
+                        "total_counts",
+                        "total_counts_mt"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-03-29T14:30:51.255096363",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    }
+}

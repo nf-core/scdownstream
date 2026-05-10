@@ -1,0 +1,90 @@
+nextflow_process {
+
+    name "Test Process HUGOUNIFIER_APPLY"
+    script "modules/local/hugounifier/apply/main.nf"
+    process "HUGOUNIFIER_APPLY"
+
+    tag "modules"
+    tag "modules_local"
+
+    setup {
+        run("HUGOUNIFIER_GET") {
+            script "modules/local/hugounifier/get/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        ['sample1', 'sample2'],
+                        [
+                            file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                            file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                        ]
+                    ]
+                )
+                """
+            }
+        }
+    }
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = HUGOUNIFIER_GET.out.changes
+                    .map { meta, changes -> [meta, changes[0]] }
+                    .combine(
+                        channel.of(file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true))
+                    )
+                    .map { meta, changes, h5ad -> [meta, h5ad, changes] }
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert var.rownames.size() > 0
+                assert obs.rownames.size() > 0
+            }
+            assert snapshot(
+                process.out.versions,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = HUGOUNIFIER_GET.out.changes
+                    .map { meta, changes -> [meta, changes[0]] }
+                    .combine(
+                        channel.of(file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true))
+                    )
+                    .map { meta, changes, h5ad -> [meta, h5ad, changes] }
+                """
+            }
+        }
+
+        then {
+            assert process.success
+
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

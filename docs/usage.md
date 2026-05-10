@@ -4,51 +4,71 @@
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
-## Introduction
+## Filtered and unfiltered matrices
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+Throughout this documentation, you will find references to `filtered` and `unfiltered` matrices.
+The `unfiltered` matrices are matrices which still contain empty droplets, whereas the `filtered` matrices have been filtered for empty droplets. A more technical definition can be found [here](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/matrices). `CellRanger` provides you with both matrices, whereas other quantification tools only provide you with the `unfiltered` matrix.
+The pipeline can handle the following cases:
+
+1. You have both `filtered` and `unfiltered` matrices: Provide both matrices in the samplesheet and the pipeline will use the `unfiltered` matrix for ambient RNA removal and the `filtered` matrix for all other steps.
+2. You only have the `filtered` matrix: Provide the `filtered` matrix in the samplesheet and the pipeline will use it for all steps. In this case, only `decontX` can be used for ambient RNA removal, as all other methods require the `unfiltered` matrix.
+3. You only have the `unfiltered` matrix: Provide the `unfiltered` matrix in the samplesheet and the pipeline will automatically create a `filtered` matrix by identifying empty droplets using `CellBender`.
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with at least 2 columns, and a header row as shown in the examples below.
 
 ```bash
 --input '[path to samplesheet file]'
 ```
 
-### Multiple runs of the same sample
+### Minimal samplesheet
 
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
+The samplesheet needs to contain at least two columns: `sample` and at least one out of `filtered` and `unfiltered`:
 
 ```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
+sample,unfiltered
+sample1,/absolute/path/to/sample1.h5ad
+sample2,relative/path/to/sample2.rds
+sample3,/absolute/path/to/sample3.csv
 ```
 
 ### Full samplesheet
 
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
-
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
+There are a couple of optional columns that can be used for more advanced features:
 
 ```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+sample,filtered,unfiltered,batch_col,label_col,condition_col,unknown_label,min_genes,min_cells,min_counts_cell,min_counts_gene,expected_cells,doublet_rate,ambient_correction,ambient_corrected_integration
+sample1,/absolute/path/to/sample1_filtered.h5ad,/absolute/path/to/sample1.h5ad,batch,cell_type,condition,unknown,1,2,3,4,5000,0.08,true,false
+sample2,relative/path/to/sample2_filtered.rds,relative/path/to/sample2.rds,batch_id,annotation,condition,unannotated,5,6,7,8,3000,,false,
+sample3,/absolute/path/to/sample3_filtered.csv,/absolute/path/to/sample3.csv,,,,,9,10,11,12,,,true,true
 ```
 
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+For CSV input files, specifying the `batch_col`, `label_col`, `condition_col`, and `unknown_label` columns will not have any effect, as no additional metadata is available in the CSV file.
+
+| Column                          | Description                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`                        | Unique sample identifier. Will be added to the pipeline output objects as `sample` column.                                                                                                                                                                                                                                                                                                                          |
+| `filtered`                      | May contain paths to `h5ad`, `h5`, `rds`, or `csv` files. `rds` files may contain any object that can be converted to a `SingleCellExperiment` using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function. `csv` files should contain a matrix with genes as columns and cells as rows.                                                                  |
+| `unfiltered`                    | Same as `filtered`, but for the unfiltered cellranger or nf-core/scrnaseq output. If not provided, only `decontX` can be used for ambient RNA removal.                                                                                                                                                                                                                                                              |
+| `batch_col`                     | Column in the input file containing batch information. If not provided, the entire input object will be considered as one batch. If the `batch_col` is something else than `batch`, it will be renamed to `batch` during pipeline execution.                                                                                                                                                                        |
+| `symbol_col`                    | Column in the input file containing gene symbol information. Defaults to `index`. There are two special values that can be used: `index` and `none`. `index` will use the row names of the matrix as gene symbols. `none` will trigger the pipeline to perform gene symbol conversion using MyGene.info based on the `geneid_col`. The values from `symbol_col` will be set as the index during pipeline execution. |
+| `geneid_col`                    | Column in the input file containing gene identifier information. Defaults to `index`. Only used if `symbol_col` is set to `none`.                                                                                                                                                                                                                                                                                   |
+| `label_col`                     | Column in the input file containing cell type information. Defaults to `label`. If the column does not exist in the input object, the pipeline will create a new column and put `unknown` in it. If the `label_col` is something else than `label`, it will be renamed to `label` during pipeline execution.                                                                                                        |
+| `condition_col`                 | Column in the input file containing condition information (e.g. disease state, treatment). If the column does not exist in the input object, the pipeline will create a new column and put `unknown` in it. If the `condition_col` is something else than `condition`, it will be renamed to `condition` during pipeline execution.                                                                                 |
+| `unknown_label`                 | Value in the `label_col` column that should be considered as unknown. Defaults to `unknown`. If the `unknown_label` is something else than `unknown`, it will be renamed to `unknown` during pipeline execution. If trying to perform integration with scANVI, more than one unique label other than `unknown` must exist in the input data.                                                                        |
+| `counts_layer`                  | Layer in the input file containing the raw counts matrix. Defaults to `X`.                                                                                                                                                                                                                                                                                                                                          |
+| `min_genes`                     | Minimum number of genes required for a cell to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                      |
+| `min_cells`                     | Minimum number of cells required for a gene to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                      |
+| `min_counts_cell`               | Minimum number of counts required for a cell to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                     |
+| `min_counts_gene`               | Minimum number of counts required for a gene to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                     |
+| `expected_cells`                | Number of expected cells, used as input to CellBender for empty droplet detection.                                                                                                                                                                                                                                                                                                                                  |
+| `doublet_rate`                  | Optional expected doublet rate (0-1) for `scDblFinder`. If not provided, `scDblFinder` estimates it internally.                                                                                                                                                                                                                                                                                                     |
+| `max_mito_percentage`           | Maximum percentage of mitochondrial reads for a cell to be considered. Defaults to `100`.                                                                                                                                                                                                                                                                                                                           |
+| `min_ribo_percentage`           | Minimum percentage of ribosomal reads for a cell to be considered. Defaults to `0`.                                                                                                                                                                                                                                                                                                                                 |
+| `max_hb_percentage`             | Maximum percentage of haemoglobin reads for a cell to be considered. Defaults to `100`.                                                                                                                                                                                                                                                                                                                             |
+| `ambient_correction`            | Whether to perform ambient RNA correction for this sample. Set to `true` to use the globally configured method, `false` to skip ambient correction for this sample. Defaults to `true`.                                                                                                                                                                                                                             |
+| `ambient_corrected_integration` | Whether to use ambient-corrected counts for integration for this sample. Set to `true` to use corrected counts in downstream integration, `false` to store them only as additional layers. Can override the global `--ambient_corrected_integration` parameter. Defaults to global setting.                                                                                                                         |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
@@ -93,6 +113,183 @@ outdir: './results/'
 ```
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
+
+### Cell type annotation
+
+#### Celltypist
+
+Automated cell type annotation using [Celltypist](https://github.com/Teichlab/celltypist) and [singleR](https://bioconductor.org/packages/release/bioc/html/SingleR.html) are supported. For `Celltypist`, you can specify the models to use with the [`celltypist_model` parameter](https://nf-co.re/scdownstream/dev/parameters/#celltypist_model).
+
+#### singleR
+
+For `singleR`, you can provide a CSV file with information about the celldex references to use for the singleR cell type annotation with the [`celldex_reference` parameter](https://nf-co.re/scdownstream/dev/parameters/#celldex_reference). The exising references are described in the [celldex package description](https://bioconductor.org/packages/devel/data/experiment/manuals/celldex/man/celldex.pdf). You can also provide paths to tar archives of pre-downloaded references (useful if your runtime environment does not have access to the internet).
+
+A CSV file that refers to the celldex references via name can look like this:
+
+```csv title="celldex_references.csv"
+id,label,reference,version
+hpca,label.main,hpca,2024-02-26
+monaco_immune,label.fine,monaco_immune,2024-02-26
+```
+
+A CSV file that refers to the celldex references via path can look like this:
+
+```csv title="celldex_references.csv"
+hpca,label.main,/path/to/hpca.tar
+monaco_immune,label.fine,/path/to/monaco_immune.tar
+```
+
+Example tar archives can be found [here](https://github.com/nf-core/test-datasets/tree/scdownstream/singleR).
+
+### Cell cycle scoring
+
+Cell cycle scoring assigns each cell an S-phase score, G2M-phase score, and a predicted cell cycle phase (`S`, `G2M`, or `G1`) based on the expression of curated marker genes (Tirosh et al. 2015, same gene sets as Seurat). The scores are stored in `adata.obs` as `S_score`, `G2M_score`, and `phase`, and are available as covariates in downstream integration steps.
+
+Cell cycle scoring is enabled by default. To skip it:
+
+```bash
+nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results --cell_cycle_scoring false
+```
+
+#### Species
+
+Bundled gene lists are provided for human and mouse. Select the appropriate species with `--species`:
+
+```bash
+# mouse
+nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results --species mouse
+```
+
+#### Custom gene lists
+
+For other organisms (e.g. rat, zebrafish), you can provide your own gene lists — one gene symbol per line — via `--s_genes` and `--g2m_genes`:
+
+```bash
+nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
+    --s_genes /path/to/my_s_genes.txt \
+    --g2m_genes /path/to/my_g2m_genes.txt
+```
+
+The bundled gene lists can be found in [`assets/cell_cycle_genes/`](../assets/cell_cycle_genes/) and serve as templates for custom lists.
+
+#### Using scores in downstream analysis
+
+The `S_score` and `G2M_score` columns can be passed to integration tools as continuous covariates to regress out cell cycle effects:
+
+```bash
+nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
+    --scvi_continuous_covariates S_score,G2M_score
+```
+
+### Reference mapping and extension
+
+**Reference mapping** means **mapping new cells into a latent space using a pre-trained model** instead of training that integration step only on the query data. In this pipeline this can be done using **scVI**, **scANVI**, and **scimilarity**. To enable it, add the corresponding method to [`integration_methods`](https://nf-co.re/scdownstream/parameters#integration_methods) (`scvi`, `scanvi`, and/or `scimilarity`) and set the matching model parameters for each method you use: [`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), and [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model) (see the [parameter reference](https://nf-co.re/scdownstream/parameters) for file types, defaults, and help text).
+
+**Extension** is for users that have outputs of a previous run of `nf-core/scdownstream` and want to extend it with new data, without re-running the integration from scratch. It only works if `scvi`, `scanvi` and/or `scimilarity` have been enabled in `integration_methods` in the original pipeline run. Other integration methods than the three mentioned before are not supported for this.
+In simple terms, in this setup the workflow is: (1) project new data into the latent space learned from the data in the original run, and then (2) combine the datasets. For (1), provide the same checkpoints as for reference mapping ([`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model)). For (2), pass the integrated `.h5ad` from the original run as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata).
+
+Pre-trained scVI models are also shared on [scvi-hub](https://huggingface.co/scvi-tools).
+
+### Skipping integration
+
+:::tip
+This can be useful if you have assigned cell type annotations to the integrated object and want to perform further analysis based on these annotations.
+:::
+
+If you want to run tasks after the integration step without performing integration, you can provide a previous result of the pipeline as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata). You do not need to provide a samplesheet via the [`input`](https://nf-co.re/scdownstream/parameters#input) parameter in this case. You also need [`base_embeddings`](https://nf-co.re/scdownstream/parameters#base_embeddings), and optionally [`base_label_col`](https://nf-co.re/scdownstream/parameters#base_label_col) and [`base_condition_col`](https://nf-co.re/scdownstream/parameters#base_condition_col) if your label or condition columns are not named `label` and `condition`.
+
+The pipeline will then re-execute the tasks after the integration step without performing integration again. Most interestingly, the pipeline will generate cell type specific UMAPs, clusterings, and PAGA graphs, if [`clustering_per_label`](https://nf-co.re/scdownstream/parameters#clustering_per_label) is set to `true`.
+
+### GPU acceleration
+
+:::warning{title="Experimental feature"}
+This is an experimental feature and may produce errors. If you encounter any issues, please report them on the [nf-core/scdownstream GitHub repository](https://github.com/nf-core/scdownstream/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml).
+:::
+
+:::info{title="Prerequisites"}
+
+- GPU acceleration has only been tested with Docker, Singularity and Apptainer.
+  - Other container technologies might work, but have not been tested.
+  - Conda is not supported.
+- CUDA 12.0 or later is required.
+- The GPUs must have a [Compute Capability](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#compute-capabilities) of 7.0 or higher.
+
+:::
+
+Tools with implemented support for GPU acceleration are:
+
+- cellbender
+- scvi-tools
+  - scVI/scANVI
+  - scAR
+  - solo
+
+To utilize GPU acceleration, you need to specify the `gpu` profile. This will make the tool steps use cuda-enabled environments and it will tell the tools to use the GPU. All processes which support GPU acceleration are marked with the `process_gpu` label.
+
+You also need to make sure that the tasks are run on a machine with a GPU. If all tasks are run on a machine with a GPU, no further action is needed. If you are running the pipeline on a slurm cluster, where there is dedicated queue for GPU jobs, you need additional configuration that might look like this:
+
+```bash
+process {
+  withLabel:process_gpu {
+    queue = '<gpu-queue>'
+    clusterOptions = '--gpus 1'
+  }
+}
+```
+
+:::tip
+More information on how to configure Slurm in Nextflow can be found [here](https://www.nextflow.io/docs/latest/executor.html#slurm). Depending on your cluster configuration, you might need to adjust the `clusterOptions` to one of the following:
+
+- `--gpus 1` (as in the example above)
+- `--gpus-per-node=1`
+- `--gres=gpu:1`
+
+:::
+
+:::tip
+If your jobs get assigned to the correct nodes, but the GPU is not utilized, you might need to add the following configuration:
+`singularity.runOptions = '--no-mount tmp --writable-tmpfs --nv --env CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES --env ROCR_VISIBLE_DEVICES=$ROCR_VISIBLE_DEVICES --env ZE_AFFINITY_MASK=$ZE_AFFINITY_MASK --env NVIDIA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES`
+
+The first part (`--no-mount tmp --writable-tmpfs --nv`) is set by default in the `gpu` profile. The rest of this configuration is needed in some cases to make the GPU visible to the container.
+:::
+
+For different executors, the configuration might look different. Once a wider range of users have tested the GPU support, we will provide more detailed instructions for different executors.
+
+### Ambient RNA correction
+
+Ambient RNA correction removes contaminating RNA from cell-free droplets that can confound single-cell analysis. The pipeline supports multiple ambient RNA correction methods that can be configured both globally and per-sample.
+
+The pipeline allows you to select an ambient RNA correction method globally using the `--ambient_correction` parameter. Available methods include `decontx` (default), `cellbender`, `soupx`, `scar`, or `none` to skip correction entirely:
+
+```bash
+nextflow run nf-core/scdownstream --ambient_correction cellbender --input samplesheet.csv --outdir results
+```
+
+For finer control, you can disable ambient RNA correction for specific samples by setting `ambient_correction` to `false` in your samplesheet:
+
+```csv title="samplesheet.csv"
+sample,filtered,unfiltered,ambient_correction
+sample1,/path/to/sample1_filtered.h5ad,/path/to/sample1.h5ad,true
+sample2,/path/to/sample2_filtered.h5ad,/path/to/sample2.h5ad,false
+```
+
+By default, the pipeline stores ambient-corrected counts as additional layers in the AnnData object (e.g., `ambient_corrected_decontx`) while keeping the original raw counts in the `X` layer. This means all downstream analysis including integration uses the raw counts, with corrected counts available for optional inspection.
+
+If you want to use the ambient-corrected counts for integration instead, you can enable this behavior globally or per sample:
+
+```bash
+nextflow run nf-core/scdownstream --ambient_corrected_integration true --input samplesheet.csv --outdir results
+```
+
+```csv title="samplesheet.csv"
+sample,filtered,unfiltered,ambient_corrected_integration
+sample1,/path/to/sample1_filtered.h5ad,/path/to/sample1.h5ad,true
+sample2,/path/to/sample2_filtered.h5ad,/path/to/sample2.h5ad,false
+```
+
+:::warning
+When `ambient_corrected_integration` is enabled, the corrected counts replace the raw counts in the `X` layer, and the original raw counts are no longer available.
+:::
 
 ### Updating the pipeline
 
@@ -152,7 +349,7 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 - `apptainer`
   - A generic configuration profile to be used with [Apptainer](https://apptainer.org/)
 - `wave`
-  - A generic configuration profile to enable [Wave](https://seqera.io/wave/) containers. Use together with one of the above (requires Nextflow ` 24.03.0-edge` or later).
+  - A generic configuration profile to enable [Wave](https://seqera.io/wave/) containers. Use together with one of the above (requires Nextflow `24.03.0-edge` or later).
 - `conda`
   - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.
 

@@ -1,0 +1,275 @@
+nextflow_process {
+
+    name "Test Process CELLTYPES_SINGLER"
+    script "modules/local/celltypes/singler/main.nf"
+    process "CELLTYPES_SINGLER"
+
+    test("Should run after celldex reference is fetched") {
+
+        setup {
+            run ("CELLDEX_FETCHREFERENCE") {
+                script "modules/local/celldex/fetchreference/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [id: "test", label: "label.fine"],
+                        "hpca",
+                        "2024-02-26"
+                    ]
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                input[1] = CELLDEX_FETCHREFERENCE.out.tar.map { meta, ref -> [[id: "test"], [meta.id], [meta.label], [ref]] }
+                """
+            }
+        }
+
+        then {
+            def predictions = path(process.out.obs[0][1]).csv
+            assert process.success
+            with(predictions) {
+                assert rowCount > 0
+                assert columnNames.any { it.endsWith("labels_test") }
+                assert columnNames.any { it.endsWith("pruned.labels_test") }
+            }
+            assert process.out.distribution.size() == 1
+            assert process.out.heatmap.size() == 1
+            assert snapshot(
+                process.out.obs,
+                file(process.out.distribution[0][1]).name,
+                file(process.out.heatmap[0][1]).name,
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with a single reference") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                input[1] = [
+                    [id: "test"],
+                    ["hpca"],
+                    ["label.fine"],
+                    [
+                        file(params.pipelines_testdata_base_path + '/singleR/celldex_hpca__2024-02-26_h5_se.tar', checkIfExists: true)
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            def predictions = path(process.out.obs[0][1]).csv
+            assert process.success
+            with(predictions) {
+                assert rowCount > 0
+                assert columnNames.any { it.endsWith("labels_hpca") }
+                assert columnNames.any { it.endsWith("pruned.labels_hpca") }
+            }
+            assert process.out.distribution.size() == 1
+            assert process.out.heatmap.size() == 1
+            assert snapshot(
+                process.out.obs,
+                file(process.out.distribution[0][1]).name,
+                file(process.out.heatmap[0][1]).name,
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with a symbol column other than index") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "symbols",
+                        "X"
+                    ]
+                )
+                input[1] = [
+                    [id: "test"],
+                    ["hpca"],
+                    ["label.fine"],
+                    [
+                        file(params.pipelines_testdata_base_path + '/singleR/celldex_hpca__2024-02-26_h5_se.tar', checkIfExists: true)
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            def predictions = path(process.out.obs[0][1]).csv
+            assert process.success
+            with(predictions) {
+                assert rowCount > 0
+                assert columnNames.any { it.endsWith("labels_hpca") }
+                assert columnNames.any { it.endsWith("pruned.labels_hpca") }
+            }
+            assert process.out.distribution.size() == 1
+            assert process.out.heatmap.size() == 1
+            assert snapshot(
+                process.out.obs,
+                file(process.out.distribution[0][1]).name,
+                file(process.out.heatmap[0][1]).name,
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should fail with a symbol column that does not exist") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "not_a_column",
+                        "X"
+                    ]
+                )
+                input[1] = [
+                    [id: "test"],
+                    ["hpca"],
+                    ["label.fine"],
+                    [
+                        file(params.pipelines_testdata_base_path + '/singleR/celldex_hpca__2024-02-26_h5_se.tar', checkIfExists: true)
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+        }
+
+    }
+
+    test("Should run with two references") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                input[1] = [
+                    [id: "test"],
+                    ["hpca", "monaco_immune"],
+                    ["label.fine", "label.main"],
+                    [
+                        file(params.pipelines_testdata_base_path + '/singleR/celldex_hpca__2024-02-26_h5_se.tar', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + '/singleR/celldex_monaco_immune__2024-02-26_h5_se.tar', checkIfExists: true)
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            def predictions = path(process.out.obs[0][1]).csv
+            assert process.success
+            with(predictions) {
+                assert rowCount > 0
+                // one set of label columns per reference
+                assert columnNames.any { it.endsWith("labels_hpca") }
+                assert columnNames.any { it.endsWith("pruned.labels_hpca") }
+                assert columnNames.any { it.endsWith("labels_monaco_immune") }
+                assert columnNames.any { it.endsWith("pruned.labels_monaco_immune") }
+            }
+            // one distribution and heatmap pdf per reference
+            assert process.out.distribution[0][1].size() == 2
+            assert process.out.heatmap[0][1].size() == 2
+            assert snapshot(
+                process.out.obs,
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with a single reference - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                input[1] = [
+                    [id: "test"],
+                    ["hpca"],
+                    ["label.fine"],
+                    [
+                        file(params.pipelines_testdata_base_path + '/singleR/celldex_hpca__2024-02-26_h5_se.tar', checkIfExists: true)
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

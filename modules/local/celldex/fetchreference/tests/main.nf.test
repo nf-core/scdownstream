@@ -1,0 +1,61 @@
+nextflow_process {
+
+    name "Test Process CELLDEX_FETCHREFERENCE"
+    script "modules/local/celldex/fetchreference/main.nf"
+    process "CELLDEX_FETCHREFERENCE"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [id: "test"],
+                    "hpca",
+                    "2024-02-26"
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(
+                file(process.out.tar[0][1]).name,
+                process.out.versions,
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [id: "test"],
+                    "hpca",
+                    "2024-02-26"
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

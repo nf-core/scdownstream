@@ -14,7 +14,16 @@ nextflow_pipeline {
 
         then {
             // stable_path: All files + folders in ${params.outdir}/ with a stable path (including file name)
-            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+            def stable_path = getAllFilesFromDir(
+                params.outdir,
+                relative: true,
+                includeDir: true,
+                ignore: [
+                    'pipeline_info/*.{html,json,txt}',
+                    'per_group/**',
+                    'multiqc/**'
+                ]
+            )
             // stable_content: All files in ${params.outdir}/ with stable content
             def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
             assert workflow.success
@@ -26,7 +35,8 @@ nextflow_pipeline {
                     stable_path,
                     // All files with stable contents
                     stable_content
-                ).match() }
+                ).match() },
+                { assert file("$outputDir/reports/qc-report.html").text.contains("Each integration method run by the pipeline") }
             )
         }
     }

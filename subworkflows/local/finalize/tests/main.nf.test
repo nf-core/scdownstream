@@ -1,0 +1,222 @@
+nextflow_workflow {
+
+    name "Test Workflow FINALIZE"
+    script "subworkflows/local/finalize/main.nf"
+    workflow "FINALIZE"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should run without failures - with fragments - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_leiden.pkl', checkIfExists: true))
+                input[2] = channel.empty()
+                input[3] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi.pkl', checkIfExists: true))
+                input[4] = channel.empty()
+                input[5] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_paga.pkl', checkIfExists: true))
+                input[6] = channel.empty()
+                input[7] = false
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - with fragments") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_leiden.pkl', checkIfExists: true))
+                input[2] = channel.empty()
+                input[3] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi.pkl', checkIfExists: true))
+                input[4] = channel.empty()
+                input[5] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_paga.pkl', checkIfExists: true))
+                input[6] = channel.empty()
+                input[7] = false
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.success
+            with(adata) {
+                assert "scvi-global-1.0_leiden" in obs.colnames
+                assert "X_scvi" in obsm
+                assert "scvi-global-1.0_paga" in uns
+            }
+            assert snapshot(
+                workflow.out.h5ad,
+                workflow.out.versions.collect { path(it).yaml },
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - no fragments - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.empty()
+                input[2] = channel.empty()
+                input[3] = channel.empty()
+                input[4] = channel.empty()
+                input[5] = channel.empty()
+                input[6] = channel.empty()
+                input[7] = false
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - no fragments") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.empty()
+                input[2] = channel.empty()
+                input[3] = channel.empty()
+                input[4] = channel.empty()
+                input[5] = channel.empty()
+                input[6] = channel.empty()
+                input[7] = false
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.success
+            assert snapshot(
+                workflow.out.h5ad,
+                workflow.out.versions.collect { path(it).yaml },
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - with prep_cellxgene - stub") {
+
+        options '-stub'
+        config './nextflow.config'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                prep_cellxgene = true
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.empty()
+                input[2] = channel.empty()
+                input[3] = channel.empty()
+                input[4] = channel.empty()
+                input[5] = channel.empty()
+                input[6] = channel.empty()
+                input[7] = true
+                """
+            }
+        }
+
+        then {
+            // In stub mode, ADATA_PREPCELLXGENE may have file staging issues
+            // but the workflow should still complete
+            assert workflow.success
+        }
+
+    }
+
+    test("Should run without failures - with prep_cellxgene") {
+
+        config './nextflow.config'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                prep_cellxgene = true
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.empty()
+                input[2] = channel.empty()
+                input[3] = channel.empty()
+                input[4] = channel.empty()
+                input[5] = channel.empty()
+                input[6] = channel.empty()
+                input[7] = true
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.success
+            assert snapshot(
+                workflow.out.h5ad,
+                workflow.out.versions.collect { path(it).yaml },
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+}

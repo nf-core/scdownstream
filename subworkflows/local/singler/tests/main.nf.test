@@ -1,0 +1,90 @@
+nextflow_workflow {
+
+    name "Test Workflow SINGLER"
+    script "subworkflows/local/singler/main.nf"
+    workflow "SINGLER"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                input[1] = channel.of([
+                        [ id: 'hpca_direct', label: 'label.main' ],
+                        file(params.pipelines_testdata_base_path + '/singleR/celldex_hpca__2024-02-26_h5_se.tar', checkIfExists: true)
+                    ], [
+                        [ id: 'immune_celldex', label: 'label.fine', version: '2024-02-26' ],
+                        "monaco_immune"
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            def predictions = path(workflow.out.obs[0][1]).csv
+            assert workflow.success
+            assert workflow.out.obs.size() == 1
+            with(predictions) {
+                assert rowCount > 0
+                // one label column per reference, keyed by the reference meta.id
+                assert columnNames.any { it.endsWith("labels_hpca_direct") }
+                assert columnNames.any { it.endsWith("pruned.labels_hpca_direct") }
+                assert columnNames.any { it.endsWith("labels_immune_celldex") }
+                assert columnNames.any { it.endsWith("pruned.labels_immune_celldex") }
+            }
+            assert snapshot(
+                workflow.out.obs,
+                workflow.out.versions.collect { path(it).yaml }
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                input[1] = channel.of([
+                        [ id: 'hpca_direct', label: 'label.main' ],
+                        file(params.pipelines_testdata_base_path + '/singleR/celldex_hpca__2024-02-26_h5_se.tar', checkIfExists: true)
+                    ], [
+                        [ id: 'immune_celldex', label: 'label.fine', version: '2024-02-26' ],
+                        "monaco_immune"
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+}

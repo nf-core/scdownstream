@@ -1,5 +1,16 @@
 name: Run nf-test
 on:
+  push:
+    branches:
+      - dev
+      - master
+      - main
+    paths-ignore:
+      - "docs/**"
+      - "**/meta.yml"
+      - "**/*.md"
+      - "**/*.png"
+      - "**/*.svg"
   pull_request:
     paths-ignore:
       - "docs/**"
@@ -50,7 +61,8 @@ jobs:
         env:
           NFT_VER: ${{ env.NFT_VER }}
         with:
-          max_shards: 7
+          max_shards: 25
+          tags: modules_local,subworkflows_local,pipeline
 
       - name: debug
         run: |
@@ -64,6 +76,7 @@ jobs:
     runs-on: # use self-hosted runners
       - runs-on=${{ github.run_id }}-nf-test
       - runner=4cpu-linux-x64
+      - volume=100gb
     strategy:
       fail-fast: false
       matrix:
@@ -117,7 +130,7 @@ jobs:
           fi
 
   confirm-pass:
-    needs: [nf-test]
+    needs: nf-test
     if: always()
     runs-on: # use self-hosted runners
       - runs-on=${{ github.run_id }}-confirm-pass

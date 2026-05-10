@@ -1,0 +1,185 @@
+{
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_characteristic_genes.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "test_characteristic_genes.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "test_characteristic_genes.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "test_characteristic_genes_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_characteristic_genes.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "test_characteristic_genes_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "plots": [
+                    "test_characteristic_genes.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "uns": [
+                    "test_characteristic_genes.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-25T15:46:33.576251638",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run with label subsetting": {
+        "content": [
+            {
+                "SCANPY_RANKGENESGROUPS": {
+                    "pandas": "2.3.3",
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                }
+            }
+        ],
+        "timestamp": "2026-03-28T17:42:45.977438907",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run without failures": {
+        "content": [
+            {
+                "SCANPY_RANKGENESGROUPS": {
+                    "pandas": "2.3.3",
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                }
+            },
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "leiden",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+
+                    ]
+                },
+                "layers": [
+
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "X_pca"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+
+                ],
+                "uns": [
+                    "X_pca",
+                    "leiden",
+                    "log1p",
+                    "neighbors",
+                    "rank_genes_groups"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-30T09:51:04.151403312",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run with condition subsetting": {
+        "content": [
+            {
+                "SCANPY_RANKGENESGROUPS": {
+                    "pandas": "2.3.3",
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                }
+            },
+            {
+                "n_obs": 4386,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "condition",
+                        "label",
+                        "leiden",
+                        "sample",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+
+                ],
+                "uns": [
+                    "leiden",
+                    "log1p",
+                    "neighbors",
+                    "pca",
+                    "rank_genes_groups"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-30T09:52:00.65325378",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    }
+}

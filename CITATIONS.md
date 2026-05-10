@@ -8,11 +8,56 @@
 
 > Di Tommaso P, Chatzou M, Floden EW, Barja PP, Palumbo E, Notredame C. Nextflow enables reproducible computational workflows. Nat Biotechnol. 2017 Apr 11;35(4):316-319. doi: 10.1038/nbt.3820. PubMed PMID: 28398311.
 
+## Base pipelines
+
+- [panpipes](https://doi.org/10.1101/2023.03.11.532085)
+
+  > Curion F, Rich-Griffin C, Agarwal D, et al. Panpipes: a pipeline for multiomic single-cell and spatial transcriptomic data analysis. Published online December 18, 2023:2023.03.11.532085. doi:10.1101/2023.03.11.532085
+
+- [scFlow](https://doi.org/10.1101/2021.08.16.456499)
+
+  > Khozoie C, Fancy N, Marjaneh MM, Murphy AE, Matthews PM, Skene N. scFlow: A Scalable and Reproducible Analysis Pipeline for Single-Cell RNA Sequencing Data. Published online August 19, 2021:2021.08.16.456499. doi:10.1101/2021.08.16.456499
+
+- [SIMBA](https://github.com/Mye-InfoBank/SIMBA)
+
+  > Trummer, N. et al. 2024. SIMBA (Single-cell Integration Methods pipeline for Big Atlases)
+
+- [YASCP](https://github.com/wtsi-hgi/yascp)
+  > Ozols, M. et al. 2023. YASCP (Yet Another Single Cell Pipeline)
+
 ## Pipeline tools
 
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 
-> Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
+  > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
+
+- [singleR](https://pubmed.ncbi.nlm.nih.gov/30643263/)
+
+  > Aran D, Looney AP, Liu L, Wu E, Fong V, Hsu A, et al. Reference-based analysis of lung single-cell sequencing reveals a transitional profibrotic macrophage. Nat Immunol. 2019;20(2):163-172. doi: 10.1038/s41590-018-0276-y. Epub 2018 Dec 17. PubMed PMID: 30531964; PubMed Central PMCID: PMC6350770.
+
+- [Seurat](https://pubmed.ncbi.nlm.nih.gov/29608179/)
+
+  > Butler A, Hoffman P, Smibert P, Papalexi E, Satija R. Integrating single-cell transcriptomic data across different conditions, technologies, and species. Nat Biotechnol. 2018 Apr;36(5):411-420. doi: 10.1038/nbt.4096. Epub 2018 Mar 12. PubMed PMID: 29608179; PubMed Central PMCID: PMC5965097.
+
+- [celldex](https://pubmed.ncbi.nlm.nih.gov/30643263/)
+
+  > Aran D, Looney AP, Liu L, Wu E, Fong V, Hsu A, Chak S, Naikawadi RP, Wolters PJ, Abate AR, Butte AJ, Bhattacharya M (2019). “Reference-based analysis of lung single-cell sequencing reveals a transitional profibrotic macrophage.” Nat. Immunol., 20, 163-172. doi:10.1038/s41590-018-0276-y.
+
+- [anndataR](https://anndatar.data-intuitive.com/)
+
+  > Cannoodt R, Zappia L, Morgan M, Deconinck L (2025). anndataR: AnnData interoperability in R. R package version 0.99.0
+
+- [scanpy](https://pubmed.ncbi.nlm.nih.gov/29409532/)
+
+  > Wolf, F. A., Angerer, P., & Theis, F. J. (2018). SCANPY: large-scale single-cell gene expression data analysis. Genome biology, 19(1), 15. https://doi.org/10.1186/s13059-017-1382-0
+
+- [scarches](https://pypi.org/project/scArches/)
+
+  > Lotfollahi, M., Naghipourfar, M., Luecken, M.D. et al. Mapping single-cell data to reference atlases by transfer learning. Nat Biotechnol 40, 121–130 (2022). https://doi.org/10.1038/s41587-021-01001-7
+
+- [scDblFinder](https://pubmed.ncbi.nlm.nih.gov/35118618/)
+
+  > Germain P, Lun A, Garcia Meixide C, Macnair W, Robinson M. Doublet identification in single-cell sequencing data using scDblFinder. F1000Res. 2022;11:979. doi: 10.12688/f1000research.73600.2.
 
 ## Software packaging/containerisation tools
 

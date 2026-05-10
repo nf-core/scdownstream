@@ -1,0 +1,101 @@
+nextflow_workflow {
+
+    name "Test Workflow DOUBLET_DETECTION"
+    script "subworkflows/local/doublet_detection/main.nf"
+    workflow "DOUBLET_DETECTION"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should run without methods") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', batch_col: 'sample' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = []
+                input[2] = 0
+                input[3] = 1
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.trace.tasks().size() == 0
+        }
+
+    }
+
+    test("Should run with all methods except doubletdetection") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                scvi_max_epochs = 2
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', batch_col: 'sample' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = ['solo', 'scrublet', 'scdblfinder']
+                input[2] = 2
+                input[3] = 1
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+
+            assert workflow.success
+            assert adata.n_obs > 6400
+            assert adata.n_obs < 6700
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml },
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', batch_col: 'sample' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = ['solo', 'scrublet', 'doubletdetection']
+                input[2] = 2
+                input[3] = 1
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+}

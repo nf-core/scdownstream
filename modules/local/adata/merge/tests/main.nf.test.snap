@@ -1,0 +1,530 @@
+{
+    "Should run without base": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_outer.h5ad:md5,d03dc674beb17ce07839ea78791fec77"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_inner.h5ad:md5,d03dc674beb17ce07839ea78791fec77"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_integrate.h5ad:md5,d03dc674beb17ce07839ea78791fec77"
+                    ]
+                ],
+                "3": [
+                    "gene_intersection.pkl:md5,c0c997e228a2aafb9af01fe06fb3ab28"
+                ],
+                "4": [
+                    "versions.yml:md5,f90dc837c47fb9c2207d021f2201c357"
+                ],
+                "inner": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_inner.h5ad:md5,d03dc674beb17ce07839ea78791fec77"
+                    ]
+                ],
+                "integrate": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_integrate.h5ad:md5,d03dc674beb17ce07839ea78791fec77"
+                    ]
+                ],
+                "intersect_genes": [
+                    "gene_intersection.pkl:md5,c0c997e228a2aafb9af01fe06fb3ab28"
+                ],
+                "outer": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_outer.h5ad:md5,d03dc674beb17ce07839ea78791fec77"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,f90dc837c47fb9c2207d021f2201c357"
+                ]
+            },
+            {
+                "ADATA_MERGE": {
+                    "anndata": "0.12.10",
+                    "python": "3.13.12",
+                    "scanpy": "1.12",
+                    "scipy": "1.17.1"
+                }
+            },
+            {
+                "n_obs": 20313,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "condition",
+                        "label",
+                        "sample",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            },
+            {
+                "n_obs": 20313,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "condition",
+                        "label",
+                        "sample",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            },
+            {
+                "n_obs": 20313,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "condition",
+                        "label",
+                        "sample",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-03-29T15:46:45.952212141",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run with base": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "SRR28679756"
+                        },
+                        "SRR28679756_outer.h5ad:md5,4b877999213cc0272cbfe601f371c2e1"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "SRR28679756"
+                        },
+                        "SRR28679756_inner.h5ad:md5,4b877999213cc0272cbfe601f371c2e1"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "SRR28679756"
+                        },
+                        "SRR28679756_integrate.h5ad:md5,f39b2e07df5c912a8db36e380368f83f"
+                    ]
+                ],
+                "3": [
+                    "gene_intersection.pkl:md5,c0c997e228a2aafb9af01fe06fb3ab28"
+                ],
+                "4": [
+                    "versions.yml:md5,f90dc837c47fb9c2207d021f2201c357"
+                ],
+                "inner": [
+                    [
+                        {
+                            "id": "SRR28679756"
+                        },
+                        "SRR28679756_inner.h5ad:md5,4b877999213cc0272cbfe601f371c2e1"
+                    ]
+                ],
+                "integrate": [
+                    [
+                        {
+                            "id": "SRR28679756"
+                        },
+                        "SRR28679756_integrate.h5ad:md5,f39b2e07df5c912a8db36e380368f83f"
+                    ]
+                ],
+                "intersect_genes": [
+                    "gene_intersection.pkl:md5,c0c997e228a2aafb9af01fe06fb3ab28"
+                ],
+                "outer": [
+                    [
+                        {
+                            "id": "SRR28679756"
+                        },
+                        "SRR28679756_outer.h5ad:md5,4b877999213cc0272cbfe601f371c2e1"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,f90dc837c47fb9c2207d021f2201c357"
+                ]
+            },
+            {
+                "ADATA_MERGE": {
+                    "anndata": "0.12.10",
+                    "python": "3.13.12",
+                    "scanpy": "1.12",
+                    "scipy": "1.17.1"
+                }
+            },
+            {
+                "n_obs": 20313,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "condition",
+                        "label",
+                        "sample",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            },
+            {
+                "n_obs": 20313,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "condition",
+                        "label",
+                        "sample",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "condition",
+                        "label",
+                        "sample",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-03-29T12:58:39.973626992",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run without base - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_outer.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_inner.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_integrate.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    "gene_intersection.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "inner": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_inner.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "integrate": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_integrate.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "intersect_genes": [
+                    "gene_intersection.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "outer": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_outer.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2025-06-01T20:28:38.500167477",
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "25.04.2"
+        }
+    },
+    "Should run with base - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "SRR28679756"
+                        },
+                        "SRR28679756_outer.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "SRR28679756"
+                        },
+                        "SRR28679756_inner.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "SRR28679756"
+                        },
+                        "SRR28679756_integrate.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    "gene_intersection.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "inner": [
+                    [
+                        {
+                            "id": "SRR28679756"
+                        },
+                        "SRR28679756_inner.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "integrate": [
+                    [
+                        {
+                            "id": "SRR28679756"
+                        },
+                        "SRR28679756_integrate.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "intersect_genes": [
+                    "gene_intersection.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "outer": [
+                    [
+                        {
+                            "id": "SRR28679756"
+                        },
+                        "SRR28679756_outer.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2025-06-01T20:29:20.550815092",
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "25.04.2"
+        }
+    }
+}

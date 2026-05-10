@@ -1,0 +1,131 @@
+nextflow_workflow {
+
+    name "Test Workflow UNIFY_GENES"
+    script "subworkflows/local/unify_genes/main.nf"
+    workflow "UNIFY_GENES"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should run without failures - single sample - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - single sample") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.success
+            with(adata) {
+                assert "symbols" in var.colnames
+                assert var.rownames.size() > 0
+                assert obs.rownames.size() > 0
+            }
+            assert snapshot(
+                workflow.out.versions,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - multiple samples - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of(
+                    [[id: 'test1'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)],
+                    [[id: 'test2'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)]
+                )
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - multiple samples") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of(
+                    [[id: 'test1'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)],
+                    [[id: 'test2'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)]
+                )
+                """
+            }
+        }
+
+        then {
+            def adata1 = anndata(workflow.out.h5ad[0][1])
+            def adata2 = anndata(workflow.out.h5ad[1][1])
+            assert workflow.success
+            with(adata1) {
+                assert "symbols" in var.colnames
+                assert var.rownames.size() > 0
+                assert obs.rownames.size() > 0
+            }
+            with(adata2) {
+                assert "symbols" in var.colnames
+                assert var.rownames.size() > 0
+                assert obs.rownames.size() > 0
+            }
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml },
+                adata1.yaml,
+                adata2.yaml
+            ).match()
+        }
+
+    }
+
+}

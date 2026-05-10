@@ -1,0 +1,82 @@
+nextflow_process {
+
+    name "Test Process SCANPY_COMBAT"
+    script "modules/local/scanpy/combat/main.nf"
+    process "SCANPY_COMBAT"
+
+    tag "modules"
+    tag "modules_local"
+
+    setup {
+        run("SCANPY_HVGS") {
+            script "modules/local/scanpy/hvgs/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                """
+            }
+        }
+    }
+
+    test("Should run without failures") {
+
+        config './nextflow.config'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_HVGS.out.h5ad
+                input[1] = "sample"
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "X_emb" in obsm
+                assert "X_pca" in obsm
+            }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_HVGS.out.h5ad
+                input[1] = "sample"
+                """
+            }
+        }
+
+        then {
+            assert process.success
+
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

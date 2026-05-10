@@ -1,0 +1,72 @@
+nextflow_workflow {
+
+    name "Test Workflow CELLTYPE_ASSIGNMENT"
+    script "subworkflows/local/celltype_assignment/main.nf"
+    workflow "CELLTYPE_ASSIGNMENT"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should run with both celltypist and singler") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                input[1] = "https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/singleR/references.csv"
+                input[2] = "Adult_COVID19_PBMC"
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.obs.size() >= 1
+            assert snapshot(
+                workflow.out.versions,
+                workflow.out.obs.size()
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                input[1] = "https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/singleR/references.csv"
+                input[2] = "Adult_COVID19_PBMC"
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+}
