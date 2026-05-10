@@ -149,6 +149,7 @@ workflow {
     PIPELINE_INITIALISATION (
         params.version,
         params.validate_params,
+        params.monochrome_logs,
         args,
         params.outdir,
         params.help,
@@ -228,7 +229,6 @@ workflow {
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
-        params.hook_url,
         NFCORE_SCDOWNSTREAM.out.multiqc_report
     )
 }
