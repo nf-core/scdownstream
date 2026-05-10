@@ -190,6 +190,12 @@ In simple terms, in this setup the workflow is: (1) project new data into the la
 
 Pre-trained scVI models are also shared on [scvi-hub](https://huggingface.co/scvi-tools).
 
+### Integration benchmarking (scib-metrics)
+
+You can run [scib-metrics](https://scib-metrics.readthedocs.io/) on each integration output by setting [`scib`](https://nf-co.re/scdownstream/parameters#scib) to `true` (default is `false`). The step is **not** run when only [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata) and [`base_embeddings`](https://nf-co.re/scdownstream/parameters#base_embeddings) are provided without `--input`.
+
+Metrics tables are published under `combine/integrate/scib_metrics/<method>/`, and a summary table is included in the MultiQC report. Values are not numerically comparable to the original scIB reference implementation (see the scib-metrics documentation). Rare batches or uninformative labels can make scores such as kBET unstable.
+
 ### Skipping integration
 
 :::tip
