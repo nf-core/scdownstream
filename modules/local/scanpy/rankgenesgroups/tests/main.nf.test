@@ -9,8 +9,6 @@ nextflow_process {
 
     test("Should run without failures") {
 
-        config './nextflow.config'
-
         when {
             params {
                 outdir = "$outputDir"
@@ -72,8 +70,6 @@ nextflow_process {
 
     test("Should run with condition subsetting") {
 
-        config './nextflow.config'
-
         when {
             params {
                 outdir = "$outputDir"
@@ -105,8 +101,6 @@ nextflow_process {
     }
 
     test("Should run with label subsetting") {
-
-        config './nextflow.config'
 
         when {
             params {

@@ -22,7 +22,6 @@ process ADATA_ENTROPY {
     script:
     prefix = task.ext.prefix ?: "${meta.id}_entropy"
     plot_basis = task.ext.plot_basis ?: null
-    args = task.ext.args ?: ''
     template 'entropy.py'
 
     stub:

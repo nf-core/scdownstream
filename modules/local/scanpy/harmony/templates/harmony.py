@@ -6,8 +6,6 @@ os.environ["KMP_AFFINITY"] = "disabled"
 
 import platform
 import yaml
-import argparse
-import shlex
 
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
@@ -15,16 +13,11 @@ os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 import harmonypy
 import scanpy as sc
 import pandas as pd
-import numpy as np
 
 from threadpoolctl import threadpool_limits
 threadpool_limits(int("${task.cpus}"))
 
 adata = sc.read_h5ad("${h5ad}")
-args = "${args}"
-parser = argparse.ArgumentParser()
-parser.add_argument("--decimals", type=int, default=None)
-params = parser.parse_args(shlex.split(args))
 
 prefix = "${prefix}"
 
@@ -56,8 +49,6 @@ else:
         f"expected {adata_processing.obsm['X_pca'].shape} or its transpose."
     )
 
-if params.decimals is not None:
-    adata_processing.obsm["X_emb"] = adata_processing.obsm["X_emb"].round(params.decimals)
 adata.obsm["X_emb"] = adata_processing.obsm["X_emb"]
 
 adata.write_h5ad(f"{prefix}.h5ad")

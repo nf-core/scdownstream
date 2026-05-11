@@ -22,7 +22,6 @@ process SCANPY_COMBAT {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    args   = task.ext.args   ?: ''
     template('combat.py')
 
     stub:

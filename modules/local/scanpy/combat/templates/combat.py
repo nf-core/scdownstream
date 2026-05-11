@@ -9,8 +9,6 @@ import platform
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
-import argparse
-import shlex
 import scanpy as sc
 import pandas as pd
 import numpy as np
@@ -20,12 +18,6 @@ import yaml
 from threadpoolctl import threadpool_limits
 threadpool_limits(int("${task.cpus}"))
 sc.settings.n_jobs = int("${task.cpus}")
-
-args = argparse.Namespace(decimals=None)
-if "${args}" != "":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--decimals', type=int, default=None)
-    args = parser.parse_args(shlex.split("${args}"))
 
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
