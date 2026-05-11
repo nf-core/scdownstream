@@ -83,7 +83,7 @@ bm = Benchmarker(
 bm.prepare()
 bm.benchmark()
 results = bm.get_results(min_max_scale=False, clean_names=True)
-results.to_csv(f"{prefix}_metrics.tsv", sep="\t")
+results.to_csv(f"{prefix}_{integration}_metrics.tsv", sep="\t")
 
 
 def _mqc_table_cell(v):
@@ -93,6 +93,7 @@ def _mqc_table_cell(v):
         fv = float(v)
         if math.isnan(fv) or math.isinf(fv):
             return None
+        return fv
     except (TypeError, ValueError):
         pass
     if hasattr(v, "item"):
@@ -100,19 +101,22 @@ def _mqc_table_cell(v):
     return v
 
 
-mqc_data = {
-    str(c): {str(i): _mqc_table_cell(results.at[i, c]) for i in results.index}
-    for c in results.columns
-}
+# MultiQC custom table: data is { sample (row): { column: value, ... } }.
+# Fixed section id merges all integration runs (one row each); one embedding row per run.
+metrics_row = results.iloc[0]
+row = {str(c): _mqc_table_cell(metrics_row[c]) for c in results.columns}
+mqc_data = {integration: row}
+mqc_headers = {str(c): {"format": "{:.3f}"} for c in results.columns}
 
-with open(f"{prefix}_mqc.json", "w") as f_json:
+with open(f"{prefix}_{integration}_mqc.json", "w") as f_json:
     json.dump(
         {
-            "id": prefix,
-            "parent_id": integration,
+            "id": "scib_metrics_benchmark",
             "plot_type": "table",
-            "section_name": f"{integration} scib-metrics",
-            "description": f"scib-metrics benchmark for the {integration} integration.",
+            "section_name": "scib-metrics",
+            "description": "scib-metrics benchmark (one row per integration method).",
+            "pconfig": {"col1_header": "Integration method"},
+            "headers": mqc_headers,
             "data": mqc_data,
         },
         f_json,

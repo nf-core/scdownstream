@@ -11,8 +11,8 @@ process SCIB_METRICS {
     tuple val(meta), val(integration_name), path(h5ad, arity: 1)
 
     output:
-    path "${prefix}_metrics.tsv", emit: metrics
-    path "${prefix}_mqc.json"   , emit: multiqc_files
+    path "${prefix}_${integration_name}_metrics.tsv", emit: metrics
+    path "${prefix}_${integration_name}_mqc.json"   , emit: multiqc_files
     path "versions.yml"         , emit: versions, topic: versions
 
     when:
