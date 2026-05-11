@@ -1,6 +1,6 @@
 {
     "@context": [
-        "https://w3id.org/ro/crate/1.1/context",
+        "https://w3id.org/ro/crate/1.2/context",
         {
             "GithubService": "https://w3id.org/ro/terms/test#GithubService",
             "JenkinsService": "https://w3id.org/ro/terms/test#JenkinsService",
@@ -99,7 +99,7 @@
             },
             "mentions": [
                 {
-                    "@id": "#eeaa5b87-3440-4c96-8af8-4019ee5b29f1"
+                    "@id": "#54786fc2-77aa-415f-96fb-aa096d4870e4"
                 }
             ],
             "name": "nf-core/scdownstream"
@@ -112,7 +112,7 @@
             },
             "conformsTo": [
                 {
-                    "@id": "https://w3id.org/ro/crate/1.1"
+                    "@id": "https://w3id.org/ro/crate/1.2"
                 },
                 {
                     "@id": "https://w3id.org/workflowhub/workflow-ro-crate/1.0"
@@ -121,18 +121,14 @@
         },
         {
             "@id": "main.nf",
-            "@type": [
-                "File",
-                "SoftwareSourceCode",
-                "ComputationalWorkflow"
-            ],
-            "creator": [
+            "@type": ["File", "SoftwareSourceCode", "ComputationalWorkflow"],
+            "contributor": [
                 {
                     "@id": "https://orcid.org/0000-0002-4639-0935"
                 }
             ],
             "dateCreated": "",
-            "dateModified": "2025-11-20T09:32:29Z",
+            "dateModified": "2026-04-30T13:33:07Z",
             "dct:conformsTo": "https://bioschemas.org/profiles/ComputationalWorkflow/1.0-RELEASE/",
             "keywords": [
                 "nf-core",
@@ -179,14 +175,14 @@
             "url": {
                 "@id": "https://www.nextflow.io/"
             },
-            "version": "!>=25.04.0"
+            "version": "!>=25.10.4"
         },
         {
-            "@id": "#eeaa5b87-3440-4c96-8af8-4019ee5b29f1",
+            "@id": "#54786fc2-77aa-415f-96fb-aa096d4870e4",
             "@type": "TestSuite",
             "instance": [
                 {
-                    "@id": "#088641ef-0de8-46e7-b0de-c62fa599ccfa"
+                    "@id": "#830019e6-b2af-490e-b0a5-27289012e2bd"
                 }
             ],
             "mainEntity": {
@@ -195,7 +191,7 @@
             "name": "Test suite for nf-core/scdownstream"
         },
         {
-            "@id": "#088641ef-0de8-46e7-b0de-c62fa599ccfa",
+            "@id": "#830019e6-b2af-490e-b0a5-27289012e2bd",
             "@type": "TestInstance",
             "name": "GitHub Actions workflow for testing nf-core/scdownstream",
             "resource": "repos/nf-core/scdownstream/actions/workflows/nf-test.yml",
