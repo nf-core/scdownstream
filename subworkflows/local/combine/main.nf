@@ -84,7 +84,11 @@ workflow COMBINE {
 
     if (scib) {
         SCIB_METRICS (
-            ch_integrations.map { meta, h5ad -> tuple(meta, meta.integration, h5ad) }
+            ch_integrations
+                .map { meta, h5ad -> tuple(meta, meta.integration, h5ad) }
+                // BBKNN corrects the neighborhood graph and does not produce a dense embedding
+                // Thus, it is not compatible with scib-metrics
+                .filter { _meta, integration, _h5ad -> integration != 'bbknn' }
         )
         ch_versions = ch_versions.mix(SCIB_METRICS.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(SCIB_METRICS.out.multiqc_files)
