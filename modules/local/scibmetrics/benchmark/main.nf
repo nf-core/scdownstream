@@ -1,4 +1,4 @@
-process SCIB_METRICS {
+process SCIBMETRICS_BENCHMARK {
     tag "${meta.id}"
     label 'process_high'
 

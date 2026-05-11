@@ -1,7 +1,7 @@
 include { INTEGRATE             } from '../integrate'
 include { ADATA_MERGEEMBEDDINGS } from '../../../modules/local/adata/mergeembeddings'
 include { ADATA_MERGE           } from '../../../modules/local/adata/merge'
-include { SCIB_METRICS          } from '../../../modules/local/scib_metrics/benchmark'
+include { SCIBMETRICS_BENCHMARK } from '../../../modules/local/scibmetrics/benchmark'
 
 workflow COMBINE {
 
@@ -83,14 +83,14 @@ workflow COMBINE {
         .map{meta, file -> [meta + [integration: meta.id], file]}
 
     if (scib) {
-        SCIB_METRICS (
+        SCIBMETRICS_BENCHMARK (
             ch_integrations
                 // BBKNN corrects the neighborhood graph and does not produce a dense embedding
                 // Thus, it is not compatible with scib-metrics
                 .filter { meta, _h5ad -> meta.id != 'bbknn' }
         )
-        ch_versions = ch_versions.mix(SCIB_METRICS.out.versions)
-        ch_multiqc_files = ch_multiqc_files.mix(SCIB_METRICS.out.multiqc_files)
+        ch_versions = ch_versions.mix(SCIBMETRICS_BENCHMARK.out.versions)
+        ch_multiqc_files = ch_multiqc_files.mix(SCIBMETRICS_BENCHMARK.out.multiqc_files)
     }
 
     emit:

@@ -1,8 +1,8 @@
 nextflow_process {
 
-    name "Test Process SCIB_METRICS"
-    script "modules/local/scib_metrics/benchmark/main.nf"
-    process "SCIB_METRICS"
+    name "Test Process SCIBMETRICS_BENCHMARK"
+    script "modules/local/scibmetrics/benchmark/main.nf"
+    process "SCIBMETRICS_BENCHMARK"
 
     tag "modules"
     tag "modules_local"
@@ -76,7 +76,7 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = SCANPY_PCA.out.h5ad.map { meta, h5ad -> [meta + [integration: meta.id], meta.id, h5ad] }
+                input[0] = SCANPY_PCA.out.h5ad
                 """
             }
         }
@@ -99,8 +99,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                        [ id: 'pca', integration: 'pca' ],
-                        'pca',
+                        [ id: 'pca' ],
                         file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
                     ]
                 )
