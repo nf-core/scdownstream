@@ -12,8 +12,8 @@ process SCIB_METRICS {
 
     output:
     path "${prefix}_metrics.tsv", emit: metrics
-    path "${prefix}_mqc.json"  , emit: multiqc_files
-    path "versions.yml"            , emit: versions, topic: versions
+    path "${prefix}_mqc.json"   , emit: multiqc_files
+    path "versions.yml"         , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
