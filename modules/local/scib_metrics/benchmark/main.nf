@@ -1,5 +1,5 @@
 process SCIB_METRICS {
-    tag "${meta.integration}"
+    tag "${meta.id}"
     label 'process_high'
 
     conda "${moduleDir}/environment.yml"
@@ -8,11 +8,11 @@ process SCIB_METRICS {
         : 'community.wave.seqera.io/library/python_pyyaml_pip_scib-metrics:26d5406663c7db7d'}"
 
     input:
-    tuple val(meta), val(integration_name), path(h5ad, arity: 1)
+    tuple val(meta), path(h5ad, arity: 1)
 
     output:
-    path "${prefix}_${integration_name}_metrics.tsv", emit: metrics
-    path "${prefix}_${integration_name}_mqc.json"   , emit: multiqc_files
+    path "${prefix}_metrics.tsv", emit: metrics
+    path "${prefix}_mqc.json"   , emit: multiqc_files
     path "versions.yml"         , emit: versions, topic: versions
 
     when:

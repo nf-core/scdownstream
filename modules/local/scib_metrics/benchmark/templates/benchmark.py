@@ -22,7 +22,6 @@ from scib_metrics.benchmark._core import BatchCorrection
 
 prefix = "${prefix}"
 args_str = "${args}"
-integration = "${integration_name}"
 h5ad_path = "${h5ad}"
 
 parser = argparse.ArgumentParser()
@@ -83,7 +82,7 @@ bm = Benchmarker(
 bm.prepare()
 bm.benchmark()
 results = bm.get_results(min_max_scale=False, clean_names=True)
-results.to_csv(f"{prefix}_{integration}_metrics.tsv", sep="\t")
+results.to_csv(f"{prefix}_metrics.tsv", sep="\t")
 
 
 def _mqc_table_cell(v):
@@ -105,10 +104,10 @@ def _mqc_table_cell(v):
 # Fixed section id merges all integration runs (one row each); one embedding row per run.
 metrics_row = results.iloc[0]
 row = {str(c): _mqc_table_cell(metrics_row[c]) for c in results.columns}
-mqc_data = {integration: row}
+mqc_data = {prefix: row}
 mqc_headers = {str(c): {"format": "{:.3f}"} for c in results.columns}
 
-with open(f"{prefix}_{integration}_mqc.json", "w") as f_json:
+with open(f"{prefix}_mqc.json", "w") as f_json:
     json.dump(
         {
             "id": "scib_metrics_benchmark",
