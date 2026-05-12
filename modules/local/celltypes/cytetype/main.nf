@@ -2,6 +2,8 @@ process CELLTYPES_CYTETYPE {
     tag "${meta.id}"
     label 'process_medium'
 
+    secret 'CYTETYPE_TOKEN'
+
     conda "${moduleDir}/environment.yml"
 
     input:
@@ -20,7 +22,6 @@ process CELLTYPES_CYTETYPE {
     prefix = task.ext.prefix ?: "${meta.id}"
     leiden_resolution = task.ext.leiden_resolution ?: 0.5
     n_top_genes = task.ext.n_top_genes ?: 50
-    auth_token = task.ext.auth_token ?: ''
 
     if ("${prefix}.h5ad" == "${h5ad}") {
         error("Input and output names are the same, use \"task.ext.prefix\" to disambiguate!")

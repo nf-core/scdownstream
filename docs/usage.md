@@ -157,7 +157,7 @@ nextflow run nf-core/scdownstream \
 > [!IMPORTANT]
 > CyteType calls the remote `https://cytetype.nygen.io` API and therefore **requires internet access** from the compute node running the `CELLTYPES_CYTETYPE` task.
 
-If your CyteType deployment requires authentication, pass the token via `--cytetype_auth_token`. Prefer providing this via a Nextflow secret or environment variable rather than committing it to a params file. The Leiden resolution and the number of marker genes per cluster passed to CyteType can be tuned with `--cytetype_leiden_resolution` and `--cytetype_n_top_genes`.
+If your CyteType deployment requires authentication, set the Nextflow secret `CYTETYPE_TOKEN` before the run (for example `nextflow secrets set CYTETYPE_TOKEN '<token>'`). The Leiden resolution and the number of marker genes per cluster passed to CyteType can be tuned with `--cytetype_leiden_resolution` and `--cytetype_n_top_genes`.
 
 ### Cell cycle scoring
 
