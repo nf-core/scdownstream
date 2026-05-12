@@ -6,11 +6,9 @@ os.environ["KMP_AFFINITY"] = "disabled"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 
-import argparse
 import json
 import math
 import platform
-import shlex
 import warnings
 from dataclasses import replace
 
@@ -21,17 +19,7 @@ from scib_metrics.benchmark import Benchmarker
 from scib_metrics.benchmark._core import BatchCorrection
 
 prefix = "${prefix}"
-args_str = "${args}"
 h5ad_path = "${h5ad}"
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--n-jobs", type=int, default=1, dest="n_jobs")
-parser.add_argument(
-    "--no-bras",
-    action="store_true",
-    help="Disable silhouette batch (BRAS); avoids failures on tiny or degenerate batch×label data.",
-)
-args_ns, _ = parser.parse_known_args(shlex.split(args_str) if args_str.strip() else [])
 
 adata = sc.read_h5ad(h5ad_path)
 
@@ -53,7 +41,8 @@ elif not bool(adata.var["highly_variable"].any()):
     )
     adata.var["highly_variable"] = True
 
-if (adata.obs["label"].astype(str) == "Unknown").all():
+labels = adata.obs["label"].astype(str)
+if (labels == "Unknown").all():
     warnings.warn(
         "All cells have label 'Unknown'; bio-conservation metrics are not meaningful."
     )
@@ -66,7 +55,10 @@ sc.pp.normalize_total(ad_bm, target_sum=1e4)
 sc.pp.log1p(ad_bm)
 
 bm_kw = {}
-if args_ns.no_bras:
+if labels.nunique() <= 1:
+    warnings.warn(
+        "obs['label'] has only one unique value; disabling BRAS (silhouette batch)."
+    )
     bm_kw["batch_correction_metrics"] = replace(BatchCorrection(), bras=False)
 
 bm = Benchmarker(
@@ -75,7 +67,6 @@ bm = Benchmarker(
     label_key="label",
     embedding_obsm_keys=["X_emb"],
     pre_integrated_embedding_obsm_key=None,
-    n_jobs=args_ns.n_jobs,
     progress_bar=False,
     **bm_kw,
 )

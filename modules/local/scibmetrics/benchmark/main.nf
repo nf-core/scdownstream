@@ -20,7 +20,6 @@ process SCIBMETRICS_BENCHMARK {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    args = task.ext.args ?: ''
     template('benchmark.py')
 
     stub:
