@@ -1,12 +1,10 @@
-name: celltypes_cytetype
 channels:
   - conda-forge
   - bioconda
 dependencies:
-  - conda-forge::python=3.12
-  - conda-forge::scanpy=1.10.4
-  - conda-forge::pyyaml=6.0.2
-  - conda-forge::threadpoolctl=3.5.0
+  - conda-forge::python=3.14.4
+  - conda-forge::pyyaml=6.0.3
+  - conda-forge::scanpy=1.12.1
   - pip
   - pip:
-      - cytetype==0.19.3
+      - cytetype==0.19.4
