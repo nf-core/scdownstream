@@ -29,7 +29,7 @@ if not study_context.strip():
 symbol_col = "${symbol_col}"
 leiden_resolution = float("${leiden_resolution}")
 n_top_genes = int("${n_top_genes}")
-_auth = os.environ.get("CYTETYPE_TOKEN")
+_auth = os.environ.get("CYTETYPE_API_KEY")
 auth_token_arg = _auth.strip() if _auth and _auth.strip() else None
 
 orig_obs_cols = set(adata.obs.columns)

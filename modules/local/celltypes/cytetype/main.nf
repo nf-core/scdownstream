@@ -2,7 +2,7 @@ process CELLTYPES_CYTETYPE {
     tag "${meta.id}"
     label 'process_medium'
 
-    secret 'CYTETYPE_TOKEN'
+    secret 'CYTETYPE_API_KEY'
 
     conda "${moduleDir}/environment.yml"
 
