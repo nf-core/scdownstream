@@ -8,8 +8,6 @@ import platform
 import json
 import base64
 import yaml
-import argparse
-import shlex
 
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
@@ -24,11 +22,6 @@ group_col = "${group_col}"
 entropy_col = "${entropy_col}"
 prefix = "${prefix}"
 adata = sc.read_h5ad("${h5ad}", backed='r')
-args = "${args}"
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--decimals", type=int, default=None)
-params = parser.parse_args(shlex.split(args))
 
 def entropy_of_group(group):
     counts = group.value_counts(normalize=True)
@@ -39,9 +32,6 @@ entropies = adata.obs.groupby(group_col)[entropy_col].apply(entropy_of_group)
 n_unique = adata.obs[entropy_col].nunique()
 colname = "${meta.id}:entropy"
 adata.obs[colname] = adata.obs[group_col].map(entropies).astype(float) / np.log2(n_unique)
-
-if params.decimals is not None:
-    adata.obs[colname] = adata.obs[colname].round(params.decimals)
 
 adata.obs[[colname]].to_pickle(f"{prefix}.pkl")
 adata.write_h5ad(f"{prefix}.h5ad")

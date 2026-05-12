@@ -38,7 +38,6 @@ emb <- Embeddings(seurat_obj, reduction = "X_emb")
 emb <- emb[match(rownames(adata\$obs), rownames(emb)), ]
 rownames(emb) <- NULL
 colnames(emb) <- NULL
-emb <- round(emb, 10)
 
 adata\$obsm\$X_emb <- emb
 

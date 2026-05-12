@@ -61,6 +61,7 @@ workflow SCDOWNSTREAM {
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
     skip_rankgenesgroups          //   value: boolean
+    scib                          //   value: boolean
     base_embeddings               //   value: string
     base_label_col                //   value: string
     base_condition_col            //   value: string
@@ -181,6 +182,7 @@ workflow SCDOWNSTREAM {
                 scimilarity_model,
                 expimap_gmt,
                 condition_col,
+                scib,
             )
             ch_versions = ch_versions.mix(COMBINE.out.versions)
             ch_obs = ch_obs.mix(COMBINE.out.obs)
@@ -190,6 +192,8 @@ workflow SCDOWNSTREAM {
             ch_finalization_base = COMBINE.out.h5ad
 
             ch_label_grouping = COMBINE.out.h5ad_inner
+
+            ch_multiqc_files = ch_multiqc_files.mix(COMBINE.out.multiqc_files)
         }
     }
     else {

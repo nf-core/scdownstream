@@ -8,8 +8,6 @@ nextflow_process {
 
     test("Should run without failures") {
 
-        config './nextflow.config'
-
         when {
             params {
                 outdir = "$outputDir"
@@ -31,7 +29,6 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
             assert snapshot(
-                process.out,
                 path(process.out.versions[0]).yaml,
                 adata.yaml
             ).match()

@@ -20,7 +20,6 @@ process SCANPY_UMAP {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    args   = task.ext.args ?: ''
     template('umap.py')
 
     stub:
