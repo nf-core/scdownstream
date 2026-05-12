@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 import scanpy as sc
 import yaml
-from importlib.metadata import PackageNotFoundError, version as pkg_version
+from importlib.metadata import version
 from threadpoolctl import threadpool_limits
 from cytetype import CyteType
 
@@ -98,18 +98,13 @@ df_out.to_pickle(f"{prefix}.pkl")
 adata.obs = pd.concat([adata.obs, df_out], axis=1)
 adata.write_h5ad(f"{prefix}.h5ad")
 
-try:
-    cytetype_ver = pkg_version("cytetype")
-except PackageNotFoundError:
-    cytetype_ver = "unknown"
-
 versions = {
     "${task.process}": {
         "python": platform.python_version(),
         "numpy": np.__version__,
         "pandas": pd.__version__,
         "scanpy": sc.__version__,
-        "cytetype": cytetype_ver,
+        "cytetype": version("cytetype")
     }
 }
 
