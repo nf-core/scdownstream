@@ -9,6 +9,8 @@ process CELLTYPES_CYTETYPE {
     input:
     tuple val(meta), path(h5ad), val(symbol_col)
     val study_context
+    val leiden_resolution
+    val n_top_genes
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
@@ -20,8 +22,6 @@ process CELLTYPES_CYTETYPE {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    leiden_resolution = task.ext.leiden_resolution ?: 0.5
-    n_top_genes = task.ext.n_top_genes ?: 50
 
     if ("${prefix}.h5ad" == "${h5ad}") {
         error("Input and output names are the same, use \"task.ext.prefix\" to disambiguate!")
