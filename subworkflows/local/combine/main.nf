@@ -1,6 +1,7 @@
 include { INTEGRATE             } from '../integrate'
 include { ADATA_MERGEEMBEDDINGS } from '../../../modules/local/adata/mergeembeddings'
 include { ADATA_MERGE           } from '../../../modules/local/adata/merge'
+include { SCIBMETRICS_BENCHMARK } from '../../../modules/local/scibmetrics/benchmark'
 
 workflow COMBINE {
 
@@ -18,10 +19,12 @@ workflow COMBINE {
     scimilarity_model           //   value: string
     expimap_gmt                 //   value: string
     condition_col               //   value: string
+    scib                        //   value: boolean
 
     main:
 
     ch_versions      = channel.empty()
+    ch_multiqc_files = channel.empty()
     ch_obs           = channel.empty()
     ch_var           = channel.empty()
     ch_obsm          = channel.empty()
@@ -79,6 +82,17 @@ workflow COMBINE {
     ch_integrations = ch_integrations
         .map{meta, file -> [meta + [integration: meta.id], file]}
 
+    if (scib) {
+        SCIBMETRICS_BENCHMARK (
+            ch_integrations
+                // BBKNN corrects the neighborhood graph and does not produce a dense embedding
+                // Thus, it is not compatible with scib-metrics
+                .filter { meta, _h5ad -> meta.id != 'bbknn' }
+        )
+        ch_versions = ch_versions.mix(SCIBMETRICS_BENCHMARK.out.versions)
+        ch_multiqc_files = ch_multiqc_files.mix(SCIBMETRICS_BENCHMARK.out.multiqc_files)
+    }
+
     emit:
     h5ad             = ch_outer         // channel: [ merged, h5ad ]
     h5ad_inner       = ch_inner         // channel: [ merged, h5ad ]
@@ -87,4 +101,5 @@ workflow COMBINE {
     obs              = ch_obs           // channel: [ pkl ]
     obsm             = ch_obsm          // channel: [ pkl ]
     versions         = ch_versions      // channel: [ versions.yml ]
+    multiqc_files    = ch_multiqc_files // channel: [ *_mqc.json ]
 }

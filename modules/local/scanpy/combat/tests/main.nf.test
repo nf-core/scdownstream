@@ -26,8 +26,6 @@ nextflow_process {
 
     test("Should run without failures") {
 
-        config './nextflow.config'
-
         when {
             params {
                 outdir = "$outputDir"

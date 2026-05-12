@@ -340,6 +340,11 @@
                     "type": "boolean",
                     "description": "Skip the rank_genes_groups step. For large datasets, the pipeline might fail due to high memory usage in this step. Use this option to skip it."
                 },
+                "scib": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Run scib-metrics integration benchmarking on each integration output (samplesheet / --input runs only; not run for base_adata-only extension without --input)."
+                },
                 "rankgenesgroups_method": {
                     "type": "string",
                     "default": "wilcoxon",
@@ -542,13 +547,6 @@
                     "type": "boolean",
                     "description": "Do not use coloured log outputs.",
                     "fa_icon": "fas fa-palette",
-                    "hidden": true
-                },
-                "hook_url": {
-                    "type": "string",
-                    "description": "Incoming hook URL for messaging service",
-                    "fa_icon": "fas fa-people-group",
-                    "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
                     "hidden": true
                 },
                 "multiqc_config": {

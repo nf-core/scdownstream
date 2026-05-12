@@ -19,7 +19,6 @@ process LIANA_RANKAGGREGATE {
     task.ext.when == null || task.ext.when
 
     script:
-    args    = task.ext.args   ?: ''
     obs_key = meta.obs_key ?: "leiden"
     prefix  = task.ext.prefix ?: "${meta.id}"
     template 'rank_aggregate.py'

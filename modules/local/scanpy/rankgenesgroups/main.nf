@@ -25,7 +25,6 @@ process SCANPY_RANKGENESGROUPS {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    args   = task.ext.args ?: ''
     template('rank_genes_groups.py')
 
     stub:

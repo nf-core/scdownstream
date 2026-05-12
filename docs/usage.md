@@ -96,7 +96,7 @@ If you wish to repeatedly use the same parameters for multiple runs, rather than
 Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
 
 > [!WARNING]
-> Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
+> Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/running/run-pipelines#configuring-pipelines), other infrastructural tweaks (such as output directories), or module arguments (args).
 
 The above pipeline run specified with a params file in yaml format:
 
@@ -207,6 +207,12 @@ nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
 In simple terms, in this setup the workflow is: (1) project new data into the latent space learned from the data in the original run, and then (2) combine the datasets. For (1), provide the same checkpoints as for reference mapping ([`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model)). For (2), pass the integrated `.h5ad` from the original run as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata).
 
 Pre-trained scVI models are also shared on [scvi-hub](https://huggingface.co/scvi-tools).
+
+### Integration benchmarking (scib-metrics)
+
+You can run [scib-metrics](https://scib-metrics.readthedocs.io/) on each integration output by setting [`scib`](https://nf-co.re/scdownstream/parameters#scib) to `true` (default is `false`). The step is **not** run when only [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata) and [`base_embeddings`](https://nf-co.re/scdownstream/parameters#base_embeddings) are provided without `--input`.
+
+Metrics tables are published under `combine/integrate/scib_metrics/<method>/`, and a summary table is included in the MultiQC report. Values are not numerically comparable to the original scIB reference implementation (see the scib-metrics documentation). Rare batches or uninformative labels can make scores such as kBET unstable.
 
 ### Skipping integration
 
@@ -387,19 +393,19 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 
 Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the pipeline steps, if the job exits with any of the error codes specified [here](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L18) it will automatically be resubmitted with higher resources request (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
 
-To change the resource requests, please see the [max resources](https://nf-co.re/docs/usage/configuration#max-resources) and [tuning workflow resources](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources) section of the nf-core website.
+To change the resource requests, please see the [max resources](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#set-max-resources) and [customise process resources](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#customize-process-resources) section of the nf-core website.
 
 ### Custom Containers
 
 In some cases, you may wish to change the container or conda environment used by a pipeline steps for a particular tool. By default, nf-core pipelines use containers and software from the [biocontainers](https://biocontainers.pro/) or [bioconda](https://bioconda.github.io/) projects. However, in some cases the pipeline specified version maybe out of date.
 
-To use a different container from the default container or conda environment specified in a pipeline, please see the [updating tool versions](https://nf-co.re/docs/usage/configuration#updating-tool-versions) section of the nf-core website.
+To use a different container from the default container or conda environment specified in a pipeline, please see the [updating tool versions](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#update-tool-versions) section of the nf-core website.
 
 ### Custom Tool Arguments
 
 A pipeline might not always support every possible argument or option of a particular tool used in pipeline. Fortunately, nf-core pipelines provide some freedom to users to insert additional parameters that the pipeline does not include by default.
 
-To learn how to provide additional arguments to a particular tool of the pipeline, please see the [customising tool arguments](https://nf-co.re/docs/usage/configuration#customising-tool-arguments) section of the nf-core website.
+To learn how to provide additional arguments to a particular tool of the pipeline, please see the [customising tool arguments](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#modifying-tool-arguments) section of the nf-core website.
 
 ### nf-core/configs
 

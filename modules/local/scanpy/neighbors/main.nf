@@ -20,7 +20,6 @@ process SCANPY_NEIGHBORS {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}_neighbors"
-    args   = task.ext.args ?: ''
     template('neighbors.py')
 
     stub:

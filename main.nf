@@ -63,9 +63,10 @@ workflow NFCORE_SCDOWNSTREAM {
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
     skip_rankgenesgroups          //   value: boolean
+    scib                          //   value: boolean
     base_embeddings               //   value: string
-    base_condition_col            //   value: string
     base_label_col                //   value: string
+    base_condition_col            //   value: string
     cluster_per_label             //   value: boolean
     cluster_global                //   value: boolean
     clustering_resolutions        //   value: string
@@ -117,6 +118,7 @@ workflow NFCORE_SCDOWNSTREAM {
         expimap_gmt,
         skip_liana,
         skip_rankgenesgroups,
+        scib,
         base_embeddings,
         base_label_col,
         base_condition_col,
@@ -151,6 +153,7 @@ workflow {
     PIPELINE_INITIALISATION (
         params.version,
         params.validate_params,
+        params.monochrome_logs,
         args,
         params.outdir,
         params.help,
@@ -206,6 +209,7 @@ workflow {
         params.expimap_gmt,
         params.skip_liana,
         params.skip_rankgenesgroups,
+        params.scib,
         params.base_embeddings,
         params.base_label_col,
         params.base_condition_col,
@@ -231,7 +235,6 @@ workflow {
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
-        params.hook_url,
         NFCORE_SCDOWNSTREAM.out.multiqc_report
     )
 }

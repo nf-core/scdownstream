@@ -15,7 +15,7 @@ include { CLUSTER                              } from '../subworkflows/local/clu
 include { PSEUDOBULKING                        } from '../subworkflows/local/pseudobulking'
 include { PER_GROUP                            } from '../subworkflows/local/per_group'
 include { FINALIZE                             } from '../subworkflows/local/finalize'
-include { MULTIQC                              } from '../modules/nf-core/multiqc/main'
+include { MULTIQC                              } from '../modules/nf-core/multiqc'
 include { paramsSummaryMap                     } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc                 } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML               } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -62,6 +62,7 @@ workflow SCDOWNSTREAM {
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
     skip_rankgenesgroups          //   value: boolean
+    scib                          //   value: boolean
     base_embeddings               //   value: string
     base_label_col                //   value: string
     base_condition_col            //   value: string
@@ -183,6 +184,7 @@ workflow SCDOWNSTREAM {
                 scimilarity_model,
                 expimap_gmt,
                 condition_col,
+                scib,
             )
             ch_versions = ch_versions.mix(COMBINE.out.versions)
             ch_obs = ch_obs.mix(COMBINE.out.obs)
@@ -192,6 +194,8 @@ workflow SCDOWNSTREAM {
             ch_finalization_base = COMBINE.out.h5ad
 
             ch_label_grouping = COMBINE.out.h5ad_inner
+
+            ch_multiqc_files = ch_multiqc_files.mix(COMBINE.out.multiqc_files)
         }
     }
     else {
@@ -345,52 +349,41 @@ workflow SCDOWNSTREAM {
             "${process}:\n${tool_versions.join('\n')}"
         }
 
-    softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+    def ch_collated_versions = softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
         .mix(topic_versions_string)
         .collectFile(
             storeDir: "${outdir}/pipeline_info",
-            name: 'nf_core_' + 'scdownstream_software_' + 'mqc_' + 'versions.yml',
+            name: 'nf_core_'  +  'scdownstream_software_'  + 'mqc_'  + 'versions.yml',
             sort: true,
-            newLine: true,
+            newLine: true
         )
-        .set { ch_collated_versions }
 
     //
     // MODULE: MultiQC
     //
-    def mqc_config  = file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true)
-    def mqc_configs = multiqc_config ? [mqc_config, file(multiqc_config, checkIfExists: true)] : [mqc_config]
-    def mqc_logo    = multiqc_logo   ? file(multiqc_logo, checkIfExists: true) : []
-
-    summary_params      = paramsSummaryMap(
-        workflow,
-        parameters_schema: "nextflow_schema.json"
-    )
-    ch_workflow_summary = channel.value(paramsSummaryMultiqc(summary_params))
-    ch_multiqc_files = ch_multiqc_files.mix(
-        ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml')
-    )
-    ch_multiqc_custom_methods_description = multiqc_methods_description
-        ? file(multiqc_methods_description, checkIfExists: true) : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
-    ch_methods_description                = channel.value(
-        methodsDescriptionText(ch_multiqc_custom_methods_description))
-
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
-    ch_multiqc_files = ch_multiqc_files.mix(
-        ch_methods_description.collectFile(
-            name: 'methods_description_mqc.yaml',
-            sort: true,
-        )
+    def ch_summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+    def ch_workflow_summary = channel.value(paramsSummaryMultiqc(ch_summary_params))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    def ch_multiqc_custom_methods_description = multiqc_methods_description
+        ? file(multiqc_methods_description, checkIfExists: true)
+        : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
+    def ch_methods_description = channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
+    MULTIQC(
+        ch_multiqc_files.flatten().collect().map { files ->
+            [
+                [id: 'scdownstream'],
+                files,
+                multiqc_config
+                    ? file(multiqc_config, checkIfExists: true)
+                    : file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true),
+                multiqc_logo ? file(multiqc_logo, checkIfExists: true) : [],
+                [],
+                [],
+            ]
+        }
     )
-
-    MULTIQC (
-        ch_multiqc_files
-            .collect()
-            .map { files -> [[id: 'multiqc'], files, mqc_configs, mqc_logo, [], []] }
-    )
-    ch_multiqc_report = MULTIQC.out.report.map { _meta, report -> report }.toList()
-
-    emit:
-    multiqc_report = ch_multiqc_report // channel: [ path(multiqc_report.html) ]
-    versions       = ch_versions       // channel: [ path(versions.yml) ]
+    emit:multiqc_report = MULTIQC.out.report.map { _meta, report -> [report] }.toList() // channel: /path/to/multiqc_report.html
+    versions       = ch_versions                 // channel: [ path(versions.yml) ]
 }
