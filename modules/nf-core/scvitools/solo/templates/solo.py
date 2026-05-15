@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 
-# Disable OpenMP CPU topology detection for MacOS compatibility
 import os
-os.environ["KMP_AFFINITY"] = "disabled"
 
 os.environ["MPLCONFIGDIR"] = "./tmp"
+os.environ.setdefault("TORCHINDUCTOR_CACHE_DIR", os.path.join(os.getcwd(), "torch_cache"))
 
 import anndata as ad
 import scvi

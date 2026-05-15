@@ -21,7 +21,9 @@
 
 ## Introduction
 
-**nf-core/scdownstream** is a bioinformatics pipeline that can be used to process already quantified single-cell RNA-seq data. It takes a samplesheet and H5AD-, SingleCellExperiment/Seurat- or CSV files as input and performs quality control, integration, dimensionality reduction and clustering. It produces an integrated H5AD and SingleCellExperiment file and an extensive QC report.
+**nf-core/scdownstream** is a bioinformatics pipeline that can be used to process already quantified single-cell RNA-seq data.
+It takes a samplesheet and H5AD-, SingleCellExperiment/Seurat- or CSV files as input and performs quality control, integration, dimensionality reduction and clustering.
+The pipeline produces an integrated H5AD and SingleCellExperiment file and an extensive QC report.
 
 The pipeline is based on the learnings and implementations from the following pipelines (alphabetical):
 
@@ -69,8 +71,7 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
 4. Clustering and dimensionality reduction
    1. [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html)
    2. [UMAP](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.umap.html)
-5. Create [Quarto](https://quarto.org/) and ([`MultiQC`](http://multiqc.info/))
-   reports
+5. Create [Quarto](https://quarto.org/) and ([`MultiQC`](http://multiqc.info/)) reports
 
 ## Usage
 
@@ -90,7 +91,8 @@ sample3,relative/path/to/sample2.rds
 sample4,/absolute/path/to/sample3.csv
 ```
 
-Each entry represents a H5AD, H5, RDS or CSV file. RDS files may contain any object that can be converted to a SingleCellExperiment using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function.
+Each entry represents a H5AD, H5, RDS or CSV file.
+RDS files may contain any object that can be converted to a SingleCellExperiment using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function.
 CSV files should contain a matrix with genes as columns and cells as rows. The first column should contain cell names/barcodes.
 
 -->
@@ -112,8 +114,7 @@ For more details and further functionality, please refer to the [usage documenta
 ## Pipeline output
 
 To see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/scdownstream/results) tab on the nf-core website pipeline page.
-For more details about the output files and reports, please refer to the
-[output documentation](https://nf-co.re/scdownstream/output).
+For more details about the output files and reports, please refer to the [output documentation](https://nf-co.re/scdownstream/output).
 
 ## Credits
 

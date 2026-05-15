@@ -16,8 +16,8 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
 
     Args:
-        data (dict): The dictionary to format.
-        indent (int): The current indentation level.
+        data: The dictionary to format.
+        indent: The current indentation level.
 
     Returns:
         str: A string formatted as YAML.
