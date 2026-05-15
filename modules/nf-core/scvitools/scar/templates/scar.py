@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-# Disable OpenMP CPU topology detection for MacOS compatibility
 import os
-os.environ["KMP_AFFINITY"] = "disabled"
+
+os.environ.setdefault("TORCHINDUCTOR_CACHE_DIR", os.path.join(os.getcwd(), "torch_cache"))
 
 import anndata as ad
 import scvi
@@ -14,7 +14,6 @@ from threadpoolctl import threadpool_limits
 threadpool_limits(int("${task.cpus}"))
 
 scvi.settings.seed = 0
-
 
 adata = ad.read_h5ad("${filtered}")
 adata_unfiltered = ad.read_h5ad("${unfiltered}")

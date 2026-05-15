@@ -7,16 +7,21 @@
 ## Filtered and unfiltered matrices
 
 Throughout this documentation, you will find references to `filtered` and `unfiltered` matrices.
-The `unfiltered` matrices are matrices which still contain empty droplets, whereas the `filtered` matrices have been filtered for empty droplets. A more technical definition can be found [here](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/matrices). `CellRanger` provides you with both matrices, whereas other quantification tools only provide you with the `unfiltered` matrix.
+The `unfiltered` matrices are matrices which still contain empty droplets, whereas the `filtered` matrices have been filtered for empty droplets.
+A more technical definition can be found [here](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/matrices).
+`CellRanger` provides you with both matrices, whereas other quantification tools only provide you with the `unfiltered` matrix.
 The pipeline can handle the following cases:
 
 1. You have both `filtered` and `unfiltered` matrices: Provide both matrices in the samplesheet and the pipeline will use the `unfiltered` matrix for ambient RNA removal and the `filtered` matrix for all other steps.
-2. You only have the `filtered` matrix: Provide the `filtered` matrix in the samplesheet and the pipeline will use it for all steps. In this case, only `decontX` can be used for ambient RNA removal, as all other methods require the `unfiltered` matrix.
+2. You only have the `filtered` matrix: Provide the `filtered` matrix in the samplesheet and the pipeline will use it for all steps.
+   In this case, only `decontX` can be used for ambient RNA removal, as all other methods require the `unfiltered` matrix.
 3. You only have the `unfiltered` matrix: Provide the `unfiltered` matrix in the samplesheet and the pipeline will automatically create a `filtered` matrix by identifying empty droplets using `CellBender`.
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with at least 2 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline.
+Use this parameter to specify its location.
+It has to be a comma-separated file with at least 2 columns, and a header row as shown in the examples below.
 
 ```bash
 --input '[path to samplesheet file]'
@@ -80,7 +85,8 @@ The typical command for running the pipeline is as follows:
 nextflow run nf-core/scdownstream --input ./samplesheet.csv --outdir ./results  -profile docker
 ```
 
-This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
+This will launch the pipeline with the `docker` configuration profile.
+See below for more information about profiles.
 
 Note that the pipeline will create the following files in your working directory:
 
@@ -96,7 +102,8 @@ If you wish to repeatedly use the same parameters for multiple runs, rather than
 Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
 
 > [!WARNING]
-> Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/running/run-pipelines#configuring-pipelines), other infrastructural tweaks (such as output directories), or module arguments (args).
+> Do not use `-c <file>` to specify parameters as this will result in errors.
+> Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/running/run-pipelines#configuring-pipelines), other infrastructural tweaks (such as output directories), or module arguments (args).
 
 The above pipeline run specified with a params file in yaml format:
 
@@ -118,11 +125,14 @@ You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-c
 
 #### Celltypist
 
-Automated cell type annotation using [Celltypist](https://github.com/Teichlab/celltypist) and [singleR](https://bioconductor.org/packages/release/bioc/html/SingleR.html) are supported. For `Celltypist`, you can specify the models to use with the [`celltypist_model` parameter](https://nf-co.re/scdownstream/dev/parameters/#celltypist_model).
+Automated cell type annotation using [Celltypist](https://github.com/Teichlab/celltypist) and [singleR](https://bioconductor.org/packages/release/bioc/html/SingleR.html) are supported.
+For `Celltypist`, you can specify the models to use with the [`celltypist_model` parameter](https://nf-co.re/scdownstream/dev/parameters/#celltypist_model).
 
 #### singleR
 
-For `singleR`, you can provide a CSV file with information about the celldex references to use for the singleR cell type annotation with the [`celldex_reference` parameter](https://nf-co.re/scdownstream/dev/parameters/#celldex_reference). The exising references are described in the [celldex package description](https://bioconductor.org/packages/devel/data/experiment/manuals/celldex/man/celldex.pdf). You can also provide paths to tar archives of pre-downloaded references (useful if your runtime environment does not have access to the internet).
+For `singleR`, you can provide a CSV file with information about the celldex references to use for the singleR cell type annotation with the [`celldex_reference` parameter](https://nf-co.re/scdownstream/dev/parameters/#celldex_reference).
+The exising references are described in the [celldex package description](https://bioconductor.org/packages/devel/data/experiment/manuals/celldex/man/celldex.pdf).
+You can also provide paths to tar archives of pre-downloaded references (useful if your runtime environment does not have access to the internet).
 
 A CSV file that refers to the celldex references via name can look like this:
 
@@ -143,9 +153,11 @@ Example tar archives can be found [here](https://github.com/nf-core/test-dataset
 
 ### Cell cycle scoring
 
-Cell cycle scoring assigns each cell an S-phase score, G2M-phase score, and a predicted cell cycle phase (`S`, `G2M`, or `G1`) based on the expression of curated marker genes (Tirosh et al. 2015, same gene sets as Seurat). The scores are stored in `adata.obs` as `S_score`, `G2M_score`, and `phase`, and are available as covariates in downstream integration steps.
+Cell cycle scoring assigns each cell an S-phase score, G2M-phase score, and a predicted cell cycle phase (`S`, `G2M`, or `G1`) based on the expression of curated marker genes (Tirosh et al. 2015, same gene sets as Seurat).
+The scores are stored in `adata.obs` as `S_score`, `G2M_score`, and `phase`, and are available as covariates in downstream integration steps.
 
-Cell cycle scoring is enabled by default. To skip it:
+Cell cycle scoring is enabled by default.
+To skip it:
 
 ```bash
 nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results --cell_cycle_scoring false
@@ -153,7 +165,8 @@ nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results --cel
 
 #### Species
 
-Bundled gene lists are provided for human and mouse. Select the appropriate species with `--species`:
+Bundled gene lists are provided for human and mouse.
+Select the appropriate species with `--species`:
 
 ```bash
 # mouse
@@ -183,18 +196,27 @@ nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
 
 ### Reference mapping and extension
 
-**Reference mapping** means **mapping new cells into a latent space using a pre-trained model** instead of training that integration step only on the query data. In this pipeline this can be done using **scVI**, **scANVI**, and **scimilarity**. To enable it, add the corresponding method to [`integration_methods`](https://nf-co.re/scdownstream/parameters#integration_methods) (`scvi`, `scanvi`, and/or `scimilarity`) and set the matching model parameters for each method you use: [`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), and [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model) (see the [parameter reference](https://nf-co.re/scdownstream/parameters) for file types, defaults, and help text).
+**Reference mapping** means **mapping new cells into a latent space using a pre-trained model** instead of training that integration step only on the query data.
+In this pipeline this can be done using **scVI**, **scANVI**, and **scimilarity**.
+To enable it, add the corresponding method to [`integration_methods`](https://nf-co.re/scdownstream/parameters#integration_methods) (`scvi`, `scanvi`, and/or `scimilarity`) and set the matching model parameters for each method you use: [`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), and [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model) (see the [parameter reference](https://nf-co.re/scdownstream/parameters) for file types, defaults, and help text).
 
-**Extension** is for users that have outputs of a previous run of `nf-core/scdownstream` and want to extend it with new data, without re-running the integration from scratch. It only works if `scvi`, `scanvi` and/or `scimilarity` have been enabled in `integration_methods` in the original pipeline run. Other integration methods than the three mentioned before are not supported for this.
-In simple terms, in this setup the workflow is: (1) project new data into the latent space learned from the data in the original run, and then (2) combine the datasets. For (1), provide the same checkpoints as for reference mapping ([`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model)). For (2), pass the integrated `.h5ad` from the original run as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata).
+**Extension** is for users that have outputs of a previous run of `nf-core/scdownstream` and want to extend it with new data, without re-running the integration from scratch.
+It only works if `scvi`, `scanvi` and/or `scimilarity` have been enabled in `integration_methods` in the original pipeline run.
+Other integration methods than the three mentioned before are not supported for this.
+In simple terms, in this setup the workflow is: (1) project new data into the latent space learned from the data in the original run, and then (2) combine the datasets.
+For (1), provide the same checkpoints as for reference mapping ([`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model)).
+For (2), pass the integrated `.h5ad` from the original run as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata).
 
 Pre-trained scVI models are also shared on [scvi-hub](https://huggingface.co/scvi-tools).
 
 ### Integration benchmarking (scib-metrics)
 
-You can run [scib-metrics](https://scib-metrics.readthedocs.io/) on each integration output by setting [`scib`](https://nf-co.re/scdownstream/parameters#scib) to `true` (default is `false`). The step is **not** run when only [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata) and [`base_embeddings`](https://nf-co.re/scdownstream/parameters#base_embeddings) are provided without `--input`.
+You can run [scib-metrics](https://scib-metrics.readthedocs.io/) on each integration output by setting [`scib`](https://nf-co.re/scdownstream/parameters#scib) to `true` (default is `false`).
+The step is **not** run when only [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata) and [`base_embeddings`](https://nf-co.re/scdownstream/parameters#base_embeddings) are provided without `--input`.
 
-Metrics tables are published under `combine/integrate/scib_metrics/<method>/`, and a summary table is included in the MultiQC report. Values are not numerically comparable to the original scIB reference implementation (see the scib-metrics documentation). Rare batches or uninformative labels can make scores such as kBET unstable.
+Metrics tables are published under `combine/integrate/scib_metrics/<method>/`, and a summary table is included in the MultiQC report.
+Values are not numerically comparable to the original scIB reference implementation (see the scib-metrics documentation).
+Rare batches or uninformative labels can make scores such as kBET unstable.
 
 ### Skipping integration
 
@@ -202,14 +224,18 @@ Metrics tables are published under `combine/integrate/scib_metrics/<method>/`, a
 This can be useful if you have assigned cell type annotations to the integrated object and want to perform further analysis based on these annotations.
 :::
 
-If you want to run tasks after the integration step without performing integration, you can provide a previous result of the pipeline as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata). You do not need to provide a samplesheet via the [`input`](https://nf-co.re/scdownstream/parameters#input) parameter in this case. You also need [`base_embeddings`](https://nf-co.re/scdownstream/parameters#base_embeddings), and optionally [`base_label_col`](https://nf-co.re/scdownstream/parameters#base_label_col) and [`base_condition_col`](https://nf-co.re/scdownstream/parameters#base_condition_col) if your label or condition columns are not named `label` and `condition`.
+If you want to run tasks after the integration step without performing integration, you can provide a previous result of the pipeline as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata).
+You do not need to provide a samplesheet via the [`input`](https://nf-co.re/scdownstream/parameters#input) parameter in this case.
+You also need [`base_embeddings`](https://nf-co.re/scdownstream/parameters#base_embeddings), and optionally [`base_label_col`](https://nf-co.re/scdownstream/parameters#base_label_col) and [`base_condition_col`](https://nf-co.re/scdownstream/parameters#base_condition_col) if your label or condition columns are not named `label` and `condition`.
 
-The pipeline will then re-execute the tasks after the integration step without performing integration again. Most interestingly, the pipeline will generate cell type specific UMAPs, clusterings, and PAGA graphs, if [`clustering_per_label`](https://nf-co.re/scdownstream/parameters#clustering_per_label) is set to `true`.
+The pipeline will then re-execute the tasks after the integration step without performing integration again.
+Most interestingly, the pipeline will generate cell type specific UMAPs, clusterings, and PAGA graphs, if [`clustering_per_label`](https://nf-co.re/scdownstream/parameters#clustering_per_label) is set to `true`.
 
 ### GPU acceleration
 
 :::warning{title="Experimental feature"}
-This is an experimental feature and may produce errors. If you encounter any issues, please report them on the [nf-core/scdownstream GitHub repository](https://github.com/nf-core/scdownstream/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml).
+This is an experimental feature and may produce errors.
+If you encounter any issues, please report them on the [nf-core/scdownstream GitHub repository](https://github.com/nf-core/scdownstream/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml).
 :::
 
 :::info{title="Prerequisites"}
@@ -218,7 +244,8 @@ This is an experimental feature and may produce errors. If you encounter any iss
   - Other container technologies might work, but have not been tested.
   - Conda is not supported.
 - CUDA 12.0 or later is required.
-- The GPUs must have a [Compute Capability](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#compute-capabilities) of 7.0 or higher.
+- The NVIDIA GPUs must have a [Compute Capability](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#compute-capabilities) of 7.0 or higher.
+- ROCM is currently unsupported
 
 :::
 
@@ -230,9 +257,13 @@ Tools with implemented support for GPU acceleration are:
   - scAR
   - solo
 
-To utilize GPU acceleration, you need to specify the `gpu` profile. This will make the tool steps use cuda-enabled environments and it will tell the tools to use the GPU. All processes which support GPU acceleration are marked with the `process_gpu` label.
+To utilize GPU acceleration, you need to specify the `gpu` profile.
+This will make the tool steps use cuda-enabled environments and it will tell the tools to use the GPU.
+All processes which support GPU acceleration are marked with the `process_gpu` label.
 
-You also need to make sure that the tasks are run on a machine with a GPU. If all tasks are run on a machine with a GPU, no further action is needed. If you are running the pipeline on a slurm cluster, where there is dedicated queue for GPU jobs, you need additional configuration that might look like this:
+You also need to make sure that the tasks are run on a machine with a GPU.
+If all tasks are run on a machine with a GPU, no further action is needed.
+If you are running the pipeline on a slurm cluster, where there is dedicated queue for GPU jobs, you need additional configuration that might look like this:
 
 ```bash
 process {
@@ -244,7 +275,8 @@ process {
 ```
 
 :::tip
-More information on how to configure Slurm in Nextflow can be found [here](https://www.nextflow.io/docs/latest/executor.html#slurm). Depending on your cluster configuration, you might need to adjust the `clusterOptions` to one of the following:
+More information on how to configure Slurm in Nextflow can be found [here](https://www.nextflow.io/docs/latest/executor.html#slurm).
+Depending on your cluster configuration, you might need to adjust the `clusterOptions` to one of the following:
 
 - `--gpus 1` (as in the example above)
 - `--gpus-per-node=1`
@@ -256,16 +288,20 @@ More information on how to configure Slurm in Nextflow can be found [here](https
 If your jobs get assigned to the correct nodes, but the GPU is not utilized, you might need to add the following configuration:
 `singularity.runOptions = '--no-mount tmp --writable-tmpfs --nv --env CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES --env ROCR_VISIBLE_DEVICES=$ROCR_VISIBLE_DEVICES --env ZE_AFFINITY_MASK=$ZE_AFFINITY_MASK --env NVIDIA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES`
 
-The first part (`--no-mount tmp --writable-tmpfs --nv`) is set by default in the `gpu` profile. The rest of this configuration is needed in some cases to make the GPU visible to the container.
+The first part (`--no-mount tmp --writable-tmpfs --nv`) is set by default in the `gpu` profile.
+The rest of this configuration is needed in some cases to make the GPU visible to the container.
 :::
 
-For different executors, the configuration might look different. Once a wider range of users have tested the GPU support, we will provide more detailed instructions for different executors.
+For different executors, the configuration might look different.
+Once a wider range of users have tested the GPU support, we will provide more detailed instructions for different executors.
 
 ### Ambient RNA correction
 
-Ambient RNA correction removes contaminating RNA from cell-free droplets that can confound single-cell analysis. The pipeline supports multiple ambient RNA correction methods that can be configured both globally and per-sample.
+Ambient RNA correction removes contaminating RNA from cell-free droplets that can confound single-cell analysis.
+The pipeline supports multiple ambient RNA correction methods that can be configured both globally and per-sample.
 
-The pipeline allows you to select an ambient RNA correction method globally using the `--ambient_correction` parameter. Available methods include `decontx` (default), `cellbender`, `soupx`, `scar`, or `none` to skip correction entirely:
+The pipeline allows you to select an ambient RNA correction method globally using the `--ambient_correction` parameter.
+Available methods include `decontx` (default), `cellbender`, `soupx`, `scar`, or `none` to skip correction entirely:
 
 ```bash
 nextflow run nf-core/scdownstream --ambient_correction cellbender --input samplesheet.csv --outdir results
@@ -279,7 +315,8 @@ sample1,/path/to/sample1_filtered.h5ad,/path/to/sample1.h5ad,true
 sample2,/path/to/sample2_filtered.h5ad,/path/to/sample2.h5ad,false
 ```
 
-By default, the pipeline stores ambient-corrected counts as additional layers in the AnnData object (e.g., `ambient_corrected_decontx`) while keeping the original raw counts in the `X` layer. This means all downstream analysis including integration uses the raw counts, with corrected counts available for optional inspection.
+By default, the pipeline stores ambient-corrected counts as additional layers in the AnnData object (e.g., `ambient_corrected_decontx`) while keeping the original raw counts in the `X` layer.
+This means all downstream analysis including integration uses the raw counts, with corrected counts available for optional inspection.
 
 If you want to use the ambient-corrected counts for integration instead, you can enable this behavior globally or per sample:
 
@@ -299,7 +336,9 @@ When `ambient_corrected_integration` is enabled, the corrected counts replace th
 
 ### Updating the pipeline
 
-When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
+When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version.
+When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since.
+To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
 ```bash
 nextflow pull nf-core/scdownstream
@@ -307,11 +346,16 @@ nextflow pull nf-core/scdownstream
 
 ### Reproducibility
 
-It is a good idea to specify the pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
+It is a good idea to specify the pipeline version when running the pipeline on your data.
+This ensures that a specific version of the pipeline code and software are used when you run your pipeline.
+If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [nf-core/scdownstream releases page](https://github.com/nf-core/scdownstream/releases) and find the latest pipeline version - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`. Of course, you can switch to another version by changing the number after the `-r` flag.
+First, go to the [nf-core/scdownstream releases page](https://github.com/nf-core/scdownstream/releases) and find the latest pipeline version - numeric only (eg. `1.3.1`).
+Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`.
+Of course, you can switch to another version by changing the number after the `-r` flag.
 
-This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.
+This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
+For example, at the bottom of the MultiQC reports.
 
 To further assist in reproducibility, you can use share and reuse [parameter files](#running-the-pipeline) to repeat pipeline runs with the same settings without having to write out a command with every single parameter.
 
@@ -325,19 +369,22 @@ To further assist in reproducibility, you can use share and reuse [parameter fil
 
 ### `-profile`
 
-Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments.
+Use this parameter to choose a configuration profile.
+Profiles can give configuration presets for different compute environments.
 
 Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Apptainer, Conda) - see below.
 
 > [!IMPORTANT]
 > We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
 
-The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to check if your system is supported, please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
+The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time.
+For more information and to check if your system is supported, please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
 
 Note that multiple profiles can be loaded, for example: `-profile test,docker` - the order of arguments is important!
 They are loaded in sequence, so later profiles can overwrite earlier profiles.
 
-If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended, since it can lead to different results on different machines dependent on the computer environment.
+If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`.
+This is _not_ recommended, since it can lead to different results on different machines dependent on the computer environment.
 
 - `test`
   - A profile with a complete configuration for automated testing
@@ -361,37 +408,50 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 
 ### `-resume`
 
-Specify this when restarting a pipeline. Nextflow will use cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously. For input to be considered the same, not only the names must be identical but the files' contents as well. For more info about this parameter, see [this blog post](https://www.nextflow.io/blog/2019/demystifying-nextflow-resume.html).
+Specify this when restarting a pipeline.
+Nextflow will use cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously.
+For input to be considered the same, not only the names must be identical but the files' contents as well.
+For more info about this parameter, see [this blog post](https://www.nextflow.io/blog/2019/demystifying-nextflow-resume.html).
 
-You can also supply a run name to resume a specific run: `-resume [run-name]`. Use the `nextflow log` command to show previous run names.
+You can also supply a run name to resume a specific run: `-resume [run-name]`.
+Use the `nextflow log` command to show previous run names.
 
 ### `-c`
 
-Specify the path to a specific config file (this is a core Nextflow command). See the [nf-core website documentation](https://nf-co.re/usage/configuration) for more information.
+Specify the path to a specific config file (this is a core Nextflow command).
+See the [nf-core website documentation](https://nf-co.re/usage/configuration) for more information.
 
 ## Custom configuration
 
 ### Resource requests
 
-Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the pipeline steps, if the job exits with any of the error codes specified [here](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L18) it will automatically be resubmitted with higher resources request (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
+Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests.
+Each step in the pipeline has a default set of requirements for number of CPUs, memory and time.
+For most of the pipeline steps, if the job exits with any of the error codes specified [here](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L18) it will automatically be resubmitted with higher resources request (2 x original, then 3 x original).
+If it still fails after the third attempt then the pipeline execution is stopped.
 
 To change the resource requests, please see the [max resources](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#set-max-resources) and [customise process resources](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#customize-process-resources) section of the nf-core website.
 
 ### Custom Containers
 
-In some cases, you may wish to change the container or conda environment used by a pipeline steps for a particular tool. By default, nf-core pipelines use containers and software from the [biocontainers](https://biocontainers.pro/) or [bioconda](https://bioconda.github.io/) projects. However, in some cases the pipeline specified version maybe out of date.
+In some cases, you may wish to change the container or conda environment used by a pipeline steps for a particular tool.
+By default, nf-core pipelines use containers and software from the [biocontainers](https://biocontainers.pro/) or [bioconda](https://bioconda.github.io/) projects.
+However, in some cases the pipeline specified version maybe out of date.
 
 To use a different container from the default container or conda environment specified in a pipeline, please see the [updating tool versions](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#update-tool-versions) section of the nf-core website.
 
 ### Custom Tool Arguments
 
-A pipeline might not always support every possible argument or option of a particular tool used in pipeline. Fortunately, nf-core pipelines provide some freedom to users to insert additional parameters that the pipeline does not include by default.
+A pipeline might not always support every possible argument or option of a particular tool used in pipeline.
+Fortunately, nf-core pipelines provide some freedom to users to insert additional parameters that the pipeline does not include by default.
 
 To learn how to provide additional arguments to a particular tool of the pipeline, please see the [customising tool arguments](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#modifying-tool-arguments) section of the nf-core website.
 
 ### nf-core/configs
 
-In most cases, you will only need to create a custom config as a one-off but if you and others within your organisation are likely to be running nf-core pipelines regularly and need to use the same settings regularly it may be a good idea to request that your custom config file is uploaded to the `nf-core/configs` git repository. Before you do this please can you test that the config file works with your pipeline of choice using the `-c` parameter. You can then create a pull request to the `nf-core/configs` repository with the addition of your config file, associated documentation file (see examples in [`nf-core/configs/docs`](https://github.com/nf-core/configs/tree/master/docs)), and amending [`nfcore_custom.config`](https://github.com/nf-core/configs/blob/master/nfcore_custom.config) to include your custom profile.
+In most cases, you will only need to create a custom config as a one-off but if you and others within your organisation are likely to be running nf-core pipelines regularly and need to use the same settings regularly it may be a good idea to request that your custom config file is uploaded to the `nf-core/configs` git repository.
+Before you do this please can you test that the config file works with your pipeline of choice using the `-c` parameter.
+You can then create a pull request to the `nf-core/configs` repository with the addition of your config file, associated documentation file (see examples in [`nf-core/configs/docs`](https://github.com/nf-core/configs/tree/master/docs)), and amending [`nfcore_custom.config`](https://github.com/nf-core/configs/blob/master/nfcore_custom.config) to include your custom profile.
 
 See the main [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html) for more information about creating your own configuration files.
 
@@ -399,9 +459,11 @@ If you have any questions or issues please send us a message on [Slack](https://
 
 ## Running in the background
 
-Nextflow handles job submissions and supervises the running jobs. The Nextflow process must run until the pipeline is finished.
+Nextflow handles job submissions and supervises the running jobs.
+The Nextflow process must run until the pipeline is finished.
 
-The Nextflow `-bg` flag launches Nextflow in the background, detached from your terminal so that the workflow does not stop if you log out of your session. The logs are saved to a file.
+The Nextflow `-bg` flag launches Nextflow in the background, detached from your terminal so that the workflow does not stop if you log out of your session.
+The logs are saved to a file.
 
 Alternatively, you can use `screen` / `tmux` or similar tool to create a detached session which you can log back into at a later time.
 Some HPC setups also allow you to run nextflow within a cluster job submitted your job scheduler (from where it submits more jobs).
