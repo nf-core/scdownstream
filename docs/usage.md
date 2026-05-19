@@ -123,10 +123,11 @@ You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-c
 
 ### Cell type annotation
 
+The pipeline supports automated cell type annotation with [Celltypist](https://github.com/Teichlab/celltypist), [singleR](https://bioconductor.org/packages/release/bioc/html/SingleR.html), and [CyteType](https://github.com/NygenAnalytics/cytetype). Each method is optional and controlled by its own parameters below.
+
 #### Celltypist
 
-Automated cell type annotation using [Celltypist](https://github.com/Teichlab/celltypist) and [singleR](https://bioconductor.org/packages/release/bioc/html/SingleR.html) are supported.
-For `Celltypist`, you can specify the models to use with the [`celltypist_model` parameter](https://nf-co.re/scdownstream/dev/parameters/#celltypist_model).
+[Celltypist](https://github.com/Teichlab/celltypist) annotates cells using pretrained logistic regression models. Specify the models with [`celltypist_model`](https://nf-co.re/scdownstream/dev/parameters/#celltypist_model); use a comma-separated list for multiple models. Available models are listed on the [Celltypist models page](https://www.celltypist.org/models). When this parameter is empty (the default), Celltypist is skipped.
 
 #### singleR
 
