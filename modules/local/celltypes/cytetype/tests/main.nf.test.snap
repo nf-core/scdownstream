@@ -1,4 +1,61 @@
 {
+    "Should run with a symbol column other than index": {
+        "content": [
+            {
+                "CELLTYPES_CYTETYPE": {
+                    "cytetype": "0.19.4",
+                    "numpy": "2.4.6",
+                    "pandas": "2.3.3",
+                    "python": "3.14.4",
+                    "scanpy": "1.12.1"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "cytetype_annotation_cytetype_leiden",
+                        "cytetype_cellOntologyTermID_cytetype_leiden",
+                        "cytetype_cellOntologyTerm_cytetype_leiden",
+                        "cytetype_cellState_cytetype_leiden",
+                        "cytetype_leiden",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-05-19T13:53:27.13897935",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
+        }
+    },
     "Should run without failures - stub": {
         "content": [
             {
@@ -46,6 +103,63 @@
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
+        }
+    },
+    "Should run without failures": {
+        "content": [
+            {
+                "CELLTYPES_CYTETYPE": {
+                    "cytetype": "0.19.4",
+                    "numpy": "2.4.6",
+                    "pandas": "2.3.3",
+                    "python": "3.14.4",
+                    "scanpy": "1.12.1"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "cytetype_annotation_cytetype_leiden",
+                        "cytetype_cellOntologyTermID_cytetype_leiden",
+                        "cytetype_cellOntologyTerm_cytetype_leiden",
+                        "cytetype_cellState_cytetype_leiden",
+                        "cytetype_leiden",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-05-19T13:31:29.118090333",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
         }
     }
 }
