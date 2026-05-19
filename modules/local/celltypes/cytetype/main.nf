@@ -2,7 +2,7 @@ process CELLTYPES_CYTETYPE {
     tag "${meta.id}"
     label 'process_medium'
 
-    secret 'CYTETYPE_API_KEY'
+    secret secrets.CYTETYPE_API_KEY ? ['CYTETYPE_API_KEY'] : ''
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
