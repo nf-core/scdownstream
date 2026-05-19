@@ -59,6 +59,7 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
       - [scVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scvi.html)
       - [scANVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scanvi.html)
       - [Harmony](https://portals.broadinstitute.org/harmony/articles/quickstart.html)
+      - [Symphony](https://symphonypy.readthedocs.io/) (via [symphonypy](https://pypi.org/project/symphonypy/))
       - [BBKNN](https://github.com/Teichlab/bbknn)
       - [Combat](https://scanpy.readthedocs.io/en/latest/api/generated/scanpy.pp.combat.html)
       - [Seurat](https://satijalab.org/seurat/articles/integration_introduction)
