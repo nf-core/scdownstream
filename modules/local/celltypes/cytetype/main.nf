@@ -6,8 +6,8 @@ process CELLTYPES_CYTETYPE {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1d/1da96b02584d1ff84d0f4a00be1bece53aa52baacad2f6dbca0bab5584203aa2/data'
-        : 'community.wave.seqera.io/library/python_pyyaml_scanpy_pip_cytetype:32269855682fb82e'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8f/8f4ddab9c445762a90a6bc0002f4099b39ae886194a6541cd35929f1c69d26f6/data'
+        : 'community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_pruned:dd84aadd1ff0dacd'}"
 
     input:
     tuple val(meta), path(h5ad), val(symbol_col)

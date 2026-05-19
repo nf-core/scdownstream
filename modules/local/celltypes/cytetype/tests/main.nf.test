@@ -1,5 +1,5 @@
-// NOTE: CyteType calls the remote Nygen API (LLM-based annotation). A full
-// functional test is not suitable for default CI. Only stub tests are provided.
+// CyteType calls the remote Nygen API (LLM-based annotation). Non-stub tests use a
+// structural snapshot (versions + adata schema) because API labels are non-deterministic.
 
 nextflow_process {
 
@@ -9,6 +9,132 @@ nextflow_process {
 
     tag "modules"
     tag "modules_local"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index"
+                    ]
+                )
+                input[1] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[2] = 0.5
+                input[3] = 50
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "cytetype_leiden" in obs.colnames
+                assert obs.colnames.any { it.startsWith("cytetype_") && it != "cytetype_leiden" }
+            }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with a symbol column other than index") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "symbols"
+                    ]
+                )
+                input[1] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[2] = 0.5
+                input[3] = 50
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "cytetype_leiden" in obs.colnames
+                assert obs.colnames.any { it.startsWith("cytetype_") && it != "cytetype_leiden" }
+            }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should fail with a symbol column that does not exist") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "not_a_column"
+                    ]
+                )
+                input[1] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[2] = 0.5
+                input[3] = 50
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+        }
+
+    }
+
+    test("Should fail with empty study context") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index"
+                    ]
+                )
+                input[1] = ""
+                input[2] = 0.5
+                input[3] = 50
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+        }
+
+    }
 
     test("Should run without failures - stub") {
 
