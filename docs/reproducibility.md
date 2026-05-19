@@ -2,7 +2,9 @@
 
 Classification of all local modules and subworkflows by output reproducibility.
 
-**Paired docs:** Strategy labels in the **Test strategy (this branch)** column are the same vocabulary as [`.cursor/rules/nf-test-assertions.mdc`](../.cursor/rules/nf-test-assertions.mdc). This file is the **catalog** (every component + the exact snapshot story per row). That rule is the **how-to** (assertion order, stubs, `versions` channel, passthrough H5AD, common mistakes).
+**Paired docs:** Strategy labels in the **Test strategy (this branch)** column are the same vocabulary as [`.cursor/rules/nf-test-assertions.mdc`](../.cursor/rules/nf-test-assertions.mdc).
+This file is the **catalog** (every component + the exact snapshot story per row).
+That rule is the **how-to** (assertion order, stubs, `versions` channel, passthrough H5AD, common mistakes).
 
 ## Legend
 
