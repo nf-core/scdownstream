@@ -2,32 +2,7 @@
     "Should run with all methods except doubletdetection": {
         "content": [
             [
-                {
-                    "DOUBLET_DETECTION:DOUBLET_REMOVAL": {
-                        "anndata": "0.12.10",
-                        "matplotlib": "3.10.8",
-                        "pandas": "2.3.3",
-                        "python": "3.13.12",
-                        "upsetplot": "0.9.0"
-                    }
-                },
-                {
-                    "DOUBLET_DETECTION:SCVITOOLS_SOLO": {
-                        "scvi": "1.4.3"
-                    }
-                },
-                {
-                    "DOUBLET_DETECTION:SCANPY_SCRUBLET": {
-                        "python": "3.12.11",
-                        "scanpy": "1.11.2"
-                    }
-                },
-                {
-                    "DOUBLET_DETECTION:SCDBLFINDER": {
-                        "R": "4.5.3",
-                        "scDblFinder": "1.24.0"
-                    }
-                }
+                
             ],
             {
                 "n_obs": 6572,
@@ -64,10 +39,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-04-16T17:39:55.893839757",
+        "timestamp": "2026-05-20T20:49:28.442775159",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nextflow": "26.04.0"
         }
     },
     "Should run without failures - stub": {
@@ -85,12 +60,6 @@
                 "1": [
                     "test_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "2": [
-                    "versions.yml:md5,4d68e26983f327e1e29eebaf8314b6ba",
-                    "versions.yml:md5,976191c1aba62e725146650b443323d1",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,fe6de40144b372e316e994db79e31852"
-                ],
                 "h5ad": [
                     [
                         {
@@ -102,19 +71,13 @@
                 ],
                 "multiqc_files": [
                     "test_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                "versions": [
-                    "versions.yml:md5,4d68e26983f327e1e29eebaf8314b6ba",
-                    "versions.yml:md5,976191c1aba62e725146650b443323d1",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,fe6de40144b372e316e994db79e31852"
                 ]
             }
         ],
-        "timestamp": "2026-04-16T17:40:42.317399158",
+        "timestamp": "2026-05-20T20:50:29.732293024",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nextflow": "26.04.0"
         }
     }
 }
