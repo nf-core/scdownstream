@@ -45,7 +45,6 @@ workflow QUALITY_CONTROL {
             [meta, unfiltered ?: filtered] },
         "cells",
     )
-    ch_versions = ch_versions.mix(GET_UNFILTERED_SIZE.out.versions)
     ch_sizes = ch_sizes.mix(
         GET_UNFILTERED_SIZE.out.size
         .map {
@@ -93,7 +92,6 @@ workflow QUALITY_CONTROL {
             },
         "cells",
     )
-    ch_versions = ch_versions.mix(GET_FILTERED_SIZE.out.versions)
     ch_sizes = ch_sizes.mix(
         GET_FILTERED_SIZE.out.size
         .map {
@@ -170,7 +168,6 @@ workflow QUALITY_CONTROL {
             ch_h5ad,
             "cells"
         )
-        ch_versions = ch_versions.mix(GET_SAMPLED_SIZE.out.versions)
         ch_sizes = ch_sizes.mix(
             GET_SAMPLED_SIZE.out.size
             .map {
@@ -184,7 +181,6 @@ workflow QUALITY_CONTROL {
         ch_h5ad,
         "cells"
     )
-    ch_versions = ch_versions.mix(GET_THRESHOLDED_SIZE.out.versions)
     ch_sizes = ch_sizes.mix(
         GET_THRESHOLDED_SIZE.out.size
         .map {
@@ -208,7 +204,6 @@ workflow QUALITY_CONTROL {
             ch_h5ad,
             "cells"
         )
-        ch_versions = ch_versions.mix(GET_DEDOUBLETED_SIZE.out.versions)
         ch_sizes = ch_sizes.mix(
             GET_DEDOUBLETED_SIZE.out.size
             .map {
