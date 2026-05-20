@@ -31,7 +31,11 @@ process CELLBENDER_REMOVEBACKGROUND {
         args = task.ext.args ?: ""
         use_gpu = task.ext.use_gpu ? "--cuda" : ""
         """
-        TMPDIR=. cellbender remove-background \
+        mkdir -p ./tmp/mplconfig
+        export MPLCONFIGDIR='./tmp/mplconfig'
+        export TMPDIR='./tmp'
+
+        cellbender remove-background \
             ${args} \
             --cpu-threads ${task.cpus} \
             ${use_gpu} \
