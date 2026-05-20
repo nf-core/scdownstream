@@ -8,7 +8,6 @@ workflow SCIMILARITY {
     scimilarity_model // channel: [ model ]
 
     main:
-    ch_versions = channel.empty()
     ch_integrations = channel.empty()
     ch_obsm = channel.empty()
     ch_obs = channel.empty()
@@ -35,7 +34,6 @@ workflow SCIMILARITY {
         ch_h5ad,
         ch_scimilarity_model,
     )
-    ch_versions = ch_versions.mix(SCIMILARITY_EMBED.out.versions)
     ch_integrations = ch_integrations.mix(SCIMILARITY_EMBED.out.h5ad)
     ch_obsm = ch_obsm.mix(SCIMILARITY_EMBED.out.obsm)
 
@@ -43,12 +41,10 @@ workflow SCIMILARITY {
         SCIMILARITY_EMBED.out.h5ad,
         ch_scimilarity_model,
     )
-    ch_versions = ch_versions.mix(SCIMILARITY_ANNOTATE.out.versions)
     ch_obs = ch_obs.mix(SCIMILARITY_ANNOTATE.out.obs)
 
     emit:
     integrations = ch_integrations // channel: [ integration, h5ad ]
     obs          = ch_obs          // channel: [ pkl ]
     obsm         = ch_obsm         // channel: [ pkl ]
-    versions     = ch_versions     // channel: [ versions.yml ]
 }

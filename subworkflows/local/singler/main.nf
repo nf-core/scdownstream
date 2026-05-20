@@ -7,7 +7,6 @@ workflow SINGLER {
     ch_reference // channel: [ meta, reference ]
 
     main:
-    ch_versions = channel.empty()
     ch_obs = channel.empty()
 
     ch_reference = ch_reference.branch { _meta, ref ->
@@ -24,7 +23,6 @@ workflow SINGLER {
                 [meta, ref, meta.version]
             }
     )
-    ch_versions = ch_versions.mix(CELLDEX_FETCHREFERENCE.out.versions)
 
     // Bring the branches back together
     ch_reference = ch_reference.files.mix(CELLDEX_FETCHREFERENCE.out.tar)
@@ -39,10 +37,8 @@ workflow SINGLER {
             .groupTuple()
             .collect()
     )
-    ch_versions = ch_versions.mix(CELLTYPES_SINGLER.out.versions)
     ch_obs = ch_obs.mix(CELLTYPES_SINGLER.out.obs)
 
     emit:
     obs      = ch_obs
-    versions = ch_versions
 }

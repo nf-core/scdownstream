@@ -11,14 +11,12 @@ workflow PER_GROUP {
     skip_rankgenesgroups   //   value: boolean
 
     main:
-    ch_versions      = channel.empty()
     ch_uns           = channel.empty()
     ch_multiqc_files = channel.empty()
 
     SCANPY_PAGA (
         ch_h5ad_with_neighbors
     )
-    ch_versions      = ch_versions.mix(SCANPY_PAGA.out.versions)
     // ch_obsp       = ch_obsp.mix(SCANPY_PAGA.out.obsp)
     ch_uns           = ch_uns.mix(SCANPY_PAGA.out.uns)
     ch_multiqc_files = ch_multiqc_files.mix(SCANPY_PAGA.out.multiqc_files)
@@ -27,7 +25,6 @@ workflow PER_GROUP {
         LIANA_RANKAGGREGATE (
             ch_h5ad_no_neighbors
         )
-        ch_versions      = ch_versions.mix(LIANA_RANKAGGREGATE.out.versions)
         ch_uns           = ch_uns.mix(LIANA_RANKAGGREGATE.out.uns)
     }
 
@@ -35,7 +32,6 @@ workflow PER_GROUP {
         DIFFERENTIAL_EXPRESSION(
             ch_h5ad_no_neighbors
         )
-        ch_versions      = ch_versions.mix(DIFFERENTIAL_EXPRESSION.out.versions)
         ch_uns           = ch_uns.mix(DIFFERENTIAL_EXPRESSION.out.uns)
         ch_multiqc_files = ch_multiqc_files.mix(DIFFERENTIAL_EXPRESSION.out.multiqc_files)
     }
@@ -43,5 +39,4 @@ workflow PER_GROUP {
     emit:
     uns           = ch_uns           // channel: [ pkl ]
     multiqc_files = ch_multiqc_files // channel: [ json ]
-    versions      = ch_versions      // channel: [ versions.yml ]
 }

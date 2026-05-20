@@ -6,7 +6,6 @@ workflow DIFFERENTIAL_EXPRESSION {
     ch_h5ad // channel: [ meta, h5ad ], anndata objects with obs_key and condition_col in meta
 
     main:
-    ch_versions      = channel.empty()
     ch_uns           = channel.empty()
     ch_multiqc_files = channel.empty()
 
@@ -64,12 +63,10 @@ workflow DIFFERENTIAL_EXPRESSION {
         ch_rankgenesgroups.filter,
         params.rankgenesgroups_method
     )
-    ch_versions      = ch_versions.mix(SCANPY_RANKGENESGROUPS.out.versions)
     ch_uns           = ch_uns.mix(SCANPY_RANKGENESGROUPS.out.uns)
     ch_multiqc_files = ch_multiqc_files.mix(SCANPY_RANKGENESGROUPS.out.multiqc_files)
 
     emit:
     uns           = ch_uns           // channel: [ pkl ]
     multiqc_files = ch_multiqc_files // channel: [ json ]
-    versions      = ch_versions      // channel: [ versions.yml ]
 }

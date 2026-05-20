@@ -14,7 +14,6 @@ workflow CLUSTER {
     embedding_key  // value: string
 
     main:
-    ch_versions = channel.empty()
     ch_obs = channel.empty()
     ch_obsm = channel.empty()
     ch_multiqc_files = channel.empty()
@@ -31,7 +30,6 @@ workflow CLUSTER {
             ch_input,
             split_col
         )
-        ch_versions = ch_versions.mix(SPLITCOL.out.versions)
 
         ch_h5ad = ch_h5ad.mix(
             SPLITCOL.out.h5ad
@@ -55,14 +53,12 @@ workflow CLUSTER {
         ch_h5ad.needs_neighbors,
         embedding_key
     )
-    ch_versions = ch_versions.mix(NEIGHBORS.out.versions)
     ch_h5ad = NEIGHBORS.out.h5ad.mix(ch_h5ad.has_neighbors)
     ch_h5ad_neighbours = NEIGHBORS.out.h5ad
 
     UMAP (
         ch_h5ad
     )
-    ch_versions = ch_versions.mix(UMAP.out.versions)
     ch_obsm = ch_obsm.mix(UMAP.out.obsm)
 
     ch_h5ad = UMAP.out.h5ad
@@ -88,7 +84,6 @@ workflow CLUSTER {
         ch_leiden.key_added,
         true
     )
-    ch_versions = ch_versions.mix(LEIDEN.out.versions)
     ch_obs = ch_obs.mix(LEIDEN.out.obs)
     ch_h5ad_clustering = LEIDEN.out.h5ad
     ch_multiqc_files = ch_multiqc_files.mix(LEIDEN.out.multiqc_files)
@@ -105,7 +100,6 @@ workflow CLUSTER {
         entropy_col
     )
     ch_obs = ch_obs.mix(ENTROPY.out.obs)
-    ch_versions = ch_versions.mix(ENTROPY.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(ENTROPY.out.multiqc_files)
 
     emit:
@@ -114,5 +108,4 @@ workflow CLUSTER {
     h5ad_neighbors  = ch_h5ad_neighbours // channel: [ integration, h5ad ]
     h5ad_clustering = ch_h5ad_clustering // channel: [ integration, h5ad ]
     multiqc_files   = ch_multiqc_files   // channel: [ json ]
-    versions        = ch_versions        // channel: [ versions.yml ]
 }

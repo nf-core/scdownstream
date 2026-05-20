@@ -7,7 +7,6 @@ workflow LOAD_H5AD {
     ch_samples // channel: [ meta, {h5ad/rds}, {h5ad/rds} ]
 
     main:
-    ch_versions = channel.empty()
     ch_files = channel.empty()
     ch_h5ad = channel.empty()
 
@@ -42,19 +41,16 @@ workflow LOAD_H5AD {
         ch_files.h5
     )
     ch_h5ad = ch_h5ad.mix(SCANPY_READH5.out.h5ad)
-    ch_versions = ch_versions.mix(SCANPY_READH5.out.versions)
 
     ADATA_READRDS (
         ch_files.rds
     )
     ch_h5ad = ch_h5ad.mix(ADATA_READRDS.out.h5ad)
-    ch_versions = ch_versions.mix(ADATA_READRDS.out.versions)
 
     ADATA_READCSV (
         ch_files.csv
     )
     ch_h5ad = ch_h5ad.mix(ADATA_READCSV.out.h5ad)
-    ch_versions = ch_versions.mix(ADATA_READCSV.out.versions)
 
     ch_output = ch_samples
         .map { meta, _filtered, _unfiltered -> [meta.id, meta] }
@@ -77,5 +73,4 @@ workflow LOAD_H5AD {
 
     emit:
     h5ad     = ch_output   // channel: [ meta, h5ad, h5ad ]
-    versions = ch_versions // channel: [ versions.yml ]
 }

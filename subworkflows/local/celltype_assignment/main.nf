@@ -9,7 +9,6 @@ workflow CELLTYPE_ASSIGNMENT {
     celltypist_model  //   value: string
 
     main:
-    ch_versions = channel.empty()
     ch_obs = channel.empty()
 
     if (celldex_reference ) {
@@ -21,7 +20,6 @@ workflow CELLTYPE_ASSIGNMENT {
             )
         )
         ch_obs = ch_obs.mix(SINGLER.out.obs)
-        ch_versions = ch_versions.mix(SINGLER.out.versions)
     }
 
     if (celltypist_model) {
@@ -35,10 +33,8 @@ workflow CELLTYPE_ASSIGNMENT {
             celltypist_models
         )
         ch_obs = ch_obs.mix(CELLTYPES_CELLTYPIST.out.obs)
-        ch_versions = ch_versions.mix(CELLTYPES_CELLTYPIST.out.versions)
     }
 
     emit:
     obs      = ch_obs      // channel: [ meta, pkl ]
-    versions = ch_versions // channel: [ versions.yml ]
 }

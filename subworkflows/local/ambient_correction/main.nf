@@ -25,7 +25,6 @@ workflow AMBIENT_CORRECTION {
     ambient_corrected_integration // value: boolean
 
     main:
-    ch_versions = channel.empty()
 
     ch_do_ambient_correction = ch_pairing
         .branch {
@@ -63,7 +62,6 @@ workflow AMBIENT_CORRECTION {
             ch_multi.output_layer
         )
         ch_h5ad = ch_h5ad.mix(CELDA_DECONTX.out.h5ad)
-        ch_versions = ch_versions.mix(CELDA_DECONTX.out.versions)
     }
     else if (method == 'cellbender') {
         CELLBENDER_REMOVEBACKGROUND (
@@ -94,7 +92,6 @@ workflow AMBIENT_CORRECTION {
             ch_multi.output_layer
         )
         ch_h5ad = ch_h5ad.mix(SOUPX.out.h5ad)
-        ch_versions = ch_versions.mix(SOUPX.out.versions)
     }
     else if (method == 'scar') {
         SCVITOOLS_SCAR (
@@ -105,7 +102,6 @@ workflow AMBIENT_CORRECTION {
             []
         )
         ch_h5ad = ch_h5ad.mix(SCVITOOLS_SCAR.out.h5ad)
-        ch_versions = ch_versions.mix(SCVITOOLS_SCAR.out.versions)
     }
     else {
         error("AMBIENT_CORRECTION: Unexpected method for ambient RNA correction: '${method}'.")
@@ -113,5 +109,4 @@ workflow AMBIENT_CORRECTION {
 
     emit:
     h5ad     = ch_h5ad     // channel: [ meta, h5ad ]
-    versions = ch_versions // channel: [ versions.yml ]
 }
