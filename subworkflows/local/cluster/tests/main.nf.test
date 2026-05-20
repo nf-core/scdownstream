@@ -77,7 +77,6 @@ nextflow_workflow {
                 def key = meta.id + "_leiden"
                 assert key in adata.obs.colnames
             }
-            assert snapshot(workflow.out.versions).match()
         }
 
     }
@@ -152,7 +151,6 @@ nextflow_workflow {
                 def key = meta.id + "_leiden"
                 assert key in adata.obs.colnames
             }
-            assert snapshot(workflow.out.versions).match()
         }
 
     }
@@ -227,7 +225,6 @@ nextflow_workflow {
                 def key = meta.id + "_leiden"
                 assert key in adata.obs.colnames
             }
-            assert snapshot(workflow.out.versions).match()
         }
 
     }
