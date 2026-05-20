@@ -1,5 +1,5 @@
 include { CELLDEX_FETCHREFERENCE } from '../../../modules/local/celldex/fetchreference'
-include { CELLTYPES_SINGLER      } from '../../../modules/local/celltypes/singler'
+include { CELLTYPES_SINGLER      } from '../../../modules/local/singler'
 
 workflow SINGLER {
     take:

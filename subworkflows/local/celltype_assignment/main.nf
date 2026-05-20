@@ -1,6 +1,6 @@
 include { samplesheetToList    } from 'plugin/nf-schema'
 include { SINGLER              } from '../singler'
-include { CELLTYPES_CELLTYPIST } from '../../../modules/local/celltypes/celltypist'
+include { CELLTYPES_CELLTYPIST } from '../../../modules/local/celltypist'
 
 workflow CELLTYPE_ASSIGNMENT {
     take:

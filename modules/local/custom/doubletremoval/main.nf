@@ -1,4 +1,4 @@
-process DOUBLET_REMOVAL {
+process CUSTOM_DOUBLETREMOVAL {
     tag "$meta.id"
     label 'process_single'
 
@@ -21,7 +21,7 @@ process DOUBLET_REMOVAL {
 
     script:
     prefix    = task.ext.prefix    ?: "${meta.id}"
-    template 'doublet_removal.py'
+    template 'doubletremoval.py'
 
     stub:
     prefix = task.ext.prefix    ?: "${meta.id}"
