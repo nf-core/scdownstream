@@ -1,0 +1,26 @@
+Changes in component 'nf-core/cellbender/removebackground'
+'modules/nf-core/cellbender/removebackground/environment.yml' is unchanged
+Changes in 'cellbender/removebackground/main.nf':
+--- modules/nf-core/cellbender/removebackground/main.nf
++++ modules/nf-core/cellbender/removebackground/main.nf
+@@ -31,7 +31,11 @@
+         args = task.ext.args ?: ""
+         use_gpu = task.ext.use_gpu ? "--cuda" : ""
+         """
+-        TMPDIR=. cellbender remove-background \
++        mkdir -p ./tmp/mplconfig
++        export MPLCONFIGDIR='./tmp/mplconfig'
++        export TMPDIR='./tmp'
++
++        cellbender remove-background \
+             ${args} \
+             --cpu-threads ${task.cpus} \
+             ${use_gpu} \
+
+'modules/nf-core/cellbender/removebackground/meta.yml' is unchanged
+'modules/nf-core/cellbender/removebackground/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/cellbender/removebackground/tests/gpu.nf.test' is unchanged
+'modules/nf-core/cellbender/removebackground/tests/gpu.nf.test.snap' is unchanged
+'modules/nf-core/cellbender/removebackground/tests/main.nf.test' is unchanged
+'modules/nf-core/cellbender/removebackground/tests/epochs.config' is unchanged
+************************************************************

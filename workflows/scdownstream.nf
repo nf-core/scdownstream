@@ -102,7 +102,6 @@ workflow SCDOWNSTREAM {
         //
         LOAD_H5AD ( ch_samplesheet )
         ch_h5ad = LOAD_H5AD.out.h5ad
-        ch_versions = ch_versions.mix(LOAD_H5AD.out.versions)
 
         //
         // Quality control per sample
@@ -128,7 +127,6 @@ workflow SCDOWNSTREAM {
             s_genes,
             g2m_genes,
         )
-        ch_versions = ch_versions.mix(QUALITY_CONTROL.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(QUALITY_CONTROL.out.multiqc_files)
         ch_h5ad = QUALITY_CONTROL.out.h5ad
         ch_obs_per_sample = ch_obs_per_sample.mix(QUALITY_CONTROL.out.obs)
@@ -141,7 +139,6 @@ workflow SCDOWNSTREAM {
             celldex_reference,
             celltypist_model
         )
-        ch_versions = ch_versions.mix(CELLTYPE_ASSIGNMENT.out.versions)
         ch_obs_per_sample = ch_obs_per_sample.mix(CELLTYPE_ASSIGNMENT.out.obs)
 
         FINALIZE_QC_ANNDATAS (
@@ -159,7 +156,6 @@ workflow SCDOWNSTREAM {
             }
         )
         ch_h5ad = FINALIZE_QC_ANNDATAS.out.h5ad
-        ch_versions = ch_versions.mix(FINALIZE_QC_ANNDATAS.out.versions)
 
         if (!qc_only) {
             //
@@ -184,7 +180,6 @@ workflow SCDOWNSTREAM {
                 condition_col,
                 scib,
             )
-            ch_versions = ch_versions.mix(COMBINE.out.versions)
             ch_obs = ch_obs.mix(COMBINE.out.obs)
             ch_var = ch_var.mix(COMBINE.out.var)
             ch_obsm = ch_obsm.mix(COMBINE.out.obsm)
@@ -206,7 +201,6 @@ workflow SCDOWNSTREAM {
             ch_base,
             ch_embeddings
         )
-        ch_versions = ch_versions.mix(ADATA_SPLITEMBEDDINGS.out.versions)
         ch_integrations = ch_integrations.mix(
             ADATA_SPLITEMBEDDINGS.out.h5ad
             .map { _meta, h5ads -> h5ads }
@@ -236,7 +230,6 @@ workflow SCDOWNSTREAM {
             "batch",
             "X_emb",
         )
-        ch_versions = ch_versions.mix(CLUSTER.out.versions)
         ch_obs = ch_obs.mix(CLUSTER.out.obs)
         ch_obsm = ch_obsm.mix(CLUSTER.out.obsm)
         ch_multiqc_files = ch_multiqc_files.mix(CLUSTER.out.multiqc_files)
@@ -248,7 +241,6 @@ workflow SCDOWNSTREAM {
                 pseudobulk_min_num_cells,
                 "X",
             )
-            ch_versions = ch_versions.mix(PSEUDOBULKING.out.versions)
         }
 
         ch_h5ad_both = CLUSTER.out.h5ad_clustering.map { meta, h5ad -> [meta + [obs_key: "${meta.id}_leiden"], h5ad] }
@@ -280,7 +272,6 @@ workflow SCDOWNSTREAM {
             skip_rankgenesgroups,
         )
 
-        ch_versions = ch_versions.mix(PER_GROUP.out.versions)
         ch_uns = ch_uns.mix(PER_GROUP.out.uns)
         ch_multiqc_files = ch_multiqc_files.mix(PER_GROUP.out.multiqc_files)
 
@@ -294,7 +285,6 @@ workflow SCDOWNSTREAM {
             ch_layers,
             prep_cellxgene
         )
-        ch_versions = ch_versions.mix(FINALIZE.out.versions)
     }
 
     //

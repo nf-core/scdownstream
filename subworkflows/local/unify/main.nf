@@ -13,7 +13,6 @@ workflow UNIFY {
     aggregate_isoforms       //   value: boolean
 
     main:
-    ch_versions = channel.empty()
     ch_multiqc_files = channel.empty()
 
     ch_h5ad = ch_h5ad.branch { meta, _h5ad ->
@@ -24,7 +23,6 @@ workflow UNIFY {
     MYGENE (
         ch_h5ad.needs_symbol_conversion
     )
-    ch_versions = ch_versions.mix(MYGENE.out.versions)
     ch_h5ad = ch_h5ad.has_symbol_col.mix(
         MYGENE.out.h5ad.map { meta, h5ad -> [meta + [symbol_col: 'symbols'], h5ad] }
     )
@@ -46,7 +44,6 @@ workflow UNIFY {
             'var',
             ch_setindex.column
         )
-        ch_versions = ch_versions.mix(SET_INDEX.out.versions)
         ch_h5ad = ch_h5ad.has_symbols_as_index.mix(
             SET_INDEX.out.h5ad
                 .map { meta, h5ad -> [meta + [symbol_col: 'index'], h5ad] }
@@ -57,7 +54,6 @@ workflow UNIFY {
                 .map { meta, h5ad -> [[id: 'upset_raw'], meta.id, h5ad] }
                 .groupTuple()
         )
-        ch_versions = ch_versions.mix(UPSET_GENES_RAW.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(UPSET_GENES_RAW.out.multiqc_files)
 
         UNIFY_GENES (
@@ -97,18 +93,15 @@ workflow UNIFY {
         ],
         h5ad]
     }
-    ch_versions = ch_versions.mix(ADATA_UNIFY.out.versions)
 
     UPSET_GENES (
         ch_h5ad
             .map { meta, h5ad -> [[id: 'upset'], meta.id, h5ad] }
             .groupTuple()
     )
-    ch_versions = ch_versions.mix(UPSET_GENES.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(UPSET_GENES.out.multiqc_files)
 
     emit:
     h5ad          = ch_h5ad          // channel: [ meta, h5ad ]
     multiqc_files = ch_multiqc_files // channel: [ json ]
-    versions      = ch_versions      // channel: [ versions.yml ]
 }

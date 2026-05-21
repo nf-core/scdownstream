@@ -4,7 +4,7 @@ process SCIMILARITY_ANNOTATE {
     label 'process_gpu'
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0b/0b07b44946319f0a77889ca315e4a48bef70c67bae06ce2603039a4995c75f0a/data'
         : 'community.wave.seqera.io/library/anndata_hnswlib_numcodecs_python_pruned:3f8ef15250e4fea7'}"
 

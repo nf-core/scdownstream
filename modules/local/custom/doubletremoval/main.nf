@@ -1,9 +1,9 @@
-process DOUBLET_REMOVAL {
+process CUSTOM_DOUBLETREMOVAL {
     tag "$meta.id"
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/45/45339bf761a2cf0cdb058492bc37f3df8b05b363731d491d1d3a14e9ba0b8f55/data':
         'community.wave.seqera.io/library/harmonypy_anndata_leidenalg_numpy_pruned:43066d5f86f18261' }"
 
@@ -21,7 +21,7 @@ process DOUBLET_REMOVAL {
 
     script:
     prefix    = task.ext.prefix    ?: "${meta.id}"
-    template 'doublet_removal.py'
+    template 'doubletremoval.py'
 
     stub:
     prefix = task.ext.prefix    ?: "${meta.id}"

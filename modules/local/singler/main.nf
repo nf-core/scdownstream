@@ -3,7 +3,7 @@ process CELLTYPES_SINGLER {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1e/1e1ca6a1732f3fc19cdbcd1ec1872fabb868109dc29fc3e530c1be05d5bc0e5f/data':
         'community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-celldex_bioconductor-hdf5array_bioconductor-rhdf5_pruned:74e0a8e51f7ab89c' }"
 

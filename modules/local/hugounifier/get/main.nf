@@ -3,7 +3,7 @@ process HUGOUNIFIER_GET {
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b6/b60674d48ce2e14fec6d6323687b1188e0fe71859f5c82332ea303db69a122d2/data'
         : 'community.wave.seqera.io/library/pip_hugo-unifier:bedd626d591c5003'}"
 

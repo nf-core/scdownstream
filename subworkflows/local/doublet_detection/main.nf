@@ -1,8 +1,8 @@
 include { SCVITOOLS_SOLO   } from '../../../modules/nf-core/scvitools/solo'
 include { SCANPY_SCRUBLET  } from '../../../modules/nf-core/scanpy/scrublet'
 include { DOUBLETDETECTION } from '../../../modules/nf-core/doubletdetection'
-include { SCDBLFINDER      } from '../../../modules/local/doublet_detection/scdblfinder'
-include { DOUBLET_REMOVAL  } from '../../../modules/local/doublet_detection/doublet_removal'
+include { SCDBLFINDER           } from '../../../modules/local/scdblfinder'
+include { CUSTOM_DOUBLETREMOVAL as DOUBLETREMOVAL } from '../../../modules/local/custom/doubletremoval'
 
 workflow DOUBLET_DETECTION {
     take:
@@ -12,7 +12,6 @@ workflow DOUBLET_DETECTION {
     scvi_max_epochs //   value: integer
 
     main:
-    ch_versions = channel.empty()
     ch_multiqc_files = channel.empty()
     ch_predictions = channel.empty()
 
@@ -29,7 +28,6 @@ workflow DOUBLET_DETECTION {
                 scvi_max_epochs ?: []
             )
             ch_predictions = ch_predictions.mix(SCVITOOLS_SOLO.out.predictions)
-            ch_versions = ch_versions.mix(SCVITOOLS_SOLO.out.versions)
         }
 
         if (methods.contains('scrublet')) {
@@ -38,7 +36,6 @@ workflow DOUBLET_DETECTION {
                 ch_batch_col
             )
             ch_predictions = ch_predictions.mix(SCANPY_SCRUBLET.out.predictions)
-            ch_versions = ch_versions.mix(SCANPY_SCRUBLET.out.versions)
         }
 
         if (methods.contains('doubletdetection')) {
@@ -46,7 +43,6 @@ workflow DOUBLET_DETECTION {
                 ch_h5ad
             )
             ch_predictions = ch_predictions.mix(DOUBLETDETECTION.out.predictions)
-            ch_versions = ch_versions.mix(DOUBLETDETECTION.out.versions)
         }
 
         if (methods.contains('scdblfinder')) {
@@ -54,21 +50,18 @@ workflow DOUBLET_DETECTION {
                 ch_h5ad_scdblfinder
             )
             ch_predictions = ch_predictions.mix(SCDBLFINDER.out.predictions)
-            ch_versions = ch_versions.mix(SCDBLFINDER.out.versions)
         }
 
-        DOUBLET_REMOVAL (
+        DOUBLETREMOVAL (
             ch_h5ad.join(ch_predictions.groupTuple()),
             threshold,
         )
 
-        ch_h5ad = DOUBLET_REMOVAL.out.h5ad
-        ch_multiqc_files = ch_multiqc_files.mix(DOUBLET_REMOVAL.out.multiqc_files)
-        ch_versions = ch_versions.mix(DOUBLET_REMOVAL.out.versions)
+        ch_h5ad = DOUBLETREMOVAL.out.h5ad
+        ch_multiqc_files = ch_multiqc_files.mix(DOUBLETREMOVAL.out.multiqc_files)
     }
 
     emit:
     h5ad          = ch_h5ad          // channel: [ meta, h5ad ]
     multiqc_files = ch_multiqc_files // channel: [ json ]
-    versions      = ch_versions      // channel: [ versions.yml ]
 }

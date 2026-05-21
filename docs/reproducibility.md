@@ -74,25 +74,30 @@ The **Test strategy (this branch)** column describes what the tests on this bran
 | ------------------------ | ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | --------------------------- |
 | `celldex/fetchreference` | Downloads a named celldex reference dataset and saves it as a tar-compressed HDF5 SummarizedExperiment. | **Non-deterministic** — live download from ExperimentHub; database version varies over time. | structural                  |
 
-### `celltypes/`
+### `celltypist/`
 
-| Module                 | Description                                                                                                                 | Reproducibility                                                                                        | Test strategy (this branch)                                                                        |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| `celltypes/celltypist` | Annotates cell types using one or more CellTypist logistic regression models after normalising and log-transforming counts. | Fully deterministic — uses a fixed, pre-trained model with no stochastic inference at prediction time. | column names — `path(process.out.versions[0]).yaml` + `adata.obs.colnames` (no `process.out` MD5s) |
-| `celltypes/singler`    | Assigns cell types using the SingleR correlation-based method against one or more celldex reference datasets.               | Fully deterministic — correlation/label-transfer method with no randomness.                            | obs CSV + file names                                                                               |
+| Module       | Description                                                                                                                 | Reproducibility                                                                                        | Test strategy (this branch)                                                                        |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| `celltypist` | Annotates cell types using one or more CellTypist logistic regression models after normalising and log-transforming counts. | Fully deterministic — uses a fixed, pre-trained model with no stochastic inference at prediction time. | column names — `path(process.out.versions[0]).yaml` + `adata.obs.colnames` (no `process.out` MD5s) |
 
 ### `custom/`
 
-| Module                | Description                                                                                 | Reproducibility     | Test strategy (this branch)                           |
-| --------------------- | ------------------------------------------------------------------------------------------- | ------------------- | ----------------------------------------------------- |
-| `custom/collectsizes` | Pivots a TSV of per-sample cell counts at different QC stages into a MultiQC summary table. | Fully deterministic | hash (no H5AD output — TSV / MultiQC JSON + versions) |
+| Module                  | Description                                                                                                         | Reproducibility     | Test strategy (this branch)                           |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------- | ----------------------------------------------------- |
+| `custom/collectsizes`   | Pivots a TSV of per-sample cell counts at different QC stages into a MultiQC summary table.                         | Fully deterministic | hash (no H5AD output — TSV / MultiQC JSON + versions) |
+| `custom/doubletremoval` | Removes doublet cells from an AnnData object based on a threshold applied to aggregated doublet-caller predictions. | Fully deterministic | hash                                                  |
 
-### `doublet_detection/`
+### `scdblfinder/`
 
-| Module                              | Description                                                                                                                   | Reproducibility                                                                                                                | Test strategy (this branch) |
-| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------- |
-| `doublet_detection/doublet_removal` | Removes doublet cells from an AnnData object based on a threshold applied to aggregated doublet-caller predictions.           | Fully deterministic                                                                                                            | hash                        |
-| `doublet_detection/scdblfinder`     | Scores and calls doublets with scDblFinder (`set.seed(123)` and BiocParallel `RNGseed=123`) and exports per-cell predictions. | Seeded / quasi-deterministic — seeds are fixed, but iterative model fitting can still vary slightly across R/package versions. | hash                        |
+| Module        | Description                                                                                                                   | Reproducibility                                                                                                                | Test strategy (this branch) |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------- |
+| `scdblfinder` | Scores and calls doublets with scDblFinder (`set.seed(123)` and BiocParallel `RNGseed=123`) and exports per-cell predictions. | Seeded / quasi-deterministic — seeds are fixed, but iterative model fitting can still vary slightly across R/package versions. | hash                        |
+
+### `singler/`
+
+| Module    | Description                                                                                                   | Reproducibility                                                             | Test strategy (this branch) |
+| --------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------- |
+| `singler` | Assigns cell types using the SingleR correlation-based method against one or more celldex reference datasets. | Fully deterministic — correlation/label-transfer method with no randomness. | obs CSV + file names        |
 
 ### `hugounifier/`
 
