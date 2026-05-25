@@ -1,24 +1,15 @@
 #!/usr/bin/env python3
-"""Per-sample CyteType annotation after lightweight Scanpy clustering + DE."""
+"""Per-sample CyteType annotation on pre-computed clustering and DE."""
 
 import os
 import platform
-
-os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
-os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
 import numpy as np
 import pandas as pd
 import scanpy as sc
 import yaml
 from importlib.metadata import version
-from threadpoolctl import threadpool_limits
 from cytetype import CyteType
-
-threadpool_limits(int("${task.cpus}"))
-sc.settings.n_jobs = int("${task.cpus}")
-sc.settings.seed = 42
-np.random.seed(42)
 
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
@@ -27,8 +18,8 @@ if not study_context.strip():
     raise ValueError("cytetype_study_context must be a non-empty string when CyteType is enabled.")
 
 symbol_col = "${symbol_col}"
-leiden_resolution = float("${leiden_resolution}")
-n_top_genes = int("${n_top_genes}")
+group_key = "${group_key}"
+rank_key = "${rank_key}"
 _auth = os.environ.get("CYTETYPE_API_KEY")
 auth_token_arg = _auth.strip() if _auth and _auth.strip() else None
 
@@ -42,41 +33,15 @@ if symbol_col != "index" and symbol_col:
 
 adata_work.var_names = adata_work.var_names.astype(str)
 
-# QC-stage AnnData is typically raw counts in X — normalize + log for clustering / markers
-sc.pp.normalize_total(adata_work, target_sum=1e4)
-sc.pp.log1p(adata_work)
-
-n_var = adata_work.n_vars
-n_top_hvg = max(500, min(2000, n_var))
-sc.pp.highly_variable_genes(
-    adata_work,
-    n_top_genes=n_top_hvg,
-    flavor="seurat",
-    subset=True,
-)
-sc.pp.scale(adata_work, max_value=10)
-
-n_obs = adata_work.n_obs
-n_pcs = min(50, max(1, n_obs - 1), max(1, adata_work.n_vars - 1))
-sc.tl.pca(adata_work, n_comps=n_pcs)
-n_neighbors = min(15, max(2, n_obs - 1))
-sc.pp.neighbors(adata_work, n_neighbors=n_neighbors, random_state=42)
-sc.tl.umap(adata_work, random_state=42)
-
-group_key = "cytetype_leiden"
-sc.tl.leiden(
-    adata_work,
-    resolution=leiden_resolution,
-    key_added=group_key,
-    random_state=42,
-)
-sc.tl.rank_genes_groups(adata_work, group_key, method="wilcoxon")
+if group_key not in adata_work.obs.columns:
+    raise ValueError(f"Group key {group_key!r} not found in adata.obs.columns")
+if rank_key not in adata_work.uns:
+    raise ValueError(f"Rank key {rank_key!r} not found in adata.uns")
 
 annotator = CyteType(
     adata_work,
     group_key=group_key,
-    rank_key="rank_genes_groups",
-    n_top_genes=n_top_genes,
+    rank_key=rank_key,
     auth_token=auth_token_arg,
 )
 adata_work = annotator.run(

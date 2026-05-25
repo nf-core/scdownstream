@@ -47,9 +47,6 @@ workflow SCDOWNSTREAM {
     qc_only                       //   value: boolean
     celldex_reference              //   value: string
     celltypist_model               //   value: string
-    cytetype_study_context         //   value: string
-    cytetype_leiden_resolution     //   value: number
-    cytetype_n_top_genes           //   value: integer
     unify_gene_symbols            //   value: boolean
     duplicate_var_resolution      //   value: string
     aggregate_isoforms            //   value: boolean
@@ -140,10 +137,7 @@ workflow SCDOWNSTREAM {
         CELLTYPE_ASSIGNMENT (
             ch_h5ad.map { meta, h5ad -> [meta, h5ad, meta.symbol_col, meta.counts_layer ?: "X"] },
             celldex_reference,
-            celltypist_model,
-            cytetype_study_context,
-            cytetype_leiden_resolution,
-            cytetype_n_top_genes
+            celltypist_model
         )
         ch_obs_per_sample = ch_obs_per_sample.mix(CELLTYPE_ASSIGNMENT.out.obs)
 

@@ -1,16 +1,12 @@
 include { samplesheetToList    } from 'plugin/nf-schema'
 include { SINGLER              } from '../singler'
 include { CELLTYPES_CELLTYPIST } from '../../../modules/local/celltypist'
-include { CELLTYPES_CYTETYPE   } from '../../../modules/local/cytetype'
 
 workflow CELLTYPE_ASSIGNMENT {
     take:
     ch_h5ad                   // channel: [ meta, h5ad, symbol_col, counts_layer ]
     celldex_reference         //   value: string
     celltypist_model          //   value: string
-    cytetype_study_context    //   value: string
-    cytetype_leiden_resolution //   value: number
-    cytetype_n_top_genes      //   value: integer
 
     main:
     ch_obs = channel.empty()
@@ -37,16 +33,6 @@ workflow CELLTYPE_ASSIGNMENT {
             celltypist_models
         )
         ch_obs = ch_obs.mix(CELLTYPES_CELLTYPIST.out.obs)
-    }
-
-    if (cytetype_study_context) {
-        CELLTYPES_CYTETYPE (
-            ch_h5ad.map { meta, h5ad, symbol_col, _counts_layer -> [meta, h5ad, symbol_col] },
-            cytetype_study_context,
-            cytetype_leiden_resolution,
-            cytetype_n_top_genes
-        )
-        ch_obs = ch_obs.mix(CELLTYPES_CYTETYPE.out.obs)
     }
 
     emit:

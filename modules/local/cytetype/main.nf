@@ -6,14 +6,15 @@ process CELLTYPES_CYTETYPE {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8f/8f4ddab9c445762a90a6bc0002f4099b39ae886194a6541cd35929f1c69d26f6/data'
-        : 'community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_pruned:dd84aadd1ff0dacd'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ea/ea6fe0f3aff9f5097236faa2a8975d4ad2ced9764032c64f4acd56b59aa37cd3/data'
+        : 'community.wave.seqera.io/library/python_pyyaml_scanpy_pip_cytetype:05f936cdbbebf101'}"
 
     input:
-    tuple val(meta), path(h5ad), val(symbol_col)
+    tuple val(meta), path(h5ad)
+    val symbol_col
     val study_context
-    val leiden_resolution
-    val n_top_genes
+    val group_key
+    val rank_key
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad

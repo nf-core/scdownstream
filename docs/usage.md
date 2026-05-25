@@ -154,9 +154,9 @@ Example tar archives can be found [here](https://github.com/nf-core/test-dataset
 
 #### CyteType
 
-[CyteType](https://github.com/NygenAnalytics/cytetype) is a multi-agent LLM-driven annotator that takes per-cluster marker genes and a free-text study description and returns predicted cell type labels. The pipeline runs CyteType per QC-filtered sample: a lightweight Scanpy clustering and `rank_genes_groups` are computed inside the module, then the markers are submitted to the CyteType API.
+[CyteType](https://github.com/NygenAnalytics/cytetype) is a multi-agent LLM-driven annotator that takes per-cluster marker genes and a free-text study description and returns predicted cell type labels. The pipeline runs CyteType per QC-filtered sample using pre-computed cluster labels and differential-expression results stored in the AnnData object.
 
-To enable CyteType, set [`cytetype_study_context`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_study_context) to a short free-text description of your study (the more specific, the better). When this parameter is empty (the default), CyteType is skipped.
+To enable CyteType, set [`cytetype_study_context`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_study_context) to a short free-text description of your study (the more specific, the better). When this parameter is empty (the default), CyteType is skipped. Use [`cytetype_group_key`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_group_key) and [`cytetype_rank_key`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_rank_key) to point CyteType at the obs column and `uns` key with your cluster labels and marker genes.
 
 ```bash
 nextflow run nf-core/scdownstream \
@@ -168,7 +168,7 @@ nextflow run nf-core/scdownstream \
 > [!IMPORTANT]
 > CyteType calls the remote `https://cytetype.nygen.io` API and therefore **requires internet access** from the compute node running the `CELLTYPES_CYTETYPE` task.
 
-If your CyteType deployment requires authentication, set the Nextflow secret `CYTETYPE_API_KEY` before the run (for example `nextflow secrets set CYTETYPE_API_KEY '<token>'`). The Leiden resolution and the number of marker genes per cluster passed to CyteType can be tuned with `--cytetype_leiden_resolution` and `--cytetype_n_top_genes`.
+If your CyteType deployment requires authentication, set the Nextflow secret `CYTETYPE_API_KEY` before the run (for example `nextflow secrets set CYTETYPE_API_KEY '<token>'`).
 
 ### Cell cycle scoring
 
