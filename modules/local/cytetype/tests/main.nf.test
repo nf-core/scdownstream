@@ -3,12 +3,30 @@
 
 nextflow_process {
 
-    name "Test Process CELLTYPES_CYTETYPE"
+    name "Test Process CYTETYPE"
     script "modules/local/cytetype/main.nf"
-    process "CELLTYPES_CYTETYPE"
+    process "CYTETYPE"
 
     tag "modules"
     tag "modules_local"
+
+    setup {
+        run("SCANPY_RANKGENESGROUPS") {
+            script "modules/local/scanpy/rankgenesgroups/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "leiden"
+                input[2] = [[], []]
+                input[3] = "wilcoxon"
+                """
+            }
+        }
+    }
 
     test("Should run without failures") {
 
@@ -18,15 +36,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = channel.of([
-                        [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        "index"
-                    ]
-                )
-                input[1] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
-                input[2] = 0.5
-                input[3] = 50
+                input[0] = SCANPY_RANKGENESGROUPS.out.h5ad
+                input[1] = "index"
+                input[2] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[3] = "leiden"
+                input[4] = "rank_genes_groups"
                 """
             }
         }
@@ -35,8 +49,8 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
             with(adata) {
-                assert "cytetype_leiden" in obs.colnames
-                assert obs.colnames.any { it.startsWith("cytetype_") && it != "cytetype_leiden" }
+                assert "leiden" in obs.colnames
+                assert obs.colnames.any { it.startsWith("cytetype_") }
             }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
@@ -54,15 +68,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = channel.of([
-                        [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        "symbols"
-                    ]
-                )
-                input[1] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
-                input[2] = 0.5
-                input[3] = 50
+                input[0] = SCANPY_RANKGENESGROUPS.out.h5ad
+                input[1] = "symbols"
+                input[2] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[3] = "leiden"
+                input[4] = "rank_genes_groups"
                 """
             }
         }
@@ -71,8 +81,8 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
             with(adata) {
-                assert "cytetype_leiden" in obs.colnames
-                assert obs.colnames.any { it.startsWith("cytetype_") && it != "cytetype_leiden" }
+                assert "leiden" in obs.colnames
+                assert obs.colnames.any { it.startsWith("cytetype_") }
             }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
@@ -90,15 +100,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = channel.of([
-                        [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        "not_a_column"
-                    ]
-                )
-                input[1] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
-                input[2] = 0.5
-                input[3] = 50
+                input[0] = SCANPY_RANKGENESGROUPS.out.h5ad
+                input[1] = "not_a_column"
+                input[2] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[3] = "leiden"
+                input[4] = "rank_genes_groups"
                 """
             }
         }
@@ -117,15 +123,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = channel.of([
-                        [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        "index"
-                    ]
-                )
-                input[1] = ""
-                input[2] = 0.5
-                input[3] = 50
+                input[0] = SCANPY_RANKGENESGROUPS.out.h5ad
+                input[1] = "index"
+                input[2] = ""
+                input[3] = "leiden"
+                input[4] = "rank_genes_groups"
                 """
             }
         }
@@ -146,15 +148,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = channel.of([
-                        [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        "index"
-                    ]
-                )
-                input[1] = "Human PBMC test context (nf-test stub)"
-                input[2] = 0.5
-                input[3] = 50
+                input[0] = SCANPY_RANKGENESGROUPS.out.h5ad
+                input[1] = "index"
+                input[2] = "Human PBMC test context (nf-test stub)"
+                input[3] = "leiden"
+                input[4] = "rank_genes_groups"
                 """
             }
         }

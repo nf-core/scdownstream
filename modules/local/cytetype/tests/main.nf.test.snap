@@ -2,11 +2,11 @@
     "Should run with a symbol column other than index": {
         "content": [
             {
-                "CELLTYPES_CYTETYPE": {
+                "CYTETYPE": {
                     "cytetype": "0.19.4",
                     "numpy": "2.4.6",
                     "pandas": "2.3.3",
-                    "python": "3.14.4",
+                    "python": "3.14.5",
                     "scanpy": "1.12.1"
                 }
             },
@@ -16,12 +16,16 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "cytetype_annotation_cytetype_leiden",
-                        "cytetype_cellOntologyTermID_cytetype_leiden",
-                        "cytetype_cellOntologyTerm_cytetype_leiden",
-                        "cytetype_cellState_cytetype_leiden",
-                        "cytetype_leiden",
-                        "sample"
+                        "batch",
+                        "condition",
+                        "cytetype_annotation_leiden",
+                        "cytetype_cellOntologyTermID_leiden",
+                        "cytetype_cellOntologyTerm_leiden",
+                        "cytetype_cellState_leiden",
+                        "label",
+                        "leiden",
+                        "sample",
+                        "sample_original"
                     ]
                 },
                 "var": {
@@ -31,26 +35,31 @@
                     ]
                 },
                 "layers": [
-                    "counts"
+                    
                 ],
                 "obsm": [
-                    
+                    "X_pca"
                 ],
                 "varm": [
-                    
+                    "PCs"
                 ],
                 "obsp": [
-                    
+                    "connectivities",
+                    "distances"
                 ],
                 "varp": [
                     
                 ],
                 "uns": [
-                    
+                    "leiden",
+                    "log1p",
+                    "neighbors",
+                    "pca",
+                    "rank_genes_groups"
                 ]
             }
         ],
-        "timestamp": "2026-05-19T13:53:27.13897935",
+        "timestamp": "2026-05-25T12:42:29.009698666",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.0"
@@ -108,11 +117,11 @@
     "Should run without failures": {
         "content": [
             {
-                "CELLTYPES_CYTETYPE": {
+                "CYTETYPE": {
                     "cytetype": "0.19.4",
                     "numpy": "2.4.6",
                     "pandas": "2.3.3",
-                    "python": "3.14.4",
+                    "python": "3.14.5",
                     "scanpy": "1.12.1"
                 }
             },
@@ -122,12 +131,16 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "cytetype_annotation_cytetype_leiden",
-                        "cytetype_cellOntologyTermID_cytetype_leiden",
-                        "cytetype_cellOntologyTerm_cytetype_leiden",
-                        "cytetype_cellState_cytetype_leiden",
-                        "cytetype_leiden",
-                        "sample"
+                        "batch",
+                        "condition",
+                        "cytetype_annotation_leiden",
+                        "cytetype_cellOntologyTermID_leiden",
+                        "cytetype_cellOntologyTerm_leiden",
+                        "cytetype_cellState_leiden",
+                        "label",
+                        "leiden",
+                        "sample",
+                        "sample_original"
                     ]
                 },
                 "var": {
@@ -137,26 +150,31 @@
                     ]
                 },
                 "layers": [
-                    "counts"
+                    
                 ],
                 "obsm": [
-                    
+                    "X_pca"
                 ],
                 "varm": [
-                    
+                    "PCs"
                 ],
                 "obsp": [
-                    
+                    "connectivities",
+                    "distances"
                 ],
                 "varp": [
                     
                 ],
                 "uns": [
-                    
+                    "leiden",
+                    "log1p",
+                    "neighbors",
+                    "pca",
+                    "rank_genes_groups"
                 ]
             }
         ],
-        "timestamp": "2026-05-19T13:31:29.118090333",
+        "timestamp": "2026-05-25T12:15:49.526020343",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.0"

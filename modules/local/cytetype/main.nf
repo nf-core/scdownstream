@@ -1,4 +1,4 @@
-process CELLTYPES_CYTETYPE {
+process CYTETYPE {
     tag "${meta.id}"
     label 'process_medium'
 

@@ -166,7 +166,7 @@ nextflow run nf-core/scdownstream \
 ```
 
 > [!IMPORTANT]
-> CyteType calls the remote `https://cytetype.nygen.io` API and therefore **requires internet access** from the compute node running the `CELLTYPES_CYTETYPE` task.
+> CyteType calls the remote `https://cytetype.nygen.io` API and therefore **requires internet access** from the compute node running the `CYTETYPE` task.
 
 If your CyteType deployment requires authentication, set the Nextflow secret `CYTETYPE_API_KEY` before the run (for example `nextflow secrets set CYTETYPE_API_KEY '<token>'`).
 
