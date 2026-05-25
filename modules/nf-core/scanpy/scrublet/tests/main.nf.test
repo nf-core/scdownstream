@@ -14,7 +14,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = channel.of([
+                input[0] = Channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
                     ]
@@ -39,7 +39,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = channel.of([
+                input[0] = Channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
                     ]
@@ -64,7 +64,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = channel.of([
+                input[0] = Channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
                     ]
@@ -90,7 +90,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = channel.of([
+                input[0] = Channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
                     ]
@@ -115,7 +115,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = channel.of([
+                input[0] = Channel.of([
                         [ id: 'test' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
                     ]

@@ -23,7 +23,6 @@ workflow COMBINE {
 
     main:
 
-    ch_versions      = channel.empty()
     ch_multiqc_files = channel.empty()
     ch_obs           = channel.empty()
     ch_var           = channel.empty()
@@ -39,7 +38,6 @@ workflow COMBINE {
     ch_var = ch_var.mix(ADATA_MERGE.out.intersect_genes)
     ch_outer = ADATA_MERGE.out.outer
     ch_inner = ADATA_MERGE.out.inner
-    ch_versions = ch_versions.mix(ADATA_MERGE.out.versions)
 
     INTEGRATE(
         ADATA_MERGE.out.integrate,
@@ -57,7 +55,6 @@ workflow COMBINE {
         expimap_gmt,
         condition_col
     )
-    ch_versions      = ch_versions.mix(INTEGRATE.out.versions)
     ch_var           = ch_var.mix(INTEGRATE.out.var)
 
     if (is_extension) {
@@ -69,7 +66,6 @@ workflow COMBINE {
                 ADATA_MERGE.out.inner.map{ _meta, inner -> inner }
             )
         )
-        ch_versions      = ch_versions.mix(ADATA_MERGEEMBEDDINGS.out.versions)
         ch_integrations  = ADATA_MERGEEMBEDDINGS.out.h5ad
         ch_obs           = ch_obs.mix(ADATA_MERGEEMBEDDINGS.out.obs)
         ch_obsm          = ch_obsm.mix(ADATA_MERGEEMBEDDINGS.out.obsm)
@@ -89,7 +85,6 @@ workflow COMBINE {
                 // Thus, it is not compatible with scib-metrics
                 .filter { meta, _h5ad -> meta.id != 'bbknn' }
         )
-        ch_versions = ch_versions.mix(SCIBMETRICS_BENCHMARK.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(SCIBMETRICS_BENCHMARK.out.multiqc_files)
     }
 
@@ -100,6 +95,5 @@ workflow COMBINE {
     var              = ch_var           // channel: [ pkl ]
     obs              = ch_obs           // channel: [ pkl ]
     obsm             = ch_obsm          // channel: [ pkl ]
-    versions         = ch_versions      // channel: [ versions.yml ]
     multiqc_files    = ch_multiqc_files // channel: [ *_mqc.json ]
 }

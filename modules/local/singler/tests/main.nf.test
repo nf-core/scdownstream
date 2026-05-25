@@ -1,7 +1,7 @@
 nextflow_process {
 
     name "Test Process CELLTYPES_SINGLER"
-    script "modules/local/celltypes/singler/main.nf"
+    script "modules/local/singler/main.nf"
     process "CELLTYPES_SINGLER"
 
     test("Should run after celldex reference is fetched") {

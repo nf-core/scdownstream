@@ -33,7 +33,6 @@ workflow QUALITY_CONTROL {
     g2m_genes                     //    path: file or []
 
     main:
-    ch_versions = channel.empty()
     ch_multiqc_files = channel.empty()
     ch_sizes = channel.empty()
     ch_obs_per_sample = channel.empty()
@@ -45,7 +44,6 @@ workflow QUALITY_CONTROL {
             [meta, unfiltered ?: filtered] },
         "cells",
     )
-    ch_versions = ch_versions.mix(GET_UNFILTERED_SIZE.out.versions)
     ch_sizes = ch_sizes.mix(
         GET_UNFILTERED_SIZE.out.size
         .map {
@@ -93,7 +91,6 @@ workflow QUALITY_CONTROL {
             },
         "cells",
     )
-    ch_versions = ch_versions.mix(GET_FILTERED_SIZE.out.versions)
     ch_sizes = ch_sizes.mix(
         GET_FILTERED_SIZE.out.size
         .map {
@@ -106,7 +103,6 @@ workflow QUALITY_CONTROL {
         ch_complete.map { meta, filtered, _unfiltered -> [meta, filtered] }
     )
     ch_multiqc_files = ch_multiqc_files.mix(QC_RAW.out.multiqc_files)
-    ch_versions = ch_versions.mix(QC_RAW.out.versions)
 
     AMBIENT_CORRECTION (
         ch_complete,
@@ -114,7 +110,6 @@ workflow QUALITY_CONTROL {
         ambient_corrected_integration
     )
     ch_h5ad = AMBIENT_CORRECTION.out.h5ad
-    ch_versions = ch_versions.mix(AMBIENT_CORRECTION.out.versions)
 
     // Unification needds to happen before filtering to make sure all genes have symbols
     // Otherwise, mitochondrial gene detection will not work correctly
@@ -124,7 +119,6 @@ workflow QUALITY_CONTROL {
         duplicate_var_resolution,
         aggregate_isoforms
     )
-    ch_versions = ch_versions.mix(UNIFY.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(UNIFY.out.multiqc_files)
     ch_h5ad = UNIFY.out.h5ad
 
@@ -154,7 +148,6 @@ workflow QUALITY_CONTROL {
         mito_genes ?: []
     )
     ch_h5ad = SCANPY_FILTER.out.h5ad
-    ch_versions = ch_versions.mix(SCANPY_FILTER.out.versions)
 
     // Only run SCANPY_SAMPLE if sample_n or sample_fraction is set
     if (sample_n || sample_fraction) {
@@ -164,13 +157,11 @@ workflow QUALITY_CONTROL {
             sample_fraction ?: []
         )
         ch_h5ad = SCANPY_SAMPLE.out.h5ad
-        ch_versions = ch_versions.mix(SCANPY_SAMPLE.out.versions)
 
         GET_SAMPLED_SIZE (
             ch_h5ad,
             "cells"
         )
-        ch_versions = ch_versions.mix(GET_SAMPLED_SIZE.out.versions)
         ch_sizes = ch_sizes.mix(
             GET_SAMPLED_SIZE.out.size
             .map {
@@ -184,7 +175,6 @@ workflow QUALITY_CONTROL {
         ch_h5ad,
         "cells"
     )
-    ch_versions = ch_versions.mix(GET_THRESHOLDED_SIZE.out.versions)
     ch_sizes = ch_sizes.mix(
         GET_THRESHOLDED_SIZE.out.size
         .map {
@@ -201,14 +191,12 @@ workflow QUALITY_CONTROL {
     )
     ch_h5ad = DOUBLET_DETECTION.out.h5ad
     ch_multiqc_files = ch_multiqc_files.mix(DOUBLET_DETECTION.out.multiqc_files)
-    ch_versions = ch_versions.mix(DOUBLET_DETECTION.out.versions)
 
     if (doublet_detection_methods.size() > 0) {
         GET_DEDOUBLETED_SIZE (
             ch_h5ad,
             "cells"
         )
-        ch_versions = ch_versions.mix(GET_DEDOUBLETED_SIZE.out.versions)
         ch_sizes = ch_sizes.mix(
             GET_DEDOUBLETED_SIZE.out.size
             .map {
@@ -222,7 +210,6 @@ workflow QUALITY_CONTROL {
         ch_h5ad
     )
     ch_multiqc_files = ch_multiqc_files.mix(QC_FILTERED.out.multiqc_files)
-    ch_versions = ch_versions.mix(QC_FILTERED.out.versions)
 
     if (cell_cycle_scoring) {
         ch_cellcycle = ch_h5ad.multiMap {
@@ -237,7 +224,6 @@ workflow QUALITY_CONTROL {
             ch_cellcycle.symbol_col
         )
         ch_obs_per_sample = ch_obs_per_sample.mix(SCANPY_CELLCYCLE.out.obs)
-        ch_versions = ch_versions.mix(SCANPY_CELLCYCLE.out.versions)
     }
 
     ch_sizes = ch_sizes
@@ -251,7 +237,6 @@ workflow QUALITY_CONTROL {
     COLLECT_SIZES (
         ch_sizes
     )
-    ch_versions = ch_versions.mix(COLLECT_SIZES.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(COLLECT_SIZES.out.multiqc_files)
 
     emit:
@@ -259,5 +244,4 @@ workflow QUALITY_CONTROL {
     sizes         = ch_sizes          // channel: [ tsv ]
     obs           = ch_obs_per_sample // channel: [ meta, pkl ]
     multiqc_files = ch_multiqc_files  // channel: [ json ]
-    versions      = ch_versions       // channel: [ versions.yml ]
 }

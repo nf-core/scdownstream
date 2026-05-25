@@ -3,7 +3,7 @@ process CELLTYPES_CELLTYPIST {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? 'oras://community.wave.seqera.io/library/celltypist_scanpy:89a98f51262cfff4'
         : 'community.wave.seqera.io/library/celltypist_scanpy:44b604b24dd4cf33'}"
 

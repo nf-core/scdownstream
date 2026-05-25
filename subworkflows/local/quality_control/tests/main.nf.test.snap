@@ -7,72 +7,13 @@
                 "test_raw_mqc.json:md5,1892d1a9408417050623e6bc2c2480a3"
             ],
             [
-                {
-                    "QUALITY_CONTROL:SCANPY_FILTER": {
-                        "python": "3.13.12",
-                        "scanpy": "1.12"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:GET_UNFILTERED_SIZE": {
-                        "python": "3.13.0",
-                        "anndata": "0.10.9"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:QC_RAW": {
-                        "matplotlib": "3.10.8",
-                        "python": "3.13.12",
-                        "scanpy": "1.12"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:GET_FILTERED_SIZE": {
-                        "python": "3.13.0",
-                        "anndata": "0.10.9"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:QC_FILTERED": {
-                        "matplotlib": "3.10.8",
-                        "python": "3.13.12",
-                        "scanpy": "1.12"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:GET_THRESHOLDED_SIZE": {
-                        "python": "3.13.0",
-                        "anndata": "0.10.9"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:UNIFY:ADATA_UNIFY": {
-                        "anndata": "0.12.10",
-                        "numpy": "2.3.5",
-                        "python": "3.13.12",
-                        "scipy": "1.17.1"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:UNIFY:UPSET_GENES": {
-                        "anndata": "0.12.10",
-                        "matplotlib": "3.10.8",
-                        "python": "3.13.12",
-                        "upsetplot": "0.9.0"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:COLLECT_SIZES": {
-                        "pandas": "2.3.3",
-                        "python": "3.13.12"
-                    }
-                }
+                
             ]
         ],
-        "timestamp": "2026-04-10T10:43:58.450893767",
+        "timestamp": "2026-05-20T20:47:39.430635416",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nextflow": "26.04.0"
         }
     },
     "Should run without ambient RNA removal and doublet detection, but with custom mito genes": {
@@ -83,72 +24,13 @@
                 "test_raw_mqc.json:md5,1892d1a9408417050623e6bc2c2480a3"
             ],
             [
-                {
-                    "QUALITY_CONTROL:SCANPY_FILTER": {
-                        "python": "3.13.12",
-                        "scanpy": "1.12"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:GET_UNFILTERED_SIZE": {
-                        "python": "3.13.0",
-                        "anndata": "0.10.9"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:QC_RAW": {
-                        "matplotlib": "3.10.8",
-                        "python": "3.13.12",
-                        "scanpy": "1.12"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:GET_FILTERED_SIZE": {
-                        "python": "3.13.0",
-                        "anndata": "0.10.9"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:QC_FILTERED": {
-                        "matplotlib": "3.10.8",
-                        "python": "3.13.12",
-                        "scanpy": "1.12"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:GET_THRESHOLDED_SIZE": {
-                        "python": "3.13.0",
-                        "anndata": "0.10.9"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:UNIFY:ADATA_UNIFY": {
-                        "anndata": "0.12.10",
-                        "numpy": "2.3.5",
-                        "python": "3.13.12",
-                        "scipy": "1.17.1"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:UNIFY:UPSET_GENES": {
-                        "anndata": "0.12.10",
-                        "matplotlib": "3.10.8",
-                        "python": "3.13.12",
-                        "upsetplot": "0.9.0"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:COLLECT_SIZES": {
-                        "pandas": "2.3.3",
-                        "python": "3.13.12"
-                    }
-                }
+                
             ]
         ],
-        "timestamp": "2026-04-10T10:44:40.327756042",
+        "timestamp": "2026-05-20T20:48:45.974906357",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nextflow": "26.04.0"
         }
     },
     "Should run with ambient RNA removal and doublet detection - stub": {
@@ -186,21 +68,6 @@
                     "test_raw_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "upset_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "4": [
-                    "versions.yml:md5,3c7417bff601859a86cdcb86fa6bfcb3",
-                    "versions.yml:md5,53938cd26fe63616cc4524da4b6062c5",
-                    "versions.yml:md5,77789821b488f540f44bd4802394a948",
-                    "versions.yml:md5,88b8f8687e69ee5ccecf75b7e6845176",
-                    "versions.yml:md5,c4bcd7799f794fb7a2ab6b9a32d346f9",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
                 "h5ad": [
                     [
                         {
@@ -232,28 +99,13 @@
                         },
                         "size_list.tsv:md5,92a87eabbcb39809ebd3c0e1a06851bd"
                     ]
-                ],
-                "versions": [
-                    "versions.yml:md5,3c7417bff601859a86cdcb86fa6bfcb3",
-                    "versions.yml:md5,53938cd26fe63616cc4524da4b6062c5",
-                    "versions.yml:md5,77789821b488f540f44bd4802394a948",
-                    "versions.yml:md5,88b8f8687e69ee5ccecf75b7e6845176",
-                    "versions.yml:md5,c4bcd7799f794fb7a2ab6b9a32d346f9",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-03-22T17:58:03.346618166",
+        "timestamp": "2026-05-20T20:53:21.602125604",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
         }
     },
     "Should run with ambient RNA removal and doublet detection": {
@@ -264,94 +116,7 @@
                 "test_raw_mqc.json:md5,1892d1a9408417050623e6bc2c2480a3"
             ],
             [
-                {
-                    "QUALITY_CONTROL:SCANPY_FILTER": {
-                        "python": "3.13.12",
-                        "scanpy": "1.12"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:AMBIENT_CORRECTION:CELDA_DECONTX": {
-                        "r": "4.5.3",
-                        "anndataR": "1.0.2",
-                        "celda": "1.26.0"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:DOUBLET_DETECTION:DOUBLET_REMOVAL": {
-                        "anndata": "0.12.10",
-                        "matplotlib": "3.10.8",
-                        "pandas": "2.3.3",
-                        "python": "3.13.12",
-                        "upsetplot": "0.9.0"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:GET_DEDOUBLETED_SIZE": {
-                        "python": "3.13.0",
-                        "anndata": "0.10.9"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:GET_UNFILTERED_SIZE": {
-                        "python": "3.13.0",
-                        "anndata": "0.10.9"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:QC_RAW": {
-                        "matplotlib": "3.10.8",
-                        "python": "3.13.12",
-                        "scanpy": "1.12"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:GET_FILTERED_SIZE": {
-                        "python": "3.13.0",
-                        "anndata": "0.10.9"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:DOUBLET_DETECTION:SCANPY_SCRUBLET": {
-                        "python": "3.12.11",
-                        "scanpy": "1.11.2"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:QC_FILTERED": {
-                        "matplotlib": "3.10.8",
-                        "python": "3.13.12",
-                        "scanpy": "1.12"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:GET_THRESHOLDED_SIZE": {
-                        "python": "3.13.0",
-                        "anndata": "0.10.9"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:UNIFY:ADATA_UNIFY": {
-                        "anndata": "0.12.10",
-                        "numpy": "2.3.5",
-                        "python": "3.13.12",
-                        "scipy": "1.17.1"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:UNIFY:UPSET_GENES": {
-                        "anndata": "0.12.10",
-                        "matplotlib": "3.10.8",
-                        "python": "3.13.12",
-                        "upsetplot": "0.9.0"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:COLLECT_SIZES": {
-                        "pandas": "2.3.3",
-                        "python": "3.13.12"
-                    }
-                }
+                
             ],
             12939,
             9887,
@@ -413,10 +178,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-04-13T12:34:15.500936",
+        "timestamp": "2026-05-20T20:52:47.896186963",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
         }
     },
     "Should run with cell cycle scoring": {
@@ -427,78 +192,13 @@
                 "test_raw_mqc.json:md5,1892d1a9408417050623e6bc2c2480a3"
             ],
             [
-                {
-                    "QUALITY_CONTROL:SCANPY_FILTER": {
-                        "python": "3.13.12",
-                        "scanpy": "1.12"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:GET_UNFILTERED_SIZE": {
-                        "python": "3.13.0",
-                        "anndata": "0.10.9"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:QC_RAW": {
-                        "matplotlib": "3.10.8",
-                        "python": "3.13.12",
-                        "scanpy": "1.12"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:GET_FILTERED_SIZE": {
-                        "python": "3.13.0",
-                        "anndata": "0.10.9"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:QC_FILTERED": {
-                        "matplotlib": "3.10.8",
-                        "python": "3.13.12",
-                        "scanpy": "1.12"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:GET_THRESHOLDED_SIZE": {
-                        "python": "3.13.0",
-                        "anndata": "0.10.9"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:UNIFY:ADATA_UNIFY": {
-                        "anndata": "0.12.10",
-                        "numpy": "2.3.5",
-                        "python": "3.13.12",
-                        "scipy": "1.17.1"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:UNIFY:UPSET_GENES": {
-                        "anndata": "0.12.10",
-                        "matplotlib": "3.10.8",
-                        "python": "3.13.12",
-                        "upsetplot": "0.9.0"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:COLLECT_SIZES": {
-                        "pandas": "2.3.3",
-                        "python": "3.13.12"
-                    }
-                },
-                {
-                    "QUALITY_CONTROL:SCANPY_CELLCYCLE": {
-                        "python": "3.13.12",
-                        "scanpy": "1.12"
-                    }
-                }
+                
             ]
         ],
-        "timestamp": "2026-04-10T10:49:06.900819591",
+        "timestamp": "2026-05-20T20:54:00.638052642",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nextflow": "26.04.0"
         }
     }
 }
