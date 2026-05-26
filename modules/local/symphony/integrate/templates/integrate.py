@@ -4,6 +4,7 @@
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
+import importlib.metadata
 import platform
 import yaml
 
@@ -51,8 +52,8 @@ df.to_pickle(f"X_{prefix}.pkl")
 versions = {
     "${task.process}": {
         "python": platform.python_version(),
-        "scanpy": sc.__version__,
-        "symphonypy": sp.__version__,
+        "scanpy": importlib.metadata.version("scanpy"),
+        "symphonypy": importlib.metadata.version("symphonypy"),
         "pandas": pd.__version__,
     }
 }

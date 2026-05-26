@@ -37,5 +37,57 @@
             "nf-test": "0.9.4",
             "nextflow": "26.04.0"
         }
+    },
+    "Should run without failures": {
+        "content": [
+            {
+                "SYMPHONY_INTEGRATE": {
+                    "pandas": "2.3.3",
+                    "python": "3.13.13",
+                    "scanpy": "1.12.1",
+                    "symphonypy": "0.2.4"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_emb",
+                    "X_pca_symphony"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "symphony"
+                ]
+            }
+        ],
+        "timestamp": "2026-05-26T17:19:00.719609",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.2"
+        }
     }
 }
