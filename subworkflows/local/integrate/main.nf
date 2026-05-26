@@ -2,8 +2,8 @@ include { SCANPY_HVGS        } from '../../../modules/local/scanpy/hvgs'
 include { SCANPY_FILTER      } from '../../../modules/local/scanpy/filter'
 include { SCVITOOLS_SCVI     } from '../../../modules/local/scvitools/scvi'
 include { SCVITOOLS_SCANVI   } from '../../../modules/local/scvitools/scanvi'
-include { SCANPY_HARMONY     } from '../../../modules/local/scanpy/harmony'
-include { SYMPHONY_HARMONYINTEGRATE } from '../../../modules/local/symphony/integrate'
+include { SYMPHONY_HARMONYINTEGRATE } from '../../../modules/local/symphony/harmonyintegrate'
+include { SYMPHONY_MAPEMBEDDING      } from '../../../modules/local/symphony/mapembedding'
 include { SCANPY_BBKNN       } from '../../../modules/local/scanpy/bbknn'
 include { SCANPY_COMBAT      } from '../../../modules/local/scanpy/combat'
 include { SCANPY_PCA         } from '../../../modules/local/scanpy/pca'
@@ -24,10 +24,12 @@ workflow INTEGRATE {
     scvi_categorical_covariates // list of string
     scvi_continuous_covariates  // list of string
     scimilarity_model           // path
+    harmony_reference           // path
     expimap_gmt                 // path
     condition_col               // string
 
     main:
+    ch_versions = channel.empty()
     ch_obs = channel.empty()
     ch_var = channel.empty()
     ch_obsm = channel.empty()
@@ -41,6 +43,7 @@ workflow INTEGRATE {
             n_hvgs,
             excluded_genes
         )
+        ch_versions = ch_versions.mix(SCANPY_HVGS.out.versions)
         ch_h5ad_hvg = SCANPY_HVGS.out.h5ad
 
         // See issue 215
@@ -60,6 +63,7 @@ workflow INTEGRATE {
             []
         )
         ch_h5ad_hvg = SCANPY_FILTER.out.h5ad
+        ch_versions = ch_versions.mix(SCANPY_FILTER.out.versions)
     }
     else {
         ch_h5ad_hvg = ch_h5ad
@@ -69,6 +73,7 @@ workflow INTEGRATE {
         SEURAT_INTEGRATION (
             ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'seurat'], h5ad] }, "batch"
         )
+        ch_versions = ch_versions.mix(SEURAT_INTEGRATION.out.versions)
         ch_integrations = ch_integrations.mix(SEURAT_INTEGRATION.out.h5ad)
     }
 
@@ -83,6 +88,7 @@ workflow INTEGRATE {
             scvi_categorical_covariates,
             scvi_continuous_covariates,
         )
+        ch_versions = ch_versions.mix(SCVITOOLS_SCVI.out.versions)
         ch_integrations = ch_integrations.mix(SCVITOOLS_SCVI.out.h5ad)
         ch_obsm = ch_obsm.mix(SCVITOOLS_SCVI.out.obsm)
     }
@@ -101,30 +107,34 @@ workflow INTEGRATE {
             scvi_categorical_covariates,
             scvi_continuous_covariates,
         )
+        ch_versions = ch_versions.mix(SCVITOOLS_SCANVI.out.versions)
         ch_integrations = ch_integrations.mix(SCVITOOLS_SCANVI.out.h5ad)
         ch_obs = ch_obs.mix(SCVITOOLS_SCANVI.out.obs)
         ch_obsm = ch_obsm.mix(SCVITOOLS_SCANVI.out.obsm)
     }
 
     if (methods.contains('harmony')) {
-        SCANPY_HARMONY (
-            ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'harmony'], h5ad] },
-            "batch",
-            "X"
-        )
-        ch_integrations = ch_integrations.mix(SCANPY_HARMONY.out.h5ad)
-        ch_obsm = ch_obsm.mix(SCANPY_HARMONY.out.obsm)
-    }
-
-    if (methods.contains('symphony')) {
-        SYMPHONY_HARMONYINTEGRATE (
-            ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'symphony'], h5ad] },
-            "batch",
-            "X"
-        )
-        ch_versions = ch_versions.mix(SYMPHONY_HARMONYINTEGRATE.out.versions)
-        ch_integrations = ch_integrations.mix(SYMPHONY_HARMONYINTEGRATE.out.h5ad)
-        ch_obsm = ch_obsm.mix(SYMPHONY_HARMONYINTEGRATE.out.obsm)
+        if (harmony_reference) {
+            SYMPHONY_MAPEMBEDDING (
+                ch_h5ad.map { _meta, h5ad -> [[id: 'harmony'], h5ad] },
+                channel.value([[id: 'harmony'], harmony_reference]),
+                "batch",
+                "X"
+            )
+            ch_versions = ch_versions.mix(SYMPHONY_MAPEMBEDDING.out.versions)
+            ch_integrations = ch_integrations.mix(SYMPHONY_MAPEMBEDDING.out.h5ad)
+            ch_obsm = ch_obsm.mix(SYMPHONY_MAPEMBEDDING.out.obsm)
+        }
+        else {
+            SYMPHONY_HARMONYINTEGRATE (
+                ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'harmony'], h5ad] },
+                "batch",
+                "X"
+            )
+            ch_versions = ch_versions.mix(SYMPHONY_HARMONYINTEGRATE.out.versions)
+            ch_integrations = ch_integrations.mix(SYMPHONY_HARMONYINTEGRATE.out.h5ad)
+            ch_obsm = ch_obsm.mix(SYMPHONY_HARMONYINTEGRATE.out.obsm)
+        }
     }
 
     if (methods.contains('bbknn')) {
@@ -132,6 +142,7 @@ workflow INTEGRATE {
             ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'bbknn'], h5ad] },
             "batch"
         )
+        ch_versions = ch_versions.mix(SCANPY_BBKNN.out.versions)
         ch_integrations = ch_integrations.mix(SCANPY_BBKNN.out.h5ad)
     }
 
@@ -140,6 +151,7 @@ workflow INTEGRATE {
             ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'combat'], h5ad] },
             "batch"
         )
+        ch_versions = ch_versions.mix(SCANPY_COMBAT.out.versions)
         ch_integrations = ch_integrations.mix(SCANPY_COMBAT.out.h5ad)
         ch_obsm = ch_obsm.mix(SCANPY_COMBAT.out.obsm)
     }
@@ -149,6 +161,7 @@ workflow INTEGRATE {
             ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'pca'], h5ad] },
             "X_emb"
         )
+        ch_versions = ch_versions.mix(SCANPY_PCA.out.versions)
         ch_integrations = ch_integrations.mix(SCANPY_PCA.out.h5ad)
         ch_obsm = ch_obsm.mix(SCANPY_PCA.out.obsm)
     }
@@ -162,6 +175,7 @@ workflow INTEGRATE {
             condition_col,
             "X"
         )
+        ch_versions = ch_versions.mix(SCARCHES_EXPIMAP.out.versions)
         ch_integrations = ch_integrations.mix(SCARCHES_EXPIMAP.out.h5ad)
         ch_obsm = ch_obsm.mix(SCARCHES_EXPIMAP.out.obsm)
     }
@@ -171,6 +185,7 @@ workflow INTEGRATE {
             ch_h5ad.map { _meta, h5ad -> [[id: 'scimilarity'], h5ad] },
             scimilarity_model,
         )
+        ch_versions = ch_versions.mix(SCIMILARITY.out.versions)
         ch_integrations = ch_integrations.mix(SCIMILARITY.out.integrations)
         ch_obs = ch_obs.mix(SCIMILARITY.out.obs)
         ch_obsm = ch_obsm.mix(SCIMILARITY.out.obsm)
@@ -181,4 +196,5 @@ workflow INTEGRATE {
     obs          = ch_obs // channel: [ pkl ]
     var          = ch_var // channel: [ pkl ]
     obsm         = ch_obsm // channel: [ pkl ]
+    versions     = ch_versions // channel: [ versions.yml ]
 }

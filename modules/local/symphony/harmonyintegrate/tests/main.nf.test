@@ -1,8 +1,8 @@
 nextflow_process {
 
-    name "Test Process SCANPY_HARMONY"
-    script "modules/local/scanpy/harmony/main.nf"
-    process "SCANPY_HARMONY"
+    name "Test Process SYMPHONY_HARMONYINTEGRATE"
+    script "modules/local/symphony/harmonyintegrate/main.nf"
+    process "SYMPHONY_HARMONYINTEGRATE"
 
     tag "modules"
     tag "modules_local"
@@ -30,6 +30,8 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
             assert "X_emb" in adata.obsm
+            assert "X_pca_symphony" in adata.obsm
+            assert "symphony" in adata.uns
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml

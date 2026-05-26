@@ -152,8 +152,8 @@
                     "type": "string",
                     "default": "scvi",
                     "description": "Specify the tool to use for integration",
-                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, harmony, symphony, bbknn, combat, seurat, scimilarity, pca, expimap",
-                    "pattern": "^((scvi|scanvi|harmony|symphony|bbknn|combat|seurat|scimilarity|pca|expimap)(,(scvi|scanvi|harmony|symphony|bbknn|combat|seurat|scimilarity|pca|expimap))*)?$"
+                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, harmony, bbknn, combat, seurat, scimilarity, pca, expimap",
+                    "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat|scimilarity|pca|expimap)(,(scvi|scanvi|harmony|bbknn|combat|seurat|scimilarity|pca|expimap))*)?$"
                 },
                 "integration_hvgs": {
                     "type": "integer",
@@ -228,7 +228,7 @@
                     "type": "string",
                     "description": "The keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`). Required if `input` is not provided - otherwise it is ignored.",
                     "help_text": "If the `input` parameter is not provided (no new data to add), integration will not be performed. In order to be able to utilize existing integration results, you need to provide the keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`).",
-                    "pattern": "^((scvi|scanvi|harmony|symphony|bbknn|combat|seurat)(,(scvi|scanvi|harmony|symphony|bbknn|combat|seurat))*)?$"
+                    "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat)(,(scvi|scanvi|harmony|bbknn|combat|seurat))*)?$"
                 }
             }
         },

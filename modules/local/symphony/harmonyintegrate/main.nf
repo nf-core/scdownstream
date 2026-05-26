@@ -13,21 +13,23 @@ process SYMPHONY_HARMONYINTEGRATE {
     val(counts_layer)
 
     output:
-    tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path "X_${prefix}.pkl"                 , emit: obsm
-    path "versions.yml"                    , emit: versions, topic: versions
+    tuple val(meta), path("${prefix}.h5ad")          , emit: h5ad
+    tuple val(meta), path("${prefix}_reference.h5ad"), emit: reference
+    path "X_${prefix}.pkl"                           , emit: obsm
+    path "versions.yml"                              , emit: versions, topic: versions
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
     if ("${prefix}.h5ad" == "${h5ad}") {
         error "Input and output names are the same, use \"task.ext.prefix\" to disambiguate!"
     }
-    template('integrate.py')
+    template('harmonyintegrate.py')
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
+    touch ${prefix}_reference.h5ad
     touch X_${prefix}.pkl
     touch versions.yml
     """
