@@ -3,7 +3,7 @@ include { SCANPY_FILTER      } from '../../../modules/local/scanpy/filter'
 include { SCVITOOLS_SCVI     } from '../../../modules/local/scvitools/scvi'
 include { SCVITOOLS_SCANVI   } from '../../../modules/local/scvitools/scanvi'
 include { SCANPY_HARMONY     } from '../../../modules/local/scanpy/harmony'
-include { SYMPHONY_INTEGRATE } from '../../../modules/local/symphony/integrate'
+include { SYMPHONY_HARMONYINTEGRATE } from '../../../modules/local/symphony/integrate'
 include { SCANPY_BBKNN       } from '../../../modules/local/scanpy/bbknn'
 include { SCANPY_COMBAT      } from '../../../modules/local/scanpy/combat'
 include { SCANPY_PCA         } from '../../../modules/local/scanpy/pca'
@@ -117,14 +117,14 @@ workflow INTEGRATE {
     }
 
     if (methods.contains('symphony')) {
-        SYMPHONY_INTEGRATE (
+        SYMPHONY_HARMONYINTEGRATE (
             ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'symphony'], h5ad] },
             "batch",
             "X"
         )
-        ch_versions = ch_versions.mix(SYMPHONY_INTEGRATE.out.versions)
-        ch_integrations = ch_integrations.mix(SYMPHONY_INTEGRATE.out.h5ad)
-        ch_obsm = ch_obsm.mix(SYMPHONY_INTEGRATE.out.obsm)
+        ch_versions = ch_versions.mix(SYMPHONY_HARMONYINTEGRATE.out.versions)
+        ch_integrations = ch_integrations.mix(SYMPHONY_HARMONYINTEGRATE.out.h5ad)
+        ch_obsm = ch_obsm.mix(SYMPHONY_HARMONYINTEGRATE.out.obsm)
     }
 
     if (methods.contains('bbknn')) {

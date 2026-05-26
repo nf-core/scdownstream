@@ -1,4 +1,4 @@
-process SYMPHONY_INTEGRATE {
+process SYMPHONY_HARMONYINTEGRATE {
     tag "${meta.id}"
     label 'process_medium'
 
