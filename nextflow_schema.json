@@ -281,18 +281,8 @@
                 },
                 "cytetype_study_context": {
                     "type": "string",
-                    "description": "Study description passed to CyteType for LLM-based cell type annotation (per-sample, after QC).",
-                    "help_text": "When set, the pipeline runs [CyteType](https://github.com/NygenAnalytics/cytetype) on each QC-filtered sample using pre-computed cluster labels and differential-expression results — **internet access is required**. Example: `Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq`. Leave empty to skip."
-                },
-                "cytetype_group_key": {
-                    "type": "string",
-                    "default": "leiden",
-                    "description": "Obs column name with cluster labels passed to CyteType."
-                },
-                "cytetype_rank_key": {
-                    "type": "string",
-                    "default": "rank_genes_groups",
-                    "description": "Uns key with pre-computed rank_genes_groups results passed to CyteType."
+                    "description": "Study description passed to CyteType for LLM-based cell type annotation (after integration, clustering, and global DE).",
+                    "help_text": "When set, the pipeline runs [CyteType](https://github.com/NygenAnalytics/cytetype) on merged data after global differential expression — **internet access is required**. Cluster labels and marker genes are taken from each grouping's obs column and `uns['rank_genes_groups']`. Example: `Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq`. Leave empty to skip."
                 }
             }
         },

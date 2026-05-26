@@ -47,6 +47,7 @@ workflow SCDOWNSTREAM {
     qc_only                       //   value: boolean
     celldex_reference              //   value: string
     celltypist_model               //   value: string
+    cytetype_study_context         //   value: string
     unify_gene_symbols            //   value: boolean
     duplicate_var_resolution      //   value: string
     aggregate_isoforms            //   value: boolean
@@ -270,10 +271,12 @@ workflow SCDOWNSTREAM {
             },
             skip_liana,
             skip_rankgenesgroups,
+            cytetype_study_context,
         )
 
         ch_uns = ch_uns.mix(PER_GROUP.out.uns)
         ch_multiqc_files = ch_multiqc_files.mix(PER_GROUP.out.multiqc_files)
+        ch_obs = ch_obs.mix(PER_GROUP.out.obs)
 
         FINALIZE (
             ch_finalization_base,

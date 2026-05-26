@@ -119,15 +119,25 @@ The integrated H5AD files are stored in subdirectories named after the integrati
     - `*.h5ad`: The H5AD file with cell type annotations.
     - `*.csv`: The cell type annotations in a CSV file.
     - `*.pdf`: The cell type annotation plots in PDF format.
-  - `cytetype/`
-    - `*.h5ad`: The H5AD file with CyteType annotations merged into `adata.obs` (only if `--save_intermediates` is enabled).
-    - `*.pkl`: The CyteType-added obs columns in a pickle file (always emitted; merged into the final per-sample H5AD by `FINALIZE_QC_ANNDATAS`).
   - `celldexreferenceprocessing`
     - `dir`: A directory containing `h5` and `rds` files for the reference(s)
 
 </details>
 
-The `celltypes` directory contains the results of the cell type annotation step. Annotations from `celltypist`, `singleR`, and `cytetype` are merged back into the final per-sample AnnData object via the `FINALIZE_QC_ANNDATAS` step.
+The `celltypes` directory contains the results of the per-sample cell type annotation step. Annotations from `celltypist` and `singleR` are merged back into the final per-sample AnnData object via the `FINALIZE_QC_ANNDATAS` step.
+
+### CyteType
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `cytetype/`
+  - `*.h5ad`: The H5AD file with CyteType annotations merged into `adata.obs` (only if `--save_intermediates` is enabled).
+  - `*.pkl`: The CyteType-added obs columns in a pickle file (always emitted; merged into the final merged cohort H5AD by `FINALIZE`).
+
+</details>
+
+CyteType runs after integration, clustering, and global differential expression. Annotations are merged into the merged cohort AnnData object via the `FINALIZE` step.
 
 ### Clustering and dimensionality reduction
 

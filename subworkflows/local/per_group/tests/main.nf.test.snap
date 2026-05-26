@@ -20,15 +20,27 @@
                 "1": [
                     "test_paga_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
+                "2": [
+                    
+                ],
+                "3": [
+                    
+                ],
+                "h5ad": [
+                    
+                ],
                 "multiqc_files": [
                     "test_paga_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "obs": [
+                    
                 ],
                 "uns": [
                     "test_paga.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-05-20T20:47:08.072914181",
+        "timestamp": "2026-05-26T20:02:50.205601049",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.0"
@@ -88,6 +100,31 @@
                     "leiden_characteristic_genes_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "test_paga_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
+                "2": [
+                    [
+                        {
+                            "id": "leiden",
+                            "obs_key": "leiden",
+                            "condition_col": "condition",
+                            "comparison_scope": "global"
+                        },
+                        "leiden_characteristic_genes.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "leiden",
+                            "obs_key": "leiden",
+                            "condition_col": "condition",
+                            "comparison_scope": "global"
+                        },
+                        "leiden_characteristic_genes.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "multiqc_files": [
                     "condition:leiden:0_characteristic_genes_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "condition:leiden:10_characteristic_genes_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -106,6 +143,9 @@
                     "leiden:condition:Treated_characteristic_genes_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "leiden_characteristic_genes_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "test_paga_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "obs": [
+                    
                 ],
                 "uns": [
                     "condition:leiden:0_characteristic_genes.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -129,7 +169,20 @@
                 ]
             }
         ],
-        "timestamp": "2026-05-20T20:48:19.518898383",
+        "timestamp": "2026-05-26T20:03:27.591343997",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
+        }
+    },
+    "Should run cytetype when study context is set - stub": {
+        "content": [
+            [
+                
+            ],
+            1
+        ],
+        "timestamp": "2026-05-26T20:04:43.262967554",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.0"

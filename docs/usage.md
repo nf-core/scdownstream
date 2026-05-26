@@ -154,9 +154,9 @@ Example tar archives can be found [here](https://github.com/nf-core/test-dataset
 
 #### CyteType
 
-[CyteType](https://github.com/NygenAnalytics/cytetype) is a multi-agent LLM-driven annotator that takes per-cluster marker genes and a free-text study description and returns predicted cell type labels. The pipeline runs CyteType per QC-filtered sample using pre-computed cluster labels and differential-expression results stored in the AnnData object.
+[CyteType](https://github.com/NygenAnalytics/cytetype) is a multi-agent LLM-driven annotator that takes per-cluster marker genes and a free-text study description and returns predicted cell type labels. The pipeline runs CyteType on merged data after integration, clustering, and global differential expression — once per grouping (each Leiden resolution and label column). Cluster labels and marker genes are taken automatically from each grouping's obs column and `uns['rank_genes_groups']`.
 
-To enable CyteType, set [`cytetype_study_context`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_study_context) to a short free-text description of your study (the more specific, the better). When this parameter is empty (the default), CyteType is skipped. Use [`cytetype_group_key`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_group_key) and [`cytetype_rank_key`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_rank_key) to point CyteType at the obs column and `uns` key with your cluster labels and marker genes.
+To enable CyteType, set [`cytetype_study_context`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_study_context) to a short free-text description of your study (the more specific, the better). When this parameter is empty (the default), CyteType is skipped. CyteType is also skipped when [`skip_rankgenesgroups`](https://nf-co.re/scdownstream/dev/parameters/#skip_rankgenesgroups) is enabled, because marker genes are required.
 
 ```bash
 nextflow run nf-core/scdownstream \
