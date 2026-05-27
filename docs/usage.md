@@ -237,22 +237,51 @@ Metrics tables are published under `combine/integrate/scib_metrics/<method>/`, a
 Values are not numerically comparable to the original scIB reference implementation (see the scib-metrics documentation).
 Rare batches or uninformative labels can make scores such as kBET unstable.
 
+## Clustering and beyond
+
+After integration, the pipeline builds a neighbour graph and UMAP for every integration output, then performs Leiden clustering and a suite of downstream analyses on each clustering result.
+
+### Clustering
+
+For each integration method, the pipeline:
+
+1. Computes a **KNN neighbour graph** (using the reduced embedding, e.g. PCA or scVI latent space).
+2. Generates a **UMAP** layout.
+3. Runs **Leiden clustering** at every resolution listed in [`clustering_resolutions`](https://nf-co.re/scdownstream/parameters#clustering_resolutions) (default `0.5,1.0`).
+
+Steps 1 and 2 always run for every integration and every subset (global and per-label). Step 3 is controlled by the analysis plan (see below).
+
+**Per-label sub-clustering** — when [`cluster_per_label`](https://nf-co.re/scdownstream/parameters#cluster_per_label) is `true`, the pipeline splits the integrated object by the label column and builds a separate neighbour graph, UMAP, and Leiden clustering for each label value, in addition to the global clustering.
+
+### Downstream analyses
+
+For each Leiden clustering result the pipeline runs a configurable set of downstream analyses:
+
+| Analysis     | What it does                                                 | Skip parameter                                                                                       |
+| ------------ | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| **PAGA**     | Trajectory / connectivity graph between clusters             | —                                                                                                    |
+| **LIANA**    | Ligand–receptor interaction analysis                         | [`skip_liana`](https://nf-co.re/scdownstream/parameters#skip_liana)                                  |
+| **DE**       | Differential expression / marker genes (`rank_genes_groups`) | [`skip_rankgenesgroups`](https://nf-co.re/scdownstream/parameters#skip_rankgenesgroups)              |
+| **CyteType** | LLM-based cluster cell type annotation                       | requires [`cytetype_study_context`](https://nf-co.re/scdownstream/parameters#cytetype_study_context) |
+
+By default (no `--analysis_plan`), all four analyses run for every clustering result, subject to the skip flags and `cytetype_study_context` above.
+
 ### Analysis plan
 
-By default, the pipeline clusters every integration method at every resolution listed in [`clustering_resolutions`](https://nf-co.re/scdownstream/parameters#clustering_resolutions), then runs PAGA, LIANA, differential expression, and (optionally) CyteType for each clustering result. With many integrations and resolutions this can produce a large number of downstream tasks.
+With many integration methods and resolutions the full downstream suite can generate a large number of tasks. The optional [`analysis_plan`](https://nf-co.re/scdownstream/parameters#analysis_plan) parameter accepts a CSV that controls exactly which Leiden resolutions are computed and which analyses run for each clustering result.
 
-To control which combinations receive downstream analyses, provide an optional [`analysis_plan`](https://nf-co.re/scdownstream/parameters#analysis_plan) CSV. Each row selects clustering results and lists which analyses to run. **All columns are optional** — empty values act as wildcards:
+Each row in the CSV selects a subset of clusterings. **All columns are optional** — an empty cell acts as a wildcard that matches everything:
 
-| Column        | Empty means                                                              |
-| ------------- | ------------------------------------------------------------------------ |
-| `integration` | match all integration methods                                            |
-| `subset`      | match all subsets (`global` and per-label)                               |
-| `resolution`  | match all resolutions (clustering still uses `--clustering_resolutions`) |
-| `analyses`    | run all four: `paga`, `liana`, `de`, `cytetype`                          |
+| Column        | Empty means                                                         |
+| ------------- | ------------------------------------------------------------------- |
+| `integration` | match all integration methods                                       |
+| `subset`      | match all subsets (`global` and per-label)                          |
+| `resolution`  | match all resolutions (still bounded by `--clustering_resolutions`) |
+| `analyses`    | run all four: `paga`, `liana`, `de`, `cytetype`                     |
 
-When multiple rows match a clustering result, their `analyses` lists are **combined** (duplicates removed). If any matching row leaves `analyses` empty, all analyses run for that clustering.
+When multiple rows match a clustering result, their `analyses` lists are **combined** (duplicates removed). If any matching row leaves `analyses` empty, all analyses run for that clustering. Clusterings that match **no** row are excluded from Leiden and all downstream analyses — but their UMAP and neighbour graph are still computed.
 
-Example plan that runs full analysis on harmony at 0.5, DE-only at resolution 1.0 for all integrations, and DE-only for scvi at any resolution:
+Example plan: full analysis on Harmony at resolution 0.5, DE-only at resolution 1.0 for every integration, and DE-only for scVI at any resolution:
 
 ```csv title="analysis_plan.csv"
 integration,subset,resolution,analyses
@@ -268,11 +297,9 @@ nextflow run nf-core/scdownstream \
     --analysis_plan analysis_plan.csv
 ```
 
-When `--analysis_plan` is **not** set, behaviour is unchanged: all clusterings run all downstream analyses (subject to [`skip_liana`](https://nf-co.re/scdownstream/parameters#skip_liana), [`skip_rankgenesgroups`](https://nf-co.re/scdownstream/parameters#skip_rankgenesgroups), and [`cytetype_study_context`](https://nf-co.re/scdownstream/parameters#cytetype_study_context)).
-
-The plan does **not** restrict UMAP or neighbour graphs: those are still computed for every integration and for every subset enabled by [`cluster_global`](https://nf-co.re/scdownstream/parameters#cluster_global) and [`cluster_per_label`](https://nf-co.re/scdownstream/parameters#cluster_per_label). The plan only selects which Leiden resolutions run and which clustering results feed into PAGA, LIANA, DE, and CyteType.
-
-Label-column analyses (PAGA / LIANA / DE on the merged `label` column) are not controlled by the plan in this version; they remain governed by the global skip flags above.
+:::note
+Label-column analyses (PAGA / LIANA / DE run on the merged `label` column rather than on Leiden clusters) are not controlled by the analysis plan; they always run subject to the global skip flags.
+:::
 
 ### Skipping integration
 

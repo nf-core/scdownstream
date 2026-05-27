@@ -69,7 +69,7 @@ workflow SCDOWNSTREAM {
     cluster_per_label             //   value: boolean
     cluster_global                //   value: boolean
     clustering_resolutions        //   value: string
-    analysis_plan                 //   value: list of plan rows from PIPELINE_INITIALISATION
+    analysis_plan                 //   value: list of plan rows parsed in main.nf
     pseudobulk                    //   value: boolean
     pseudobulk_groupby_labels     //   value: string
     pseudobulk_min_num_cells      //   value: integer

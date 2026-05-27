@@ -18,6 +18,7 @@
 include { SCDOWNSTREAM            } from './workflows/scdownstream'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_scdownstream_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_scdownstream_pipeline'
+include { analysisPlanToList      } from './subworkflows/local/utils_nfcore_scdownstream_pipeline'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
@@ -70,7 +71,7 @@ workflow NFCORE_SCDOWNSTREAM {
     cluster_per_label             //   value: boolean
     cluster_global                //   value: boolean
     clustering_resolutions        //   value: string
-    analysis_plan                 //   value: list of plan rows from PIPELINE_INITIALISATION
+    analysis_plan                 //   value: list of plan rows parsed in main.nf
     pseudobulk                    //   value: boolean
     pseudobulk_groupby_labels     //   value: string
     pseudobulk_min_num_cells      //   value: integer
@@ -177,6 +178,8 @@ workflow {
         ? file(params.g2m_genes ?: "${projectDir}/assets/cell_cycle_genes/${params.species}_g2m_genes.txt", checkIfExists: true)
         : []
 
+    def analysis_plan = analysisPlanToList()
+
     NFCORE_SCDOWNSTREAM (
         PIPELINE_INITIALISATION.out.samplesheet,
         ch_base_adata,
@@ -218,7 +221,7 @@ workflow {
         params.cluster_per_label,
         params.cluster_global,
         params.clustering_resolutions,
-        PIPELINE_INITIALISATION.out.analysis_plan,
+        analysis_plan,
         params.pseudobulk,
         params.pseudobulk_groupby_labels,
         params.pseudobulk_min_num_cells,
