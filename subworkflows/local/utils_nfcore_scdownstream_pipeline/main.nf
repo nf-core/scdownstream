@@ -105,9 +105,14 @@ workflow PIPELINE_INITIALISATION {
         }
         : channel.empty()
 
+    analysis_plan = params.analysis_plan
+        ? samplesheetToList(params.analysis_plan, "${projectDir}/assets/schema_analysis_plan.json")
+        : defaultAnalysisPlan()
+
     emit:
-    samplesheet = ch_samplesheet
-    versions    = ch_versions
+    samplesheet        = ch_samplesheet
+    analysis_plan        = analysis_plan
+    versions             = ch_versions
 }
 
 /*
@@ -159,6 +164,13 @@ workflow PIPELINE_COMPLETION {
     FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+//
+// Default analysis plan: one row with empty wildcards (match all clusterings, all analyses)
+//
+def defaultAnalysisPlan() {
+    return [[integration: null, subset: null, resolution: null, analyses: null]]
+}
+
 //
 // Check and validate pipeline parameters
 //

@@ -253,6 +253,14 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Create a global UMAP and clustering (for each integration method)"
+                },
+                "analysis_plan": {
+                    "type": "string",
+                    "description": "Path to a CSV file controlling which integration × resolution combinations feed into downstream analyses (PAGA, LIANA, DE, CyteType).",
+                    "help_text": "All columns are optional — empty values act as wildcards. When provided, rows are matched against each clustering result; analyses from all matching rows are combined. When --analysis_plan is not set, all combinations run all analyses (governed by skip_liana / skip_rankgenesgroups). See the usage docs for the full schema.",
+                    "mimetype": "text/csv",
+                    "schema": "assets/schema_analysis_plan.json",
+                    "pattern": "^\\S+\\.csv$"
                 }
             }
         },

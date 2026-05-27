@@ -70,6 +70,7 @@ workflow NFCORE_SCDOWNSTREAM {
     cluster_per_label             //   value: boolean
     cluster_global                //   value: boolean
     clustering_resolutions        //   value: string
+    analysis_plan                 //   value: list of plan rows from PIPELINE_INITIALISATION
     pseudobulk                    //   value: boolean
     pseudobulk_groupby_labels     //   value: string
     pseudobulk_min_num_cells      //   value: integer
@@ -125,6 +126,7 @@ workflow NFCORE_SCDOWNSTREAM {
         cluster_per_label,
         cluster_global,
         clustering_resolutions,
+        analysis_plan,
         pseudobulk,
         pseudobulk_groupby_labels,
         pseudobulk_min_num_cells,
@@ -216,6 +218,7 @@ workflow {
         params.cluster_per_label,
         params.cluster_global,
         params.clustering_resolutions,
+        PIPELINE_INITIALISATION.out.analysis_plan,
         params.pseudobulk,
         params.pseudobulk_groupby_labels,
         params.pseudobulk_min_num_cells,

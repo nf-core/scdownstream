@@ -69,6 +69,7 @@ workflow SCDOWNSTREAM {
     cluster_per_label             //   value: boolean
     cluster_global                //   value: boolean
     clustering_resolutions        //   value: string
+    analysis_plan                 //   value: list of plan rows from PIPELINE_INITIALISATION
     pseudobulk                    //   value: boolean
     pseudobulk_groupby_labels     //   value: string
     pseudobulk_min_num_cells      //   value: integer
@@ -222,12 +223,13 @@ workflow SCDOWNSTREAM {
     // Perform clustering and per-cluster analysis
     //
     if (!qc_only) {
-        CLUSTER (
+        CLUSTER(
             ch_integrations,
             cluster_per_label,
             cluster_global,
             ch_input ? "label" : base_label_col,
-            clustering_resolutions.split(','),
+            analysis_plan,
+            clustering_resolutions.split(',').collect { res -> res.trim() },
             "batch",
             "X_emb",
         )
@@ -244,7 +246,29 @@ workflow SCDOWNSTREAM {
             )
         }
 
-        ch_h5ad_both = CLUSTER.out.h5ad_clustering.map { meta, h5ad -> [meta + [obs_key: "${meta.id}_leiden"], h5ad] }
+        ch_h5ad_both = CLUSTER.out.h5ad_clustering
+            .map { meta, h5ad ->
+                [meta + [obs_key: "${meta.id}_leiden"], h5ad]
+            }
+            .map { meta, h5ad ->
+                def matching_rows = analysis_plan.findAll { r ->
+                    (!r.integration || r.integration == meta.integration) &&
+                    (!r.subset || r.subset == meta.subset) &&
+                    (!r.resolution || (r.resolution as String) == (meta.resolution as String))
+                }
+                [meta, h5ad, matching_rows]
+            }
+            .filter { _meta, _h5ad, matching_rows -> matching_rows }
+            .map { meta, h5ad, matching_rows ->
+                def extra = matching_rows.any { row -> !row.analyses }
+                    ? [:]
+                    : [
+                        analyses: matching_rows
+                            .collectMany { row -> row.analyses.split(',')*.trim() }
+                            .toSet(),
+                    ]
+                [meta + extra, h5ad]
+            }
 
         PER_GROUP (
             // Run on each clustering resolution for each embedding

@@ -5,13 +5,14 @@ include { SCANPY_UMAP as UMAP           } from '../../../modules/local/scanpy/um
 include { ADATA_ENTROPY as ENTROPY      } from '../../../modules/local/adata/entropy'
 workflow CLUSTER {
     take:
-    ch_input       // channel: [ integration, h5ad ]
-    per_label      // value: boolean
-    global         // value: boolean
-    split_col      // value: string
-    ch_resolutions // channel: [ string ]
-    entropy_col    // value: string
-    embedding_key  // value: string
+    ch_input            // channel: [ meta, h5ad ]
+    per_label           //   value: boolean
+    global              //   value: boolean
+    split_col           //   value: string
+    analysis_plan_rows  //   value: list of plan rows; empty fields are wildcards
+    default_resolutions //   value: list of resolution strings
+    entropy_col         //   value: string
+    embedding_key       //   value: string
 
     main:
     ch_obs = channel.empty()
@@ -61,19 +62,28 @@ workflow CLUSTER {
     )
     ch_obsm = ch_obsm.mix(UMAP.out.obsm)
 
-    ch_h5ad = UMAP.out.h5ad
+    ch_resolutions = channel.fromList(default_resolutions)
+
+    ch_h5ad_for_leiden = UMAP.out.h5ad
         .combine(ch_resolutions)
+        .filter { meta, _h5ad, resolution ->
+            analysis_plan_rows.any { row ->
+                (!row.integration || row.integration == meta.integration) &&
+                (!row.subset || row.subset == meta.subset) &&
+                (!row.resolution || (row.resolution as String) == resolution)
+            }
+        }
         .map { meta, h5ad, resolution ->
             [
                 meta + [
                     resolution: resolution,
                     id: meta.integration + "-" + meta.subset + "-" + resolution,
                 ],
-                h5ad
+                h5ad,
             ]
         }
 
-    ch_leiden = ch_h5ad.multiMap{ meta, h5ad ->
+    ch_leiden = ch_h5ad_for_leiden.multiMap{ meta, h5ad ->
         h5ad: [meta, h5ad]
         resolution: meta.resolution
         key_added: meta.id + "_leiden"
