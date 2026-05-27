@@ -43,8 +43,12 @@ workflow PER_GROUP {
         ch_uns           = ch_uns.mix(DIFFERENTIAL_EXPRESSION.out.uns)
         ch_multiqc_files = ch_multiqc_files.mix(DIFFERENTIAL_EXPRESSION.out.multiqc_files)
         ch_h5ad          = ch_h5ad.mix(DIFFERENTIAL_EXPRESSION.out.h5ad)
+    }
 
-        if (cytetype_study_context) {
+    if (cytetype_study_context) {
+        if (skip_rankgenesgroups) {
+            log.warn "cytetype_study_context is provided but rankgenesgroups is skipped; cytetype will not be run"
+        } else {
             ch_h5ad_for_cytetype = ch_h5ad
                 .filter { meta, _h5ad -> meta.analyses == null || 'cytetype' in meta.analyses }
 
