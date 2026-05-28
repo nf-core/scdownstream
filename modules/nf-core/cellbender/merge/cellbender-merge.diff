@@ -1,0 +1,20 @@
+Changes in component 'nf-core/cellbender/merge'
+'modules/nf-core/cellbender/merge/environment.yml' is unchanged
+'modules/nf-core/cellbender/merge/meta.yml' is unchanged
+'modules/nf-core/cellbender/merge/main.nf' is unchanged
+'modules/nf-core/cellbender/merge/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/cellbender/merge/tests/main.nf.test' is unchanged
+Changes in 'cellbender/merge/templates/merge.py':
+--- modules/nf-core/cellbender/merge/templates/merge.py
++++ modules/nf-core/cellbender/merge/templates/merge.py
+@@ -29,7 +29,7 @@
+ 
+ adata_cellbender = load_anndata_from_input_and_output("${unfiltered}", "${cellbender_h5}", analyzed_barcodes_only=False)
+ 
+-adata_cellbender = adata_cellbender[adata.obs_names]
++adata_cellbender = adata_cellbender[adata.obs_names, adata.var_names]
+ 
+ if "${output_layer}" == "X":
+     adata.X = adata_cellbender.layers["cellbender"]
+
+************************************************************

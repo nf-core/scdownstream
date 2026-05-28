@@ -29,7 +29,7 @@ adata = ad.read_h5ad("${filtered}")
 
 adata_cellbender = load_anndata_from_input_and_output("${unfiltered}", "${cellbender_h5}", analyzed_barcodes_only=False)
 
-adata_cellbender = adata_cellbender[adata.obs_names]
+adata_cellbender = adata_cellbender[adata.obs_names, adata.var_names]
 
 if "${output_layer}" == "X":
     adata.X = adata_cellbender.layers["cellbender"]
