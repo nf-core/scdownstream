@@ -4,6 +4,8 @@ import platform
 
 import anndata as ad
 import cellbender
+import numpy as np
+import pandas as pd
 from cellbender.remove_background.downstream import load_anndata_from_input_and_output
 
 
@@ -25,11 +27,52 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
     return yaml_str
 
 
+def var_alignment_keys(adata):
+    if "probe_ids" in adata.var.columns:
+        keys = adata.var["probe_ids"].astype(str)
+        if keys.is_unique:
+            return keys
+    if "gene_ids" in adata.var.columns:
+        keys = adata.var["gene_ids"].astype(str)
+        if keys.is_unique:
+            return keys
+    keys = adata.var.index.astype(str)
+    if keys.is_unique:
+        return keys
+    raise ValueError(
+        "Cannot align CellBender output to the filtered matrix: no unique feature "
+        "identifiers found among var `probe_ids`, `gene_ids`, or the var index."
+    )
+
+
+def subset_cellbender_to_filtered(adata, adata_cellbender):
+    adata_cellbender = adata_cellbender[adata.obs_names]
+    if adata.n_vars == adata_cellbender.n_vars:
+        return adata_cellbender
+
+    target_keys = var_alignment_keys(adata)
+    source_keys = var_alignment_keys(adata_cellbender)
+
+    source_positions = pd.Series(np.arange(adata_cellbender.n_vars), index=source_keys)
+    if not source_positions.index.is_unique:
+        source_positions = source_positions[~source_positions.index.duplicated(keep="first")]
+
+    positions = source_positions.loc[target_keys.values]
+    if positions.isna().any():
+        missing = target_keys[positions.isna()].unique()[:5]
+        raise ValueError(
+            "Features from the filtered matrix were not found in the CellBender output. "
+            f"Examples: {list(missing)}"
+        )
+
+    return adata_cellbender[:, positions.to_numpy(dtype=int)]
+
+
 adata = ad.read_h5ad("${filtered}")
 
 adata_cellbender = load_anndata_from_input_and_output("${unfiltered}", "${cellbender_h5}", analyzed_barcodes_only=False)
 
-adata_cellbender = adata_cellbender[adata.obs_names, adata.var_names]
+adata_cellbender = subset_cellbender_to_filtered(adata, adata_cellbender)
 
 if "${output_layer}" == "X":
     adata.X = adata_cellbender.layers["cellbender"]
