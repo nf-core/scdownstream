@@ -26,7 +26,13 @@ rank_key = "${rank_key}"
 _auth = os.environ.get("CYTETYPE_API_KEY")
 auth_token_arg = _auth.strip() if _auth and _auth.strip() else None
 
-orig_obs_cols = set(adata.obs.columns)
+output_cols = [
+    f"cytetype_annotation_{group_key}",
+    f"cytetype_cellOntologyTerm_{group_key}",
+    f"cytetype_cellOntologyTermID_{group_key}",
+    f"cytetype_cellState_{group_key}",
+]
+
 adata_work = adata.copy()
 
 if symbol_col != "index" and symbol_col:
@@ -54,13 +60,14 @@ adata_work = annotator.run(
     require_artifacts=True,
 )
 
-added_cols = [c for c in adata_work.obs.columns if c not in orig_obs_cols]
-if not added_cols:
+missing_cols = [c for c in output_cols if c not in adata_work.obs.columns]
+if missing_cols:
     raise RuntimeError(
-        "CyteType did not add any new obs columns; check logs and study_context."
+        f"CyteType did not add expected obs columns: {missing_cols}. "
+        "Check logs and study_context."
     )
 
-df_out = adata_work.obs[added_cols].reindex(adata.obs.index)
+df_out = adata_work.obs[output_cols].reindex(adata.obs.index)
 df_out.to_pickle(f"{prefix}.pkl")
 
 adata.obs = pd.concat([adata.obs, df_out], axis=1)
