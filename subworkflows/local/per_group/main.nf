@@ -49,14 +49,18 @@ workflow PER_GROUP {
         if (skip_rankgenesgroups) {
             log.warn "cytetype_study_context is provided but rankgenesgroups is skipped; cytetype will not be run"
         } else {
-            ch_h5ad_for_cytetype = ch_h5ad
+            ch_cytetype = ch_h5ad
                 .filter { meta, _h5ad -> meta.analyses == null || 'cytetype' in meta.analyses }
+                .multiMap { meta, h5ad ->
+                    h5ad: [meta, h5ad]
+                    group_key: meta.obs_key
+                }
 
             CYTETYPE(
-                ch_h5ad_for_cytetype,
+                ch_cytetype.h5ad,
                 "index",
                 cytetype_study_context,
-                ch_h5ad_for_cytetype.map { meta, _h5ad -> meta.obs_key },
+                ch_cytetype.group_key,
                 "rank_genes_groups"
             )
             ch_obs = ch_obs.mix(CYTETYPE.out.obs)
