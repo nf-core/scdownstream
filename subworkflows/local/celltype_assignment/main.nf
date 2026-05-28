@@ -4,9 +4,9 @@ include { CELLTYPES_CELLTYPIST } from '../../../modules/local/celltypist'
 
 workflow CELLTYPE_ASSIGNMENT {
     take:
-    ch_h5ad           // channel: [ meta, h5ad, symbol_col, counts_layer ]
-    celldex_reference //   value: string
-    celltypist_model  //   value: string
+    ch_h5ad                   // channel: [ meta, h5ad, symbol_col, counts_layer ]
+    celldex_reference         //   value: string
+    celltypist_model          //   value: string
 
     main:
     ch_obs = channel.empty()

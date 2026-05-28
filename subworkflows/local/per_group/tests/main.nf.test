@@ -26,12 +26,15 @@ nextflow_workflow {
                 input[1] = channel.empty()
                 input[2] = true
                 input[3] = true
+                input[4] = ''
                 """
             }
         }
 
         then {
             assert workflow.success
+            assert workflow.out.h5ad.size() == 0
+            assert workflow.out.obs.size() == 0
             assert snapshot(workflow.out).match()
         }
 
@@ -54,6 +57,7 @@ nextflow_workflow {
                 input[1] = channel.empty()
                 input[2] = true
                 input[3] = true
+                input[4] = ''
                 """
             }
         }
@@ -64,6 +68,8 @@ nextflow_workflow {
             assert workflow.out.uns.size() == 1
             assert workflow.out.uns.any { file(it).name == "test_paga.pkl" }
             assert workflow.out.multiqc_files.size() == 1
+            assert workflow.out.h5ad.size() == 0
+            assert workflow.out.obs.size() == 0
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml }
             ).match()
@@ -91,12 +97,15 @@ nextflow_workflow {
                 input[1] = h5ad
                 input[2] = false
                 input[3] = false
+                input[4] = ''
                 """
             }
         }
 
         then {
             assert workflow.success
+            assert workflow.out.h5ad.size() >= 1
+            assert workflow.out.obs.size() == 0
             assert snapshot(workflow.out).match()
         }
 
@@ -120,6 +129,7 @@ nextflow_workflow {
                 input[1] = h5ad
                 input[2] = false
                 input[3] = false
+                input[4] = ''
                 """
             }
         }
@@ -131,9 +141,250 @@ nextflow_workflow {
             assert workflow.out.uns.any { file(it).name == "test_paga.pkl" }
             assert workflow.out.uns.any { file(it).name == "test_liana.pkl" }
             assert workflow.out.multiqc_files.size() >= 1
+            assert workflow.out.h5ad.size() >= 1
+            assert workflow.out.obs.size() == 0
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml }
             ).match()
+        }
+
+    }
+
+    test("Should run cytetype when study context is set - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = false
+                skip_rankgenesgroups = false
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [id: 'test', obs_key: 'leiden', condition_col: 'condition'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = false
+                input[3] = false
+                input[4] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad.size() >= 1
+            assert workflow.out.obs.size() >= 1
+            assert workflow.out.obs.any { _meta, pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml },
+                workflow.out.obs.size()
+            ).match()
+        }
+
+    }
+
+    test("Should run only DE when analyses is restricted - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+                skip_rankgenesgroups = false
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        analyses: ['de'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = true
+                input[3] = false
+                input[4] = ''
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.uns.size() >= 1
+            assert workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
+            assert !workflow.out.uns.any { file(it).name == 'test_paga.pkl' }
+            assert !workflow.out.uns.any { file(it).name == 'test_liana.pkl' }
+            assert workflow.out.obs.size() == 0
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml }
+            ).match()
+        }
+
+    }
+
+    test("Should run only PAGA and LIANA when analyses is restricted - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = false
+                skip_rankgenesgroups = true
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        analyses: ['paga', 'liana'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = false
+                input[3] = true
+                input[4] = ''
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.uns.any { file(it).name == 'test_paga.pkl' }
+            assert workflow.out.uns.any { file(it).name == 'test_liana.pkl' }
+            assert !workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
+            assert workflow.out.h5ad.size() == 0
+            assert workflow.out.obs.size() == 0
+        }
+
+    }
+
+    test("Should union analyses from combined meta analyses set - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+                skip_rankgenesgroups = false
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        analyses: ['paga', 'de'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = true
+                input[3] = false
+                input[4] = ''
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.uns.any { file(it).name == 'test_paga.pkl' }
+            assert workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
+            assert !workflow.out.uns.any { file(it).name == 'test_liana.pkl' }
+            assert workflow.out.obs.size() == 0
+        }
+
+    }
+
+    test("Should skip cytetype when not listed in analyses - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+                skip_rankgenesgroups = false
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        analyses: ['de'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = true
+                input[3] = false
+                input[4] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
+            assert workflow.out.obs.size() == 0
+        }
+
+    }
+
+    test("Should run cytetype when listed in analyses - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+                skip_rankgenesgroups = false
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        analyses: ['de', 'cytetype'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = true
+                input[3] = false
+                input[4] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
+            assert workflow.out.obs.any { _meta, pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
         }
 
     }

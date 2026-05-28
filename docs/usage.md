@@ -123,10 +123,11 @@ You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-c
 
 ### Cell type annotation
 
+The pipeline supports automated cell type annotation with [Celltypist](https://github.com/Teichlab/celltypist), [singleR](https://bioconductor.org/packages/release/bioc/html/SingleR.html), and [CyteType](https://github.com/NygenAnalytics/cytetype). Each method is optional and controlled by its own parameters below.
+
 #### Celltypist
 
-Automated cell type annotation using [Celltypist](https://github.com/Teichlab/celltypist) and [singleR](https://bioconductor.org/packages/release/bioc/html/SingleR.html) are supported.
-For `Celltypist`, you can specify the models to use with the [`celltypist_model` parameter](https://nf-co.re/scdownstream/dev/parameters/#celltypist_model).
+[Celltypist](https://github.com/Teichlab/celltypist) annotates cells using pretrained logistic regression models. Specify the models with [`celltypist_model`](https://nf-co.re/scdownstream/dev/parameters/#celltypist_model); use a comma-separated list for multiple models. Available models are listed on the [Celltypist models page](https://www.celltypist.org/models). When this parameter is empty (the default), Celltypist is skipped.
 
 #### singleR
 
@@ -150,6 +151,24 @@ monaco_immune,label.fine,/path/to/monaco_immune.tar
 ```
 
 Example tar archives can be found [here](https://github.com/nf-core/test-datasets/tree/scdownstream/singleR).
+
+#### CyteType
+
+[CyteType](https://github.com/NygenAnalytics/cytetype) is a multi-agent LLM-driven annotator that takes per-cluster marker genes and a free-text study description and returns predicted cell type labels. The pipeline runs CyteType on merged data after integration, clustering, and global differential expression — once per grouping (each Leiden resolution and label column). Cluster labels and marker genes are taken automatically from each grouping's obs column and `uns['rank_genes_groups']`.
+
+To enable CyteType, set [`cytetype_study_context`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_study_context) to a short free-text description of your study (the more specific, the better). When this parameter is empty (the default), CyteType is skipped. CyteType is also skipped when [`skip_rankgenesgroups`](https://nf-co.re/scdownstream/dev/parameters/#skip_rankgenesgroups) is enabled, because marker genes are required.
+
+```bash
+nextflow run nf-core/scdownstream \
+    --input samplesheet.csv \
+    --outdir results \
+    --cytetype_study_context "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq"
+```
+
+> [!IMPORTANT]
+> CyteType calls the remote `https://cytetype.nygen.io` API and therefore **requires internet access** from the compute node running the `CYTETYPE` task.
+
+If your CyteType deployment requires authentication, set the Nextflow secret `CYTETYPE_API_KEY` before the run (for example `nextflow secrets set CYTETYPE_API_KEY '<token>'`).
 
 ### Cell cycle scoring
 
@@ -217,6 +236,70 @@ The step is **not** run when only [`base_adata`](https://nf-co.re/scdownstream/p
 Metrics tables are published under `combine/integrate/scib_metrics/<method>/`, and a summary table is included in the MultiQC report.
 Values are not numerically comparable to the original scIB reference implementation (see the scib-metrics documentation).
 Rare batches or uninformative labels can make scores such as kBET unstable.
+
+## Clustering and beyond
+
+After integration, the pipeline builds a neighbour graph and UMAP for every integration output, then performs Leiden clustering and a suite of downstream analyses on each clustering result.
+
+### Clustering
+
+For each integration method, the pipeline:
+
+1. Computes a **KNN neighbour graph** (using the reduced embedding, e.g. PCA or scVI latent space).
+2. Generates a **UMAP** layout.
+3. Runs **Leiden clustering** at every resolution listed in [`clustering_resolutions`](https://nf-co.re/scdownstream/parameters#clustering_resolutions) (default `0.5,1.0`).
+
+Steps 1 and 2 always run for every integration and every subset (global and per-label). Step 3 is controlled by the analysis plan (see below).
+
+**Per-label sub-clustering** — when [`cluster_per_label`](https://nf-co.re/scdownstream/parameters#cluster_per_label) is `true`, the pipeline splits the integrated object by the label column and builds a separate neighbour graph, UMAP, and Leiden clustering for each label value, in addition to the global clustering.
+
+### Downstream analyses
+
+For each Leiden clustering result the pipeline runs a configurable set of downstream analyses:
+
+| Analysis     | What it does                                                 | Skip parameter                                                                                       |
+| ------------ | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| **PAGA**     | Trajectory / connectivity graph between clusters             | —                                                                                                    |
+| **LIANA**    | Ligand–receptor interaction analysis                         | [`skip_liana`](https://nf-co.re/scdownstream/parameters#skip_liana)                                  |
+| **DE**       | Differential expression / marker genes (`rank_genes_groups`) | [`skip_rankgenesgroups`](https://nf-co.re/scdownstream/parameters#skip_rankgenesgroups)              |
+| **CyteType** | LLM-based cluster cell type annotation                       | requires [`cytetype_study_context`](https://nf-co.re/scdownstream/parameters#cytetype_study_context) |
+
+By default (no `--analysis_plan`), all four analyses run for every clustering result, subject to the skip flags and `cytetype_study_context` above.
+
+### Analysis plan
+
+With many integration methods and resolutions the full downstream suite can generate a large number of tasks. The optional [`analysis_plan`](https://nf-co.re/scdownstream/parameters#analysis_plan) parameter accepts a CSV that controls exactly which Leiden resolutions are computed and which analyses run for each clustering result.
+
+Each row in the CSV selects a subset of clusterings. **All columns are optional** — an empty cell acts as a wildcard that matches everything:
+
+| Column        | Empty means                                                         |
+| ------------- | ------------------------------------------------------------------- |
+| `integration` | match all integration methods                                       |
+| `subset`      | match all subsets (`global` and per-label)                          |
+| `resolution`  | match all resolutions (still bounded by `--clustering_resolutions`) |
+| `analyses`    | run all four: `paga`, `liana`, `de`, `cytetype`                     |
+
+When multiple rows match a clustering result, their `analyses` lists are **combined** (duplicates removed). If any matching row leaves `analyses` empty, all analyses run for that clustering. Clusterings that match **no** row are excluded from Leiden and all downstream analyses — but their UMAP and neighbour graph are still computed.
+
+Example plan: full analysis on Harmony at resolution 0.5, DE-only at resolution 1.0 for every integration, and DE-only for scVI at any resolution:
+
+```csv title="analysis_plan.csv"
+integration,subset,resolution,analyses
+harmony,global,0.5,"paga,de,cytetype"
+,,1.0,de
+scvi,,,de
+```
+
+```bash
+nextflow run nf-core/scdownstream \
+    --input samplesheet.csv \
+    --outdir results \
+    --analysis_plan analysis_plan.csv
+```
+
+:::note
+Label-column analyses (PAGA / LIANA / DE run on the merged `label` column rather than on Leiden clusters) are not controlled by the analysis plan; they always run subject to the global skip flags.
+:::
 
 ### Skipping integration
 

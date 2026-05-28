@@ -25,9 +25,10 @@ nextflow_workflow {
                 input[1] = false
                 input[2] = true
                 input[3] = ''
-                input[4] = channel.of('0.5', '1')
-                input[5] = 'sample'
-                input[6] = 'X_scvi'
+                input[4] = [[integration: null, subset: null, resolution: null, analyses: null]]
+                input[5] = ['0.5', '1']
+                input[6] = 'sample'
+                input[7] = 'X_scvi'
                 """
             }
         }
@@ -55,9 +56,10 @@ nextflow_workflow {
                 input[1] = false
                 input[2] = true
                 input[3] = ''
-                input[4] = channel.of('0.5', '1')
-                input[5] = 'sample'
-                input[6] = 'X_scvi'
+                input[4] = [[integration: null, subset: null, resolution: null, analyses: null]]
+                input[5] = ['0.5', '1']
+                input[6] = 'sample'
+                input[7] = 'X_scvi'
                 """
             }
         }
@@ -99,9 +101,10 @@ nextflow_workflow {
                 input[1] = true
                 input[2] = false
                 input[3] = 'sample'
-                input[4] = channel.of('0.5', '1')
-                input[5] = 'sample'
-                input[6] = 'X_scvi'
+                input[4] = [[integration: null, subset: null, resolution: null, analyses: null]]
+                input[5] = ['0.5', '1']
+                input[6] = 'sample'
+                input[7] = 'X_scvi'
                 """
             }
         }
@@ -129,9 +132,10 @@ nextflow_workflow {
                 input[1] = true
                 input[2] = false
                 input[3] = 'sample'
-                input[4] = channel.of('0.5', '1')
-                input[5] = 'sample'
-                input[6] = 'X_scvi'
+                input[4] = [[integration: null, subset: null, resolution: null, analyses: null]]
+                input[5] = ['0.5', '1']
+                input[6] = 'sample'
+                input[7] = 'X_scvi'
                 """
             }
         }
@@ -173,9 +177,10 @@ nextflow_workflow {
                 input[1] = true
                 input[2] = true
                 input[3] = 'sample'
-                input[4] = channel.of('0.5', '1')
-                input[5] = 'sample'
-                input[6] = 'X_scvi'
+                input[4] = [[integration: null, subset: null, resolution: null, analyses: null]]
+                input[5] = ['0.5', '1']
+                input[6] = 'sample'
+                input[7] = 'X_scvi'
                 """
             }
         }
@@ -203,9 +208,10 @@ nextflow_workflow {
                 input[1] = true
                 input[2] = true
                 input[3] = 'sample'
-                input[4] = channel.of('0.5', '1')
-                input[5] = 'sample'
-                input[6] = 'X_scvi'
+                input[4] = [[integration: null, subset: null, resolution: null, analyses: null]]
+                input[5] = ['0.5', '1']
+                input[6] = 'sample'
+                input[7] = 'X_scvi'
                 """
             }
         }
@@ -225,6 +231,119 @@ nextflow_workflow {
                 def key = meta.id + "_leiden"
                 assert key in adata.obs.colnames
             }
+        }
+
+    }
+
+    test("Should cluster only resolutions matched by analysis plan - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', integration: 'pca' ],
+                        file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = false
+                input[2] = true
+                input[3] = ''
+                input[4] = [[integration: null, subset: null, resolution: 0.5, analyses: null]]
+                input[5] = ['0.5', '1']
+                input[6] = 'sample'
+                input[7] = 'X_scvi'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad_clustering.size() == 1
+            workflow.out.h5ad_clustering.each { meta, h5ad ->
+                assert meta.integration == 'pca'
+                assert meta.subset == 'global'
+                assert meta.resolution == '0.5'
+            }
+            assert workflow.out.obsm.size() == 1
+        }
+
+    }
+
+    test("Should skip clustering when analysis plan matches no rows - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', integration: 'pca' ],
+                        file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = false
+                input[2] = true
+                input[3] = ''
+                input[4] = [[integration: 'harmony', subset: null, resolution: null, analyses: null]]
+                input[5] = ['0.5', '1']
+                input[6] = 'sample'
+                input[7] = 'X_scvi'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad_clustering.size() == 0
+            assert workflow.out.obsm.size() == 1
+            assert workflow.out.h5ad_neighbors.size() == 1
+        }
+
+    }
+
+    test("Should cluster resolutions from multiple matching analysis plan rows - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', integration: 'pca' ],
+                        file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = false
+                input[2] = true
+                input[3] = ''
+                input[4] = [
+                    [integration: 'pca', subset: 'global', resolution: 0.5, analyses: null],
+                    [integration: 'pca', subset: 'global', resolution: 1, analyses: null],
+                ]
+                input[5] = ['0.5', '1']
+                input[6] = 'sample'
+                input[7] = 'X_scvi'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def resolutions = workflow.out.h5ad_clustering
+                .collect { meta, h5ad -> meta.resolution }
+                .sort()
+            assert resolutions == ['0.5', '1']
         }
 
     }

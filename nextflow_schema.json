@@ -253,6 +253,14 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Create a global UMAP and clustering (for each integration method)"
+                },
+                "analysis_plan": {
+                    "type": "string",
+                    "description": "Path to a CSV file controlling which integration × resolution combinations feed into downstream analyses (PAGA, LIANA, DE, CyteType).",
+                    "help_text": "All columns are optional — empty values act as wildcards. When provided, rows are matched against each clustering result; analyses from all matching rows are combined. When --analysis_plan is not set, all combinations run all analyses (governed by skip_liana / skip_rankgenesgroups). See the usage docs for the full schema.",
+                    "mimetype": "text/csv",
+                    "schema": "assets/schema_analysis_plan.json",
+                    "pattern": "^\\S+\\.csv$"
                 }
             }
         },
@@ -278,6 +286,11 @@
                     "description": "Path to comma-separated file containing information about the celldex references to use for the singleR cell type annotation.",
                     "help_text": "You will need to create a design file with information about the celldex references to use for the singleR cell type annotation before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 or 4 columns, and a header row. See [usage docs](https://nf-co.re/scdownstream/usage#cell-type-annotation).",
                     "fa_icon": "fas fa-file-csv"
+                },
+                "cytetype_study_context": {
+                    "type": "string",
+                    "description": "Study description passed to CyteType for LLM-based cell type annotation (after integration, clustering, and global DE).",
+                    "help_text": "When set, the pipeline runs [CyteType](https://github.com/NygenAnalytics/cytetype) on merged data after global differential expression — **internet access is required**. Cluster labels and marker genes are taken from each grouping's obs column and `uns['rank_genes_groups']`. Example: `Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq`. Leave empty to skip."
                 }
             }
         },

@@ -1,0 +1,168 @@
+// CyteType calls the remote Nygen API (LLM-based annotation). Non-stub tests use a
+// structural snapshot (versions + adata schema) because API labels are non-deterministic.
+
+nextflow_process {
+
+    name "Test Process CYTETYPE"
+    script "modules/local/cytetype/main.nf"
+    process "CYTETYPE"
+
+    tag "modules"
+    tag "modules_local"
+
+    setup {
+        run("SCANPY_RANKGENESGROUPS") {
+            script "modules/local/scanpy/rankgenesgroups/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "leiden"
+                input[2] = [[], []]
+                input[3] = "wilcoxon"
+                """
+            }
+        }
+    }
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_RANKGENESGROUPS.out.h5ad
+                input[1] = "index"
+                input[2] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[3] = "leiden"
+                input[4] = "rank_genes_groups"
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "leiden" in obs.colnames
+                assert obs.colnames.any { it.startsWith("cytetype_") }
+            }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with a symbol column other than index") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_RANKGENESGROUPS.out.h5ad
+                input[1] = "symbols"
+                input[2] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[3] = "leiden"
+                input[4] = "rank_genes_groups"
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "leiden" in obs.colnames
+                assert obs.colnames.any { it.startsWith("cytetype_") }
+            }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should fail with a symbol column that does not exist") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_RANKGENESGROUPS.out.h5ad
+                input[1] = "not_a_column"
+                input[2] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[3] = "leiden"
+                input[4] = "rank_genes_groups"
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+        }
+
+    }
+
+    test("Should fail with empty study context") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_RANKGENESGROUPS.out.h5ad
+                input[1] = "index"
+                input[2] = ""
+                input[3] = "leiden"
+                input[4] = "rank_genes_groups"
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_RANKGENESGROUPS.out.h5ad
+                input[1] = "index"
+                input[2] = "Human PBMC test context (nf-test stub)"
+                input[3] = "leiden"
+                input[4] = "rank_genes_groups"
+                """
+            }
+        }
+
+        then {
+            assert process.success
+
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

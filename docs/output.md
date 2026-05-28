@@ -44,6 +44,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 3. Cell type annotation
    - [CellTypist](https://www.celltypist.org/)
    - [SingleR](https://www.bioconductor.org/packages/release/bioc/html/SingleR.html)
+   - [CyteType](https://github.com/NygenAnalytics/cytetype)
 4. Clustering and dimensionality reduction
    1. [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html)
    2. [UMAP](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.umap.html)
@@ -123,8 +124,20 @@ The integrated H5AD files are stored in subdirectories named after the integrati
 
 </details>
 
-The `celltypes` directory contains the results of the cell type annotation step.
-So far, only `celltypist` is supported.
+The `celltypes` directory contains the results of the per-sample cell type annotation step. Annotations from `celltypist` and `singleR` are merged back into the final per-sample AnnData object via the `FINALIZE_QC_ANNDATAS` step.
+
+### CyteType
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `cytetype/`
+  - `*.h5ad`: The H5AD file with CyteType annotations merged into `adata.obs` (only if `--save_intermediates` is enabled).
+  - `*.pkl`: The CyteType-added obs columns in a pickle file (always emitted; merged into the final merged cohort H5AD by `FINALIZE`).
+
+</details>
+
+CyteType runs after integration, clustering, and global differential expression. Annotations are merged into the merged cohort AnnData object via the `FINALIZE` step.
 
 ### Clustering and dimensionality reduction
 

@@ -28,6 +28,10 @@ nextflow_workflow {
             assert workflow.out.uns.size() >= 1
             assert workflow.out.multiqc_files.size() >= 1
             assert workflow.out.uns.any { file(it).name.endsWith("_characteristic_genes.pkl") }
+            assert workflow.out.h5ad.size() >= 1
+            assert workflow.out.h5ad.every { meta, _h5ad -> meta.comparison_scope == 'global' }
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert "rank_genes_groups" in adata.uns
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml }
             ).match()
@@ -56,6 +60,10 @@ nextflow_workflow {
             assert workflow.out.uns.size() >= 1
             assert workflow.out.multiqc_files.size() >= 1
             assert workflow.out.uns.any { file(it).name.endsWith("_characteristic_genes.pkl") }
+            assert workflow.out.h5ad.size() >= 1
+            assert workflow.out.h5ad.every { meta, _h5ad -> meta.comparison_scope == 'global' }
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert "rank_genes_groups" in adata.uns
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml }
             ).match()

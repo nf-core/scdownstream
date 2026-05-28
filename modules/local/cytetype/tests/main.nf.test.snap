@@ -1,0 +1,183 @@
+{
+    "Should run with a symbol column other than index": {
+        "content": [
+            {
+                "CYTETYPE": {
+                    "cytetype": "0.19.4",
+                    "numpy": "2.4.6",
+                    "pandas": "2.3.3",
+                    "python": "3.14.5",
+                    "scanpy": "1.12.1"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "condition",
+                        "cytetype_annotation_leiden",
+                        "cytetype_cellOntologyTermID_leiden",
+                        "cytetype_cellOntologyTerm_leiden",
+                        "cytetype_cellState_leiden",
+                        "label",
+                        "leiden",
+                        "sample",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "leiden",
+                    "log1p",
+                    "neighbors",
+                    "pca",
+                    "rank_genes_groups"
+                ]
+            }
+        ],
+        "timestamp": "2026-05-25T12:42:29.009698666",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_cytetype.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_cytetype.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_cytetype.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_cytetype.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-04-29T12:54:04.745026",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run without failures": {
+        "content": [
+            {
+                "CYTETYPE": {
+                    "cytetype": "0.19.4",
+                    "numpy": "2.4.6",
+                    "pandas": "2.3.3",
+                    "python": "3.14.5",
+                    "scanpy": "1.12.1"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "condition",
+                        "cytetype_annotation_leiden",
+                        "cytetype_cellOntologyTermID_leiden",
+                        "cytetype_cellOntologyTerm_leiden",
+                        "cytetype_cellState_leiden",
+                        "label",
+                        "leiden",
+                        "sample",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "leiden",
+                    "log1p",
+                    "neighbors",
+                    "pca",
+                    "rank_genes_groups"
+                ]
+            }
+        ],
+        "timestamp": "2026-05-25T12:15:49.526020343",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
+        }
+    }
+}
