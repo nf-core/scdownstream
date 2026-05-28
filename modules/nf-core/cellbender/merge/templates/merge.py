@@ -29,7 +29,13 @@ adata = ad.read_h5ad("${filtered}")
 
 adata_cellbender = load_anndata_from_input_and_output("${unfiltered}", "${cellbender_h5}", analyzed_barcodes_only=False)
 
-adata_cellbender = adata_cellbender[adata.obs_names]
+# Subset to the barcodes and genes present in the filtered matrix.
+# Gene symbols (var index) may not be unique, so align on Ensembl IDs.
+# The filtered h5ad uses 'gene_ids'; load_anndata_from_input_and_output uses 'gene_id'.
+gene_id_col = "gene_id" if "gene_id" in adata_cellbender.var.columns else adata_cellbender.var.index.name
+cb_id_to_pos = {gid: i for i, gid in enumerate(adata_cellbender.var[gene_id_col])}
+var_positions = [cb_id_to_pos[gid] for gid in adata.var["gene_ids"]]
+adata_cellbender = adata_cellbender[adata.obs_names, var_positions]
 
 if "${output_layer}" == "X":
     adata.X = adata_cellbender.layers["cellbender"]
