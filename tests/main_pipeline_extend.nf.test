@@ -4,17 +4,18 @@ nextflow_pipeline {
     script "main.nf"
     tag "pipeline"
 
-    test("Should perform scvi reference extension") {
+    test("Should perform scvi and harmony reference extension") {
 
         when {
             params {
                 input = 'https://github.com/nf-core/test-datasets/raw/refs/heads/scdownstream/samplesheet_single.csv'
-                integration_methods = 'scvi'
+                integration_methods = 'scvi,harmony'
                 doublet_detection   = 'scrublet,scdblfinder'
                 celltypist_model    = 'Adult_COVID19_PBMC'
                 integration_hvgs    = 500
                 outdir              = "$outputDir"
                 scvi_model          = 'https://github.com/nf-core/test-datasets/raw/refs/heads/scdownstream/extension_base/model.pt'
+                harmony_reference   = 'https://github.com/nf-core/test-datasets/raw/refs/heads/scdownstream/extension_base/harmony_reference.h5ad'
                 base_adata          = 'https://github.com/nf-core/test-datasets/raw/refs/heads/scdownstream/extension_base/merged.h5ad'
             }
         }

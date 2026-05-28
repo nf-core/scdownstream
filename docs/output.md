@@ -98,6 +98,7 @@ The `preprocess` directory contains a subdirectory for each sample, which contai
     - `${tool}`
       - `*.h5ad/*.rds`: The integrated H5AD or RDS file.
       - `X_${tool}.pkl`: Low-dimensional representation of the integrated data.
+      - `harmony_reference.h5ad` (Harmony only): Compact Symphony reference AnnData for query mapping, published from de novo Harmony runs.
 
 </details>
 

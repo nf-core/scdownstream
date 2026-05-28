@@ -1,5 +1,5 @@
 {
-    "Should perform scvi reference extension": {
+    "Should perform scvi and harmony reference extension": {
         "content": [
             {
                 "ADATA_EXTEND": {
@@ -144,6 +144,12 @@
                 "SCVITOOLS_SCVI": {
                     "scvi": "1.4.3"
                 },
+                "SYMPHONY_MAPEMBEDDING": {
+                    "pandas": "2.3.3",
+                    "python": "3.13.13",
+                    "scanpy": "1.12.1",
+                    "symphonypy": "0.2.4"
+                },
                 "UMAP": {
                     "pandas": "2.3.3",
                     "python": "3.13.12",
@@ -175,6 +181,14 @@
                 "celltypes/singler/SRR28679759_singler_immune_direct_heatmap.pdf",
                 "celltypes/singler/SRR28679759_singler_predictions.csv",
                 "cluster_dimred",
+                "cluster_dimred/harmony",
+                "cluster_dimred/harmony/entropy",
+                "cluster_dimred/harmony/entropy/harmony-global-0.5_entropy.png",
+                "cluster_dimred/harmony/entropy/harmony-global-1.0_entropy.png",
+                "cluster_dimred/harmony/leiden",
+                "cluster_dimred/harmony/leiden/harmony-global-0.5_leiden.png",
+                "cluster_dimred/harmony/leiden/harmony-global-1.0_leiden.png",
+                "cluster_dimred/harmony/umap",
                 "cluster_dimred/scvi",
                 "cluster_dimred/scvi/entropy",
                 "cluster_dimred/scvi/entropy/scvi-global-0.5_entropy.png",
@@ -186,6 +200,7 @@
                 "combine",
                 "combine/integrate",
                 "combine/integrate/scib_metrics",
+                "combine/integrate/scib_metrics/harmony_metrics.tsv",
                 "combine/integrate/scib_metrics/scvi_metrics.tsv",
                 "combine/integrate/scvi",
                 "combine/integrate/scvi/scvi_model",
@@ -228,7 +243,7 @@
                 "qc-report.qmd:md5,13061014a897b3fbdafd6ea3212df0e0"
             ]
         ],
-        "timestamp": "2026-05-11T23:24:27.061703025",
+        "timestamp": "2026-05-28T11:14:08.38204652",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.0"

@@ -41,6 +41,7 @@ if adata.n_vars > n_hvgs:
 
     raw_counts = adata.X.copy()
 
+    sc.pp.normalize_total(adata)
     sc.pp.log1p(adata)
     sc.pp.highly_variable_genes(adata, **kwargs)
 

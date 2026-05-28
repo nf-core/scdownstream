@@ -167,6 +167,14 @@
                     "description": "Optional file containing a list of gene symbols (one per line). If provided, these genes will be excluded from highly variable genes selection for integration.",
                     "exists": true
                 },
+                "harmony_reference": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to a Symphony reference AnnData, only relevant if Harmony is selected in `integration_methods`. If provided, query cells will be mapped onto this reference instead of running de novo Harmony integration.",
+                    "help_text": "The file should be in the .h5ad format. It is produced by a prior de novo Harmony run as `{outdir}/combine/integrate/harmony/harmony_reference.h5ad` and contains the compact Symphony reference metadata required for query mapping. Required for Harmony reference mapping and when extending an atlas with `--base_adata`.",
+                    "pattern": "^\\S+\\.h5ad$",
+                    "exists": true
+                },
                 "scvi_model": {
                     "type": "string",
                     "format": "file-path",

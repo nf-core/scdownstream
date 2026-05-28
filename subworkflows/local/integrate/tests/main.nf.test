@@ -31,7 +31,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -65,7 +66,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -74,8 +76,7 @@ nextflow_workflow {
             def adata = anndata(workflow.out.integrations[0][1])
             assert workflow.success
             assert "X_emb" in adata.obsm
-            assert "X_pca_symphony" in adata.obsm
-            assert "symphony" in adata.uns
+            assert "X_symphony" in adata.obsm
             assert snapshot(
                 workflow.out.versions,
                 adata.yaml
@@ -108,7 +109,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -142,7 +144,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -187,7 +190,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -221,7 +225,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -262,7 +267,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -298,7 +304,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -332,7 +339,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -373,7 +381,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'batch'
+                input[11] = null
+                input[12] = 'batch'
                 """
             }
         }
@@ -407,7 +416,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'batch'
+                input[11] = null
+                input[12] = 'batch'
                 """
             }
         }
