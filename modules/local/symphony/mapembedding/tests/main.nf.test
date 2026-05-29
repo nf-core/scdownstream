@@ -13,7 +13,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                        [ id: 'harmony' ],
+                        [ id: 'symphony' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
@@ -33,7 +33,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                        [ id: 'harmony' ],
+                        [ id: 'symphony' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
@@ -68,12 +68,12 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                        [ id: 'harmony' ],
+                        [ id: 'symphony' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = channel.of([
-                        [ id: 'harmony' ],
+                        [ id: 'symphony' ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )

@@ -17,7 +17,7 @@ workflow COMBINE {
     scvi_categorical_covariates //   value: string
     scvi_continuous_covariates  //   value: string
     scimilarity_model           //   value: string
-    harmony_reference           //   value: string
+    symphony_reference           //   value: string
     expimap_gmt                 //   value: string
     condition_col               //   value: string
     scib                        //   value: boolean
@@ -53,7 +53,7 @@ workflow COMBINE {
         scvi_categorical_covariates,
         scvi_continuous_covariates,
         scimilarity_model,
-        harmony_reference,
+        symphony_reference,
         expimap_gmt,
         condition_col
     )

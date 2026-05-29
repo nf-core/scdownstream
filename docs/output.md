@@ -34,7 +34,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
    3. Integration
       - [scVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scvi.html)
       - [scANVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scanvi.html)
-      - [Harmony](https://portals.broadinstitute.org/harmony/articles/quickstart.html) (via [symphonypy](https://pypi.org/project/symphonypy/))
+      - [Symphony](https://github.com/immunogenomics/symphony) / Harmony (via [symphonypy](https://pypi.org/project/symphonypy/))
       - [BBKNN](https://github.com/Teichlab/bbknn)
       - [Combat](https://scanpy.readthedocs.io/en/latest/api/generated/scanpy.pp.combat.html)
       - [Seurat](https://satijalab.org/seurat/articles/integration_introduction)
@@ -98,7 +98,7 @@ The `preprocess` directory contains a subdirectory for each sample, which contai
     - `${tool}`
       - `*.h5ad/*.rds`: The integrated H5AD or RDS file.
       - `X_${tool}.pkl`: Low-dimensional representation of the integrated data.
-      - `harmony_reference.h5ad` (Harmony only): Compact Symphony reference AnnData for query mapping, published from de novo Harmony runs.
+      - `symphony_reference.h5ad` (Symphony only): Compact Symphony reference AnnData for query mapping, published from de novo Symphony runs.
 
 </details>
 

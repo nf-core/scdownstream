@@ -58,7 +58,7 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
    3. Integration
       - [scVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scvi.html)
       - [scANVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scanvi.html)
-      - [Harmony](https://portals.broadinstitute.org/harmony/articles/quickstart.html) (via [symphonypy](https://pypi.org/project/symphonypy/))
+      - [Symphony](https://github.com/immunogenomics/symphony) / Harmony (via [symphonypy](https://pypi.org/project/symphonypy/))
       - [BBKNN](https://github.com/Teichlab/bbknn)
       - [Combat](https://scanpy.readthedocs.io/en/latest/api/generated/scanpy.pp.combat.html)
       - [Seurat](https://satijalab.org/seurat/articles/integration_introduction)

@@ -24,7 +24,7 @@ workflow INTEGRATE {
     scvi_categorical_covariates // list of string
     scvi_continuous_covariates  // list of string
     scimilarity_model           // path
-    harmony_reference           // path
+    symphony_reference           // path
     expimap_gmt                 // path
     condition_col               // string
 
@@ -113,11 +113,11 @@ workflow INTEGRATE {
         ch_obsm = ch_obsm.mix(SCVITOOLS_SCANVI.out.obsm)
     }
 
-    if (methods.contains('harmony')) {
-        if (harmony_reference) {
+    if (methods.contains('symphony')) {
+        if (symphony_reference) {
             SYMPHONY_MAPEMBEDDING (
-                ch_h5ad.map { _meta, h5ad -> [[id: 'harmony'], h5ad] },
-                channel.value([[id: 'harmony'], harmony_reference]),
+                ch_h5ad.map { _meta, h5ad -> [[id: 'symphony'], h5ad] },
+                channel.value([[id: 'symphony'], symphony_reference]),
                 "batch",
                 "X"
             )
@@ -127,7 +127,7 @@ workflow INTEGRATE {
         }
         else {
             SYMPHONY_HARMONYINTEGRATE (
-                ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'harmony'], h5ad] },
+                ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'symphony'], h5ad] },
                 "batch",
                 "X"
             )

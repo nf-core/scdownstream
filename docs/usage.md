@@ -216,16 +216,16 @@ nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
 ### Reference mapping and extension
 
 **Reference mapping** means **mapping new cells into a latent space using a pre-trained model** instead of training that integration step only on the query data.
-In this pipeline this can be done using **scVI**, **scANVI**, **scimilarity**, and **Harmony (Symphony)**.
-To enable it, add the corresponding method to [`integration_methods`](https://nf-co.re/scdownstream/parameters#integration_methods) (`scvi`, `scanvi`, `scimilarity`, and/or `harmony`) and set the matching model parameters for each method you use: [`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model), and [`harmony_reference`](https://nf-co.re/scdownstream/parameters#harmony_reference) (see the [parameter reference](https://nf-co.re/scdownstream/parameters) for file types, defaults, and help text).
+In this pipeline this can be done using **scVI**, **scANVI**, **scimilarity**, and **Symphony**.
+To enable it, add the corresponding method to [`integration_methods`](https://nf-co.re/scdownstream/parameters#integration_methods) (`scvi`, `scanvi`, `scimilarity`, and/or `symphony`) and set the matching model parameters for each method you use: [`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model), and [`symphony_reference`](https://nf-co.re/scdownstream/parameters#symphony_reference) (see the [parameter reference](https://nf-co.re/scdownstream/parameters) for file types, defaults, and help text).
 
-For Harmony reference mapping, provide the compact Symphony reference AnnData from a prior de novo run (`{outdir}/combine/integrate/harmony/harmony_reference.h5ad`). It contains the gene statistics, PCA loadings, Harmony centroids, and normalization metadata required for query mapping.
+For Symphony reference mapping, provide the compact Symphony reference AnnData from a prior de novo run (`{outdir}/combine/integrate/symphony/symphony_reference.h5ad`). It contains the gene statistics, PCA loadings, Harmony centroids, and normalization metadata required for query mapping.
 
 **Extension** is for users that have outputs of a previous run of `nf-core/scdownstream` and want to extend it with new data, without re-running the integration from scratch.
-It only works if `scvi`, `scanvi`, `scimilarity`, and/or `harmony` have been enabled in `integration_methods` in the original pipeline run.
+It only works if `scvi`, `scanvi`, `scimilarity`, and/or `symphony` have been enabled in `integration_methods` in the original pipeline run.
 Other integration methods than the four mentioned before are not supported for this.
 In simple terms, in this setup the workflow is: (1) project new data into the latent space learned from the data in the original run, and then (2) combine the datasets.
-For (1), provide the same checkpoints as for reference mapping ([`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model), [`harmony_reference`](https://nf-co.re/scdownstream/parameters#harmony_reference)).
+For (1), provide the same checkpoints as for reference mapping ([`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model), [`symphony_reference`](https://nf-co.re/scdownstream/parameters#symphony_reference)).
 For (2), pass the integrated `.h5ad` from the original run as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata).
 
 Pre-trained scVI models are also shared on [scvi-hub](https://huggingface.co/scvi-tools).
@@ -283,11 +283,11 @@ Each row in the CSV selects a subset of clusterings. **All columns are optional*
 
 When multiple rows match a clustering result, their `analyses` lists are **combined** (duplicates removed). If any matching row leaves `analyses` empty, all analyses run for that clustering. Clusterings that match **no** row are excluded from Leiden and all downstream analyses — but their UMAP and neighbour graph are still computed.
 
-Example plan: full analysis on Harmony at resolution 0.5, DE-only at resolution 1.0 for every integration, and DE-only for scVI at any resolution:
+Example plan: full analysis on Symphony at resolution 0.5, DE-only at resolution 1.0 for every integration, and DE-only for scVI at any resolution:
 
 ```csv title="analysis_plan.csv"
 integration,subset,resolution,analyses
-harmony,global,0.5,"paga,de,cytetype"
+symphony,global,0.5,"paga,de,cytetype"
 ,,1.0,de
 scvi,,,de
 ```

@@ -152,8 +152,8 @@
                     "type": "string",
                     "default": "scvi",
                     "description": "Specify the tool to use for integration",
-                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, harmony, bbknn, combat, seurat, scimilarity, pca, expimap",
-                    "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat|scimilarity|pca|expimap)(,(scvi|scanvi|harmony|bbknn|combat|seurat|scimilarity|pca|expimap))*)?$"
+                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, symphony, bbknn, combat, seurat, scimilarity, pca, expimap",
+                    "pattern": "^((scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap)(,(scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap))*)?$"
                 },
                 "integration_hvgs": {
                     "type": "integer",
@@ -167,11 +167,11 @@
                     "description": "Optional file containing a list of gene symbols (one per line). If provided, these genes will be excluded from highly variable genes selection for integration.",
                     "exists": true
                 },
-                "harmony_reference": {
+                "symphony_reference": {
                     "type": "string",
                     "format": "file-path",
-                    "description": "Path to a Symphony reference AnnData, only relevant if Harmony is selected in `integration_methods`. If provided, query cells will be mapped onto this reference instead of running de novo Harmony integration.",
-                    "help_text": "The file should be in the .h5ad format. It is produced by a prior de novo Harmony run as `{outdir}/combine/integrate/harmony/harmony_reference.h5ad` and contains the compact Symphony reference metadata required for query mapping. Required for Harmony reference mapping and when extending an atlas with `--base_adata`.",
+                    "description": "Path to a Symphony reference AnnData, only relevant if Symphony is selected in `integration_methods`. If provided, query cells will be mapped onto this reference instead of running de novo Symphony integration.",
+                    "help_text": "The file should be in the .h5ad format. It is produced by a prior de novo Symphony run as `{outdir}/combine/integrate/symphony/symphony_reference.h5ad` and contains the compact Symphony reference metadata required for query mapping. Required for Symphony reference mapping and when extending an atlas with `--base_adata`.",
                     "pattern": "^\\S+\\.h5ad$",
                     "exists": true
                 },
@@ -236,7 +236,7 @@
                     "type": "string",
                     "description": "The keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`). Required if `input` is not provided - otherwise it is ignored.",
                     "help_text": "If the `input` parameter is not provided (no new data to add), integration will not be performed. In order to be able to utilize existing integration results, you need to provide the keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`).",
-                    "pattern": "^((scvi|scanvi|harmony|bbknn|combat|seurat)(,(scvi|scanvi|harmony|bbknn|combat|seurat))*)?$"
+                    "pattern": "^((scvi|scanvi|symphony|bbknn|combat|seurat)(,(scvi|scanvi|symphony|bbknn|combat|seurat))*)?$"
                 }
             }
         },
@@ -577,7 +577,7 @@
                     "type": "string",
                     "fa_icon": "far fa-check-circle",
                     "description": "Base URL or local path to location of pipeline test dataset files",
-                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/3ba0ba7174a5667fc2e005430594ffb063f986c7/",
+                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/e3a7f43eb802a090affac918026d2ba5dce8fcd5/",
                     "hidden": true
                 },
                 "trace_report_suffix": {

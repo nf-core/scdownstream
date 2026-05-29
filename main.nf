@@ -61,7 +61,7 @@ workflow NFCORE_SCDOWNSTREAM {
     scvi_categorical_covariates   //   value: string
     scvi_continuous_covariates    //   value: string
     scimilarity_model             //   value: string
-    harmony_reference             //   value: string
+    symphony_reference             //   value: string
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
     skip_rankgenesgroups          //   value: boolean
@@ -118,7 +118,7 @@ workflow NFCORE_SCDOWNSTREAM {
         scvi_categorical_covariates,
         scvi_continuous_covariates,
         scimilarity_model,
-        harmony_reference,
+        symphony_reference,
         expimap_gmt,
         skip_liana,
         skip_rankgenesgroups,
@@ -182,8 +182,8 @@ workflow {
 
     def analysis_plan = analysisPlanToList()
 
-    def harmony_reference = params.harmony_reference
-        ? file(params.harmony_reference, checkIfExists: true)
+    def symphony_reference = params.symphony_reference
+        ? file(params.symphony_reference, checkIfExists: true)
         : null
 
     NFCORE_SCDOWNSTREAM (
@@ -217,7 +217,7 @@ workflow {
         params.scvi_categorical_covariates,
         params.scvi_continuous_covariates,
         params.scimilarity_model,
-        harmony_reference,
+        symphony_reference,
         params.expimap_gmt,
         params.skip_liana,
         params.skip_rankgenesgroups,
