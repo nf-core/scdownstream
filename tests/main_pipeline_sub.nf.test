@@ -8,7 +8,7 @@ nextflow_pipeline {
 
         when {
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nf-core/test-datasets/e3a7f43eb802a090affac918026d2ba5dce8fcd5/'
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/e3a7f43eb802a090affac918026d2ba5dce8fcd5/'
                 outdir              = "$outputDir"
                 input               = null
                 base_adata          = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
