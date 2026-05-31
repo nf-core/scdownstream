@@ -8,8 +8,8 @@ nextflow_process {
     tag "modules_local"
 
     setup {
-        run("SCANPY_HVGS") {
-            script "modules/local/scanpy/hvgs/main.nf"
+        run("SCANPY_FILTER", alias: "QC_FILTER") {
+            script "modules/local/scanpy/filter/main.nf"
             process {
                 """
                 input[0] = channel.of([
@@ -17,12 +17,29 @@ nextflow_process {
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
+                input[1] = "index"
+                input[2] = 20
+                input[3] = 20
+                input[4] = 50
+                input[5] = 50
+                input[6] = 100
+                input[7] = 0
+                input[8] = 100
+                input[9] = []
+                """
+            }
+        }
+        run("SCANPY_HVGS") {
+            script "modules/local/scanpy/hvgs/main.nf"
+            process {
+                """
+                input[0] = QC_FILTER.out.h5ad
                 input[1] = 100
                 input[2] = []
                 """
             }
         }
-        run("SCANPY_FILTER") {
+        run("SCANPY_FILTER", alias: "HVG_FILTER") {
             script "modules/local/scanpy/filter/main.nf"
             process {
                 """
@@ -49,7 +66,7 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = SCANPY_FILTER.out.h5ad
+                input[0] = HVG_FILTER.out.h5ad
                 input[1] = 'sample'
                 """
             }
@@ -79,7 +96,7 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = SCANPY_FILTER.out.h5ad
+                input[0] = HVG_FILTER.out.h5ad
                 input[1] = 'sample'
                 """
             }
