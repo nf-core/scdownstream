@@ -44,6 +44,7 @@ workflow SCDOWNSTREAM {
     cell_cycle_scoring            //   value: boolean
     s_genes                       //    path: file or []
     g2m_genes                     //    path: file or []
+    species                       //   value: string
     qc_only                       //   value: boolean
     celldex_reference              //   value: string
     celltypist_model               //   value: string
@@ -129,6 +130,7 @@ workflow SCDOWNSTREAM {
             cell_cycle_scoring,
             s_genes,
             g2m_genes,
+            species,
         )
         ch_multiqc_files = ch_multiqc_files.mix(QUALITY_CONTROL.out.multiqc_files)
         ch_h5ad = QUALITY_CONTROL.out.h5ad

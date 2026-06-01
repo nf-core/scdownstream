@@ -9,6 +9,7 @@ process ADATA_MYGENE {
 
     input:
     tuple val(meta), path(h5ad)
+    val(species)
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad

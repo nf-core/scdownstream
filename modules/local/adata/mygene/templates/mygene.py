@@ -27,7 +27,7 @@ for i in range(0, len(inputs), 500):
         inputs[i : i + 500],
         scopes=["symbol", "entrezgene", "ensemblgene"],
         fields="symbol",
-        species="human",
+        species="${species}",
         as_dataframe=True,
     )
     mapping.update(df_genes["symbol"].dropna().to_dict())

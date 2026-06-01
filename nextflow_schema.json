@@ -86,7 +86,7 @@
                 "species": {
                     "type": "string",
                     "default": "human",
-                    "description": "Species of the input data. Used to auto-select bundled cell cycle gene lists (assets/cell_cycle_genes/<species>_s_genes.txt and _g2m_genes.txt). Bundled lists are provided for 'human' and 'mouse'. Ignored when --s_genes and --g2m_genes are set explicitly."
+                    "description": "Species of the input data. Used to auto-select bundled cell cycle gene lists (assets/cell_cycle_genes/<species>_s_genes.txt and _g2m_genes.txt) and as the MyGene.info taxonomy when converting gene identifiers (samplesheet symbol_col: none). Bundled cell cycle lists are provided for 'human' and 'mouse'. Ignored when --s_genes and --g2m_genes are set explicitly."
                 },
                 "cell_cycle_scoring": {
                     "type": "boolean",
