@@ -18,6 +18,7 @@ nextflow_pipeline {
                 scvi_model          = pipelines_testdata_base_path + 'extension_base/model.pt'
                 symphony_reference   = pipelines_testdata_base_path + 'extension_base/symphony_reference.h5ad'
                 base_adata          = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                clustering_resolutions = '1.0'
                 analysis_plan       = "${projectDir}/tests/analysis_plan_extension.csv"
             }
         }
