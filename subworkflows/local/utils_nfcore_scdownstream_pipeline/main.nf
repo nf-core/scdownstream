@@ -165,6 +165,7 @@ workflow PIPELINE_COMPLETION {
 def analysisPlanToList() {
     params.analysis_plan
         ? samplesheetToList(params.analysis_plan, "${projectDir}/assets/schema_analysis_plan.json")
+            .collect { row -> row[0] }
         : [[integration: null, subset: null, resolution: null, analyses: null]]
 }
 

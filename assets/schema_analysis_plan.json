@@ -12,27 +12,31 @@
                 "pattern": "^\\S*$",
                 "default": null,
                 "errorMessage": "Integration name cannot contain spaces",
-                "description": "Integration method name, or empty to match all integrations"
+                "description": "Integration method name, or empty to match all integrations",
+                "meta": ["integration"]
             },
             "subset": {
                 "type": "string",
                 "pattern": "^\\S*$",
                 "default": null,
                 "errorMessage": "Subset cannot contain spaces",
-                "description": "Clustering subset (global or a label value), or empty to match all subsets"
+                "description": "Clustering subset (global or a label value), or empty to match all subsets",
+                "meta": ["subset"]
             },
             "resolution": {
                 "type": "number",
                 "minimum": 0,
                 "default": null,
-                "description": "Leiden resolution, or empty to match all resolutions"
+                "description": "Leiden resolution, or empty to match all resolutions",
+                "meta": ["resolution"]
             },
             "analyses": {
                 "type": "string",
                 "pattern": "^(|paga|liana|de|cytetype)(,(paga|liana|de|cytetype))*$",
                 "default": null,
                 "errorMessage": "Analyses must be a comma-separated list of paga, liana, de, and/or cytetype",
-                "description": "Downstream analyses to run for matching clusterings, or empty to run all analyses"
+                "description": "Downstream analyses to run for matching clusterings, or empty to run all analyses",
+                "meta": ["analyses"]
             }
         }
     }
