@@ -27,6 +27,7 @@ nextflow_pipeline {
         }
 
         then {
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', 'multiqc/**'])
             assert workflow.success
             assert file("$outputDir/finalized/merged.h5ad").exists()
             assert file("$outputDir/combine/integrate/scvi/scvi_model/model.pt").exists()
@@ -34,6 +35,10 @@ nextflow_pipeline {
             assert !file("$outputDir/celltypes").exists()
             assert !file("$outputDir/cluster_dimred").exists()
             assert !file("$outputDir/per_group").exists()
+            assert snapshot(
+                removeNextflowVersion("$outputDir/pipeline_info/nf_core_scdownstream_software_mqc_versions.yml"),
+                stable_name
+            ).match()
         }
     }
 }

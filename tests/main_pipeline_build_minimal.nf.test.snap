@@ -1,0 +1,155 @@
+{
+    "Should build minimal extension and reference mapping fixtures": {
+        "content": [
+            {
+                "ADATA_EXTEND": {
+                    "anndata": "0.12.10",
+                    "numpy": "2.3.5",
+                    "pandas": "2.3.3",
+                    "python": "3.13.12"
+                },
+                "ADATA_MERGE": {
+                    "anndata": "0.12.10",
+                    "python": "3.13.12",
+                    "scanpy": "1.12",
+                    "scipy": "1.17.1"
+                },
+                "ADATA_READRDS": {
+                    "anndata": "0.11.1",
+                    "anndata2ri": "1.3.2",
+                    "rpy2": "3.5.11",
+                    "pandas": "2.2.3",
+                    "seurat": "5.1.0"
+                },
+                "ADATA_TORDS": {
+                    "anndataR": "1.0.2"
+                },
+                "ADATA_UNIFY": {
+                    "anndata": "0.12.10",
+                    "numpy": "2.3.5",
+                    "python": "3.13.12",
+                    "scipy": "1.17.1"
+                },
+                "COLLECT_SIZES": {
+                    "pandas": "2.3.3",
+                    "python": "3.13.12"
+                },
+                "FINALIZE_QC_ANNDATAS": {
+                    "anndata": "0.12.10",
+                    "numpy": "2.3.5",
+                    "pandas": "2.3.3",
+                    "python": "3.13.12"
+                },
+                "GET_FILTERED_SIZE": {
+                    "python": "3.13.0",
+                    "anndata": "0.10.9"
+                },
+                "GET_SAMPLED_SIZE": {
+                    "python": "3.13.0",
+                    "anndata": "0.10.9"
+                },
+                "GET_THRESHOLDED_SIZE": {
+                    "python": "3.13.0",
+                    "anndata": "0.10.9"
+                },
+                "GET_UNFILTERED_SIZE": {
+                    "python": "3.13.0",
+                    "anndata": "0.10.9"
+                },
+                "QC_FILTERED": {
+                    "matplotlib": "3.10.8",
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                },
+                "QC_RAW": {
+                    "matplotlib": "3.10.8",
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                },
+                "QC_REPORT": {
+                    "papermill": "2.7.0",
+                    "quarto": "1.8.27"
+                },
+                "SCANPY_FILTER": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                },
+                "SCANPY_HVGS": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                },
+                "SCANPY_SAMPLE": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                },
+                "SCVITOOLS_SCVI": {
+                    "scvi": "1.4.3"
+                },
+                "SYMPHONY_HARMONYINTEGRATE": {
+                    "pandas": "2.3.3",
+                    "python": "3.13.13",
+                    "scanpy": "1.12.1",
+                    "symphonypy": "0.2.4"
+                },
+                "UPSET_GENES": {
+                    "anndata": "0.12.10",
+                    "matplotlib": "3.10.8",
+                    "python": "3.13.12",
+                    "upsetplot": "0.9.0"
+                },
+                "Workflow": {
+                    "nf-core/scdownstream": "v0.0.1dev"
+                }
+            },
+            [
+                "combine",
+                "combine/integrate",
+                "combine/integrate/scvi",
+                "combine/integrate/scvi/scvi_model",
+                "combine/integrate/scvi/scvi_model/model.pt",
+                "combine/integrate/symphony",
+                "combine/integrate/symphony/symphony_reference.h5ad",
+                "combine/merge",
+                "combine/merge/upset_genes.png",
+                "finalized",
+                "finalized/merged.h5ad",
+                "finalized/merged.rds",
+                "finalized/merged_metadata.csv",
+                "multiqc",
+                "pipeline_info",
+                "pipeline_info/nf_core_scdownstream_software_mqc_versions.yml",
+                "quality_control",
+                "quality_control/qc_filtered",
+                "quality_control/qc_filtered/SRR28679756_preprocessed_total_counts_vs_n_genes_by_counts.png",
+                "quality_control/qc_filtered/SRR28679757_preprocessed_total_counts_vs_n_genes_by_counts.png",
+                "quality_control/qc_filtered/SRR28679758_preprocessed_total_counts_vs_n_genes_by_counts.png",
+                "quality_control/qc_raw",
+                "quality_control/qc_raw/SRR28679756_raw_total_counts_vs_n_genes_by_counts.png",
+                "quality_control/qc_raw/SRR28679757_raw_total_counts_vs_n_genes_by_counts.png",
+                "quality_control/qc_raw/SRR28679758_raw_total_counts_vs_n_genes_by_counts.png",
+                "quality_control/sizes",
+                "quality_control/sizes/sizes.tsv",
+                "reports",
+                "reports/_extensions",
+                "reports/_extensions/nf-core",
+                "reports/_extensions/nf-core/_extension.yml",
+                "reports/_extensions/nf-core/nf-core-scdownstream_logo_light.png",
+                "reports/_extensions/nf-core/nf-core.scss",
+                "reports/_extensions/nf-core/nf-core.theme",
+                "reports/_extensions/nf-core/toc.html",
+                "reports/params.yml",
+                "reports/qc-report.html",
+                "reports/qc-report.qmd",
+                "scanpy",
+                "scanpy/SRR28679756_sampled.h5ad",
+                "scanpy/SRR28679757_sampled.h5ad",
+                "scanpy/SRR28679758_sampled.h5ad"
+            ]
+        ],
+        "timestamp": "2026-06-04T08:04:26.539454251",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
+        }
+    }
+}
