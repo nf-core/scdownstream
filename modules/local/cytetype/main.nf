@@ -5,7 +5,7 @@ process CYTETYPE {
     secret secrets.CYTETYPE_API_KEY ? ['CYTETYPE_API_KEY'] : ''
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ea/ea6fe0f3aff9f5097236faa2a8975d4ad2ced9764032c64f4acd56b59aa37cd3/data'
         : 'community.wave.seqera.io/library/python_pyyaml_scanpy_pip_cytetype:05f936cdbbebf101'}"
 

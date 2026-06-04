@@ -3,7 +3,7 @@ process SYMPHONY_MAPEMBEDDING {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
             ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/51/512121548a21b4d1bb8acfd5e30a75c5c2103ddd00cf1de4713c682b7e6b5387/data'
             : 'community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:2198c27c5c9392d5'}"
 
