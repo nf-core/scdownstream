@@ -135,12 +135,6 @@
                     "python": "3.13.12",
                     "scanpy": "1.12"
                 },
-                "SCANPY_HARMONY": {
-                    "harmonypy": "0.2.0",
-                    "pandas": "2.3.3",
-                    "python": "3.13.12",
-                    "scanpy": "1.12"
-                },
                 "SCANPY_HVGS": {
                     "python": "3.13.12",
                     "scanpy": "1.12"
@@ -171,6 +165,12 @@
                 },
                 "SCVITOOLS_SOLO": {
                     "scvi": "1.4.3"
+                },
+                "SYMPHONY_HARMONYINTEGRATE": {
+                    "pandas": "2.3.3",
+                    "python": "3.13.13",
+                    "scanpy": "1.12.1",
+                    "symphonypy": "0.2.4"
                 },
                 "UMAP": {
                     "pandas": "2.3.3",
@@ -237,14 +237,6 @@
                 "cluster_dimred/combat/leiden/combat-global-0.5_leiden.png",
                 "cluster_dimred/combat/leiden/combat-global-1.0_leiden.png",
                 "cluster_dimred/combat/umap",
-                "cluster_dimred/harmony",
-                "cluster_dimred/harmony/entropy",
-                "cluster_dimred/harmony/entropy/harmony-global-0.5_entropy.png",
-                "cluster_dimred/harmony/entropy/harmony-global-1.0_entropy.png",
-                "cluster_dimred/harmony/leiden",
-                "cluster_dimred/harmony/leiden/harmony-global-0.5_leiden.png",
-                "cluster_dimred/harmony/leiden/harmony-global-1.0_leiden.png",
-                "cluster_dimred/harmony/umap",
                 "cluster_dimred/scvi",
                 "cluster_dimred/scvi/entropy",
                 "cluster_dimred/scvi/entropy/scvi-global-0.5_entropy.png",
@@ -253,15 +245,25 @@
                 "cluster_dimred/scvi/leiden/scvi-global-0.5_leiden.png",
                 "cluster_dimred/scvi/leiden/scvi-global-1.0_leiden.png",
                 "cluster_dimred/scvi/umap",
+                "cluster_dimred/symphony",
+                "cluster_dimred/symphony/entropy",
+                "cluster_dimred/symphony/entropy/symphony-global-0.5_entropy.png",
+                "cluster_dimred/symphony/entropy/symphony-global-1.0_entropy.png",
+                "cluster_dimred/symphony/leiden",
+                "cluster_dimred/symphony/leiden/symphony-global-0.5_leiden.png",
+                "cluster_dimred/symphony/leiden/symphony-global-1.0_leiden.png",
+                "cluster_dimred/symphony/umap",
                 "combine",
                 "combine/integrate",
                 "combine/integrate/scib_metrics",
                 "combine/integrate/scib_metrics/combat_metrics.tsv",
-                "combine/integrate/scib_metrics/harmony_metrics.tsv",
                 "combine/integrate/scib_metrics/scvi_metrics.tsv",
+                "combine/integrate/scib_metrics/symphony_metrics.tsv",
                 "combine/integrate/scvi",
                 "combine/integrate/scvi/scvi_model",
                 "combine/integrate/scvi/scvi_model/model.pt",
+                "combine/integrate/symphony",
+                "combine/integrate/symphony/symphony_reference.h5ad",
                 "combine/merge",
                 "combine/merge/upset_genes.png",
                 "finalized",
@@ -305,7 +307,7 @@
                 "qc-report.qmd:md5,13061014a897b3fbdafd6ea3212df0e0"
             ]
         ],
-        "timestamp": "2026-05-11T22:49:53.648324922",
+        "timestamp": "2026-05-28T17:09:18.020969587",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.0"

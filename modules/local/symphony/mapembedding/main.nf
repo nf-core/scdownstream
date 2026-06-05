@@ -1,14 +1,15 @@
-process SCANPY_HARMONY {
+process SYMPHONY_MAPEMBEDDING {
     tag "${meta.id}"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-            ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/45/45339bf761a2cf0cdb058492bc37f3df8b05b363731d491d1d3a14e9ba0b8f55/data'
-            : 'community.wave.seqera.io/library/harmonypy_anndata_leidenalg_numpy_pruned:43066d5f86f18261'}"
+            ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/51/512121548a21b4d1bb8acfd5e30a75c5c2103ddd00cf1de4713c682b7e6b5387/data'
+            : 'community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:2198c27c5c9392d5'}"
 
     input:
     tuple val(meta), path(h5ad)
+    tuple val(meta2), path(reference_h5ad, stageAs: 'reference/reference.h5ad')
     val(batch_col)
     val(counts_layer)
 
@@ -22,7 +23,7 @@ process SCANPY_HARMONY {
     if ("${prefix}.h5ad" == "${h5ad}") {
         error "Input and output names are the same, use \"task.ext.prefix\" to disambiguate!"
     }
-    template('harmony.py')
+    template('map_embedding.py')
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"

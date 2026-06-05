@@ -46,6 +46,7 @@ workflow NFCORE_SCDOWNSTREAM {
     cell_cycle_scoring            //   value: boolean
     s_genes                       //    path: file or []
     g2m_genes                     //    path: file or []
+    species                       //   value: string
     qc_only                       //   value: boolean
     celldex_reference             //   value: string
     celltypist_model              //   value: string
@@ -61,6 +62,7 @@ workflow NFCORE_SCDOWNSTREAM {
     scvi_categorical_covariates   //   value: string
     scvi_continuous_covariates    //   value: string
     scimilarity_model             //   value: string
+    symphony_reference             //   value: string
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
     skip_rankgenesgroups          //   value: boolean
@@ -102,6 +104,7 @@ workflow NFCORE_SCDOWNSTREAM {
         cell_cycle_scoring,
         s_genes,
         g2m_genes,
+        species,
         qc_only,
         celldex_reference,
         celltypist_model,
@@ -117,6 +120,7 @@ workflow NFCORE_SCDOWNSTREAM {
         scvi_categorical_covariates,
         scvi_continuous_covariates,
         scimilarity_model,
+        symphony_reference,
         expimap_gmt,
         skip_liana,
         skip_rankgenesgroups,
@@ -180,6 +184,10 @@ workflow {
 
     def analysis_plan = analysisPlanToList()
 
+    def symphony_reference = params.symphony_reference
+        ? file(params.symphony_reference, checkIfExists: true)
+        : null
+
     NFCORE_SCDOWNSTREAM (
         PIPELINE_INITIALISATION.out.samplesheet,
         ch_base_adata,
@@ -196,6 +204,7 @@ workflow {
         params.cell_cycle_scoring,
         s_genes_file,
         g2m_genes_file,
+        params.species,
         params.qc_only,
         params.celldex_reference,
         params.celltypist_model,
@@ -211,6 +220,7 @@ workflow {
         params.scvi_categorical_covariates,
         params.scvi_continuous_covariates,
         params.scimilarity_model,
+        symphony_reference,
         params.expimap_gmt,
         params.skip_liana,
         params.skip_rankgenesgroups,

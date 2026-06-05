@@ -30,11 +30,14 @@ adata = ad.read_h5ad("${filtered}")
 adata_cellbender = load_anndata_from_input_and_output("${unfiltered}", "${cellbender_h5}", analyzed_barcodes_only=False)
 
 # Subset to the barcodes and genes present in the filtered matrix.
-# Gene symbols (var index) may not be unique, so align on Ensembl IDs.
-# The filtered h5ad uses 'gene_ids'; load_anndata_from_input_and_output uses 'gene_id'.
-gene_id_col = "gene_id" if "gene_id" in adata_cellbender.var.columns else adata_cellbender.var.index.name
-cb_id_to_pos = {gid: i for i, gid in enumerate(adata_cellbender.var[gene_id_col])}
-var_positions = [cb_id_to_pos[gid] for gid in adata.var["gene_ids"]]
+# Gene symbols (var index) may not be unique, so prefer Ensembl IDs when present.
+# Column names differ: 10x/readh5 uses 'gene_ids'; unify/cellbender uses 'gene_id'.
+filtered_gene_id_col = next((col for col in ("gene_ids", "gene_id") if col in adata.var.columns), None)
+cellbender_gene_id_col = next((col for col in ("gene_id", "gene_ids") if col in adata_cellbender.var.columns), None)
+filtered_ids = adata.var[filtered_gene_id_col] if filtered_gene_id_col else adata.var.index
+cellbender_ids = adata_cellbender.var[cellbender_gene_id_col] if filtered_gene_id_col and cellbender_gene_id_col else adata_cellbender.var.index
+cb_id_to_pos = {gid: i for i, gid in enumerate(cellbender_ids)}
+var_positions = [cb_id_to_pos[gid] for gid in filtered_ids]
 adata_cellbender = adata_cellbender[adata.obs_names, var_positions]
 
 if "${output_layer}" == "X":

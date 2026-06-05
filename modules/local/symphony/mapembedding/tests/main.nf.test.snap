@@ -5,13 +5,13 @@
                 "0": [
                     [
                         {
-                            "id": "test"
+                            "id": "symphony"
                         },
-                        "test_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
-                    "X_test_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "2": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -19,32 +19,33 @@
                 "h5ad": [
                     [
                         {
-                            "id": "test"
+                            "id": "symphony"
                         },
-                        "test_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "obsm": [
-                    "X_test_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-04-01T15:10:58.212224761",
+        "timestamp": "2026-05-28T16:31:40.664029252",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
         }
     },
     "Should run without failures": {
         "content": [
             {
-                "SCANPY_PCA": {
+                "SYMPHONY_MAPEMBEDDING": {
                     "pandas": "2.3.3",
-                    "python": "3.13.12",
-                    "scanpy": "1.12"
+                    "python": "3.13.13",
+                    "scanpy": "1.12.1",
+                    "symphonypy": "0.2.4"
                 }
             },
             {
@@ -66,10 +67,11 @@
                     
                 ],
                 "obsm": [
-                    "X_pca"
+                    "X_emb",
+                    "X_symphony"
                 ],
                 "varm": [
-                    "X_pca"
+                    
                 ],
                 "obsp": [
                     
@@ -78,12 +80,11 @@
                     
                 ],
                 "uns": [
-                    "X_pca",
-                    "log1p"
+                    
                 ]
             }
         ],
-        "timestamp": "2026-05-28T12:10:47.461951809",
+        "timestamp": "2026-05-28T13:56:04.774526372",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.0"

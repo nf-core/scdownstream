@@ -7,7 +7,7 @@ nextflow_workflow {
     tag "subworkflows"
     tag "subworkflows_local"
 
-    test("Should run without failures - harmony - stub") {
+    test("Should run without failures - symphony - stub") {
 
         options '-stub'
 
@@ -24,14 +24,15 @@ nextflow_workflow {
                 input[1] = false
                 input[2] = 2000
                 input[3] = []
-                input[4] = ['harmony']
+                input[4] = ['symphony']
                 input[5] = null
                 input[6] = null
                 input[7] = []
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -43,7 +44,7 @@ nextflow_workflow {
 
     }
 
-    test("Should run without failures - harmony") {
+    test("Should run without failures - symphony") {
 
         when {
             params {
@@ -58,14 +59,15 @@ nextflow_workflow {
                 input[1] = false
                 input[2] = 2000
                 input[3] = []
-                input[4] = ['harmony']
+                input[4] = ['symphony']
                 input[5] = null
                 input[6] = null
                 input[7] = []
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -74,6 +76,7 @@ nextflow_workflow {
             def adata = anndata(workflow.out.integrations[0][1])
             assert workflow.success
             assert "X_emb" in adata.obsm
+            assert "X_symphony" in adata.obsm
             assert snapshot(
                 workflow.out.versions,
                 adata.yaml
@@ -106,7 +109,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -140,7 +144,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -185,7 +190,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -219,7 +225,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -253,14 +260,15 @@ nextflow_workflow {
                 input[1] = true
                 input[2] = -1
                 input[3] = []
-                input[4] = ['harmony']
+                input[4] = ['symphony']
                 input[5] = null
                 input[6] = null
                 input[7] = []
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -296,7 +304,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -330,7 +339,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'condition'
+                input[11] = null
+                input[12] = 'condition'
                 """
             }
         }
@@ -371,7 +381,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'batch'
+                input[11] = null
+                input[12] = 'batch'
                 """
             }
         }
@@ -405,7 +416,8 @@ nextflow_workflow {
                 input[8] = []
                 input[9] = null
                 input[10] = null
-                input[11] = 'batch'
+                input[11] = null
+                input[12] = 'batch'
                 """
             }
         }

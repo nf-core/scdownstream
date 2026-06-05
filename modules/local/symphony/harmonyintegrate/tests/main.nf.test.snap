@@ -11,9 +11,17 @@
                     ]
                 ],
                 "1": [
-                    "X_test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_reference.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
                 ],
                 "2": [
+                    "X_test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "h5ad": [
@@ -27,25 +35,33 @@
                 "obsm": [
                     "X_test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
+                "reference": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_reference.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-03-22T10:56:43.269700775",
+        "timestamp": "2026-05-28T13:28:41.939214142",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nextflow": "26.04.0"
         }
     },
     "Should run without failures": {
         "content": [
             {
-                "SCANPY_HARMONY": {
-                    "harmonypy": "0.2.0",
+                "SYMPHONY_HARMONYINTEGRATE": {
                     "pandas": "2.3.3",
-                    "python": "3.13.12",
-                    "scanpy": "1.12"
+                    "python": "3.13.13",
+                    "scanpy": "1.12.1",
+                    "symphonypy": "0.2.4"
                 }
             },
             {
@@ -67,7 +83,8 @@
                     
                 ],
                 "obsm": [
-                    "X_emb"
+                    "X_emb",
+                    "X_symphony"
                 ],
                 "varm": [
                     
@@ -81,12 +98,49 @@
                 "uns": [
                     
                 ]
+            },
+            {
+                "n_obs": 0,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "highly_variable",
+                        "mean",
+                        "std"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "harmony",
+                    "normalize"
+                ]
             }
         ],
-        "timestamp": "2026-03-29T11:17:47.094134151",
+        "timestamp": "2026-05-28T14:41:42.365043934",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nextflow": "26.04.0"
         }
     }
 }

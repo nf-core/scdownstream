@@ -21,10 +21,16 @@ inputs = (
 )
 
 mg = mygene.MyGeneInfo()
-df_genes = mg.querymany(inputs,
-    scopes=["symbol", "entrezgene", "ensemblgene"],
-    fields="symbol", species="human", as_dataframe=True)
-mapping = df_genes["symbol"].dropna().to_dict()
+mapping = {}
+for i in range(0, len(inputs), 500):
+    df_genes = mg.querymany(
+        inputs[i : i + 500],
+        scopes=["symbol", "entrezgene", "ensemblgene"],
+        fields="symbol",
+        species="${species}",
+        as_dataframe=True,
+    )
+    mapping.update(df_genes["symbol"].dropna().to_dict())
 
 outputs = [mapping.get(i, i) for i in inputs]
 

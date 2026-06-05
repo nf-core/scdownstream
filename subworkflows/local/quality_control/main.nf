@@ -31,6 +31,7 @@ workflow QUALITY_CONTROL {
     cell_cycle_scoring            //   value: boolean
     s_genes                       //    path: file or []
     g2m_genes                     //    path: file or []
+    species                       //   value: string
 
     main:
     ch_multiqc_files = channel.empty()
@@ -117,7 +118,8 @@ workflow QUALITY_CONTROL {
         ch_h5ad,
         unify_gene_symbols,
         duplicate_var_resolution,
-        aggregate_isoforms
+        aggregate_isoforms,
+        species
     )
     ch_multiqc_files = ch_multiqc_files.mix(UNIFY.out.multiqc_files)
     ch_h5ad = UNIFY.out.h5ad

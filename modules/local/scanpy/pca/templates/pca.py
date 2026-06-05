@@ -21,7 +21,8 @@ adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 key_added = "${key_added}"
 
-# Run PCA
+sc.pp.normalize_total(adata)
+sc.pp.log1p(adata)
 sc.pp.pca(adata, random_state=0, key_added=key_added)
 
 adata.write_h5ad(f"{prefix}.h5ad")

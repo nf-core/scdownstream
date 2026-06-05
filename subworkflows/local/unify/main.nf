@@ -11,6 +11,7 @@ workflow UNIFY {
     unify_gene_symbols       //   value: boolean
     duplicate_var_resolution //   value: string
     aggregate_isoforms       //   value: boolean
+    species                  //   value: string
 
     main:
     ch_multiqc_files = channel.empty()
@@ -21,7 +22,8 @@ workflow UNIFY {
     }
 
     MYGENE (
-        ch_h5ad.needs_symbol_conversion
+        ch_h5ad.needs_symbol_conversion,
+        species
     )
     ch_h5ad = ch_h5ad.has_symbol_col.mix(
         MYGENE.out.h5ad.map { meta, h5ad -> [meta + [symbol_col: 'symbols'], h5ad] }
