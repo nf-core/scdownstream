@@ -200,6 +200,52 @@ nextflow_process {
 
     }
 
+    test("Should run without failures - with partial MAD filtering") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'index'
+                input[2] = 0
+                input[3] = 0
+                input[4] = 0
+                input[5] = 0
+                input[6] = 100
+                input[7] = 0
+                input[8] = 100
+                input[9] = 0
+                input[10] = 0
+                input[11] = 0
+                input[12] = 3
+                input[13] = []
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert adata.n_obs > 0
+            with(adata) {
+                assert "pct_counts_mt" in obs.colnames
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
     test("Should run without failures - with MAD filtering") {
 
         when {

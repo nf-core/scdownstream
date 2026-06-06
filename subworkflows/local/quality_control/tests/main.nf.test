@@ -193,6 +193,127 @@ nextflow_workflow {
 
     }
 
+    test("Should run without ambient RNA removal and doublet detection - with MAD filtering") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [
+                            id: 'test',
+                            batch_col: 'sample',
+                            counts_layer: 'X',
+                            max_mito_percentage: 8,
+                            log1p_total_counts_nmads: 5,
+                            log1p_n_genes_by_counts_nmads: 5,
+                            pct_counts_in_top_20_genes_nmads: 5,
+                            pct_counts_mt_nmads: 3
+                        ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'none'
+                input[2] = false
+                input[3] = false
+                input[4] = 'sum'
+                input[5] = false
+                input[6] = []
+                input[7] = 1
+                input[8] = null
+                input[9] = null
+                input[10] = null
+                input[11] = null
+                input[12] = false
+                input[13] = []
+                input[14] = []
+                input[15] = 'human'
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+
+            assert workflow.success
+            assert workflow.out.h5ad.size() == 1
+            with(adata) {
+                assert "log1p_total_counts" in obs.colnames
+                assert "log1p_n_genes_by_counts" in obs.colnames
+                assert "pct_counts_in_top_20_genes" in obs.colnames
+                assert "pct_counts_mt" in obs.colnames
+            }
+            assert snapshot(
+                workflow.out.multiqc_files,
+                workflow.out.versions.collect { path(it).yaml },
+                adata.n_obs,
+                adata.n_vars,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without ambient RNA removal and doublet detection - with partial MAD filtering") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [
+                            id: 'test',
+                            batch_col: 'sample',
+                            counts_layer: 'X',
+                            pct_counts_mt_nmads: 3
+                        ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'none'
+                input[2] = false
+                input[3] = false
+                input[4] = 'sum'
+                input[5] = false
+                input[6] = []
+                input[7] = 1
+                input[8] = null
+                input[9] = null
+                input[10] = null
+                input[11] = null
+                input[12] = false
+                input[13] = []
+                input[14] = []
+                input[15] = 'human'
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+
+            assert workflow.success
+            assert workflow.out.h5ad.size() == 1
+            with(adata) {
+                assert "pct_counts_mt" in obs.colnames
+            }
+            assert snapshot(
+                workflow.out.multiqc_files,
+                workflow.out.versions.collect { path(it).yaml },
+                adata.n_obs,
+                adata.n_vars,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
     test("Should run with cell cycle scoring") {
 
         when {
