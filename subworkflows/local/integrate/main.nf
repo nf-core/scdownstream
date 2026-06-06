@@ -60,6 +60,10 @@ workflow INTEGRATE {
             100,
             0,
             100,
+            0,
+            0,
+            0,
+            0,
             []
         )
         ch_h5ad_hvg = SCANPY_FILTER.out.h5ad

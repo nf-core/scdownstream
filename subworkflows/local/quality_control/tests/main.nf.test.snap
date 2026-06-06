@@ -108,6 +108,174 @@
             "nextflow": "26.04.0"
         }
     },
+    "Should run without ambient RNA removal and doublet detection - with MAD filtering": {
+        "content": [
+            [
+                "sizes_mqc.json:md5,ac78d5f442533ecb26886d95d03925ac",
+                "test_preprocessed_mqc.json:md5,f5a84fc4f0304fb3231de01deeb6c53d",
+                "test_raw_mqc.json:md5,1892d1a9408417050623e6bc2c2480a3"
+            ],
+            [
+                
+            ],
+            12663,
+            9887,
+            {
+                "n_obs": 12663,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "condition",
+                        "label",
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "sample",
+                        "sample_original",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "hb",
+                        "log1p_mean_counts",
+                        "log1p_total_counts",
+                        "mean_counts",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-06-06T13:04:17.599607485",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
+        }
+    },
+    "Should run without ambient RNA removal and doublet detection - with partial MAD filtering": {
+        "content": [
+            [
+                "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
+                "test_preprocessed_mqc.json:md5,f9b60b49d10d7f9f0fa0608b18ce3d84",
+                "test_raw_mqc.json:md5,1892d1a9408417050623e6bc2c2480a3"
+            ],
+            [
+                
+            ],
+            12940,
+            9887,
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "condition",
+                        "label",
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "sample",
+                        "sample_original",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "hb",
+                        "log1p_mean_counts",
+                        "log1p_total_counts",
+                        "mean_counts",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-06-06T13:06:16.743756521",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
+        }
+    },
     "Should run with ambient RNA removal and doublet detection": {
         "content": [
             [

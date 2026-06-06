@@ -17,6 +17,10 @@ process SCANPY_FILTER {
     val max_mito_percentage
     val min_ribo_percentage
     val max_hb_percentage
+    val log1p_total_counts_nmads
+    val log1p_n_genes_by_counts_nmads
+    val pct_counts_in_top_20_genes_nmads
+    val pct_counts_mt_nmads
     path mito_genes
 
     output:

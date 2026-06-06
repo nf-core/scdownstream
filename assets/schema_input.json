@@ -131,6 +131,34 @@
                 "errorMessage": "Max haemoglobin percentage must be an integer between 0 and 100.",
                 "meta": ["max_hb_percentage"]
             },
+            "log1p_total_counts_nmads": {
+                "type": "number",
+                "minimum": 0,
+                "default": 0,
+                "errorMessage": "MAD cutoff for log1p_total_counts must be a non-negative number. 0 disables MAD filtering for this metric.",
+                "meta": ["log1p_total_counts_nmads"]
+            },
+            "log1p_n_genes_by_counts_nmads": {
+                "type": "number",
+                "minimum": 0,
+                "default": 0,
+                "errorMessage": "MAD cutoff for log1p_n_genes_by_counts must be a non-negative number. 0 disables MAD filtering for this metric.",
+                "meta": ["log1p_n_genes_by_counts_nmads"]
+            },
+            "pct_counts_in_top_20_genes_nmads": {
+                "type": "number",
+                "minimum": 0,
+                "default": 0,
+                "errorMessage": "MAD cutoff for pct_counts_in_top_20_genes must be a non-negative number. 0 disables MAD filtering for this metric.",
+                "meta": ["pct_counts_in_top_20_genes_nmads"]
+            },
+            "pct_counts_mt_nmads": {
+                "type": "number",
+                "minimum": 0,
+                "default": 0,
+                "errorMessage": "MAD cutoff for pct_counts_mt must be a non-negative number. 0 disables MAD filtering for this metric.",
+                "meta": ["pct_counts_mt_nmads"]
+            },
             "expected_cells": {
                 "type": "integer",
                 "minimum": 1,

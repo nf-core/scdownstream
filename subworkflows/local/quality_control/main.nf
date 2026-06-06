@@ -136,6 +136,10 @@ workflow QUALITY_CONTROL {
             max_mito_percentage: meta.max_mito_percentage ?: 100
             min_ribo_percentage: meta.min_ribo_percentage ?: 0
             max_hb_percentage: meta.max_hb_percentage ?: 100
+            log1p_total_counts_nmads: meta.log1p_total_counts_nmads ?: 0
+            log1p_n_genes_by_counts_nmads: meta.log1p_n_genes_by_counts_nmads ?: 0
+            pct_counts_in_top_20_genes_nmads: meta.pct_counts_in_top_20_genes_nmads ?: 0
+            pct_counts_mt_nmads: meta.pct_counts_mt_nmads ?: 0
         }
     SCANPY_FILTER (
         ch_filtering.h5ad,
@@ -147,6 +151,10 @@ workflow QUALITY_CONTROL {
         ch_filtering.max_mito_percentage,
         ch_filtering.min_ribo_percentage,
         ch_filtering.max_hb_percentage,
+        ch_filtering.log1p_total_counts_nmads,
+        ch_filtering.log1p_n_genes_by_counts_nmads,
+        ch_filtering.pct_counts_in_top_20_genes_nmads,
+        ch_filtering.pct_counts_mt_nmads,
         mito_genes ?: []
     )
     ch_h5ad = SCANPY_FILTER.out.h5ad
