@@ -12,10 +12,11 @@ nextflow_pipeline {
                 outdir              = "$outputDir"
                 input               = null
                 base_adata          = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
-                base_embeddings     = 'symphony'
+                base_embeddings     = 'scvi'
                 cluster_global      = false
                 cluster_per_label   = true
                 base_label_col      = 'sample'
+                analysis_plan       = "${projectDir}/tests/analysis_plan_sub.csv"
             }
         }
 
