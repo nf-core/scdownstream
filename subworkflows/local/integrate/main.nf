@@ -12,6 +12,14 @@ include { SEURAT_INTEGRATION } from '../../../modules/local/seurat/integration'
 include { ADATA_READRDS      } from '../../../modules/local/adata/readrds'
 include { SCIMILARITY        } from '../scimilarity'
 
+def integrationMeta(meta, method) {
+    def subset_suffix = meta.subset ? "-${meta.subset}" : ""
+    meta + [
+        id: "${method}${subset_suffix}",
+        integration: method,
+    ]
+}
+
 workflow INTEGRATE {
     take:
     ch_h5ad                     // channel: [ merged, h5ad ]
@@ -75,7 +83,7 @@ workflow INTEGRATE {
 
     if (methods.contains('seurat')) {
         SEURAT_INTEGRATION (
-            ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'seurat'], h5ad] }, "batch"
+            ch_h5ad_hvg.map { meta, h5ad -> [integrationMeta(meta, 'seurat'), h5ad] }, "batch"
         )
         ch_versions = ch_versions.mix(SEURAT_INTEGRATION.out.versions)
         ch_integrations = ch_integrations.mix(SEURAT_INTEGRATION.out.h5ad)
@@ -84,7 +92,7 @@ workflow INTEGRATE {
     if (methods.contains('scvi')) {
         SCVITOOLS_SCVI (
             (scvi_model ? ch_h5ad : ch_h5ad_hvg)
-                .map { _meta, h5ad -> [[id: 'scvi'], h5ad] },
+                .map { meta, h5ad -> [integrationMeta(meta, 'scvi'), h5ad] },
             scvi_model
                 ? channel.value([[id: 'scvi'], scvi_model])
                 : [[], []],
@@ -100,7 +108,7 @@ workflow INTEGRATE {
     if (methods.contains('scanvi')) {
         SCVITOOLS_SCANVI (
             (scvi_model ? ch_h5ad : ch_h5ad_hvg)
-                .map { _meta, h5ad -> [[id: 'scanvi'], h5ad] },
+                .map { meta, h5ad -> [integrationMeta(meta, 'scanvi'), h5ad] },
             scanvi_model
                 ? channel.value([[id: 'scanvi'], scanvi_model])
                 : methods.contains('scvi')
@@ -120,7 +128,7 @@ workflow INTEGRATE {
     if (methods.contains('symphony')) {
         if (symphony_reference) {
             SYMPHONY_MAPEMBEDDING (
-                ch_h5ad.map { _meta, h5ad -> [[id: 'symphony'], h5ad] },
+                ch_h5ad.map { meta, h5ad -> [integrationMeta(meta, 'symphony'), h5ad] },
                 channel.value([[id: 'symphony'], symphony_reference]),
                 "batch",
                 "X"
@@ -131,7 +139,7 @@ workflow INTEGRATE {
         }
         else {
             SYMPHONY_HARMONYINTEGRATE (
-                ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'symphony'], h5ad] },
+                ch_h5ad_hvg.map { meta, h5ad -> [integrationMeta(meta, 'symphony'), h5ad] },
                 "batch",
                 "X"
             )
@@ -143,7 +151,7 @@ workflow INTEGRATE {
 
     if (methods.contains('bbknn')) {
         SCANPY_BBKNN (
-            ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'bbknn'], h5ad] },
+            ch_h5ad_hvg.map { meta, h5ad -> [integrationMeta(meta, 'bbknn'), h5ad] },
             "batch"
         )
         ch_versions = ch_versions.mix(SCANPY_BBKNN.out.versions)
@@ -152,7 +160,7 @@ workflow INTEGRATE {
 
     if (methods.contains('combat')) {
         SCANPY_COMBAT (
-            ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'combat'], h5ad] },
+            ch_h5ad_hvg.map { meta, h5ad -> [integrationMeta(meta, 'combat'), h5ad] },
             "batch"
         )
         ch_versions = ch_versions.mix(SCANPY_COMBAT.out.versions)
@@ -162,7 +170,7 @@ workflow INTEGRATE {
 
     if (methods.contains('pca')) {
         SCANPY_PCA (
-            ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'pca'], h5ad] },
+            ch_h5ad_hvg.map { meta, h5ad -> [integrationMeta(meta, 'pca'), h5ad] },
             "X_emb"
         )
         ch_versions = ch_versions.mix(SCANPY_PCA.out.versions)
@@ -172,7 +180,7 @@ workflow INTEGRATE {
 
     if (methods.contains('expimap')) {
         SCARCHES_EXPIMAP (
-            ch_h5ad_hvg.map { _meta, h5ad -> [[id: 'expimap'], h5ad] },
+            ch_h5ad_hvg.map { meta, h5ad -> [integrationMeta(meta, 'expimap'), h5ad] },
             expimap_gmt
             ? channel.value([[id: 'expimap'], file(expimap_gmt, checkIfExists: true)])
             : channel.value([[id: 'expimap'], file("${projectDir}/assets/databases/expimap/pathways.gmt", checkIfExists: true)]),
@@ -186,7 +194,7 @@ workflow INTEGRATE {
 
     if (methods.contains('scimilarity')) {
         SCIMILARITY (
-            ch_h5ad.map { _meta, h5ad -> [[id: 'scimilarity'], h5ad] },
+            ch_h5ad.map { meta, h5ad -> [integrationMeta(meta, 'scimilarity'), h5ad] },
             scimilarity_model,
         )
         ch_versions = ch_versions.mix(SCIMILARITY.out.versions)

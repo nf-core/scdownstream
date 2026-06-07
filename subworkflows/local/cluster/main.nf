@@ -20,15 +20,25 @@ workflow CLUSTER {
     ch_multiqc_files = channel.empty()
     ch_h5ad = channel.empty()
 
+    ch_input_by_subset = ch_input.branch { meta, _h5ad ->
+        already_split: meta.subset != null
+        needs_split: true
+    }
+
+    ch_h5ad = ch_h5ad.mix(
+        ch_input_by_subset.already_split
+            .map { meta, h5ad -> [meta + [already_split: true], h5ad] }
+    )
+
     if (global) {
         ch_h5ad = ch_h5ad
-            .mix(ch_input
+            .mix(ch_input_by_subset.needs_split
                 .map { meta, h5ad -> [meta + [subset: "global"], h5ad] })
     }
 
     if (per_label) {
         SPLITCOL (
-            ch_input,
+            ch_input_by_subset.needs_split,
             split_col
         )
 
@@ -57,14 +67,26 @@ workflow CLUSTER {
     ch_h5ad = NEIGHBORS.out.h5ad.mix(ch_h5ad.has_neighbors)
     ch_h5ad_neighbours = NEIGHBORS.out.h5ad
 
+    ch_h5ad_for_umap = ch_h5ad
+        .map { meta, h5ad ->
+            meta.already_split
+                ? [meta + [id: meta.id + "-umap", cluster_id: meta.id], h5ad]
+                : [meta, h5ad]
+        }
+
     UMAP (
-        ch_h5ad
+        ch_h5ad_for_umap
     )
     ch_obsm = ch_obsm.mix(UMAP.out.obsm)
 
     ch_resolutions = channel.fromList(default_resolutions)
 
     ch_h5ad_for_leiden = UMAP.out.h5ad
+        .map { meta, h5ad ->
+            meta.cluster_id
+                ? [meta.findAll { key, _value -> key != 'cluster_id' } + [id: meta.cluster_id], h5ad]
+                : [meta, h5ad]
+        }
         .combine(ch_resolutions)
         .filter { meta, _h5ad, resolution ->
             analysis_plan_rows.any { row ->

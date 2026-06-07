@@ -173,8 +173,8 @@ def analysisPlanToList() {
 // Check and validate pipeline parameters
 //
 def validateInputParameters() {
-    if (!params.input && !(params.base_adata && params.base_embeddings && params.base_label_col)) {
-        throw new Exception("Either an input samplesheet or (base_adata && base_embeddings && base_label_col) must be provided")
+    if (!params.input && !(params.base_adata && params.base_label_col && (params.base_embeddings || params.integrate_per_label))) {
+        throw new Exception("Either an input samplesheet or (base_adata && base_label_col && (base_embeddings || integrate_per_label)) must be provided")
     }
 
     if (params.qc_only && !params.input) {
@@ -186,19 +186,19 @@ def validateInputParameters() {
         throw new Exception("Only scvi, scanvi, scimilarity and symphony integration methods are supported if base_adata is provided")
     }
 
-    if (params.base_adata && 'scvi' in integration_methods && !params.scvi_model) {
+    if (params.input && params.base_adata && 'scvi' in integration_methods && !params.scvi_model) {
         throw new Exception("If base_adata is provided and scvi is used as integration method, scvi_model must be provided.")
     }
 
-    if (params.base_adata && 'scanvi' in integration_methods && !params.scanvi_model) {
+    if (params.input && params.base_adata && 'scanvi' in integration_methods && !params.scanvi_model) {
         throw new Exception("If base_adata is provided and scanvi is used as integration method, scanvi_model must be provided.")
     }
 
-    if (params.base_adata && 'scimilarity' in integration_methods && !params.scimilarity_model) {
+    if (params.input && params.base_adata && 'scimilarity' in integration_methods && !params.scimilarity_model) {
         throw new Exception("If base_adata is provided and scimilarity is used as integration method, scimilarity_model must be provided.")
     }
 
-    if (params.base_adata && 'symphony' in integration_methods && !params.symphony_reference) {
+    if (params.input && params.base_adata && 'symphony' in integration_methods && !params.symphony_reference) {
         throw new Exception("If base_adata is provided and symphony is used as integration method, symphony_reference must be provided.")
     }
 

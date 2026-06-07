@@ -70,6 +70,7 @@ workflow NFCORE_SCDOWNSTREAM {
     base_embeddings               //   value: string
     base_label_col                //   value: string
     base_condition_col            //   value: string
+    integrate_per_label           //   value: boolean
     cluster_per_label             //   value: boolean
     cluster_global                //   value: boolean
     clustering_resolutions        //   value: string
@@ -128,6 +129,7 @@ workflow NFCORE_SCDOWNSTREAM {
         base_embeddings,
         base_label_col,
         base_condition_col,
+        integrate_per_label,
         cluster_per_label,
         cluster_global,
         clustering_resolutions,
@@ -228,6 +230,7 @@ workflow {
         params.base_embeddings,
         params.base_label_col,
         params.base_condition_col,
+        params.integrate_per_label,
         params.cluster_per_label,
         params.cluster_global,
         params.clustering_resolutions,

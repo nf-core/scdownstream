@@ -232,10 +232,15 @@
                     "default": "condition",
                     "description": "The column in the base AnnData object that contains the condition (e.g. disease state, treatment) information."
                 },
+                "integrate_per_label": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "In base_adata-only runs, split the base AnnData by base_label_col and run the selected integration_methods independently for each group before clustering."
+                },
                 "base_embeddings": {
                     "type": "string",
-                    "description": "The keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`). Required if `input` is not provided - otherwise it is ignored.",
-                    "help_text": "If the `input` parameter is not provided (no new data to add), integration will not be performed. In order to be able to utilize existing integration results, you need to provide the keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`).",
+                    "description": "The keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`). Required if input is not provided and integrate_per_label is false; otherwise it is ignored.",
+                    "help_text": "If the `input` parameter is not provided (no new data to add), integration is skipped unless `integrate_per_label` is true. To reuse existing integration results, provide the keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`).",
                     "pattern": "^((scvi|scanvi|symphony|bbknn|combat|seurat)(,(scvi|scanvi|symphony|bbknn|combat|seurat))*)?$"
                 }
             }
