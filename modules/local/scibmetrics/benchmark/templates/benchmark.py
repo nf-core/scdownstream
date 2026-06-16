@@ -54,13 +54,11 @@ def _stratified_subsample(adata, n_max, strategy, seed, label_key="label", batch
 
     rng = np.random.default_rng(seed)
     if strategy == "stratified_label":
-        group_keys = adata.obs[label_key].astype(str)
+        group_indices = adata.obs.groupby(label_key, observed=True).indices
     elif strategy == "stratified_label_batch":
-        group_keys = (
-            adata.obs[label_key].astype(str)
-            + "\0"
-            + adata.obs[batch_key].astype(str)
-        )
+        group_indices = adata.obs.groupby(
+            [label_key, batch_key], observed=True
+        ).indices
     else:
         raise SystemExit(
             f"Unknown scib_subsample_strategy '{strategy}'; "
@@ -69,8 +67,8 @@ def _stratified_subsample(adata, n_max, strategy, seed, label_key="label", batch
 
     frac = n_max / n_before
     selected = []
-    for group in group_keys.unique():
-        idx = np.flatnonzero((group_keys == group).to_numpy())
+    for idx in group_indices.values():
+        idx = np.asarray(idx)
         n_take = max(1, min(len(idx), int(round(len(idx) * frac))))
         if n_take >= len(idx):
             selected.extend(idx.tolist())
