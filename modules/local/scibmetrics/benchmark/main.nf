@@ -11,9 +11,10 @@ process SCIBMETRICS_BENCHMARK {
     tuple val(meta), path(h5ad, arity: 1)
 
     output:
-    path "${prefix}_metrics.tsv", emit: metrics
-    path "${prefix}_mqc.json"   , emit: multiqc_files
-    path "versions.yml"         , emit: versions, topic: versions
+    path "${prefix}_metrics.tsv"         , emit: metrics
+    path "${prefix}_benchmark_info.json" , emit: benchmark_info
+    path "${prefix}_mqc.json"            , emit: multiqc_files
+    path "versions.yml"                  , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -26,6 +27,7 @@ process SCIBMETRICS_BENCHMARK {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}_metrics.tsv
+    touch ${prefix}_benchmark_info.json
     touch ${prefix}_mqc.json
     touch versions.yml
     """

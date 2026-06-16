@@ -353,6 +353,35 @@
                     "default": false,
                     "description": "Run scib-metrics integration benchmarking on each integration output (samplesheet / --input runs only; not run for base_adata-only extension without --input)."
                 },
+                "scib_max_cells": {
+                    "type": "integer",
+                    "default": null,
+                    "minimum": 1,
+                    "description": "Optional maximum number of cells for scib-metrics benchmarking after integration. When set, cells are subsampled stratified by label and batch before metric computation."
+                },
+                "scib_subsample_strategy": {
+                    "type": "string",
+                    "default": "stratified_label_batch",
+                    "enum": ["none", "stratified_label", "stratified_label_batch"],
+                    "description": "Stratified subsampling strategy used when scib_max_cells is set. Uniform sampling is not used; if strategy is 'none' while scib_max_cells is set, stratified_label_batch is applied with a warning."
+                },
+                "scib_subsample_seed": {
+                    "type": "integer",
+                    "default": 42,
+                    "description": "Random seed for reproducible scib-metrics cell subsampling."
+                },
+                "scib_metric_profile": {
+                    "type": "string",
+                    "default": "fast",
+                    "enum": ["fast", "full"],
+                    "description": "scib-metrics metric set. 'fast' disables expensive metrics (isolated labels, k-means NMI/ARI, PCR comparison) for routine runs; 'full' runs the default scib-metrics benchmark suite for publication-style scoring."
+                },
+                "scib_neighbor_backend": {
+                    "type": "string",
+                    "default": "default",
+                    "enum": ["default", "faiss"],
+                    "description": "Nearest-neighbor backend for graph-based scib-metrics. 'faiss' uses CPU brute-force search and is often faster on large subsampled objects."
+                },
                 "rankgenesgroups_method": {
                     "type": "string",
                     "default": "wilcoxon",
