@@ -20,6 +20,10 @@ def integrationMeta(meta, method) {
     ]
 }
 
+def integrationKey(meta) {
+    meta.subset ?: 'all'
+}
+
 workflow INTEGRATE {
     take:
     ch_h5ad                     // channel: [ merged, h5ad ]
@@ -35,6 +39,9 @@ workflow INTEGRATE {
     symphony_reference           // path
     expimap_gmt                 // path
     condition_col               // string
+    batch_col                   // string
+    scanvi_label_col            // string
+    scanvi_unlabeled_category   // string
 
     main:
     ch_versions = channel.empty()
@@ -83,7 +90,8 @@ workflow INTEGRATE {
 
     if (methods.contains('seurat')) {
         SEURAT_INTEGRATION (
-            ch_h5ad_hvg.map { meta, h5ad -> [integrationMeta(meta, 'seurat'), h5ad] }, "batch"
+            ch_h5ad_hvg.map { meta, h5ad -> [integrationMeta(meta, 'seurat'), h5ad] },
+            batch_col
         )
         ch_versions = ch_versions.mix(SEURAT_INTEGRATION.out.versions)
         ch_integrations = ch_integrations.mix(SEURAT_INTEGRATION.out.h5ad)
@@ -96,7 +104,7 @@ workflow INTEGRATE {
             scvi_model
                 ? channel.value([[id: 'scvi'], scvi_model])
                 : [[], []],
-            "batch",
+            batch_col,
             scvi_categorical_covariates,
             scvi_continuous_covariates,
         )
@@ -106,16 +114,33 @@ workflow INTEGRATE {
     }
 
     if (methods.contains('scanvi')) {
+        ch_scanvi_h5ad = (scvi_model ? ch_h5ad : ch_h5ad_hvg)
+            .map { meta, h5ad -> [integrationMeta(meta, 'scanvi'), h5ad] }
+
+        if (!scanvi_model && methods.contains('scvi')) {
+            ch_scanvi_reference_model = ch_scanvi_h5ad
+                .map { meta, h5ad -> [integrationKey(meta), meta, h5ad] }
+                .join(
+                    SCVITOOLS_SCVI.out.model
+                        .map { meta, model -> [integrationKey(meta), meta, model] }
+                )
+                .multiMap { _key, meta, h5ad, meta2, model ->
+                    h5ad: [meta, h5ad]
+                    reference_model: [meta2, model]
+                }
+        }
+
         SCVITOOLS_SCANVI (
-            (scvi_model ? ch_h5ad : ch_h5ad_hvg)
-                .map { meta, h5ad -> [integrationMeta(meta, 'scanvi'), h5ad] },
+            !scanvi_model && methods.contains('scvi')
+                ? ch_scanvi_reference_model.h5ad
+                : ch_scanvi_h5ad,
             scanvi_model
                 ? channel.value([[id: 'scanvi'], scanvi_model])
                 : methods.contains('scvi')
-                    ? SCVITOOLS_SCVI.out.model
+                    ? ch_scanvi_reference_model.reference_model
                     : [[], []],
-            ["label", "Unknown"],
-            "batch",
+            [scanvi_label_col, scanvi_unlabeled_category],
+            batch_col,
             scvi_categorical_covariates,
             scvi_continuous_covariates,
         )
@@ -130,7 +155,7 @@ workflow INTEGRATE {
             SYMPHONY_MAPEMBEDDING (
                 ch_h5ad.map { meta, h5ad -> [integrationMeta(meta, 'symphony'), h5ad] },
                 channel.value([[id: 'symphony'], symphony_reference]),
-                "batch",
+                batch_col,
                 "X"
             )
             ch_versions = ch_versions.mix(SYMPHONY_MAPEMBEDDING.out.versions)
@@ -140,7 +165,7 @@ workflow INTEGRATE {
         else {
             SYMPHONY_HARMONYINTEGRATE (
                 ch_h5ad_hvg.map { meta, h5ad -> [integrationMeta(meta, 'symphony'), h5ad] },
-                "batch",
+                batch_col,
                 "X"
             )
             ch_versions = ch_versions.mix(SYMPHONY_HARMONYINTEGRATE.out.versions)
@@ -152,7 +177,7 @@ workflow INTEGRATE {
     if (methods.contains('bbknn')) {
         SCANPY_BBKNN (
             ch_h5ad_hvg.map { meta, h5ad -> [integrationMeta(meta, 'bbknn'), h5ad] },
-            "batch"
+            batch_col
         )
         ch_versions = ch_versions.mix(SCANPY_BBKNN.out.versions)
         ch_integrations = ch_integrations.mix(SCANPY_BBKNN.out.h5ad)
@@ -161,7 +186,7 @@ workflow INTEGRATE {
     if (methods.contains('combat')) {
         SCANPY_COMBAT (
             ch_h5ad_hvg.map { meta, h5ad -> [integrationMeta(meta, 'combat'), h5ad] },
-            "batch"
+            batch_col
         )
         ch_versions = ch_versions.mix(SCANPY_COMBAT.out.versions)
         ch_integrations = ch_integrations.mix(SCANPY_COMBAT.out.h5ad)

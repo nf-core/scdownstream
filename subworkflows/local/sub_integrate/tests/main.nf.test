@@ -31,6 +31,9 @@ nextflow_workflow {
                 input[10] = null
                 input[11] = null
                 input[12] = 'condition'
+                input[13] = 'batch'
+                input[14] = 'label'
+                input[15] = 'Unknown'
                 """
             }
         }
@@ -48,6 +51,52 @@ nextflow_workflow {
             workflow.out.obsm.each { obsm ->
                 assert path(obsm).getFileName().toString().startsWith("X_pca-")
             }
+        }
+
+    }
+
+    test("Should pair scVI models with scANVI by subset - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'base'],
+                    file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'sample'
+                input[2] = -1
+                input[3] = []
+                input[4] = ['scvi', 'scanvi']
+                input[5] = null
+                input[6] = null
+                input[7] = ''
+                input[8] = ''
+                input[9] = 'https://zenodo.org/records/10685499/files/model_v1.1.tar.gz'
+                input[10] = null
+                input[11] = null
+                input[12] = 'condition'
+                input[13] = 'batch'
+                input[14] = 'label'
+                input[15] = 'Unknown'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def scanvi_integrations = workflow.out.integrations.findAll { meta, _h5ad -> meta.integration == 'scanvi' }
+            assert scanvi_integrations.size() > 1
+            scanvi_integrations.each { meta, _h5ad ->
+                assert meta.subset
+                assert meta.id == "scanvi-${meta.subset}"
+            }
+            assert snapshot(workflow.out).match()
         }
 
     }
@@ -78,6 +127,9 @@ nextflow_workflow {
                 input[10] = null
                 input[11] = null
                 input[12] = 'condition'
+                input[13] = 'batch'
+                input[14] = 'label'
+                input[15] = 'Unknown'
                 """
             }
         }

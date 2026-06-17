@@ -69,6 +69,9 @@ workflow SCDOWNSTREAM {
     base_embeddings               //   value: string
     base_label_col                //   value: string
     base_condition_col            //   value: string
+    base_batch_col                //   value: string
+    base_scanvi_label_col         //   value: string
+    base_scanvi_unknown_label     //   value: string
     integrate_per_label           //   value: boolean
     cluster_per_label             //   value: boolean
     cluster_global                //   value: boolean
@@ -242,7 +245,10 @@ workflow SCDOWNSTREAM {
                 scimilarity_model,
                 symphony_reference,
                 expimap_gmt,
-                condition_col
+                condition_col,
+                base_batch_col,
+                base_scanvi_label_col,
+                base_scanvi_unknown_label
             )
             ch_integrations = ch_integrations.mix(SUB_INTEGRATE.out.integrations)
             ch_obs = ch_obs.mix(SUB_INTEGRATE.out.obs)

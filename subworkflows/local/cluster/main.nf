@@ -52,7 +52,10 @@ workflow CLUSTER {
     ch_h5ad = ch_h5ad
         .map {
             meta, h5ad ->
-            [meta + [id: meta.integration + "-" + meta.subset], h5ad]
+            def cluster_id = meta.subset != null
+                ? meta.integration + "-" + meta.subset
+                : meta.integration
+            [meta + [id: cluster_id], h5ad]
         }
 
     ch_h5ad = ch_h5ad.branch { meta, _h5ad ->

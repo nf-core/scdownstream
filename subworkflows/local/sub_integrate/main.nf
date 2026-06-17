@@ -16,6 +16,9 @@ workflow SUB_INTEGRATE {
     symphony_reference           //    path: file or null
     expimap_gmt                 //   value: string
     condition_col               //   value: string
+    batch_col                   //   value: string
+    scanvi_label_col            //   value: string
+    scanvi_unlabeled_category   //   value: string
 
     main:
     SPLITCOL (
@@ -42,7 +45,10 @@ workflow SUB_INTEGRATE {
         scimilarity_model,
         symphony_reference,
         expimap_gmt,
-        condition_col
+        condition_col,
+        batch_col,
+        scanvi_label_col,
+        scanvi_unlabeled_category
     )
 
     emit:

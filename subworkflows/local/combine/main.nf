@@ -55,7 +55,10 @@ workflow COMBINE {
         scimilarity_model,
         symphony_reference,
         expimap_gmt,
-        condition_col
+        condition_col,
+        "batch",
+        "label",
+        "Unknown"
     )
     ch_var           = ch_var.mix(INTEGRATE.out.var)
 
