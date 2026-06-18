@@ -189,6 +189,9 @@ workflow SCDOWNSTREAM {
                 symphony_reference,
                 expimap_gmt,
                 condition_col,
+                base_batch_col,
+                base_scanvi_label_col,
+                base_scanvi_unknown_label,
                 scib,
             )
             ch_obs = ch_obs.mix(COMBINE.out.obs)

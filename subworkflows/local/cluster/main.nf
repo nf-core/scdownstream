@@ -102,7 +102,7 @@ workflow CLUSTER {
             [
                 meta + [
                     resolution: resolution,
-                    id: meta.integration + "-" + meta.subset + "-" + resolution,
+                    id: meta.id + "-" + resolution,
                 ],
                 h5ad,
             ]

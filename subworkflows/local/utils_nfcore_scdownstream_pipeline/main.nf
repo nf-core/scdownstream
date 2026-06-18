@@ -182,23 +182,26 @@ def validateInputParameters() {
     }
 
     def integration_methods = params.integration_methods.split(',').collect { it -> it.trim().toLowerCase() }
-    if (params.input && params.base_adata && (integration_methods - ['scvi', 'scanvi', 'scimilarity', 'symphony']).size() > 0) {
+    def is_extension = params.input && params.base_adata
+    def is_per_label_base_integration = !params.input && params.base_adata && params.integrate_per_label
+
+    if (is_extension && (integration_methods - ['scvi', 'scanvi', 'scimilarity', 'symphony']).size() > 0) {
         throw new Exception("Only scvi, scanvi, scimilarity and symphony integration methods are supported if base_adata is provided")
     }
 
-    if (params.input && params.base_adata && 'scvi' in integration_methods && !params.scvi_model) {
+    if (is_extension && 'scvi' in integration_methods && !params.scvi_model) {
         throw new Exception("If base_adata is provided and scvi is used as integration method, scvi_model must be provided.")
     }
 
-    if (params.input && params.base_adata && 'scanvi' in integration_methods && !params.scanvi_model) {
+    if (is_extension && 'scanvi' in integration_methods && !params.scanvi_model) {
         throw new Exception("If base_adata is provided and scanvi is used as integration method, scanvi_model must be provided.")
     }
 
-    if (params.input && params.base_adata && 'scimilarity' in integration_methods && !params.scimilarity_model) {
+    if ((is_extension || is_per_label_base_integration) && 'scimilarity' in integration_methods && !params.scimilarity_model) {
         throw new Exception("If base_adata is provided and scimilarity is used as integration method, scimilarity_model must be provided.")
     }
 
-    if (params.input && params.base_adata && 'symphony' in integration_methods && !params.symphony_reference) {
+    if (is_extension && 'symphony' in integration_methods && !params.symphony_reference) {
         throw new Exception("If base_adata is provided and symphony is used as integration method, symphony_reference must be provided.")
     }
 
