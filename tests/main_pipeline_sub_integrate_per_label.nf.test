@@ -14,7 +14,6 @@ nextflow_pipeline {
                 base_adata          = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
                 base_embeddings     = null
                 base_label_col      = 'sample'
-                base_batch_col      = 'batch'
                 integrate_per_label = true
                 integration_methods = 'pca'
                 integration_hvgs    = -1

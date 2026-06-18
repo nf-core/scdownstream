@@ -325,8 +325,7 @@ The pipeline will then re-execute the tasks after the integration step without p
 Most interestingly, the pipeline will generate cell type specific UMAPs, clusterings, and PAGA graphs, if [`clustering_per_label`](https://nf-co.re/scdownstream/parameters#clustering_per_label) is set to `true`.
 
 If [`integrate_per_label`](https://nf-co.re/scdownstream/parameters#integrate_per_label) is enabled, [`base_label_col`](https://nf-co.re/scdownstream/parameters#base_label_col) is the split/grouping column, not necessarily the supervised cell-type label used by integration methods.
-Use [`base_batch_col`](https://nf-co.re/scdownstream/parameters#base_batch_col) to select the batch column for batch-aware integration methods.
-When using scANVI, use [`base_scanvi_label_col`](https://nf-co.re/scdownstream/parameters#base_scanvi_label_col) and [`base_scanvi_unknown_label`](https://nf-co.re/scdownstream/parameters#base_scanvi_unknown_label) to select the supervised labels and unlabeled category.
+Because [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata) is expected to be a previous pipeline output, batch-aware methods use the standard `batch` column, and scANVI uses the standard `label` column with `Unknown` as the unlabeled category.
 Subset names in `analysis_plan` match the filesystem-safe keys produced by splitting the AnnData object; spaces in group values are replaced with underscores.
 Per-label integrations are treated as already split for clustering, so the pipeline creates subset-specific embedding keys such as `X_pca-SRR28679756_pca` and UMAP keys such as `X_pca-SRR28679756_umap` in the finalized base AnnData.
 

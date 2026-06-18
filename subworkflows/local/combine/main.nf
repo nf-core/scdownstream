@@ -20,9 +20,6 @@ workflow COMBINE {
     symphony_reference           //   value: string
     expimap_gmt                 //   value: string
     condition_col               //   value: string
-    batch_col                   //   value: string
-    scanvi_label_col            //   value: string
-    scanvi_unlabeled_category   //   value: string
     scib                        //   value: boolean
 
     main:
@@ -58,10 +55,7 @@ workflow COMBINE {
         scimilarity_model,
         symphony_reference,
         expimap_gmt,
-        condition_col,
-        batch_col,
-        scanvi_label_col,
-        scanvi_unlabeled_category
+        condition_col
     )
     ch_var           = ch_var.mix(INTEGRATE.out.var)
 

@@ -39,9 +39,6 @@ workflow INTEGRATE {
     symphony_reference           // path
     expimap_gmt                 // path
     condition_col               // string
-    batch_col                   // string
-    scanvi_label_col            // string
-    scanvi_unlabeled_category   // string
 
     main:
     ch_versions = channel.empty()
@@ -91,7 +88,7 @@ workflow INTEGRATE {
     if (methods.contains('seurat')) {
         SEURAT_INTEGRATION (
             ch_h5ad_hvg.map { meta, h5ad -> [integrationMeta(meta, 'seurat'), h5ad] },
-            batch_col
+            "batch"
         )
         ch_versions = ch_versions.mix(SEURAT_INTEGRATION.out.versions)
         ch_integrations = ch_integrations.mix(SEURAT_INTEGRATION.out.h5ad)
@@ -104,7 +101,7 @@ workflow INTEGRATE {
             scvi_model
                 ? channel.value([[id: 'scvi'], scvi_model])
                 : [[], []],
-            batch_col,
+            "batch",
             scvi_categorical_covariates,
             scvi_continuous_covariates,
         )
@@ -139,8 +136,8 @@ workflow INTEGRATE {
                 : methods.contains('scvi')
                     ? ch_scanvi_reference_model.reference_model
                     : [[], []],
-            [scanvi_label_col, scanvi_unlabeled_category],
-            batch_col,
+            ["label", "Unknown"],
+            "batch",
             scvi_categorical_covariates,
             scvi_continuous_covariates,
         )
@@ -155,7 +152,7 @@ workflow INTEGRATE {
             SYMPHONY_MAPEMBEDDING (
                 ch_h5ad.map { meta, h5ad -> [integrationMeta(meta, 'symphony'), h5ad] },
                 channel.value([[id: 'symphony'], symphony_reference]),
-                batch_col,
+                "batch",
                 "X"
             )
             ch_versions = ch_versions.mix(SYMPHONY_MAPEMBEDDING.out.versions)
@@ -165,7 +162,7 @@ workflow INTEGRATE {
         else {
             SYMPHONY_HARMONYINTEGRATE (
                 ch_h5ad_hvg.map { meta, h5ad -> [integrationMeta(meta, 'symphony'), h5ad] },
-                batch_col,
+                "batch",
                 "X"
             )
             ch_versions = ch_versions.mix(SYMPHONY_HARMONYINTEGRATE.out.versions)
@@ -177,7 +174,7 @@ workflow INTEGRATE {
     if (methods.contains('bbknn')) {
         SCANPY_BBKNN (
             ch_h5ad_hvg.map { meta, h5ad -> [integrationMeta(meta, 'bbknn'), h5ad] },
-            batch_col
+            "batch"
         )
         ch_versions = ch_versions.mix(SCANPY_BBKNN.out.versions)
         ch_integrations = ch_integrations.mix(SCANPY_BBKNN.out.h5ad)
@@ -186,7 +183,7 @@ workflow INTEGRATE {
     if (methods.contains('combat')) {
         SCANPY_COMBAT (
             ch_h5ad_hvg.map { meta, h5ad -> [integrationMeta(meta, 'combat'), h5ad] },
-            batch_col
+            "batch"
         )
         ch_versions = ch_versions.mix(SCANPY_COMBAT.out.versions)
         ch_integrations = ch_integrations.mix(SCANPY_COMBAT.out.h5ad)

@@ -232,21 +232,6 @@
                     "default": "condition",
                     "description": "The column in the base AnnData object that contains the condition (e.g. disease state, treatment) information."
                 },
-                "base_batch_col": {
-                    "type": "string",
-                    "default": "batch",
-                    "description": "The column in the base AnnData object that contains batch information for integration methods used with integrate_per_label."
-                },
-                "base_scanvi_label_col": {
-                    "type": "string",
-                    "default": "label",
-                    "description": "The column in the base AnnData object that contains cell labels for scANVI when integrate_per_label is true and scanvi is selected."
-                },
-                "base_scanvi_unknown_label": {
-                    "type": "string",
-                    "default": "Unknown",
-                    "description": "The category in base_scanvi_label_col that should be treated as unlabeled by scANVI when integrate_per_label is true."
-                },
                 "integrate_per_label": {
                     "type": "boolean",
                     "default": false,
