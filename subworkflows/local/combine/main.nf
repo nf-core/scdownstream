@@ -78,14 +78,14 @@ workflow COMBINE {
     }
 
     ch_integrations = ch_integrations
-        .map{meta, file -> [meta + [integration: meta.id], file]}
+        .map { meta, file -> [meta + [id: meta.integration], file] }
 
     if (scib) {
         SCIBMETRICS_BENCHMARK (
             ch_integrations
                 // BBKNN corrects the neighborhood graph and does not produce a dense embedding
                 // Thus, it is not compatible with scib-metrics
-                .filter { meta, _h5ad -> meta.id != 'bbknn' }
+                .filter { meta, _h5ad -> meta.integration != 'bbknn' }
         )
         ch_multiqc_files = ch_multiqc_files.mix(SCIBMETRICS_BENCHMARK.out.multiqc_files)
     }

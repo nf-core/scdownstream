@@ -1,5 +1,5 @@
 include { ADATA_SPLITCOL as SPLITCOL } from '../../../modules/local/adata/splitcol'
-include { INTEGRATE                 } from '../integrate'
+include { INTEGRATE                  } from '../integrate'
 
 workflow SUB_INTEGRATE {
     take:
@@ -13,7 +13,7 @@ workflow SUB_INTEGRATE {
     scvi_categorical_covariates //   value: string
     scvi_continuous_covariates  //   value: string
     scimilarity_model           //   value: string
-    symphony_reference           //    path: file or null
+    symphony_reference          //    path: file or null
     expimap_gmt                 //   value: string
     condition_col               //   value: string
 
@@ -26,7 +26,14 @@ workflow SUB_INTEGRATE {
     ch_h5ad_split = SPLITCOL.out.h5ad
         .transpose()
         .map { meta, h5ad ->
-            [meta + [subset: h5ad.simpleName], h5ad]
+            def subset = h5ad.simpleName
+            [
+                meta + [
+                    id: subset,
+                    subset: subset,
+                ],
+                h5ad,
+            ]
         }
 
     INTEGRATE (
@@ -45,8 +52,13 @@ workflow SUB_INTEGRATE {
         condition_col
     )
 
+    ch_integrations = INTEGRATE.out.integrations
+        .map { meta, h5ad ->
+            [meta + [id: "${meta.integration}-${meta.subset}"], h5ad]
+        }
+
     emit:
-    integrations = INTEGRATE.out.integrations // channel: [ meta, h5ad ]
+    integrations = ch_integrations            // channel: [ meta, h5ad ]
     obs          = INTEGRATE.out.obs          // channel: [ pkl ]
     var          = INTEGRATE.out.var          // channel: [ pkl ]
     obsm         = INTEGRATE.out.obsm         // channel: [ pkl ]
