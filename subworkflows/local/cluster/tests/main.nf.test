@@ -348,4 +348,124 @@ nextflow_workflow {
 
     }
 
+    test("Should cluster already-split inputs without global or per-label flags - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of(
+                    [
+                        [ id: 'pca-A', integration: 'pca', subset: 'A' ],
+                        file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'pca-B', integration: 'pca', subset: 'B' ],
+                        file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = false
+                input[2] = false
+                input[3] = 'sample'
+                input[4] = [[integration: null, subset: null, resolution: null, analyses: null]]
+                input[5] = ['0.5', '1']
+                input[6] = 'sample'
+                input[7] = 'X_scvi'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad_neighbors.size() == 2
+            assert workflow.out.h5ad_clustering.size() == 4
+            workflow.out.h5ad_neighbors.each { meta, _h5ad ->
+                assert meta.subset in ['A', 'B']
+                assert meta.id == "pca-${meta.subset}"
+            }
+            workflow.out.obsm.each { obsm ->
+                def name = path(obsm).getFileName().toString()
+                assert !name.contains('-umap_umap')
+                assert name ==~ /X_pca-[AB]_umap\.pkl/
+            }
+        }
+
+    }
+
+    test("Should emit BBKNN graph-ready objects in h5ad_neighbors - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'bbknn-global', integration: 'bbknn', subset: 'global' ],
+                        file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = false
+                input[2] = false
+                input[3] = ''
+                input[4] = [[integration: null, subset: null, resolution: null, analyses: null]]
+                input[5] = ['0.5']
+                input[6] = 'sample'
+                input[7] = 'X_emb'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad_neighbors.size() == 1
+            workflow.out.h5ad_neighbors.each { meta, _h5ad ->
+                assert meta.integration == 'bbknn'
+            }
+        }
+
+    }
+
+    test("Should attach analyses metadata from analysis plan - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', integration: 'pca' ],
+                        file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = false
+                input[2] = true
+                input[3] = ''
+                input[4] = [[integration: 'pca', subset: 'global', resolution: 0.5, analyses: 'paga,de']]
+                input[5] = ['0.5', '1']
+                input[6] = 'sample'
+                input[7] = 'X_scvi'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad_clustering.size() == 1
+            workflow.out.h5ad_clustering.each { meta, _h5ad ->
+                assert meta.analyses as Set == ['paga', 'de'] as Set
+            }
+        }
+
+    }
+
 }

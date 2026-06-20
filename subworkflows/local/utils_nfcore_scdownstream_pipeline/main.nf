@@ -169,6 +169,27 @@ def analysisPlanToList() {
         : [[integration: null, subset: null, resolution: null, analyses: null]]
 }
 
+def matchesAnalysisPlanRow(row, meta, resolution = null) {
+    (!row.integration || row.integration == meta.integration) &&
+    (!row.subset || row.subset == meta.subset) &&
+    (resolution == null || !row.resolution || (row.resolution as String) == (resolution as String))
+}
+
+def matchingAnalysisPlanRows(rows, meta, resolution = null) {
+    rows.findAll { row -> matchesAnalysisPlanRow(row, meta, resolution) }
+}
+
+def analysesFromPlanRows(rows) {
+    if (!rows || rows.any { !it.analyses }) {
+        return [:]
+    }
+    [
+        analyses: rows
+            .collectMany { row -> row.analyses.split(',')*.trim() }
+            .toSet(),
+    ]
+}
+
 //
 // Check and validate pipeline parameters
 //

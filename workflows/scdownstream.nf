@@ -282,25 +282,6 @@ workflow SCDOWNSTREAM {
             .map { meta, h5ad ->
                 [meta + [obs_key: "${meta.id}_leiden"], h5ad]
             }
-            .map { meta, h5ad ->
-                def matching_rows = analysis_plan.findAll { r ->
-                    (!r.integration || r.integration == meta.integration) &&
-                    (!r.subset || r.subset == meta.subset) &&
-                    (!r.resolution || (r.resolution as String) == (meta.resolution as String))
-                }
-                [meta, h5ad, matching_rows]
-            }
-            .filter { _meta, _h5ad, matching_rows -> matching_rows }
-            .map { meta, h5ad, matching_rows ->
-                def extra = matching_rows.any { row -> !row.analyses }
-                    ? [:]
-                    : [
-                        analyses: matching_rows
-                            .collectMany { row -> row.analyses.split(',')*.trim() }
-                            .toSet(),
-                    ]
-                [meta + extra, h5ad]
-            }
 
         PER_GROUP (
             // Run on each clustering resolution for each embedding
