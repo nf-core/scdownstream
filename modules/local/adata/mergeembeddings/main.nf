@@ -1,5 +1,5 @@
 process ADATA_MERGEEMBEDDINGS {
-    tag "${meta.id}"
+    tag "${meta.integration ?: meta.id}"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
@@ -20,11 +20,13 @@ process ADATA_MERGEEMBEDDINGS {
     task.ext.when == null || task.ext.when
 
     script:
-    prefix = task.ext.prefix ?: "${meta.id}"
+    integration_key = meta.integration ?: meta.id
+    prefix = task.ext.prefix ?: "${integration_key}"
     template('merge_embeddings.py')
 
     stub:
-    prefix = task.ext.prefix ?: "${meta.id}"
+    integration_key = meta.integration ?: meta.id
+    prefix = task.ext.prefix ?: "${integration_key}"
     """
     touch ${prefix}.h5ad
     touch ${prefix}.pkl
