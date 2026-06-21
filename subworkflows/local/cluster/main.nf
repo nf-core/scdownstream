@@ -50,11 +50,13 @@ workflow CLUSTER {
 
     ch_h5ad_for_leiden = UMAP.out.h5ad
         .combine(ch_resolutions)
-        .filter { meta, _h5ad, resolution ->
-            !matchingAnalysisPlanRows(analysis_plan_rows, meta, resolution).isEmpty()
-        }
         .map { meta, h5ad, resolution ->
-            def matching_rows = matchingAnalysisPlanRows(analysis_plan_rows, meta, resolution)
+            [matchingAnalysisPlanRows(analysis_plan_rows, meta, resolution), meta, h5ad, resolution]
+        }
+        .filter { matching_rows, _meta, _h5ad, _resolution ->
+            !matching_rows.isEmpty()
+        }
+        .map { matching_rows, meta, h5ad, resolution ->
             [
                 meta + [
                     resolution: resolution,
