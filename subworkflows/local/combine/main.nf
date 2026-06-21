@@ -62,11 +62,12 @@ workflow COMBINE {
     if (is_extension) {
         ADATA_MERGEEMBEDDINGS(
             INTEGRATE.out.integrations
-            .combine(
-                ch_base.map{ _meta, base -> base }
-            ).combine(
-                ADATA_MERGE.out.inner.map{ _meta, inner -> inner }
-            )
+                .map { meta, integrated -> [meta, meta.integration ?: meta.id, integrated] }
+                .combine(
+                    ch_base.map { _meta, base -> base }
+                ).combine(
+                    ADATA_MERGE.out.inner.map { _meta, inner -> inner }
+                )
         )
         ch_integrations  = ADATA_MERGEEMBEDDINGS.out.h5ad
         ch_obs           = ch_obs.mix(ADATA_MERGEEMBEDDINGS.out.obs)

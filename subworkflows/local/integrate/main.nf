@@ -118,8 +118,15 @@ workflow INTEGRATE {
                 .multiMap { _key, meta, h5ad, meta2, model ->
                     h5ad: [meta, h5ad]
                     reference_model: [meta2, model]
+                    reference_model_type: meta2.integration ?: meta2.id ?: ''
                 }
         }
+
+        ch_scanvi_reference_model_type = !scanvi_model && methods.contains('scvi')
+            ? ch_scanvi_reference_model.reference_model_type
+            : scanvi_model
+                ? ch_scanvi_h5ad.map { _meta, _h5ad -> 'scanvi' }
+                : ch_scanvi_h5ad.map { _meta, _h5ad -> '' }
 
         SCVITOOLS_SCANVI (
             !scanvi_model && methods.contains('scvi')
@@ -130,6 +137,7 @@ workflow INTEGRATE {
                 : methods.contains('scvi')
                     ? ch_scanvi_reference_model.reference_model
                     : [[], []],
+            ch_scanvi_reference_model_type,
             ["label", "Unknown"],
             "batch",
             scvi_categorical_covariates,

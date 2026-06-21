@@ -13,6 +13,7 @@ process SCVITOOLS_SCANVI {
     input:
     tuple val(meta), path(h5ad, arity: 1)
     tuple val(meta2), path(reference_model, stageAs: 'reference_model/model.pt')
+    val reference_model_type
     tuple val(label_col), val(unlabeled_category)
     val batch_col
     val categorical_covariates

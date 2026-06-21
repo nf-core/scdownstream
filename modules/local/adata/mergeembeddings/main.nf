@@ -1,5 +1,5 @@
 process ADATA_MERGEEMBEDDINGS {
-    tag "${meta.integration ?: meta.id}"
+    tag "${meta.id}"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
@@ -8,7 +8,7 @@ process ADATA_MERGEEMBEDDINGS {
         'community.wave.seqera.io/library/harmonypy_anndata_leidenalg_numpy_pruned:43066d5f86f18261' }"
 
     input:
-    tuple val(meta), path(integrated, stageAs: 'integrated.h5ad'), path(base), path(combined)
+    tuple val(meta), val(integration_key), path(integrated, stageAs: 'integrated.h5ad'), path(base), path(combined)
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
@@ -20,13 +20,11 @@ process ADATA_MERGEEMBEDDINGS {
     task.ext.when == null || task.ext.when
 
     script:
-    integration_key = meta.integration ?: meta.id
-    prefix = task.ext.prefix ?: "${integration_key}"
+    prefix = task.ext.prefix ?: "${meta.id}"
     template('merge_embeddings.py')
 
     stub:
-    integration_key = meta.integration ?: meta.id
-    prefix = task.ext.prefix ?: "${integration_key}"
+    prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
     touch ${prefix}.pkl

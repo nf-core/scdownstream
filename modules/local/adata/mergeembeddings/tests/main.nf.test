@@ -17,6 +17,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                     [id: 'scvi'],
+                    'scvi',
                     file(params.pipelines_testdata_base_path + '/intermediates/merge_embeddings/integrated_scvi.h5ad', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + '/intermediates/merge_embeddings/base_scvi.h5ad', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + '/intermediates/merge_embeddings/combined_scvi.h5ad', checkIfExists: true)
@@ -53,6 +54,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                     [id: 'scanvi'],
+                    'scanvi',
                     file(params.pipelines_testdata_base_path + '/intermediates/merge_embeddings/integrated_scanvi.h5ad', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + '/intermediates/merge_embeddings/base_scanvi.h5ad', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + '/intermediates/merge_embeddings/combined_scanvi.h5ad', checkIfExists: true)
@@ -92,6 +94,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                     [id: 'scvi'],
+                    'scvi',
                     file(params.pipelines_testdata_base_path + '/intermediates/merge_embeddings/integrated_scvi.h5ad', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + '/intermediates/merge_embeddings/base_scvi.h5ad', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + '/intermediates/merge_embeddings/combined_scvi.h5ad', checkIfExists: true)
