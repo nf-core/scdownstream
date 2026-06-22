@@ -78,7 +78,6 @@ nextflow_workflow {
             assert "X_emb" in adata.obsm
             assert "X_symphony" in adata.obsm
             assert snapshot(
-                workflow.out.versions,
                 adata.yaml
             ).match()
         }
@@ -159,7 +158,6 @@ nextflow_workflow {
                 assert "distances" in obsp
             }
             assert snapshot(
-                workflow.out.versions,
                 adata.yaml
             ).match()
         }
@@ -236,7 +234,6 @@ nextflow_workflow {
             assert workflow.success
             assert "X_emb" in adata.obsm
             assert snapshot(
-                workflow.out.versions,
                 adata.yaml
             ).match()
         }
@@ -350,7 +347,6 @@ nextflow_workflow {
             assert workflow.success
             assert "X_emb" in adata.obsm
             assert snapshot(
-                workflow.out.versions,
                 adata.yaml
             ).match()
         }
@@ -427,7 +423,6 @@ nextflow_workflow {
             assert workflow.success
             assert "X_emb" in adata.obsm
             assert snapshot(
-                workflow.out.versions,
                 adata.yaml
             ).match()
         }
