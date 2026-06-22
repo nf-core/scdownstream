@@ -16,8 +16,13 @@ workflow SUB_INTEGRATE {
     symphony_reference          //    path: file or null
     expimap_gmt                 //   value: string
     condition_col               //   value: string
+    label_whitelist             //   value: string or null
 
     main:
+    def normalized_whitelist = label_whitelist
+        ? label_whitelist.split(',')*.trim().findAll { label -> label }.collect { label -> label.replace(' ', '_') }
+        : []
+
     SPLITCOL (
         ch_h5ad,
         split_col
@@ -35,6 +40,14 @@ workflow SUB_INTEGRATE {
                 h5ad,
             ]
         }
+
+    if (normalized_whitelist) {
+        ch_h5ad_split = ch_h5ad_split
+            .filter { meta, _h5ad -> meta.subset in normalized_whitelist }
+            .ifEmpty {
+                error("integrate_per_label_whitelist: none of the requested labels matched any group in '${split_col}': ${normalized_whitelist.join(', ')}")
+            }
+    }
 
     INTEGRATE (
         ch_h5ad_split,

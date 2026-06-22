@@ -31,6 +31,7 @@ nextflow_workflow {
                 input[10] = null
                 input[11] = null
                 input[12] = 'condition'
+                input[13] = null
                 """
             }
         }
@@ -78,6 +79,7 @@ nextflow_workflow {
                 input[10] = null
                 input[11] = null
                 input[12] = 'condition'
+                input[13] = null
                 """
             }
         }
@@ -121,6 +123,7 @@ nextflow_workflow {
                 input[10] = null
                 input[11] = null
                 input[12] = 'condition'
+                input[13] = null
                 """
             }
         }
@@ -132,6 +135,49 @@ nextflow_workflow {
                 assert meta.integration == 'scimilarity'
                 assert meta.subset
                 assert meta.id == "scimilarity-${meta.subset}"
+            }
+        }
+
+    }
+
+    test("Should integrate only whitelisted groups with PCA") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'base'],
+                    file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'sample'
+                input[2] = -1
+                input[3] = []
+                input[4] = ['pca']
+                input[5] = null
+                input[6] = null
+                input[7] = ''
+                input[8] = ''
+                input[9] = 'https://zenodo.org/records/10685499/files/model_v1.1.tar.gz'
+                input[10] = null
+                input[11] = null
+                input[12] = 'condition'
+                input[13] = 'SRR28679756'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.integrations.size() == 1
+            workflow.out.integrations.each { meta, h5ad ->
+                def adata = anndata(h5ad)
+                assert meta.integration == 'pca'
+                assert meta.subset == 'SRR28679756'
+                assert meta.id == 'pca-SRR28679756'
+                assert "X_emb" in adata.obsm
             }
         }
 
@@ -163,6 +209,7 @@ nextflow_workflow {
                 input[10] = null
                 input[11] = null
                 input[12] = 'condition'
+                input[13] = null
                 """
             }
         }

@@ -45,4 +45,38 @@ nextflow_pipeline {
             ).match()
         }
     }
+
+    test("Should integrate only whitelisted labels in sub mode") {
+
+        when {
+            params {
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/e3a7f43eb802a090affac918026d2ba5dce8fcd5/'
+                outdir              = "$outputDir"
+                input               = null
+                base_adata          = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                base_embeddings     = null
+                base_label_col      = 'sample'
+                integrate_per_label = true
+                integrate_per_label_whitelist = 'SRR28679756'
+                integration_methods = 'pca'
+                integration_hvgs    = -1
+                cluster_global      = false
+                cluster_per_label   = false
+                skip_liana          = true
+                skip_rankgenesgroups = true
+                analysis_plan       = "${projectDir}/tests/analysis_plan_sub.csv"
+            }
+        }
+
+        then {
+            assert workflow.success
+            def adata = anndata("$outputDir/finalized/base.h5ad")
+            def pcaKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_pca") }
+            def umapKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_umap") }
+            assert pcaKeys.size() == 1
+            assert pcaKeys[0] == 'X_pca-SRR28679756_pca'
+            assert umapKeys.size() == 1
+            assert umapKeys[0] == 'X_pca-SRR28679756_umap'
+        }
+    }
 }

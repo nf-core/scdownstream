@@ -202,6 +202,10 @@ def validateInputParameters() {
         throw new Exception("If qc_only is set to true, an input samplesheet must be provided")
     }
 
+    if (params.integrate_per_label_whitelist && !params.integrate_per_label) {
+        throw new Exception("integrate_per_label_whitelist requires integrate_per_label to be true")
+    }
+
     def integration_methods = params.integration_methods.split(',').collect { it -> it.trim().toLowerCase() }
     def is_extension = params.input && params.base_adata
     def is_per_label_base_integration = !params.input && params.base_adata && params.integrate_per_label

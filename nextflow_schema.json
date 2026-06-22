@@ -237,6 +237,10 @@
                     "default": false,
                     "description": "In base_adata-only runs, split the base AnnData by base_label_col and run the selected integration_methods independently for each group before clustering."
                 },
+                "integrate_per_label_whitelist": {
+                    "type": "string",
+                    "description": "Optional comma-separated list of group values from base_label_col for which per-label integration should be run. When not provided, integration is run for all groups. Only used when integrate_per_label is true. Values must match the filesystem-safe subset names produced when splitting (spaces are replaced with underscores)."
+                },
                 "base_embeddings": {
                     "type": "string",
                     "description": "The keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`). Required if input is not provided and integrate_per_label is false; otherwise it is ignored.",

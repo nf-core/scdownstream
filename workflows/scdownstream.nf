@@ -70,6 +70,7 @@ workflow SCDOWNSTREAM {
     base_label_col                //   value: string
     base_condition_col            //   value: string
     integrate_per_label           //   value: boolean
+    integrate_per_label_whitelist //   value: string
     cluster_per_label             //   value: boolean
     cluster_global                //   value: boolean
     clustering_resolutions        //   value: string
@@ -242,7 +243,8 @@ workflow SCDOWNSTREAM {
                 scimilarity_model,
                 symphony_reference,
                 expimap_gmt,
-                condition_col
+                condition_col,
+                integrate_per_label_whitelist
             )
             ch_integrations = ch_integrations.mix(SUB_INTEGRATE.out.integrations)
             ch_obs = ch_obs.mix(SUB_INTEGRATE.out.obs)
