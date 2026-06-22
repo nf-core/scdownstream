@@ -62,5 +62,4 @@ workflow SUB_INTEGRATE {
     obs          = INTEGRATE.out.obs          // channel: [ pkl ]
     var          = INTEGRATE.out.var          // channel: [ pkl ]
     obsm         = INTEGRATE.out.obsm         // channel: [ pkl ]
-    versions     = INTEGRATE.out.versions     // channel: [ versions.yml ]
 }
