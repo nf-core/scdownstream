@@ -1,0 +1,96 @@
+{
+    "Should integrate each label in sub mode": {
+        "content": [
+            {
+                "ADATA_EXTEND": {
+                    "anndata": "0.12.10",
+                    "numpy": "2.3.5",
+                    "pandas": "2.3.3",
+                    "python": "3.13.12"
+                },
+                "ADATA_TORDS": {
+                    "anndataR": "1.0.2"
+                },
+                "NEIGHBORS": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                },
+                "QC_REPORT": {
+                    "papermill": "2.7.0",
+                    "quarto": "1.8.27"
+                },
+                "SCANPY_FILTER": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                },
+                "SCANPY_HVGS": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                },
+                "SCANPY_PAGA": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                },
+                "SCANPY_PCA": {
+                    "pandas": "2.3.3",
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                },
+                "SPLITCOL": {
+                    "anndata": "0.12.10",
+                    "python": "3.13.12"
+                },
+                "UMAP": {
+                    "pandas": "2.3.3",
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                },
+                "Workflow": {
+                    "nf-core/scdownstream": "v0.0.1dev"
+                }
+            },
+            [
+                "cluster_dimred",
+                "cluster_dimred/pca",
+                "cluster_dimred/pca/umap",
+                "finalized",
+                "finalized/base.h5ad",
+                "finalized/base.rds",
+                "finalized/base_metadata.csv",
+                "multiqc",
+                "per_group",
+                "pipeline_info",
+                "pipeline_info/nf_core_scdownstream_software_mqc_versions.yml",
+                "reports",
+                "reports/_extensions",
+                "reports/_extensions/nf-core",
+                "reports/_extensions/nf-core/_extension.yml",
+                "reports/_extensions/nf-core/nf-core-scdownstream_logo_light.png",
+                "reports/_extensions/nf-core/nf-core.scss",
+                "reports/_extensions/nf-core/nf-core.theme",
+                "reports/_extensions/nf-core/toc.html",
+                "reports/params.yml",
+                "reports/qc-report.html",
+                "reports/qc-report.qmd",
+                "splitcol",
+                "splitcol/SRR28679756.h5ad",
+                "splitcol/SRR28679757.h5ad",
+                "splitcol/SRR28679758.h5ad"
+            ],
+            [
+                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
+                "_extension.yml:md5,1771443b5d44c88feb54a56c5a9a2319",
+                "nf-core.scss:md5,b9826d146ce24fe3d3c51bfd4e450baa",
+                "nf-core.theme:md5,ac9559ae18b3f513cf7a5419e4a69c24",
+                "toc.html:md5,fe6831ffaecfb53058310943d42942ca",
+                "params.yml:md5,dba27060f41cac7c739000e07a760569",
+                "qc-report.qmd:md5,13061014a897b3fbdafd6ea3212df0e0"
+            ]
+        ],
+        "timestamp": "2026-06-16T12:53:31.829224062",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    }
+}

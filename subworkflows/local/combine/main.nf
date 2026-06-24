@@ -62,11 +62,12 @@ workflow COMBINE {
     if (is_extension) {
         ADATA_MERGEEMBEDDINGS(
             INTEGRATE.out.integrations
-            .combine(
-                ch_base.map{ _meta, base -> base }
-            ).combine(
-                ADATA_MERGE.out.inner.map{ _meta, inner -> inner }
-            )
+                .map { meta, integrated -> [meta, meta.integration ?: meta.id, integrated] }
+                .combine(
+                    ch_base.map { _meta, base -> base }
+                ).combine(
+                    ADATA_MERGE.out.inner.map { _meta, inner -> inner }
+                )
         )
         ch_integrations  = ADATA_MERGEEMBEDDINGS.out.h5ad
         ch_obs           = ch_obs.mix(ADATA_MERGEEMBEDDINGS.out.obs)
@@ -78,14 +79,14 @@ workflow COMBINE {
     }
 
     ch_integrations = ch_integrations
-        .map{meta, file -> [meta + [integration: meta.id], file]}
+        .map { meta, file -> [meta + [id: meta.integration], file] }
 
     if (scib) {
         SCIBMETRICS_BENCHMARK (
             ch_integrations
                 // BBKNN corrects the neighborhood graph and does not produce a dense embedding
                 // Thus, it is not compatible with scib-metrics
-                .filter { meta, _h5ad -> meta.id != 'bbknn' }
+                .filter { meta, _h5ad -> meta.integration != 'bbknn' }
         )
         ch_multiqc_files = ch_multiqc_files.mix(SCIBMETRICS_BENCHMARK.out.multiqc_files)
     }

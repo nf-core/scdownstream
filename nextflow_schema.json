@@ -225,17 +225,26 @@
                 "base_label_col": {
                     "type": "string",
                     "default": "label",
-                    "description": "The column in the base AnnData object that contains the label (e.g. cell type) information."
+                    "description": "The column in the base AnnData object used to group cells for downstream per-label analysis and, when integrate_per_label is true, to split the object before integration."
                 },
                 "base_condition_col": {
                     "type": "string",
                     "default": "condition",
                     "description": "The column in the base AnnData object that contains the condition (e.g. disease state, treatment) information."
                 },
+                "integrate_per_label": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "In base_adata-only runs, split the base AnnData by base_label_col and run the selected integration_methods independently for each group before clustering."
+                },
+                "integrate_per_label_whitelist": {
+                    "type": "string",
+                    "description": "Optional comma-separated list of group values from base_label_col for which per-label integration should be run. When not provided, integration is run for all groups. Only used when integrate_per_label is true. Values must match the filesystem-safe subset names produced when splitting (spaces are replaced with underscores)."
+                },
                 "base_embeddings": {
                     "type": "string",
-                    "description": "The keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`). Required if `input` is not provided - otherwise it is ignored.",
-                    "help_text": "If the `input` parameter is not provided (no new data to add), integration will not be performed. In order to be able to utilize existing integration results, you need to provide the keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`).",
+                    "description": "The keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`). Required if input is not provided and integrate_per_label is false; otherwise it is ignored.",
+                    "help_text": "If the `input` parameter is not provided (no new data to add), integration is skipped unless `integrate_per_label` is true. To reuse existing integration results, provide the keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`).",
                     "pattern": "^((scvi|scanvi|symphony|bbknn|combat|seurat)(,(scvi|scanvi|symphony|bbknn|combat|seurat))*)?$"
                 }
             }

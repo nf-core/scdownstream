@@ -1,8 +1,11 @@
-include { ADATA_SPLITCOL as SPLITCOL    } from '../../../modules/local/adata/splitcol'
-include { SCANPY_NEIGHBORS as NEIGHBORS } from '../../../modules/local/scanpy/neighbors'
-include { SCANPY_LEIDEN as LEIDEN       } from '../../../modules/local/scanpy/leiden'
-include { SCANPY_UMAP as UMAP           } from '../../../modules/local/scanpy/umap'
-include { ADATA_ENTROPY as ENTROPY      } from '../../../modules/local/adata/entropy'
+include { CLUSTER_TARGETS                   } from '../cluster_targets'
+include { SCANPY_NEIGHBORS as NEIGHBORS     } from '../../../modules/local/scanpy/neighbors'
+include { SCANPY_LEIDEN as LEIDEN           } from '../../../modules/local/scanpy/leiden'
+include { SCANPY_UMAP as UMAP               } from '../../../modules/local/scanpy/umap'
+include { ADATA_ENTROPY as ENTROPY          } from '../../../modules/local/adata/entropy'
+include { matchingAnalysisPlanRows          } from '../utils_nfcore_scdownstream_pipeline'
+include { analysesFromPlanRows              } from '../utils_nfcore_scdownstream_pipeline'
+
 workflow CLUSTER {
     take:
     ch_input            // channel: [ meta, h5ad ]
@@ -18,35 +21,16 @@ workflow CLUSTER {
     ch_obs = channel.empty()
     ch_obsm = channel.empty()
     ch_multiqc_files = channel.empty()
-    ch_h5ad = channel.empty()
 
-    if (global) {
-        ch_h5ad = ch_h5ad
-            .mix(ch_input
-                .map { meta, h5ad -> [meta + [subset: "global"], h5ad] })
-    }
+    CLUSTER_TARGETS (
+        ch_input,
+        per_label,
+        global,
+        split_col,
+    )
 
-    if (per_label) {
-        SPLITCOL (
-            ch_input,
-            split_col
-        )
-
-        ch_h5ad = ch_h5ad.mix(
-            SPLITCOL.out.h5ad
-                .transpose()
-                .map { meta, h5ad -> [meta + [subset: h5ad.simpleName], h5ad] }
-        )
-    }
-
-    ch_h5ad = ch_h5ad
-        .map {
-            meta, h5ad ->
-            [meta + [id: meta.integration + "-" + meta.subset], h5ad]
-        }
-
-    ch_h5ad = ch_h5ad.branch { meta, _h5ad ->
-        has_neighbors: meta.integration == "bbknn"
+    ch_h5ad = CLUSTER_TARGETS.out.targets.branch { meta, _h5ad ->
+        has_neighbors: meta.integration == 'bbknn'
         needs_neighbors: true
     }
 
@@ -54,11 +38,11 @@ workflow CLUSTER {
         ch_h5ad.needs_neighbors,
         embedding_key
     )
-    ch_h5ad = NEIGHBORS.out.h5ad.mix(ch_h5ad.has_neighbors)
-    ch_h5ad_neighbours = NEIGHBORS.out.h5ad
+
+    ch_h5ad_graph = NEIGHBORS.out.h5ad.mix(ch_h5ad.has_neighbors)
 
     UMAP (
-        ch_h5ad
+        ch_h5ad_graph
     )
     ch_obsm = ch_obsm.mix(UMAP.out.obsm)
 
@@ -66,27 +50,26 @@ workflow CLUSTER {
 
     ch_h5ad_for_leiden = UMAP.out.h5ad
         .combine(ch_resolutions)
-        .filter { meta, _h5ad, resolution ->
-            analysis_plan_rows.any { row ->
-                (!row.integration || row.integration == meta.integration) &&
-                (!row.subset || row.subset == meta.subset) &&
-                (!row.resolution || (row.resolution as String) == resolution)
-            }
-        }
         .map { meta, h5ad, resolution ->
+            [matchingAnalysisPlanRows(analysis_plan_rows, meta, resolution), meta, h5ad, resolution]
+        }
+        .filter { matching_rows, _meta, _h5ad, _resolution ->
+            !matching_rows.isEmpty()
+        }
+        .map { matching_rows, meta, h5ad, resolution ->
             [
                 meta + [
                     resolution: resolution,
-                    id: meta.integration + "-" + meta.subset + "-" + resolution,
-                ],
+                    id: meta.id + '-' + resolution,
+                ] + analysesFromPlanRows(matching_rows),
                 h5ad,
             ]
         }
 
-    ch_leiden = ch_h5ad_for_leiden.multiMap{ meta, h5ad ->
+    ch_leiden = ch_h5ad_for_leiden.multiMap { meta, h5ad ->
         h5ad: [meta, h5ad]
         resolution: meta.resolution
-        key_added: meta.id + "_leiden"
+        key_added: meta.id + '_leiden'
     }
     LEIDEN (
         ch_leiden.h5ad,
@@ -101,7 +84,7 @@ workflow CLUSTER {
     ch_entropy = LEIDEN.out.h5ad
         .multiMap { meta, h5ad ->
             h5ad: [meta, h5ad]
-            group_col: meta.id + "_leiden"
+            group_col: meta.id + '_leiden'
         }
 
     ENTROPY (
@@ -115,7 +98,7 @@ workflow CLUSTER {
     emit:
     obs             = ch_obs             // channel: [ pkl ]
     obsm            = ch_obsm            // channel: [ pkl ]
-    h5ad_neighbors  = ch_h5ad_neighbours // channel: [ integration, h5ad ]
-    h5ad_clustering = ch_h5ad_clustering // channel: [ integration, h5ad ]
+    h5ad_neighbors  = ch_h5ad_graph      // channel: [ meta, h5ad ]
+    h5ad_clustering = ch_h5ad_clustering // channel: [ meta, h5ad ]
     multiqc_files   = ch_multiqc_files   // channel: [ json ]
 }

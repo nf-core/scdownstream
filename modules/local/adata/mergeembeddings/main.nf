@@ -8,7 +8,7 @@ process ADATA_MERGEEMBEDDINGS {
         'community.wave.seqera.io/library/harmonypy_anndata_leidenalg_numpy_pruned:43066d5f86f18261' }"
 
     input:
-    tuple val(meta), path(integrated, stageAs: 'integrated.h5ad'), path(base), path(combined)
+    tuple val(meta), val(integration_key), path(integrated, stageAs: 'integrated.h5ad'), path(base), path(combined)
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad

@@ -11,6 +11,7 @@ include { ADATA_EXTEND as FINALIZE_QC_ANNDATAS } from '../modules/local/adata/ex
 include { QUARTONOTEBOOK as QC_REPORT          } from '../modules/nf-core/quartonotebook'
 include { COMBINE                              } from '../subworkflows/local/combine'
 include { ADATA_SPLITEMBEDDINGS                } from '../modules/local/adata/splitembeddings'
+include { SUB_INTEGRATE                        } from '../subworkflows/local/sub_integrate'
 include { CLUSTER                              } from '../subworkflows/local/cluster'
 include { PSEUDOBULKING                        } from '../subworkflows/local/pseudobulking'
 include { PER_GROUP                            } from '../subworkflows/local/per_group'
@@ -68,6 +69,8 @@ workflow SCDOWNSTREAM {
     base_embeddings               //   value: string
     base_label_col                //   value: string
     base_condition_col            //   value: string
+    integrate_per_label           //   value: boolean
+    integrate_per_label_whitelist //   value: string
     cluster_per_label             //   value: boolean
     cluster_global                //   value: boolean
     clustering_resolutions        //   value: string
@@ -198,29 +201,56 @@ workflow SCDOWNSTREAM {
         }
     }
     else {
-        ch_embeddings = channel.value(
-            base_embeddings.split(',')
-            .collect { it -> it.trim() }
-        )
-
-        ADATA_SPLITEMBEDDINGS (
-            ch_base,
-            ch_embeddings
-        )
-        ch_integrations = ch_integrations.mix(
-            ADATA_SPLITEMBEDDINGS.out.h5ad
-            .map { _meta, h5ads -> h5ads }
-            .flatten()
-            .map {
-                h5ad ->
-                [[id: h5ad.simpleName, integration: h5ad.simpleName], h5ad]
-            }
-        )
-
         ch_finalization_base = ch_base
         ch_label_grouping = ch_base
         grouping_col = base_label_col
         condition_col = base_condition_col
+
+        if (base_embeddings) {
+            ch_embeddings = channel.value(
+                base_embeddings.split(',')
+                .collect { it -> it.trim() }
+            )
+
+            ADATA_SPLITEMBEDDINGS (
+                ch_base,
+                ch_embeddings
+            )
+            ch_integrations = ch_integrations.mix(
+                ADATA_SPLITEMBEDDINGS.out.h5ad
+                .map { _meta, h5ads -> h5ads }
+                .flatten()
+                .map {
+                    h5ad ->
+                    [[id: h5ad.simpleName, integration: h5ad.simpleName], h5ad]
+                }
+            )
+        }
+
+        if (integrate_per_label) {
+            SUB_INTEGRATE (
+                ch_base,
+                base_label_col,
+                integration_hvgs,
+                integration_excluded_genes ? file(integration_excluded_genes) : [],
+                integration_methods
+                    .split(',')
+                    .collect { it -> it.trim().toLowerCase() },
+                scvi_model,
+                scanvi_model,
+                scvi_categorical_covariates,
+                scvi_continuous_covariates,
+                scimilarity_model,
+                symphony_reference,
+                expimap_gmt,
+                condition_col,
+                integrate_per_label_whitelist
+            )
+            ch_integrations = ch_integrations.mix(SUB_INTEGRATE.out.integrations)
+            ch_obs = ch_obs.mix(SUB_INTEGRATE.out.obs)
+            ch_var = ch_var.mix(SUB_INTEGRATE.out.var)
+            ch_obsm = ch_obsm.mix(SUB_INTEGRATE.out.obsm)
+        }
     }
 
     //
@@ -253,25 +283,6 @@ workflow SCDOWNSTREAM {
         ch_h5ad_both = CLUSTER.out.h5ad_clustering
             .map { meta, h5ad ->
                 [meta + [obs_key: "${meta.id}_leiden"], h5ad]
-            }
-            .map { meta, h5ad ->
-                def matching_rows = analysis_plan.findAll { r ->
-                    (!r.integration || r.integration == meta.integration) &&
-                    (!r.subset || r.subset == meta.subset) &&
-                    (!r.resolution || (r.resolution as String) == (meta.resolution as String))
-                }
-                [meta, h5ad, matching_rows]
-            }
-            .filter { _meta, _h5ad, matching_rows -> matching_rows }
-            .map { meta, h5ad, matching_rows ->
-                def extra = matching_rows.any { row -> !row.analyses }
-                    ? [:]
-                    : [
-                        analyses: matching_rows
-                            .collectMany { row -> row.analyses.split(',')*.trim() }
-                            .toSet(),
-                    ]
-                [meta + extra, h5ad]
             }
 
         PER_GROUP (

@@ -14,7 +14,7 @@ import yaml
 adata_integrated = ad.read_h5ad("${integrated}", backed="r")
 adata_base = ad.read_h5ad("${base}", backed="r")
 adata_combined = ad.read_h5ad("${combined}")
-integration = "${meta.id}"
+integration = "${integration_key}"
 
 emb = pd.concat([
     pd.DataFrame(adata_base.obsm[f"X_{integration}"], index=adata_base.obs_names),

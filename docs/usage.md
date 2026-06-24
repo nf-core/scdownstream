@@ -318,10 +318,17 @@ This can be useful if you have assigned cell type annotations to the integrated 
 
 If you want to run tasks after the integration step without performing integration, you can provide a previous result of the pipeline as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata).
 You do not need to provide a samplesheet via the [`input`](https://nf-co.re/scdownstream/parameters#input) parameter in this case.
-You also need [`base_embeddings`](https://nf-co.re/scdownstream/parameters#base_embeddings), and optionally [`base_label_col`](https://nf-co.re/scdownstream/parameters#base_label_col) and [`base_condition_col`](https://nf-co.re/scdownstream/parameters#base_condition_col) if your label or condition columns are not named `label` and `condition`.
+You also need either [`base_embeddings`](https://nf-co.re/scdownstream/parameters#base_embeddings) to reuse existing embeddings, or [`integrate_per_label`](https://nf-co.re/scdownstream/parameters#integrate_per_label) to compute new integrations independently for each group in [`base_label_col`](https://nf-co.re/scdownstream/parameters#base_label_col).
+Set [`base_condition_col`](https://nf-co.re/scdownstream/parameters#base_condition_col) if your condition column is not named `condition`.
 
 The pipeline will then re-execute the tasks after the integration step without performing integration again.
 Most interestingly, the pipeline will generate cell type specific UMAPs, clusterings, and PAGA graphs, if [`clustering_per_label`](https://nf-co.re/scdownstream/parameters#clustering_per_label) is set to `true`.
+
+If [`integrate_per_label`](https://nf-co.re/scdownstream/parameters#integrate_per_label) is enabled, [`base_label_col`](https://nf-co.re/scdownstream/parameters#base_label_col) is the split/grouping column, not necessarily the supervised cell-type label used by integration methods.
+Use [`integrate_per_label_whitelist`](https://nf-co.re/scdownstream/parameters#integrate_per_label_whitelist) to restrict per-label integration to a subset of groups (comma-separated values from `base_label_col`). When omitted, integration runs for every group. Whitelist values must use the same filesystem-safe subset names as in `analysis_plan` (spaces replaced with underscores).
+Because [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata) is expected to be a previous pipeline output, batch-aware methods use the standard `batch` column, and scANVI uses the standard `label` column with `Unknown` as the unlabeled category.
+Subset names in `analysis_plan` match the filesystem-safe keys produced by splitting the AnnData object; spaces in group values are replaced with underscores.
+Per-label integrations are treated as already split for clustering, so the pipeline creates subset-specific embedding keys such as `X_pca-SRR28679756_pca` and UMAP keys such as `X_pca-SRR28679756_umap` in the finalized base AnnData.
 
 ### GPU acceleration
 

@@ -25,7 +25,7 @@ scvi.settings.seed = 0
 
 adata = ad.read_h5ad("${h5ad}")
 reference_model_path = "reference_model"
-reference_model_type = "${meta2.id ?: ''}"
+reference_model_type = "${reference_model_type}"
 
 plan_kwargs = {}
 

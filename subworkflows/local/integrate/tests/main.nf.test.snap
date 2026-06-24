@@ -1,11 +1,59 @@
 {
+    "Should run without failures - symphony - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "symphony"
+                        },
+                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "symphony"
+                        },
+                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-06-21T21:46:12.559118492",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
     "Should run without failures - bbknn - stub": {
         "content": [
             {
                 "0": [
                     [
                         {
-                            "id": "bbknn"
+                            "id": "test",
+                            "integration": "bbknn"
                         },
                         "bbknn.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
@@ -19,15 +67,11 @@
                 "3": [
                     
                 ],
-                "4": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
                 "integrations": [
                     [
                         {
-                            "id": "bbknn"
+                            "id": "test",
+                            "integration": "bbknn"
                         },
                         "bbknn.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
@@ -40,27 +84,17 @@
                 ],
                 "var": [
                     
-                ],
-                "versions": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-03-25T15:47:40.215608271",
+        "timestamp": "2026-06-21T21:49:00.253275922",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nextflow": "26.04.3"
         }
     },
     "Should run without failures - combat": {
         "content": [
-            [
-                "versions.yml:md5,20020d8c9cf585aaa75dd5a14aa5d3ae",
-                "versions.yml:md5,a6c1e0a77e0d31423a9d77edba85127d",
-                "versions.yml:md5,d28b65c4c18c54e1abc34040b584b823"
-            ],
             {
                 "n_obs": 12940,
                 "n_vars": 2000,
@@ -123,10 +157,78 @@
                 ]
             }
         ],
-        "timestamp": "2026-05-28T14:03:08.524818368",
+        "timestamp": "2026-06-21T21:54:10.633312287",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - symphony": {
+        "content": [
+            {
+                "n_obs": 12940,
+                "n_vars": 2000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "hb",
+                        "highly_variable",
+                        "mean_counts",
+                        "means",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_emb",
+                    "X_symphony"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "log1p"
+                ]
+            }
+        ],
+        "timestamp": "2026-06-21T21:48:19.110877208",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
         }
     },
     "Should run without failures - pca - stub": {
@@ -135,7 +237,8 @@
                 "0": [
                     [
                         {
-                            "id": "pca"
+                            "id": "test",
+                            "integration": "pca"
                         },
                         "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
@@ -149,15 +252,11 @@
                 "3": [
                     "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "4": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
                 "integrations": [
                     [
                         {
-                            "id": "pca"
+                            "id": "test",
+                            "integration": "pca"
                         },
                         "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
@@ -170,18 +269,128 @@
                 ],
                 "var": [
                     
-                ],
-                "versions": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-04-10T16:50:54.506012382",
+        "timestamp": "2026-06-21T21:55:00.598749808",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - extension mode - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "symphony"
+                        },
+                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "symphony"
+                        },
+                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-06-21T21:54:31.640453621",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - pca": {
+        "content": [
+            {
+                "n_obs": 12940,
+                "n_vars": 2000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "hb",
+                        "highly_variable",
+                        "mean_counts",
+                        "means",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    "X_emb"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_emb",
+                    "hvg",
+                    "log1p"
+                ]
+            }
+        ],
+        "timestamp": "2026-06-21T21:56:59.165239958",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
         }
     },
     "Should run without failures - combat - stub": {
@@ -190,7 +399,8 @@
                 "0": [
                     [
                         {
-                            "id": "combat"
+                            "id": "test",
+                            "integration": "combat"
                         },
                         "combat.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
@@ -204,15 +414,11 @@
                 "3": [
                     "combat.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "4": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
                 "integrations": [
                     [
                         {
-                            "id": "combat"
+                            "id": "test",
+                            "integration": "combat"
                         },
                         "combat.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
@@ -225,27 +431,17 @@
                 ],
                 "var": [
                     
-                ],
-                "versions": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-03-25T15:49:26.334091777",
+        "timestamp": "2026-06-21T21:52:11.810632603",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nextflow": "26.04.3"
         }
     },
     "Should run without failures - bbknn": {
         "content": [
-            [
-                "versions.yml:md5,20020d8c9cf585aaa75dd5a14aa5d3ae",
-                "versions.yml:md5,ccf730637c4c61a84ac4a002bf9832e0",
-                "versions.yml:md5,d28b65c4c18c54e1abc34040b584b823"
-            ],
             {
                 "n_obs": 12940,
                 "n_vars": 2000,
@@ -308,269 +504,14 @@
                 ]
             }
         ],
-        "timestamp": "2026-05-28T14:01:44.359301169",
+        "timestamp": "2026-06-21T21:51:38.687983406",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
-        }
-    },
-    "Should run without failures - symphony - stub": {
-        "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "symphony"
-                        },
-                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "1": [
-                    
-                ],
-                "2": [
-                    
-                ],
-                "3": [
-                    "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                "4": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                "integrations": [
-                    [
-                        {
-                            "id": "symphony"
-                        },
-                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "obs": [
-                    
-                ],
-                "obsm": [
-                    "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                "var": [
-                    
-                ],
-                "versions": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ]
-            }
-        ],
-        "timestamp": "2026-05-28T16:31:59.971834646",
-        "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
-        }
-    },
-    "Should run without failures - symphony": {
-        "content": [
-            [
-                "versions.yml:md5,0941a4daea5c41d9e3259be11e9f2263",
-                "versions.yml:md5,20020d8c9cf585aaa75dd5a14aa5d3ae",
-                "versions.yml:md5,d28b65c4c18c54e1abc34040b584b823"
-            ],
-            {
-                "n_obs": 12940,
-                "n_vars": 2000,
-                "obs": {
-                    "index": "_index",
-                    "columns": [
-                        "batch",
-                        "n_counts",
-                        "n_genes",
-                        "n_genes_by_counts",
-                        "pct_counts_hb",
-                        "pct_counts_mt",
-                        "pct_counts_ribo",
-                        "total_counts",
-                        "total_counts_hb",
-                        "total_counts_mt",
-                        "total_counts_ribo"
-                    ]
-                },
-                "var": {
-                    "index": "_index",
-                    "columns": [
-                        "dispersions",
-                        "dispersions_norm",
-                        "hb",
-                        "highly_variable",
-                        "mean_counts",
-                        "means",
-                        "mt",
-                        "n_cells",
-                        "n_cells_by_counts",
-                        "n_counts",
-                        "pct_dropout_by_counts",
-                        "ribo",
-                        "symbols",
-                        "total_counts"
-                    ]
-                },
-                "layers": [
-                    "counts"
-                ],
-                "obsm": [
-                    "X_emb",
-                    "X_symphony"
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    "hvg",
-                    "log1p"
-                ]
-            }
-        ],
-        "timestamp": "2026-05-28T16:32:53.466053531",
-        "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
-        }
-    },
-    "Should run without failures - extension mode - stub": {
-        "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "symphony"
-                        },
-                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "1": [
-                    
-                ],
-                "2": [
-                    
-                ],
-                "3": [
-                    "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                "4": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                "integrations": [
-                    [
-                        {
-                            "id": "symphony"
-                        },
-                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "obs": [
-                    
-                ],
-                "obsm": [
-                    "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                "var": [
-                    
-                ],
-                "versions": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ]
-            }
-        ],
-        "timestamp": "2026-05-28T16:35:48.236148467",
-        "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
-        }
-    },
-    "Should run without failures - pca": {
-        "content": [
-            [
-                "versions.yml:md5,20020d8c9cf585aaa75dd5a14aa5d3ae",
-                "versions.yml:md5,87a2cb96724430656d9c1276e91e0208",
-                "versions.yml:md5,d28b65c4c18c54e1abc34040b584b823"
-            ],
-            {
-                "n_obs": 12940,
-                "n_vars": 2000,
-                "obs": {
-                    "index": "_index",
-                    "columns": [
-                        "batch",
-                        "n_counts",
-                        "n_genes",
-                        "n_genes_by_counts",
-                        "pct_counts_hb",
-                        "pct_counts_mt",
-                        "pct_counts_ribo",
-                        "total_counts",
-                        "total_counts_hb",
-                        "total_counts_mt",
-                        "total_counts_ribo"
-                    ]
-                },
-                "var": {
-                    "index": "_index",
-                    "columns": [
-                        "dispersions",
-                        "dispersions_norm",
-                        "hb",
-                        "highly_variable",
-                        "mean_counts",
-                        "means",
-                        "mt",
-                        "n_cells",
-                        "n_cells_by_counts",
-                        "n_counts",
-                        "pct_dropout_by_counts",
-                        "ribo",
-                        "symbols",
-                        "total_counts"
-                    ]
-                },
-                "layers": [
-                    "counts"
-                ],
-                "obsm": [
-                    "X_emb"
-                ],
-                "varm": [
-                    "X_emb"
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    "X_emb",
-                    "hvg",
-                    "log1p"
-                ]
-            }
-        ],
-        "timestamp": "2026-05-28T14:04:36.10115423",
-        "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.3"
         }
     },
     "Should run without failures - expimap": {
         "content": [
-            [
-                "versions.yml:md5,44d9a1bbfabdc0ecae8adc586c7c1b2d"
-            ],
             {
                 "n_obs": 12940,
                 "n_vars": 9887,
@@ -606,10 +547,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-04-11T15:55:42.640248171",
+        "timestamp": "2026-06-21T21:58:37.690022279",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.3"
         }
     },
     "Should run without failures - expimap - stub": {
@@ -618,7 +559,8 @@
                 "0": [
                     [
                         {
-                            "id": "expimap"
+                            "id": "test",
+                            "integration": "expimap"
                         },
                         "expimap.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
@@ -632,13 +574,11 @@
                 "3": [
                     "X_expimap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "4": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
                 "integrations": [
                     [
                         {
-                            "id": "expimap"
+                            "id": "test",
+                            "integration": "expimap"
                         },
                         "expimap.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
@@ -651,16 +591,13 @@
                 ],
                 "var": [
                     
-                ],
-                "versions": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-04-11T09:14:13.34716941",
+        "timestamp": "2026-06-21T21:57:18.218087269",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nextflow": "26.04.3"
         }
     }
 }
