@@ -9,6 +9,11 @@ process SCIBMETRICS_BENCHMARK {
 
     input:
     tuple val(meta), path(h5ad, arity: 1)
+    val max_cells
+    val subsample_strategy
+    val subsample_seed
+    val metric_profile
+    val neighbor_backend
 
     output:
     path "${prefix}_metrics.tsv"         , emit: metrics

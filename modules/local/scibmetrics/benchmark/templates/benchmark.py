@@ -20,11 +20,11 @@ from scib_metrics.benchmark import Benchmarker, BioConservation, BatchCorrection
 
 prefix = "${prefix}"
 h5ad_path = "${h5ad}"
-max_cells_raw = "${task.ext.max_cells}"
-subsample_strategy = "${task.ext.subsample_strategy}"
-subsample_seed = int("${task.ext.subsample_seed}")
-metric_profile = "${task.ext.metric_profile}"
-neighbor_backend = "${task.ext.neighbor_backend}"
+max_cells_raw = "${max_cells}"
+subsample_strategy = "${subsample_strategy}"
+subsample_seed = int("${subsample_seed}")
+metric_profile = "${metric_profile}"
+neighbor_backend = "${neighbor_backend}"
 n_jobs = int("${task.cpus}")
 
 max_cells = None
