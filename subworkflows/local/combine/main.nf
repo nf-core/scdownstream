@@ -25,7 +25,6 @@ workflow COMBINE {
     scib_subsample_strategy     //   value: string
     scib_subsample_seed         //   value: integer
     scib_metric_profile         //   value: string
-    scib_neighbor_backend       //   value: string
 
     main:
 
@@ -96,7 +95,6 @@ workflow COMBINE {
             scib_subsample_strategy,
             scib_subsample_seed,
             scib_metric_profile,
-            scib_neighbor_backend,
         )
         ch_multiqc_files = ch_multiqc_files.mix(SCIBMETRICS_BENCHMARK.out.multiqc_files)
     }

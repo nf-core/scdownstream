@@ -375,12 +375,6 @@
                     "enum": ["fast", "full"],
                     "description": "scib-metrics metric set. 'fast' disables expensive metrics (isolated labels, k-means NMI/ARI, PCR comparison) for routine runs; 'full' runs the default scib-metrics benchmark suite for publication-style scoring."
                 },
-                "scib_neighbor_backend": {
-                    "type": "string",
-                    "default": "default",
-                    "enum": ["default", "faiss"],
-                    "description": "Nearest-neighbor backend for graph-based scib-metrics. 'faiss' uses CPU brute-force search and is often faster on large subsampled objects."
-                },
                 "rankgenesgroups_method": {
                     "type": "string",
                     "default": "wilcoxon",

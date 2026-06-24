@@ -24,7 +24,6 @@ max_cells_raw = "${max_cells}"
 subsample_strategy = "${subsample_strategy}"
 subsample_seed = int("${subsample_seed}")
 metric_profile = "${metric_profile}"
-neighbor_backend = "${neighbor_backend}"
 n_jobs = int("${task.cpus}")
 
 max_cells = None
@@ -106,28 +105,6 @@ def _metric_config(profile):
     )
 
 
-def _neighbor_computer(backend):
-    if backend in ("default", ""):
-        return None
-
-    if backend != "faiss":
-        raise SystemExit(
-            f"Unknown scib_neighbor_backend '{backend}'; expected 'default' or 'faiss'."
-        )
-
-    import faiss
-    from scib_metrics.nearest_neighbors import NeighborsResults
-
-    def faiss_brute_force_nn(X: np.ndarray, k: int):
-        X = np.ascontiguousarray(X, dtype=np.float32)
-        index = faiss.IndexFlatL2(X.shape[1])
-        index.add(X)
-        distances, indices = index.search(X, k)
-        return NeighborsResults(indices=indices, distances=np.sqrt(distances))
-
-    return faiss_brute_force_nn
-
-
 adata = sc.read_h5ad(h5ad_path)
 
 missing = [c for c in ("batch", "label") if c not in adata.obs]
@@ -189,8 +166,6 @@ if labels.nunique() <= 1:
     batch_cfg = bm_kw.get("batch_correction_metrics", BatchCorrection())
     bm_kw["batch_correction_metrics"] = replace(batch_cfg, bras=False)
 
-neighbor_computer = _neighbor_computer(neighbor_backend)
-
 bm = Benchmarker(
     ad_bm,
     batch_key="batch",
@@ -200,7 +175,7 @@ bm = Benchmarker(
     progress_bar=False,
     **bm_kw,
 )
-bm.prepare(neighbor_computer=neighbor_computer)
+bm.prepare()
 bm.benchmark()
 results = bm.get_results(min_max_scale=False, clean_names=True)
 results.to_csv(f"{prefix}_metrics.tsv", sep="\t")
@@ -208,7 +183,6 @@ results.to_csv(f"{prefix}_metrics.tsv", sep="\t")
 benchmark_info = {
     "integration_method": prefix,
     "metric_profile": metric_profile,
-    "neighbor_backend": neighbor_backend or "default",
     "n_jobs": n_jobs,
     **subsample_info,
 }
@@ -235,7 +209,6 @@ def _benchmark_description(info):
     parts = [
         "scib-metrics benchmark (one row per integration method).",
         f"Profile: {info['metric_profile']}.",
-        f"Neighbor backend: {info['neighbor_backend']}.",
     ]
     if info["subsampled"]:
         parts.append(

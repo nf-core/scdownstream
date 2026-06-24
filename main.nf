@@ -71,7 +71,6 @@ workflow NFCORE_SCDOWNSTREAM {
     scib_subsample_strategy       //   value: string
     scib_subsample_seed           //   value: integer
     scib_metric_profile           //   value: string
-    scib_neighbor_backend         //   value: string
     base_embeddings               //   value: string
     base_label_col                //   value: string
     base_condition_col            //   value: string
@@ -136,7 +135,6 @@ workflow NFCORE_SCDOWNSTREAM {
         scib_subsample_strategy,
         scib_subsample_seed,
         scib_metric_profile,
-        scib_neighbor_backend,
         base_embeddings,
         base_label_col,
         base_condition_col,
@@ -243,7 +241,6 @@ workflow {
         params.scib_subsample_strategy,
         params.scib_subsample_seed,
         params.scib_metric_profile,
-        params.scib_neighbor_backend,
         params.base_embeddings,
         params.base_label_col,
         params.base_condition_col,
