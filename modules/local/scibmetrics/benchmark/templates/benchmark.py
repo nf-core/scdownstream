@@ -12,15 +12,110 @@ import platform
 import warnings
 from dataclasses import replace
 
+import numpy as np
 import scanpy as sc
 import scib_metrics
 import yaml
-from scib_metrics.benchmark import Benchmarker
-from scib_metrics.benchmark._core import BatchCorrection
+from scib_metrics.benchmark import Benchmarker, BioConservation, BatchCorrection
 
 prefix = "${prefix}"
 h5ad_path = "${h5ad}"
+max_cells_raw = "${max_cells}"
+subsample_strategy = "${subsample_strategy}"
+subsample_seed = int("${subsample_seed}")
+metric_profile = "${metric_profile}"
+n_jobs = int("${task.cpus}")
 
+
+def _optional_int(value):
+    return None if value in ("", "null", "None") else int(value)
+
+
+def _stratified_subsample(adata, n_max, strategy, seed, label_key="label", batch_key="batch"):
+    n_before = adata.n_obs
+    info = _subsample_info(
+        n_before=n_before,
+        n_after=n_before,
+        strategy="none",
+        seed=seed,
+        max_cells=n_max,
+    )
+    if n_max is None or n_max <= 0 or n_before <= n_max:
+        return adata, info
+
+    effective_strategy, groupby_keys = _subsample_groupby(strategy, label_key, batch_key)
+    rng = np.random.default_rng(seed)
+    frac = n_max / n_before
+    selected = np.concatenate(
+        [
+            rng.choice(idx, size=max(1, round(len(idx) * frac)), replace=False)
+            for idx in adata.obs.groupby(groupby_keys, observed=True).indices.values()
+        ]
+    )
+
+    if selected.size > n_max:
+        selected = rng.choice(selected, size=n_max, replace=False)
+
+    adata_sub = adata[np.sort(selected)].copy()
+    return adata_sub, _subsample_info(
+        n_before=n_before,
+        n_after=adata_sub.n_obs,
+        strategy=effective_strategy,
+        seed=seed,
+        max_cells=n_max,
+    )
+
+
+def _subsample_info(n_before, n_after, strategy, seed, max_cells):
+    return {
+        "subsampled": n_after < n_before,
+        "n_cells_before": n_before,
+        "n_cells_after": n_after,
+        "strategy": strategy,
+        "seed": seed,
+        "max_cells": max_cells,
+    }
+
+
+def _subsample_groupby(strategy, label_key, batch_key):
+    strategies = {
+        "stratified_label": [label_key],
+        "stratified_label_batch": [label_key, batch_key],
+    }
+
+    if strategy in ("none", ""):
+        warnings.warn(
+            "scib_max_cells is set but scib_subsample_strategy is 'none'; "
+            "using stratified_label_batch instead of uniform sampling."
+        )
+        strategy = "stratified_label_batch"
+
+    if strategy not in strategies:
+        raise SystemExit(
+            f"Unknown scib_subsample_strategy '{strategy}'; "
+            "expected stratified_label or stratified_label_batch."
+        )
+    return strategy, strategies[strategy]
+
+
+def _benchmarker_kwargs(profile):
+    if profile == "full":
+        return {}
+    if profile != "fast":
+        raise SystemExit(
+            f"Unknown scib_metric_profile '{profile}'; expected 'fast' or 'full'."
+        )
+    return {
+        "bio_conservation_metrics": replace(
+            BioConservation(),
+            isolated_labels=False,
+            nmi_ari_cluster_labels_kmeans=False,
+        ),
+        "batch_correction_metrics": replace(BatchCorrection(), pcr_comparison=False),
+    }
+
+
+max_cells = _optional_int(max_cells_raw)
 adata = sc.read_h5ad(h5ad_path)
 
 missing = [c for c in ("batch", "label") if c not in adata.obs]
@@ -41,6 +136,13 @@ elif not bool(adata.var["highly_variable"].any()):
     )
     adata.var["highly_variable"] = True
 
+adata, subsample_info = _stratified_subsample(
+    adata,
+    max_cells,
+    subsample_strategy,
+    subsample_seed,
+)
+
 labels = adata.obs["label"].astype(str)
 if (labels == "Unknown").all():
     warnings.warn(
@@ -48,18 +150,21 @@ if (labels == "Unknown").all():
     )
 
 ad_bm = adata.copy()
-if "counts" not in ad_bm.layers:
-    ad_bm.layers["counts"] = ad_bm.X.copy()
-ad_bm.X = ad_bm.layers["counts"].copy()
-sc.pp.normalize_total(ad_bm, target_sum=1e4)
-sc.pp.log1p(ad_bm)
+bm_kw = {"n_jobs": n_jobs, **_benchmarker_kwargs(metric_profile)}
 
-bm_kw = {}
+if metric_profile == "full":
+    if "counts" not in ad_bm.layers:
+        ad_bm.layers["counts"] = ad_bm.X.copy()
+    ad_bm.X = ad_bm.layers["counts"].copy()
+    sc.pp.normalize_total(ad_bm, target_sum=1e4)
+    sc.pp.log1p(ad_bm)
+
 if labels.nunique() <= 1:
     warnings.warn(
         "obs['label'] has only one unique value; disabling BRAS (silhouette batch)."
     )
-    bm_kw["batch_correction_metrics"] = replace(BatchCorrection(), bras=False)
+    batch_cfg = bm_kw.get("batch_correction_metrics", BatchCorrection())
+    bm_kw["batch_correction_metrics"] = replace(batch_cfg, bras=False)
 
 bm = Benchmarker(
     ad_bm,
@@ -74,6 +179,15 @@ bm.prepare()
 bm.benchmark()
 results = bm.get_results(min_max_scale=False, clean_names=True)
 results.to_csv(f"{prefix}_metrics.tsv", sep="\t")
+
+benchmark_info = {
+    "integration_method": prefix,
+    "metric_profile": metric_profile,
+    "n_jobs": n_jobs,
+    **subsample_info,
+}
+with open(f"{prefix}_benchmark_info.json", "w") as f_info:
+    json.dump(benchmark_info, f_info, indent=2)
 
 
 def _mqc_table_cell(v):
@@ -91,6 +205,26 @@ def _mqc_table_cell(v):
     return v
 
 
+def _benchmark_description(info):
+    parts = [
+        "scib-metrics benchmark (one row per integration method).",
+        f"Profile: {info['metric_profile']}.",
+    ]
+    if info["subsampled"]:
+        parts.append(
+            "Subsampled "
+            f"{info['n_cells_before']} -> {info['n_cells_after']} cells "
+            f"({info['strategy']}, seed={info['seed']})."
+        )
+    else:
+        parts.append(f"Cells: {info['n_cells_before']} (no subsampling).")
+    parts.append(
+        "Subsampled scores are for within-pipeline monitoring; "
+        "not directly comparable to full-data scIB paper benchmarks."
+    )
+    return " ".join(parts)
+
+
 # MultiQC custom table: data is { sample (row): { column: value, ... } }.
 # Fixed section id merges all integration runs (one row each); one embedding row per run.
 metrics_row = results.iloc[0]
@@ -104,7 +238,7 @@ with open(f"{prefix}_mqc.json", "w") as f_json:
             "id": "scib_metrics_benchmark",
             "plot_type": "table",
             "section_name": "scib-metrics",
-            "description": "scib-metrics benchmark (one row per integration method).",
+            "description": _benchmark_description(benchmark_info),
             "pconfig": {"col1_header": "Integration method"},
             "headers": mqc_headers,
             "data": mqc_data,

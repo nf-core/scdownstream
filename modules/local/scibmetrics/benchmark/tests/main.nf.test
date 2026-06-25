@@ -79,6 +79,10 @@ nextflow_process {
             process {
                 """
                 input[0] = SCANPY_PCA.out.h5ad
+                input[1] = 0
+                input[2] = 'stratified_label_batch'
+                input[3] = 42
+                input[4] = 'fast'
                 """
             }
         }
@@ -105,6 +109,10 @@ nextflow_process {
                         file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
                     ]
                 )
+                input[1] = 0
+                input[2] = 'stratified_label_batch'
+                input[3] = 42
+                input[4] = 'fast'
                 """
             }
         }

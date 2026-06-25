@@ -21,6 +21,10 @@ workflow COMBINE {
     expimap_gmt                 //   value: string
     condition_col               //   value: string
     scib                        //   value: boolean
+    scib_max_cells              //   value: integer or null
+    scib_subsample_strategy     //   value: string
+    scib_subsample_seed         //   value: integer
+    scib_metric_profile         //   value: string
 
     main:
 
@@ -86,7 +90,11 @@ workflow COMBINE {
             ch_integrations
                 // BBKNN corrects the neighborhood graph and does not produce a dense embedding
                 // Thus, it is not compatible with scib-metrics
-                .filter { meta, _h5ad -> meta.integration != 'bbknn' }
+                .filter { meta, _h5ad -> meta.integration != 'bbknn' },
+            scib_max_cells ?: 0,
+            scib_subsample_strategy,
+            scib_subsample_seed,
+            scib_metric_profile,
         )
         ch_multiqc_files = ch_multiqc_files.mix(SCIBMETRICS_BENCHMARK.out.multiqc_files)
     }

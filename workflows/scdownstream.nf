@@ -66,6 +66,10 @@ workflow SCDOWNSTREAM {
     skip_liana                    //   value: boolean
     skip_rankgenesgroups          //   value: boolean
     scib                          //   value: boolean
+    scib_max_cells                //   value: integer or null
+    scib_subsample_strategy       //   value: string
+    scib_subsample_seed           //   value: integer
+    scib_metric_profile           //   value: string
     base_embeddings               //   value: string
     base_label_col                //   value: string
     base_condition_col            //   value: string
@@ -188,6 +192,10 @@ workflow SCDOWNSTREAM {
                 expimap_gmt,
                 condition_col,
                 scib,
+                scib_max_cells,
+                scib_subsample_strategy,
+                scib_subsample_seed,
+                scib_metric_profile,
             )
             ch_obs = ch_obs.mix(COMBINE.out.obs)
             ch_var = ch_var.mix(COMBINE.out.var)

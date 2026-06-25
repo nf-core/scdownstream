@@ -67,6 +67,10 @@ workflow NFCORE_SCDOWNSTREAM {
     skip_liana                    //   value: boolean
     skip_rankgenesgroups          //   value: boolean
     scib                          //   value: boolean
+    scib_max_cells                //   value: integer or null
+    scib_subsample_strategy       //   value: string
+    scib_subsample_seed           //   value: integer
+    scib_metric_profile           //   value: string
     base_embeddings               //   value: string
     base_label_col                //   value: string
     base_condition_col            //   value: string
@@ -127,6 +131,10 @@ workflow NFCORE_SCDOWNSTREAM {
         skip_liana,
         skip_rankgenesgroups,
         scib,
+        scib_max_cells,
+        scib_subsample_strategy,
+        scib_subsample_seed,
+        scib_metric_profile,
         base_embeddings,
         base_label_col,
         base_condition_col,
@@ -229,6 +237,10 @@ workflow {
         params.skip_liana,
         params.skip_rankgenesgroups,
         params.scib,
+        params.scib_max_cells,
+        params.scib_subsample_strategy,
+        params.scib_subsample_seed,
+        params.scib_metric_profile,
         params.base_embeddings,
         params.base_label_col,
         params.base_condition_col,
