@@ -26,85 +26,96 @@ subsample_seed = int("${subsample_seed}")
 metric_profile = "${metric_profile}"
 n_jobs = int("${task.cpus}")
 
-max_cells = None
-if max_cells_raw and max_cells_raw not in ("null", "None", ""):
-    max_cells = int(max_cells_raw)
+
+def _optional_int(value):
+    return None if value in ("", "null", "None") else int(value)
 
 
 def _stratified_subsample(adata, n_max, strategy, seed, label_key="label", batch_key="batch"):
     n_before = adata.n_obs
-    info = {
-        "subsampled": False,
-        "n_cells_before": n_before,
-        "n_cells_after": n_before,
-        "strategy": "none",
-        "seed": seed,
-        "max_cells": n_max,
-    }
+    info = _subsample_info(
+        n_before=n_before,
+        n_after=n_before,
+        strategy="none",
+        seed=seed,
+        max_cells=n_max,
+    )
     if n_max is None or n_max <= 0 or n_before <= n_max:
         return adata, info
 
+    effective_strategy, groupby_keys = _subsample_groupby(strategy, label_key, batch_key)
+    rng = np.random.default_rng(seed)
+    frac = n_max / n_before
+    selected = np.concatenate(
+        [
+            rng.choice(idx, size=max(1, round(len(idx) * frac)), replace=False)
+            for idx in adata.obs.groupby(groupby_keys, observed=True).indices.values()
+        ]
+    )
+
+    if selected.size > n_max:
+        selected = rng.choice(selected, size=n_max, replace=False)
+
+    adata_sub = adata[np.sort(selected)].copy()
+    return adata_sub, _subsample_info(
+        n_before=n_before,
+        n_after=adata_sub.n_obs,
+        strategy=effective_strategy,
+        seed=seed,
+        max_cells=n_max,
+    )
+
+
+def _subsample_info(n_before, n_after, strategy, seed, max_cells):
+    return {
+        "subsampled": n_after < n_before,
+        "n_cells_before": n_before,
+        "n_cells_after": n_after,
+        "strategy": strategy,
+        "seed": seed,
+        "max_cells": max_cells,
+    }
+
+
+def _subsample_groupby(strategy, label_key, batch_key):
+    strategies = {
+        "stratified_label": [label_key],
+        "stratified_label_batch": [label_key, batch_key],
+    }
+
     if strategy in ("none", ""):
-        strategy = "stratified_label_batch"
         warnings.warn(
             "scib_max_cells is set but scib_subsample_strategy is 'none'; "
             "using stratified_label_batch instead of uniform sampling."
         )
+        strategy = "stratified_label_batch"
 
-    rng = np.random.default_rng(seed)
-    if strategy == "stratified_label":
-        group_indices = adata.obs.groupby(label_key, observed=True).indices
-    elif strategy == "stratified_label_batch":
-        group_indices = adata.obs.groupby(
-            [label_key, batch_key], observed=True
-        ).indices
-    else:
+    if strategy not in strategies:
         raise SystemExit(
             f"Unknown scib_subsample_strategy '{strategy}'; "
             "expected stratified_label or stratified_label_batch."
         )
-
-    frac = n_max / n_before
-    selected = []
-    for idx in group_indices.values():
-        idx = np.asarray(idx)
-        n_take = max(1, min(len(idx), int(round(len(idx) * frac))))
-        if n_take >= len(idx):
-            selected.extend(idx.tolist())
-        else:
-            selected.extend(rng.choice(idx, size=n_take, replace=False).tolist())
-
-    if len(selected) > n_max:
-        selected = rng.choice(np.array(selected), size=n_max, replace=False).tolist()
-
-    adata_sub = adata[sorted(selected)].copy()
-    info.update(
-        {
-            "subsampled": True,
-            "n_cells_after": adata_sub.n_obs,
-            "strategy": strategy,
-        }
-    )
-    return adata_sub, info
+    return strategy, strategies[strategy]
 
 
-def _metric_config(profile):
+def _benchmarker_kwargs(profile):
     if profile == "full":
-        return None, None
+        return {}
     if profile != "fast":
         raise SystemExit(
             f"Unknown scib_metric_profile '{profile}'; expected 'fast' or 'full'."
         )
-    return (
-        replace(
+    return {
+        "bio_conservation_metrics": replace(
             BioConservation(),
             isolated_labels=False,
             nmi_ari_cluster_labels_kmeans=False,
         ),
-        replace(BatchCorrection(), pcr_comparison=False),
-    )
+        "batch_correction_metrics": replace(BatchCorrection(), pcr_comparison=False),
+    }
 
 
+max_cells = _optional_int(max_cells_raw)
 adata = sc.read_h5ad(h5ad_path)
 
 missing = [c for c in ("batch", "label") if c not in adata.obs]
@@ -139,25 +150,14 @@ if (labels == "Unknown").all():
     )
 
 ad_bm = adata.copy()
-bio_metrics, batch_metrics = _metric_config(metric_profile)
-skip_pcr = metric_profile == "fast"
+bm_kw = {"n_jobs": n_jobs, **_benchmarker_kwargs(metric_profile)}
 
-if not skip_pcr:
+if metric_profile == "full":
     if "counts" not in ad_bm.layers:
         ad_bm.layers["counts"] = ad_bm.X.copy()
     ad_bm.X = ad_bm.layers["counts"].copy()
     sc.pp.normalize_total(ad_bm, target_sum=1e4)
     sc.pp.log1p(ad_bm)
-elif ad_bm.X.max() > 30:
-    warnings.warn(
-        "scib fast profile skips PCR comparison; assuming adata.X is already normalized."
-    )
-
-bm_kw = {"n_jobs": n_jobs}
-if bio_metrics is not None:
-    bm_kw["bio_conservation_metrics"] = bio_metrics
-if batch_metrics is not None:
-    bm_kw["batch_correction_metrics"] = batch_metrics
 
 if labels.nunique() <= 1:
     warnings.warn(
