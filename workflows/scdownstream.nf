@@ -65,6 +65,7 @@ workflow SCDOWNSTREAM {
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
     skip_rankgenesgroups          //   value: boolean
+    skip_qc_report                //   value: boolean
     scib                          //   value: boolean
     scib_max_cells                //   value: integer or null
     scib_subsample_strategy       //   value: string
@@ -340,32 +341,34 @@ workflow SCDOWNSTREAM {
     //
     // Render quality control report
     //
-    qc_report_notebook = file("${projectDir}/bin/qc-report.qmd", checkIfExists: true)
-    extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
-    if (!qc_only) {
-        ch_qc_report_input_base = FINALIZE.out.h5ad
-    } else {
-        ch_qc_report_input_base = ch_h5ad
+    if (!skip_qc_report) {
+        qc_report_notebook = file("${projectDir}/bin/qc-report.qmd", checkIfExists: true)
+        extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
+        if (!qc_only) {
+            ch_qc_report_input_base = FINALIZE.out.h5ad
+        } else {
+            ch_qc_report_input_base = ch_h5ad
+        }
+        if (ch_input) {
+            ch_sizes = QUALITY_CONTROL.out.sizes.map { _meta, tsv -> tsv }
+        } else {
+            ch_sizes = channel.empty()
+        }
+        ch_qc_report_input_data = ch_qc_report_input_base
+            .map { _meta, h5ad -> h5ad }
+            .mix ( ch_sizes )
+            .collect()
+        qc_report_params = [
+            qc_only: qc_only,
+            has_input: ch_input != null
+        ]
+        QC_REPORT (
+            [[id: 'qc-report'], qc_report_notebook],
+            qc_report_params,
+            ch_qc_report_input_data,
+            extensions
+        )
     }
-    if (ch_input) {
-        ch_sizes = QUALITY_CONTROL.out.sizes.map { _meta, tsv -> tsv }
-    } else {
-        ch_sizes = channel.empty()
-    }
-    ch_qc_report_input_data = ch_qc_report_input_base
-        .map { _meta, h5ad -> h5ad }
-        .mix ( ch_sizes )
-        .collect()
-    qc_report_params = [
-        qc_only: qc_only,
-        has_input: ch_input != null
-    ]
-    QC_REPORT (
-        [[id: 'qc-report'], qc_report_notebook],
-        qc_report_params,
-        ch_qc_report_input_data,
-        extensions
-    )
 
     //
     // Collate and save software versions

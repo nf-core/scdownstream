@@ -348,6 +348,10 @@
                     "type": "boolean",
                     "description": "Skip the rank_genes_groups step. For large datasets, the pipeline might fail due to high memory usage in this step. Use this option to skip it."
                 },
+                "skip_qc_report": {
+                    "type": "boolean",
+                    "description": "Skip rendering the Quarto QC HTML report in reports/."
+                },
                 "scib": {
                     "type": "boolean",
                     "default": false,
