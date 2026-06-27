@@ -66,6 +66,7 @@ workflow NFCORE_SCDOWNSTREAM {
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
     skip_rankgenesgroups          //   value: boolean
+    skip_qc_report                //   value: boolean
     scib                          //   value: boolean
     scib_max_cells                //   value: integer or null
     scib_subsample_strategy       //   value: string
@@ -130,6 +131,7 @@ workflow NFCORE_SCDOWNSTREAM {
         expimap_gmt,
         skip_liana,
         skip_rankgenesgroups,
+        skip_qc_report,
         scib,
         scib_max_cells,
         scib_subsample_strategy,
@@ -236,6 +238,7 @@ workflow {
         params.expimap_gmt,
         params.skip_liana,
         params.skip_rankgenesgroups,
+        params.skip_qc_report,
         params.scib,
         params.scib_max_cells,
         params.scib_subsample_strategy,
