@@ -1,5 +1,6 @@
 include { ADATA_SPLITCOL as SPLITCOL } from '../../../modules/local/adata/splitcol'
 include { INTEGRATE                  } from '../integrate'
+include { anndata                      } from 'plugin/nf-anndata'
 
 workflow SUB_INTEGRATE {
     take:
@@ -19,9 +20,47 @@ workflow SUB_INTEGRATE {
     label_whitelist             //   value: string or null
 
     main:
+    def normalized_methods = methods*.trim()*.toLowerCase()
+
+    def provided_reference_models = []
+    if (scvi_model && normalized_methods.contains('scvi')) {
+        provided_reference_models << 'scvi_model'
+    }
+    if (scanvi_model && normalized_methods.contains('scanvi')) {
+        provided_reference_models << 'scanvi_model'
+    }
+    if (scimilarity_model && normalized_methods.contains('scimilarity')) {
+        provided_reference_models << 'scimilarity_model'
+    }
+    if (symphony_reference && normalized_methods.contains('symphony')) {
+        provided_reference_models << 'symphony_reference'
+    }
+
+    if (provided_reference_models) {
+        log.warn """\
+            Per-label integration (integrate_per_label) was enabled, but reference model parameter(s) [${provided_reference_models.join(', ')}] were also provided.
+            Query cells will be mapped into the pre-trained reference latent space instead of training a separate integration model per label group.
+            The resulting embeddings may therefore be identical across label groups. \
+            """.stripIndent()
+    }
+
     def normalized_whitelist = label_whitelist
         ? label_whitelist.split(',')*.trim().findAll { label -> label }.collect { label -> label.replace(' ', '_') }
         : []
+
+    if (normalized_whitelist) {
+        ch_h5ad = ch_h5ad.map { meta, h5ad ->
+            def ad = anndata(h5ad)
+            if (!(split_col in ad.obs.colnames)) {
+                error("integrate_per_label_whitelist: column '${split_col}' not found in adata")
+            }
+            def available_groups = ad.obs[split_col].unique().collect { value -> value.toString().replace(' ', '_') }
+            if (!normalized_whitelist.any { label -> label in available_groups }) {
+                error("integrate_per_label_whitelist: none of the requested labels matched any group in '${split_col}': ${normalized_whitelist.join(', ')}")
+            }
+            [meta, h5ad]
+        }
+    }
 
     SPLITCOL (
         ch_h5ad,
@@ -44,9 +83,6 @@ workflow SUB_INTEGRATE {
     if (normalized_whitelist) {
         ch_h5ad_split = ch_h5ad_split
             .filter { meta, _h5ad -> meta.subset in normalized_whitelist }
-            .ifEmpty {
-                error("integrate_per_label_whitelist: none of the requested labels matched any group in '${split_col}': ${normalized_whitelist.join(', ')}")
-            }
     }
 
     INTEGRATE (
