@@ -35,11 +35,7 @@ adata_cellbender = load_anndata_from_input_and_output("${unfiltered}", "${cellbe
 filtered_gene_id_col = next((col for col in ("gene_ids", "gene_id") if col in adata.var.columns), None)
 cellbender_gene_id_col = next((col for col in ("gene_id", "gene_ids") if col in adata_cellbender.var.columns), None)
 filtered_ids = adata.var[filtered_gene_id_col] if filtered_gene_id_col else adata.var.index
-cellbender_ids = (
-    adata_cellbender.var[cellbender_gene_id_col]
-    if filtered_gene_id_col and cellbender_gene_id_col
-    else adata_cellbender.var.index
-)
+cellbender_ids = adata_cellbender.var[cellbender_gene_id_col] if filtered_gene_id_col and cellbender_gene_id_col else adata_cellbender.var.index
 cb_id_to_pos = {gid: i for i, gid in enumerate(cellbender_ids)}
 var_positions = [cb_id_to_pos[gid] for gid in filtered_ids]
 adata_cellbender = adata_cellbender[adata.obs_names, var_positions]
