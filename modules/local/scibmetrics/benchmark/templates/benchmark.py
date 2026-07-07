@@ -16,7 +16,7 @@ import numpy as np
 import scanpy as sc
 import scib_metrics
 import yaml
-from scib_metrics.benchmark import Benchmarker, BioConservation, BatchCorrection
+from scib_metrics.benchmark import BatchCorrection, Benchmarker, BioConservation
 
 prefix = "${prefix}"
 h5ad_path = "${h5ad}"
@@ -92,8 +92,7 @@ def _subsample_groupby(strategy, label_key, batch_key):
 
     if strategy not in strategies:
         raise SystemExit(
-            f"Unknown scib_subsample_strategy '{strategy}'; "
-            "expected stratified_label or stratified_label_batch."
+            f"Unknown scib_subsample_strategy '{strategy}'; expected stratified_label or stratified_label_batch."
         )
     return strategy, strategies[strategy]
 
@@ -102,9 +101,7 @@ def _benchmarker_kwargs(profile):
     if profile == "full":
         return {}
     if profile != "fast":
-        raise SystemExit(
-            f"Unknown scib_metric_profile '{profile}'; expected 'fast' or 'full'."
-        )
+        raise SystemExit(f"Unknown scib_metric_profile '{profile}'; expected 'fast' or 'full'.")
     return {
         "bio_conservation_metrics": replace(
             BioConservation(),
@@ -120,20 +117,14 @@ adata = sc.read_h5ad(h5ad_path)
 
 missing = [c for c in ("batch", "label") if c not in adata.obs]
 if missing:
-    raise SystemExit(
-        f"scib-metrics requires obs columns {missing}; available: {list(adata.obs.columns)}"
-    )
+    raise SystemExit(f"scib-metrics requires obs columns {missing}; available: {list(adata.obs.columns)}")
 if "X_emb" not in adata.obsm:
-    raise SystemExit(
-        f"scib-metrics requires obsm['X_emb']; available: {list(adata.obsm.keys())}"
-    )
+    raise SystemExit(f"scib-metrics requires obsm['X_emb']; available: {list(adata.obsm.keys())}")
 
 if "highly_variable" not in adata.var.columns:
     adata.var["highly_variable"] = True
 elif not bool(adata.var["highly_variable"].any()):
-    warnings.warn(
-        "No highly_variable genes flagged; using all genes as HVG for scib-metrics PCA."
-    )
+    warnings.warn("No highly_variable genes flagged; using all genes as HVG for scib-metrics PCA.")
     adata.var["highly_variable"] = True
 
 adata, subsample_info = _stratified_subsample(
@@ -145,9 +136,7 @@ adata, subsample_info = _stratified_subsample(
 
 labels = adata.obs["label"].astype(str)
 if (labels == "Unknown").all():
-    warnings.warn(
-        "All cells have label 'Unknown'; bio-conservation metrics are not meaningful."
-    )
+    warnings.warn("All cells have label 'Unknown'; bio-conservation metrics are not meaningful.")
 
 ad_bm = adata.copy()
 bm_kw = {"n_jobs": n_jobs, **_benchmarker_kwargs(metric_profile)}
@@ -160,9 +149,7 @@ if metric_profile == "full":
     sc.pp.log1p(ad_bm)
 
 if labels.nunique() <= 1:
-    warnings.warn(
-        "obs['label'] has only one unique value; disabling BRAS (silhouette batch)."
-    )
+    warnings.warn("obs['label'] has only one unique value; disabling BRAS (silhouette batch).")
     batch_cfg = bm_kw.get("batch_correction_metrics", BatchCorrection())
     bm_kw["batch_correction_metrics"] = replace(batch_cfg, bras=False)
 

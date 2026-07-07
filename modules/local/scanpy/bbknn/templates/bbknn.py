@@ -2,20 +2,16 @@
 
 import os
 import platform
-import argparse
-import shlex
-
-import numpy as np
 
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
-import scanpy as sc
-import pandas as pd
 import bbknn
+import pandas as pd
+import scanpy as sc
 import yaml
-
 from threadpoolctl import threadpool_limits
+
 threadpool_limits(int("${task.cpus}"))
 
 adata = sc.read_h5ad("${h5ad}")
@@ -41,7 +37,7 @@ versions = {
         "python": platform.python_version(),
         "scanpy": sc.__version__,
         "bbknn": bbknn.__version__,
-        "pandas": pd.__version__
+        "pandas": pd.__version__,
     }
 }
 

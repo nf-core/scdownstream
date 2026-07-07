@@ -2,6 +2,7 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import platform
@@ -10,12 +11,12 @@ from collections import defaultdict
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
-import numpy as np
-import scipy
-from scipy.sparse import csr_matrix
 import anndata as ad
+import numpy as np
 import scanpy as sc
+import scipy
 import yaml
+from scipy.sparse import csr_matrix
 
 adatas = [sc.read_h5ad(f) for f in sorted("${h5ads}".split())]
 
@@ -30,8 +31,10 @@ force_obs_cols = "${force_obs_cols}"
 obs_col_intersection = list(obs_col_intersection.union(force_obs_cols.split(",") if force_obs_cols else []))
 sorted(obs_col_intersection)
 
+
 def get_columns(adata):
     return {dtype: adata.obs.select_dtypes(include=dtype).columns for dtype in ["object", "category", "number"]}
+
 
 column_dtypes = defaultdict(set)
 
@@ -70,7 +73,7 @@ adata_outer.X = csr_matrix(adata_outer.X)
 adata_outer.obs = adata_outer.obs.reindex(sorted(adata_outer.obs.columns), axis=1)
 
 gene_intersection = set(genes[0]).intersection(*genes[1:])
-intersection_mask = adata_outer.var_names.to_series(name='intersection').map(lambda x: x in gene_intersection)
+intersection_mask = adata_outer.var_names.to_series(name="intersection").map(lambda x: x in gene_intersection)
 adata_inner = adata_outer[:, intersection_mask]
 
 intersection_mask.to_pickle("gene_intersection.pkl")
@@ -82,9 +85,7 @@ if base_path:
     adata_integrate = adata_inner[~adata_inner.obs.index.isin(adata_base.obs.index)]
 
     known_labels = adata_base.obs["label"].unique()
-    adata_integrate.obs["label"] = adata_integrate.obs["label"].map(
-        lambda x: x if x in known_labels else "Unknown"
-    )
+    adata_integrate.obs["label"] = adata_integrate.obs["label"].map(lambda x: x if x in known_labels else "Unknown")
     adata_integrate.write("${prefix}_integrate.h5ad")
 else:
     # Create symlink to the inner dataset

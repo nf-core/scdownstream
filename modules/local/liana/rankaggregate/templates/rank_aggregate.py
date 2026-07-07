@@ -2,15 +2,15 @@
 
 import os
 import platform
+
 import yaml
 
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
+import liana as li
 import pandas as pd
 import scanpy as sc
-import liana as li
-
 from threadpoolctl import threadpool_limits
 
 threadpool_limits(int("${task.cpus}"))
@@ -23,9 +23,7 @@ if adata.obs[obs_key].nunique() > 1:
     if (adata.X < 0).nnz == 0:
         sc.pp.log1p(adata)
     try:
-        li.mt.rank_aggregate(
-            adata, obs_key, use_raw=False, verbose=True, n_jobs=int("${task.cpus}")
-        )
+        li.mt.rank_aggregate(adata, obs_key, use_raw=False, verbose=True, n_jobs=int("${task.cpus}"))
         df: pd.DataFrame = adata.uns["liana_res"]
 
         df.to_pickle(f"{prefix}.pkl")
@@ -37,9 +35,7 @@ if adata.obs[obs_key].nunique() > 1:
         else:
             raise e
 else:
-    print(
-        f"Skipping rank aggregation because the column {obs_key} has only one unique value."
-    )
+    print(f"Skipping rank aggregation because the column {obs_key} has only one unique value.")
 
 # Versions
 

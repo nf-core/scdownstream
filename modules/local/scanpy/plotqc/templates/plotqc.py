@@ -2,24 +2,26 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
-import scanpy as sc
-import matplotlib
-import matplotlib.pyplot as plt
-import platform
 import base64
 import json
+import platform
+
+import matplotlib
+import matplotlib.pyplot as plt
+import scanpy as sc
 import yaml
 
 adata = sc.read_h5ad("${h5ad}")
 
 sc.pp.calculate_qc_metrics(adata, percent_top=None, log1p=False, inplace=True)
 
-sc.pl.scatter(adata, x='total_counts', y='n_genes_by_counts', show=False)
+sc.pl.scatter(adata, x="total_counts", y="n_genes_by_counts", show=False)
 path = "${prefix}_total_counts_vs_n_genes_by_counts.png"
 plt.savefig(path)
 
@@ -34,7 +36,6 @@ with open(path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
         "parent_id": "${section_name}".replace(" ", "_"),
         "parent_name": "${section_name}",
         "parent_description": "${description}",
-
         "section_name": "${meta.id}",
         "plot_type": "image",
         "data": image_html,

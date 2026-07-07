@@ -14,11 +14,7 @@ adata = ad.read_h5ad("$h5ad")
 input_col = "${input_col}"
 output_col = "${output_col}"
 
-inputs = (
-    adata.var.index.to_list()
-    if input_col == "index"
-    else adata.var[input_col].to_list()
-)
+inputs = adata.var.index.to_list() if input_col == "index" else adata.var[input_col].to_list()
 
 mg = mygene.MyGeneInfo()
 mapping = {}

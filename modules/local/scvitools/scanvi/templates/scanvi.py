@@ -2,22 +2,23 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 os.environ.setdefault("TORCHINDUCTOR_CACHE_DIR", os.path.join(os.getcwd(), "torch_cache"))
 
 os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
 
-import scvi
 import anndata as ad
 import pandas as pd
-from scvi.model import SCVI, SCANVI
+import scvi
 import torch
 import yaml
+from scvi.model import SCANVI, SCVI
+from threadpoolctl import threadpool_limits
 
 torch.use_deterministic_algorithms(True)
-torch.set_float32_matmul_precision('medium')
+torch.set_float32_matmul_precision("medium")
 
-from threadpoolctl import threadpool_limits
 threadpool_limits(int("${task.cpus}"))
 
 scvi.settings.num_threads = int("${task.cpus}")
@@ -35,7 +36,7 @@ if reference_model_type and reference_model_type not in ["scvi", "scanvi"]:
 if reference_model_type == "scanvi":
     SCANVI.prepare_query_anndata(adata, reference_model_path)
     model = SCANVI.load_query_data(adata, reference_model_path)
-    plan_kwargs['weight_decay'] = 0.0
+    plan_kwargs["weight_decay"] = 0.0
 else:
     unlabeled_category = "${unlabeled_category}"
     unique_labels = set(adata.obs["${label_col}"].unique())
@@ -50,7 +51,7 @@ else:
         model = SCANVI.from_scvi_model(
             scvi_model=model, labels_key="${label_col}", unlabeled_category=unlabeled_category
         )
-        plan_kwargs['weight_decay'] = 0.0
+        plan_kwargs["weight_decay"] = 0.0
     else:
         categorical_covariates = "${categorical_covariates}"
         continuous_covariates = "${continuous_covariates}"
@@ -58,23 +59,30 @@ else:
         categorical_covariates = categorical_covariates.split(",") if categorical_covariates else None
         continuous_covariates = continuous_covariates.split(",") if continuous_covariates else None
 
-        SCANVI.setup_anndata(adata, batch_key="${batch_col}", labels_key="${label_col}", unlabeled_category=unlabeled_category,
-                                categorical_covariate_keys = categorical_covariates,
-                                continuous_covariate_keys = continuous_covariates)
+        SCANVI.setup_anndata(
+            adata,
+            batch_key="${batch_col}",
+            labels_key="${label_col}",
+            unlabeled_category=unlabeled_category,
+            categorical_covariate_keys=categorical_covariates,
+            continuous_covariate_keys=continuous_covariates,
+        )
 
-        model = SCANVI(adata,
-                        n_hidden=int("${n_hidden}"),
-                        n_layers=int("${n_layers}"),
-                        n_latent=int("${n_latent}"),
-                        dispersion="${dispersion}",
-                        gene_likelihood="${gene_likelihood}")
+        model = SCANVI(
+            adata,
+            n_hidden=int("${n_hidden}"),
+            n_layers=int("${n_layers}"),
+            n_latent=int("${n_latent}"),
+            dispersion="${dispersion}",
+            gene_likelihood="${gene_likelihood}",
+        )
 
 if "${task.ext.use_gpu}" == "true":
     model.to_device(0)
 
-model.train(early_stopping=True,
-            max_epochs=int("${max_epochs}") if "${max_epochs?:''}" else None,
-            plan_kwargs=plan_kwargs)
+model.train(
+    early_stopping=True, max_epochs=int("${max_epochs}") if "${max_epochs?:''}" else None, plan_kwargs=plan_kwargs
+)
 
 # Round to ensure hashes are stable
 adata.obsm["X_emb"] = model.get_latent_representation()
@@ -93,11 +101,7 @@ df.to_pickle("X_${prefix}.pkl")
 
 # Versions
 
-versions = {
-    "${task.process}": {
-        "scvi": scvi.__version__
-    }
-}
+versions = {"${task.process}": {"scvi": scvi.__version__}}
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)

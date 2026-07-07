@@ -2,18 +2,20 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
 os.environ["MPLCONFIGDIR"] = "./tmp"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
 import platform
+
 import anndata as ad
-import scanpy as sc
-from scipy.sparse import csc_matrix
 import numpy as np
+import scanpy as sc
 import scipy as sp
 import yaml
+from scipy.sparse import csc_matrix
 
 adata = ad.read_h5ad("${h5ad}")
 
@@ -38,7 +40,7 @@ versions = {
         "python": platform.python_version(),
         "anndata": ad.__version__,
         "scipy": sp.__version__,
-        "numpy": np.__version__
+        "numpy": np.__version__,
     }
 }
 

@@ -2,6 +2,7 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import platform
@@ -9,13 +10,13 @@ import platform
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
-import scanpy as sc
-import pandas as pd
 import numpy as np
-from scipy.sparse import csr_matrix
+import pandas as pd
+import scanpy as sc
 import yaml
-
+from scipy.sparse import csr_matrix
 from threadpoolctl import threadpool_limits
+
 threadpool_limits(int("${task.cpus}"))
 sc.settings.n_jobs = int("${task.cpus}")
 
@@ -39,7 +40,7 @@ versions = {
         "python": platform.python_version(),
         "scanpy": sc.__version__,
         "pandas": pd.__version__,
-        "numpy": np.__version__
+        "numpy": np.__version__,
     }
 }
 

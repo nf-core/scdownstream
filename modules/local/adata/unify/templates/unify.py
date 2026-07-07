@@ -2,17 +2,20 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
-import anndata as ad
-import scipy
-import numpy as np
-from scipy.sparse import csr_matrix
-import platform
-import yaml
 import importlib.metadata
+import platform
+
+import anndata as ad
+import numpy as np
+import scipy
+import yaml
+from scipy.sparse import csr_matrix
+
 
 # Function borrowed from https://github.com/icbi-lab/luca/blob/5ffb0a4671e9c288b10e73de18d447ee176bef1d/lib/scanpy_helper_submodule/scanpy_helpers/util.py#L122C1-L135C21
 def aggregate_duplicate_var(adata, aggr_fun=np.mean):
@@ -21,8 +24,8 @@ def aggregate_duplicate_var(adata, aggr_fun=np.mean):
     if len(duplicated_var):
         for var in duplicated_var:
             mask = adata.var_names == var
-            X_slice = adata.X[:, mask].toarray()
-            var_aggr = aggr_fun(X_slice, axis=1)[:, np.newaxis]
+            x_slice = adata.X[:, mask].toarray()
+            var_aggr = aggr_fun(x_slice, axis=1)[:, np.newaxis]
             adata.X[:, mask] = np.repeat(var_aggr, np.sum(mask), axis=1)
 
         adata_dedup = adata[:, retain_var].copy()
@@ -30,15 +33,14 @@ def aggregate_duplicate_var(adata, aggr_fun=np.mean):
     else:
         return adata
 
-def to_Florent_case(s: str):
+
+def to_florent_case(s: str):
     corrected = s.lower().strip()
 
     if corrected in ["na", "nan", "null", "unknown"]:
         return "Unknown"
 
-    corrected = s \
-        .replace(" ", "_") \
-        .replace("-", "_")
+    corrected = s.replace(" ", "_").replace("-", "_")
 
     corrected = "".join([c if c.isalnum() or c == "_" else "" for c in corrected])
 
@@ -54,6 +56,7 @@ def to_Florent_case(s: str):
         return "Unknown"
 
     return corrected.capitalize()
+
 
 adata = ad.read_h5ad("$h5ad")
 
@@ -83,7 +86,7 @@ if symbol_col != "index":
 
 if "${aggregate_isoforms}" == "true":
     # Remove all numeric suffixes following a dot, keep non-numeric suffixes
-    adata.var_names = adata.var_names.str.replace(r'\\.\\d+', '', regex=True)
+    adata.var_names = adata.var_names.str.replace(r"\\.\\d+", "", regex=True)
 
 adata.var.index = adata.var.index.astype(str)
 
@@ -115,7 +118,10 @@ adata.obs["batch"] = adata.obs["batch"].astype(str).astype("category")
 
 if label_col:
     if label_col not in adata.obs:
-        raise ValueError("The specified label column does not exist in the dataset. Existing columns: " + ", ".join(adata.obs.columns))
+        raise ValueError(
+            "The specified label column does not exist in the dataset. Existing columns: "
+            + ", ".join(adata.obs.columns)
+        )
 
     if label_col != "label":
         if "label" in adata.obs:
@@ -131,7 +137,7 @@ if label_col:
     # Replace all NaN values with "unknown"
     adata.obs["label"] = adata.obs["label"].astype(str)
     adata.obs["label"] = adata.obs["label"].fillna("unknown")
-    adata.obs["label"] = adata.obs["label"].map(to_Florent_case)
+    adata.obs["label"] = adata.obs["label"].map(to_florent_case)
     adata.obs["label"] = adata.obs["label"].astype("category")
 else:
     if "label" in adata.obs:
@@ -144,7 +150,10 @@ condition_col = "${condition_col}"
 
 if condition_col:
     if condition_col not in adata.obs:
-        raise ValueError("The specified condition column does not exist in the dataset. Existing columns: " + ", ".join(adata.obs.columns))
+        raise ValueError(
+            "The specified condition column does not exist in the dataset. Existing columns: "
+            + ", ".join(adata.obs.columns)
+        )
 
     if condition_col != "condition":
         if "condition" in adata.obs:
@@ -155,7 +164,7 @@ if condition_col:
     # Replace all NaN values with "unknown"
     adata.obs["condition"] = adata.obs["condition"].astype(str)
     adata.obs["condition"] = adata.obs["condition"].fillna("unknown")
-    adata.obs["condition"] = adata.obs["condition"].map(to_Florent_case)
+    adata.obs["condition"] = adata.obs["condition"].map(to_florent_case)
     adata.obs["condition"] = adata.obs["condition"].astype("category")
 else:
     if "condition" in adata.obs:
@@ -187,9 +196,9 @@ adata.write_h5ad("${prefix}.h5ad")
 versions = {
     "${task.process}": {
         "python": platform.python_version(),
-        "anndata": importlib.metadata.version('anndata'),
+        "anndata": importlib.metadata.version("anndata"),
         "scipy": scipy.__version__,
-        "numpy": np.__version__
+        "numpy": np.__version__,
     }
 }
 

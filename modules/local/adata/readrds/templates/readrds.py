@@ -6,12 +6,14 @@ os.environ["TMPDIR"] = "."
 
 import anndata as ad
 import anndata2ri
-import rpy2
 import pandas as pd
+import rpy2
 import rpy2.robjects as ro
-seurat = ro.packages.importr('Seurat')
+
+seurat = ro.packages.importr("Seurat")
 # Import SingleCellExperiment to check for class
-sce_pkg = ro.packages.importr('SingleCellExperiment')
+sce_pkg = ro.packages.importr("SingleCellExperiment")
+
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
@@ -32,11 +34,12 @@ def format_yaml_like(data: dict, indent: int = 0) -> str:
             yaml_str += f"{spaces}{key}: {value}\\n"
     return yaml_str
 
+
 # Read the RDS file first
-rds_obj = ro.r(f'readRDS("${rds}")')
+rds_obj = ro.r('readRDS("${rds}")')
 
 # Check if it's already a SingleCellExperiment
-is_sce = 'SingleCellExperiment' in rds_obj.extends()
+is_sce = "SingleCellExperiment" in rds_obj.extends()
 
 # Convert only if not already a SingleCellExperiment
 if not is_sce:
@@ -58,7 +61,7 @@ versions = {
         "anndata2ri": anndata2ri.__version__,
         "rpy2": rpy2.__version__,
         "pandas": pd.__version__,
-        "seurat": seurat.__version__
+        "seurat": seurat.__version__,
     }
 }
 

@@ -2,22 +2,23 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
-import json
-import platform
 import base64
+import json
 import pickle
+import platform
 
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
-import scanpy as sc
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
+import scanpy as sc
 import yaml
-
 from threadpoolctl import threadpool_limits
+
 threadpool_limits(int("${task.cpus}"))
 sc.settings.n_jobs = int("${task.cpus}")
 
@@ -34,11 +35,7 @@ obs_key = "${obs_key}"
 if filter_col and filter_val:
     adata = adata[adata.obs[filter_col] == filter_val].copy()
 
-kwargs = {
-    "groupby": obs_key,
-    "method": method,
-    "pts": True
-}
+kwargs = {"groupby": obs_key, "method": method, "pts": True}
 
 # Check value counts for each group
 value_counts = adata.obs[obs_key].value_counts()
@@ -85,7 +82,6 @@ if len(valid_groups) >= 2:
             "parent_id": "${meta.integration}",
             "parent_name": "${meta.integration}",
             "parent_description": "Results of the ${meta.integration} integration.",
-
             "section_name": section_name,
             "description": description,
             "plot_type": "image",
@@ -104,11 +100,7 @@ else:
 # Versions
 
 versions = {
-    "${task.process}": {
-        "python": platform.python_version(),
-        "scanpy": sc.__version__,
-        "pandas": pd.__version__
-    }
+    "${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__, "pandas": pd.__version__}
 }
 
 with open("versions.yml", "w") as f:

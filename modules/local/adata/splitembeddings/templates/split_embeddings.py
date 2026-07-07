@@ -2,6 +2,7 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import platform
@@ -25,12 +26,7 @@ for embedding in embeddings:
 
 # Versions
 
-versions = {
-    "${task.process}": {
-        "python": platform.python_version(),
-        "anndata": ad.__version__
-    }
-}
+versions = {"${task.process}": {"python": platform.python_version(), "anndata": ad.__version__}}
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)
