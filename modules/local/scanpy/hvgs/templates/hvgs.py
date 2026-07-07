@@ -2,9 +2,11 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import platform
+
 from threadpoolctl import threadpool_limits
 
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
@@ -23,7 +25,7 @@ batch_key = "${batch_key}"
 
 # Remove excluded genes from the anndata prior to identifying highly variable genes
 if "${excluded_genes}":
-    with open("${excluded_genes}", "r") as f:
+    with open("${excluded_genes}") as f:
         excluded_genes = [line.strip() for line in f if line.strip()]
     mask = ~adata.var_names.isin(excluded_genes)
     adata = adata[:, mask].copy()
@@ -54,12 +56,7 @@ adata.write_h5ad(f"{prefix}.h5ad")
 
 # Versions
 
-versions = {
-    "${task.process}": {
-        "python": platform.python_version(),
-        "scanpy": sc.__version__
-    }
-}
+versions = {"${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}}
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)

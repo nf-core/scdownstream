@@ -8,10 +8,10 @@ os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 
 import pandas as pd
 import scanpy as sc
-from scimilarity.utils import lognorm_counts, align_dataset
-from scimilarity import CellQuery
 import scimilarity
 import yaml
+from scimilarity import CellQuery
+from scimilarity.utils import align_dataset, lognorm_counts
 
 adata = sc.read_h5ad("${h5ad}")
 adata_raw = adata.copy()

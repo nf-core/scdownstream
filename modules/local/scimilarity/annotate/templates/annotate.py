@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 
 import os
-import shutil
 import platform
 
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 
 import scanpy as sc
-from scimilarity import CellAnnotation
 import scimilarity
 import yaml
+from scimilarity import CellAnnotation
 
 adata = sc.read_h5ad("${h5ad}")
 adata_raw = adata.copy()
@@ -18,9 +17,7 @@ adata_raw = adata.copy()
 use_gpu = "${task.ext.use_gpu}" == "true"
 ca = CellAnnotation("${model}", use_gpu=use_gpu)
 
-predictions, nn_idxs, nn_dists, nn_stats = ca.get_predictions_knn(
-    adata.obsm["X_emb"]
-)
+predictions, nn_idxs, nn_dists, nn_stats = ca.get_predictions_knn(adata.obsm["X_emb"])
 
 adata_raw.obs["annotation:scimilarity"] = predictions.values
 

@@ -2,26 +2,28 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
-import platform
-import json
 import base64
+import json
 import pickle
+import platform
+
 import yaml
 
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
-import scanpy as sc
-import numpy as np
 import matplotlib.pyplot as plt
-
+import numpy as np
+import scanpy as sc
 from threadpoolctl import threadpool_limits
+
 threadpool_limits(int("${task.cpus}"))
 sc.settings.n_jobs = int("${task.cpus}")
 
-adata = sc.read_h5ad("${h5ad}", backed='r')
+adata = sc.read_h5ad("${h5ad}", backed="r")
 prefix = "${prefix}"
 obs_key = "${obs_key}"
 
@@ -51,7 +53,6 @@ if adata.obs[obs_key].value_counts().size > 1:
             "parent_id": "${meta.integration}",
             "parent_name": "${meta.integration}",
             "parent_description": "Results of the ${meta.integration} integration.",
-
             "section_name": "${meta.id} PAGA",
             "plot_type": "image",
             "data": image_html,
@@ -63,12 +64,7 @@ else:
 
 # Versions
 
-versions = {
-    "${task.process}": {
-        "python": platform.python_version(),
-        "scanpy": sc.__version__
-    }
-}
+versions = {"${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}}
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)

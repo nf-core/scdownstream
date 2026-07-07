@@ -2,19 +2,20 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
-import platform
 import base64
 import json
+import platform
 
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
 import anndata as ad
+import matplotlib
 import matplotlib.pyplot as plt
 import upsetplot
-import matplotlib
 import yaml
 
 # Versions
@@ -33,6 +34,7 @@ with open("versions.yml", "w") as f:
 
 prefix = "${prefix}"
 
+
 def load_gene_names(path: str) -> list[str]:
     adata = ad.read_h5ad(path, backed="r")
     try:
@@ -40,10 +42,8 @@ def load_gene_names(path: str) -> list[str]:
     finally:
         adata.file.close()
 
-adata_genes = dict(zip(
-    "${names.join(' ')}".split(),
-    [load_gene_names(path) for path in "${h5ads}".split()]
-))
+
+adata_genes = dict(zip("${names.join(' ')}".split(), [load_gene_names(path) for path in "${h5ads}".split()]))
 
 if len(adata_genes) < 2:
     exit(0)

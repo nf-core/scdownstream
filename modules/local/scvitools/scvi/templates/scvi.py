@@ -2,22 +2,23 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 os.environ.setdefault("TORCHINDUCTOR_CACHE_DIR", os.path.join(os.getcwd(), "torch_cache"))
 
 os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
 
-import scvi
 import anndata as ad
 import pandas as pd
-from scvi.model import SCVI
+import scvi
 import torch
 import yaml
+from scvi.model import SCVI
+from threadpoolctl import threadpool_limits
 
 torch.set_float32_matmul_precision("medium")
 torch.use_deterministic_algorithms(True)
 
-from threadpoolctl import threadpool_limits
 threadpool_limits(int("${task.cpus}"))
 
 scvi.settings.num_threads = int("${task.cpus}")
@@ -35,19 +36,15 @@ if reference_model_type:
     elif reference_model_type == "scvi":
         SCVI.prepare_query_anndata(adata, reference_model_path)
         model = SCVI.load_query_data(adata, reference_model_path)
-        plan_kwargs['weight_decay'] = 0.0
+        plan_kwargs["weight_decay"] = 0.0
     else:
         raise ValueError(f"Invalid reference model type: {reference_model_type}")
 else:
     categorical_covariates = "${categorical_covariates}"
     continuous_covariates = "${continuous_covariates}"
 
-    categorical_covariates = (
-        categorical_covariates.split(",") if categorical_covariates else None
-    )
-    continuous_covariates = (
-        continuous_covariates.split(",") if continuous_covariates else None
-    )
+    categorical_covariates = categorical_covariates.split(",") if categorical_covariates else None
+    continuous_covariates = continuous_covariates.split(",") if continuous_covariates else None
 
     SCVI.setup_anndata(
         adata,
@@ -88,11 +85,7 @@ df.to_pickle("X_${prefix}.pkl")
 
 # Versions
 
-versions = {
-    "${task.process}": {
-        "scvi": scvi.__version__
-    }
-}
+versions = {"${task.process}": {"scvi": scvi.__version__}}
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)

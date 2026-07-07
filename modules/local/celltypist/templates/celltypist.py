@@ -7,10 +7,11 @@ os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["CELLTYPIST_FOLDER"] = "./tmp/celltypist"
 
+import celltypist
 import pandas as pd
 import scanpy as sc
-import celltypist
 from celltypist import models as ct_models
+
 
 def format_yaml_like(data: dict, indent: int = 0) -> str:
     """Formats a dictionary to a YAML-like string.
@@ -38,9 +39,7 @@ prefix = "${prefix}"
 models = "${models.join(' ')}".split()
 
 adata_celltypist = adata.copy()  # make a copy of our adata
-sc.pp.normalize_per_cell(
-    adata_celltypist, counts_per_cell_after=10**4
-)  # normalize to 10,000 counts per cell
+sc.pp.normalize_per_cell(adata_celltypist, counts_per_cell_after=10**4)  # normalize to 10,000 counts per cell
 sc.pp.log1p(adata_celltypist)  # log-transform
 
 symbol_col = "${symbol_col}"
@@ -61,14 +60,10 @@ for model in models:
     ct_models.download_models(model=model_file)
     model_obj = ct_models.Model.load(model_file)
 
-    predictions = celltypist.annotate(
-        adata_celltypist, model=model_obj
-    )
+    predictions = celltypist.annotate(adata_celltypist, model=model_obj)
     predictions_adata = predictions.to_adata()
 
-    df_celltypist = predictions_adata.obs.loc[
-        adata.obs.index, ["predicted_labels", "conf_score"]
-    ]
+    df_celltypist = predictions_adata.obs.loc[adata.obs.index, ["predicted_labels", "conf_score"]]
 
     df_celltypist.columns = [f"celltypist:{model_name}", f"celltypist:{model_name}:conf"]
     df_list.append(df_celltypist)
@@ -86,7 +81,7 @@ versions = {
         "python": platform.python_version(),
         "pandas": pd.__version__,
         "scanpy": sc.__version__,
-        "celltypist": celltypist.__version__
+        "celltypist": celltypist.__version__,
     }
 }
 

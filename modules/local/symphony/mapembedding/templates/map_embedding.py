@@ -15,7 +15,6 @@ import symphonypy as sp
 import yaml
 from threadpoolctl import threadpool_limits
 
-
 threadpool_limits(int("${task.cpus}"))
 
 adata = sc.read_h5ad("${h5ad}")

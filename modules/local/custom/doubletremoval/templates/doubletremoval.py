@@ -2,30 +2,33 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
-import platform
 import base64
 import json
+import platform
 
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
 import anndata as ad
-import pandas as pd
-import matplotlib.pyplot as plt
-import upsetplot
 import matplotlib
+import matplotlib.pyplot as plt
+import pandas as pd
+import upsetplot
 import yaml
 
 adata = ad.read_h5ad("${h5ad}")
 threshold = int("${threshold}")
 prefix = "${prefix}"
 
+
 def load(path: str) -> pd.DataFrame:
     if path.endswith(".pkl"):
         return pd.read_pickle(path)
     if path.endswith(".csv"):
         return pd.read_csv(path, index_col=0)
+
 
 predictions = pd.concat([load(f) for f in "${predictions}".split()], axis=1)
 mask = predictions.sum(axis=1) >= threshold
@@ -53,16 +56,11 @@ if not len(predictions.columns) > 1:
 
 # Plot
 
-contents = {column: predictions[column][predictions[column]].index.tolist()
-               for column in predictions.columns}
+contents = {column: predictions[column][predictions[column]].index.tolist() for column in predictions.columns}
 
 plot_data = upsetplot.from_contents(contents)
 
-upsetplot.plot(plot_data,
-               sort_by="cardinality",
-               show_counts=True,
-               subset_size="count",
-               min_subset_size=10)
+upsetplot.plot(plot_data, sort_by="cardinality", show_counts=True, subset_size="count", min_subset_size=10)
 plot_path = f"{prefix}_predictions_mqc.png"
 plt.savefig(plot_path)
 
@@ -77,7 +75,6 @@ with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
         "parent_id": "doublet_predictions",
         "parent_name": "Doublet predictions",
         "parent_description": "Upset plots of the various doublet prediction tools for each sample.",
-
         "section_name": "${meta.id}",
         "plot_type": "image",
         "data": image_html,

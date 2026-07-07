@@ -7,11 +7,12 @@ import platform
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
+from importlib.metadata import version
+
 import numpy as np
 import pandas as pd
 import scanpy as sc
 import yaml
-from importlib.metadata import version
 from cytetype import CyteType
 
 adata = sc.read_h5ad("${h5ad}")
@@ -62,10 +63,7 @@ adata_work = annotator.run(
 
 missing_cols = [c for c in output_cols if c not in adata_work.obs.columns]
 if missing_cols:
-    raise RuntimeError(
-        f"CyteType did not add expected obs columns: {missing_cols}. "
-        "Check logs and study_context."
-    )
+    raise RuntimeError(f"CyteType did not add expected obs columns: {missing_cols}. Check logs and study_context.")
 
 df_out = adata_work.obs[output_cols].reindex(adata.obs.index)
 df_out.to_pickle(f"{prefix}.pkl")
@@ -79,7 +77,7 @@ versions = {
         "numpy": np.__version__,
         "pandas": pd.__version__,
         "scanpy": sc.__version__,
-        "cytetype": version("cytetype")
+        "cytetype": version("cytetype"),
     }
 }
 

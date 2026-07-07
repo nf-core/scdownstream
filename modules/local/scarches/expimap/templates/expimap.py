@@ -3,6 +3,7 @@
 import argparse
 import os
 import shlex
+
 import yaml
 
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
@@ -13,11 +14,10 @@ import anndata as ad
 # Monkey-patch anndata for scarches compatibility
 ad.read = ad.read_h5ad
 
-import scarches as sca
 import pandas as pd
 import scanpy as sc
+import scarches as sca
 import torch
-
 from threadpoolctl import threadpool_limits
 
 threadpool_limits(int("${task.cpus}"))
@@ -72,19 +72,13 @@ if not raw_condition:
         "(e.g. batch or condition). scArches EXPIMAP does not support training without a condition key."
     )
 if raw_condition not in adata_processing.obs.columns:
-    raise ValueError(
-        f"EXPIMAP condition_col {raw_condition!r} is not present in adata.obs.columns"
-    )
+    raise ValueError(f"EXPIMAP condition_col {raw_condition!r} is not present in adata.obs.columns")
 condition_key = raw_condition
 
 if "${reference_model}":
-    sca.utils.add_annotations(
-        adata_processing, "${reference_model}", min_genes=12, clean=True
-    )
+    sca.utils.add_annotations(adata_processing, "${reference_model}", min_genes=12, clean=True)
 else:
-    raise ValueError(
-        "Reference model is required for EXPIMAP. Please provide a path to the reference model."
-    )
+    raise ValueError("Reference model is required for EXPIMAP. Please provide a path to the reference model.")
 
 expimap_kw = {
     "adata": adata_processing,

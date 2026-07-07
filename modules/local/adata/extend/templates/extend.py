@@ -2,17 +2,18 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
-import platform
-import pickle
 import importlib.metadata
+import pickle
+import platform
+from pathlib import Path
 
 import anndata as ad
-import pandas as pd
 import numpy as np
+import pandas as pd
 import yaml
-from pathlib import Path
 
 adata = ad.read_h5ad("${base}")
 prefix = "${prefix}"
@@ -23,13 +24,15 @@ obsp_paths = sorted(Path("obsp/").glob("*"))
 uns_paths = sorted(Path("uns/").glob("*"))
 layers_paths = sorted(Path("layers/").glob("*"))
 
+
 def load_pickle_or_csv(path):
     if path.suffix == ".pkl":
         return pd.read_pickle(path)
     elif path.suffix == ".csv":
-        return pd.read_csv(path, index_col = 0)
+        return pd.read_csv(path, index_col=0)
     else:
         raise ValueError(f"Unsupported file extension: {path}")
+
 
 for path in obs_paths:
     df = load_pickle_or_csv(path).reindex(adata.obs_names)
@@ -62,7 +65,7 @@ versions = {
         "python": platform.python_version(),
         "anndata": importlib.metadata.version("anndata"),
         "pandas": pd.__version__,
-        "numpy": np.__version__
+        "numpy": np.__version__,
     }
 }
 

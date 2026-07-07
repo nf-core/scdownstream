@@ -2,10 +2,12 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
-import platform
 import importlib.metadata
+import platform
+
 import anndata as ad
 import pandas as pd
 import yaml
@@ -20,7 +22,7 @@ versions = {
     "${task.process}": {
         "python": platform.python_version(),
         "anndata": importlib.metadata.version("anndata"),
-        "pandas": pd.__version__
+        "pandas": pd.__version__,
     }
 }
 

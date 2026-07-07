@@ -2,6 +2,7 @@
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import platform
@@ -9,8 +10,8 @@ import platform
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
-import yaml
 import scanpy as sc
+import yaml
 from threadpoolctl import threadpool_limits
 
 threadpool_limits(int("${task.cpus}"))
@@ -22,9 +23,7 @@ prefix = "${prefix}"
 n = "${n ?: ''}"
 fraction = "${fraction ?: ''}"
 
-kwargs = {
-    "rng": 0
-}
+kwargs = {"rng": 0}
 
 if n:
     kwargs["n"] = int(n)
@@ -42,9 +41,7 @@ adata.write_h5ad(f"{prefix}.h5ad")
 
 # Versions
 
-versions = {
-    "${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}
-}
+versions = {"${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}}
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)
