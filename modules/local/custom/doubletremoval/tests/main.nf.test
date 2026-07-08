@@ -26,6 +26,7 @@ nextflow_process {
                     ]
                 )
                 input[1] = 2
+                input[2] = true
                 """
             }
         }
@@ -38,6 +39,41 @@ nextflow_process {
                 path(process.out.versions[0]).yaml,
                 adata.yaml
             ).match()
+        }
+
+    }
+
+    test("Should annotate doublets without removing cells") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        [
+                            file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_doubletdetection.pkl', checkIfExists: true),
+                            file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_scrublet.pkl', checkIfExists: true),
+                            file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_solo.pkl', checkIfExists: true)
+                        ]
+                    ]
+                )
+                input[1] = 2
+                input[2] = false
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert adata.n_obs == 6705
+            assert "test_scrublet" in adata.obs.colnames
+            assert "test_solo" in adata.obs.colnames
+            assert "test_doubletdetection" in adata.obs.colnames
         }
 
     }
@@ -63,6 +99,7 @@ nextflow_process {
                     ]
                 )
                 input[1] = 2
+                input[2] = true
                 """
             }
         }

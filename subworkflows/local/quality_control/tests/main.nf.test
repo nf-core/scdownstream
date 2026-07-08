@@ -16,7 +16,17 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = channel.of([
-                        [ id: 'test', batch_col: 'sample', counts_layer: 'X' ],
+                        [
+                            id: 'test',
+                            batch_col: 'sample',
+                            counts_layer: 'X',
+                            min_cells: 0,
+                            max_mito_percentage: 100,
+                            log1p_total_counts_nmads: 0,
+                            log1p_n_genes_by_counts_nmads: 0,
+                            pct_counts_in_top_20_genes_nmads: 0,
+                            pct_counts_mt_nmads: 0
+                        ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
                     ]
@@ -28,14 +38,15 @@ nextflow_workflow {
                 input[5] = false
                 input[6] = []
                 input[7] = 1
-                input[8] = null
+                input[8] = false
                 input[9] = null
                 input[10] = null
                 input[11] = null
-                input[12] = false
-                input[13] = []
+                input[12] = null
+                input[13] = false
                 input[14] = []
-                input[15] = 'human'
+                input[15] = []
+                input[16] = 'human'
                 """
             }
         }
@@ -60,7 +71,17 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = channel.of([
-                        [ id: 'test', batch_col: 'sample', counts_layer: 'X' ],
+                        [
+                            id: 'test',
+                            batch_col: 'sample',
+                            counts_layer: 'X',
+                            min_cells: 0,
+                            max_mito_percentage: 100,
+                            log1p_total_counts_nmads: 0,
+                            log1p_n_genes_by_counts_nmads: 0,
+                            pct_counts_in_top_20_genes_nmads: 0,
+                            pct_counts_mt_nmads: 0
+                        ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
                     ]
@@ -72,15 +93,16 @@ nextflow_workflow {
                 input[5] = false
                 input[6] = []
                 input[7] = 1
-                input[8] = null
-                input[9] = channel.of('POMP', 'DLG2')
+                input[8] = false
+                input[9] = null
+                input[10] = channel.of('POMP', 'DLG2')
                     .collectFile(name: 'mito_genes.txt')
-                input[10] = null
                 input[11] = null
-                input[12] = false
-                input[13] = []
+                input[12] = null
+                input[13] = false
                 input[14] = []
-                input[15] = 'human'
+                input[15] = []
+                input[16] = 'human'
                 """
             }
         }
@@ -105,7 +127,17 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = channel.of([
-                        [ id: 'test', batch_col: 'sample', counts_layer: 'X' ],
+                        [
+                            id: 'test',
+                            batch_col: 'sample',
+                            counts_layer: 'X',
+                            min_cells: 0,
+                            max_mito_percentage: 100,
+                            log1p_total_counts_nmads: 0,
+                            log1p_n_genes_by_counts_nmads: 0,
+                            pct_counts_in_top_20_genes_nmads: 0,
+                            pct_counts_mt_nmads: 0
+                        ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
                     ]
@@ -117,14 +149,15 @@ nextflow_workflow {
                 input[5] = false
                 input[6] = ['scrublet']
                 input[7] = 1
-                input[8] = null
+                input[8] = true
                 input[9] = null
                 input[10] = null
                 input[11] = null
-                input[12] = false
-                input[13] = []
+                input[12] = null
+                input[13] = false
                 input[14] = []
-                input[15] = 'human'
+                input[15] = []
+                input[16] = 'human'
                 """
             }
         }
@@ -174,14 +207,15 @@ nextflow_workflow {
                 input[5] = false
                 input[6] = ['scrublet']
                 input[7] = 1
-                input[8] = null
+                input[8] = true
                 input[9] = null
                 input[10] = null
                 input[11] = null
-                input[12] = false
-                input[13] = []
+                input[12] = null
+                input[13] = false
                 input[14] = []
-                input[15] = 'human'
+                input[15] = []
+                input[16] = 'human'
                 """
             }
         }
@@ -223,14 +257,15 @@ nextflow_workflow {
                 input[5] = false
                 input[6] = []
                 input[7] = 1
-                input[8] = null
+                input[8] = false
                 input[9] = null
                 input[10] = null
                 input[11] = null
-                input[12] = false
-                input[13] = []
+                input[12] = null
+                input[13] = false
                 input[14] = []
-                input[15] = 'human'
+                input[15] = []
+                input[16] = 'human'
                 """
             }
         }
@@ -257,7 +292,7 @@ nextflow_workflow {
 
     }
 
-    test("Should run without ambient RNA removal and doublet detection - with partial MAD filtering") {
+    test("Should apply sc-best-practices QC filtering when samplesheet defaults are present in meta") {
 
         when {
             params {
@@ -270,6 +305,12 @@ nextflow_workflow {
                             id: 'test',
                             batch_col: 'sample',
                             counts_layer: 'X',
+                            min_genes: 0,
+                            min_cells: 20,
+                            max_mito_percentage: 8,
+                            log1p_total_counts_nmads: 5,
+                            log1p_n_genes_by_counts_nmads: 5,
+                            pct_counts_in_top_20_genes_nmads: 5,
                             pct_counts_mt_nmads: 3
                         ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
@@ -283,14 +324,74 @@ nextflow_workflow {
                 input[5] = false
                 input[6] = []
                 input[7] = 1
-                input[8] = null
+                input[8] = false
                 input[9] = null
                 input[10] = null
                 input[11] = null
-                input[12] = false
-                input[13] = []
+                input[12] = null
+                input[13] = false
                 input[14] = []
-                input[15] = 'human'
+                input[15] = []
+                input[16] = 'human'
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+
+            assert workflow.success
+            assert workflow.out.h5ad.size() == 1
+            assert adata.n_obs < 6000
+            assert adata.n_vars < 20000
+            with(adata) {
+                assert "log1p_total_counts" in obs.colnames
+                assert "pct_counts_mt" in obs.colnames
+            }
+        }
+
+    }
+
+    test("Should run without ambient RNA removal and doublet detection - with partial MAD filtering") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [
+                            id: 'test',
+                            batch_col: 'sample',
+                            counts_layer: 'X',
+                            min_cells: 0,
+                            max_mito_percentage: 100,
+                            log1p_total_counts_nmads: 0,
+                            log1p_n_genes_by_counts_nmads: 0,
+                            pct_counts_in_top_20_genes_nmads: 0,
+                            pct_counts_mt_nmads: 3
+                        ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'none'
+                input[2] = false
+                input[3] = false
+                input[4] = 'sum'
+                input[5] = false
+                input[6] = []
+                input[7] = 1
+                input[8] = false
+                input[9] = null
+                input[10] = null
+                input[11] = null
+                input[12] = null
+                input[13] = false
+                input[14] = []
+                input[15] = []
+                input[16] = 'human'
                 """
             }
         }
@@ -323,7 +424,17 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = channel.of([
-                        [ id: 'test', batch_col: 'sample', counts_layer: 'X' ],
+                        [
+                            id: 'test',
+                            batch_col: 'sample',
+                            counts_layer: 'X',
+                            min_cells: 0,
+                            max_mito_percentage: 100,
+                            log1p_total_counts_nmads: 0,
+                            log1p_n_genes_by_counts_nmads: 0,
+                            pct_counts_in_top_20_genes_nmads: 0,
+                            pct_counts_mt_nmads: 0
+                        ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
                     ]
@@ -335,14 +446,15 @@ nextflow_workflow {
                 input[5] = false
                 input[6] = []
                 input[7] = 1
-                input[8] = null
+                input[8] = false
                 input[9] = null
                 input[10] = null
                 input[11] = null
-                input[12] = true
-                input[13] = file("${projectDir}/assets/cell_cycle_genes/human_s_genes.txt")
-                input[14] = file("${projectDir}/assets/cell_cycle_genes/human_g2m_genes.txt")
-                input[15] = 'human'
+                input[12] = null
+                input[13] = true
+                input[14] = file("${projectDir}/assets/cell_cycle_genes/human_s_genes.txt")
+                input[15] = file("${projectDir}/assets/cell_cycle_genes/human_g2m_genes.txt")
+                input[16] = 'human'
                 """
             }
         }

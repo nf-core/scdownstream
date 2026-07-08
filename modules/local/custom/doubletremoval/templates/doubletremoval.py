@@ -20,6 +20,7 @@ import yaml
 
 adata = ad.read_h5ad("${h5ad}")
 threshold = int("${threshold}")
+remove_doublets = "${removal}" == "true"
 prefix = "${prefix}"
 
 
@@ -31,9 +32,14 @@ def load(path: str) -> pd.DataFrame:
 
 
 predictions = pd.concat([load(f) for f in "${predictions}".split()], axis=1)
-mask = predictions.sum(axis=1) >= threshold
+predictions = predictions.reindex(adata.obs_names)
+for column in predictions.columns:
+    adata.obs[column] = predictions[column]
 
-adata = adata[~mask, :]
+if remove_doublets:
+    mask = predictions.sum(axis=1) >= threshold
+    adata = adata[~mask, :]
+
 adata.write_h5ad(f"{prefix}.h5ad")
 
 # Versions

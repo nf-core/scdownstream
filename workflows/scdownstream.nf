@@ -38,6 +38,7 @@ workflow SCDOWNSTREAM {
     ambient_corrected_integration //   value: boolean
     doublet_detection             //   value: string
     doublet_detection_threshold   //   value: integer
+    doublet_removal               //   value: boolean
     scvi_max_epochs               //   value: integer
     mito_genes                    //   value: string
     sample_n                      //   value: string
@@ -131,6 +132,7 @@ workflow SCDOWNSTREAM {
                     .split(',')
                     .collect { it -> it.trim().toLowerCase() },
             doublet_detection_threshold,
+            doublet_removal,
             scvi_max_epochs,
             mito_genes,
             sample_n,

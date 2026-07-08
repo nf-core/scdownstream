@@ -24,6 +24,7 @@ workflow QUALITY_CONTROL {
     aggregate_isoforms            //   value: boolean
     doublet_detection_methods     //   value: list of strings
     doublet_detection_threshold   //   value: integer
+    doublet_removal               //   value: boolean
     scvi_max_epochs               //   value: integer
     mito_genes                    //   value: string (path) or null
     sample_n                      //   value: string (integer > 1 or null)
@@ -129,17 +130,17 @@ workflow QUALITY_CONTROL {
             meta, h5ad ->
             h5ad: [meta, h5ad]
             symbol_col: meta.symbol_col ?: "index"
-            min_genes: meta.min_genes ?: 0
-            min_cells: meta.min_cells ?: 0
-            min_counts_gene: meta.min_counts_gene ?: 0
-            min_counts_cell: meta.min_counts_cell ?: 0
-            max_mito_percentage: meta.max_mito_percentage ?: 100
-            min_ribo_percentage: meta.min_ribo_percentage ?: 0
-            max_hb_percentage: meta.max_hb_percentage ?: 100
-            log1p_total_counts_nmads: meta.log1p_total_counts_nmads ?: 0
-            log1p_n_genes_by_counts_nmads: meta.log1p_n_genes_by_counts_nmads ?: 0
-            pct_counts_in_top_20_genes_nmads: meta.pct_counts_in_top_20_genes_nmads ?: 0
-            pct_counts_mt_nmads: meta.pct_counts_mt_nmads ?: 0
+            min_genes: meta.min_genes
+            min_cells: meta.min_cells
+            min_counts_gene: meta.min_counts_gene
+            min_counts_cell: meta.min_counts_cell
+            max_mito_percentage: meta.max_mito_percentage
+            min_ribo_percentage: meta.min_ribo_percentage
+            max_hb_percentage: meta.max_hb_percentage
+            log1p_total_counts_nmads: meta.log1p_total_counts_nmads
+            log1p_n_genes_by_counts_nmads: meta.log1p_n_genes_by_counts_nmads
+            pct_counts_in_top_20_genes_nmads: meta.pct_counts_in_top_20_genes_nmads
+            pct_counts_mt_nmads: meta.pct_counts_mt_nmads
         }
     SCANPY_FILTER (
         ch_filtering.h5ad,
@@ -197,12 +198,13 @@ workflow QUALITY_CONTROL {
         ch_h5ad,
         doublet_detection_methods,
         doublet_detection_threshold,
+        doublet_removal,
         scvi_max_epochs
     )
     ch_h5ad = DOUBLET_DETECTION.out.h5ad
     ch_multiqc_files = ch_multiqc_files.mix(DOUBLET_DETECTION.out.multiqc_files)
 
-    if (doublet_detection_methods.size() > 0) {
+    if (doublet_detection_methods.size() > 0 && doublet_removal) {
         GET_DEDOUBLETED_SIZE (
             ch_h5ad,
             "cells"

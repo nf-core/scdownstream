@@ -39,6 +39,7 @@ workflow NFCORE_SCDOWNSTREAM {
     ambient_corrected_integration //   value: boolean
     doublet_detection             //   value: string
     doublet_detection_threshold   //   value: integer
+    doublet_removal               //   value: boolean
     scvi_max_epochs               //   value: integer
     mito_genes                    //   value: string
     sample_n                      //   value: string
@@ -104,6 +105,7 @@ workflow NFCORE_SCDOWNSTREAM {
         ambient_corrected_integration,
         doublet_detection,
         doublet_detection_threshold,
+        doublet_removal,
         scvi_max_epochs,
         mito_genes,
         sample_n,
@@ -211,6 +213,7 @@ workflow {
         params.ambient_corrected_integration,
         params.doublet_detection,
         params.doublet_detection_threshold,
+        params.doublet_removal,
         params.scvi_max_epochs,
         params.mito_genes,
         params.sample_n,

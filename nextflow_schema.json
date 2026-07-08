@@ -125,15 +125,20 @@
                 },
                 "doublet_detection": {
                     "type": "string",
-                    "default": "scrublet",
-                    "description": "Specify the tools to use for doublet detection. Setting to 'none' will skip this step",
+                    "default": "scdblfinder",
+                    "description": "Specify the tools to use for doublet detection. Setting to 'none' will skip this step. Default scDblFinder follows sc-best-practices recommendations.",
                     "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: solo, scrublet, doubletdetection, scdblfinder",
                     "pattern": "^(none|(solo|scrublet|doubletdetection|scdblfinder)(,(solo|scrublet|doubletdetection|scdblfinder))*)$"
                 },
                 "doublet_detection_threshold": {
                     "type": "integer",
                     "default": 1,
-                    "description": "Number of tools that need to agree on a doublet for it to be called as such"
+                    "description": "Number of tools that need to agree on a doublet for it to be removed when `doublet_removal` is true"
+                },
+                "doublet_removal": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to remove cells flagged as doublets. When false (default), doublet scores are stored in `adata.obs` for inspection, following sc-best-practices guidance to review doublets before filtering."
                 },
                 "cellbender_epochs": {
                     "type": "integer",

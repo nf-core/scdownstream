@@ -10,6 +10,7 @@ process CUSTOM_DOUBLETREMOVAL {
     input:
     tuple val(meta), path(h5ad), path(predictions)
     val(threshold)
+    val(removal)
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad

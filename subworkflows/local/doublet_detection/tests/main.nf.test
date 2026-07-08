@@ -22,7 +22,8 @@ nextflow_workflow {
                 )
                 input[1] = []
                 input[2] = 0
-                input[3] = 1
+                input[3] = false
+                input[4] = 1
                 """
             }
         }
@@ -50,7 +51,8 @@ nextflow_workflow {
                 )
                 input[1] = ['solo', 'scrublet', 'scdblfinder']
                 input[2] = 2
-                input[3] = 1
+                input[3] = true
+                input[4] = 1
                 """
             }
         }
@@ -61,6 +63,41 @@ nextflow_workflow {
             assert workflow.success
             assert adata.n_obs > 6400
             assert adata.n_obs < 6700
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml },
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should annotate doublets without removing cells when doublet_removal is false") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', batch_col: 'sample' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = ['scdblfinder']
+                input[2] = 1
+                input[3] = false
+                input[4] = 1
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+
+            assert workflow.success
+            assert adata.n_obs == 6705
+            assert "test_scdblfinder" in adata.obs.colnames
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml },
                 adata.yaml
@@ -86,7 +123,8 @@ nextflow_workflow {
                 )
                 input[1] = ['solo', 'scrublet', 'doubletdetection']
                 input[2] = 2
-                input[3] = 1
+                input[3] = true
+                input[4] = 1
                 """
             }
         }
