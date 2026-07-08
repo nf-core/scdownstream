@@ -514,6 +514,10 @@ This is _not_ recommended, since it can lead to different results on different m
 - `test`
   - A profile with a complete configuration for automated testing
   - Includes links to test data so needs no other parameters
+- `python_only`
+  - Swaps R-based QC defaults for Python tools: scAR (`--ambient_correction`) instead of decontX, and Scrublet (`--doublet_detection`) instead of scDblFinder
+  - Combine with a software profile, e.g. `-profile docker,python_only`
+  - scAR requires filtered and unfiltered matrices; use `--ambient_correction none` for filtered-only samples
 - `docker`
   - A generic configuration profile to be used with [Docker](https://docker.com/)
 - `singularity`
