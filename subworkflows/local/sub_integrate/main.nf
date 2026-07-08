@@ -6,7 +6,8 @@ workflow SUB_INTEGRATE {
     take:
     ch_h5ad                     // channel: [ val(meta), path(h5ad) ]
     split_col                   //   value: string
-    n_hvgs                      //   value: integer
+    feature_selection           //   value: string
+    n_features                      //   value: integer
     excluded_genes              //    path: file or []
     methods                     //   value: list of string
     scvi_model                  //   value: string
@@ -88,7 +89,8 @@ workflow SUB_INTEGRATE {
     INTEGRATE (
         ch_h5ad_split,
         false,
-        n_hvgs,
+        feature_selection,
+        n_features,
         excluded_genes,
         methods,
         scvi_model,

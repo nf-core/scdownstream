@@ -55,7 +55,8 @@ workflow NFCORE_SCDOWNSTREAM {
     unify_gene_symbols            //   value: boolean
     duplicate_var_resolution      //   value: string
     aggregate_isoforms            //   value: boolean
-    integration_hvgs              //   value: integer
+    feature_selection             //   value: string
+    integration_n_features        //   value: integer
     integration_methods           //   value: string
     integration_excluded_genes    //   value: string
     scvi_model                    //   value: string
@@ -63,7 +64,7 @@ workflow NFCORE_SCDOWNSTREAM {
     scvi_categorical_covariates   //   value: string
     scvi_continuous_covariates    //   value: string
     scimilarity_model             //   value: string
-    symphony_reference             //   value: string
+    symphony_reference            //   value: string
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
     skip_rankgenesgroups          //   value: boolean
@@ -121,7 +122,8 @@ workflow NFCORE_SCDOWNSTREAM {
         unify_gene_symbols,
         duplicate_var_resolution,
         aggregate_isoforms,
-        integration_hvgs,
+        feature_selection,
+        integration_n_features,
         integration_methods,
         integration_excluded_genes,
         scvi_model,
@@ -229,7 +231,8 @@ workflow {
         params.unify_gene_symbols,
         params.duplicate_var_resolution,
         params.aggregate_isoforms,
-        params.integration_hvgs,
+        params.feature_selection,
+        params.integration_n_features,
         params.integration_methods,
         params.integration_excluded_genes,
         params.scvi_model,

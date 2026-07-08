@@ -9,19 +9,19 @@ nextflow_pipeline {
         when {
             params {
                 pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/e3a7f43eb802a090affac918026d2ba5dce8fcd5/'
-                outdir              = "$outputDir"
-                input               = null
-                base_adata          = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
-                base_embeddings     = null
-                base_label_col      = 'sample'
-                integrate_per_label = true
-                integration_methods = 'pca'
-                integration_hvgs    = -1
-                cluster_global      = false
-                cluster_per_label   = false
-                skip_liana          = true
-                skip_rankgenesgroups = true
-                analysis_plan       = "${projectDir}/tests/analysis_plan_sub.csv"
+                outdir                       = "$outputDir"
+                input                        = null
+                base_adata                   = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                base_embeddings              = null
+                base_label_col               = 'sample'
+                integrate_per_label          = true
+                integration_methods          = 'pca'
+                integration_n_features       = -1
+                cluster_global               = false
+                cluster_per_label            = false
+                skip_liana                   = true
+                skip_rankgenesgroups         = true
+                analysis_plan                = "${projectDir}/tests/analysis_plan_sub.csv"
             }
         }
 
@@ -50,21 +50,21 @@ nextflow_pipeline {
 
         when {
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/e3a7f43eb802a090affac918026d2ba5dce8fcd5/'
-                outdir              = "$outputDir"
-                input               = null
-                base_adata          = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
-                base_embeddings     = null
-                base_label_col      = 'sample'
-                integrate_per_label = true
+                pipelines_testdata_base_path  = 'https://raw.githubusercontent.com/nictru/test-datasets/e3a7f43eb802a090affac918026d2ba5dce8fcd5/'
+                outdir                        = "$outputDir"
+                input                         = null
+                base_adata                    = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                base_embeddings               = null
+                base_label_col                = 'sample'
+                integrate_per_label           = true
                 integrate_per_label_whitelist = 'SRR28679756'
-                integration_methods = 'pca'
-                integration_hvgs    = -1
-                cluster_global      = false
-                cluster_per_label   = false
-                skip_liana          = true
-                skip_rankgenesgroups = true
-                analysis_plan       = "${projectDir}/tests/analysis_plan_sub.csv"
+                integration_methods           = 'pca'
+                integration_n_features        = -1
+                cluster_global                = false
+                cluster_per_label             = false
+                skip_liana                    = true
+                skip_rankgenesgroups          = true
+                analysis_plan                 = "${projectDir}/tests/analysis_plan_sub.csv"
             }
         }
 

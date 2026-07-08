@@ -54,7 +54,8 @@ workflow SCDOWNSTREAM {
     unify_gene_symbols            //   value: boolean
     duplicate_var_resolution      //   value: string
     aggregate_isoforms            //   value: boolean
-    integration_hvgs              //   value: integer
+    feature_selection             //   value: string
+    integration_n_features              //   value: integer
     integration_methods           //   value: string
     integration_excluded_genes    //   value: string
     scvi_model                    //   value: string
@@ -183,7 +184,8 @@ workflow SCDOWNSTREAM {
                 ch_h5ad,
                 ch_base,
                 is_extension,
-                integration_hvgs,
+                feature_selection,
+                integration_n_features,
                 integration_methods,
                 integration_excluded_genes,
                 scvi_model,
@@ -242,7 +244,8 @@ workflow SCDOWNSTREAM {
             SUB_INTEGRATE (
                 ch_base,
                 base_label_col,
-                integration_hvgs,
+                feature_selection,
+                integration_n_features,
                 integration_excluded_genes ? file(integration_excluded_genes) : [],
                 integration_methods
                     .split(',')

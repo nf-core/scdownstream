@@ -160,16 +160,23 @@
                     "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, symphony, bbknn, combat, seurat, scimilarity, pca, expimap",
                     "pattern": "^((scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap)(,(scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap))*)?$"
                 },
-                "integration_hvgs": {
+                "feature_selection": {
+                    "type": "string",
+                    "default": "deviance",
+                    "enum": ["hvgs", "deviance", "none"],
+                    "description": "Gene selection method applied before integration on merged counts.",
+                    "help_text": "Default is binomial deviance via scry (`deviance`), as recommended in sc-best-practices. Use `hvgs` for scanpy highly variable genes, or `none` to skip feature selection. The `python_only` profile overrides this to `hvgs`. Gene count is controlled by `integration_n_features` (`0` = auto: scanpy auto for HVGs, 4000 for deviance). Ignored when a reference model defines the gene set."
+                },
+                "integration_n_features": {
                     "type": "integer",
                     "default": 0,
-                    "description": "Number of highly variable genes to use for integration. If set to 0, the number of highly variable genes will be automatically determined. If set to a negative number, all genes will be used.",
-                    "help_text": "If a reference model is provided, this does not have any effect. This is because the reference model defines the set of genes that will be used for integration."
+                    "description": "Number of genes to retain for integration feature selection.",
+                    "help_text": "Applies to both `hvgs` and `deviance`. If set to 0, the number of genes is chosen automatically (scanpy default for HVGs, 4000 for deviance). If set to a negative number, all genes are used when `feature_selection` is `hvgs` or `none`. If a reference model is provided, this does not have any effect because the reference model defines the gene set."
                 },
                 "integration_excluded_genes": {
                     "type": "string",
                     "format": "file-path",
-                    "description": "Optional file containing a list of gene symbols (one per line). If provided, these genes will be excluded from highly variable genes selection for integration.",
+                    "description": "Optional file containing a list of gene symbols (one per line). If provided, these genes will be excluded from feature selection for integration.",
                     "exists": true
                 },
                 "symphony_reference": {
