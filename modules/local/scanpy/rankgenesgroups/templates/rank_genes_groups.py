@@ -54,8 +54,17 @@ if len(valid_groups) >= 2:
 
     sc.pp.log1p(adata)
     sc.tl.rank_genes_groups(adata, **kwargs)
+    sc.tl.filter_rank_genes_groups(
+        adata,
+        key=rank_key,
+        min_in_group_fraction=0.2,
+        max_out_group_fraction=0.2,
+    )
 
     rgg_dict = adata.uns[rank_key]
+
+    marker_df = sc.get.rank_genes_groups_df(adata, key=rank_key)
+    marker_df.to_csv(f"{prefix}_markers.csv", index=False)
 
     pickle.dump(rgg_dict, open(f"{prefix}.pkl", "wb"))
     adata.write_h5ad(f"{prefix}.h5ad")
@@ -65,31 +74,37 @@ if len(valid_groups) >= 2:
     path = f"{prefix}.png"
     plt.savefig(path)
 
-    # MultiQC
-    with open(path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
-        image_string = base64.b64encode(f_plot.read()).decode("utf-8")
+    sc.pl.rank_genes_groups_dotplot(adata, key=rank_key, show=False)
+    dotplot_path = f"{prefix}_dotplot.png"
+    plt.savefig(dotplot_path)
+
+    # Build section name with filter and obs_key information
+    if filter_col and filter_val:
+        section_name = f"Characteristic genes (grouped by: {obs_key}, filtered: {filter_col}={filter_val})"
+        description = f"Characteristic genes, grouped by <code>{obs_key}</code>, filtered to <code>{filter_col}={filter_val}</code>."
+    else:
+        section_name = f"Characteristic genes (grouped by: {obs_key})"
+        description = f"Characteristic genes, grouped by <code>{obs_key}</code>."
+
+    def write_mqc_plot(plot_path, plot_id, plot_label):
+        with open(plot_path, "rb") as f_plot:
+            image_string = base64.b64encode(f_plot.read()).decode("utf-8")
         image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
-
-        # Build section name with filter and obs_key information
-        if filter_col and filter_val:
-            section_name = f"Characteristic genes (grouped by: {obs_key}, filtered: {filter_col}={filter_val})"
-            description = f"Characteristic genes, grouped by <code>{obs_key}</code>, filtered to <code>{filter_col}={filter_val}</code>."
-        else:
-            section_name = f"Characteristic genes (grouped by: {obs_key})"
-            description = f"Characteristic genes, grouped by <code>{obs_key}</code>."
-
         custom_json = {
-            "id": "${prefix}",
+            "id": plot_id,
             "parent_id": "${meta.integration}",
             "parent_name": "${meta.integration}",
             "parent_description": "Results of the ${meta.integration} integration.",
-            "section_name": section_name,
-            "description": description,
+            "section_name": f"{section_name} ({plot_label})",
+            "description": f"{description} {plot_label.capitalize()}.",
             "plot_type": "image",
             "data": image_html,
         }
+        with open(f"{plot_id}_mqc.json", "w") as f_json:
+            json.dump(custom_json, f_json)
 
-        json.dump(custom_json, f_json)
+    write_mqc_plot(path, "${prefix}", "rank plot")
+    write_mqc_plot(dotplot_path, "${prefix}_dotplot", "dot plot")
 else:
     if len(valid_groups) == 0:
         print("Skipping rank_genes_groups computation: no groups have >= 2 samples.")

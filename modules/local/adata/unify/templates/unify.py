@@ -172,6 +172,31 @@ else:
     adata.obs["condition"] = "Unknown"
 adata.obs["condition"] = adata.obs["condition"].astype("category")
 
+# Unify donor / biological replicate column for pseudobulk analyses
+donor_col = "${donor_col}"
+
+if donor_col:
+    if donor_col not in adata.obs:
+        raise ValueError(
+            "The specified donor column does not exist in the dataset. Existing columns: "
+            + ", ".join(adata.obs.columns)
+        )
+
+    if donor_col != "donor":
+        if "donor" in adata.obs:
+            raise ValueError("The donor column already exists.")
+        adata.obs["donor"] = adata.obs[donor_col]
+        del adata.obs[donor_col]
+
+    adata.obs["donor"] = adata.obs["donor"].astype(str)
+    adata.obs["donor"] = adata.obs["donor"].fillna("unknown")
+    adata.obs["donor"] = adata.obs["donor"].astype("category")
+else:
+    if "donor" in adata.obs:
+        raise ValueError("The donor column already exists.")
+    adata.obs["donor"] = "unknown"
+adata.obs["donor"] = adata.obs["donor"].astype("category")
+
 # Add "sample" column
 if "sample" in adata.obs and not adata.obs["sample"].equals("${meta.id}"):
     adata.obs["sample_original"] = adata.obs["sample"]

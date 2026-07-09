@@ -32,10 +32,10 @@
             },
             "analyses": {
                 "type": "string",
-                "pattern": "^(|paga|liana|de|pseudobulk_de|cytetype)(,(paga|liana|de|pseudobulk_de|cytetype))*$",
+                "pattern": "^(|paga|liana|de|cytetype)(,(paga|liana|de|cytetype))*$",
                 "default": null,
-                "errorMessage": "Analyses must be a comma-separated list of paga, liana, de, pseudobulk_de, and/or cytetype",
-                "description": "Downstream analyses to run for matching clusterings, or empty to run all analyses except pseudobulk_de",
+                "errorMessage": "Analyses must be a comma-separated list of paga, liana, de, and/or cytetype",
+                "description": "Downstream analyses to run for matching clusterings, or empty to run all analyses",
                 "meta": ["analyses"]
             },
             "de_methods": {

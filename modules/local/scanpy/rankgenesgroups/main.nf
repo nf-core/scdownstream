@@ -18,6 +18,7 @@ process SCANPY_RANKGENESGROUPS {
     tuple val(meta), path("*.h5ad"), emit: h5ad, optional: true
     path "*.pkl"                   , emit: uns, optional: true
     path "*.png"                   , emit: plots, optional: true
+    path "*.csv"                   , emit: markers, optional: true
     path "*_mqc.json"              , emit: multiqc_files, optional: true
     path "versions.yml"            , emit: versions, topic: versions
 
@@ -34,7 +35,9 @@ process SCANPY_RANKGENESGROUPS {
     touch "${prefix}.h5ad"
     touch "${prefix}.pkl"
     touch "${prefix}.png"
+    touch "${prefix}_dotplot.png"
     touch "${prefix}_mqc.json"
+    touch "${prefix}_dotplot_mqc.json"
     touch "versions.yml"
     """
 }

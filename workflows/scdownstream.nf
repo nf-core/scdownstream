@@ -81,7 +81,7 @@ workflow SCDOWNSTREAM {
     clustering_resolutions        //   value: string
     analysis_plan                 //   value: list of plan rows parsed in main.nf
     de_methods                    //   value: string
-    pseudobulk_donor_col          //   value: string
+    pseudobulk                    //   value: boolean
     pseudobulk_min_num_cells      //   value: integer
     pseudobulk_min_total_counts   //   value: integer
     reference_condition           //   value: string
@@ -316,7 +316,7 @@ workflow SCDOWNSTREAM {
             skip_liana,
             cytetype_study_context,
             de_methods,
-            pseudobulk_donor_col,
+            pseudobulk,
             pseudobulk_min_num_cells,
             pseudobulk_min_total_counts,
             reference_condition ?: '',

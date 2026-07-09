@@ -19,6 +19,7 @@ process DECOUPLER_PSEUDOBULK {
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
     path "${prefix}_samples.tsv"           , emit: samples
+    path "*_mqc.json"                      , emit: multiqc_files
     path "versions.yml"                  , emit: versions, topic: versions
 
     when:
@@ -33,6 +34,7 @@ process DECOUPLER_PSEUDOBULK {
     """
     touch ${prefix}.h5ad
     touch ${prefix}_samples.tsv
+    touch ${prefix}_mqc.json
     touch versions.yml
     """
 }

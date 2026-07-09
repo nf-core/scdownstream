@@ -4,7 +4,7 @@ include { DIFFERENTIAL_EXPRESSION } from '../differential_expression'
 include { CYTETYPE                 } from '../../../modules/local/cytetype'
 include { resolveDeMethodsWithPrerequisites } from '../utils_nfcore_scdownstream_pipeline'
 include { cellLevelDeMethods                    } from '../utils_nfcore_scdownstream_pipeline'
-include { pseudobulkDeMethods                   } from '../utils_nfcore_scdownstream_pipeline'
+include { pseudobulkingEnabled                  } from '../utils_nfcore_scdownstream_pipeline'
 include { rankGenesGroupsAnalysisEnabled        } from '../utils_nfcore_scdownstream_pipeline'
 
 workflow PER_GROUP {
@@ -14,7 +14,7 @@ workflow PER_GROUP {
     skip_liana                    //   value: boolean
     cytetype_study_context        //   value: string
     de_methods_default            //   value: string
-    pseudobulk_donor_col          //   value: string
+    pseudobulk                    //   value: boolean
     pseudobulk_min_num_cells      //   value: integer
     pseudobulk_min_total_counts   //   value: integer
     reference_condition           //   value: string
@@ -50,13 +50,14 @@ workflow PER_GROUP {
             def m = meta.de_methods_resolved
             m && (
                 (rankGenesGroupsAnalysisEnabled(meta) && m.intersect(cellLevelDeMethods())) ||
-                ((meta.analyses && 'pseudobulk_de' in meta.analyses) && m.intersect(pseudobulkDeMethods()))
+                pseudobulkingEnabled(meta, pseudobulk) ||
+                ((meta.analyses == null || 'de' in meta.analyses) && 'edgepython_sc' in m)
             )
         }
 
     DIFFERENTIAL_EXPRESSION(
         ch_h5ad_de,
-        pseudobulk_donor_col,
+        pseudobulk,
         pseudobulk_min_num_cells,
         pseudobulk_min_total_counts,
         reference_condition,

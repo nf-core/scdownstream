@@ -113,9 +113,9 @@
                 },
                 "ambient_correction": {
                     "type": "string",
-                    "default": "decontx",
+                    "default": "soupx",
                     "enum": ["none", "decontx", "cellbender", "soupx", "scar"],
-                    "description": "Specify the tool to use for ambient RNA correction. If 'none' is selected, no ambient RNA correction will be performed. If you want to use ambient RNA correction only for a subset of datasets, you can use the 'ambient_correction' column in the sample sheet. By default, the ambient-corrected counts will NOT be used for integration, but only stored as an additional layer in the final AnnData object because of the findings in [this publication](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-023-02978-x). If you want to use the ambient-corrected counts for integration, set `ambient_corrected_integration` to true in the sample sheet."
+                    "description": "Specify the tool to use for ambient RNA correction. SoupX is the default and requires an unfiltered matrix for each corrected sample. If 'none' is selected, no ambient RNA correction will be performed. Per-sample overrides are available via the samplesheet `ambient_correction` column."
                 },
                 "ambient_corrected_integration": {
                     "type": "boolean",
@@ -269,7 +269,7 @@
             "properties": {
                 "clustering_resolutions": {
                     "type": "string",
-                    "default": "0.5,1.0",
+                    "default": "0.25,0.5,1.0",
                     "description": "Specify the resolutions for clustering",
                     "help_text": "Specify the resolutions for clustering. If you want to use multiple resolutions, separate them with a comma.",
                     "pattern": "^\\d+(\\.\\d+)?(,\\d+(\\.\\d+)?)*$"
@@ -286,7 +286,7 @@
                 "analysis_plan": {
                     "type": "string",
                     "description": "Path to a CSV file controlling which integration × resolution combinations feed into downstream analyses (PAGA, LIANA, DE, CyteType).",
-                    "help_text": "All columns are optional — empty values act as wildcards. When provided, rows are matched against each clustering result; analyses from all matching rows are combined. When --analysis_plan is not set, all combinations run all analyses except `pseudobulk_de` (governed by skip_liana, --de_methods, and cytetype_study_context). See the usage docs for the full schema.",
+                    "help_text": "All columns are optional — empty values act as wildcards. When provided, rows are matched against each clustering result; analyses from all matching rows are combined. When --analysis_plan is not set, all combinations run paga, liana, de, and cytetype (subject to skip_liana, --de_methods, and cytetype_study_context). See the usage docs for the full schema.",
                     "mimetype": "text/csv",
                     "schema": "assets/schema_analysis_plan.json",
                     "pattern": "^\\S+\\.csv$"
@@ -392,7 +392,7 @@
                     "default": "wilcoxon",
                     "pattern": "^(|wilcoxon|t-test|t-test_overestim_var|logreg|pydeseq2|edgepython|edgepython_sc)(,(wilcoxon|t-test|t-test_overestim_var|logreg|pydeseq2|edgepython|edgepython_sc))*$",
                     "description": "Comma-separated differential expression engines to run when enabled by the analysis plan.",
-                    "help_text": "Rank-genes-groups methods: `wilcoxon`, `t-test`, `t-test_overestim_var`, `logreg` (cluster, condition, and label-stratified comparisons via Scanpy). Pseudobulk: `pydeseq2`, `edgepython` (require `pseudobulk_de` in the analysis plan). Donor-aware single-cell: `edgepython_sc`. Provide multiple rank-genes-groups methods to run each in parallel. Set to an empty string (`--de_methods ''`) to disable all DE engines unless a matching `--analysis_plan` row supplies `de_methods`. Per-row overrides are supported in `--analysis_plan`."
+                    "help_text": "Rank-genes-groups methods: `wilcoxon`, `t-test`, `t-test_overestim_var`, `logreg` (cluster, condition, and label-stratified comparisons via Scanpy). Pseudobulk sample-level methods: `pydeseq2`, `edgepython` (automatically run pseudobulk aggregation when `de` is enabled). Donor-aware single-cell: `edgepython_sc`. Set to an empty string (`--de_methods ''`) to disable all DE engines unless a matching `--analysis_plan` row supplies `de_methods`. Per-row overrides are supported in `--analysis_plan`."
                 },
                 "reference_condition": {
                     "type": "string",
@@ -482,11 +482,10 @@
             "description": "Options for pseudobulk aggregation and sample-level differential expression",
             "fa_icon": "fas fa-users",
             "properties": {
-                "pseudobulk_donor_col": {
-                    "type": "string",
-                    "default": "batch",
-                    "description": "obs column with biological replicate / donor identifiers for pseudobulk aggregation and mixed models.",
-                    "help_text": "Must identify independent biological replicates (patients, mice, etc.), not technical sequencing batches. Pseudobulk profiles are aggregated per donor × cell type × condition."
+                "pseudobulk": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Run pseudobulk aggregation even when no pseudobulk DE method is selected in de_methods."
                 },
                 "pseudobulk_min_num_cells": {
                     "type": "integer",

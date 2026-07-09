@@ -31,4 +31,5 @@ workflow PSEUDOBULKING {
     emit:
     h5ad    = PSEUDOBULK.out.h5ad
     samples = PSEUDOBULK.out.samples
+    multiqc_files = PSEUDOBULK.out.multiqc_files
 }

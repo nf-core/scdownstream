@@ -12,6 +12,7 @@ include { UTILS_NFSCHEMA_PLUGIN     } from '../../nf-core/utils_nfschema_plugin'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
 include { samplesheetToList         } from 'plugin/nf-schema'
 include { paramsHelp                } from 'plugin/nf-schema'
+include { anndata                     } from 'plugin/nf-anndata'
 include { completionEmail           } from '../../nf-core/utils_nfcore_pipeline'
 include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NFCORE_PIPELINE     } from '../../nf-core/utils_nfcore_pipeline'
@@ -95,6 +96,11 @@ workflow PIPELINE_INITIALISATION {
     UTILS_NFCORE_PIPELINE(
         nextflow_cli_args
     )
+
+    //
+    // Custom validation for pipeline parameters
+    //
+    validateInputParameters()
 
     //
     // Create channel from input file provided through params.input
@@ -259,6 +265,51 @@ def pseudobulkDeMethods() {
     ['pydeseq2', 'edgepython'] as Set
 }
 
+def resolvedDeMethodsForPlanRow(row) {
+    if (row.de_methods) {
+        return row.de_methods.split(',').collect { token -> token.trim() }.findAll { token -> token }
+    }
+    return params.de_methods.split(',').collect { token -> token.trim() }.findAll { token -> token }
+}
+
+def pseudobulkDeMethodsRequested() {
+    def global_methods = params.de_methods.split(',').collect { token -> token.trim() }.findAll { token -> token }
+    if (global_methods.intersect(pseudobulkDeMethods() as List)) {
+        return true
+    }
+    if (!params.analysis_plan) {
+        return false
+    }
+    return analysisPlanToList().any { row ->
+        def analyses = row.analyses
+            ? row.analyses.split(',').collect { token -> token.trim() }
+            : ['paga', 'liana', 'de', 'cytetype']
+        ('de' in analyses || !row.analyses) &&
+            resolvedDeMethodsForPlanRow(row).intersect(pseudobulkDeMethods() as List)
+    }
+}
+
+def pseudobulkingRequired() {
+    params.pseudobulk || pseudobulkDeMethodsRequested()
+}
+
+def pseudobulkingEnabled(meta, pseudobulk_flag = params.pseudobulk) {
+    if (pseudobulk_flag) {
+        return true
+    }
+    if (meta.analyses && !('de' in meta.analyses)) {
+        return false
+    }
+    return meta.de_methods_resolved.intersect(pseudobulkDeMethods())
+}
+
+def pseudobulkDeEnabled(meta) {
+    if (!(meta.analyses == null || 'de' in meta.analyses)) {
+        return false
+    }
+    return meta.de_methods_resolved.intersect(pseudobulkDeMethods())
+}
+
 //
 // Check and validate pipeline parameters
 //
@@ -310,26 +361,12 @@ def validateInputParameters() {
         throw new Exception("Invalid de_methods: ${invalid_de_methods.join(', ')}. Valid options: ${validDeMethods().join(', ')}")
     }
 
-    def pseudobulk_methods = de_methods.intersect(pseudobulkDeMethods() as List)
-    if (pseudobulk_methods) {
-        def plan_rows = params.analysis_plan ? analysisPlanToList() : []
-        def plan_has_pseudobulk_de = plan_rows.any { row -> row.analyses && 'pseudobulk_de' in row.analyses.split(',').collect { token -> token.trim() } }
-        if (!plan_has_pseudobulk_de) {
-            log.warn "de_methods includes ${pseudobulk_methods.join(', ')} but no analysis_plan row lists pseudobulk_de in analyses. Pseudobulk DE will not run."
-        }
-    }
-
-    def plan_rows_with_pb_methods = params.analysis_plan
-        ? analysisPlanToList().findAll { row ->
-            row.de_methods && (row.de_methods.split(',').collect { token -> token.trim() }.intersect(pseudobulkDeMethods() as List))
-        }
-        : []
-    if (plan_rows_with_pb_methods) {
-        def missing_token = plan_rows_with_pb_methods.findAll { row ->
-            !row.analyses || !('pseudobulk_de' in row.analyses.split(',').collect { token -> token.trim() })
-        }
-        if (missing_token) {
-            log.warn "analysis_plan rows specify pseudobulk de_methods (${pseudobulkDeMethods().join(', ')}) without pseudobulk_de in analyses. Those engines will not run for matching clusterings."
+    if (pseudobulkingRequired() && params.base_adata) {
+        def ad = anndata(file(params.base_adata, checkIfExists: true))
+        if (!('donor' in ad.obs.colnames)) {
+            throw new Exception(
+                "Pseudobulking requires a 'donor' column in base_adata. Available obs columns: ${ad.obs.colnames.join(', ')}."
+            )
         }
     }
 }
@@ -341,6 +378,21 @@ def validateInputSamplesheet(input) {
     def (meta, filtered, unfiltered) = input
     if (!filtered && !unfiltered) {
         throw new Exception("Both filtered and unfiltered files are missing for sample ${meta.id}")
+    }
+
+    if (params.ambient_correction == 'soupx' && meta.ambient_correction != false && !unfiltered) {
+        throw new Exception(
+            "Sample '${meta.id}' is configured for SoupX ambient correction but no unfiltered matrix was provided. " +
+            "Provide an unfiltered matrix, set sample-level ambient_correction to false to disable ambient correction for this sample, " +
+            "or use --ambient_correction decontx for filtered-only input."
+        )
+    }
+
+    if (pseudobulkingRequired() && !meta.donor_col) {
+        throw new Exception(
+            "Sample '${meta.id}' requires a donor_col in the samplesheet for pseudobulking. " +
+            "Set donor_col to the obs column containing biological replicate identifiers."
+        )
     }
 
     return input

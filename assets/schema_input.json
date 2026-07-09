@@ -65,6 +65,12 @@
                 "errorMessage": "Condition column needs to start with a letter and can contain letters, numbers, underlines and dashes.",
                 "meta": ["condition_col"]
             },
+            "donor_col": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                "errorMessage": "Donor column needs to start with a letter and can contain letters, numbers, underlines and dashes.",
+                "meta": ["donor_col"]
+            },
             "unknown_label": {
                 "type": "string",
                 "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",

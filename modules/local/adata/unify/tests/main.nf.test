@@ -31,6 +31,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -73,6 +74,7 @@ nextflow_process {
                 input[6] = "counts"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -118,6 +120,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -153,6 +156,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -195,6 +199,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -231,6 +236,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "mean"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -267,6 +273,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "max"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -303,6 +310,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "make_unique"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -344,6 +352,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = true
+                input[9] = ""
                 """
             }
         }
@@ -387,6 +396,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -427,6 +437,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -466,6 +477,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -505,6 +517,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -539,6 +552,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -579,6 +593,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -618,6 +633,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -657,6 +673,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -696,6 +713,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -735,6 +753,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -775,6 +794,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -809,6 +829,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -849,6 +870,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -888,6 +910,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -927,6 +950,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -934,6 +958,77 @@ nextflow_process {
         then {
             assert process.failed
             assert process.errorReport.contains("The condition column already exists")
+        }
+    }
+
+    test("Should create donor column when missing") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [id: 'test'],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/minimal_structure.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "batch"
+                input[2] = ""
+                input[3] = ""
+                input[4] = "unknown"
+                input[5] = "index"
+                input[6] = "X"
+                input[7] = "sum"
+                input[8] = false
+                input[9] = ""
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "donor" in obs.colnames
+                assert obs.get("donor").unique().every { it == "unknown" }
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+    }
+
+    test("Should fail when specified donor column is missing") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [id: 'test'],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/minimal_structure.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "batch"
+                input[2] = ""
+                input[3] = ""
+                input[4] = "unknown"
+                input[5] = "index"
+                input[6] = "X"
+                input[7] = "sum"
+                input[8] = false
+                input[9] = "donor"
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("The specified donor column does not exist")
         }
     }
 
@@ -961,6 +1056,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -996,6 +1092,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -1035,6 +1132,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -1074,6 +1172,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -1114,6 +1213,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -1157,6 +1257,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -1202,6 +1303,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -1246,6 +1348,7 @@ nextflow_process {
                 input[6] = "counts"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }
@@ -1296,6 +1399,7 @@ nextflow_process {
                 input[6] = "X"
                 input[7] = "sum"
                 input[8] = false
+                input[9] = ""
                 """
             }
         }

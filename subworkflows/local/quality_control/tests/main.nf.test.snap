@@ -44,6 +44,7 @@
                             "counts_layer": "X",
                             "label_col": "label",
                             "condition_col": "condition",
+                            "donor_col": "donor",
                             "unknown_label": "unknown",
                             "symbol_col": "index"
                         },
@@ -76,6 +77,7 @@
                             "counts_layer": "X",
                             "label_col": "label",
                             "condition_col": "condition",
+                            "donor_col": "donor",
                             "unknown_label": "unknown",
                             "symbol_col": "index"
                         },
@@ -102,10 +104,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-05-20T20:53:21.602125604",
+        "timestamp": "2026-07-09T10:36:36.159587",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without ambient RNA removal and doublet detection - with MAD filtering": {
@@ -134,8 +136,6 @@
                         "log1p_total_counts_hb",
                         "log1p_total_counts_mt",
                         "log1p_total_counts_ribo",
-                        "n_counts",
-                        "n_genes",
                         "n_genes_by_counts",
                         "pct_counts_hb",
                         "pct_counts_in_top_20_genes",
@@ -157,9 +157,7 @@
                         "log1p_total_counts",
                         "mean_counts",
                         "mt",
-                        "n_cells",
                         "n_cells_by_counts",
-                        "n_counts",
                         "pct_dropout_by_counts",
                         "ribo",
                         "symbols",
@@ -186,10 +184,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-06T13:04:17.599607485",
+        "timestamp": "2026-07-09T10:37:03.928678",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without ambient RNA removal and doublet detection - with partial MAD filtering": {
@@ -218,8 +216,6 @@
                         "log1p_total_counts_hb",
                         "log1p_total_counts_mt",
                         "log1p_total_counts_ribo",
-                        "n_counts",
-                        "n_genes",
                         "n_genes_by_counts",
                         "pct_counts_hb",
                         "pct_counts_in_top_20_genes",
@@ -243,7 +239,6 @@
                         "mt",
                         "n_cells",
                         "n_cells_by_counts",
-                        "n_counts",
                         "pct_dropout_by_counts",
                         "ribo",
                         "symbols",
@@ -270,10 +265,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-06T13:06:16.743756521",
+        "timestamp": "2026-07-09T10:38:02.003135",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run with ambient RNA removal and doublet detection": {
@@ -297,14 +292,19 @@
                         "batch",
                         "condition",
                         "label",
-                        "n_counts",
-                        "n_genes",
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
                         "n_genes_by_counts",
                         "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
                         "pct_counts_mt",
                         "pct_counts_ribo",
                         "sample",
                         "sample_original",
+                        "test_scrublet",
                         "total_counts",
                         "total_counts_hb",
                         "total_counts_mt",
@@ -315,11 +315,12 @@
                     "index": "_index",
                     "columns": [
                         "hb",
+                        "log1p_mean_counts",
+                        "log1p_total_counts",
                         "mean_counts",
                         "mt",
                         "n_cells",
                         "n_cells_by_counts",
-                        "n_counts",
                         "pct_dropout_by_counts",
                         "ribo",
                         "symbols",
@@ -346,10 +347,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-05-20T20:52:47.896186963",
+        "timestamp": "2026-07-09T10:36:14.598917",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run with cell cycle scoring": {

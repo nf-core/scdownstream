@@ -236,6 +236,7 @@ workflow QUALITY_CONTROL {
             ch_cellcycle.symbol_col
         )
         ch_obs_per_sample = ch_obs_per_sample.mix(SCANPY_CELLCYCLE.out.obs)
+        ch_multiqc_files = ch_multiqc_files.mix(SCANPY_CELLCYCLE.out.multiqc_files)
     }
 
     ch_sizes = ch_sizes

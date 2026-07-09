@@ -14,7 +14,7 @@ The pipeline can handle the following cases:
 
 1. You have both `filtered` and `unfiltered` matrices: Provide both matrices in the samplesheet and the pipeline will use the `unfiltered` matrix for ambient RNA removal and the `filtered` matrix for all other steps.
 2. You only have the `filtered` matrix: Provide the `filtered` matrix in the samplesheet and the pipeline will use it for all steps.
-   In this case, only `decontX` can be used for ambient RNA removal, as all other methods require the `unfiltered` matrix.
+   SoupX is the default ambient correction method and requires an unfiltered matrix. For filtered-only input, disable ambient correction per sample (`ambient_correction=false`) or set `--ambient_correction decontx`.
 3. You only have the `unfiltered` matrix: Provide the `unfiltered` matrix in the samplesheet and the pipeline will automatically create a `filtered` matrix by identifying empty droplets using `CellBender`.
 
 ## Samplesheet input
@@ -61,6 +61,7 @@ For CSV input files, specifying the `batch_col`, `label_col`, `condition_col`, a
 | `geneid_col`                       | Column in the input file containing gene identifier information. Defaults to `index`. Only used if `symbol_col` is set to `none`.                                                                                                                                                                                                                                                                                                                          |
 | `label_col`                        | Column in the input file containing cell type information. Defaults to `label`. If the column does not exist in the input object, the pipeline will create a new column and put `unknown` in it. If the `label_col` is something else than `label`, it will be renamed to `label` during pipeline execution.                                                                                                                                               |
 | `condition_col`                    | Column in the input file containing condition information (e.g. disease state, treatment). If the column does not exist in the input object, the pipeline will create a new column and put `unknown` in it. If the `condition_col` is something else than `condition`, it will be renamed to `condition` during pipeline execution.                                                                                                                        |
+| `donor_col`                        | Column in the input file containing biological replicate / donor identifiers (e.g. patient, mouse). Required in the samplesheet when pseudobulking is enabled. If the column is something else than `donor`, it will be renamed to `donor` during unification.                                                                                                                         |
 | `unknown_label`                    | Value in the `label_col` column that should be considered as unknown. Defaults to `unknown`. If the `unknown_label` is something else than `unknown`, it will be renamed to `unknown` during pipeline execution. If trying to perform integration with scANVI, more than one unique label other than `unknown` must exist in the input data.                                                                                                               |
 | `counts_layer`                     | Layer in the input file containing the raw counts matrix. Defaults to `X`.                                                                                                                                                                                                                                                                                                                                                                                 |
 | `min_genes`                        | Minimum number of genes required for a cell to be considered. Defaults to `0`.                                                                                                                                                                                                                                                                                                                                                                             |
@@ -98,7 +99,7 @@ With no QC columns, each sample receives:
 - `max_mito_percentage=8`
 - `min_cells=20` (gene filter after ambient correction)
 
-Doublet handling also follows the book: `--doublet_detection` defaults to `scdblfinder`, and `--doublet_removal` defaults to `false`, so doublet scores are written to `adata.obs` without removing cells until you opt in.
+Doublet handling also follows the book: `--doublet_detection` defaults to `scdblfinder`, and `--doublet_removal` defaults to `false`, so doublet scores are written to `adata.obs` without removing cells until you opt in. Ambient RNA correction defaults to SoupX and requires an unfiltered matrix for each corrected sample.
 
 Before integration, merged raw counts are subset to informative genes. By default, [`feature_selection`](https://nf-co.re/scdownstream/parameters#feature_selection) is `deviance` (binomial deviance via scry, ~4,000 genes when [`integration_n_features`](https://nf-co.re/scdownstream/parameters#integration_n_features) is `0`). Use `--feature_selection hvgs` for scanpy highly variable genes, or `--feature_selection none` to skip gene filtering. The `python_only` profile sets `feature_selection` to `hvgs` automatically.
 
@@ -284,7 +285,7 @@ For each integration method, the pipeline:
 
 1. Computes a **KNN neighbour graph** (using the reduced embedding, e.g. PCA or scVI latent space).
 2. Generates a **UMAP** layout.
-3. Runs **Leiden clustering** at every resolution listed in [`clustering_resolutions`](https://nf-co.re/scdownstream/parameters#clustering_resolutions) (default `0.5,1.0`).
+3. Runs **Leiden clustering** at every resolution listed in [`clustering_resolutions`](https://nf-co.re/scdownstream/parameters#clustering_resolutions) (default `0.25,0.5,1.0`).
 
 Steps 1 and 2 always run for every integration and every subset (global and per-label). Step 3 is controlled by the analysis plan (see below).
 
@@ -298,31 +299,30 @@ For each Leiden clustering result the pipeline runs a configurable set of downst
 | ----------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | **PAGA**          | Trajectory / connectivity graph between clusters                             | —                                                                                                    |
 | **LIANA**         | Ligand–receptor interaction analysis                                         | [`skip_liana`](https://nf-co.re/scdownstream/parameters#skip_liana)                                  |
-| **DE**            | Cell-level differential expression via rank_genes_groups and optional mixed model | omit `de` from the analysis plan and/or set [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) to an empty string |
-| **pseudobulk_de** | Pseudobulk aggregation and sample-level differential expression              | opt-in via analysis plan only                                                                        |
+| **DE**            | Cell-level and sample-level differential expression via `de_methods`         | omit `de` from the analysis plan and/or set [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) to an empty string |
 | **CyteType**      | LLM-based cluster cell type annotation                                       | requires [`cytetype_study_context`](https://nf-co.re/scdownstream/parameters#cytetype_study_context) |
 
-By default (no `--analysis_plan`), `paga`, `liana`, `de`, and `cytetype` run for every clustering result, subject to `skip_liana`, `de_methods`, and `cytetype_study_context` above. **`pseudobulk_de` is never run by default**; add it explicitly in the analysis plan.
+By default (no `--analysis_plan`), `paga`, `liana`, `de`, and `cytetype` run for every clustering result, subject to `skip_liana`, `de_methods`, and `cytetype_study_context` above. Sample-level pseudobulk DE runs automatically when `pydeseq2` or `edgepython` are included in the resolved `de_methods` for a clustering.
 
 ### Differential expression methods
 
 The [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) parameter selects which engines run when the corresponding analysis token is active:
 
-| Method | Analysis token | Purpose |
-| ------ | -------------- | ------- |
-| `wilcoxon` | `de` | Scanpy `rank_genes_groups` with the Wilcoxon test (default) |
-| `t-test` | `de` | Scanpy `rank_genes_groups` with Student's t-test |
-| `t-test_overestim_var` | `de` | Scanpy `rank_genes_groups` with t-test (overestimated variance) |
-| `logreg` | `de` | Scanpy `rank_genes_groups` with logistic regression |
-| `edgepython_sc` | `de` | Donor-aware single-cell mixed model ([edgePython](https://github.com/pachterlab/edgePython)) |
-| `pydeseq2` | `pseudobulk_de` | Sample-level PyDESeq2 on pseudobulk counts |
-| `edgepython` | `pseudobulk_de` | Sample-level edgeR-style QL F-test on pseudobulk counts |
+| Method | Purpose |
+| ------ | ------- |
+| `wilcoxon` | Scanpy `rank_genes_groups` with the Wilcoxon test (default) |
+| `t-test` | Scanpy `rank_genes_groups` with Student's t-test |
+| `t-test_overestim_var` | Scanpy `rank_genes_groups` with t-test (overestimated variance) |
+| `logreg` | Scanpy `rank_genes_groups` with logistic regression |
+| `edgepython_sc` | Donor-aware single-cell mixed model ([edgePython](https://github.com/pachterlab/edgePython)) |
+| `pydeseq2` | Sample-level PyDESeq2 on pseudobulk counts (triggers pseudobulk aggregation) |
+| `edgepython` | Sample-level edgeR-style QL F-test on pseudobulk counts (triggers pseudobulk aggregation) |
 
-Use multiple comma-separated values to compare methods in one run, for example `--de_methods wilcoxon,t-test,pydeseq2,edgepython`. To disable all DE engines globally, pass an empty value: `--de_methods ''`. DE still runs for a clustering when a matching `--analysis_plan` row supplies `de_methods`.
+Use multiple comma-separated values to compare methods in one run, for example `--de_methods wilcoxon,pydeseq2,edgepython`. To disable all DE engines globally, pass an empty value: `--de_methods ''`. DE still runs for a clustering when a matching `--analysis_plan` row supplies `de_methods`.
 
-**Rank-genes-groups comparisons:** each selected Scanpy method (`wilcoxon`, `t-test`, `t-test_overestim_var`, `logreg`) runs `rank_genes_groups` for global cluster markers, per-condition cluster markers, and per-cluster condition contrasts when those columns are present. Multiple Scanpy methods produce parallel outputs (separate `uns` keys and plots per method). For donor-aware modelling across biological replicates, use `pseudobulk_de` with `pydeseq2` and/or `edgepython`, or `edgepython_sc` under the `de` token.
+**Rank-genes-groups comparisons:** each selected Scanpy method (`wilcoxon`, `t-test`, `t-test_overestim_var`, `logreg`) runs `rank_genes_groups` for global cluster markers, per-condition cluster markers, and per-cluster condition contrasts when those columns are present. Multiple Scanpy methods produce parallel outputs (separate `uns` keys and plots per method). For donor-aware modelling across biological replicates, add `pydeseq2` and/or `edgepython` to `de_methods`, or use `edgepython_sc`.
 
-**Pseudobulk settings:** aggregation follows the [sc-best-practices DGE tutorial](https://www.sc-best-practices.org/conditions/differential_gene_expression.html) using [decoupler](https://decoupler.readthedocs.io/) (`pp.pseudobulk` + `filter_samples`). Biological replicate column ([`pseudobulk_donor_col`](https://nf-co.re/scdownstream/parameters#pseudobulk_donor_col), default `batch` — must be donor/patient, not a technical batch), minimum cells per pseudobulk sample ([`pseudobulk_min_num_cells`](https://nf-co.re/scdownstream/parameters#pseudobulk_min_num_cells), default `10`), and minimum total counts ([`pseudobulk_min_total_counts`](https://nf-co.re/scdownstream/parameters#pseudobulk_min_total_counts), default `1000`). Sample-level DE uses a fixed `~ donor + condition` design per cell-type stratum. Set [`reference_condition`](https://nf-co.re/scdownstream/parameters#reference_condition) to choose the baseline condition for pseudobulk and `edgepython_sc` contrasts (defaults to the first level alphabetically).
+**Pseudobulk settings:** aggregation follows the [sc-best-practices DGE tutorial](https://www.sc-best-practices.org/conditions/differential_gene_expression.html) using [decoupler](https://decoupler.readthedocs.io/) (`pp.pseudobulk` + `filter_samples`). Biological replicate identifiers are unified to a `donor` column during QC unification. Set the source column per sample with `donor_col` in the samplesheet (required when pseudobulking is enabled). When extending a previous run, `base_adata` must already contain a `donor` column. Minimum cells per pseudobulk sample ([`pseudobulk_min_num_cells`](https://nf-co.re/scdownstream/parameters#pseudobulk_min_num_cells), default `10`) and minimum total counts ([`pseudobulk_min_total_counts`](https://nf-co.re/scdownstream/parameters#pseudobulk_min_total_counts), default `1000`) filter low-coverage pseudobulk profiles. Sample-level DE uses a fixed `~ donor + condition` design per cell-type stratum. Set [`reference_condition`](https://nf-co.re/scdownstream/parameters#reference_condition) to choose the baseline condition for pseudobulk and `edgepython_sc` contrasts (defaults to the first level alphabetically). Use [`pseudobulk`](https://nf-co.re/scdownstream/parameters#pseudobulk) to export pseudobulk count matrices without running pseudobulk DE methods.
 
 ### Analysis plan
 
@@ -335,7 +335,7 @@ Each row in the CSV selects a subset of clusterings. **All columns are optional*
 | `integration` | match all integration methods                                                            |
 | `subset`      | match all subsets (`global` and per-label)                                               |
 | `resolution`  | match all resolutions (still bounded by `--clustering_resolutions`)                    |
-| `analyses`    | run `paga`, `liana`, `de`, and `cytetype` (not `pseudobulk_de`)                          |
+| `analyses`    | run `paga`, `liana`, `de`, and `cytetype`                          |
 | `de_methods`  | use the global [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) default |
 
 When multiple rows match a clustering result, their `analyses` lists are **combined** (duplicates removed). If any matching row leaves `analyses` empty, all analyses run for that clustering. Clusterings that match **no** row are excluded from Leiden and all downstream analyses — but their UMAP and neighbour graph are still computed.
@@ -344,7 +344,7 @@ Example plan: full analysis on Symphony at resolution 0.5, DE-only at resolution
 
 ```csv title="analysis_plan.csv"
 integration,subset,resolution,analyses,de_methods
-scvi,global,0.5,"de,pseudobulk_de","wilcoxon,pydeseq2,edgepython"
+scvi,global,0.5,"de","wilcoxon,pydeseq2,edgepython"
 ,,,de,wilcoxon
 ```
 
@@ -449,10 +449,14 @@ Ambient RNA correction removes contaminating RNA from cell-free droplets that ca
 The pipeline supports multiple ambient RNA correction methods that can be configured both globally and per-sample.
 
 The pipeline allows you to select an ambient RNA correction method globally using the `--ambient_correction` parameter.
-Available methods include `decontx` (default), `cellbender`, `soupx`, `scar`, or `none` to skip correction entirely:
+Available methods include `soupx` (default), `decontx`, `cellbender`, `scar`, or `none` to skip correction entirely.
+SoupX requires an unfiltered matrix for each sample where ambient correction is enabled. For filtered-only samples, disable correction in the samplesheet or use `--ambient_correction decontx`.
+
+> [!WARNING]
+> If nf-core/scrnaseq already ran CellBender and you also enable downstream ambient correction on the same count matrix, you may apply two correction steps. Inspect the upstream outputs and disable one stage when appropriate.
 
 ```bash
-nextflow run nf-core/scdownstream --ambient_correction cellbender --input samplesheet.csv --outdir results
+nextflow run nf-core/scdownstream --ambient_correction decontx --input samplesheet.csv --outdir results
 ```
 
 For finer control, you can disable ambient RNA correction for specific samples by setting `ambient_correction` to `false` in your samplesheet:
@@ -463,7 +467,7 @@ sample1,/path/to/sample1_filtered.h5ad,/path/to/sample1.h5ad,true
 sample2,/path/to/sample2_filtered.h5ad,/path/to/sample2.h5ad,false
 ```
 
-By default, the pipeline stores ambient-corrected counts as additional layers in the AnnData object (e.g., `ambient_corrected_decontx`) while keeping the original raw counts in the `X` layer.
+By default, the pipeline stores ambient-corrected counts as additional layers in the AnnData object (e.g., `ambient_corrected_soupx`) while keeping the original raw counts in the `X` layer.
 This means all downstream analysis including integration uses the raw counts, with corrected counts available for optional inspection.
 
 If you want to use the ambient-corrected counts for integration instead, you can enable this behavior globally or per sample:

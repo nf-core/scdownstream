@@ -2,12 +2,15 @@
 
 import os
 import platform
+import base64
+import json
 
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 
 import anndata as ad
 import decoupler as dc
+import matplotlib.pyplot as plt
 import pandas as pd
 import yaml
 
@@ -79,6 +82,29 @@ obs[["sample_id", "donor", "celltype", "condition", "n_cells", "total_counts"]].
     sep="\t",
     index=False,
 )
+
+summary = obs.groupby("celltype", observed=True).size().sort_values(ascending=False)
+fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+summary.plot.bar(ax=ax)
+ax.set_xlabel("Cell type")
+ax.set_ylabel("Pseudobulk samples")
+ax.set_title("Pseudobulk samples per cell type")
+plot_path = f"{prefix}_pseudobulk_summary.png"
+plt.savefig(plot_path)
+
+with open(plot_path, "rb") as f_plot, open(f"{prefix}_mqc.json", "w") as f_json:
+    image_string = base64.b64encode(f_plot.read()).decode("utf-8")
+    image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
+    custom_json = {
+        "id": f"{prefix}_pseudobulk",
+        "parent_id": "${meta.integration}",
+        "parent_name": "${meta.integration}",
+        "parent_description": "Pseudobulk aggregation summaries for ${meta.integration}.",
+        "section_name": "${meta.id}",
+        "plot_type": "image",
+        "data": image_html,
+    }
+    json.dump(custom_json, f_json)
 
 versions = {
     "${task.process}": {

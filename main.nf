@@ -83,7 +83,7 @@ workflow NFCORE_SCDOWNSTREAM {
     clustering_resolutions        //   value: string
     analysis_plan                 //   value: list of plan rows parsed in main.nf
     de_methods                    //   value: string
-    pseudobulk_donor_col          //   value: string
+    pseudobulk                    //   value: boolean
     pseudobulk_min_num_cells      //   value: integer
     pseudobulk_min_total_counts   //   value: integer
     reference_condition           //   value: string
@@ -151,7 +151,7 @@ workflow NFCORE_SCDOWNSTREAM {
         clustering_resolutions,
         analysis_plan,
         de_methods,
-        pseudobulk_donor_col,
+        pseudobulk,
         pseudobulk_min_num_cells,
         pseudobulk_min_total_counts,
         reference_condition,
@@ -262,7 +262,7 @@ workflow {
         params.clustering_resolutions,
         analysis_plan,
         params.de_methods,
-        params.pseudobulk_donor_col,
+        params.pseudobulk,
         params.pseudobulk_min_num_cells,
         params.pseudobulk_min_total_counts,
         params.reference_condition,
