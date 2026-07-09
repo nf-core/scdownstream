@@ -23,6 +23,7 @@ nextflow_process {
                 input[1] = "leiden"
                 input[2] = [[], []]
                 input[3] = "wilcoxon"
+                input[4] = "rank_genes_groups"
                 """
             }
         }
@@ -57,6 +58,7 @@ nextflow_process {
                 input[1] = "leiden"
                 input[2] = [[], []]
                 input[3] = "wilcoxon"
+                input[4] = "rank_genes_groups"
                 """
             }
         }
@@ -84,6 +86,7 @@ nextflow_process {
                 input[1] = "leiden"
                 input[2] = ["condition", "Healthy"]
                 input[3] = "wilcoxon"
+                input[4] = "rank_genes_groups"
                 """
             }
         }
@@ -116,6 +119,7 @@ nextflow_process {
                 input[1] = "condition"
                 input[2] = ["label", "Tcell"]
                 input[3] = "wilcoxon"
+                input[4] = "rank_genes_groups"
                 """
             }
         }

@@ -190,7 +190,7 @@ Example tar archives can be found [here](https://github.com/nf-core/test-dataset
 
 [CyteType](https://github.com/NygenAnalytics/cytetype) is a multi-agent LLM-driven annotator that takes per-cluster marker genes and a free-text study description and returns predicted cell type labels. The pipeline runs CyteType on merged data after integration, clustering, and global differential expression — once per grouping (each Leiden resolution and label column). Cluster labels and marker genes are taken automatically from each grouping's obs column and `uns['rank_genes_groups']`.
 
-To enable CyteType, set [`cytetype_study_context`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_study_context) to a short free-text description of your study (the more specific, the better). When this parameter is empty (the default), CyteType is skipped. CyteType is also skipped when [`skip_rankgenesgroups`](https://nf-co.re/scdownstream/dev/parameters/#skip_rankgenesgroups) is enabled, because marker genes are required.
+To enable CyteType, set [`cytetype_study_context`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_study_context) to a short free-text description of your study (the more specific, the better). When this parameter is empty (the default), CyteType is skipped. CyteType always reads Wilcoxon `rank_genes_groups` results; when CyteType is enabled, `wilcoxon` is added to the resolved `de_methods` for each eligible clustering if not already present.
 
 ```bash
 nextflow run nf-core/scdownstream \
@@ -294,14 +294,35 @@ Steps 1 and 2 always run for every integration and every subset (global and per-
 
 For each Leiden clustering result the pipeline runs a configurable set of downstream analyses:
 
-| Analysis     | What it does                                                 | Skip parameter                                                                                       |
-| ------------ | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| **PAGA**     | Trajectory / connectivity graph between clusters             | —                                                                                                    |
-| **LIANA**    | Ligand–receptor interaction analysis                         | [`skip_liana`](https://nf-co.re/scdownstream/parameters#skip_liana)                                  |
-| **DE**       | Differential expression / marker genes (`rank_genes_groups`) | [`skip_rankgenesgroups`](https://nf-co.re/scdownstream/parameters#skip_rankgenesgroups)              |
-| **CyteType** | LLM-based cluster cell type annotation                       | requires [`cytetype_study_context`](https://nf-co.re/scdownstream/parameters#cytetype_study_context) |
+| Analysis          | What it does                                                                 | Skip parameter                                                                                       |
+| ----------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **PAGA**          | Trajectory / connectivity graph between clusters                             | —                                                                                                    |
+| **LIANA**         | Ligand–receptor interaction analysis                                         | [`skip_liana`](https://nf-co.re/scdownstream/parameters#skip_liana)                                  |
+| **DE**            | Cell-level differential expression via rank_genes_groups and optional mixed model | omit `de` from the analysis plan and/or set [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) to an empty string |
+| **pseudobulk_de** | Pseudobulk aggregation and sample-level differential expression              | opt-in via analysis plan only                                                                        |
+| **CyteType**      | LLM-based cluster cell type annotation                                       | requires [`cytetype_study_context`](https://nf-co.re/scdownstream/parameters#cytetype_study_context) |
 
-By default (no `--analysis_plan`), all four analyses run for every clustering result, subject to the skip flags and `cytetype_study_context` above.
+By default (no `--analysis_plan`), `paga`, `liana`, `de`, and `cytetype` run for every clustering result, subject to `skip_liana`, `de_methods`, and `cytetype_study_context` above. **`pseudobulk_de` is never run by default**; add it explicitly in the analysis plan.
+
+### Differential expression methods
+
+The [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) parameter selects which engines run when the corresponding analysis token is active:
+
+| Method | Analysis token | Purpose |
+| ------ | -------------- | ------- |
+| `wilcoxon` | `de` | Scanpy `rank_genes_groups` with the Wilcoxon test (default) |
+| `t-test` | `de` | Scanpy `rank_genes_groups` with Student's t-test |
+| `t-test_overestim_var` | `de` | Scanpy `rank_genes_groups` with t-test (overestimated variance) |
+| `logreg` | `de` | Scanpy `rank_genes_groups` with logistic regression |
+| `edgepython_sc` | `de` | Donor-aware single-cell mixed model ([edgePython](https://github.com/pachterlab/edgePython)) |
+| `pydeseq2` | `pseudobulk_de` | Sample-level PyDESeq2 on pseudobulk counts |
+| `edgepython` | `pseudobulk_de` | Sample-level edgeR-style QL F-test on pseudobulk counts |
+
+Use multiple comma-separated values to compare methods in one run, for example `--de_methods wilcoxon,t-test,pydeseq2,edgepython`. To disable all DE engines globally, pass an empty value: `--de_methods ''`. DE still runs for a clustering when a matching `--analysis_plan` row supplies `de_methods`.
+
+**Rank-genes-groups comparisons:** each selected Scanpy method (`wilcoxon`, `t-test`, `t-test_overestim_var`, `logreg`) runs `rank_genes_groups` for global cluster markers, per-condition cluster markers, and per-cluster condition contrasts when those columns are present. Multiple Scanpy methods produce parallel outputs (separate `uns` keys and plots per method). For donor-aware modelling across biological replicates, use `pseudobulk_de` with `pydeseq2` and/or `edgepython`, or `edgepython_sc` under the `de` token.
+
+**Pseudobulk settings:** aggregation follows the [sc-best-practices DGE tutorial](https://www.sc-best-practices.org/conditions/differential_gene_expression.html) using [decoupler](https://decoupler.readthedocs.io/) (`pp.pseudobulk` + `filter_samples`). Biological replicate column ([`pseudobulk_donor_col`](https://nf-co.re/scdownstream/parameters#pseudobulk_donor_col), default `batch` — must be donor/patient, not a technical batch), minimum cells per pseudobulk sample ([`pseudobulk_min_num_cells`](https://nf-co.re/scdownstream/parameters#pseudobulk_min_num_cells), default `10`), and minimum total counts ([`pseudobulk_min_total_counts`](https://nf-co.re/scdownstream/parameters#pseudobulk_min_total_counts), default `1000`). Sample-level DE uses a fixed `~ donor + condition` design per cell-type stratum. Set [`reference_condition`](https://nf-co.re/scdownstream/parameters#reference_condition) to choose the baseline condition for pseudobulk and `edgepython_sc` contrasts (defaults to the first level alphabetically).
 
 ### Analysis plan
 
@@ -309,22 +330,22 @@ With many integration methods and resolutions the full downstream suite can gene
 
 Each row in the CSV selects a subset of clusterings. **All columns are optional** — an empty cell acts as a wildcard that matches everything:
 
-| Column        | Empty means                                                         |
-| ------------- | ------------------------------------------------------------------- |
-| `integration` | match all integration methods                                       |
-| `subset`      | match all subsets (`global` and per-label)                          |
-| `resolution`  | match all resolutions (still bounded by `--clustering_resolutions`) |
-| `analyses`    | run all four: `paga`, `liana`, `de`, `cytetype`                     |
+| Column        | Empty means                                                                              |
+| ------------- | ---------------------------------------------------------------------------------------- |
+| `integration` | match all integration methods                                                            |
+| `subset`      | match all subsets (`global` and per-label)                                               |
+| `resolution`  | match all resolutions (still bounded by `--clustering_resolutions`)                    |
+| `analyses`    | run `paga`, `liana`, `de`, and `cytetype` (not `pseudobulk_de`)                          |
+| `de_methods`  | use the global [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) default |
 
 When multiple rows match a clustering result, their `analyses` lists are **combined** (duplicates removed). If any matching row leaves `analyses` empty, all analyses run for that clustering. Clusterings that match **no** row are excluded from Leiden and all downstream analyses — but their UMAP and neighbour graph are still computed.
 
 Example plan: full analysis on Symphony at resolution 0.5, DE-only at resolution 1.0 for every integration, and DE-only for scVI at any resolution:
 
 ```csv title="analysis_plan.csv"
-integration,subset,resolution,analyses
-symphony,global,0.5,"paga,de,cytetype"
-,,1.0,de
-scvi,,,de
+integration,subset,resolution,analyses,de_methods
+scvi,global,0.5,"de,pseudobulk_de","wilcoxon,pydeseq2,edgepython"
+,,,de,wilcoxon
 ```
 
 ```bash

@@ -20,7 +20,7 @@ nextflow_pipeline {
                 cluster_global               = false
                 cluster_per_label            = false
                 skip_liana                   = true
-                skip_rankgenesgroups         = true
+                de_methods                   = ''
                 analysis_plan                = "${projectDir}/tests/analysis_plan_sub.csv"
             }
         }
@@ -63,7 +63,7 @@ nextflow_pipeline {
                 cluster_global                = false
                 cluster_per_label             = false
                 skip_liana                    = true
-                skip_rankgenesgroups          = true
+                de_methods                    = ''
                 analysis_plan                 = "${projectDir}/tests/analysis_plan_sub.csv"
             }
         }

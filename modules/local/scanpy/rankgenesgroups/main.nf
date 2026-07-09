@@ -12,6 +12,7 @@ process SCANPY_RANKGENESGROUPS {
     val(obs_key)
     tuple val(filter_col), val(filter_val)
     val(method)
+    val(rank_key)
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad, optional: true

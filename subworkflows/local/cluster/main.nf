@@ -5,6 +5,7 @@ include { SCANPY_UMAP as UMAP               } from '../../../modules/local/scanp
 include { ADATA_ENTROPY as ENTROPY          } from '../../../modules/local/adata/entropy'
 include { matchingAnalysisPlanRows          } from '../utils_nfcore_scdownstream_pipeline'
 include { analysesFromPlanRows              } from '../utils_nfcore_scdownstream_pipeline'
+include { deMethodsFromPlanRows             } from '../utils_nfcore_scdownstream_pipeline'
 
 workflow CLUSTER {
     take:
@@ -61,7 +62,7 @@ workflow CLUSTER {
                 meta + [
                     resolution: resolution,
                     id: meta.id + '-' + resolution,
-                ] + analysesFromPlanRows(matching_rows),
+                ] + analysesFromPlanRows(matching_rows) + deMethodsFromPlanRows(matching_rows),
                 h5ad,
             ]
         }

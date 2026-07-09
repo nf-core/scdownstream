@@ -67,7 +67,6 @@ workflow NFCORE_SCDOWNSTREAM {
     symphony_reference            //   value: string
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
-    skip_rankgenesgroups          //   value: boolean
     skip_qc_report                //   value: boolean
     scib                          //   value: boolean
     scib_max_cells                //   value: integer or null
@@ -83,9 +82,11 @@ workflow NFCORE_SCDOWNSTREAM {
     cluster_global                //   value: boolean
     clustering_resolutions        //   value: string
     analysis_plan                 //   value: list of plan rows parsed in main.nf
-    pseudobulk                    //   value: boolean
-    pseudobulk_groupby_labels     //   value: string
+    de_methods                    //   value: string
+    pseudobulk_donor_col          //   value: string
     pseudobulk_min_num_cells      //   value: integer
+    pseudobulk_min_total_counts   //   value: integer
+    reference_condition           //   value: string
     prep_cellxgene                //   value: boolean
     outdir                        //   value: string
     multiqc_config                //   value: string
@@ -134,7 +135,6 @@ workflow NFCORE_SCDOWNSTREAM {
         symphony_reference,
         expimap_gmt,
         skip_liana,
-        skip_rankgenesgroups,
         skip_qc_report,
         scib,
         scib_max_cells,
@@ -150,15 +150,18 @@ workflow NFCORE_SCDOWNSTREAM {
         cluster_global,
         clustering_resolutions,
         analysis_plan,
-        pseudobulk,
-        pseudobulk_groupby_labels,
+        de_methods,
+        pseudobulk_donor_col,
         pseudobulk_min_num_cells,
+        pseudobulk_min_total_counts,
+        reference_condition,
         prep_cellxgene,
         outdir,
         multiqc_config,
         multiqc_logo,
-        multiqc_methods_description
+        multiqc_methods_description,
     )
+
     emit:
     multiqc_report = SCDOWNSTREAM.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
@@ -190,8 +193,8 @@ workflow {
     // WORKFLOW: Run main workflow
     //
     ch_base_adata = params.base_adata
-            ? channel.value([[id: "base"], file(params.base_adata, checkIfExists: true)])
-            : channel.value([[], []])
+        ? channel.value([[id: "base"], file(params.base_adata, checkIfExists: true)])
+        : channel.value([[], []])
 
     def s_genes_file = params.cell_cycle_scoring
         ? file(params.s_genes ?: "${projectDir}/assets/cell_cycle_genes/${params.species}_s_genes.txt", checkIfExists: true)
@@ -243,7 +246,6 @@ workflow {
         symphony_reference,
         params.expimap_gmt,
         params.skip_liana,
-        params.skip_rankgenesgroups,
         params.skip_qc_report,
         params.scib,
         params.scib_max_cells,
@@ -259,9 +261,11 @@ workflow {
         params.cluster_global,
         params.clustering_resolutions,
         analysis_plan,
-        params.pseudobulk,
-        params.pseudobulk_groupby_labels,
+        params.de_methods,
+        params.pseudobulk_donor_col,
         params.pseudobulk_min_num_cells,
+        params.pseudobulk_min_total_counts,
+        params.reference_condition,
         params.prep_cellxgene,
         params.outdir,
         params.multiqc_config,

@@ -1,0 +1,138 @@
+{
+    "Should aggregate pseudobulk profiles with decoupler": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,c76acc821c72c16aff360cb31c8fcb68"
+                    ]
+                ],
+                "1": [
+                    "test_samples.tsv:md5,40d3c06cebddd742a806a52ac1aa2226"
+                ],
+                "2": [
+                    "versions.yml:md5,c038d52da375dc87900a713a0379fe41"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,c76acc821c72c16aff360cb31c8fcb68"
+                    ]
+                ],
+                "samples": [
+                    "test_samples.tsv:md5,40d3c06cebddd742a806a52ac1aa2226"
+                ],
+                "versions": [
+                    "versions.yml:md5,c038d52da375dc87900a713a0379fe41"
+                ]
+            },
+            {
+                "DECOUPLER_PSEUDOBULK": {
+                    "anndata": "0.12.19",
+                    "decoupler": "2.1.6",
+                    "pandas": "2.3.3",
+                    "python": "3.12.13"
+                }
+            },
+            {
+                "n_obs": 36,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "celltype",
+                        "condition",
+                        "donor",
+                        "leiden",
+                        "leiden_condition",
+                        "n_cells",
+                        "psbulk_cells",
+                        "psbulk_counts",
+                        "sample",
+                        "sample_id",
+                        "sample_original",
+                        "total_counts"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-07-08T13:51:07.231569",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "obs_key": "leiden",
+                            "condition_col": "condition"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "test_samples.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "obs_key": "leiden",
+                            "condition_col": "condition"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "samples": [
+                    "test_samples.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-08T13:09:50.316886",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    }
+}

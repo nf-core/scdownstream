@@ -13,7 +13,6 @@ include { COMBINE                              } from '../subworkflows/local/com
 include { ADATA_SPLITEMBEDDINGS                } from '../modules/local/adata/splitembeddings'
 include { SUB_INTEGRATE                        } from '../subworkflows/local/sub_integrate'
 include { CLUSTER                              } from '../subworkflows/local/cluster'
-include { PSEUDOBULKING                        } from '../subworkflows/local/pseudobulking'
 include { PER_GROUP                            } from '../subworkflows/local/per_group'
 include { FINALIZE                             } from '../subworkflows/local/finalize'
 include { MULTIQC                              } from '../modules/nf-core/multiqc'
@@ -66,7 +65,6 @@ workflow SCDOWNSTREAM {
     symphony_reference             //   value: string
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
-    skip_rankgenesgroups          //   value: boolean
     skip_qc_report                //   value: boolean
     scib                          //   value: boolean
     scib_max_cells                //   value: integer or null
@@ -82,9 +80,11 @@ workflow SCDOWNSTREAM {
     cluster_global                //   value: boolean
     clustering_resolutions        //   value: string
     analysis_plan                 //   value: list of plan rows parsed in main.nf
-    pseudobulk                    //   value: boolean
-    pseudobulk_groupby_labels     //   value: string
+    de_methods                    //   value: string
+    pseudobulk_donor_col          //   value: string
     pseudobulk_min_num_cells      //   value: integer
+    pseudobulk_min_total_counts   //   value: integer
+    reference_condition           //   value: string
     prep_cellxgene                //   value: boolean
     outdir                        //   value: string
     multiqc_config                //   value: string
@@ -285,15 +285,6 @@ workflow SCDOWNSTREAM {
         ch_obsm = ch_obsm.mix(CLUSTER.out.obsm)
         ch_multiqc_files = ch_multiqc_files.mix(CLUSTER.out.multiqc_files)
 
-        if (pseudobulk) {
-            PSEUDOBULKING (
-                CLUSTER.out.h5ad_clustering,
-                pseudobulk_groupby_labels.split(','),
-                pseudobulk_min_num_cells,
-                "X",
-            )
-        }
-
         ch_h5ad_both = CLUSTER.out.h5ad_clustering
             .map { meta, h5ad ->
                 [meta + [obs_key: "${meta.id}_leiden"], h5ad]
@@ -323,8 +314,12 @@ workflow SCDOWNSTREAM {
                 [meta + [condition_col: condition_col], h5ad]
             },
             skip_liana,
-            skip_rankgenesgroups,
             cytetype_study_context,
+            de_methods,
+            pseudobulk_donor_col,
+            pseudobulk_min_num_cells,
+            pseudobulk_min_total_counts,
+            reference_condition ?: '',
         )
 
         ch_uns = ch_uns.mix(PER_GROUP.out.uns)

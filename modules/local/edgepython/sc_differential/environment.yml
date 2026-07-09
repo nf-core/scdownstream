@@ -1,13 +1,13 @@
+name: edgepython_sc_differential
 channels:
   - conda-forge
-  - bioconda
 dependencies:
   - conda-forge::python=3.12
   - conda-forge::anndata=0.12.10
+  - conda-forge::pandas=2.2.3
+  - conda-forge::numpy=2.2.3
   - conda-forge::pyyaml=6.0.3
-  - conda-forge::zarr=2.18.7
-  - conda-forge::numcodecs=0.15.1
-  - conda-forge::hnswlib=0.8.0
+  - conda-forge::scipy=1.15.2
   - pip
   - pip:
-      - scimilarity==0.4.1
+      - edgepython==0.2.6

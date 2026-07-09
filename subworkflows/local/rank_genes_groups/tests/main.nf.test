@@ -1,8 +1,8 @@
 nextflow_workflow {
 
-    name "Test Workflow DIFFERENTIAL_EXPRESSION"
-    script "subworkflows/local/differential_expression/main.nf"
-    workflow "DIFFERENTIAL_EXPRESSION"
+    name "Test Workflow RANK_GENES_GROUPS"
+    script "subworkflows/local/rank_genes_groups/main.nf"
+    workflow "RANK_GENES_GROUPS"
 
     tag "subworkflows"
     tag "subworkflows_local"
@@ -18,7 +18,7 @@ nextflow_workflow {
                 input[0] = channel.of([
                     [id: 'test'],
                     file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
-                ]).map { meta, h5ad -> [meta + [obs_key: 'leiden', condition_col: 'condition'], h5ad] }
+                ]).map { meta, h5ad -> [meta + [obs_key: 'leiden', condition_col: 'condition', de_methods_resolved: ['wilcoxon'] as Set], h5ad] }
                 """
             }
         }
@@ -50,7 +50,7 @@ nextflow_workflow {
                 input[0] = channel.of([
                     [id: 'test'],
                     file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
-                ]).map { meta, h5ad -> [meta + [obs_key: 'label', condition_col: 'condition'], h5ad] }
+                ]).map { meta, h5ad -> [meta + [obs_key: 'label', condition_col: 'condition', de_methods_resolved: ['wilcoxon'] as Set], h5ad] }
                 """
             }
         }
@@ -67,6 +67,32 @@ nextflow_workflow {
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml }
             ).match()
+        }
+
+    }
+
+    test("Should run multiple rank-genes-groups methods in parallel") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ]).map { meta, h5ad -> [meta + [obs_key: 'leiden', condition_col: 'condition', de_methods_resolved: ['wilcoxon', 't-test'] as Set], h5ad] }
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.uns.size() >= 2
+            assert workflow.out.h5ad.size() == 2
+            assert workflow.out.h5ad.every { meta, _h5ad -> meta.comparison_scope == 'global' }
+            assert workflow.out.h5ad.collect { meta, _h5ad -> meta.de_method }.toSet() == ['wilcoxon', 't-test'] as Set
         }
 
     }

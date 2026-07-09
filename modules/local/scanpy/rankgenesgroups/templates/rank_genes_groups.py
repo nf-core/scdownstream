@@ -25,6 +25,7 @@ sc.settings.n_jobs = int("${task.cpus}")
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 method = "${method}"
+rank_key = "${rank_key}"
 
 filter_col = "${filter_col ?: ''}"
 filter_val = "${filter_val ?: ''}"
@@ -35,7 +36,7 @@ obs_key = "${obs_key}"
 if filter_col and filter_val:
     adata = adata[adata.obs[filter_col] == filter_val].copy()
 
-kwargs = {"groupby": obs_key, "method": method, "pts": True}
+kwargs = {"groupby": obs_key, "method": method, "pts": True, "key_added": rank_key}
 
 # Check value counts for each group
 value_counts = adata.obs[obs_key].value_counts()
@@ -54,13 +55,13 @@ if len(valid_groups) >= 2:
     sc.pp.log1p(adata)
     sc.tl.rank_genes_groups(adata, **kwargs)
 
-    rgg_dict = adata.uns["rank_genes_groups"]
+    rgg_dict = adata.uns[rank_key]
 
     pickle.dump(rgg_dict, open(f"{prefix}.pkl", "wb"))
     adata.write_h5ad(f"{prefix}.h5ad")
 
     # Plot
-    sc.pl.rank_genes_groups(adata, show=False)
+    sc.pl.rank_genes_groups(adata, key=rank_key, show=False)
     path = f"{prefix}.png"
     plt.savefig(path)
 

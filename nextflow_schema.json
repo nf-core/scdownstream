@@ -286,7 +286,7 @@
                 "analysis_plan": {
                     "type": "string",
                     "description": "Path to a CSV file controlling which integration × resolution combinations feed into downstream analyses (PAGA, LIANA, DE, CyteType).",
-                    "help_text": "All columns are optional — empty values act as wildcards. When provided, rows are matched against each clustering result; analyses from all matching rows are combined. When --analysis_plan is not set, all combinations run all analyses (governed by skip_liana / skip_rankgenesgroups). See the usage docs for the full schema.",
+                    "help_text": "All columns are optional — empty values act as wildcards. When provided, rows are matched against each clustering result; analyses from all matching rows are combined. When --analysis_plan is not set, all combinations run all analyses except `pseudobulk_de` (governed by skip_liana, --de_methods, and cytetype_study_context). See the usage docs for the full schema.",
                     "mimetype": "text/csv",
                     "schema": "assets/schema_analysis_plan.json",
                     "pattern": "^\\S+\\.csv$"
@@ -356,10 +356,6 @@
                     "type": "boolean",
                     "description": "Skip the LIANA step. For large datasets, the pipeline might fail due to high memory usage in this step. Use this option to skip it."
                 },
-                "skip_rankgenesgroups": {
-                    "type": "boolean",
-                    "description": "Skip the rank_genes_groups step. For large datasets, the pipeline might fail due to high memory usage in this step. Use this option to skip it."
-                },
                 "skip_qc_report": {
                     "type": "boolean",
                     "description": "Skip rendering the Quarto QC HTML report in reports/."
@@ -391,16 +387,17 @@
                     "enum": ["fast", "full"],
                     "description": "scib-metrics metric set. 'fast' disables expensive metrics (isolated labels, k-means NMI/ARI, PCR comparison) for routine runs; 'full' runs the default scib-metrics benchmark suite for publication-style scoring."
                 },
-                "rankgenesgroups_method": {
+                "de_methods": {
                     "type": "string",
                     "default": "wilcoxon",
-                    "enum": ["t-test", "t-test_overestim_var", "wilcoxon", "logreg"],
-                    "description": "Statistical method for ranking genes in differential expression analysis.",
-                    "help_text": "Available methods are: 't-test' (default t-test), 't-test_overestim_var' (t-test with overestimated variance), 'wilcoxon' (Wilcoxon rank-sum test, default), 'logreg' (logistic regression)."
+                    "pattern": "^(|wilcoxon|t-test|t-test_overestim_var|logreg|pydeseq2|edgepython|edgepython_sc)(,(wilcoxon|t-test|t-test_overestim_var|logreg|pydeseq2|edgepython|edgepython_sc))*$",
+                    "description": "Comma-separated differential expression engines to run when enabled by the analysis plan.",
+                    "help_text": "Rank-genes-groups methods: `wilcoxon`, `t-test`, `t-test_overestim_var`, `logreg` (cluster, condition, and label-stratified comparisons via Scanpy). Pseudobulk: `pydeseq2`, `edgepython` (require `pseudobulk_de` in the analysis plan). Donor-aware single-cell: `edgepython_sc`. Provide multiple rank-genes-groups methods to run each in parallel. Set to an empty string (`--de_methods ''`) to disable all DE engines unless a matching `--analysis_plan` row supplies `de_methods`. Per-row overrides are supported in `--analysis_plan`."
                 },
-                "pseudobulk": {
-                    "type": "boolean",
-                    "description": "Perform pseudobulking"
+                "reference_condition": {
+                    "type": "string",
+                    "description": "Reference condition level for condition-based differential expression contrasts.",
+                    "help_text": "Used by pseudobulk DE (`pydeseq2`, `edgepython`) and donor-aware `edgepython_sc`. Defaults to the first condition alphabetically when empty."
                 },
                 "prep_cellxgene": {
                     "type": "boolean",
@@ -480,20 +477,26 @@
             }
         },
         "pseudobulking_options": {
-            "title": "Pseudobulking options",
+            "title": "Pseudobulk differential expression options",
             "type": "object",
-            "description": "Options for pseudobulking",
+            "description": "Options for pseudobulk aggregation and sample-level differential expression",
             "fa_icon": "fas fa-users",
             "properties": {
-                "pseudobulk_groupby_labels": {
+                "pseudobulk_donor_col": {
                     "type": "string",
-                    "description": "Group by labels for pseudobulking. If you want to use multiple labels, separate them with a comma.",
-                    "default": "batch"
+                    "default": "batch",
+                    "description": "obs column with biological replicate / donor identifiers for pseudobulk aggregation and mixed models.",
+                    "help_text": "Must identify independent biological replicates (patients, mice, etc.), not technical sequencing batches. Pseudobulk profiles are aggregated per donor × cell type × condition."
                 },
                 "pseudobulk_min_num_cells": {
                     "type": "integer",
-                    "description": "Minimum number of cells for pseudobulking",
-                    "default": 5
+                    "description": "Minimum number of cells per pseudobulk sample",
+                    "default": 10
+                },
+                "pseudobulk_min_total_counts": {
+                    "type": "integer",
+                    "description": "Minimum total UMI counts per pseudobulk sample",
+                    "default": 1000
                 }
             }
         },

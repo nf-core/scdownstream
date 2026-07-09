@@ -166,7 +166,7 @@ def analysisPlanToList() {
     params.analysis_plan
         ? samplesheetToList(params.analysis_plan, "${projectDir}/assets/schema_analysis_plan.json")
             .collect { row -> row[0] }
-        : [[integration: null, subset: null, resolution: null, analyses: null]]
+        : [[integration: null, subset: null, resolution: null, analyses: null, de_methods: null]]
 }
 
 def matchesAnalysisPlanRow(row, meta, resolution = null) {
@@ -180,14 +180,83 @@ def matchingAnalysisPlanRows(rows, meta, resolution = null) {
 }
 
 def analysesFromPlanRows(rows) {
-    if (!rows || rows.any { !it.analyses }) {
+    if (!rows || rows.any { row -> !row.analyses }) {
         return [:]
     }
     [
         analyses: rows
-            .collectMany { row -> row.analyses.split(',')*.trim() }
+            .collectMany { row -> row.analyses.split(',').collect { token -> token.trim() } }
             .toSet(),
     ]
+}
+
+def deMethodsFromPlanRows(rows) {
+    def methods = rows
+        .findAll { row -> row.de_methods }
+        .collectMany { row -> row.de_methods.split(',').collect { token -> token.trim() } }
+        .findAll { method -> method }
+        .toSet()
+    if (methods.isEmpty()) {
+        return [:]
+    }
+    [de_methods: methods]
+}
+
+def resolveDeMethods(meta, default_methods) {
+    if (meta.de_methods) {
+        return meta.de_methods as Set
+    }
+    return default_methods.split(',').collect { token -> token.trim() }.findAll { token -> token } as Set
+}
+
+def cytetypeEligible(meta, cytetype_study_context) {
+    cytetype_study_context && (meta.analyses == null || 'cytetype' in meta.analyses)
+}
+
+def resolveDeMethodsWithPrerequisites(meta, default_methods, cytetype_study_context = '') {
+    def resolved = resolveDeMethods(meta, default_methods)
+    def extra = [:]
+    if (cytetypeEligible(meta, cytetype_study_context)) {
+        if (!('wilcoxon' in resolved)) {
+            resolved = resolved + 'wilcoxon'
+        }
+        extra.cytetype_prerequisite = true
+    }
+    return [de_methods_resolved: resolved] + extra
+}
+
+def rankGenesGroupsAnalysisEnabled(meta) {
+    meta.analyses == null || 'de' in meta.analyses || meta.cytetype_prerequisite
+}
+
+def rankGenesGroupsMethods() {
+    ['wilcoxon', 't-test', 't-test_overestim_var', 'logreg'] as Set
+}
+
+def rankGenesGroupsMethodSlug(method) {
+    method.replace('-', '_')
+}
+
+def rankGenesGroupsMethodKey(method, single_method = false) {
+    single_method ? 'rank_genes_groups' : "rank_genes_groups_${rankGenesGroupsMethodSlug(method)}"
+}
+
+def preferredRankGenesGroupsMethod(methods) {
+    def order = ['wilcoxon', 't-test', 't-test_overestim_var', 'logreg']
+    def resolved = methods.intersect(rankGenesGroupsMethods())
+    order.find { method -> method in resolved } ?: resolved.toList()[0]
+}
+
+def validDeMethods() {
+    (rankGenesGroupsMethods() + ['pydeseq2', 'edgepython', 'edgepython_sc']) as Set
+}
+
+def cellLevelDeMethods() {
+    (rankGenesGroupsMethods() + ['edgepython_sc']) as Set
+}
+
+def pseudobulkDeMethods() {
+    ['pydeseq2', 'edgepython'] as Set
 }
 
 //
@@ -233,6 +302,35 @@ def validateInputParameters() {
     // Validate sample_n and sample_fraction parameters
     if (params.sample_n && params.sample_fraction) {
         throw new Exception("Both sample_n and sample_fraction are set. Please use only one of them.")
+    }
+
+    def de_methods = params.de_methods.split(',').collect { token -> token.trim() }.findAll { token -> token }
+    def invalid_de_methods = de_methods.findAll { method -> !(method in validDeMethods()) }
+    if (invalid_de_methods) {
+        throw new Exception("Invalid de_methods: ${invalid_de_methods.join(', ')}. Valid options: ${validDeMethods().join(', ')}")
+    }
+
+    def pseudobulk_methods = de_methods.intersect(pseudobulkDeMethods() as List)
+    if (pseudobulk_methods) {
+        def plan_rows = params.analysis_plan ? analysisPlanToList() : []
+        def plan_has_pseudobulk_de = plan_rows.any { row -> row.analyses && 'pseudobulk_de' in row.analyses.split(',').collect { token -> token.trim() } }
+        if (!plan_has_pseudobulk_de) {
+            log.warn "de_methods includes ${pseudobulk_methods.join(', ')} but no analysis_plan row lists pseudobulk_de in analyses. Pseudobulk DE will not run."
+        }
+    }
+
+    def plan_rows_with_pb_methods = params.analysis_plan
+        ? analysisPlanToList().findAll { row ->
+            row.de_methods && (row.de_methods.split(',').collect { token -> token.trim() }.intersect(pseudobulkDeMethods() as List))
+        }
+        : []
+    if (plan_rows_with_pb_methods) {
+        def missing_token = plan_rows_with_pb_methods.findAll { row ->
+            !row.analyses || !('pseudobulk_de' in row.analyses.split(',').collect { token -> token.trim() })
+        }
+        if (missing_token) {
+            log.warn "analysis_plan rows specify pseudobulk de_methods (${pseudobulkDeMethods().join(', ')}) without pseudobulk_de in analyses. Those engines will not run for matching clusterings."
+        }
     }
 }
 

@@ -5,91 +5,35 @@
                 "0": [
                     [
                         {
-                            "id": "test"
+                            "id": "test",
+                            "obs_key": "leiden",
+                            "condition_col": "condition"
                         },
                         "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "h5ad_pseudobulk": [
+                "1": [
+                    "test_samples.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
                     [
                         {
-                            "id": "test"
+                            "id": "test",
+                            "obs_key": "leiden",
+                            "condition_col": "condition"
                         },
                         "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
+                ],
+                "samples": [
+                    "test_samples.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-05-20T20:51:23.229396158",
+        "timestamp": "2026-07-08T12:46:42.054884",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
-        }
-    },
-    "Should run without failures": {
-        "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,34fab270f99105fdf5a5be051117b24f"
-                    ]
-                ],
-                "h5ad_pseudobulk": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,34fab270f99105fdf5a5be051117b24f"
-                    ]
-                ]
-            },
-            [
-                
-            ],
-            {
-                "n_obs": 3,
-                "n_vars": 9887,
-                "obs": {
-                    "index": "_index",
-                    "columns": [
-                        "cells",
-                        "sample"
-                    ]
-                },
-                "var": {
-                    "index": "_index",
-                    "columns": [
-                        
-                    ]
-                },
-                "layers": [
-                    "count_nonzero",
-                    "sum"
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
-            }
-        ],
-        "timestamp": "2026-05-20T20:50:42.412004478",
-        "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     }
 }
