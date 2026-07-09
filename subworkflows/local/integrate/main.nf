@@ -1,6 +1,7 @@
 include { SCANPY_HVGS        } from '../../../modules/local/scanpy/hvgs'
 include { SCRY_DEVIANCE       } from '../../../modules/local/scry/deviance'
 include { SCANPY_FILTER      } from '../../../modules/local/scanpy/filter'
+include { NORMALIZATION      } from '../normalization'
 include { SCVITOOLS_SCVI     } from '../../../modules/local/scvitools/scvi'
 include { SCVITOOLS_SCANVI   } from '../../../modules/local/scvitools/scanvi'
 include { SYMPHONY_HARMONYINTEGRATE } from '../../../modules/local/symphony/harmonyintegrate'
@@ -20,6 +21,8 @@ workflow INTEGRATE {
     feature_selection           // string: hvgs | deviance | none
     n_features                      // integer
     excluded_genes              // path
+    normalization_methods       // list of string
+    transformed_layer           // string
     methods                     // list of string
     scvi_model                  // path
     scanvi_model                // path
@@ -34,16 +37,28 @@ workflow INTEGRATE {
     ch_obs = channel.empty()
     ch_var = channel.empty()
     ch_obsm = channel.empty()
+    ch_layers = channel.empty()
     ch_integrations = channel.empty()
 
     // If a reference model is provided, only the genes in the reference model are used
     // Otherwise, we would intersect the HVGs, which is not what we want
     if (!is_extension) {
+        if (normalization_methods) {
+            NORMALIZATION(
+                ch_h5ad,
+                normalization_methods,
+                transformed_layer ?: '',
+            )
+            ch_h5ad = NORMALIZATION.out.h5ad
+            ch_layers = ch_layers.mix(NORMALIZATION.out.layers)
+        }
+
         if (feature_selection == 'hvgs') {
             SCANPY_HVGS (
                 ch_h5ad,
                 n_features,
-                excluded_genes
+                excluded_genes,
+                transformed_layer ?: '',
             )
             ch_h5ad_hvg = SCANPY_HVGS.out.h5ad
             ch_var = ch_var.mix(SCANPY_HVGS.out.var)
@@ -213,7 +228,8 @@ workflow INTEGRATE {
             ch_h5ad_hvg.map { meta, h5ad ->
                 [meta + [integration: 'pca'], h5ad]
             },
-            "X_emb"
+            "X_emb",
+            transformed_layer ?: '',
         )
         ch_integrations = ch_integrations.mix(SCANPY_PCA.out.h5ad)
         ch_obsm = ch_obsm.mix(SCANPY_PCA.out.obsm)
@@ -251,4 +267,5 @@ workflow INTEGRATE {
     obs          = ch_obs // channel: [ pkl ]
     var          = ch_var // channel: [ pkl ]
     obsm         = ch_obsm // channel: [ pkl ]
+    layers       = ch_layers // channel: [ *.npy ]
 }

@@ -21,10 +21,20 @@ sc.settings.n_jobs = int("${task.cpus}")
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 key_added = "${key_added}"
+input_layer = "${input_layer}"
 
-sc.pp.normalize_total(adata)
-sc.pp.log1p(adata)
-sc.pp.pca(adata, random_state=0, key_added=key_added)
+kwargs = {
+    "random_state": 0,
+    "key_added": key_added,
+}
+
+if input_layer and input_layer in adata.layers:
+    kwargs["layer"] = input_layer
+else:
+    sc.pp.normalize_total(adata, target_sum=None)
+    sc.pp.log1p(adata)
+
+sc.pp.pca(adata, **kwargs)
 
 adata.write_h5ad(f"{prefix}.h5ad")
 df = pd.DataFrame(adata.obsm[key_added], index=adata.obs_names)

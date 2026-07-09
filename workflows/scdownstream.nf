@@ -57,6 +57,8 @@ workflow SCDOWNSTREAM {
     integration_n_features              //   value: integer
     integration_methods           //   value: string
     integration_excluded_genes    //   value: string
+    normalization_methods         //   value: string
+    transformed_layer             //   value: string
     scvi_model                    //   value: string
     scanvi_model                  //   value: string
     scvi_categorical_covariates   //   value: string
@@ -188,6 +190,8 @@ workflow SCDOWNSTREAM {
                 integration_n_features,
                 integration_methods,
                 integration_excluded_genes,
+                normalization_methods,
+                transformed_layer,
                 scvi_model,
                 scanvi_model,
                 scvi_categorical_covariates,
@@ -205,6 +209,7 @@ workflow SCDOWNSTREAM {
             ch_obs = ch_obs.mix(COMBINE.out.obs)
             ch_var = ch_var.mix(COMBINE.out.var)
             ch_obsm = ch_obsm.mix(COMBINE.out.obsm)
+            ch_layers = ch_layers.mix(COMBINE.out.layers)
             ch_integrations = ch_integrations.mix(COMBINE.out.integrations)
             ch_finalization_base = COMBINE.out.h5ad
 
@@ -247,6 +252,13 @@ workflow SCDOWNSTREAM {
                 feature_selection,
                 integration_n_features,
                 integration_excluded_genes ? file(integration_excluded_genes) : [],
+                normalization_methods
+                    ? normalization_methods
+                        .split(',')
+                        .collect { it -> it.trim().toLowerCase() }
+                        .findAll { method -> method }
+                    : [],
+                transformed_layer ?: '',
                 integration_methods
                     .split(',')
                     .collect { it -> it.trim().toLowerCase() },
@@ -264,6 +276,7 @@ workflow SCDOWNSTREAM {
             ch_obs = ch_obs.mix(SUB_INTEGRATE.out.obs)
             ch_var = ch_var.mix(SUB_INTEGRATE.out.var)
             ch_obsm = ch_obsm.mix(SUB_INTEGRATE.out.obsm)
+            ch_layers = ch_layers.mix(SUB_INTEGRATE.out.layers)
         }
     }
 

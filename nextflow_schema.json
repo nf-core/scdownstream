@@ -179,6 +179,19 @@
                     "description": "Optional file containing a list of gene symbols (one per line). If provided, these genes will be excluded from feature selection for integration.",
                     "exists": true
                 },
+                "normalization_methods": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Comma-separated list of normalisation representations to compute before feature selection and integration.",
+                    "help_text": "Supported methods: `log1p` (shifted-log layer `log1p_norm`), `scran` (scran-normalised layer `scran`), `pearson_residuals` (layer `pearson_residuals`). Raw counts remain in `X`. Count-model integrations and differential expression always use raw counts. Use with `transformed_layer` for PCA or HVG-based workflows.",
+                    "pattern": "^((log1p|scran|pearson_residuals)(,(log1p|scran|pearson_residuals))*)?$"
+                },
+                "transformed_layer": {
+                    "type": "string",
+                    "default": "",
+                    "description": "AnnData layer used by transformed-expression consumers such as PCA integration.",
+                    "help_text": "Examples: `log1p_norm`, `scran`, `pearson_residuals`. Leave empty to keep the current internal shifted-log behaviour in PCA and HVG modules. Does not affect scVI/scANVI or count-based DE."
+                },
                 "symphony_reference": {
                     "type": "string",
                     "format": "file-path",

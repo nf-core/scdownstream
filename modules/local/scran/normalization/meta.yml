@@ -1,0 +1,54 @@
+name: "scran_normalization"
+description: Compute scran size-factor normalisation and store log-normalised counts in an AnnData layer
+keywords:
+  - normalization
+  - single-cell
+  - scrnaseq
+  - scran
+tools:
+  - "scran":
+      description: "Methods for single-cell RNA-seq data analysis"
+      homepage: "https://bioconductor.org/packages/scran/"
+      documentation: "https://bioconductor.org/packages/release/bioc/html/scran.html"
+      tool_dev_url: "https://github.com/libscran/scran"
+      licence: ["GPL-3.0-or-later"]
+      identifier: biotools:scran
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format with raw counts in `X` or a `counts` layer
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with a `scran` layer
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"

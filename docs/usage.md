@@ -103,6 +103,8 @@ Doublet handling also follows the book: `--doublet_detection` defaults to `scdbl
 
 Before integration, merged raw counts are subset to informative genes. By default, [`feature_selection`](https://nf-co.re/scdownstream/parameters#feature_selection) is `deviance` (binomial deviance via scry, ~4,000 genes when [`integration_n_features`](https://nf-co.re/scdownstream/parameters#integration_n_features) is `0`). Use `--feature_selection hvgs` for scanpy highly variable genes, or `--feature_selection none` to skip gene filtering. The `python_only` profile sets `feature_selection` to `hvgs` automatically.
 
+Optional normalisation layers can be computed before feature selection with [`normalization_methods`](https://nf-co.re/scdownstream/parameters#normalization_methods) (`log1p`, `scran`, `pearson_residuals`). Raw counts remain in `X`; shifted-log output is stored in `log1p_norm`, scran output in `scran`, and analytic Pearson residuals in `pearson_residuals`. Use [`transformed_layer`](https://nf-co.re/scdownstream/parameters#transformed_layer) to point PCA integration (and HVG selection when applicable) at one of these layers. Count-model integrations (`scvi`, `scanvi`) and all differential expression engines continue to use raw counts.
+
 To disable individual filters for a sample, set the corresponding samplesheet column to `0` (for MAD metrics or `min_cells`) or a permissive value (e.g. `max_mito_percentage=100`):
 
 ```csv title="samplesheet.csv"

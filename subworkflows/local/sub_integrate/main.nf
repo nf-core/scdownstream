@@ -9,6 +9,8 @@ workflow SUB_INTEGRATE {
     feature_selection           //   value: string
     n_features                      //   value: integer
     excluded_genes              //    path: file or []
+    normalization_methods       //   value: list of string
+    transformed_layer           //   value: string
     methods                     //   value: list of string
     scvi_model                  //   value: string
     scanvi_model                //   value: string
@@ -92,6 +94,8 @@ workflow SUB_INTEGRATE {
         feature_selection,
         n_features,
         excluded_genes,
+        normalization_methods,
+        transformed_layer,
         methods,
         scvi_model,
         scanvi_model,
@@ -113,4 +117,5 @@ workflow SUB_INTEGRATE {
     obs          = INTEGRATE.out.obs          // channel: [ pkl ]
     var          = INTEGRATE.out.var          // channel: [ pkl ]
     obsm         = INTEGRATE.out.obsm         // channel: [ pkl ]
+    layers       = INTEGRATE.out.layers       // channel: [ *.npy ]
 }

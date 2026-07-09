@@ -1,0 +1,42 @@
+#!/usr/bin/env Rscript
+
+library(scran)
+library(scater)
+library(anndataR)
+library(SingleCellExperiment)
+library(Matrix)
+
+adata <- read_h5ad("${h5ad}")
+
+if (!("counts" %in% names(adata\$layers))) {
+    adata\$layers[["counts"]] <- adata\$X
+}
+
+sce <- adata\$as_SingleCellExperiment(x_mapping = "counts", assays_mapping = FALSE)
+
+clusters <- quickCluster(sce)
+sce <- computeSumFactors(sce, clusters = clusters)
+sce <- logNormCounts(sce)
+
+logcounts <- assay(sce, "logcounts")
+adata_out <- read_h5ad("${h5ad}")
+
+if (!("counts" %in% names(adata_out\$layers))) {
+    adata_out\$layers[["counts"]] <- adata_out\$X
+}
+
+adata_out\$layers[["scran"]] <- logcounts
+writeMM(logcounts, "scran.mtx")
+write_h5ad(adata_out, "${prefix}.h5ad")
+
+r.version <- strsplit(version[["version.string"]], " ")[[1]][3]
+scran.version <- as.character(packageVersion("scran"))
+
+writeLines(
+    c(
+        '"${task.process}":',
+        paste("    R:", r.version),
+        paste("    scran:", scran.version)
+    ),
+    "versions.yml"
+)

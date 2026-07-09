@@ -13,6 +13,8 @@ workflow COMBINE {
     integration_n_features            //   value: integer
     integration_methods         //   value: string
     integration_excluded_genes  //   value: string
+    normalization_methods       //   value: string
+    transformed_layer           //   value: string
     scvi_model                  //   value: string
     scanvi_model                //   value: string
     scvi_categorical_covariates //   value: string
@@ -33,6 +35,7 @@ workflow COMBINE {
     ch_obs           = channel.empty()
     ch_var           = channel.empty()
     ch_obsm          = channel.empty()
+    ch_layers        = channel.empty()
 
     ADATA_MERGE(
         ch_h5ad
@@ -51,6 +54,13 @@ workflow COMBINE {
         feature_selection,
         integration_n_features,
         integration_excluded_genes ? file(integration_excluded_genes) : [],
+        normalization_methods
+            ? normalization_methods
+                .split(',')
+                .collect { it -> it.trim().toLowerCase() }
+                .findAll { method -> method }
+            : [],
+        transformed_layer ?: '',
         integration_methods
             .split(',')
             .collect { it -> it.trim().toLowerCase() },
@@ -63,7 +73,8 @@ workflow COMBINE {
         expimap_gmt,
         condition_col
     )
-    ch_var           = ch_var.mix(INTEGRATE.out.var)
+    ch_var = ch_var.mix(INTEGRATE.out.var)
+    ch_layers = ch_layers.mix(INTEGRATE.out.layers)
 
     if (is_extension) {
         ADATA_MERGEEMBEDDINGS(
@@ -108,5 +119,6 @@ workflow COMBINE {
     var              = ch_var           // channel: [ pkl ]
     obs              = ch_obs           // channel: [ pkl ]
     obsm             = ch_obsm          // channel: [ pkl ]
+    layers           = ch_layers        // channel: [ *.npy ]
     multiqc_files    = ch_multiqc_files // channel: [ *_mqc.json ]
 }

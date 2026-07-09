@@ -36,6 +36,7 @@ nextflow_process {
                 input[0] = ADATA_UNIFY.out.h5ad
                 input[1] = 500
                 input[2] = []
+                input[3] = ''
                 """
             }
         }
@@ -66,6 +67,7 @@ nextflow_process {
                 """
                 input[0] = SCANPY_FILTER.out.h5ad
                 input[1] = 'X_emb'
+                input[2] = ''
                 """
             }
         }

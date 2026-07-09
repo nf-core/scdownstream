@@ -14,6 +14,8 @@ import anndata as ad
 import numpy as np
 import pandas as pd
 import yaml
+from scipy.io import mmread
+from scipy.sparse import issparse, load_npz
 
 adata = ad.read_h5ad("${base}")
 prefix = "${prefix}"
@@ -32,6 +34,16 @@ def load_pickle_or_csv(path):
         return pd.read_csv(path, index_col=0)
     else:
         raise ValueError(f"Unsupported file extension: {path}")
+
+
+def load_layer(path):
+    if path.suffix == ".npz":
+        return load_npz(path)
+    if path.suffix == ".mtx":
+        return mmread(path).tocsr().astype(np.float32)
+    if path.suffix == ".npy":
+        return np.float32(np.load(path))
+    raise ValueError(f"Unsupported layer file extension: {path}")
 
 
 for path in obs_paths:
@@ -53,7 +65,10 @@ for path in uns_paths:
     adata.uns[path.stem] = pickle.load(open(path, "rb"))
 
 for path in layers_paths:
-    adata.layers[path.stem] = np.float32(np.load(path))
+    layer = load_layer(path)
+    if not issparse(layer):
+        layer = np.asarray(layer, dtype=np.float32)
+    adata.layers[path.stem] = layer
 
 adata.write_h5ad(f"{prefix}.h5ad")
 adata.obs.to_csv(f"{prefix}_metadata.csv")

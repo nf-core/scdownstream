@@ -15,7 +15,7 @@
                     
                 ],
                 "2": [
-                    
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "3": [
                     "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -36,14 +36,14 @@
                     "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "var": [
-                    
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-06-21T21:46:12.559118492",
+        "timestamp": "2026-07-09T14:45:15.107226",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without failures - bbknn - stub": {
@@ -62,7 +62,7 @@
                     
                 ],
                 "2": [
-                    
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "3": [
                     
@@ -83,14 +83,14 @@
                     
                 ],
                 "var": [
-                    
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-06-21T21:49:00.253275922",
+        "timestamp": "2026-07-09T14:45:57.1011",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without failures - combat": {
@@ -102,10 +102,16 @@
                     "index": "_index",
                     "columns": [
                         "batch",
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
                         "n_counts",
                         "n_genes",
                         "n_genes_by_counts",
                         "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
                         "pct_counts_mt",
                         "pct_counts_ribo",
                         "total_counts",
@@ -121,6 +127,8 @@
                         "dispersions_norm",
                         "hb",
                         "highly_variable",
+                        "log1p_mean_counts",
+                        "log1p_total_counts",
                         "mean_counts",
                         "means",
                         "mt",
@@ -157,10 +165,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-21T21:54:10.633312287",
+        "timestamp": "2026-07-09T14:47:19.970204",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without failures - symphony": {
@@ -172,10 +180,16 @@
                     "index": "_index",
                     "columns": [
                         "batch",
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
                         "n_counts",
                         "n_genes",
                         "n_genes_by_counts",
                         "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
                         "pct_counts_mt",
                         "pct_counts_ribo",
                         "total_counts",
@@ -191,6 +205,8 @@
                         "dispersions_norm",
                         "hb",
                         "highly_variable",
+                        "log1p_mean_counts",
+                        "log1p_total_counts",
                         "mean_counts",
                         "means",
                         "mt",
@@ -225,10 +241,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-21T21:48:19.110877208",
+        "timestamp": "2026-07-09T14:45:48.145915",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without failures - pca - stub": {
@@ -247,7 +263,7 @@
                     
                 ],
                 "2": [
-                    
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "3": [
                     "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -268,14 +284,14 @@
                     "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "var": [
-                    
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-06-21T21:55:00.598749808",
+        "timestamp": "2026-07-09T14:47:35.475626",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without failures - extension mode - stub": {
@@ -409,7 +425,7 @@
                     
                 ],
                 "2": [
-                    
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "3": [
                     "combat.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -430,14 +446,14 @@
                     "combat.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "var": [
-                    
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-06-21T21:52:11.810632603",
+        "timestamp": "2026-07-09T14:46:41.573709",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without failures - bbknn": {
@@ -449,10 +465,16 @@
                     "index": "_index",
                     "columns": [
                         "batch",
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
                         "n_counts",
                         "n_genes",
                         "n_genes_by_counts",
                         "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
                         "pct_counts_mt",
                         "pct_counts_ribo",
                         "total_counts",
@@ -468,6 +490,8 @@
                         "dispersions_norm",
                         "hb",
                         "highly_variable",
+                        "log1p_mean_counts",
+                        "log1p_total_counts",
                         "mean_counts",
                         "means",
                         "mt",
@@ -504,10 +528,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-21T21:51:38.687983406",
+        "timestamp": "2026-07-09T14:46:32.278615",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without failures - expimap": {
@@ -551,6 +575,53 @@
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - deviance - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "test_deviance_features.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "test_deviance_features.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-09T14:08:18.310819",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without failures - expimap - stub": {

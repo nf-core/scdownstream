@@ -11,6 +11,7 @@ process SCANPY_HVGS {
     tuple val(meta), path(h5ad)
     val n_hvgs
     path excluded_genes
+    val input_layer
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad

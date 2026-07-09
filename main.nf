@@ -59,6 +59,8 @@ workflow NFCORE_SCDOWNSTREAM {
     integration_n_features        //   value: integer
     integration_methods           //   value: string
     integration_excluded_genes    //   value: string
+    normalization_methods         //   value: string
+    transformed_layer             //   value: string
     scvi_model                    //   value: string
     scanvi_model                  //   value: string
     scvi_categorical_covariates   //   value: string
@@ -127,6 +129,8 @@ workflow NFCORE_SCDOWNSTREAM {
         integration_n_features,
         integration_methods,
         integration_excluded_genes,
+        normalization_methods,
+        transformed_layer,
         scvi_model,
         scanvi_model,
         scvi_categorical_covariates,
@@ -238,6 +242,8 @@ workflow {
         params.integration_n_features,
         params.integration_methods,
         params.integration_excluded_genes,
+        params.normalization_methods,
+        params.transformed_layer,
         params.scvi_model,
         params.scanvi_model,
         params.scvi_categorical_covariates,

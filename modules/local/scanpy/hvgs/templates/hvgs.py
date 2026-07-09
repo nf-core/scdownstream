@@ -22,6 +22,7 @@ adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 n_hvgs = int("${n_hvgs}")
 batch_key = "${batch_key}"
+input_layer = "${input_layer}"
 
 # Remove excluded genes from the anndata prior to identifying highly variable genes
 if "${excluded_genes}":
@@ -41,10 +42,14 @@ if adata.n_vars > n_hvgs:
     if n_hvgs > 0:
         kwargs["n_top_genes"] = n_hvgs
 
-    raw_counts = adata.X.copy()
+    raw_counts = adata.layers["counts"].copy() if "counts" in adata.layers else adata.X.copy()
 
-    sc.pp.normalize_total(adata)
-    sc.pp.log1p(adata)
+    if input_layer and input_layer in adata.layers:
+        adata.X = adata.layers[input_layer]
+    else:
+        sc.pp.normalize_total(adata, target_sum=None)
+        sc.pp.log1p(adata)
+
     sc.pp.highly_variable_genes(adata, **kwargs)
 
     adata.var[["highly_variable"]].to_pickle(f"{prefix}.pkl")
