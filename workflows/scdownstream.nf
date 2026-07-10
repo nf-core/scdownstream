@@ -6,7 +6,7 @@
 
 include { LOAD_H5AD                            } from '../subworkflows/local/load_h5ad'
 include { QUALITY_CONTROL                      } from '../subworkflows/local/quality_control'
-include { CELLTYPE_ASSIGNMENT                  } from '../subworkflows/local/celltype_assignment'
+include { PER_CELL_ANNOTATION                  } from '../subworkflows/local/per_cell_annotation'
 include { ADATA_EXTEND as FINALIZE_QC_ANNDATAS } from '../modules/local/adata/extend'
 include { QUARTONOTEBOOK as QC_REPORT          } from '../modules/nf-core/quartonotebook'
 include { COMBINE                              } from '../subworkflows/local/combine'
@@ -104,6 +104,7 @@ workflow SCDOWNSTREAM {
     ch_uns = channel.empty()
     ch_layers = channel.empty()
     ch_multiqc_files = channel.empty()
+    ch_per_cell_annotation_columns = channel.empty()
 
     if (ch_input) {
         ch_obs_per_sample = channel.empty()
@@ -150,14 +151,19 @@ workflow SCDOWNSTREAM {
         ch_obs_per_sample = ch_obs_per_sample.mix(QUALITY_CONTROL.out.obs)
 
         //
-        // Perform automated celltype assignment
+        // Perform per-cell annotation with SingleR and CellTypist
         //
-        CELLTYPE_ASSIGNMENT (
+        PER_CELL_ANNOTATION (
             ch_h5ad.map { meta, h5ad -> [meta, h5ad, meta.symbol_col, meta.counts_layer ?: "X"] },
             celldex_reference,
             celltypist_model
         )
-        ch_obs_per_sample = ch_obs_per_sample.mix(CELLTYPE_ASSIGNMENT.out.obs)
+        ch_obs_per_sample = ch_obs_per_sample.mix(PER_CELL_ANNOTATION.out.obs)
+
+        ch_per_cell_annotation_columns = PER_CELL_ANNOTATION.out.annotation_column_rows
+            .filter { row -> row.aggregatable == 'true' }
+            .map { row -> row.obs_column }
+            .unique()
 
         FINALIZE_QC_ANNDATAS (
             ch_h5ad
@@ -333,6 +339,7 @@ workflow SCDOWNSTREAM {
             pseudobulk_min_num_cells,
             pseudobulk_min_total_counts,
             reference_condition ?: '',
+            ch_per_cell_annotation_columns,
         )
 
         ch_uns = ch_uns.mix(PER_GROUP.out.uns)

@@ -44,8 +44,8 @@ nextflow_process {
             assert process.success
             with(predictions) {
                 assert rowCount > 0
-                assert columnNames.any { it.endsWith("labels_test") }
-                assert columnNames.any { it.endsWith("pruned.labels_test") }
+                assert columnNames.any { it == "annotation:singler:test:per_cell" }
+                assert columnNames.any { it == "annotation:singler:test:per_cell:pruned" }
             }
             assert process.out.distribution.size() == 1
             assert process.out.heatmap.size() == 1
@@ -91,8 +91,8 @@ nextflow_process {
             assert process.success
             with(predictions) {
                 assert rowCount > 0
-                assert columnNames.any { it.endsWith("labels_hpca") }
-                assert columnNames.any { it.endsWith("pruned.labels_hpca") }
+                assert columnNames.any { it == "annotation:singler:hpca:per_cell" }
+                assert columnNames.any { it == "annotation:singler:hpca:per_cell:pruned" }
             }
             assert process.out.distribution.size() == 1
             assert process.out.heatmap.size() == 1
@@ -138,8 +138,8 @@ nextflow_process {
             assert process.success
             with(predictions) {
                 assert rowCount > 0
-                assert columnNames.any { it.endsWith("labels_hpca") }
-                assert columnNames.any { it.endsWith("pruned.labels_hpca") }
+                assert columnNames.any { it == "annotation:singler:hpca:per_cell" }
+                assert columnNames.any { it == "annotation:singler:hpca:per_cell:pruned" }
             }
             assert process.out.distribution.size() == 1
             assert process.out.heatmap.size() == 1
@@ -220,10 +220,10 @@ nextflow_process {
             with(predictions) {
                 assert rowCount > 0
                 // one set of label columns per reference
-                assert columnNames.any { it.endsWith("labels_hpca") }
-                assert columnNames.any { it.endsWith("pruned.labels_hpca") }
-                assert columnNames.any { it.endsWith("labels_monaco_immune") }
-                assert columnNames.any { it.endsWith("pruned.labels_monaco_immune") }
+                assert columnNames.any { it == "annotation:singler:hpca:per_cell" }
+                assert columnNames.any { it == "annotation:singler:hpca:per_cell:pruned" }
+                assert columnNames.any { it == "annotation:singler:monaco_immune:per_cell" }
+                assert columnNames.any { it == "annotation:singler:monaco_immune:per_cell:pruned" }
             }
             // one distribution and heatmap pdf per reference
             assert process.out.distribution[0][1].size() == 2

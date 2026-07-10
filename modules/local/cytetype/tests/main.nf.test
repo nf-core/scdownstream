@@ -42,6 +42,8 @@ nextflow_process {
                 input[2] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
                 input[3] = "leiden"
                 input[4] = "rank_genes_groups"
+                input[5] = "scvi"
+                input[6] = "0.5"
                 """
             }
         }
@@ -51,7 +53,7 @@ nextflow_process {
                 def adata = anndata(process.out.h5ad[0][1])
                 with(adata) {
                     assert "leiden" in obs.colnames
-                    assert obs.colnames.any { it.startsWith("cytetype_") }
+                    assert obs.colnames.any { it.startsWith("annotation:cytetype:") }
                 }
                 assert snapshot(
                     path(process.out.versions[0]).yaml,
@@ -77,6 +79,8 @@ nextflow_process {
                 input[2] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
                 input[3] = "leiden"
                 input[4] = "rank_genes_groups"
+                input[5] = "scvi"
+                input[6] = "0.5"
                 """
             }
         }
@@ -86,7 +90,7 @@ nextflow_process {
                 def adata = anndata(process.out.h5ad[0][1])
                 with(adata) {
                     assert "leiden" in obs.colnames
-                    assert obs.colnames.any { it.startsWith("cytetype_") }
+                    assert obs.colnames.any { it.startsWith("annotation:cytetype:") }
                 }
                 assert snapshot(
                     path(process.out.versions[0]).yaml,
@@ -112,6 +116,8 @@ nextflow_process {
                 input[2] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
                 input[3] = "leiden"
                 input[4] = "rank_genes_groups"
+                input[5] = "scvi"
+                input[6] = "0.5"
                 """
             }
         }
@@ -135,6 +141,8 @@ nextflow_process {
                 input[2] = ""
                 input[3] = "leiden"
                 input[4] = "rank_genes_groups"
+                input[5] = "scvi"
+                input[6] = "0.5"
                 """
             }
         }
@@ -160,6 +168,8 @@ nextflow_process {
                 input[2] = "Human PBMC test context (nf-test stub)"
                 input[3] = "leiden"
                 input[4] = "rank_genes_groups"
+                input[5] = "scvi"
+                input[6] = "0.5"
                 """
             }
         }

@@ -53,6 +53,7 @@ if symbol_col != "index" and symbol_col:
 adata_celltypist.var_names = adata_celltypist.var_names.astype(str)
 
 df_list = []
+manifest_rows = []
 
 for model in models:
     model_file = f"{model}.pkl" if not model.endswith(".pkl") else model
@@ -63,13 +64,22 @@ for model in models:
     predictions = celltypist.annotate(adata_celltypist, model=model_obj)
     predictions_adata = predictions.to_adata()
 
+    per_cell_col = f"annotation:celltypist:{model_name}:per_cell"
+    conf_col = f"annotation:celltypist:{model_name}:per_cell:confidence"
     df_celltypist = predictions_adata.obs.loc[adata.obs.index, ["predicted_labels", "conf_score"]]
-
-    df_celltypist.columns = [f"celltypist:{model_name}", f"celltypist:{model_name}:conf"]
+    df_celltypist.columns = [per_cell_col, conf_col]
     df_list.append(df_celltypist)
+    manifest_rows.extend(
+        [
+            {"obs_column": per_cell_col, "aggregatable": "true"},
+            {"obs_column": conf_col, "aggregatable": "false"},
+        ]
+    )
 
 df_celltypist = pd.concat(df_list, axis=1)
 df_celltypist.to_pickle("${prefix}.pkl")
+
+pd.DataFrame(manifest_rows).to_csv(f"{prefix}_annotation_columns.csv", index=False)
 
 adata.obs = pd.concat([adata.obs, df_celltypist], axis=1)
 adata.write_h5ad(f"{prefix}.h5ad")

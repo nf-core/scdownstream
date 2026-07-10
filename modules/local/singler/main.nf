@@ -12,10 +12,11 @@ process CELLTYPES_SINGLER {
     tuple val(meta2), val(names), val(labels), path(references)
 
     output:
-    tuple val(meta), path("*.csv")             , emit: obs
-    tuple val(meta), path("*_distribution.pdf"), emit: distribution
-    tuple val(meta), path("*_heatmap.pdf")     , emit: heatmap
-    path "versions.yml"                        , emit: versions, topic: versions
+    tuple val(meta), path("*_predictions.csv")       , emit: obs
+    tuple val(meta), path("*_annotation_columns.csv"), emit: annotation_columns
+    tuple val(meta), path("*_distribution.pdf")      , emit: distribution
+    tuple val(meta), path("*_heatmap.pdf")           , emit: heatmap
+    path "versions.yml"                              , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -30,7 +31,8 @@ process CELLTYPES_SINGLER {
     """
     touch ${prefix}_distribution.pdf
     touch ${prefix}_heatmap.pdf
-    touch ${prefix}.csv
+    touch ${prefix}_predictions.csv
+    echo "obs_column,aggregatable" > ${prefix}_annotation_columns.csv
     touch versions.yml
     """
 }

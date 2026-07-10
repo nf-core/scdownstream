@@ -1,8 +1,8 @@
 nextflow_workflow {
 
-    name "Test Workflow CELLTYPE_ASSIGNMENT"
-    script "subworkflows/local/celltype_assignment/main.nf"
-    workflow "CELLTYPE_ASSIGNMENT"
+    name "Test Workflow PER_CELL_ANNOTATION"
+    script "subworkflows/local/per_cell_annotation/main.nf"
+    workflow "PER_CELL_ANNOTATION"
 
     tag "subworkflows"
     tag "subworkflows_local"
@@ -31,9 +31,10 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.obs.size() >= 1
+            assert workflow.out.annotation_column_rows.size() >= 1
             assert snapshot(
-                workflow.out.versions,
-                workflow.out.obs.size()
+                workflow.out.obs.size(),
+                workflow.out.annotation_column_rows.collect { row -> [row.obs_column, row.aggregatable] }.unique()
             ).match()
         }
 

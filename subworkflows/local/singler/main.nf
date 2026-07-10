@@ -40,5 +40,6 @@ workflow SINGLER {
     ch_obs = ch_obs.mix(CELLTYPES_SINGLER.out.obs)
 
     emit:
-    obs      = ch_obs
+    obs                = ch_obs
+    annotation_columns = CELLTYPES_SINGLER.out.annotation_columns
 }

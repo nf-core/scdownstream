@@ -12,9 +12,10 @@ process CELLTYPES_CELLTYPIST {
     val models
 
     output:
-    tuple val(meta), path("*.h5ad"), emit: h5ad
-    tuple val(meta), path("*.pkl") , emit: obs
-    path "versions.yml"            , emit: versions, topic: versions
+    tuple val(meta), path("*.h5ad")                  , emit: h5ad
+    tuple val(meta), path("*.pkl")                   , emit: obs
+    tuple val(meta), path("*_annotation_columns.csv"), emit: annotation_columns
+    path "versions.yml"                              , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -28,6 +29,7 @@ process CELLTYPES_CELLTYPIST {
     """
     touch ${prefix}.h5ad
     touch ${prefix}.pkl
+    echo "obs_column,aggregatable" > ${prefix}_annotation_columns.csv
     touch versions.yml
     """
 }

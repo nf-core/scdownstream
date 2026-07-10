@@ -193,7 +193,7 @@ Example tar archives can be found [here](https://github.com/nf-core/test-dataset
 
 [CyteType](https://github.com/NygenAnalytics/cytetype) is a multi-agent LLM-driven annotator that takes per-cluster marker genes and a free-text study description and returns predicted cell type labels. The pipeline runs CyteType on merged data after integration, clustering, and global differential expression — once per grouping (each Leiden resolution and label column). Cluster labels and marker genes are taken automatically from each grouping's obs column and `uns['rank_genes_groups']`.
 
-To enable CyteType, set [`cytetype_study_context`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_study_context) to a short free-text description of your study (the more specific, the better). When this parameter is empty (the default), CyteType is skipped. CyteType always reads Wilcoxon `rank_genes_groups` results; when CyteType is enabled, `wilcoxon` is added to the resolved `de_methods` for each eligible clustering if not already present.
+To enable CyteType, set [`cytetype_study_context`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_study_context) to a short free-text description of your study (the more specific, the better). When this parameter is empty (the default), CyteType is skipped. In the analysis plan, CyteType is controlled by the `cytetype` token. CyteType always reads Wilcoxon `rank_genes_groups` results; when `cytetype` is active, `wilcoxon` is added to the resolved `de_methods` for each eligible clustering if not already present.
 
 ```bash
 nextflow run nf-core/scdownstream \
@@ -301,10 +301,13 @@ For each Leiden clustering result the pipeline runs a configurable set of downst
 | ----------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | **PAGA**          | Trajectory / connectivity graph between clusters                             | —                                                                                                    |
 | **LIANA**         | Ligand–receptor interaction analysis                                         | [`skip_liana`](https://nf-co.re/scdownstream/parameters#skip_liana)                                  |
-| **DE**            | Cell-level and sample-level differential expression via `de_methods`         | omit `de` from the analysis plan and/or set [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) to an empty string |
-| **CyteType**      | LLM-based cluster cell type annotation                                       | requires [`cytetype_study_context`](https://nf-co.re/scdownstream/parameters#cytetype_study_context) |
+| **DE**                       | Cell-level and sample-level differential expression via `de_methods`         | omit `de` from the analysis plan and/or set [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) to an empty string |
+| **Aggregate per-cell annotation** | Majority vote of per-cell SingleR/CellTypist labels per cluster (columns derived from annotator manifests) | omit `aggregate_per_cell_annotation` from the analysis plan and/or do not run per-cell annotators |
+| **CyteType**                      | LLM-based cluster cell type annotation                                       | omit `cytetype` from the analysis plan and/or leave [`cytetype_study_context`](https://nf-co.re/scdownstream/parameters#cytetype_study_context) empty |
 
-By default (no `--analysis_plan`), `paga`, `liana`, `de`, and `cytetype` run for every clustering result, subject to `skip_liana`, `de_methods`, and `cytetype_study_context` above. Sample-level pseudobulk DE runs automatically when `pydeseq2` or `edgepython` are included in the resolved `de_methods` for a clustering.
+By default (no `--analysis_plan`), `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, and `cytetype` run for every clustering result, subject to `skip_liana`, `de_methods`, and `cytetype_study_context` above. Sample-level pseudobulk DE runs automatically when `pydeseq2` or `edgepython` are included in the resolved `de_methods` for a clustering.
+
+Per-cell SingleR and CellTypist annotation runs earlier in the pipeline (before sample merge) when [`celldex_reference`](https://nf-co.re/scdownstream/parameters#celldex_reference) and/or [`celltypist_model`](https://nf-co.re/scdownstream/parameters#celltypist_model) are set. `aggregate_per_cell_annotation` summarises those per-cell predictions per cluster using columns declared in each annotator's manifest. `cytetype` is an independent cluster-level annotator.
 
 ### Differential expression methods
 
@@ -337,7 +340,7 @@ Each row in the CSV selects a subset of clusterings. **All columns are optional*
 | `integration` | match all integration methods                                                            |
 | `subset`      | match all subsets (`global` and per-label)                                               |
 | `resolution`  | match all resolutions (still bounded by `--clustering_resolutions`)                    |
-| `analyses`    | run `paga`, `liana`, `de`, and `cytetype`                          |
+| `analyses`    | run `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, and `cytetype`         |
 | `de_methods`  | use the global [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) default |
 
 When multiple rows match a clustering result, their `analyses` lists are **combined** (duplicates removed). If any matching row leaves `analyses` empty, all analyses run for that clustering. Clusterings that match **no** row are excluded from Leiden and all downstream analyses — but their UMAP and neighbour graph are still computed.

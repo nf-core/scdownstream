@@ -1,29 +1,29 @@
-include { SCANPY_PAGA             } from '../../../modules/local/scanpy/paga'
-include { LIANA_RANKAGGREGATE     } from '../../../modules/local/liana/rankaggregate'
-include { DIFFERENTIAL_EXPRESSION } from '../differential_expression'
-include { CYTETYPE                 } from '../../../modules/local/cytetype'
+include { SCANPY_PAGA                       } from '../../../modules/local/scanpy/paga'
+include { LIANA_RANKAGGREGATE               } from '../../../modules/local/liana/rankaggregate'
+include { DIFFERENTIAL_EXPRESSION           } from '../differential_expression'
+include { CLUSTER_ANNOTATION                } from '../cluster_annotation'
 include { resolveDeMethodsWithPrerequisites } from '../utils_nfcore_scdownstream_pipeline'
-include { cellLevelDeMethods                    } from '../utils_nfcore_scdownstream_pipeline'
-include { pseudobulkingEnabled                  } from '../utils_nfcore_scdownstream_pipeline'
-include { rankGenesGroupsAnalysisEnabled        } from '../utils_nfcore_scdownstream_pipeline'
+include { cellLevelDeMethods                } from '../utils_nfcore_scdownstream_pipeline'
+include { pseudobulkingEnabled              } from '../utils_nfcore_scdownstream_pipeline'
+include { rankGenesGroupsAnalysisEnabled    } from '../utils_nfcore_scdownstream_pipeline'
 
 workflow PER_GROUP {
     take:
-    ch_h5ad_with_neighbors        // channel: [ meta, h5ad ]
-    ch_h5ad_no_neighbors          // channel: [ meta, h5ad ]
-    skip_liana                    //   value: boolean
-    cytetype_study_context        //   value: string
-    de_methods_default            //   value: string
-    pseudobulk                    //   value: boolean
-    pseudobulk_min_num_cells      //   value: integer
-    pseudobulk_min_total_counts   //   value: integer
-    reference_condition           //   value: string
+    ch_h5ad_with_neighbors         // channel: [ meta, h5ad ]
+    ch_h5ad_no_neighbors           // channel: [ meta, h5ad ]
+    skip_liana                     //   value: boolean
+    cytetype_study_context         //   value: string
+    de_methods_default             //   value: string
+    pseudobulk                     //   value: boolean
+    pseudobulk_min_num_cells       //   value: integer
+    pseudobulk_min_total_counts    //   value: integer
+    ch_per_cell_annotation_columns // channel: string
+    reference_condition            //   value: string
 
     main:
     ch_uns           = channel.empty()
     ch_multiqc_files = channel.empty()
     ch_h5ad          = channel.empty()
-    ch_obs           = channel.empty()
 
     SCANPY_PAGA(
         ch_h5ad_with_neighbors
@@ -66,31 +66,17 @@ workflow PER_GROUP {
     ch_multiqc_files = ch_multiqc_files.mix(DIFFERENTIAL_EXPRESSION.out.multiqc_files)
     ch_h5ad          = ch_h5ad.mix(DIFFERENTIAL_EXPRESSION.out.h5ad)
 
-    if (cytetype_study_context) {
-        ch_cytetype = ch_h5ad
-            .filter { meta, _h5ad -> meta.analyses == null || 'cytetype' in meta.analyses }
-            .filter { meta, _h5ad ->
-                meta.comparison_scope == 'global' && meta.de_method == 'wilcoxon'
-            }
-            .multiMap { meta, h5ad ->
-                h5ad: [meta, h5ad]
-                group_key: meta.obs_key
-                rank_key: meta.rank_key
-            }
-
-        CYTETYPE(
-            ch_cytetype.h5ad,
-            "index",
-            cytetype_study_context,
-            ch_cytetype.group_key,
-            ch_cytetype.rank_key,
-        )
-        ch_obs = ch_obs.mix(CYTETYPE.out.obs)
-    }
+    CLUSTER_ANNOTATION(
+        ch_h5ad_no_neighbors,
+        ch_h5ad,
+        ch_per_cell_annotation_columns,
+        cytetype_study_context,
+    )
+    ch_obs = CLUSTER_ANNOTATION.out.obs
 
     emit:
     uns           = ch_uns
-    multiqc_files = ch_multiqc_files
+    multiqc_files = ch_multiqc_files.flatten()
     h5ad          = ch_h5ad
     obs           = ch_obs
 }

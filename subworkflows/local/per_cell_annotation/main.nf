@@ -2,7 +2,7 @@ include { samplesheetToList    } from 'plugin/nf-schema'
 include { SINGLER              } from '../singler'
 include { CELLTYPES_CELLTYPIST } from '../../../modules/local/celltypist'
 
-workflow CELLTYPE_ASSIGNMENT {
+workflow PER_CELL_ANNOTATION {
     take:
     ch_h5ad                   // channel: [ meta, h5ad, symbol_col, counts_layer ]
     celldex_reference         //   value: string
@@ -10,6 +10,7 @@ workflow CELLTYPE_ASSIGNMENT {
 
     main:
     ch_obs = channel.empty()
+    ch_annotation_column_rows = channel.empty()
 
     if (celldex_reference ) {
         SINGLER (
@@ -20,6 +21,7 @@ workflow CELLTYPE_ASSIGNMENT {
             )
         )
         ch_obs = ch_obs.mix(SINGLER.out.obs)
+        ch_annotation_column_rows = ch_annotation_column_rows.mix(SINGLER.out.annotation_columns)
     }
 
     if (celltypist_model) {
@@ -33,8 +35,13 @@ workflow CELLTYPE_ASSIGNMENT {
             celltypist_models
         )
         ch_obs = ch_obs.mix(CELLTYPES_CELLTYPIST.out.obs)
+        ch_annotation_column_rows = ch_annotation_column_rows.mix(CELLTYPES_CELLTYPIST.out.annotation_columns)
     }
 
+    ch_annotation_column_rows = ch_annotation_column_rows
+        .splitCsv(header: true, elem: 1)
+
     emit:
-    obs      = ch_obs      // channel: [ meta, pkl ]
+    obs                    = ch_obs                    // channel: [ meta, pkl ]
+    annotation_column_rows = ch_annotation_column_rows // channel: [ obs_column, aggregatable ]
 }

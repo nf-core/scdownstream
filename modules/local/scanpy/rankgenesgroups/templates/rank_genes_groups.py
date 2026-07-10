@@ -33,10 +33,13 @@ filter_val = "${filter_val ?: ''}"
 meta_id = "${meta.id}"
 obs_key = "${obs_key}"
 
+adata.obs[obs_key] = adata.obs[obs_key].astype(str)
+
 if filter_col and filter_val:
     adata = adata[adata.obs[filter_col] == filter_val].copy()
 
 kwargs = {"groupby": obs_key, "method": method, "pts": True, "key_added": rank_key}
+filtered_rank_key = f"{rank_key}_filtered"
 
 # Check value counts for each group
 value_counts = adata.obs[obs_key].value_counts()
@@ -57,14 +60,20 @@ if len(valid_groups) >= 2:
     sc.tl.filter_rank_genes_groups(
         adata,
         key=rank_key,
+        key_added=filtered_rank_key,
         min_in_group_fraction=0.2,
         max_out_group_fraction=0.2,
     )
 
-    rgg_dict = adata.uns[rank_key]
-
-    marker_df = sc.get.rank_genes_groups_df(adata, key=rank_key)
+    marker_df = sc.get.rank_genes_groups_df(adata, group=None, key=filtered_rank_key)
+    marker_df = marker_df[marker_df["names"].notna()].copy()
     marker_df.to_csv(f"{prefix}_markers.csv", index=False)
+
+    # Store filtered markers under rank_key for downstream consumers such as CyteType.
+    rgg_dict = dict(adata.uns.pop(filtered_rank_key))
+    # Scanpy marks filtered-out genes as missing names; replace them so H5AD serialisation works.
+    rgg_dict["names"] = pd.DataFrame(rgg_dict["names"]).fillna("").to_records(index=False)
+    adata.uns[rank_key] = rgg_dict
 
     pickle.dump(rgg_dict, open(f"{prefix}.pkl", "wb"))
     adata.write_h5ad(f"{prefix}.h5ad")

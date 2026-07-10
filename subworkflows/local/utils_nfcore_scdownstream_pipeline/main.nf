@@ -215,8 +215,12 @@ def resolveDeMethods(meta, default_methods) {
     return default_methods.split(',').collect { token -> token.trim() }.findAll { token -> token } as Set
 }
 
+def analysisEnabled(meta, token) {
+    meta.analyses == null || token in meta.analyses
+}
+
 def cytetypeEligible(meta, cytetype_study_context) {
-    cytetype_study_context && (meta.analyses == null || 'cytetype' in meta.analyses)
+    cytetype_study_context && analysisEnabled(meta, 'cytetype')
 }
 
 def resolveDeMethodsWithPrerequisites(meta, default_methods, cytetype_study_context = '') {
@@ -283,7 +287,7 @@ def pseudobulkDeMethodsRequested() {
     return analysisPlanToList().any { row ->
         def analyses = row.analyses
             ? row.analyses.split(',').collect { token -> token.trim() }
-            : ['paga', 'liana', 'de', 'cytetype']
+            : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype']
         ('de' in analyses || !row.analyses) &&
             resolvedDeMethodsForPlanRow(row).intersect(pseudobulkDeMethods() as List)
     }

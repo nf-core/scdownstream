@@ -298,8 +298,8 @@
                 },
                 "analysis_plan": {
                     "type": "string",
-                    "description": "Path to a CSV file controlling which integration × resolution combinations feed into downstream analyses (PAGA, LIANA, DE, CyteType).",
-                    "help_text": "All columns are optional — empty values act as wildcards. When provided, rows are matched against each clustering result; analyses from all matching rows are combined. When --analysis_plan is not set, all combinations run paga, liana, de, and cytetype (subject to skip_liana, --de_methods, and cytetype_study_context). See the usage docs for the full schema.",
+                    "description": "Path to a CSV file controlling which integration × resolution combinations feed into downstream analyses (PAGA, LIANA, DE, cluster-level annotation).",
+                    "help_text": "All columns are optional — empty values act as wildcards. When provided, rows are matched against each clustering result; analyses from all matching rows are combined. When --analysis_plan is not set, all combinations run paga, liana, de, aggregate_per_cell_annotation, and cytetype (subject to skip_liana, --de_methods, and cytetype_study_context). Cluster-level annotation tokens: aggregate_per_cell_annotation (majority vote of per-cell SingleR/CellTypist labels) and cytetype (CyteType LLM). See the usage docs for the full schema.",
                     "mimetype": "text/csv",
                     "schema": "assets/schema_analysis_plan.json",
                     "pattern": "^\\S+\\.csv$"
