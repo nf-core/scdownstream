@@ -9,6 +9,7 @@ include { SYMPHONY_MAPEMBEDDING     } from '../../../modules/local/symphony/mape
 include { SCANPY_BBKNN       } from '../../../modules/local/scanpy/bbknn'
 include { SCANPY_COMBAT      } from '../../../modules/local/scanpy/combat'
 include { SCANPY_PCA         } from '../../../modules/local/scanpy/pca'
+include { SCANORAMA_INTEGRATE } from '../../../modules/local/scanorama/integrate'
 include { SCARCHES_EXPIMAP   } from '../../../modules/local/scarches/expimap'
 include { SEURAT_INTEGRATION } from '../../../modules/local/seurat/integration'
 include { ADATA_READRDS      } from '../../../modules/local/adata/readrds'
@@ -210,6 +211,18 @@ workflow INTEGRATE {
             "batch"
         )
         ch_integrations = ch_integrations.mix(SCANPY_BBKNN.out.h5ad)
+    }
+
+    if (methods.contains('scanorama')) {
+        SCANORAMA_INTEGRATE (
+            ch_h5ad_hvg.map { meta, h5ad ->
+                [meta + [integration: 'scanorama'], h5ad]
+            },
+            "batch",
+            "X"
+        )
+        ch_integrations = ch_integrations.mix(SCANORAMA_INTEGRATE.out.h5ad)
+        ch_obsm = ch_obsm.mix(SCANORAMA_INTEGRATE.out.obsm)
     }
 
     if (methods.contains('combat')) {

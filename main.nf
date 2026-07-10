@@ -83,6 +83,8 @@ workflow NFCORE_SCDOWNSTREAM {
     cluster_per_label             //   value: boolean
     cluster_global                //   value: boolean
     clustering_resolutions        //   value: string
+    neighbors_n_pcs               //   value: integer or null
+    tsne                          //   value: boolean
     analysis_plan                 //   value: list of plan rows parsed in main.nf
     de_methods                    //   value: string
     pseudobulk                    //   value: boolean
@@ -153,6 +155,8 @@ workflow NFCORE_SCDOWNSTREAM {
         cluster_per_label,
         cluster_global,
         clustering_resolutions,
+        neighbors_n_pcs,
+        tsne,
         analysis_plan,
         de_methods,
         pseudobulk,
@@ -266,6 +270,8 @@ workflow {
         params.cluster_per_label,
         params.cluster_global,
         params.clustering_resolutions,
+        params.neighbors_n_pcs ?: '',
+        params.tsne,
         analysis_plan,
         params.de_methods,
         params.pseudobulk,

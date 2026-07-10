@@ -157,8 +157,8 @@
                     "type": "string",
                     "default": "scvi",
                     "description": "Specify the tool to use for integration",
-                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, symphony, bbknn, combat, seurat, scimilarity, pca, expimap",
-                    "pattern": "^((scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap)(,(scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap))*)?$"
+                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, symphony, bbknn, combat, seurat, scimilarity, pca, expimap, scanorama",
+                    "pattern": "^((scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap|scanorama)(,(scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap|scanorama))*)?$"
                 },
                 "feature_selection": {
                     "type": "string",
@@ -286,6 +286,17 @@
                     "description": "Specify the resolutions for clustering",
                     "help_text": "Specify the resolutions for clustering. If you want to use multiple resolutions, separate them with a comma.",
                     "pattern": "^\\d+(\\.\\d+)?(,\\d+(\\.\\d+)?)*$"
+                },
+                "neighbors_n_pcs": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Number of principal components used to build the neighbour graph before UMAP and Leiden clustering.",
+                    "help_text": "When omitted, scanpy uses its default (`n_pcs`). Set to `30` to follow the sc-best-practices clustering tutorial when using PCA or Symphony embeddings."
+                },
+                "tsne": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Compute a t-SNE embedding alongside UMAP for each integration method."
                 },
                 "cluster_per_label": {
                     "type": "boolean",

@@ -1,8 +1,8 @@
 nextflow_process {
 
-    name "Test Process SCANPY_NEIGHBORS"
-    script "modules/local/scanpy/neighbors/main.nf"
-    process "SCANPY_NEIGHBORS"
+    name "Test Process SCANORAMA_INTEGRATE"
+    script "modules/local/scanorama/integrate/main.nf"
+    process "SCANORAMA_INTEGRATE"
 
     tag "modules"
     tag "modules_local"
@@ -17,27 +17,20 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'test' ],
-                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
                     ]
                 )
-                input[1] = "X_pca"
-                input[2] = ''
+                input[1] = 'batch'
+                input[2] = 'X'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
             assert process.success
-            with(adata) {
-                assert "connectivities" in obsp
-                assert "distances" in obsp
-                assert "neighbors" in uns
-            }
-            assert snapshot(
-                path(process.out.versions[0]).yaml,
-                adata.yaml
-            ).match()
+            assert process.out.h5ad.size() == 1
+            assert process.out.obsm.size() == 1
+            assert snapshot(path(process.out.versions[0]).yaml).match()
         }
 
     }
@@ -54,11 +47,11 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'test' ],
-                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
                     ]
                 )
-                input[1] = "X_pca"
-                input[2] = ''
+                input[1] = 'batch'
+                input[2] = 'X'
                 """
             }
         }

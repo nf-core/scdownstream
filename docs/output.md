@@ -156,6 +156,9 @@ CyteType runs after integration, clustering, and global differential expression.
     - `umap/`
       - `*.h5ad`: The H5AD file with the UMAP coordinates.
       - `*.pkl`: The UMAP coordinates in a pickle file.
+    - `tsne/` (when `--tsne` is enabled)
+      - `*.h5ad`: The H5AD file with the t-SNE coordinates.
+      - `*.pkl`: The t-SNE coordinates in a pickle file.
 
 </details>
 

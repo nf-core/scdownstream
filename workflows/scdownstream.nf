@@ -81,6 +81,8 @@ workflow SCDOWNSTREAM {
     cluster_per_label             //   value: boolean
     cluster_global                //   value: boolean
     clustering_resolutions        //   value: string
+    neighbors_n_pcs               //   value: integer or null
+    tsne                          //   value: boolean
     analysis_plan                 //   value: list of plan rows parsed in main.nf
     de_methods                    //   value: string
     pseudobulk                    //   value: boolean
@@ -299,6 +301,8 @@ workflow SCDOWNSTREAM {
             clustering_resolutions.split(',').collect { res -> res.trim() },
             "batch",
             "X_emb",
+            neighbors_n_pcs,
+            tsne,
         )
         ch_obs = ch_obs.mix(CLUSTER.out.obs)
         ch_obsm = ch_obsm.mix(CLUSTER.out.obsm)
