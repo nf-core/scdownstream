@@ -53,24 +53,27 @@ if original_index is not None:
 adata.obs[["S_score", "G2M_score", "phase"]].to_pickle(f"{prefix}.pkl")
 adata.write_h5ad(f"{prefix}.h5ad")
 
-fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
-sc.pl.violin(adata, ["S_score", "G2M_score"], groupby="phase", ax=ax, show=False)
-plot_path = f"{prefix}_cell_cycle_scores.png"
-plt.savefig(plot_path)
+if adata.obs["phase"].nunique() > 1:
+    fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+    sc.pl.violin(adata, ["S_score", "G2M_score"], groupby="phase", ax=ax, show=False)
+    plot_path = f"{prefix}_cell_cycle_scores.png"
+    plt.savefig(plot_path)
 
-with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
-    image_string = base64.b64encode(f_plot.read()).decode("utf-8")
-    image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
-    custom_json = {
-        "id": "${prefix}",
-        "parent_id": "cell_cycle",
-        "parent_name": "Cell cycle scoring",
-        "parent_description": "Cell cycle scores assigned before integration.",
-        "section_name": "${meta.id}",
-        "plot_type": "image",
-        "data": image_html,
-    }
-    json.dump(custom_json, f_json)
+    with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
+        image_string = base64.b64encode(f_plot.read()).decode("utf-8")
+        image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
+        custom_json = {
+            "id": "${prefix}",
+            "parent_id": "cell_cycle",
+            "parent_name": "Cell cycle scoring",
+            "parent_description": "Cell cycle scores assigned before integration.",
+            "section_name": "${meta.id}",
+            "plot_type": "image",
+            "data": image_html,
+        }
+        json.dump(custom_json, f_json)
+else:
+    print(f"Warning: only one cell cycle phase detected; skipping violin plot for {prefix}.")
 
 # Versions
 

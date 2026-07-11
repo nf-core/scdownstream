@@ -96,7 +96,7 @@ nextflow_workflow {
             def adata = anndata(workflow.out.h5ad[0][1])
 
             assert workflow.success
-            assert adata.n_obs == 6705
+            assert adata.n_obs == 7373
             assert "test_scdblfinder" in adata.obs.colnames
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml },

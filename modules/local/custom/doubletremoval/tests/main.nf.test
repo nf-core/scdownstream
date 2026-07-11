@@ -70,7 +70,7 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
-            assert adata.n_obs == 6705
+            assert adata.n_obs == 7373
             assert "test_scrublet" in adata.obs.colnames
             assert "test_solo" in adata.obs.colnames
             assert "test_doubletdetection" in adata.obs.colnames

@@ -61,7 +61,21 @@ features_df <- data.frame(
 write.csv(features_df, "${prefix}_features.csv")
 
 sce <- sce[top_genes, ]
-write_h5ad(sce, "${prefix}.h5ad")
+adata_out <- read_h5ad("${h5ad}")
+if (!("counts" %in% names(adata_out\$layers))) {
+    adata_out\$layers[["counts"]] <- adata_out\$X
+}
+gene_idx <- match(top_genes, rownames(adata_out))
+if (any(is.na(gene_idx))) {
+    missing <- top_genes[is.na(gene_idx)]
+    stop("Selected deviant genes missing from input AnnData: ", paste(missing, collapse = ", "))
+}
+adata_out <- adata_out[gene_idx, ]
+rowData(sce)\$binomial_deviance <- deviance[top_genes]
+rowData(sce)\$highly_deviant <- highly_deviant[top_genes]
+adata_out\$var[["binomial_deviance"]] <- rowData(sce)\$binomial_deviance
+adata_out\$var[["highly_deviant"]] <- rowData(sce)\$highly_deviant
+write_h5ad(adata_out, "${prefix}.h5ad")
 
 r.version <- strsplit(version[['version.string']], ' ')[[1]][3]
 scry.version <- as.character(packageVersion('scry'))
