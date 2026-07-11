@@ -1,8 +1,5 @@
-include { SCANPY_HVGS                   } from '../../../modules/local/scanpy/hvgs'
-include { SCANPY_PEARSONRESIDUALS_HVGS  } from '../../../modules/local/scanpy/pearsonresidualshvgs'
-include { SCRY_DEVIANCE                   } from '../../../modules/local/scry/deviance'
-include { SCANPY_FILTER      } from '../../../modules/local/scanpy/filter'
 include { NORMALIZATION      } from '../normalization'
+include { FEATURE_SELECTION  } from '../feature_selection'
 include { SCVITOOLS_SCVI     } from '../../../modules/local/scvitools/scvi'
 include { SCVITOOLS_SCANVI   } from '../../../modules/local/scvitools/scanvi'
 include { SYMPHONY_HARMONYINTEGRATE } from '../../../modules/local/symphony/harmonyintegrate'
@@ -51,63 +48,15 @@ workflow INTEGRATE {
         ch_h5ad = NORMALIZATION.out.h5ad
         ch_layers = ch_layers.mix(NORMALIZATION.out.layers)
 
-        if (feature_selection == 'hvgs') {
-            SCANPY_HVGS (
-                ch_h5ad,
-                n_features,
-                excluded_genes,
-                normalization_method,
-                false,
-            )
-            ch_h5ad_hvg = SCANPY_HVGS.out.h5ad
-            ch_var = ch_var.mix(SCANPY_HVGS.out.var)
-        }
-        else if (feature_selection == 'deviance') {
-            SCRY_DEVIANCE (
-                ch_h5ad,
-                n_features,
-                excluded_genes,
-                ch_h5ad.map { _meta, _h5ad -> _meta.batch_col ?: '' }
-            )
-            ch_h5ad_hvg = SCRY_DEVIANCE.out.h5ad
-            ch_var = ch_var.mix(SCRY_DEVIANCE.out.var)
-        }
-        else if (feature_selection == 'pearson_residuals_hvgs') {
-            SCANPY_PEARSONRESIDUALS_HVGS (
-                ch_h5ad,
-                n_features,
-                excluded_genes,
-                ch_h5ad.map { meta, _h5ad -> meta.batch_col ?: '' },
-                ch_h5ad.map { meta, _h5ad -> meta.counts_layer ?: 'X' }
-            )
-            ch_h5ad_hvg = SCANPY_PEARSONRESIDUALS_HVGS.out.h5ad
-            ch_var = ch_var.mix(SCANPY_PEARSONRESIDUALS_HVGS.out.var)
-        }
-        else if (feature_selection == 'none') {
-            ch_h5ad_hvg = ch_h5ad
-        }
-        else {
-            error("Unknown feature_selection: ${feature_selection}")
-        }
-
-        // Filter out empty cells from the AnnData object
-        SCANPY_FILTER (
-            ch_h5ad_hvg,
-            "index",
-            1,
-            0,
-            0,
-            0,
-            100,
-            0,
-            100,
-            0,
-            0,
-            0,
-            0,
-            []
+        FEATURE_SELECTION(
+            ch_h5ad,
+            feature_selection,
+            n_features,
+            excluded_genes,
+            normalization_method,
         )
-        ch_h5ad_hvg = SCANPY_FILTER.out.h5ad
+        ch_h5ad_hvg = FEATURE_SELECTION.out.h5ad
+        ch_var = ch_var.mix(FEATURE_SELECTION.out.var)
     }
     else {
         ch_h5ad_hvg = ch_h5ad
