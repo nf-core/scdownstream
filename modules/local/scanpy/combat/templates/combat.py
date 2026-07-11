@@ -29,8 +29,7 @@ adata_proc = adata.copy()
 
 if input_layer != "X" and input_layer not in adata_proc.layers:
     raise ValueError(
-        f"input_layer {input_layer!r} is not present in adata.layers "
-        f"(available: {list(adata_proc.layers.keys())})"
+        f"input_layer {input_layer!r} is not present in adata.layers (available: {list(adata_proc.layers.keys())})"
     )
 
 if input_layer != "X":

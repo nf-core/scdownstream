@@ -41,9 +41,7 @@ if counts_layer == "X":
     pearson_layer = None
 else:
     if counts_layer not in adata.layers:
-        raise ValueError(
-            f"counts_layer '{counts_layer}' was requested but is not present in adata.layers"
-        )
+        raise ValueError(f"counts_layer '{counts_layer}' was requested but is not present in adata.layers")
     raw_counts = adata.layers[counts_layer].copy()
     pearson_layer = counts_layer
 

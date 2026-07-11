@@ -105,18 +105,18 @@ Before integration, merged raw counts are subset to informative genes. By defaul
 
 One normalisation method is always computed before feature selection via [`normalization_method`](https://nf-co.re/scdownstream/parameters#normalization_method) (`log1p` or `scran`). Raw counts remain in `X`; normalised expression is stored in a matching AnnData layer (`log1p` or `scran`). Layer-aware integrations read that layer directly. The `python_only` profile overrides the default `scran` with `log1p`, avoiding the R-based scran dependency.
 
-| Integration method | Uses `normalization_method` layer |
-| --- | --- |
-| `pca` | Yes |
+| Integration method              | Uses `normalization_method` layer       |
+| ------------------------------- | --------------------------------------- |
+| `pca`                           | Yes                                     |
 | `symphony` (reference building) | No (internal normalisation from counts) |
-| `scanorama` | Yes |
-| `bbknn` | Yes |
-| `combat` | Yes |
-| `scvi`, `scanvi` | No (raw counts) |
-| `seurat` | No (counts via SCTransform) |
-| `expimap` | No (raw counts) |
-| `scimilarity` | No (internal log-normalisation) |
-| `symphony` (reference mapping) | No (reference normalisation target) |
+| `scanorama`                     | Yes                                     |
+| `bbknn`                         | Yes                                     |
+| `combat`                        | Yes                                     |
+| `scvi`, `scanvi`                | No (raw counts)                         |
+| `seurat`                        | No (counts via SCTransform)             |
+| `expimap`                       | No (raw counts)                         |
+| `scimilarity`                   | No (internal log-normalisation)         |
+| `symphony` (reference mapping)  | No (reference normalisation target)     |
 
 Count-model integrations (`scvi`, `scanvi`) and all differential expression engines continue to use raw counts.
 

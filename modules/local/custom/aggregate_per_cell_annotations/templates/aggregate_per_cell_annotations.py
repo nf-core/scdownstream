@@ -21,9 +21,7 @@ resolution = "${resolution}"
 
 def aggregated_annotation_column(per_cell_col: str, integration: str, resolution: str) -> str:
     if per_cell_col.endswith(":per_cell:pruned"):
-        return per_cell_col.replace(
-            ":per_cell:pruned", f":aggregated:{integration}:{resolution}:pruned"
-        )
+        return per_cell_col.replace(":per_cell:pruned", f":aggregated:{integration}:{resolution}:pruned")
     if per_cell_col.endswith(":per_cell"):
         return per_cell_col.replace(":per_cell", f":aggregated:{integration}:{resolution}")
     raise ValueError(f"Unexpected per-cell annotation column: {per_cell_col!r}")
@@ -58,9 +56,8 @@ for cluster, group in adata.obs.groupby(cluster_col, observed=True):
         }
     )
 
-cluster_majority = (
-    adata.obs.groupby(cluster_col, observed=True)[annotation_col]
-    .apply(lambda series: series.astype(str).value_counts().idxmax() if not series.empty else "")
+cluster_majority = adata.obs.groupby(cluster_col, observed=True)[annotation_col].apply(
+    lambda series: series.astype(str).value_counts().idxmax() if not series.empty else ""
 )
 obs_cols = {
     output_col: adata.obs[cluster_col].map(cluster_majority),

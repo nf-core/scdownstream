@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-import os
-import platform
 import base64
 import json
+import os
+import platform
 
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
@@ -65,9 +65,7 @@ else:
     raise ValueError("decoupler pseudobulk QC column psbulk_counts not found in obs")
 
 obs["sample_id"] = obs.apply(
-    lambda row: "__".join(
-        str(row[col]).replace(" ", "_") for col in ("donor", "celltype", "condition")
-    ),
+    lambda row: "__".join(str(row[col]).replace(" ", "_") for col in ("donor", "celltype", "condition")),
     axis=1,
 )
 pdata.obs = obs

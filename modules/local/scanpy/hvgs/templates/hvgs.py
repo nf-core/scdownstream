@@ -47,8 +47,7 @@ if adata.n_vars > n_hvgs:
 
     if input_layer != "X" and input_layer not in adata.layers:
         raise ValueError(
-            f"input_layer {input_layer!r} is not present in adata.layers "
-            f"(available: {list(adata.layers.keys())})"
+            f"input_layer {input_layer!r} is not present in adata.layers (available: {list(adata.layers.keys())})"
         )
 
     if input_layer != "X":

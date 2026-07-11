@@ -70,7 +70,9 @@ if not len(predictions.columns) > 1:
 
         with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
             image_string = base64.b64encode(f_plot.read()).decode("utf-8")
-            image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
+            image_html = (
+                f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
+            )
             custom_json = {
                 "id": "${prefix}",
                 "parent_id": "doublet_predictions",
