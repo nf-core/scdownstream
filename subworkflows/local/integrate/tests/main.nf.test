@@ -502,6 +502,46 @@ nextflow_workflow {
 
     }
 
+    test("Should run without failures - pearson_residuals_hvgs - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                ])
+                input[1] = false
+                input[2] = 'pearson_residuals_hvgs'
+                input[3] = 500
+                input[4] = []
+                input[5] = []
+                input[6] = ''
+                input[7] = ['pca']
+                input[8] = null
+                input[9] = null
+                input[10] = []
+                input[11] = []
+                input[12] = null
+                input[13] = null
+                input[14] = null
+                input[15] = 'condition'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
     test("Should run without failures - deviance") {
 
         when {

@@ -20,6 +20,9 @@
                 "3": [
                     
                 ],
+                "4": [
+                    
+                ],
                 "integrations": [
                     [
                         {
@@ -28,6 +31,9 @@
                         },
                         "bbknn.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
+                ],
+                "layers": [
+                    
                 ],
                 "obs": [
                     
@@ -40,7 +46,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T14:45:57.1011",
+        "timestamp": "2026-07-11T09:17:46.869797",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.4"
@@ -99,11 +105,10 @@
                     "counts"
                 ],
                 "obsm": [
-                    "X_emb",
-                    "X_pca"
+                    "X_emb"
                 ],
                 "varm": [
-                    "PCs"
+                    
                 ],
                 "obsp": [
                     
@@ -113,12 +118,11 @@
                 ],
                 "uns": [
                     "hvg",
-                    "log1p",
-                    "pca"
+                    "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-07-09T14:47:19.970204",
+        "timestamp": "2026-07-11T09:19:07.22812",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.4"
@@ -145,6 +149,9 @@
                 "3": [
                     "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
+                "4": [
+                    
+                ],
                 "integrations": [
                     [
                         {
@@ -153,6 +160,9 @@
                         },
                         "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
+                ],
+                "layers": [
+                    
                 ],
                 "obs": [
                     
@@ -165,7 +175,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T14:47:35.475626",
+        "timestamp": "2026-07-11T09:19:22.306071",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.4"
@@ -245,6 +255,9 @@
                 "3": [
                     "combat.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
+                "4": [
+                    
+                ],
                 "integrations": [
                     [
                         {
@@ -253,6 +266,9 @@
                         },
                         "combat.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
+                ],
+                "layers": [
+                    
                 ],
                 "obs": [
                     
@@ -265,7 +281,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T14:46:41.573709",
+        "timestamp": "2026-07-11T09:18:29.880512",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.4"
@@ -370,6 +386,9 @@
                 "3": [
                     "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
+                "4": [
+                    
+                ],
                 "integrations": [
                     [
                         {
@@ -378,6 +397,9 @@
                         },
                         "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
+                ],
+                "layers": [
+                    
                 ],
                 "obs": [
                     
@@ -390,7 +412,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T14:08:18.310819",
+        "timestamp": "2026-07-11T09:20:51.449028",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.4"
@@ -546,6 +568,9 @@
                 "3": [
                     "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
+                "4": [
+                    
+                ],
                 "integrations": [
                     [
                         {
@@ -554,6 +579,9 @@
                         },
                         "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
+                ],
+                "layers": [
+                    
                 ],
                 "obs": [
                     
@@ -566,10 +594,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-21T21:54:31.640453621",
+        "timestamp": "2026-07-11T09:19:13.55251",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without failures - pca": {
@@ -581,10 +609,16 @@
                     "index": "_index",
                     "columns": [
                         "batch",
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
                         "n_counts",
                         "n_genes",
                         "n_genes_by_counts",
                         "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
                         "pct_counts_mt",
                         "pct_counts_ribo",
                         "total_counts",
@@ -600,6 +634,8 @@
                         "dispersions_norm",
                         "hb",
                         "highly_variable",
+                        "log1p_mean_counts",
+                        "log1p_total_counts",
                         "mean_counts",
                         "means",
                         "mt",
@@ -634,10 +670,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-21T21:56:59.165239958",
+        "timestamp": "2026-07-11T09:19:52.734534",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without failures - expimap": {
@@ -704,6 +740,9 @@
                 "3": [
                     "X_expimap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
+                "4": [
+                    
+                ],
                 "integrations": [
                     [
                         {
@@ -712,6 +751,9 @@
                         },
                         "expimap.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
+                ],
+                "layers": [
+                    
                 ],
                 "obs": [
                     
@@ -724,10 +766,63 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-21T21:57:18.218087269",
+        "timestamp": "2026-07-11T09:19:59.538367",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run without failures - pearson_residuals_hvgs - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "test_pearson_residuals_hvgs.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "layers": [
+                    
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "test_pearson_residuals_hvgs.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-11T09:21:01.09154",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     }
 }

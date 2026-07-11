@@ -163,15 +163,15 @@
                 "feature_selection": {
                     "type": "string",
                     "default": "deviance",
-                    "enum": ["hvgs", "deviance", "none"],
+                    "enum": ["hvgs", "deviance", "pearson_residuals_hvgs", "none"],
                     "description": "Gene selection method applied before integration on merged counts.",
-                    "help_text": "Default is binomial deviance via scry (`deviance`), as recommended in sc-best-practices. Use `hvgs` for scanpy highly variable genes, or `none` to skip feature selection. The `python_only` profile overrides this to `hvgs`. Gene count is controlled by `integration_n_features` (`0` = auto: scanpy auto for HVGs, 4000 for deviance). Ignored when a reference model defines the gene set."
+                    "help_text": "Default is binomial deviance via scry (`deviance`), as recommended in sc-best-practices. Use `hvgs` for scanpy highly variable genes, `pearson_residuals_hvgs` for Pearson-residual HVG selection on raw counts, or `none` to skip feature selection. The `python_only` profile overrides this to `hvgs`. Gene count is controlled by `integration_n_features` (`0` = auto: scanpy auto for HVGs, 4000 for deviance and pearson_residuals_hvgs). Ignored when a reference model defines the gene set."
                 },
                 "integration_n_features": {
                     "type": "integer",
                     "default": 0,
                     "description": "Number of genes to retain for integration feature selection.",
-                    "help_text": "Applies to both `hvgs` and `deviance`. If set to 0, the number of genes is chosen automatically (scanpy default for HVGs, 4000 for deviance). If set to a negative number, all genes are used when `feature_selection` is `hvgs` or `none`. If a reference model is provided, this does not have any effect because the reference model defines the gene set."
+                    "help_text": "Applies to `hvgs`, `deviance`, and `pearson_residuals_hvgs`. If set to 0, the number of genes is chosen automatically (scanpy default for HVGs, 4000 for deviance and pearson_residuals_hvgs). If set to a negative number, all genes are used when `feature_selection` is `hvgs` or `none`; negative values are not supported for `pearson_residuals_hvgs`. If a reference model is provided, this does not have any effect because the reference model defines the gene set."
                 },
                 "integration_excluded_genes": {
                     "type": "string",
@@ -183,14 +183,14 @@
                     "type": "string",
                     "default": "scran",
                     "description": "Comma-separated list of normalisation representations to compute before feature selection and integration.",
-                    "help_text": "Supported methods: `log1p` (shifted-log layer `log1p_norm`), `scran` (scran-normalised layer `scran`), `pearson_residuals` (layer `pearson_residuals`). Raw counts remain in `X`. Count-model integrations and differential expression always use raw counts. Use with `transformed_layer` for PCA-like integrations and HVG selection. Default: `scran`. The `python_only` profile overrides this to `log1p`.",
-                    "pattern": "^((log1p|scran|pearson_residuals)(,(log1p|scran|pearson_residuals))*)?$"
+                    "help_text": "Supported methods: `log1p` (shifted-log layer `log1p_norm`) and `scran` (scran-normalised layer `scran`). Raw counts remain in `X`. Count-model integrations and differential expression always use raw counts. Use with `transformed_layer` for PCA-like integrations. Default: `scran`. The `python_only` profile overrides this to `log1p`.",
+                    "pattern": "^((log1p|scran)(,(log1p|scran))*)?$"
                 },
                 "transformed_layer": {
                     "type": "string",
                     "default": "scran",
                     "description": "AnnData layer used by transformed-expression consumers such as PCA, Harmony, Scanorama, BBKNN, and Combat integration.",
-                    "help_text": "Examples: `log1p_norm`, `scran`, `pearson_residuals`. Default: `scran`. If empty or unavailable, layer-aware methods normalise and log-transform `X` internally. Does not affect scVI/scANVI, Seurat, EXPIMAP, scimilarity, or count-based DE. The `python_only` profile overrides this to `log1p_norm`."
+                    "help_text": "Examples: `log1p_norm`, `scran`. Default: `scran`. If empty or unavailable, layer-aware methods normalise and log-transform `X` internally. Does not affect scVI/scANVI, Seurat, EXPIMAP, scimilarity, or count-based DE. The `python_only` profile overrides this to `log1p_norm`."
                 },
                 "symphony_reference": {
                     "type": "string",

@@ -1,7 +1,7 @@
-name: "scanpy_pearsonresiduals"
-description: Compute analytic Pearson residuals and store them in an AnnData layer
+name: "scanpy_pearsonresidualshvgs"
+description: Select highly variable genes using analytic Pearson residuals on raw counts
 keywords:
-  - normalization
+  - feature-selection
   - single-cell
   - scrnaseq
   - scanpy
@@ -26,6 +26,22 @@ input:
         pattern: "*.{h5ad}"
         ontologies:
           - edam: "http://edamontology.org/format_3590"
+    - n_genes:
+        type: integer
+        description: |
+          Number of highly variable genes to retain. If 0, defaults to 4000.
+    - excluded_genes:
+        type: file
+        description: |
+          Optional file with one gene symbol per line to exclude before feature selection.
+    - batch_key:
+        type: string
+        description: |
+          Optional column in obs for batch-aware Pearson residual HVG selection.
+    - counts_layer:
+        type: string
+        description: |
+          Layer containing raw counts, or `X` to use the main matrix.
 
 output:
   h5ad:
@@ -36,10 +52,15 @@ output:
             e.g. `[ id:'sample1' ]`
       - "*.h5ad":
           type: file
-          description: AnnData object with a `pearson_residuals` layer
+          description: AnnData object subset to highly variable genes with raw counts in `X`
           pattern: "*.h5ad"
           ontologies:
             - edam: "http://edamontology.org/format_3590"
+  var:
+    - "*.pkl":
+        type: file
+        description: Pickled DataFrame with highly variable gene annotations
+        pattern: "*.pkl"
   versions:
     - versions.yml:
         type: file
@@ -73,6 +94,6 @@ containers:
       https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f6/f692c0c793f5ac7da42963b22084153c26be689e512864095832318e77dee2f9/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/pearsonresiduals/.conda-lock/linux_amd64-bd-641b33efb395c24e_1.txt
+      lock_file: modules/local/scanpy/pearsonresidualshvgs/.conda-lock/linux_amd64-bd-641b33efb395c24e_1.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/pearsonresiduals/.conda-lock/linux_arm64-bd-1ffabec2e58c5ef2_1.txt
+      lock_file: modules/local/scanpy/pearsonresidualshvgs/.conda-lock/linux_arm64-bd-1ffabec2e58c5ef2_1.txt

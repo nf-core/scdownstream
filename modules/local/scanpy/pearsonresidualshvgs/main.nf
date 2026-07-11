@@ -1,4 +1,4 @@
-process SCANPY_PEARSONRESIDUALS {
+process SCANPY_PEARSONRESIDUALS_HVGS {
     tag "${meta.id}"
     label 'process_medium'
 
@@ -9,10 +9,14 @@ process SCANPY_PEARSONRESIDUALS {
 
     input:
     tuple val(meta), path(h5ad)
+    val n_genes
+    path excluded_genes
+    val(batch_key)
+    val(counts_layer)
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path "pearson_residuals.np*"           , emit: layers
+    path ("${prefix}.pkl")                 , emit: var
     path "versions.yml"                    , emit: versions, topic: versions
 
     when:
@@ -20,13 +24,13 @@ process SCANPY_PEARSONRESIDUALS {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    template('pearsonresiduals.py')
+    template('pearsonresidualshvgs.py')
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
-    touch pearson_residuals.npz
+    touch ${prefix}.pkl
     touch versions.yml
     """
 }

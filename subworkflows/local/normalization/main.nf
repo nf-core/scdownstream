@@ -1,6 +1,5 @@
-include { SCANPY_LOG1PNORM        } from '../../../modules/local/scanpy/log1pnorm'
-include { SCANPY_PEARSONRESIDUALS } from '../../../modules/local/scanpy/pearsonresiduals'
-include { SCRAN_NORMALIZATION     } from '../../../modules/local/scran/normalization'
+include { SCANPY_LOG1PNORM    } from '../../../modules/local/scanpy/log1pnorm'
+include { SCRAN_NORMALIZATION } from '../../../modules/local/scran/normalization'
 
 workflow NORMALIZATION {
     take:
@@ -25,14 +24,6 @@ workflow NORMALIZATION {
         ch_layers = ch_layers.mix(SCRAN_NORMALIZATION.out.layers)
         if (transformed_layer == 'scran') {
             ch_working = SCRAN_NORMALIZATION.out.h5ad
-        }
-    }
-
-    if (normalization_methods.contains('pearson_residuals')) {
-        SCANPY_PEARSONRESIDUALS(ch_h5ad)
-        ch_layers = ch_layers.mix(SCANPY_PEARSONRESIDUALS.out.layers)
-        if (transformed_layer == 'pearson_residuals') {
-            ch_working = SCANPY_PEARSONRESIDUALS.out.h5ad
         }
     }
 

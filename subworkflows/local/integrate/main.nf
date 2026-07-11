@@ -1,5 +1,6 @@
-include { SCANPY_HVGS        } from '../../../modules/local/scanpy/hvgs'
-include { SCRY_DEVIANCE       } from '../../../modules/local/scry/deviance'
+include { SCANPY_HVGS                   } from '../../../modules/local/scanpy/hvgs'
+include { SCANPY_PEARSONRESIDUALS_HVGS  } from '../../../modules/local/scanpy/pearsonresidualshvgs'
+include { SCRY_DEVIANCE                   } from '../../../modules/local/scry/deviance'
 include { SCANPY_FILTER      } from '../../../modules/local/scanpy/filter'
 include { NORMALIZATION      } from '../normalization'
 include { SCVITOOLS_SCVI     } from '../../../modules/local/scvitools/scvi'
@@ -19,7 +20,7 @@ workflow INTEGRATE {
     take:
     ch_h5ad                     // channel: [ merged, h5ad ]
     is_extension                // boolean
-    feature_selection           // string: hvgs | deviance | none
+    feature_selection           // string: hvgs | deviance | pearson_residuals_hvgs | none
     n_features                      // integer
     excluded_genes              // path
     normalization_methods       // list of string
@@ -73,6 +74,17 @@ workflow INTEGRATE {
             )
             ch_h5ad_hvg = SCRY_DEVIANCE.out.h5ad
             ch_var = ch_var.mix(SCRY_DEVIANCE.out.var)
+        }
+        else if (feature_selection == 'pearson_residuals_hvgs') {
+            SCANPY_PEARSONRESIDUALS_HVGS (
+                ch_h5ad,
+                n_features,
+                excluded_genes,
+                ch_h5ad.map { meta, _h5ad -> meta.batch_col ?: '' },
+                ch_h5ad.map { meta, _h5ad -> meta.counts_layer ?: 'X' }
+            )
+            ch_h5ad_hvg = SCANPY_PEARSONRESIDUALS_HVGS.out.h5ad
+            ch_var = ch_var.mix(SCANPY_PEARSONRESIDUALS_HVGS.out.var)
         }
         else if (feature_selection == 'none') {
             ch_h5ad_hvg = ch_h5ad

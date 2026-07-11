@@ -1,8 +1,8 @@
 nextflow_process {
 
-    name "Test Process SCANPY_PEARSONRESIDUALS"
-    script "modules/local/scanpy/pearsonresiduals/main.nf"
-    process "SCANPY_PEARSONRESIDUALS"
+    name "Test Process SCANPY_PEARSONRESIDUALS_HVGS"
+    script "modules/local/scanpy/pearsonresidualshvgs/main.nf"
+    process "SCANPY_PEARSONRESIDUALS_HVGS"
 
     tag "modules"
     tag "modules_local"
@@ -20,6 +20,10 @@ nextflow_process {
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
+                input[1] = 100
+                input[2] = []
+                input[3] = ''
+                input[4] = 'X'
                 """
             }
         }
@@ -27,7 +31,8 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
-            assert "pearson_residuals" in adata.layers
+            assert adata.n_vars == 100
+            assert "highly_variable" in adata.var.colnames
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml
@@ -51,6 +56,10 @@ nextflow_process {
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
+                input[1] = 100
+                input[2] = []
+                input[3] = ''
+                input[4] = 'X'
                 """
             }
         }
