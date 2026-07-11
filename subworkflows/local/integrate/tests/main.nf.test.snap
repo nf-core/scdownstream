@@ -418,6 +418,79 @@
             "nextflow": "26.04.4"
         }
     },
+    "Should run without failures - deviance": {
+        "content": [
+            {
+                "n_obs": 12940,
+                "n_vars": 500,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "binomial_deviance",
+                        "hb",
+                        "highly_deviant",
+                        "log1p_mean_counts",
+                        "log1p_total_counts",
+                        "mean_counts",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "counts",
+                    "log1p"
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    "X_emb"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_emb"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-11T20:38:27.688068306",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
     "Should run without failures - symphony - stub": {
         "content": [
             {

@@ -2,6 +2,7 @@
 
 library(scran)
 library(scater)
+library(scuttle)
 library(anndataR)
 library(SingleCellExperiment)
 library(Matrix)
@@ -14,15 +15,33 @@ if (!("counts" %in% names(adata\$layers))) {
 
 sce <- adata\$as_SingleCellExperiment(x_mapping = "counts", assays_mapping = FALSE)
 
+lib_sizes <- librarySizeFactors(sce)
+keep_cells <- lib_sizes > 0
+if (!all(keep_cells)) {
+    sce <- sce[, keep_cells]
+}
+
 clusters <- quickCluster(sce)
 sce <- computeSumFactors(sce, clusters = clusters)
+size_factors <- sizeFactors(sce)
+invalid <- !is.finite(size_factors) | size_factors <= 0
+if (any(invalid)) {
+    positive <- size_factors[!invalid]
+    replacement <- if (length(positive) > 0) min(positive) else 1
+    size_factors[invalid] <- replacement
+    sizeFactors(sce) <- size_factors
+}
 sce <- logNormCounts(sce)
 
-logcounts <- assay(sce, "logcounts")
+logcounts <- t(assay(sce, "logcounts"))
 adata_out <- read_h5ad("${h5ad}")
 
 if (!("counts" %in% names(adata_out\$layers))) {
     adata_out\$layers[["counts"]] <- adata_out\$X
+}
+
+if (!all(keep_cells)) {
+    adata_out <- adata_out[keep_cells, ]
 }
 
 adata_out\$layers[["scran"]] <- logcounts

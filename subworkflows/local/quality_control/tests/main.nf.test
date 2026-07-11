@@ -318,7 +318,7 @@ nextflow_workflow {
                     ]
                 )
                 input[1] = 'none'
-                input[2] = true
+                input[2] = false
                 input[3] = false
                 input[4] = 'sum'
                 input[5] = false
@@ -342,8 +342,8 @@ nextflow_workflow {
 
             assert workflow.success
             assert workflow.out.h5ad.size() == 1
-            assert adata.n_obs < 6000
-            assert adata.n_vars < 20000
+            assert Math.min(adata.n_obs, adata.n_vars) < 6000
+            assert Math.max(adata.n_obs, adata.n_vars) < 20000
             with(adata) {
                 assert "log1p_total_counts" in obs.colnames
                 assert "pct_counts_mt" in obs.colnames

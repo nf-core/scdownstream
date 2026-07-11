@@ -60,21 +60,24 @@ features_df <- data.frame(
 )
 write.csv(features_df, "${prefix}_features.csv")
 
-sce <- sce[top_genes, ]
+top_idx <- ord[seq_len(n_keep)]
 adata_out <- read_h5ad("${h5ad}")
 if (!("counts" %in% names(adata_out\$layers))) {
     adata_out\$layers[["counts"]] <- adata_out\$X
 }
-gene_idx <- match(top_genes, rownames(adata_out))
-if (any(is.na(gene_idx))) {
-    missing <- top_genes[is.na(gene_idx)]
-    stop("Selected deviant genes missing from input AnnData: ", paste(missing, collapse = ", "))
+if (nrow(sce) != adata_out\$n_vars()) {
+    stop(
+        "Gene count mismatch between deviance selection and input AnnData: ",
+        nrow(sce),
+        " SCE genes vs ",
+        adata_out\$n_vars(),
+        " AnnData variables."
+    )
 }
-adata_out <- adata_out[gene_idx, ]
-rowData(sce)\$binomial_deviance <- deviance[top_genes]
-rowData(sce)\$highly_deviant <- highly_deviant[top_genes]
-adata_out\$var[["binomial_deviance"]] <- rowData(sce)\$binomial_deviance
-adata_out\$var[["highly_deviant"]] <- rowData(sce)\$highly_deviant
+adata_out <- adata_out[, top_idx]
+adata_out <- adata_out\$as_InMemoryAnnData()
+adata_out\$var[["binomial_deviance"]] <- deviance[top_idx]
+adata_out\$var[["highly_deviant"]] <- highly_deviant[top_idx]
 write_h5ad(adata_out, "${prefix}.h5ad")
 
 r.version <- strsplit(version[['version.string']], ' ')[[1]][3]

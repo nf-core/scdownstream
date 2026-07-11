@@ -44,6 +44,7 @@ if symbol_col != "index":
         )
     original_index = adata.var_names.copy()
     adata.var_names = adata.var[symbol_col].astype(str)
+    adata.var_names_make_unique()
 
 sc.tl.score_genes_cell_cycle(adata, s_genes=s_genes, g2m_genes=g2m_genes)
 
@@ -54,8 +55,13 @@ adata.obs[["S_score", "G2M_score", "phase"]].to_pickle(f"{prefix}.pkl")
 adata.write_h5ad(f"{prefix}.h5ad")
 
 if adata.obs["phase"].nunique() > 1:
-    fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
-    sc.pl.violin(adata, ["S_score", "G2M_score"], groupby="phase", ax=ax, show=False)
+    phase_counts = adata.obs["phase"].value_counts()
+    valid_phases = phase_counts[phase_counts > 0].index
+    adata_violin = adata[adata.obs["phase"].isin(valid_phases)].copy()
+    adata_violin.obs["phase"] = adata_violin.obs["phase"].astype("category").cat.remove_unused_categories()
+
+    sc.pl.violin(adata_violin, ["S_score", "G2M_score"], groupby="phase", show=False)
+    fig = plt.gcf()
     plot_path = f"{prefix}_cell_cycle_scores.png"
     plt.savefig(plot_path)
 

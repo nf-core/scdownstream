@@ -67,16 +67,28 @@ if len(valid_groups) >= 2:
 
     marker_df = sc.get.rank_genes_groups_df(adata, group=None, key=filtered_rank_key)
     marker_df = marker_df[marker_df["names"].notna()].copy()
+    source_key = filtered_rank_key
 
     if marker_df.empty:
-        print(f"Warning: no genes passed filter for {obs_key}; skipping plots and H5AD output.")
+        print(f"Warning: no genes passed filter for {obs_key}; using unfiltered rank_genes_groups results.")
+        marker_df = sc.get.rank_genes_groups_df(adata, group=None, key=rank_key)
+        marker_df = marker_df[marker_df["names"].notna()].copy()
+        source_key = rank_key
+
+    if marker_df.empty:
+        print(f"Warning: no rank_genes_groups results for {obs_key}; skipping plots and H5AD output.")
     else:
         marker_df.to_csv(f"{prefix}_markers.csv", index=False)
 
         # Store filtered markers under rank_key for downstream consumers such as CyteType.
-        rgg_dict = dict(adata.uns.pop(filtered_rank_key))
+        if source_key == filtered_rank_key:
+            rgg_dict = dict(adata.uns.pop(filtered_rank_key))
+        else:
+            adata.uns.pop(filtered_rank_key, None)
+            rgg_dict = dict(adata.uns[rank_key])
         # Scanpy marks filtered-out genes as missing names; replace them so H5AD serialisation works.
-        rgg_dict["names"] = pd.DataFrame(rgg_dict["names"]).fillna("").to_records(index=False)
+        names_df = pd.DataFrame(rgg_dict["names"]).fillna("").astype(str)
+        rgg_dict["names"] = names_df.to_records(index=False)
         adata.uns[rank_key] = rgg_dict
 
         pickle.dump(rgg_dict, open(f"{prefix}.pkl", "wb"))
