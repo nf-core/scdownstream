@@ -15,8 +15,18 @@ from threadpoolctl import threadpool_limits
 threadpool_limits(int("${task.cpus}"))
 
 adata = sc.read_h5ad("${h5ad}")
+prefix = "${prefix}"
+input_layer = "${input_layer}"
 
-sc.tl.pca(adata)
+pca_kwargs = {}
+
+if input_layer and input_layer in adata.layers:
+    pca_kwargs["layer"] = input_layer
+else:
+    sc.pp.normalize_total(adata, target_sum=None)
+    sc.pp.log1p(adata)
+
+sc.tl.pca(adata, **pca_kwargs)
 
 kwargs = {
     "batch_key": "${batch_col}",
@@ -28,9 +38,7 @@ if adata.n_obs >= 1e5:
 
 adata = bbknn.bbknn(adata, **kwargs)
 
-adata.write_h5ad("${prefix}.h5ad")
-
-# Versions
+adata.write_h5ad(f"{prefix}.h5ad")
 
 versions = {
     "${task.process}": {

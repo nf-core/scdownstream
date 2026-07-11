@@ -14,9 +14,6 @@
                     "test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "2": [
-                    "test.npy:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                "3": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "h5ad": [
@@ -27,9 +24,6 @@
                         "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "layers": [
-                    "test.npy:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
                 "obsm": [
                     "test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
@@ -38,49 +32,46 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-25T15:44:57.270966951",
+        "timestamp": "2026-07-10T23:39:59.918641",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without failures": {
         "content": [
             {
                 "SCANPY_COMBAT": {
-                    "numpy": "2.3.5",
                     "pandas": "2.3.3",
                     "python": "3.13.12",
                     "scanpy": "1.12"
                 }
             },
             {
-                "n_obs": 38234,
-                "n_vars": 101,
+                "n_obs": 12940,
+                "n_vars": 9887,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample"
+                        "batch"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "dispersions",
-                        "dispersions_norm",
-                        "highly_variable",
-                        "means"
+                        "symbols"
                     ]
                 },
                 "layers": [
-                    "combat"
+                    "combat",
+                    "counts",
+                    "log1p_norm"
                 ],
                 "obsm": [
-                    "X_emb",
-                    "X_pca"
+                    "X_emb"
                 ],
                 "varm": [
-                    "PCs"
+                    
                 ],
                 "obsp": [
                     
@@ -89,16 +80,14 @@
                     
                 ],
                 "uns": [
-                    "hvg",
-                    "log1p",
-                    "pca"
+                    
                 ]
             }
         ],
-        "timestamp": "2026-05-31T07:26:05.351659325",
+        "timestamp": "2026-07-10T23:41:14.696763",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     }
 }

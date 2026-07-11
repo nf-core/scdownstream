@@ -208,7 +208,8 @@ workflow INTEGRATE {
             ch_h5ad_hvg.map { meta, h5ad ->
                 [meta + [integration: 'bbknn'], h5ad]
             },
-            "batch"
+            "batch",
+            transformed_layer ?: ''
         )
         ch_integrations = ch_integrations.mix(SCANPY_BBKNN.out.h5ad)
     }
@@ -219,7 +220,7 @@ workflow INTEGRATE {
                 [meta + [integration: 'scanorama'], h5ad]
             },
             "batch",
-            "X"
+            transformed_layer ?: ''
         )
         ch_integrations = ch_integrations.mix(SCANORAMA_INTEGRATE.out.h5ad)
         ch_obsm = ch_obsm.mix(SCANORAMA_INTEGRATE.out.obsm)
@@ -230,7 +231,8 @@ workflow INTEGRATE {
             ch_h5ad_hvg.map { meta, h5ad ->
                 [meta + [integration: 'combat'], h5ad]
             },
-            "batch"
+            "batch",
+            transformed_layer ?: ''
         )
         ch_integrations = ch_integrations.mix(SCANPY_COMBAT.out.h5ad)
         ch_obsm = ch_obsm.mix(SCANPY_COMBAT.out.obsm)

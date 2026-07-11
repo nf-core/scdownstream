@@ -23,9 +23,9 @@ input:
     - batch_col:
         type: string
         description: obs column with batch labels
-    - counts_layer:
+    - input_layer:
         type: string
-        description: Layer containing raw counts, or X
+        description: AnnData layer with transformed expression, or empty to normalise counts internally
 
 output:
   h5ad:

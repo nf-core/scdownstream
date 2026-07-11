@@ -10,7 +10,7 @@ process SCANORAMA_INTEGRATE {
     input:
     tuple val(meta), path(h5ad, arity: 1)
     val(batch_col)
-    val(counts_layer)
+    val(input_layer)
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
