@@ -12,6 +12,7 @@ process SCANPY_HVGS {
     val n_hvgs
     path excluded_genes
     val input_layer
+    val log_normalize
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad

@@ -11,6 +11,7 @@ process SCANPY_PCA {
     tuple val(meta), path(h5ad)
     val key_added
     val input_layer
+    val log_normalize
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad

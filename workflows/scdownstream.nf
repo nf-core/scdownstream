@@ -57,8 +57,7 @@ workflow SCDOWNSTREAM {
     integration_n_features              //   value: integer
     integration_methods           //   value: string
     integration_excluded_genes    //   value: string
-    normalization_methods         //   value: string
-    transformed_layer             //   value: string
+    normalization_method          //   value: string
     scvi_model                    //   value: string
     scanvi_model                  //   value: string
     scvi_categorical_covariates   //   value: string
@@ -198,8 +197,7 @@ workflow SCDOWNSTREAM {
                 integration_n_features,
                 integration_methods,
                 integration_excluded_genes,
-                normalization_methods,
-                transformed_layer,
+                normalization_method,
                 scvi_model,
                 scanvi_model,
                 scvi_categorical_covariates,
@@ -260,13 +258,7 @@ workflow SCDOWNSTREAM {
                 feature_selection,
                 integration_n_features,
                 integration_excluded_genes ? file(integration_excluded_genes) : [],
-                normalization_methods
-                    ? normalization_methods
-                        .split(',')
-                        .collect { it -> it.trim().toLowerCase() }
-                        .findAll { method -> method }
-                    : [],
-                transformed_layer ?: '',
+                normalization_method,
                 integration_methods
                     .split(',')
                     .collect { it -> it.trim().toLowerCase() },

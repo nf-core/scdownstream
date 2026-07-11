@@ -103,11 +103,9 @@ Doublet handling also follows the book: `--doublet_detection` defaults to `scdbl
 
 Before integration, merged raw counts are subset to informative genes. By default, [`feature_selection`](https://nf-co.re/scdownstream/parameters#feature_selection) is `deviance` (binomial deviance via scry, ~4,000 genes when [`integration_n_features`](https://nf-co.re/scdownstream/parameters#integration_n_features) is `0`). Use `--feature_selection hvgs` for scanpy highly variable genes, `--feature_selection pearson_residuals_hvgs` for Pearson-residual HVG selection on raw counts, or `--feature_selection none` to skip gene filtering. The `python_only` profile sets `feature_selection` to `hvgs` automatically.
 
-Optional normalisation layers are computed before feature selection with [`normalization_methods`](https://nf-co.re/scdownstream/parameters#normalization_methods) (`log1p`, `scran`). By default, the pipeline computes `scran` and sets [`transformed_layer`](https://nf-co.re/scdownstream/parameters#transformed_layer) to `scran`. Raw counts remain in `X`; shifted-log output is stored in `log1p_norm` and scran output in `scran`. The `python_only` profile overrides these defaults to `log1p` and `log1p_norm`, avoiding the R-based scran dependency.
+One normalisation method is always computed before feature selection via [`normalization_method`](https://nf-co.re/scdownstream/parameters#normalization_method) (`log1p` or `scran`). Raw counts remain in `X`; normalised expression is stored in a matching AnnData layer (`log1p` or `scran`). Layer-aware integrations read that layer directly. The `python_only` profile overrides the default `scran` with `log1p`, avoiding the R-based scran dependency.
 
-[`transformed_layer`](https://nf-co.re/scdownstream/parameters#transformed_layer) selects which layer transformed-expression consumers read. If empty or unavailable, those methods normalise and log-transform counts internally before PCA or correction.
-
-| Integration method | Uses `transformed_layer` |
+| Integration method | Uses `normalization_method` layer |
 | --- | --- |
 | `pca` | Yes |
 | `symphony` (reference building) | No (internal normalisation from counts) |

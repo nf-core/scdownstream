@@ -25,7 +25,10 @@ input:
         description: obs column with batch labels
     - input_layer:
         type: string
-        description: AnnData layer with transformed expression, or empty to normalise counts internally
+        description: AnnData layer to read expression from (`X` or a layer name)
+    - log_normalize:
+        type: boolean
+        description: When true, log-normalise counts from input_layer before integration; when false, use input_layer as pre-normalised expression
 
 output:
   h5ad:

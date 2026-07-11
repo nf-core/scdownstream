@@ -17,16 +17,22 @@ threadpool_limits(int("${task.cpus}"))
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 input_layer = "${input_layer}"
+log_normalize = "${log_normalize}" == "true"
 
-pca_kwargs = {}
+if input_layer != "X" and input_layer not in adata.layers:
+    raise ValueError(
+        f"input_layer {input_layer!r} is not present in adata.layers "
+        f"(available: {list(adata.layers.keys())})"
+    )
 
-if input_layer and input_layer in adata.layers:
-    pca_kwargs["layer"] = input_layer
-else:
-    sc.pp.normalize_total(adata, target_sum=None)
+if input_layer != "X":
+    adata.X = adata.layers[input_layer]
+
+if log_normalize:
+    sc.pp.normalize_total(adata)
     sc.pp.log1p(adata)
 
-sc.tl.pca(adata, **pca_kwargs)
+sc.tl.pca(adata)
 
 kwargs = {
     "batch_key": "${batch_col}",

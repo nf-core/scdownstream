@@ -22,14 +22,22 @@ sc.settings.n_jobs = int("${task.cpus}")
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 input_layer = "${input_layer}"
+log_normalize = "${log_normalize}" == "true"
 batch_col = "${batch_col}"
 
 adata_proc = adata.copy()
 
-if input_layer and input_layer in adata.layers:
+if input_layer != "X" and input_layer not in adata_proc.layers:
+    raise ValueError(
+        f"input_layer {input_layer!r} is not present in adata.layers "
+        f"(available: {list(adata_proc.layers.keys())})"
+    )
+
+if input_layer != "X":
     adata_proc.X = adata_proc.layers[input_layer]
-else:
-    sc.pp.normalize_total(adata_proc, target_sum=None)
+
+if log_normalize:
+    sc.pp.normalize_total(adata_proc)
     sc.pp.log1p(adata_proc)
 
 combat_layer = csr_matrix(sc.pp.combat(adata_proc, key=batch_col, inplace=False))

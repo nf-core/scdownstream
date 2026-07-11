@@ -12,7 +12,7 @@ process SCANPY_LOG1PNORM {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path "log1p_norm.np*"                  , emit: layers
+    path "log1p.np*"                       , emit: layers
     path "versions.yml"                    , emit: versions, topic: versions
 
     when:
@@ -26,7 +26,7 @@ process SCANPY_LOG1PNORM {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
-    touch log1p_norm.npz
+    touch log1p.npz
     touch versions.yml
     """
 }

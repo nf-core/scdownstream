@@ -179,18 +179,12 @@
                     "description": "Optional file containing a list of gene symbols (one per line). If provided, these genes will be excluded from feature selection for integration.",
                     "exists": true
                 },
-                "normalization_methods": {
+                "normalization_method": {
                     "type": "string",
                     "default": "scran",
-                    "description": "Comma-separated list of normalisation representations to compute before feature selection and integration.",
-                    "help_text": "Supported methods: `log1p` (shifted-log layer `log1p_norm`) and `scran` (scran-normalised layer `scran`). Raw counts remain in `X`. Count-model integrations and differential expression always use raw counts. Use with `transformed_layer` for PCA-like integrations. Default: `scran`. The `python_only` profile overrides this to `log1p`.",
-                    "pattern": "^((log1p|scran)(,(log1p|scran))*)?$"
-                },
-                "transformed_layer": {
-                    "type": "string",
-                    "default": "scran",
-                    "description": "AnnData layer used by transformed-expression consumers such as PCA, Harmony, Scanorama, BBKNN, and Combat integration.",
-                    "help_text": "Examples: `log1p_norm`, `scran`. Default: `scran`. If empty or unavailable, layer-aware methods normalise and log-transform `X` internally. Does not affect scVI/scANVI, Seurat, EXPIMAP, scimilarity, or count-based DE. The `python_only` profile overrides this to `log1p_norm`."
+                    "description": "Normalisation method to compute before feature selection and integration.",
+                    "help_text": "Supported methods: `log1p` (shifted-log layer `log1p`) and `scran` (scran-normalised layer `scran`). Raw counts remain in `X`. Layer-aware integrations (PCA, BBKNN, Combat, Scanorama, scanpy HVGs) read the matching layer. Count-model integrations and differential expression always use raw counts. Default: `scran`. The `python_only` profile overrides this to `log1p`.",
+                    "pattern": "^(log1p|scran)$"
                 },
                 "symphony_reference": {
                     "type": "string",

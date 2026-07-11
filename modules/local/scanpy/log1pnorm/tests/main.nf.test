@@ -27,7 +27,7 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
-            assert "log1p_norm" in adata.layers
+            assert "log1p" in adata.layers
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml

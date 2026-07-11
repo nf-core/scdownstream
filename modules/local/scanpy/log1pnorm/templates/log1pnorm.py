@@ -23,12 +23,12 @@ sc.pp.normalize_total(adata_norm, target_sum=None)
 sc.pp.log1p(adata_norm)
 
 layer_matrix = adata_norm.X.copy()
-adata.layers["log1p_norm"] = layer_matrix
+adata.layers["log1p"] = layer_matrix
 
 if issparse(layer_matrix):
-    save_npz("log1p_norm.npz", layer_matrix.astype("float32"))
+    save_npz("log1p.npz", layer_matrix.astype("float32"))
 else:
-    np.save("log1p_norm.npy", np.asarray(layer_matrix, dtype=np.float32))
+    np.save("log1p.npy", np.asarray(layer_matrix, dtype=np.float32))
 
 adata.write_h5ad(f"{prefix}.h5ad")
 

@@ -21,10 +21,9 @@ workflow INTEGRATE {
     ch_h5ad                     // channel: [ merged, h5ad ]
     is_extension                // boolean
     feature_selection           // string: hvgs | deviance | pearson_residuals_hvgs | none
-    n_features                      // integer
+    n_features                  // integer
     excluded_genes              // path
-    normalization_methods       // list of string
-    transformed_layer           // string
+    normalization_method        // string
     methods                     // list of string
     scvi_model                  // path
     scanvi_model                // path
@@ -45,22 +44,20 @@ workflow INTEGRATE {
     // If a reference model is provided, only the genes in the reference model are used
     // Otherwise, we would intersect the HVGs, which is not what we want
     if (!is_extension) {
-        if (normalization_methods) {
-            NORMALIZATION(
-                ch_h5ad,
-                normalization_methods,
-                transformed_layer ?: '',
-            )
-            ch_h5ad = NORMALIZATION.out.h5ad
-            ch_layers = ch_layers.mix(NORMALIZATION.out.layers)
-        }
+        NORMALIZATION(
+            ch_h5ad,
+            normalization_method,
+        )
+        ch_h5ad = NORMALIZATION.out.h5ad
+        ch_layers = ch_layers.mix(NORMALIZATION.out.layers)
 
         if (feature_selection == 'hvgs') {
             SCANPY_HVGS (
                 ch_h5ad,
                 n_features,
                 excluded_genes,
-                transformed_layer ?: '',
+                normalization_method,
+                false,
             )
             ch_h5ad_hvg = SCANPY_HVGS.out.h5ad
             ch_var = ch_var.mix(SCANPY_HVGS.out.var)
@@ -221,7 +218,8 @@ workflow INTEGRATE {
                 [meta + [integration: 'bbknn'], h5ad]
             },
             "batch",
-            transformed_layer ?: ''
+            normalization_method,
+            false,
         )
         ch_integrations = ch_integrations.mix(SCANPY_BBKNN.out.h5ad)
     }
@@ -232,7 +230,8 @@ workflow INTEGRATE {
                 [meta + [integration: 'scanorama'], h5ad]
             },
             "batch",
-            transformed_layer ?: ''
+            normalization_method,
+            false,
         )
         ch_integrations = ch_integrations.mix(SCANORAMA_INTEGRATE.out.h5ad)
         ch_obsm = ch_obsm.mix(SCANORAMA_INTEGRATE.out.obsm)
@@ -244,7 +243,8 @@ workflow INTEGRATE {
                 [meta + [integration: 'combat'], h5ad]
             },
             "batch",
-            transformed_layer ?: ''
+            normalization_method,
+            false,
         )
         ch_integrations = ch_integrations.mix(SCANPY_COMBAT.out.h5ad)
         ch_obsm = ch_obsm.mix(SCANPY_COMBAT.out.obsm)
@@ -256,7 +256,8 @@ workflow INTEGRATE {
                 [meta + [integration: 'pca'], h5ad]
             },
             "X_emb",
-            transformed_layer ?: '',
+            normalization_method,
+            false,
         )
         ch_integrations = ch_integrations.mix(SCANPY_PCA.out.h5ad)
         ch_obsm = ch_obsm.mix(SCANPY_PCA.out.obsm)

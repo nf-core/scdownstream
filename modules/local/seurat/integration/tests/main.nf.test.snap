@@ -47,10 +47,16 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
                         "n_counts",
                         "n_genes",
                         "n_genes_by_counts",
                         "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
                         "pct_counts_mt",
                         "pct_counts_ribo",
                         "sample",
@@ -67,6 +73,8 @@
                         "dispersions_norm",
                         "hb",
                         "highly_variable",
+                        "log1p_mean_counts",
+                        "log1p_total_counts",
                         "mean_counts",
                         "means",
                         "mt",
@@ -99,10 +107,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-05-31T08:44:01.475540778",
+        "timestamp": "2026-07-11T09:59:48.106718",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     }
 }

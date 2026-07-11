@@ -11,6 +11,7 @@ process SCANORAMA_INTEGRATE {
     tuple val(meta), path(h5ad, arity: 1)
     val(batch_col)
     val(input_layer)
+    val(log_normalize)
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad

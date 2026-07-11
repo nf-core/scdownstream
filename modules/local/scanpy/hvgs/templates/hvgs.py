@@ -23,6 +23,7 @@ prefix = "${prefix}"
 n_hvgs = int("${n_hvgs}")
 batch_key = "${batch_key}"
 input_layer = "${input_layer}"
+log_normalize = "${log_normalize}" == "true"
 
 # Remove excluded genes from the anndata prior to identifying highly variable genes
 if "${excluded_genes}":
@@ -44,9 +45,16 @@ if adata.n_vars > n_hvgs:
 
     raw_counts = adata.layers["counts"].copy() if "counts" in adata.layers else adata.X.copy()
 
-    if input_layer and input_layer in adata.layers:
+    if input_layer != "X" and input_layer not in adata.layers:
+        raise ValueError(
+            f"input_layer {input_layer!r} is not present in adata.layers "
+            f"(available: {list(adata.layers.keys())})"
+        )
+
+    if input_layer != "X":
         adata.X = adata.layers[input_layer]
-    else:
+
+    if log_normalize:
         sc.pp.normalize_total(adata, target_sum=None)
         sc.pp.log1p(adata)
 
