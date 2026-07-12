@@ -342,8 +342,9 @@ nextflow_workflow {
 
             assert workflow.success
             assert workflow.out.h5ad.size() == 1
-            assert Math.min(adata.n_obs, adata.n_vars) < 6000
-            assert Math.max(adata.n_obs, adata.n_vars) < 20000
+            // Samplesheet MAD defaults remove low-quality cells from the 12940-cell filtered input.
+            assert adata.n_obs < 12940
+            assert adata.n_obs > 10000
             with(adata) {
                 assert "log1p_total_counts" in obs.colnames
                 assert "pct_counts_mt" in obs.colnames

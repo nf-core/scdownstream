@@ -24,6 +24,9 @@ if (!all(keep_cells)) {
 clusters <- quickCluster(sce)
 sce <- computeSumFactors(sce, clusters = clusters)
 size_factors <- sizeFactors(sce)
+# Zero-library cells are removed above. Remaining invalid size factors are
+# replaced with the smallest positive factor so every emitted cell keeps a
+# valid normalisation scale and aligned output axes.
 invalid <- !is.finite(size_factors) | size_factors <= 0
 if (any(invalid)) {
     positive <- size_factors[!invalid]

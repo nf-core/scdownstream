@@ -67,6 +67,7 @@ for adata in adatas:
         adata.obs[col] = adata.obs[col].astype(str).astype("category")
 
 adata_outer = ad.concat(adatas, join="outer")
+adata_outer.obs_names_make_unique()
 adata_outer.X = csr_matrix(adata_outer.X)
 
 # Sort obs columns alphabetically to make reproducible

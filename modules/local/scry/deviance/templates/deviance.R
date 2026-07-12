@@ -61,21 +61,39 @@ features_df <- data.frame(
 write.csv(features_df, "${prefix}_features.csv")
 
 top_idx <- ord[seq_len(n_keep)]
+
 adata_out <- read_h5ad("${h5ad}")
 if (!("counts" %in% names(adata_out\$layers))) {
     adata_out\$layers[["counts"]] <- adata_out\$X
 }
-if (nrow(sce) != adata_out\$n_vars()) {
+
+var_idx <- match(rownames(sce), adata_out\$var_names)
+if (any(is.na(var_idx))) {
+    missing <- rownames(sce)[is.na(var_idx)]
     stop(
-        "Gene count mismatch between deviance selection and input AnnData: ",
-        nrow(sce),
-        " SCE genes vs ",
-        adata_out\$n_vars(),
-        " AnnData variables."
+        "SCE genes missing from input AnnData var_names: ",
+        paste(head(missing, 5), collapse = ", ")
     )
 }
+adata_out <- adata_out[, var_idx]
+
+sce_genes <- rownames(sce)[top_idx]
+adata_genes <- adata_out\$var_names[top_idx]
+if (!identical(sce_genes, adata_genes)) {
+    stop(
+        "Gene order mismatch between deviance selection and input AnnData at selected indices. ",
+        "First mismatch: ",
+        paste(head(sce_genes[sce_genes != adata_genes], 5), collapse = ", ")
+    )
+}
+
+obs_meta <- adata_out\$obs
 adata_out <- adata_out[, top_idx]
 adata_out <- adata_out\$as_InMemoryAnnData()
+# HDF5-backed views can drop obs when row names are duplicated; restore metadata when possible.
+if (ncol(adata_out\$obs) == 0 && ncol(obs_meta) > 0) {
+    adata_out\$obs <- obs_meta
+}
 adata_out\$var[["binomial_deviance"]] <- deviance[top_idx]
 adata_out\$var[["highly_deviant"]] <- highly_deviant[top_idx]
 write_h5ad(adata_out, "${prefix}.h5ad")
