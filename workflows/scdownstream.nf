@@ -334,8 +334,8 @@ workflow SCDOWNSTREAM {
             pseudobulk,
             pseudobulk_min_num_cells,
             pseudobulk_min_total_counts,
-            reference_condition ?: '',
             ch_per_cell_annotation_columns,
+            reference_condition ?: '',
         )
 
         ch_uns = ch_uns.mix(PER_GROUP.out.uns)

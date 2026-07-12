@@ -27,11 +27,6 @@
                     "python": "3.13.12",
                     "scipy": "1.17.1"
                 },
-                "CELDA_DECONTX": {
-                    "r": "4.5.3",
-                    "anndataR": "1.0.2",
-                    "celda": "1.26.0"
-                },
                 "CELLDEX_FETCHREFERENCE": {
                     "R": "R version 4.4.1 (2024-06-14)",
                     "celldex": "1.16.0",
@@ -73,10 +68,6 @@
                     "numpy": "2.3.5",
                     "pandas": "2.3.3",
                     "python": "3.13.12"
-                },
-                "GET_DEDOUBLETED_SIZE": {
-                    "python": "3.13.0",
-                    "anndata": "0.10.9"
                 },
                 "GET_FILTERED_SIZE": {
                     "python": "3.13.0",
@@ -144,6 +135,12 @@
                 "SCVITOOLS_SCVI": {
                     "scvi": "1.4.3"
                 },
+                "SOUPX": {
+                    "r": "4.5.3",
+                    "anndataR": "1.0.2",
+                    "SoupX": "1.6.2",
+                    "Seurat": "5.4.0"
+                },
                 "SYMPHONY_MAPEMBEDDING": {
                     "pandas": "2.3.3",
                     "python": "3.13.13",
@@ -171,6 +168,7 @@
             [
                 "celltypes",
                 "celltypes/singler",
+                "celltypes/singler/SRR28679759_singler_annotation_columns.csv",
                 "celltypes/singler/SRR28679759_singler_hpca_celldex_distribution.pdf",
                 "celltypes/singler/SRR28679759_singler_hpca_celldex_heatmap.pdf",
                 "celltypes/singler/SRR28679759_singler_hpca_direct_distribution.pdf",
@@ -186,9 +184,6 @@
                 "cluster_dimred/scvi/entropy/scvi-global-0.5_entropy.png",
                 "cluster_dimred/scvi/leiden",
                 "cluster_dimred/scvi/leiden/scvi-global-0.5_leiden.png",
-                "cluster_dimred/scvi/umap",
-                "cluster_dimred/symphony",
-                "cluster_dimred/symphony/umap",
                 "combine",
                 "combine/integrate",
                 "combine/integrate/scib_metrics",
@@ -237,10 +232,10 @@
                 "qc-report.qmd:md5,13061014a897b3fbdafd6ea3212df0e0"
             ]
         ],
-        "timestamp": "2026-06-02T21:41:11.599858049",
+        "timestamp": "2026-07-12T20:17:46.682877309",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.3"
         }
     }
 }

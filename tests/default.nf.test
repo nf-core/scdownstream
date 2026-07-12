@@ -9,6 +9,7 @@ nextflow_pipeline {
         when {
             params {
                 outdir = "$outputDir"
+                ambient_correction = 'decontx'
             }
         }
 

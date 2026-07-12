@@ -9,6 +9,7 @@ nextflow_pipeline {
         when {
             params {
                 input                  = 'https://github.com/nf-core/test-datasets/raw/refs/heads/scdownstream/samplesheet.csv'
+                ambient_correction     = 'decontx'
                 integration_methods    = 'scvi,symphony,bbknn,combat,seurat'
                 doublet_detection      = 'scrublet,scdblfinder'
                 celltypist_model       = 'Adult_COVID19_PBMC'
