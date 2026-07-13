@@ -10,7 +10,6 @@ workflow FINALIZE {
     ch_obsm        // channel: [ pkl ]
     ch_obsp
     ch_uns         // channel: [ pkl ]
-    ch_layers
     prep_cellxgene //   value: boolean
 
     main:
@@ -21,7 +20,7 @@ workflow FINALIZE {
         .combine(ch_obsm.flatten().collect().ifEmpty([]).map{ it -> [it] })
         .combine(ch_obsp.flatten().collect().ifEmpty([]).map{ it -> [it] })
         .combine(ch_uns.flatten().collect().ifEmpty([]).map{ it -> [it] })
-        .combine(ch_layers.flatten().collect().ifEmpty([]).map{ it -> [it] })
+        .combine(channel.value([[]]))
     )
 
     ADATA_TORDS (

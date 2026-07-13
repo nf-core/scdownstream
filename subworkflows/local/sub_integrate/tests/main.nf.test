@@ -40,6 +40,8 @@ nextflow_workflow {
 
         then {
             assert workflow.success
+            def adata_parent = anndata(workflow.out.h5ad[0][1])
+            assert "log1p" in adata_parent.layers
             assert workflow.out.integrations.size() > 1
             workflow.out.integrations.each { meta, h5ad ->
                 def adata = anndata(h5ad)

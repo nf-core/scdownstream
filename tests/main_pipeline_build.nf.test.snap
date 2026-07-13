@@ -77,10 +77,6 @@
                     "pandas": "2.3.3",
                     "python": "3.13.12"
                 },
-                "GET_DEDOUBLETED_SIZE": {
-                    "python": "3.13.0",
-                    "anndata": "0.10.9"
-                },
                 "GET_FILTERED_SIZE": {
                     "python": "3.13.0",
                     "anndata": "0.10.9"
@@ -126,7 +122,6 @@
                     "scanpy": "1.12"
                 },
                 "SCANPY_COMBAT": {
-                    "numpy": "2.3.5",
                     "pandas": "2.3.3",
                     "python": "3.13.12",
                     "scanpy": "1.12"
@@ -160,6 +155,10 @@
                     "python": "3.11.10",
                     "scib-metrics": "0.5.9"
                 },
+                "SCRAN_NORMALIZATION": {
+                    "R": "4.5.3",
+                    "scran": "1.38.0"
+                },
                 "SCVITOOLS_SCVI": {
                     "scvi": "1.4.3"
                 },
@@ -167,6 +166,11 @@
                     "R": "4.5.3",
                     "Seurat": "5.5.0",
                     "anndataR": "1.0.2"
+                },
+                "SUBSETVAR_INNER": {
+                    "anndata": "0.12.10",
+                    "numpy": "2.3.5",
+                    "python": "3.13.12"
                 },
                 "SYMPHONY_HARMONYINTEGRATE": {
                     "pandas": "2.3.3",
@@ -195,6 +199,7 @@
             [
                 "celltypes",
                 "celltypes/singler",
+                "celltypes/singler/SRR28679756_singler_annotation_columns.csv",
                 "celltypes/singler/SRR28679756_singler_hpca_celldex_distribution.pdf",
                 "celltypes/singler/SRR28679756_singler_hpca_celldex_heatmap.pdf",
                 "celltypes/singler/SRR28679756_singler_hpca_direct_distribution.pdf",
@@ -204,6 +209,7 @@
                 "celltypes/singler/SRR28679756_singler_immune_direct_distribution.pdf",
                 "celltypes/singler/SRR28679756_singler_immune_direct_heatmap.pdf",
                 "celltypes/singler/SRR28679756_singler_predictions.csv",
+                "celltypes/singler/SRR28679757_singler_annotation_columns.csv",
                 "celltypes/singler/SRR28679757_singler_hpca_celldex_distribution.pdf",
                 "celltypes/singler/SRR28679757_singler_hpca_celldex_heatmap.pdf",
                 "celltypes/singler/SRR28679757_singler_hpca_direct_distribution.pdf",
@@ -213,6 +219,7 @@
                 "celltypes/singler/SRR28679757_singler_immune_direct_distribution.pdf",
                 "celltypes/singler/SRR28679757_singler_immune_direct_heatmap.pdf",
                 "celltypes/singler/SRR28679757_singler_predictions.csv",
+                "celltypes/singler/SRR28679758_singler_annotation_columns.csv",
                 "celltypes/singler/SRR28679758_singler_hpca_celldex_distribution.pdf",
                 "celltypes/singler/SRR28679758_singler_hpca_celldex_heatmap.pdf",
                 "celltypes/singler/SRR28679758_singler_hpca_direct_distribution.pdf",
@@ -223,20 +230,11 @@
                 "celltypes/singler/SRR28679758_singler_immune_direct_heatmap.pdf",
                 "celltypes/singler/SRR28679758_singler_predictions.csv",
                 "cluster_dimred",
-                "cluster_dimred/bbknn",
-                "cluster_dimred/bbknn/umap",
-                "cluster_dimred/combat",
-                "cluster_dimred/combat/umap",
                 "cluster_dimred/scvi",
                 "cluster_dimred/scvi/entropy",
                 "cluster_dimred/scvi/entropy/scvi-global-0.5_entropy.png",
                 "cluster_dimred/scvi/leiden",
                 "cluster_dimred/scvi/leiden/scvi-global-0.5_leiden.png",
-                "cluster_dimred/scvi/umap",
-                "cluster_dimred/seurat",
-                "cluster_dimred/seurat/umap",
-                "cluster_dimred/symphony",
-                "cluster_dimred/symphony/umap",
                 "combine",
                 "combine/integrate",
                 "combine/integrate/scib_metrics",
@@ -296,10 +294,10 @@
                 "qc-report.qmd:md5,13061014a897b3fbdafd6ea3212df0e0"
             ]
         ],
-        "timestamp": "2026-06-06T15:16:14.553425954",
+        "timestamp": "2026-07-13T16:11:51.620155418",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.3"
         }
     }
 }

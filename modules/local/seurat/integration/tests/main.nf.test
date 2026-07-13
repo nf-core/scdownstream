@@ -66,6 +66,14 @@ nextflow_process {
                 """
             }
         }
+        run("SCANPY_LOG1PNORM") {
+            script "modules/local/scanpy/log1pnorm/main.nf"
+            process {
+                """
+                input[0] = HVG_FILTER.out.h5ad
+                """
+            }
+        }
     }
 
     test("Should run without failures") {
@@ -76,7 +84,7 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = HVG_FILTER.out.h5ad
+                input[0] = SCANPY_LOG1PNORM.out.h5ad
                 input[1] = 'sample'
                 """
             }
@@ -106,7 +114,7 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = HVG_FILTER.out.h5ad
+                input[0] = SCANPY_LOG1PNORM.out.h5ad
                 input[1] = 'sample'
                 """
             }

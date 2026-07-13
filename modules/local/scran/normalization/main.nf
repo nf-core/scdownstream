@@ -12,7 +12,6 @@ process SCRAN_NORMALIZATION {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path "scran.mtx"                       , emit: layers
     path "versions.yml"                    , emit: versions, topic: versions
 
     when:
@@ -26,7 +25,6 @@ process SCRAN_NORMALIZATION {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
-    touch scran.mtx
     touch versions.yml
     """
 }

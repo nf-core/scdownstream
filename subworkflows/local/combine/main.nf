@@ -1,6 +1,9 @@
 include { INTEGRATE             } from '../integrate'
+include { NORMALIZATION         } from '../normalization'
 include { ADATA_MERGEEMBEDDINGS } from '../../../modules/local/adata/mergeembeddings'
 include { ADATA_MERGE           } from '../../../modules/local/adata/merge'
+include { ADATA_SUBSETVAR as SUBSETVAR_INNER } from '../../../modules/local/adata/subsetvar'
+include { ADATA_SUBSETVAR as SUBSETVAR_INTEGRATE } from '../../../modules/local/adata/subsetvar'
 include { SCIBMETRICS_BENCHMARK } from '../../../modules/local/scibmetrics/benchmark'
 
 workflow COMBINE {
@@ -34,7 +37,6 @@ workflow COMBINE {
     ch_obs           = channel.empty()
     ch_var           = channel.empty()
     ch_obsm          = channel.empty()
-    ch_layers        = channel.empty()
 
     ADATA_MERGE(
         ch_h5ad
@@ -43,12 +45,40 @@ workflow COMBINE {
             .map { meta, h5ads -> [meta, h5ads.sort { a, b -> a.name <=> b.name }] },
         ch_base,
     )
-    ch_var = ch_var.mix(ADATA_MERGE.out.intersect_genes)
     ch_outer = ADATA_MERGE.out.outer
-    ch_inner = ADATA_MERGE.out.inner
+    ch_inner = channel.empty()
+    ch_integrate_input = channel.empty()
+
+    if (!is_extension) {
+        NORMALIZATION(
+            ch_outer,
+            normalization_method,
+        )
+        ch_outer = NORMALIZATION.out.h5ad
+
+        SUBSETVAR_INNER(
+            ch_outer,
+            'intersection',
+        )
+        ch_inner = SUBSETVAR_INNER.out.h5ad
+        ch_integrate_input = ch_inner
+    }
+    else {
+        SUBSETVAR_INNER(
+            ch_outer,
+            'intersection',
+        )
+        ch_inner = SUBSETVAR_INNER.out.h5ad
+
+        SUBSETVAR_INTEGRATE(
+            ADATA_MERGE.out.integrate,
+            'intersection',
+        )
+        ch_integrate_input = SUBSETVAR_INTEGRATE.out.h5ad
+    }
 
     INTEGRATE(
-        ADATA_MERGE.out.integrate,
+        ch_integrate_input,
         is_extension,
         feature_selection,
         integration_n_features,
@@ -66,8 +96,7 @@ workflow COMBINE {
         expimap_gmt,
         condition_col
     )
-    ch_var = ch_var.mix(INTEGRATE.out.var)
-    ch_layers = ch_layers.mix(INTEGRATE.out.layers)
+    ch_var = INTEGRATE.out.var
 
     if (is_extension) {
         ADATA_MERGEEMBEDDINGS(
@@ -76,7 +105,7 @@ workflow COMBINE {
                 .combine(
                     ch_base.map { _meta, base -> base }
                 ).combine(
-                    ADATA_MERGE.out.inner.map { _meta, inner -> inner }
+                    ch_inner.map { _meta, inner -> inner }
                 )
         )
         ch_integrations  = ADATA_MERGEEMBEDDINGS.out.h5ad
@@ -112,6 +141,5 @@ workflow COMBINE {
     var              = ch_var           // channel: [ pkl ]
     obs              = ch_obs           // channel: [ pkl ]
     obsm             = ch_obsm          // channel: [ pkl ]
-    layers           = ch_layers        // channel: [ *.npy ]
     multiqc_files    = ch_multiqc_files // channel: [ *_mqc.json ]
 }

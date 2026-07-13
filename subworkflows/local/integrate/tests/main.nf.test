@@ -7,6 +7,20 @@ nextflow_workflow {
     tag "subworkflows"
     tag "subworkflows_local"
 
+    setup {
+        run("SCANPY_LOG1PNORM", alias: "PREP_NORMALIZED") {
+            script "modules/local/scanpy/log1pnorm/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                ])
+                """
+            }
+        }
+    }
+
     test("Should run without failures - symphony - stub") {
 
         options '-stub'
@@ -17,10 +31,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = channel.of([
-                    [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
-                ])
+                input[0] = PREP_NORMALIZED.out.h5ad
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -54,10 +65,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = channel.of([
-                    [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
-                ])
+                input[0] = PREP_NORMALIZED.out.h5ad
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -98,10 +106,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = channel.of([
-                    [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
-                ])
+                input[0] = PREP_NORMALIZED.out.h5ad
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -135,10 +140,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = channel.of([
-                    [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
-                ])
+                input[0] = PREP_NORMALIZED.out.h5ad
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -182,10 +184,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = channel.of([
-                    [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
-                ])
+                input[0] = PREP_NORMALIZED.out.h5ad
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -219,10 +218,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = channel.of([
-                    [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
-                ])
+                input[0] = PREP_NORMALIZED.out.h5ad
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -301,10 +297,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = channel.of([
-                    [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
-                ])
+                input[0] = PREP_NORMALIZED.out.h5ad
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -338,10 +331,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = channel.of([
-                    [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
-                ])
+                input[0] = PREP_NORMALIZED.out.h5ad
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -461,10 +451,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = channel.of([
-                    [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
-                ])
+                input[0] = PREP_NORMALIZED.out.h5ad
                 input[1] = false
                 input[2] = 'deviance'
                 input[3] = 500
@@ -500,10 +487,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = channel.of([
-                    [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
-                ])
+                input[0] = PREP_NORMALIZED.out.h5ad
                 input[1] = false
                 input[2] = 'pearson_residuals_hvgs'
                 input[3] = 500
@@ -537,10 +521,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = channel.of([
-                    [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
-                ])
+                input[0] = PREP_NORMALIZED.out.h5ad
                 input[1] = false
                 input[2] = 'deviance'
                 input[3] = 500
@@ -583,10 +564,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = channel.of([
-                    [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
-                ])
+                input[0] = PREP_NORMALIZED.out.h5ad
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000

@@ -13,9 +13,7 @@ process ADATA_MERGE {
 
     output:
     tuple val(meta), path("*_outer.h5ad")    , emit: outer
-    tuple val(meta), path("*_inner.h5ad")    , emit: inner
     tuple val(meta), path("*_integrate.h5ad"), emit: integrate
-    path "gene_intersection.pkl"             , emit: intersect_genes
     path "versions.yml"                      , emit: versions, topic: versions
 
     when:
@@ -30,9 +28,7 @@ process ADATA_MERGE {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}_outer.h5ad
-    touch ${prefix}_inner.h5ad
     touch ${prefix}_integrate.h5ad
-    touch gene_intersection.pkl
     touch versions.yml
     """
 }

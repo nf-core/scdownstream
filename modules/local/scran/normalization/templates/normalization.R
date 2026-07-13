@@ -5,7 +5,6 @@ library(scater)
 library(scuttle)
 library(anndataR)
 library(SingleCellExperiment)
-library(Matrix)
 
 adata <- read_h5ad("${h5ad}")
 
@@ -48,7 +47,6 @@ if (!all(keep_cells)) {
 }
 
 adata_out\$layers[["scran"]] <- logcounts
-writeMM(logcounts, "scran.mtx")
 write_h5ad(adata_out, "${prefix}.h5ad")
 
 r.version <- strsplit(version[["version.string"]], " ")[[1]][3]

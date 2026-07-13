@@ -7,7 +7,7 @@
                         {
                             "id": "merged"
                         },
-                        "merged_outer.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "merged_log1pnorm.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -28,7 +28,6 @@
                     ]
                 ],
                 "3": [
-                    "gene_intersection.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "merged_deviance_features.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "4": [
@@ -38,9 +37,6 @@
                     "X_scvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "6": [
-                    "log1p.npz:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                "7": [
                     
                 ],
                 "h5ad": [
@@ -48,7 +44,7 @@
                         {
                             "id": "merged"
                         },
-                        "merged_outer.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "merged_log1pnorm.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "h5ad_inner": [
@@ -68,9 +64,6 @@
                         "scvi.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "layers": [
-                    "log1p.npz:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
                 "multiqc_files": [
                     
                 ],
@@ -81,12 +74,11 @@
                     "X_scvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "var": [
-                    "gene_intersection.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "merged_deviance_features.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-07-11T13:46:49.801957575",
+        "timestamp": "2026-07-13T13:07:56.091737855",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.3"
@@ -109,11 +101,12 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "intersection"
                     ]
                 },
                 "layers": [
-                    "counts"
+                    "counts",
+                    "log1p"
                 ],
                 "obsm": [
                     
@@ -132,10 +125,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-05-20T20:49:57.677330269",
+        "timestamp": "2026-07-13T13:13:12.654417921",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.3"
         }
     }
 }

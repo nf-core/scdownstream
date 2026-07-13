@@ -12,7 +12,10 @@ plan("multicore", workers = max(1L, as.integer("${task.cpus}")))
 
 adata <- read_h5ad("${h5ad}")
 
-seurat_obj <- adata\$as_Seurat(x_mapping = "counts")
+seurat_obj <- adata\$as_Seurat(
+    x_mapping = "counts",
+    layers_mapping = FALSE
+)
 
 # Split layers by batch — V5 multi-layer integration workflow
 seurat_obj[["RNA"]] <- split(seurat_obj[["RNA"]], f = seurat_obj@meta.data[["${batch_col}"]])

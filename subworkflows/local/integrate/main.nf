@@ -1,4 +1,3 @@
-include { NORMALIZATION      } from '../normalization'
 include { FEATURE_SELECTION  } from '../feature_selection'
 include { SCVITOOLS_SCVI     } from '../../../modules/local/scvitools/scvi'
 include { SCVITOOLS_SCANVI   } from '../../../modules/local/scvitools/scanvi'
@@ -35,19 +34,11 @@ workflow INTEGRATE {
     ch_obs = channel.empty()
     ch_var = channel.empty()
     ch_obsm = channel.empty()
-    ch_layers = channel.empty()
     ch_integrations = channel.empty()
 
     // If a reference model is provided, only the genes in the reference model are used
     // Otherwise, we would intersect the HVGs, which is not what we want
     if (!is_extension) {
-        NORMALIZATION(
-            ch_h5ad,
-            normalization_method,
-        )
-        ch_h5ad = NORMALIZATION.out.h5ad
-        ch_layers = ch_layers.mix(NORMALIZATION.out.layers)
-
         FEATURE_SELECTION(
             ch_h5ad,
             feature_selection,
@@ -244,5 +235,4 @@ workflow INTEGRATE {
     obs          = ch_obs // channel: [ pkl ]
     var          = ch_var // channel: [ pkl ]
     obsm         = ch_obsm // channel: [ pkl ]
-    layers       = ch_layers // channel: [ *.npy ]
 }

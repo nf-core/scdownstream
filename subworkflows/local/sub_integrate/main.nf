@@ -1,5 +1,6 @@
 include { ADATA_SPLITCOL as SPLITCOL } from '../../../modules/local/adata/splitcol'
 include { INTEGRATE                  } from '../integrate'
+include { NORMALIZATION              } from '../normalization'
 include { anndata                      } from 'plugin/nf-anndata'
 
 workflow SUB_INTEGRATE {
@@ -64,8 +65,14 @@ workflow SUB_INTEGRATE {
         }
     }
 
-    SPLITCOL (
+    NORMALIZATION(
         ch_h5ad,
+        normalization_method,
+    )
+    ch_h5ad_normalized = NORMALIZATION.out.h5ad
+
+    SPLITCOL (
+        ch_h5ad_normalized,
         split_col
     )
 
@@ -111,9 +118,9 @@ workflow SUB_INTEGRATE {
         }
 
     emit:
+    h5ad         = ch_h5ad_normalized            // channel: [ meta, h5ad ]
     integrations = ch_integrations            // channel: [ meta, h5ad ]
     obs          = INTEGRATE.out.obs          // channel: [ pkl ]
     var          = INTEGRATE.out.var          // channel: [ pkl ]
     obsm         = INTEGRATE.out.obsm         // channel: [ pkl ]
-    layers       = INTEGRATE.out.layers       // channel: [ *.npy ]
 }
