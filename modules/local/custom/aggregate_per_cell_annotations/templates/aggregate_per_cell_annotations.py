@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 import scanpy as sc
 import yaml
+from scipy.stats import entropy
 
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
@@ -34,7 +35,7 @@ for cluster, group in adata.obs.groupby(cluster_col, observed=True):
     counts = group[annotation_col].astype(str).value_counts(normalize=True)
     dominant_label = counts.idxmax() if not counts.empty else ""
     dominant_fraction = float(counts.max()) if not counts.empty else 0.0
-    label_entropy = float(-(counts * np.log2(counts + 1e-12)).sum()) if not counts.empty else 0.0
+    label_entropy = float(entropy(counts, base=2)) if not counts.empty else 0.0
     conf_col = f"{annotation_col}:confidence"
     mean_conf = float(group[conf_col].mean()) if conf_col in group.columns else np.nan
     summary_rows.append(
