@@ -12,6 +12,13 @@ import yaml
 adata = ad.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 reference_condition = "${reference_condition}"
+if not reference_condition:
+    raise ValueError("reference_condition must be set for edgePython pseudobulk differential expression")
+
+
+def safe_name(value: str) -> str:
+    return re.sub(r"[^A-Za-z0-9._-]+", "_", str(value))
+
 
 required_cols = ["donor", "condition", "celltype"]
 for col in required_cols:
@@ -27,11 +34,9 @@ for celltype, celltype_data in adata.obs.groupby("celltype", observed=True):
     if len(conditions) < 2 or len(donors) < 2:
         continue
 
-    ref = reference_condition if reference_condition else conditions[0]
-    treatments = [condition for condition in conditions if condition != str(ref)]
+    treatments = [condition for condition in conditions if condition != reference_condition]
     if not treatments:
         continue
-    treatment = str(treatments[0])
 
     counts = sub.X
     if hasattr(counts, "toarray"):
@@ -43,7 +48,7 @@ for celltype, celltype_data in adata.obs.groupby("celltype", observed=True):
     metadata["donor"] = metadata["donor"].astype(str)
     metadata["condition"] = pd.Categorical(
         metadata["condition"],
-        categories=[str(ref), treatment],
+        categories=[reference_condition] + treatments,
     )
 
     design = ep.model_matrix(metadata, formula="~ donor + condition")
@@ -51,16 +56,18 @@ for celltype, celltype_data in adata.obs.groupby("celltype", observed=True):
     y = ep.calc_norm_factors(y)
     y = ep.estimate_disp(y)
     fit = ep.glm_ql_fit(y, design)
-    coef_name = f"condition{treatment}"
-    if coef_name not in design.columns:
-        continue
-    coef_index = list(design.columns).index(coef_name)
-    res = ep.glm_ql_ftest(fit, coef=coef_index)
-    top = ep.top_tags(res, n=sub.n_vars)
-    safe_celltype = re.sub(r"[^A-Za-z0-9._-]+", "_", str(celltype))
-    out_path = f"{prefix}_{safe_celltype}_results.csv"
-    top["table"].to_csv(out_path)
-    written.append(out_path)
+    safe_celltype = safe_name(celltype)
+
+    for treatment in treatments:
+        coef_name = f"condition{treatment}"
+        if coef_name not in design.columns:
+            continue
+        coef_index = list(design.columns).index(coef_name)
+        res = ep.glm_ql_ftest(fit, coef=coef_index)
+        top = ep.top_tags(res, n=sub.n_vars)
+        out_path = f"{prefix}_{safe_celltype}_{safe_name(treatment)}_results.csv"
+        top["table"].to_csv(out_path)
+        written.append(out_path)
 
 if not written:
     raise ValueError("No cell-type strata passed replicate filtering for edgePython pseudobulk")

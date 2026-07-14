@@ -16,7 +16,7 @@ process EDGEPYTHON_SCDIFFERENTIAL {
     val(reference_condition)
 
     output:
-    tuple val(meta), path("${prefix}_results.csv"), emit: results
+    tuple val(meta), path("${prefix}_*_results.csv"), emit: results
     path "versions.yml"                             , emit: versions, topic: versions
 
     when:
@@ -29,7 +29,7 @@ process EDGEPYTHON_SCDIFFERENTIAL {
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch ${prefix}_results.csv
+    touch ${prefix}_treatment_results.csv
     touch versions.yml
     """
 }

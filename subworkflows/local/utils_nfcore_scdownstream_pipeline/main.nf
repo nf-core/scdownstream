@@ -269,6 +269,27 @@ def pseudobulkDeMethods() {
     ['pydeseq2', 'edgepython'] as Set
 }
 
+def referenceConditionDeMethods() {
+    (pseudobulkDeMethods() + ['edgepython_sc']) as Set
+}
+
+def referenceConditionRequired() {
+    def global_methods = params.de_methods.split(',').collect { token -> token.trim() }.findAll { token -> token }
+    if (global_methods.intersect(referenceConditionDeMethods() as List)) {
+        return true
+    }
+    if (!params.analysis_plan) {
+        return false
+    }
+    return analysisPlanToList().any { row ->
+        def analyses = row.analyses
+            ? row.analyses.split(',').collect { token -> token.trim() }
+            : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype']
+        ('de' in analyses || !row.analyses) &&
+            resolvedDeMethodsForPlanRow(row).intersect(referenceConditionDeMethods() as List)
+    }
+}
+
 def resolvedDeMethodsForPlanRow(row) {
     if (row.de_methods) {
         return row.de_methods.split(',').collect { token -> token.trim() }.findAll { token -> token }
@@ -363,6 +384,12 @@ def validateInputParameters() {
     def invalid_de_methods = de_methods.findAll { method -> !(method in validDeMethods()) }
     if (invalid_de_methods) {
         throw new Exception("Invalid de_methods: ${invalid_de_methods.join(', ')}. Valid options: ${validDeMethods().join(', ')}")
+    }
+
+    if (referenceConditionRequired() && !params.reference_condition?.trim()) {
+        throw new Exception(
+            "reference_condition must be set when using pydeseq2, edgepython, or edgepython_sc differential expression methods"
+        )
     }
 
     if (pseudobulkingRequired() && params.base_adata) {

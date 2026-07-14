@@ -415,7 +415,7 @@
                 "reference_condition": {
                     "type": "string",
                     "description": "Reference condition level for condition-based differential expression contrasts.",
-                    "help_text": "Used by pseudobulk DE (`pydeseq2`, `edgepython`) and donor-aware `edgepython_sc`. Defaults to the first condition alphabetically when empty."
+                    "help_text": "Required for pseudobulk DE (`pydeseq2`, `edgepython`) and donor-aware `edgepython_sc` when those methods are enabled. Must match a condition level in the data."
                 },
                 "prep_cellxgene": {
                     "type": "boolean",

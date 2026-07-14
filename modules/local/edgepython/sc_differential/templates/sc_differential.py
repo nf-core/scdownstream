@@ -2,6 +2,7 @@
 
 import os
 import platform
+import re
 
 import anndata as ad
 import edgepython as ep
@@ -19,6 +20,13 @@ condition_col = "${condition_col}"
 celltype_col = "${celltype_col}"
 celltype_value = "${celltype_value}"
 reference_condition = "${reference_condition}"
+if not reference_condition:
+    raise ValueError("reference_condition must be set for edgepython_sc differential expression")
+
+
+def safe_name(value: str) -> str:
+    return re.sub(r"[^A-Za-z0-9._-]+", "_", str(value))
+
 
 for col in [donor_col, condition_col, celltype_col]:
     if col not in adata.obs.columns:
@@ -35,11 +43,9 @@ if len(conditions) < 2:
 if len(donors) < 2:
     raise ValueError("At least two donors are required for edgepython_sc")
 
-ref = reference_condition if reference_condition else conditions[0]
-treatments = [condition for condition in conditions if condition != str(ref)]
+treatments = [condition for condition in conditions if condition != reference_condition]
 if not treatments:
-    raise ValueError(f"Reference condition '{ref}' is the only condition present")
-treatment = treatments[0]
+    raise ValueError(f"Reference condition '{reference_condition}' is the only condition present")
 
 counts = subset.X
 if sp.issparse(counts):
@@ -51,17 +57,25 @@ metadata.columns = ["donor", "condition"]
 metadata["donor"] = metadata["donor"].astype(str)
 metadata["condition"] = pd.Categorical(
     metadata["condition"].astype(str),
-    categories=[str(ref), treatment],
+    categories=[reference_condition] + treatments,
 )
 
 fit = ep.glm_sc_fit(counts=counts, metadata=metadata, formula="~ condition", group_col="donor")
 fit = ep.shrink_sc_disp(fit)
-res = ep.glm_sc_test(fit, coef="condition", contrast=[treatment, str(ref)])
-results = res["table"] if isinstance(res, dict) else res
-if hasattr(results, "to_csv"):
-    results.to_csv(f"{prefix}_results.csv")
-else:
-    pd.DataFrame(results).to_csv(f"{prefix}_results.csv")
+
+written = []
+for treatment in treatments:
+    res = ep.glm_sc_test(fit, coef="condition", contrast=[treatment, reference_condition])
+    results = res["table"] if isinstance(res, dict) else res
+    out_path = f"{prefix}_{safe_name(treatment)}_results.csv"
+    if hasattr(results, "to_csv"):
+        results.to_csv(out_path)
+    else:
+        pd.DataFrame(results).to_csv(out_path)
+    written.append(out_path)
+
+if not written:
+    raise ValueError("No edgepython_sc contrasts could be tested")
 
 versions = {
     "${task.process}": {
