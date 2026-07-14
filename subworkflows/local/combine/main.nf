@@ -1,10 +1,10 @@
-include { INTEGRATE             } from '../integrate'
-include { NORMALIZATION         } from '../normalization'
-include { ADATA_MERGEEMBEDDINGS } from '../../../modules/local/adata/mergeembeddings'
-include { ADATA_MERGE           } from '../../../modules/local/adata/merge'
-include { ADATA_SUBSETVAR as SUBSETVAR_INNER } from '../../../modules/local/adata/subsetvar'
+include { INTEGRATE                              } from '../integrate'
+include { NORMALIZATION                          } from '../normalization'
+include { ADATA_MERGEEMBEDDINGS                  } from '../../../modules/local/adata/mergeembeddings'
+include { ADATA_MERGE                            } from '../../../modules/local/adata/merge'
+include { ADATA_SUBSETVAR as SUBSETVAR_INNER     } from '../../../modules/local/adata/subsetvar'
 include { ADATA_SUBSETVAR as SUBSETVAR_INTEGRATE } from '../../../modules/local/adata/subsetvar'
-include { SCIBMETRICS_BENCHMARK } from '../../../modules/local/scibmetrics/benchmark'
+include { SCIBMETRICS_BENCHMARK                  } from '../../../modules/local/scibmetrics/benchmark'
 
 workflow COMBINE {
 
