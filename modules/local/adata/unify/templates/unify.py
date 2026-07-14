@@ -58,6 +58,45 @@ def to_florent_case(s: str):
     return corrected.capitalize()
 
 
+def unify_obs_column(
+    adata,
+    source_col: str,
+    target_name: str,
+    default_value: str = "Unknown",
+    *,
+    apply_florent_case: bool = False,
+    unknown_label: str | None = None,
+) -> None:
+    if source_col:
+        if source_col not in adata.obs:
+            raise ValueError(
+                f"The specified {target_name} column does not exist in the dataset. Existing columns: "
+                + ", ".join(adata.obs.columns)
+            )
+
+        if source_col != target_name:
+            if target_name in adata.obs:
+                raise ValueError(f"The {target_name} column already exists.")
+            adata.obs[target_name] = adata.obs[source_col]
+            del adata.obs[source_col]
+
+        if unknown_label is not None and unknown_label != "unknown":
+            if "unknown" in adata.obs[target_name]:
+                raise ValueError(f"The {target_name} column already contains 'unknown' values.")
+            adata.obs[target_name].replace({unknown_label: "unknown"}, inplace=True)
+
+        adata.obs[target_name] = adata.obs[target_name].astype(str)
+        adata.obs[target_name] = adata.obs[target_name].fillna("unknown")
+        if apply_florent_case:
+            adata.obs[target_name] = adata.obs[target_name].map(to_florent_case)
+    else:
+        if target_name in adata.obs:
+            raise ValueError(f"The {target_name} column already exists.")
+        adata.obs[target_name] = default_value
+
+    adata.obs[target_name] = adata.obs[target_name].astype("category")
+
+
 adata = ad.read_h5ad("$h5ad")
 
 counts_layer = "${counts_layer}"
@@ -116,86 +155,35 @@ if batch_col != "batch":
         del adata.obs[batch_col]
 adata.obs["batch"] = adata.obs["batch"].astype(str).astype("category")
 
-if label_col:
-    if label_col not in adata.obs:
-        raise ValueError(
-            "The specified label column does not exist in the dataset. Existing columns: "
-            + ", ".join(adata.obs.columns)
-        )
-
-    if label_col != "label":
-        if "label" in adata.obs:
-            raise ValueError("The label column already exists.")
-        adata.obs["label"] = adata.obs[label_col]
-        del adata.obs[label_col]
-
-    if unknown_label != "unknown":
-        if "unknown" in adata.obs["label"]:
-            raise ValueError("The label column already contains 'unknown' values.")
-        adata.obs["label"].replace({unknown_label: "unknown"}, inplace=True)
-
-    # Replace all NaN values with "unknown"
-    adata.obs["label"] = adata.obs["label"].astype(str)
-    adata.obs["label"] = adata.obs["label"].fillna("unknown")
-    adata.obs["label"] = adata.obs["label"].map(to_florent_case)
-    adata.obs["label"] = adata.obs["label"].astype("category")
-else:
-    if "label" in adata.obs:
-        raise ValueError("The label column already exists.")
-    adata.obs["label"] = "Unknown"
-adata.obs["label"] = adata.obs["label"].astype("category")
+unify_obs_column(
+    adata,
+    label_col,
+    "label",
+    default_value="Unknown",
+    apply_florent_case=True,
+    unknown_label=unknown_label,
+)
 
 # Unify conditions
 condition_col = "${condition_col}"
 
-if condition_col:
-    if condition_col not in adata.obs:
-        raise ValueError(
-            "The specified condition column does not exist in the dataset. Existing columns: "
-            + ", ".join(adata.obs.columns)
-        )
-
-    if condition_col != "condition":
-        if "condition" in adata.obs:
-            raise ValueError("The condition column already exists.")
-        adata.obs["condition"] = adata.obs[condition_col]
-        del adata.obs[condition_col]
-
-    # Replace all NaN values with "unknown"
-    adata.obs["condition"] = adata.obs["condition"].astype(str)
-    adata.obs["condition"] = adata.obs["condition"].fillna("unknown")
-    adata.obs["condition"] = adata.obs["condition"].map(to_florent_case)
-    adata.obs["condition"] = adata.obs["condition"].astype("category")
-else:
-    if "condition" in adata.obs:
-        raise ValueError("The condition column already exists.")
-    adata.obs["condition"] = "Unknown"
-adata.obs["condition"] = adata.obs["condition"].astype("category")
+unify_obs_column(
+    adata,
+    condition_col,
+    "condition",
+    default_value="Unknown",
+    apply_florent_case=True,
+)
 
 # Unify donor / biological replicate column for pseudobulk analyses
 donor_col = "${donor_col}"
 
-if donor_col:
-    if donor_col not in adata.obs:
-        raise ValueError(
-            "The specified donor column does not exist in the dataset. Existing columns: "
-            + ", ".join(adata.obs.columns)
-        )
-
-    if donor_col != "donor":
-        if "donor" in adata.obs:
-            raise ValueError("The donor column already exists.")
-        adata.obs["donor"] = adata.obs[donor_col]
-        del adata.obs[donor_col]
-
-    adata.obs["donor"] = adata.obs["donor"].astype(str)
-    adata.obs["donor"] = adata.obs["donor"].fillna("unknown")
-    adata.obs["donor"] = adata.obs["donor"].astype("category")
-else:
-    if "donor" in adata.obs:
-        raise ValueError("The donor column already exists.")
-    adata.obs["donor"] = "unknown"
-adata.obs["donor"] = adata.obs["donor"].astype("category")
+unify_obs_column(
+    adata,
+    donor_col,
+    "donor",
+    default_value="unknown",
+)
 
 # Add "sample" column
 if "sample" in adata.obs and not adata.obs["sample"].equals("${meta.id}"):
