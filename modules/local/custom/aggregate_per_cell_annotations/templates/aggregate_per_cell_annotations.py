@@ -20,11 +20,9 @@ resolution = "${resolution}"
 
 
 def aggregated_annotation_column(per_cell_col: str, integration: str, resolution: str) -> str:
-    if per_cell_col.endswith(":per_cell:pruned"):
-        return per_cell_col.replace(":per_cell:pruned", f":aggregated:{integration}:{resolution}:pruned")
-    if per_cell_col.endswith(":per_cell"):
-        return per_cell_col.replace(":per_cell", f":aggregated:{integration}:{resolution}")
-    raise ValueError(f"Unexpected per-cell annotation column: {per_cell_col!r}")
+    if ":per_cell" not in per_cell_col:
+        raise ValueError(f"Unexpected per-cell annotation column: {per_cell_col!r}")
+    return per_cell_col.replace(":per_cell", f":aggregated:{integration}:{resolution}")
 
 
 output_col = aggregated_annotation_column(annotation_col, integration, resolution)
