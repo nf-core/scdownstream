@@ -18,14 +18,10 @@ annotation_col = "${annotation_col}"
 integration = "${integration}"
 resolution = "${resolution}"
 
+if ":per_cell" not in annotation_col:
+    raise ValueError(f"Unexpected per-cell annotation column: {annotation_col!r}")
 
-def aggregated_annotation_column(per_cell_col: str, integration: str, resolution: str) -> str:
-    if ":per_cell" not in per_cell_col:
-        raise ValueError(f"Unexpected per-cell annotation column: {per_cell_col!r}")
-    return per_cell_col.replace(":per_cell", f":aggregated:{integration}:{resolution}")
-
-
-output_col = aggregated_annotation_column(annotation_col, integration, resolution)
+output_col = annotation_col.replace(":per_cell", f":aggregated:{integration}:{resolution}")
 
 if annotation_col not in adata.obs.columns:
     raise ValueError(f"Annotation column {annotation_col!r} not found in adata.obs")
