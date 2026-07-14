@@ -22,8 +22,8 @@ adata = sc.read_h5ad("${h5ad}", backed="r")
 prefix = "${prefix}"
 
 kwargs = {"use_rep": "${rep}"}
-n_pcs = "${n_pcs}"
-if n_pcs and n_pcs not in {"null", ""}:
+n_pcs = "${n_pcs ?: ''}"
+if n_pcs:
     kwargs["n_pcs"] = int(n_pcs)
 
 sc.pp.neighbors(adata, **kwargs)

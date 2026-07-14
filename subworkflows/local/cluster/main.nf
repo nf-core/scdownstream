@@ -41,7 +41,7 @@ workflow CLUSTER {
     NEIGHBORS (
         ch_h5ad.needs_neighbors,
         embedding_key,
-        neighbors_n_pcs ?: '',
+        neighbors_n_pcs ?: [],
     )
 
     ch_h5ad_graph = NEIGHBORS.out.h5ad.mix(ch_h5ad.has_neighbors)
