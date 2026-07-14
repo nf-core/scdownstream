@@ -15,18 +15,22 @@ nextflow_workflow {
             params {
                 outdir = "$outputDir"
                 skip_liana = true
-                skip_rankgenesgroups = true
             }
             workflow {
                 """
                 input[0] = channel.of([
-                    [id: 'test', obs_key: 'leiden', condition_col: 'condition'],
+                    [id: 'test', obs_key: 'leiden', condition_col: 'condition', integration: 'scvi', resolution: '0.5', analyses: ['paga'] as Set],
                     file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                 ])
                 input[1] = channel.empty()
                 input[2] = true
-                input[3] = true
-                input[4] = ''
+                input[3] = ''
+                input[4] = 'wilcoxon'
+                input[5] = 'batch'
+                input[6] = 10
+                input[7] = 1000
+                input[8] = channel.empty()
+                input[9] = ''
                 """
             }
         }
@@ -46,18 +50,22 @@ nextflow_workflow {
             params {
                 outdir = "$outputDir"
                 skip_liana = true
-                skip_rankgenesgroups = true
             }
             workflow {
                 """
                 input[0] = channel.of([
-                    [id: 'test', obs_key: 'leiden', condition_col: 'condition'],
+                    [id: 'test', obs_key: 'leiden', condition_col: 'condition', integration: 'scvi', resolution: '0.5', analyses: ['paga'] as Set],
                     file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                 ])
                 input[1] = channel.empty()
                 input[2] = true
-                input[3] = true
-                input[4] = ''
+                input[3] = ''
+                input[4] = 'wilcoxon'
+                input[5] = 'batch'
+                input[6] = 10
+                input[7] = 1000
+                input[8] = channel.empty()
+                input[9] = ''
                 """
             }
         }
@@ -85,19 +93,32 @@ nextflow_workflow {
             params {
                 outdir = "$outputDir"
                 skip_liana = false
-                skip_rankgenesgroups = false
             }
             workflow {
                 """
                 def h5ad = channel.of([
-                    [id: 'test', obs_key: 'leiden', condition_col: 'condition'],
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        comparison_scope: 'global',
+                        de_method: 'wilcoxon',
+                        rank_key: 'rank_genes_groups',
+                    ],
                     file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = h5ad
                 input[1] = h5ad
                 input[2] = false
-                input[3] = false
-                input[4] = ''
+                input[3] = ''
+                input[4] = 'wilcoxon'
+                input[5] = 'batch'
+                input[6] = 10
+                input[7] = 1000
+                input[8] = channel.empty()
+                input[9] = ''
                 """
             }
         }
@@ -117,19 +138,32 @@ nextflow_workflow {
             params {
                 outdir = "$outputDir"
                 skip_liana = false
-                skip_rankgenesgroups = false
             }
             workflow {
                 """
                 def h5ad = channel.of([
-                    [id: 'test', obs_key: 'leiden', condition_col: 'condition'],
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        comparison_scope: 'global',
+                        de_method: 'wilcoxon',
+                        rank_key: 'rank_genes_groups',
+                    ],
                     file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = h5ad
                 input[1] = h5ad
                 input[2] = false
-                input[3] = false
-                input[4] = ''
+                input[3] = ''
+                input[4] = 'wilcoxon'
+                input[5] = false
+                input[6] = 10
+                input[7] = 1000
+                input[8] = channel.empty()
+                input[9] = ''
                 """
             }
         }
@@ -158,19 +192,32 @@ nextflow_workflow {
             params {
                 outdir = "$outputDir"
                 skip_liana = false
-                skip_rankgenesgroups = false
             }
             workflow {
                 """
                 def h5ad = channel.of([
-                    [id: 'test', obs_key: 'leiden', condition_col: 'condition'],
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        comparison_scope: 'global',
+                        de_method: 'wilcoxon',
+                        rank_key: 'rank_genes_groups',
+                    ],
                     file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = h5ad
                 input[1] = h5ad
                 input[2] = false
-                input[3] = false
-                input[4] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[3] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[4] = 'wilcoxon'
+                input[5] = 'batch'
+                input[6] = 10
+                input[7] = 1000
+                input[8] = channel.empty()
+                input[9] = ''
                 """
             }
         }
@@ -196,7 +243,6 @@ nextflow_workflow {
             params {
                 outdir = "$outputDir"
                 skip_liana = true
-                skip_rankgenesgroups = false
             }
             workflow {
                 """
@@ -212,8 +258,13 @@ nextflow_workflow {
                 input[0] = h5ad
                 input[1] = h5ad
                 input[2] = true
-                input[3] = false
-                input[4] = ''
+                input[3] = ''
+                input[4] = 'wilcoxon'
+                input[5] = 'batch'
+                input[6] = 10
+                input[7] = 1000
+                input[8] = channel.empty()
+                input[9] = ''
                 """
             }
         }
@@ -240,7 +291,6 @@ nextflow_workflow {
             params {
                 outdir = "$outputDir"
                 skip_liana = false
-                skip_rankgenesgroups = true
             }
             workflow {
                 """
@@ -256,8 +306,13 @@ nextflow_workflow {
                 input[0] = h5ad
                 input[1] = h5ad
                 input[2] = false
-                input[3] = true
-                input[4] = ''
+                input[3] = ''
+                input[4] = 'wilcoxon'
+                input[5] = 'batch'
+                input[6] = 10
+                input[7] = 1000
+                input[8] = channel.empty()
+                input[9] = ''
                 """
             }
         }
@@ -281,7 +336,6 @@ nextflow_workflow {
             params {
                 outdir = "$outputDir"
                 skip_liana = true
-                skip_rankgenesgroups = false
             }
             workflow {
                 """
@@ -297,8 +351,13 @@ nextflow_workflow {
                 input[0] = h5ad
                 input[1] = h5ad
                 input[2] = true
-                input[3] = false
-                input[4] = ''
+                input[3] = ''
+                input[4] = 'wilcoxon'
+                input[5] = 'batch'
+                input[6] = 10
+                input[7] = 1000
+                input[8] = channel.empty()
+                input[9] = ''
                 """
             }
         }
@@ -321,7 +380,6 @@ nextflow_workflow {
             params {
                 outdir = "$outputDir"
                 skip_liana = true
-                skip_rankgenesgroups = false
             }
             workflow {
                 """
@@ -337,8 +395,13 @@ nextflow_workflow {
                 input[0] = h5ad
                 input[1] = h5ad
                 input[2] = true
-                input[3] = false
-                input[4] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[3] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[4] = 'wilcoxon'
+                input[5] = 'batch'
+                input[6] = 10
+                input[7] = 1000
+                input[8] = channel.empty()
+                input[9] = ''
                 """
             }
         }
@@ -351,7 +414,7 @@ nextflow_workflow {
 
     }
 
-    test("Should run cytetype when listed in analyses - stub") {
+    test("Should force wilcoxon for cytetype when de_methods is empty - stub") {
 
         options '-stub'
 
@@ -359,7 +422,6 @@ nextflow_workflow {
             params {
                 outdir = "$outputDir"
                 skip_liana = true
-                skip_rankgenesgroups = false
             }
             workflow {
                 """
@@ -368,15 +430,25 @@ nextflow_workflow {
                         id: 'test',
                         obs_key: 'leiden',
                         condition_col: 'condition',
-                        analyses: ['de', 'cytetype'] as Set,
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        comparison_scope: 'global',
+                        de_method: 'wilcoxon',
+                        rank_key: 'rank_genes_groups',
+                        analyses: ['cytetype'] as Set,
                     ],
                     file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = h5ad
                 input[1] = h5ad
                 input[2] = true
-                input[3] = false
-                input[4] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[3] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[4] = ''
+                input[5] = 'batch'
+                input[6] = 10
+                input[7] = 1000
+                input[8] = channel.empty()
+                input[9] = ''
                 """
             }
         }
@@ -385,6 +457,140 @@ nextflow_workflow {
             assert workflow.success
             assert workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
             assert workflow.out.obs.any { _meta, pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
+        }
+
+    }
+
+    test("Should force wilcoxon for cytetype when another rgg method is configured - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        comparison_scope: 'global',
+                        de_method: 'wilcoxon',
+                        rank_key: 'rank_genes_groups',
+                        analyses: ['de', 'cytetype'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = true
+                input[3] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[4] = 'logreg'
+                input[5] = 'batch'
+                input[6] = 10
+                input[7] = 1000
+                input[8] = channel.empty()
+                input[9] = ''
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad.any { meta, _h5ad -> meta.de_method == 'wilcoxon' }
+            assert workflow.out.h5ad.any { meta, _h5ad -> meta.de_method == 'logreg' }
+            assert workflow.out.obs.any { _meta, pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
+        }
+
+    }
+
+    test("Should run aggregate_per_cell_annotation when analyses includes aggregate_per_cell_annotation - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        analyses: ['aggregate_per_cell_annotation'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = channel.empty()
+                input[1] = h5ad
+                input[2] = true
+                input[3] = ''
+                input[4] = 'wilcoxon'
+                input[5] = 'batch'
+                input[6] = 10
+                input[7] = 1000
+                input[8] = channel.of('annotation:celltypist:Adult_COVID19_PBMC:per_cell')
+                input[9] = 'label'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.obs.size() >= 1
+            assert workflow.out.obs.any { _meta, pkl -> file(pkl).name == 'test:annotation:celltypist:Adult_COVID19_PBMC:per_cell.pkl' }
+            assert workflow.out.uns.size() == 0
+        }
+
+    }
+
+    test("Should skip aggregate_per_cell_annotation when not listed in analyses - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        analyses: ['paga'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.empty()
+                input[2] = true
+                input[3] = ''
+                input[4] = 'wilcoxon'
+                input[5] = 'batch'
+                input[6] = 10
+                input[7] = 1000
+                input[8] = channel.empty()
+                input[9] = ''
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.obs.size() == 0
+            assert workflow.out.uns.any { file(it).name == 'test_paga.pkl' }
         }
 
     }

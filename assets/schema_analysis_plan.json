@@ -32,11 +32,19 @@
             },
             "analyses": {
                 "type": "string",
-                "pattern": "^(|paga|liana|de|cytetype)(,(paga|liana|de|cytetype))*$",
+                "pattern": "^(|paga|liana|de|aggregate_per_cell_annotation|cytetype)(,(paga|liana|de|aggregate_per_cell_annotation|cytetype))*$",
                 "default": null,
-                "errorMessage": "Analyses must be a comma-separated list of paga, liana, de, and/or cytetype",
-                "description": "Downstream analyses to run for matching clusterings, or empty to run all analyses",
+                "errorMessage": "Analyses must be a comma-separated list of paga, liana, de, aggregate_per_cell_annotation, and/or cytetype",
+                "description": "Downstream analyses to run for matching clusterings, or empty to run all analyses. Cluster-level cell type annotation uses aggregate_per_cell_annotation (majority vote of per-cell SingleR/CellTypist labels) and/or cytetype (CyteType LLM; requires cytetype_study_context).",
                 "meta": ["analyses"]
+            },
+            "de_methods": {
+                "type": "string",
+                "pattern": "^(|wilcoxon|t-test|t-test_overestim_var|logreg|pydeseq2|edgepython|edgepython_sc)(,(wilcoxon|t-test|t-test_overestim_var|logreg|pydeseq2|edgepython|edgepython_sc))*$",
+                "default": null,
+                "errorMessage": "de_methods must be a comma-separated list of wilcoxon, t-test, t-test_overestim_var, logreg, pydeseq2, edgepython, and/or edgepython_sc",
+                "description": "Differential expression engines for matching clusterings, or empty to use the global --de_methods default",
+                "meta": ["de_methods"]
             }
         }
     }

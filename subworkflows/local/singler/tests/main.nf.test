@@ -38,10 +38,10 @@ nextflow_workflow {
             with(predictions) {
                 assert rowCount > 0
                 // one label column per reference, keyed by the reference meta.id
-                assert columnNames.any { it.endsWith("labels_hpca_direct") }
-                assert columnNames.any { it.endsWith("pruned.labels_hpca_direct") }
-                assert columnNames.any { it.endsWith("labels_immune_celldex") }
-                assert columnNames.any { it.endsWith("pruned.labels_immune_celldex") }
+                assert columnNames.any { it == "annotation:singler:hpca_direct:per_cell" }
+                assert columnNames.any { it == "annotation:singler:hpca_direct:per_cell:pruned" }
+                assert columnNames.any { it == "annotation:singler:immune_celldex:per_cell" }
+                assert columnNames.any { it == "annotation:singler:immune_celldex:per_cell:pruned" }
             }
             assert snapshot(
                 workflow.out.obs,

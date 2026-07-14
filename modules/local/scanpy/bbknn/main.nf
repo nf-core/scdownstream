@@ -10,6 +10,8 @@ process SCANPY_BBKNN {
     input:
     tuple val(meta), path(h5ad)
     val(batch_col)
+    val(input_layer)
+    val(log_normalize)
 
     output:
     tuple val(meta), path("*.h5ad") , emit: h5ad

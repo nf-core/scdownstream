@@ -1,0 +1,81 @@
+nextflow_workflow {
+
+    name "Test Workflow FEATURE_SELECTION"
+    script "subworkflows/local/feature_selection/main.nf"
+    workflow "FEATURE_SELECTION"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    setup {
+        run("SCANPY_LOG1PNORM") {
+            script "modules/local/scanpy/log1pnorm/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                """
+            }
+        }
+    }
+
+    test("Should run hvgs feature selection") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = SCANPY_LOG1PNORM.out.h5ad
+                input[1] = 'hvgs'
+                input[2] = 2000
+                input[3] = []
+                input[4] = 'log1p'
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.success
+            assert "highly_variable" in adata.var.colnames
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run pearson_residuals_hvgs feature selection - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'pearson_residuals_hvgs'
+                input[2] = 500
+                input[3] = []
+                input[4] = 'log1p'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+}

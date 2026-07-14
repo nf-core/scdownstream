@@ -66,30 +66,26 @@ for adata in adatas:
             continue
         adata.obs[col] = adata.obs[col].astype(str).astype("category")
 
+gene_intersection = set(genes[0]).intersection(*genes[1:])
+
 adata_outer = ad.concat(adatas, join="outer")
+adata_outer.var["intersection"] = adata_outer.var_names.isin(gene_intersection).astype(bool)
+adata_outer.obs_names_make_unique()
 adata_outer.X = csr_matrix(adata_outer.X)
 
 # Sort obs columns alphabetically to make reproducible
 adata_outer.obs = adata_outer.obs.reindex(sorted(adata_outer.obs.columns), axis=1)
 
-gene_intersection = set(genes[0]).intersection(*genes[1:])
-intersection_mask = adata_outer.var_names.to_series(name="intersection").map(lambda x: x in gene_intersection)
-adata_inner = adata_outer[:, intersection_mask]
-
-intersection_mask.to_pickle("gene_intersection.pkl")
-
 adata_outer.write("${prefix}_outer.h5ad")
-adata_inner.write("${prefix}_inner.h5ad")
 
 if base_path:
-    adata_integrate = adata_inner[~adata_inner.obs.index.isin(adata_base.obs.index)]
+    adata_integrate = adata_outer[~adata_outer.obs.index.isin(adata_base.obs.index)].copy()
 
     known_labels = adata_base.obs["label"].unique()
     adata_integrate.obs["label"] = adata_integrate.obs["label"].map(lambda x: x if x in known_labels else "Unknown")
     adata_integrate.write("${prefix}_integrate.h5ad")
 else:
-    # Create symlink to the inner dataset
-    os.symlink("${prefix}_inner.h5ad", "${prefix}_integrate.h5ad")
+    os.symlink("${prefix}_outer.h5ad", "${prefix}_integrate.h5ad")
 
 # Versions
 

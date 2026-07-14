@@ -15,6 +15,8 @@ process CYTETYPE {
     val study_context
     val group_key
     val rank_key
+    val integration
+    val resolution
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad

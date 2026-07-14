@@ -12,6 +12,7 @@ include { UTILS_NFSCHEMA_PLUGIN     } from '../../nf-core/utils_nfschema_plugin'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
 include { samplesheetToList         } from 'plugin/nf-schema'
 include { paramsHelp                } from 'plugin/nf-schema'
+include { anndata                   } from 'plugin/nf-anndata'
 include { completionEmail           } from '../../nf-core/utils_nfcore_pipeline'
 include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NFCORE_PIPELINE     } from '../../nf-core/utils_nfcore_pipeline'
@@ -97,6 +98,11 @@ workflow PIPELINE_INITIALISATION {
     )
 
     //
+    // Custom validation for pipeline parameters
+    //
+    validateInputParameters()
+
+    //
     // Create channel from input file provided through params.input
     //
     ch_samplesheet = params.input
@@ -166,7 +172,7 @@ def analysisPlanToList() {
     params.analysis_plan
         ? samplesheetToList(params.analysis_plan, "${projectDir}/assets/schema_analysis_plan.json")
             .collect { row -> row[0] }
-        : [[integration: null, subset: null, resolution: null, analyses: null]]
+        : [[integration: null, subset: null, resolution: null, analyses: null, de_methods: null]]
 }
 
 def matchesAnalysisPlanRow(row, meta, resolution = null) {
@@ -180,14 +186,153 @@ def matchingAnalysisPlanRows(rows, meta, resolution = null) {
 }
 
 def analysesFromPlanRows(rows) {
-    if (!rows || rows.any { !it.analyses }) {
+    if (!rows || rows.any { row -> !row.analyses }) {
         return [:]
     }
     [
         analyses: rows
-            .collectMany { row -> row.analyses.split(',')*.trim() }
+            .collectMany { row -> row.analyses.split(',').collect { token -> token.trim() } }
             .toSet(),
     ]
+}
+
+def deMethodsFromPlanRows(rows) {
+    def methods = rows
+        .findAll { row -> row.de_methods }
+        .collectMany { row -> row.de_methods.split(',').collect { token -> token.trim() } }
+        .findAll { method -> method }
+        .toSet()
+    if (methods.isEmpty()) {
+        return [:]
+    }
+    [de_methods: methods]
+}
+
+def resolveDeMethods(meta, default_methods) {
+    if (meta.de_methods) {
+        return meta.de_methods as Set
+    }
+    return default_methods.split(',').collect { token -> token.trim() }.findAll { token -> token } as Set
+}
+
+def analysisEnabled(meta, token) {
+    meta.analyses == null || token in meta.analyses
+}
+
+def cytetypeEligible(meta, cytetype_study_context) {
+    cytetype_study_context && analysisEnabled(meta, 'cytetype')
+}
+
+def resolveDeMethodsWithPrerequisites(meta, default_methods, cytetype_study_context = '') {
+    def resolved = resolveDeMethods(meta, default_methods)
+    def extra = [:]
+    if (cytetypeEligible(meta, cytetype_study_context)) {
+        if (!('wilcoxon' in resolved)) {
+            resolved = resolved + 'wilcoxon'
+        }
+        extra.cytetype_prerequisite = true
+    }
+    return [de_methods_resolved: resolved] + extra
+}
+
+def rankGenesGroupsAnalysisEnabled(meta) {
+    meta.analyses == null || 'de' in meta.analyses || meta.cytetype_prerequisite
+}
+
+def rankGenesGroupsMethods() {
+    ['wilcoxon', 't-test', 't-test_overestim_var', 'logreg'] as Set
+}
+
+def rankGenesGroupsMethodSlug(method) {
+    method.replace('-', '_')
+}
+
+def rankGenesGroupsMethodKey(method, single_method = false) {
+    single_method ? 'rank_genes_groups' : "rank_genes_groups_${rankGenesGroupsMethodSlug(method)}"
+}
+
+def preferredRankGenesGroupsMethod(methods) {
+    def order = ['wilcoxon', 't-test', 't-test_overestim_var', 'logreg']
+    def resolved = methods.intersect(rankGenesGroupsMethods())
+    order.find { method -> method in resolved } ?: resolved.toList()[0]
+}
+
+def validDeMethods() {
+    (rankGenesGroupsMethods() + ['pydeseq2', 'edgepython', 'edgepython_sc']) as Set
+}
+
+def cellLevelDeMethods() {
+    (rankGenesGroupsMethods() + ['edgepython_sc']) as Set
+}
+
+def pseudobulkDeMethods() {
+    ['pydeseq2', 'edgepython'] as Set
+}
+
+def referenceConditionDeMethods() {
+    (pseudobulkDeMethods() + ['edgepython_sc']) as Set
+}
+
+def referenceConditionRequired() {
+    def global_methods = params.de_methods.split(',').collect { token -> token.trim() }.findAll { token -> token }
+    if (global_methods.intersect(referenceConditionDeMethods() as List)) {
+        return true
+    }
+    if (!params.analysis_plan) {
+        return false
+    }
+    return analysisPlanToList().any { row ->
+        def analyses = row.analyses
+            ? row.analyses.split(',').collect { token -> token.trim() }
+            : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype']
+        ('de' in analyses || !row.analyses) &&
+            resolvedDeMethodsForPlanRow(row).intersect(referenceConditionDeMethods() as List)
+    }
+}
+
+def resolvedDeMethodsForPlanRow(row) {
+    if (row.de_methods) {
+        return row.de_methods.split(',').collect { token -> token.trim() }.findAll { token -> token }
+    }
+    return params.de_methods.split(',').collect { token -> token.trim() }.findAll { token -> token }
+}
+
+def pseudobulkDeMethodsRequested() {
+    def global_methods = params.de_methods.split(',').collect { token -> token.trim() }.findAll { token -> token }
+    if (global_methods.intersect(pseudobulkDeMethods() as List)) {
+        return true
+    }
+    if (!params.analysis_plan) {
+        return false
+    }
+    return analysisPlanToList().any { row ->
+        def analyses = row.analyses
+            ? row.analyses.split(',').collect { token -> token.trim() }
+            : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype']
+        ('de' in analyses || !row.analyses) &&
+            resolvedDeMethodsForPlanRow(row).intersect(pseudobulkDeMethods() as List)
+    }
+}
+
+def pseudobulkingRequired() {
+    params.pseudobulk || pseudobulkDeMethodsRequested()
+}
+
+def pseudobulkingEnabled(meta, pseudobulk_flag = params.pseudobulk) {
+    if (pseudobulk_flag) {
+        return true
+    }
+    if (meta.analyses && !('de' in meta.analyses)) {
+        return false
+    }
+    return meta.de_methods_resolved.intersect(pseudobulkDeMethods())
+}
+
+def pseudobulkDeEnabled(meta) {
+    if (!(meta.analyses == null || 'de' in meta.analyses)) {
+        return false
+    }
+    return meta.de_methods_resolved.intersect(pseudobulkDeMethods())
 }
 
 //
@@ -234,6 +379,27 @@ def validateInputParameters() {
     if (params.sample_n && params.sample_fraction) {
         throw new Exception("Both sample_n and sample_fraction are set. Please use only one of them.")
     }
+
+    def de_methods = params.de_methods.split(',').collect { token -> token.trim() }.findAll { token -> token }
+    def invalid_de_methods = de_methods.findAll { method -> !(method in validDeMethods()) }
+    if (invalid_de_methods) {
+        throw new Exception("Invalid de_methods: ${invalid_de_methods.join(', ')}. Valid options: ${validDeMethods().join(', ')}")
+    }
+
+    if (referenceConditionRequired() && !params.reference_condition?.trim()) {
+        throw new Exception(
+            "reference_condition must be set when using pydeseq2, edgepython, or edgepython_sc differential expression methods"
+        )
+    }
+
+    if (pseudobulkingRequired() && params.base_adata) {
+        def ad = anndata(file(params.base_adata, checkIfExists: true))
+        if (!('donor' in ad.obs.colnames)) {
+            throw new Exception(
+                "Pseudobulking requires a 'donor' column in base_adata. Available obs columns: ${ad.obs.colnames.join(', ')}."
+            )
+        }
+    }
 }
 
 //
@@ -243,6 +409,21 @@ def validateInputSamplesheet(input) {
     def (meta, filtered, unfiltered) = input
     if (!filtered && !unfiltered) {
         throw new Exception("Both filtered and unfiltered files are missing for sample ${meta.id}")
+    }
+
+    if (params.ambient_correction == 'soupx' && meta.ambient_correction != false && !unfiltered) {
+        throw new Exception(
+            "Sample '${meta.id}' is configured for SoupX ambient correction but no unfiltered matrix was provided. " +
+            "Provide an unfiltered matrix, set sample-level ambient_correction to false to disable ambient correction for this sample, " +
+            "or use --ambient_correction decontx for filtered-only input."
+        )
+    }
+
+    if (pseudobulkingRequired() && !meta.donor_col) {
+        throw new Exception(
+            "Sample '${meta.id}' requires a donor_col in the samplesheet for pseudobulking. " +
+            "Set donor_col to the obs column containing biological replicate identifiers."
+        )
     }
 
     return input

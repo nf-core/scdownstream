@@ -7,7 +7,7 @@ nextflow_process {
     tag "modules"
     tag "modules_local"
 
-    test("Should run without failures") {
+    test("Should run without failures when n_pcs is empty array") {
 
         when {
             params {
@@ -21,13 +21,49 @@ nextflow_process {
                     ]
                 )
                 input[1] = "X_pca"
+                input[2] = []
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
             assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "connectivities" in obsp
+                assert "distances" in obsp
+                assert "neighbors" in uns
+            }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures when n_pcs is provided") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "X_pca"
+                input[2] = 30
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
             with(adata) {
                 assert "connectivities" in obsp
                 assert "distances" in obsp
@@ -57,6 +93,7 @@ nextflow_process {
                     ]
                 )
                 input[1] = "X_pca"
+                input[2] = ''
                 """
             }
         }

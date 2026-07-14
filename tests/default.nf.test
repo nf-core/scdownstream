@@ -9,6 +9,7 @@ nextflow_pipeline {
         when {
             params {
                 outdir = "$outputDir"
+                ambient_correction = 'decontx'
             }
         }
 
@@ -27,6 +28,9 @@ nextflow_pipeline {
             // stable_content: All files in ${params.outdir}/ with stable content
             def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
             assert workflow.success
+            def adata_merged = anndata("$outputDir/finalized/merged.h5ad")
+            assert adata_merged.n_vars > 0
+            assert "scran" in adata_merged.layers || "log1p" in adata_merged.layers
             assertAll(
                 { assert snapshot(
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions

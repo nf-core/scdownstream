@@ -1,23 +1,25 @@
-include { SCANPY_HVGS        } from '../../../modules/local/scanpy/hvgs'
-include { SCANPY_FILTER      } from '../../../modules/local/scanpy/filter'
-include { SCVITOOLS_SCVI     } from '../../../modules/local/scvitools/scvi'
-include { SCVITOOLS_SCANVI   } from '../../../modules/local/scvitools/scanvi'
+include { FEATURE_SELECTION         } from '../feature_selection'
+include { SCVITOOLS_SCVI            } from '../../../modules/local/scvitools/scvi'
+include { SCVITOOLS_SCANVI          } from '../../../modules/local/scvitools/scanvi'
 include { SYMPHONY_HARMONYINTEGRATE } from '../../../modules/local/symphony/harmonyintegrate'
 include { SYMPHONY_MAPEMBEDDING     } from '../../../modules/local/symphony/mapembedding'
-include { SCANPY_BBKNN       } from '../../../modules/local/scanpy/bbknn'
-include { SCANPY_COMBAT      } from '../../../modules/local/scanpy/combat'
-include { SCANPY_PCA         } from '../../../modules/local/scanpy/pca'
-include { SCARCHES_EXPIMAP   } from '../../../modules/local/scarches/expimap'
-include { SEURAT_INTEGRATION } from '../../../modules/local/seurat/integration'
-include { ADATA_READRDS      } from '../../../modules/local/adata/readrds'
-include { SCIMILARITY        } from '../scimilarity'
+include { SCANPY_BBKNN              } from '../../../modules/local/scanpy/bbknn'
+include { SCANPY_COMBAT             } from '../../../modules/local/scanpy/combat'
+include { SCANPY_PCA                } from '../../../modules/local/scanpy/pca'
+include { SCANORAMA_INTEGRATE       } from '../../../modules/local/scanorama/integrate'
+include { SCARCHES_EXPIMAP          } from '../../../modules/local/scarches/expimap'
+include { SEURAT_INTEGRATION        } from '../../../modules/local/seurat/integration'
+include { ADATA_READRDS             } from '../../../modules/local/adata/readrds'
+include { SCIMILARITY               } from '../scimilarity'
 
 workflow INTEGRATE {
     take:
     ch_h5ad                     // channel: [ merged, h5ad ]
     is_extension                // boolean
-    n_hvgs                      // integer
+    feature_selection           // string: hvgs | deviance | pearson_residuals_hvgs | none
+    n_features                  // integer
     excluded_genes              // path
+    normalization_method        // string
     methods                     // list of string
     scvi_model                  // path
     scanvi_model                // path
@@ -37,34 +39,15 @@ workflow INTEGRATE {
     // If a reference model is provided, only the genes in the reference model are used
     // Otherwise, we would intersect the HVGs, which is not what we want
     if (!is_extension) {
-        SCANPY_HVGS (
+        FEATURE_SELECTION(
             ch_h5ad,
-            n_hvgs,
-            excluded_genes
+            feature_selection,
+            n_features,
+            excluded_genes,
+            normalization_method,
         )
-        ch_h5ad_hvg = SCANPY_HVGS.out.h5ad
-
-        // See issue 215
-        // ch_var = ch_var.mix(SCANPY_HVGS.out.var)
-
-        // Filter out empty cells from the AnnData object
-        SCANPY_FILTER (
-            ch_h5ad_hvg,
-            "index",
-            1,
-            0,
-            0,
-            0,
-            100,
-            0,
-            100,
-            0,
-            0,
-            0,
-            0,
-            []
-        )
-        ch_h5ad_hvg = SCANPY_FILTER.out.h5ad
+        ch_h5ad_hvg = FEATURE_SELECTION.out.h5ad
+        ch_var = ch_var.mix(FEATURE_SELECTION.out.var)
     }
     else {
         ch_h5ad_hvg = ch_h5ad
@@ -174,9 +157,24 @@ workflow INTEGRATE {
             ch_h5ad_hvg.map { meta, h5ad ->
                 [meta + [integration: 'bbknn'], h5ad]
             },
-            "batch"
+            "batch",
+            normalization_method,
+            false,
         )
         ch_integrations = ch_integrations.mix(SCANPY_BBKNN.out.h5ad)
+    }
+
+    if (methods.contains('scanorama')) {
+        SCANORAMA_INTEGRATE (
+            ch_h5ad_hvg.map { meta, h5ad ->
+                [meta + [integration: 'scanorama'], h5ad]
+            },
+            "batch",
+            normalization_method,
+            false,
+        )
+        ch_integrations = ch_integrations.mix(SCANORAMA_INTEGRATE.out.h5ad)
+        ch_obsm = ch_obsm.mix(SCANORAMA_INTEGRATE.out.obsm)
     }
 
     if (methods.contains('combat')) {
@@ -184,7 +182,9 @@ workflow INTEGRATE {
             ch_h5ad_hvg.map { meta, h5ad ->
                 [meta + [integration: 'combat'], h5ad]
             },
-            "batch"
+            "batch",
+            normalization_method,
+            false,
         )
         ch_integrations = ch_integrations.mix(SCANPY_COMBAT.out.h5ad)
         ch_obsm = ch_obsm.mix(SCANPY_COMBAT.out.obsm)
@@ -195,7 +195,9 @@ workflow INTEGRATE {
             ch_h5ad_hvg.map { meta, h5ad ->
                 [meta + [integration: 'pca'], h5ad]
             },
-            "X_emb"
+            "X_emb",
+            normalization_method,
+            false,
         )
         ch_integrations = ch_integrations.mix(SCANPY_PCA.out.h5ad)
         ch_obsm = ch_obsm.mix(SCANPY_PCA.out.obsm)

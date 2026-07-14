@@ -113,9 +113,9 @@
                 },
                 "ambient_correction": {
                     "type": "string",
-                    "default": "decontx",
+                    "default": "soupx",
                     "enum": ["none", "decontx", "cellbender", "soupx", "scar"],
-                    "description": "Specify the tool to use for ambient RNA correction. If 'none' is selected, no ambient RNA correction will be performed. If you want to use ambient RNA correction only for a subset of datasets, you can use the 'ambient_correction' column in the sample sheet. By default, the ambient-corrected counts will NOT be used for integration, but only stored as an additional layer in the final AnnData object because of the findings in [this publication](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-023-02978-x). If you want to use the ambient-corrected counts for integration, set `ambient_corrected_integration` to true in the sample sheet."
+                    "description": "Specify the tool to use for ambient RNA correction. SoupX is the default and requires an unfiltered matrix for each corrected sample. If 'none' is selected, no ambient RNA correction will be performed. Per-sample overrides are available via the samplesheet `ambient_correction` column."
                 },
                 "ambient_corrected_integration": {
                     "type": "boolean",
@@ -125,15 +125,20 @@
                 },
                 "doublet_detection": {
                     "type": "string",
-                    "default": "scrublet",
-                    "description": "Specify the tools to use for doublet detection. Setting to 'none' will skip this step",
+                    "default": "scdblfinder",
+                    "description": "Specify the tools to use for doublet detection. Setting to 'none' will skip this step. Default scDblFinder follows sc-best-practices recommendations.",
                     "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: solo, scrublet, doubletdetection, scdblfinder",
                     "pattern": "^(none|(solo|scrublet|doubletdetection|scdblfinder)(,(solo|scrublet|doubletdetection|scdblfinder))*)$"
                 },
                 "doublet_detection_threshold": {
                     "type": "integer",
                     "default": 1,
-                    "description": "Number of tools that need to agree on a doublet for it to be called as such"
+                    "description": "Number of tools that need to agree on a doublet for it to be removed when `doublet_removal` is true"
+                },
+                "doublet_removal": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to remove cells flagged as doublets. When false (default), doublet scores are stored in `adata.obs` for inspection, following sc-best-practices guidance to review doublets before filtering."
                 },
                 "cellbender_epochs": {
                     "type": "integer",
@@ -152,20 +157,34 @@
                     "type": "string",
                     "default": "scvi",
                     "description": "Specify the tool to use for integration",
-                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, symphony, bbknn, combat, seurat, scimilarity, pca, expimap",
-                    "pattern": "^((scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap)(,(scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap))*)?$"
+                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, symphony, bbknn, combat, seurat, scimilarity, pca, expimap, scanorama",
+                    "pattern": "^((scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap|scanorama)(,(scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap|scanorama))*)?$"
                 },
-                "integration_hvgs": {
+                "feature_selection": {
+                    "type": "string",
+                    "default": "deviance",
+                    "enum": ["hvgs", "deviance", "pearson_residuals_hvgs", "none"],
+                    "description": "Gene selection method applied before integration on merged counts.",
+                    "help_text": "Default is binomial deviance via scry (`deviance`), as recommended in sc-best-practices. Use `hvgs` for scanpy highly variable genes, `pearson_residuals_hvgs` for Pearson-residual HVG selection on raw counts, or `none` to skip feature selection. The `python_only` profile overrides this to `hvgs`. Gene count is controlled by `integration_n_features` (`0` = auto: scanpy auto for HVGs, 4000 for deviance and pearson_residuals_hvgs). Ignored when a reference model defines the gene set."
+                },
+                "integration_n_features": {
                     "type": "integer",
                     "default": 0,
-                    "description": "Number of highly variable genes to use for integration. If set to 0, the number of highly variable genes will be automatically determined. If set to a negative number, all genes will be used.",
-                    "help_text": "If a reference model is provided, this does not have any effect. This is because the reference model defines the set of genes that will be used for integration."
+                    "description": "Number of genes to retain for integration feature selection.",
+                    "help_text": "Applies to `hvgs`, `deviance`, and `pearson_residuals_hvgs`. If set to 0, the number of genes is chosen automatically (scanpy default for HVGs, 4000 for deviance and pearson_residuals_hvgs). If set to a negative number, all genes are used when `feature_selection` is `hvgs` or `none`; negative values are not supported for `pearson_residuals_hvgs`. If a reference model is provided, this does not have any effect because the reference model defines the gene set."
                 },
                 "integration_excluded_genes": {
                     "type": "string",
                     "format": "file-path",
-                    "description": "Optional file containing a list of gene symbols (one per line). If provided, these genes will be excluded from highly variable genes selection for integration.",
+                    "description": "Optional file containing a list of gene symbols (one per line). If provided, these genes will be excluded from feature selection for integration.",
                     "exists": true
+                },
+                "normalization_method": {
+                    "type": "string",
+                    "default": "scran",
+                    "description": "Normalisation method to compute before feature selection and integration.",
+                    "help_text": "Supported methods: `log1p` (shifted-log layer `log1p`) and `scran` (scran-normalised layer `scran`). Raw counts remain in `X`. Layer-aware integrations (PCA, BBKNN, Combat, Scanorama, scanpy HVGs) read the matching layer. Count-model integrations and differential expression always use raw counts. Default: `scran`. The `python_only` profile overrides this to `log1p`.",
+                    "pattern": "^(log1p|scran)$"
                 },
                 "symphony_reference": {
                     "type": "string",
@@ -257,10 +276,21 @@
             "properties": {
                 "clustering_resolutions": {
                     "type": "string",
-                    "default": "0.5,1.0",
+                    "default": "0.25,0.5,1.0",
                     "description": "Specify the resolutions for clustering",
                     "help_text": "Specify the resolutions for clustering. If you want to use multiple resolutions, separate them with a comma.",
                     "pattern": "^\\d+(\\.\\d+)?(,\\d+(\\.\\d+)?)*$"
+                },
+                "neighbors_n_pcs": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Number of principal components used to build the neighbour graph before UMAP and Leiden clustering.",
+                    "help_text": "When omitted, scanpy uses its default (`n_pcs`). Set to `30` to follow the sc-best-practices clustering tutorial when using PCA or Symphony embeddings."
+                },
+                "tsne": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Compute a t-SNE embedding alongside UMAP for each integration method."
                 },
                 "cluster_per_label": {
                     "type": "boolean",
@@ -273,8 +303,8 @@
                 },
                 "analysis_plan": {
                     "type": "string",
-                    "description": "Path to a CSV file controlling which integration × resolution combinations feed into downstream analyses (PAGA, LIANA, DE, CyteType).",
-                    "help_text": "All columns are optional — empty values act as wildcards. When provided, rows are matched against each clustering result; analyses from all matching rows are combined. When --analysis_plan is not set, all combinations run all analyses (governed by skip_liana / skip_rankgenesgroups). See the usage docs for the full schema.",
+                    "description": "Path to a CSV file controlling which integration × resolution combinations feed into downstream analyses (PAGA, LIANA, DE, cluster-level annotation).",
+                    "help_text": "All columns are optional — empty values act as wildcards. When provided, rows are matched against each clustering result; analyses from all matching rows are combined. When --analysis_plan is not set, all combinations run paga, liana, de, aggregate_per_cell_annotation, and cytetype (subject to skip_liana, --de_methods, and cytetype_study_context). Cluster-level annotation tokens: aggregate_per_cell_annotation (majority vote of per-cell SingleR/CellTypist labels) and cytetype (CyteType LLM). See the usage docs for the full schema.",
                     "mimetype": "text/csv",
                     "schema": "assets/schema_analysis_plan.json",
                     "pattern": "^\\S+\\.csv$"
@@ -344,10 +374,6 @@
                     "type": "boolean",
                     "description": "Skip the LIANA step. For large datasets, the pipeline might fail due to high memory usage in this step. Use this option to skip it."
                 },
-                "skip_rankgenesgroups": {
-                    "type": "boolean",
-                    "description": "Skip the rank_genes_groups step. For large datasets, the pipeline might fail due to high memory usage in this step. Use this option to skip it."
-                },
                 "skip_qc_report": {
                     "type": "boolean",
                     "description": "Skip rendering the Quarto QC HTML report in reports/."
@@ -379,16 +405,17 @@
                     "enum": ["fast", "full"],
                     "description": "scib-metrics metric set. 'fast' disables expensive metrics (isolated labels, k-means NMI/ARI, PCR comparison) for routine runs; 'full' runs the default scib-metrics benchmark suite for publication-style scoring."
                 },
-                "rankgenesgroups_method": {
+                "de_methods": {
                     "type": "string",
                     "default": "wilcoxon",
-                    "enum": ["t-test", "t-test_overestim_var", "wilcoxon", "logreg"],
-                    "description": "Statistical method for ranking genes in differential expression analysis.",
-                    "help_text": "Available methods are: 't-test' (default t-test), 't-test_overestim_var' (t-test with overestimated variance), 'wilcoxon' (Wilcoxon rank-sum test, default), 'logreg' (logistic regression)."
+                    "pattern": "^(|wilcoxon|t-test|t-test_overestim_var|logreg|pydeseq2|edgepython|edgepython_sc)(,(wilcoxon|t-test|t-test_overestim_var|logreg|pydeseq2|edgepython|edgepython_sc))*$",
+                    "description": "Comma-separated differential expression engines to run when enabled by the analysis plan.",
+                    "help_text": "Rank-genes-groups methods: `wilcoxon`, `t-test`, `t-test_overestim_var`, `logreg` (cluster, condition, and label-stratified comparisons via Scanpy). Pseudobulk sample-level methods: `pydeseq2`, `edgepython` (automatically run pseudobulk aggregation when `de` is enabled). Donor-aware single-cell: `edgepython_sc`. Set to an empty string (`--de_methods ''`) to disable all DE engines unless a matching `--analysis_plan` row supplies `de_methods`. Per-row overrides are supported in `--analysis_plan`."
                 },
-                "pseudobulk": {
-                    "type": "boolean",
-                    "description": "Perform pseudobulking"
+                "reference_condition": {
+                    "type": "string",
+                    "description": "Reference condition level for condition-based differential expression contrasts.",
+                    "help_text": "Required for pseudobulk DE (`pydeseq2`, `edgepython`) and donor-aware `edgepython_sc` when those methods are enabled. Must match a condition level in the data."
                 },
                 "prep_cellxgene": {
                     "type": "boolean",
@@ -468,20 +495,25 @@
             }
         },
         "pseudobulking_options": {
-            "title": "Pseudobulking options",
+            "title": "Pseudobulk differential expression options",
             "type": "object",
-            "description": "Options for pseudobulking",
+            "description": "Options for pseudobulk aggregation and sample-level differential expression",
             "fa_icon": "fas fa-users",
             "properties": {
-                "pseudobulk_groupby_labels": {
-                    "type": "string",
-                    "description": "Group by labels for pseudobulking. If you want to use multiple labels, separate them with a comma.",
-                    "default": "batch"
+                "pseudobulk": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Run pseudobulk aggregation even when no pseudobulk DE method is selected in de_methods."
                 },
                 "pseudobulk_min_num_cells": {
                     "type": "integer",
-                    "description": "Minimum number of cells for pseudobulking",
-                    "default": 5
+                    "description": "Minimum number of cells per pseudobulk sample",
+                    "default": 10
+                },
+                "pseudobulk_min_total_counts": {
+                    "type": "integer",
+                    "description": "Minimum total UMI counts per pseudobulk sample",
+                    "default": 1000
                 }
             }
         },

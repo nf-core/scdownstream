@@ -43,6 +43,12 @@ stopifnot(
 
 Sys.setenv(XDG_CACHE_HOME = file.path(getwd(), ".cache"))
 prediction_results <- list()
+manifest_rows <- data.frame(
+  obs_column = character(),
+  aggregatable = character(),
+  stringsAsFactors = FALSE
+)
+
 for (ref_idx in seq_along(references)) {
   ref <- references[ref_idx]
   reflabel <- reference_labels[ref_idx]
@@ -101,10 +107,33 @@ for (ref_idx in seq_along(references)) {
     height = 12
   )
 
-  colnames(predictions) <- paste0(
-    colnames(predictions), "_", ref_name
+  predictions <- as.data.frame(predictions, stringsAsFactors = FALSE)
+  colnames(predictions) <- paste0(colnames(predictions), "_", ref_name)
+
+  annotation_columns <- setNames(
+    c(
+      paste0("annotation:singler:", ref_name, ":per_cell"),
+      paste0("annotation:singler:", ref_name, ":per_cell:pruned")
+    ),
+    c(
+      paste0("labels_", ref_name),
+      paste0("pruned.labels_", ref_name)
+    )
   )
-  prediction_results[[ref]] <- predictions
+  for (old_col in names(annotation_columns)) {
+    if (!old_col %in% colnames(predictions)) {
+      next
+    }
+    new_col <- unname(annotation_columns[old_col])
+    colnames(predictions)[colnames(predictions) == old_col] <- new_col
+    manifest_rows <- rbind(
+      manifest_rows,
+      data.frame(obs_column = new_col, aggregatable = "true", stringsAsFactors = FALSE)
+    )
+  }
+
+  # Use ref_idx, not ref, so cbind does not prefix column names with the tar filename
+  prediction_results[[ref_idx]] <- predictions
 }
 
 prediction_nrows <- lapply(prediction_results, nrow)
@@ -119,6 +148,12 @@ stopifnot(
 # This is predicated in the assumption that all prediction data frames have exactly
 # the same rows ... see the stopifnot clause above
 predictions <- do.call(cbind, prediction_results)
+
+write.csv(
+  unique(manifest_rows),
+  file = paste0(prefix, "_annotation_columns.csv"),
+  row.names = FALSE
+)
 
 write.csv(
   predictions,

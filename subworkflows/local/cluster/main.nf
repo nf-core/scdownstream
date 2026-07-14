@@ -2,9 +2,11 @@ include { CLUSTER_TARGETS                   } from '../cluster_targets'
 include { SCANPY_NEIGHBORS as NEIGHBORS     } from '../../../modules/local/scanpy/neighbors'
 include { SCANPY_LEIDEN as LEIDEN           } from '../../../modules/local/scanpy/leiden'
 include { SCANPY_UMAP as UMAP               } from '../../../modules/local/scanpy/umap'
+include { SCANPY_TSNE as TSNE               } from '../../../modules/local/scanpy/tsne'
 include { ADATA_ENTROPY as ENTROPY          } from '../../../modules/local/adata/entropy'
 include { matchingAnalysisPlanRows          } from '../utils_nfcore_scdownstream_pipeline'
 include { analysesFromPlanRows              } from '../utils_nfcore_scdownstream_pipeline'
+include { deMethodsFromPlanRows             } from '../utils_nfcore_scdownstream_pipeline'
 
 workflow CLUSTER {
     take:
@@ -16,6 +18,8 @@ workflow CLUSTER {
     default_resolutions //   value: list of resolution strings
     entropy_col         //   value: string
     embedding_key       //   value: string
+    neighbors_n_pcs     //   value: integer or null
+    tsne                //   value: boolean
 
     main:
     ch_obs = channel.empty()
@@ -36,7 +40,8 @@ workflow CLUSTER {
 
     NEIGHBORS (
         ch_h5ad.needs_neighbors,
-        embedding_key
+        embedding_key,
+        neighbors_n_pcs ?: [],
     )
 
     ch_h5ad_graph = NEIGHBORS.out.h5ad.mix(ch_h5ad.has_neighbors)
@@ -45,6 +50,13 @@ workflow CLUSTER {
         ch_h5ad_graph
     )
     ch_obsm = ch_obsm.mix(UMAP.out.obsm)
+
+    if (tsne) {
+        TSNE (
+            ch_h5ad_graph
+        )
+        ch_obsm = ch_obsm.mix(TSNE.out.obsm)
+    }
 
     ch_resolutions = channel.fromList(default_resolutions)
 
@@ -61,7 +73,7 @@ workflow CLUSTER {
                 meta + [
                     resolution: resolution,
                     id: meta.id + '-' + resolution,
-                ] + analysesFromPlanRows(matching_rows),
+                ] + analysesFromPlanRows(matching_rows) + deMethodsFromPlanRows(matching_rows),
                 h5ad,
             ]
         }

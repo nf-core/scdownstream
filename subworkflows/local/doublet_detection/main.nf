@@ -9,6 +9,7 @@ workflow DOUBLET_DETECTION {
     ch_h5ad         // channel: [ meta, h5ad ]
     methods         //   value: list of strings
     threshold       //   value: integer
+    doublet_removal //   value: boolean
     scvi_max_epochs //   value: integer
 
     main:
@@ -55,6 +56,7 @@ workflow DOUBLET_DETECTION {
         DOUBLETREMOVAL (
             ch_h5ad.join(ch_predictions.groupTuple()),
             threshold,
+            doublet_removal,
         )
 
         ch_h5ad = DOUBLETREMOVAL.out.h5ad

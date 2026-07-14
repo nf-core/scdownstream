@@ -17,6 +17,7 @@ process ADATA_UNIFY {
     val counts_layer
     val duplicate_var_resolution
     val aggregate_isoforms
+    val donor_col
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad

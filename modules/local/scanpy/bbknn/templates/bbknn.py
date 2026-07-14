@@ -15,6 +15,21 @@ from threadpoolctl import threadpool_limits
 threadpool_limits(int("${task.cpus}"))
 
 adata = sc.read_h5ad("${h5ad}")
+prefix = "${prefix}"
+input_layer = "${input_layer}"
+log_normalize = "${log_normalize}" == "true"
+
+if input_layer != "X" and input_layer not in adata.layers:
+    raise ValueError(
+        f"input_layer {input_layer!r} is not present in adata.layers (available: {list(adata.layers.keys())})"
+    )
+
+if input_layer != "X":
+    adata.X = adata.layers[input_layer]
+
+if log_normalize:
+    sc.pp.normalize_total(adata)
+    sc.pp.log1p(adata)
 
 sc.tl.pca(adata)
 
@@ -28,9 +43,7 @@ if adata.n_obs >= 1e5:
 
 adata = bbknn.bbknn(adata, **kwargs)
 
-adata.write_h5ad("${prefix}.h5ad")
-
-# Versions
+adata.write_h5ad(f"{prefix}.h5ad")
 
 versions = {
     "${task.process}": {

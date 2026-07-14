@@ -65,6 +65,12 @@
                 "errorMessage": "Condition column needs to start with a letter and can contain letters, numbers, underlines and dashes.",
                 "meta": ["condition_col"]
             },
+            "donor_col": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                "errorMessage": "Donor column needs to start with a letter and can contain letters, numbers, underlines and dashes.",
+                "meta": ["donor_col"]
+            },
             "unknown_label": {
                 "type": "string",
                 "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
@@ -89,8 +95,9 @@
             "min_cells": {
                 "type": "integer",
                 "minimum": 0,
-                "default": 0,
-                "errorMessage": "Minimum number of cells must be an integer greater than 0.",
+                "default": 20,
+                "description": "Minimum number of cells a gene must be detected in to be retained. Follows sc-best-practices (https://www.sc-best-practices.org/preprocessing_visualization/quality_control.html). Set to 0 to disable.",
+                "errorMessage": "Minimum number of cells must be a non-negative integer.",
                 "meta": ["min_cells"]
             },
             "min_counts_cell": {
@@ -111,7 +118,8 @@
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 100,
-                "default": 100,
+                "default": 8,
+                "description": "Maximum mitochondrial read percentage per cell. Follows sc-best-practices (https://www.sc-best-practices.org/preprocessing_visualization/quality_control.html).",
                 "errorMessage": "Max mitochondrial percentage must be an integer between 0 and 100.",
                 "meta": ["max_mito_percentage"]
             },
@@ -134,28 +142,32 @@
             "log1p_total_counts_nmads": {
                 "type": "number",
                 "minimum": 0,
-                "default": 0,
+                "default": 5,
+                "description": "MAD cutoff for log1p_total_counts. Cells outside median ± n × MAD are removed. Follows sc-best-practices. Set to 0 to disable for this sample.",
                 "errorMessage": "MAD cutoff for log1p_total_counts must be a non-negative number. 0 disables MAD filtering for this metric.",
                 "meta": ["log1p_total_counts_nmads"]
             },
             "log1p_n_genes_by_counts_nmads": {
                 "type": "number",
                 "minimum": 0,
-                "default": 0,
+                "default": 5,
+                "description": "MAD cutoff for log1p_n_genes_by_counts. Set to 0 to disable for this sample.",
                 "errorMessage": "MAD cutoff for log1p_n_genes_by_counts must be a non-negative number. 0 disables MAD filtering for this metric.",
                 "meta": ["log1p_n_genes_by_counts_nmads"]
             },
             "pct_counts_in_top_20_genes_nmads": {
                 "type": "number",
                 "minimum": 0,
-                "default": 0,
+                "default": 5,
+                "description": "MAD cutoff for pct_counts_in_top_20_genes. Set to 0 to disable for this sample.",
                 "errorMessage": "MAD cutoff for pct_counts_in_top_20_genes must be a non-negative number. 0 disables MAD filtering for this metric.",
                 "meta": ["pct_counts_in_top_20_genes_nmads"]
             },
             "pct_counts_mt_nmads": {
                 "type": "number",
                 "minimum": 0,
-                "default": 0,
+                "default": 3,
+                "description": "MAD cutoff for pct_counts_mt. Set to 0 to disable for this sample.",
                 "errorMessage": "MAD cutoff for pct_counts_mt must be a non-negative number. 0 disables MAD filtering for this metric.",
                 "meta": ["pct_counts_mt_nmads"]
             },

@@ -16,6 +16,7 @@ process SCANPY_CELLCYCLE {
     output:
     tuple val(meta), path("${prefix}.pkl"),  emit: obs
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
+    path "*_mqc.json"                        , emit: multiqc_files
     path "versions.yml",                     emit: versions, topic: versions
 
     when:
@@ -33,6 +34,7 @@ process SCANPY_CELLCYCLE {
     """
     touch ${prefix}.pkl
     touch ${prefix}.h5ad
+    touch ${prefix}_mqc.json
     touch versions.yml
     """
 }

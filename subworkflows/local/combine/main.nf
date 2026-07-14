@@ -1,7 +1,10 @@
-include { INTEGRATE             } from '../integrate'
-include { ADATA_MERGEEMBEDDINGS } from '../../../modules/local/adata/mergeembeddings'
-include { ADATA_MERGE           } from '../../../modules/local/adata/merge'
-include { SCIBMETRICS_BENCHMARK } from '../../../modules/local/scibmetrics/benchmark'
+include { INTEGRATE                              } from '../integrate'
+include { NORMALIZATION                          } from '../normalization'
+include { ADATA_MERGEEMBEDDINGS                  } from '../../../modules/local/adata/mergeembeddings'
+include { ADATA_MERGE                            } from '../../../modules/local/adata/merge'
+include { ADATA_SUBSETVAR as SUBSETVAR_INNER     } from '../../../modules/local/adata/subsetvar'
+include { ADATA_SUBSETVAR as SUBSETVAR_INTEGRATE } from '../../../modules/local/adata/subsetvar'
+include { SCIBMETRICS_BENCHMARK                  } from '../../../modules/local/scibmetrics/benchmark'
 
 workflow COMBINE {
 
@@ -9,15 +12,17 @@ workflow COMBINE {
     ch_h5ad                     // channel: [ val(meta), path(h5ad) ]
     ch_base                     // channel: [ val(meta), path(h5ad) ]
     is_extension                //   value: boolean
-    integration_hvgs            //   value: integer
+    feature_selection           //   value: string
+    integration_n_features      //   value: integer
     integration_methods         //   value: string
     integration_excluded_genes  //   value: string
+    normalization_method        //   value: string
     scvi_model                  //   value: string
     scanvi_model                //   value: string
     scvi_categorical_covariates //   value: string
     scvi_continuous_covariates  //   value: string
     scimilarity_model           //   value: string
-    symphony_reference           //   value: string
+    symphony_reference          //   value: string
     expimap_gmt                 //   value: string
     condition_col               //   value: string
     scib                        //   value: boolean
@@ -40,15 +45,43 @@ workflow COMBINE {
             .map { meta, h5ads -> [meta, h5ads.sort { a, b -> a.name <=> b.name }] },
         ch_base,
     )
-    ch_var = ch_var.mix(ADATA_MERGE.out.intersect_genes)
     ch_outer = ADATA_MERGE.out.outer
-    ch_inner = ADATA_MERGE.out.inner
+
+    if (!is_extension) {
+        NORMALIZATION(
+            ch_outer,
+            normalization_method,
+        )
+        ch_outer = NORMALIZATION.out.h5ad
+
+        SUBSETVAR_INNER(
+            ch_outer,
+            'intersection',
+        )
+        ch_inner = SUBSETVAR_INNER.out.h5ad
+        ch_integrate_input = ch_inner
+    }
+    else {
+        SUBSETVAR_INNER(
+            ch_outer,
+            'intersection',
+        )
+        ch_inner = SUBSETVAR_INNER.out.h5ad
+
+        SUBSETVAR_INTEGRATE(
+            ADATA_MERGE.out.integrate,
+            'intersection',
+        )
+        ch_integrate_input = SUBSETVAR_INTEGRATE.out.h5ad
+    }
 
     INTEGRATE(
-        ADATA_MERGE.out.integrate,
+        ch_integrate_input,
         is_extension,
-        integration_hvgs,
+        feature_selection,
+        integration_n_features,
         integration_excluded_genes ? file(integration_excluded_genes) : [],
+        normalization_method,
         integration_methods
             .split(',')
             .collect { it -> it.trim().toLowerCase() },
@@ -61,7 +94,7 @@ workflow COMBINE {
         expimap_gmt,
         condition_col
     )
-    ch_var           = ch_var.mix(INTEGRATE.out.var)
+    ch_var = INTEGRATE.out.var
 
     if (is_extension) {
         ADATA_MERGEEMBEDDINGS(
@@ -70,7 +103,7 @@ workflow COMBINE {
                 .combine(
                     ch_base.map { _meta, base -> base }
                 ).combine(
-                    ADATA_MERGE.out.inner.map { _meta, inner -> inner }
+                    ch_inner.map { _meta, inner -> inner }
                 )
         )
         ch_integrations  = ADATA_MERGEEMBEDDINGS.out.h5ad

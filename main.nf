@@ -39,6 +39,7 @@ workflow NFCORE_SCDOWNSTREAM {
     ambient_corrected_integration //   value: boolean
     doublet_detection             //   value: string
     doublet_detection_threshold   //   value: integer
+    doublet_removal               //   value: boolean
     scvi_max_epochs               //   value: integer
     mito_genes                    //   value: string
     sample_n                      //   value: string
@@ -54,18 +55,19 @@ workflow NFCORE_SCDOWNSTREAM {
     unify_gene_symbols            //   value: boolean
     duplicate_var_resolution      //   value: string
     aggregate_isoforms            //   value: boolean
-    integration_hvgs              //   value: integer
+    feature_selection             //   value: string
+    integration_n_features        //   value: integer
     integration_methods           //   value: string
     integration_excluded_genes    //   value: string
+    normalization_method          //   value: string
     scvi_model                    //   value: string
     scanvi_model                  //   value: string
     scvi_categorical_covariates   //   value: string
     scvi_continuous_covariates    //   value: string
     scimilarity_model             //   value: string
-    symphony_reference             //   value: string
+    symphony_reference            //   value: string
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
-    skip_rankgenesgroups          //   value: boolean
     skip_qc_report                //   value: boolean
     scib                          //   value: boolean
     scib_max_cells                //   value: integer or null
@@ -80,10 +82,14 @@ workflow NFCORE_SCDOWNSTREAM {
     cluster_per_label             //   value: boolean
     cluster_global                //   value: boolean
     clustering_resolutions        //   value: string
+    neighbors_n_pcs               //   value: integer or null
+    tsne                          //   value: boolean
     analysis_plan                 //   value: list of plan rows parsed in main.nf
+    de_methods                    //   value: string
     pseudobulk                    //   value: boolean
-    pseudobulk_groupby_labels     //   value: string
     pseudobulk_min_num_cells      //   value: integer
+    pseudobulk_min_total_counts   //   value: integer
+    reference_condition           //   value: string
     prep_cellxgene                //   value: boolean
     outdir                        //   value: string
     multiqc_config                //   value: string
@@ -104,6 +110,7 @@ workflow NFCORE_SCDOWNSTREAM {
         ambient_corrected_integration,
         doublet_detection,
         doublet_detection_threshold,
+        doublet_removal,
         scvi_max_epochs,
         mito_genes,
         sample_n,
@@ -119,9 +126,11 @@ workflow NFCORE_SCDOWNSTREAM {
         unify_gene_symbols,
         duplicate_var_resolution,
         aggregate_isoforms,
-        integration_hvgs,
+        feature_selection,
+        integration_n_features,
         integration_methods,
         integration_excluded_genes,
+        normalization_method,
         scvi_model,
         scanvi_model,
         scvi_categorical_covariates,
@@ -130,7 +139,6 @@ workflow NFCORE_SCDOWNSTREAM {
         symphony_reference,
         expimap_gmt,
         skip_liana,
-        skip_rankgenesgroups,
         skip_qc_report,
         scib,
         scib_max_cells,
@@ -145,16 +153,21 @@ workflow NFCORE_SCDOWNSTREAM {
         cluster_per_label,
         cluster_global,
         clustering_resolutions,
+        neighbors_n_pcs,
+        tsne,
         analysis_plan,
+        de_methods,
         pseudobulk,
-        pseudobulk_groupby_labels,
         pseudobulk_min_num_cells,
+        pseudobulk_min_total_counts,
+        reference_condition,
         prep_cellxgene,
         outdir,
         multiqc_config,
         multiqc_logo,
-        multiqc_methods_description
+        multiqc_methods_description,
     )
+
     emit:
     multiqc_report = SCDOWNSTREAM.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
@@ -186,8 +199,8 @@ workflow {
     // WORKFLOW: Run main workflow
     //
     ch_base_adata = params.base_adata
-            ? channel.value([[id: "base"], file(params.base_adata, checkIfExists: true)])
-            : channel.value([[], []])
+        ? channel.value([[id: "base"], file(params.base_adata, checkIfExists: true)])
+        : channel.value([[], []])
 
     def s_genes_file = params.cell_cycle_scoring
         ? file(params.s_genes ?: "${projectDir}/assets/cell_cycle_genes/${params.species}_s_genes.txt", checkIfExists: true)
@@ -211,6 +224,7 @@ workflow {
         params.ambient_corrected_integration,
         params.doublet_detection,
         params.doublet_detection_threshold,
+        params.doublet_removal,
         params.scvi_max_epochs,
         params.mito_genes,
         params.sample_n,
@@ -226,9 +240,11 @@ workflow {
         params.unify_gene_symbols,
         params.duplicate_var_resolution,
         params.aggregate_isoforms,
-        params.integration_hvgs,
+        params.feature_selection,
+        params.integration_n_features,
         params.integration_methods,
         params.integration_excluded_genes,
+        params.normalization_method,
         params.scvi_model,
         params.scanvi_model,
         params.scvi_categorical_covariates,
@@ -237,7 +253,6 @@ workflow {
         symphony_reference,
         params.expimap_gmt,
         params.skip_liana,
-        params.skip_rankgenesgroups,
         params.skip_qc_report,
         params.scib,
         params.scib_max_cells,
@@ -252,10 +267,14 @@ workflow {
         params.cluster_per_label,
         params.cluster_global,
         params.clustering_resolutions,
+        params.neighbors_n_pcs ?: '',
+        params.tsne,
         analysis_plan,
+        params.de_methods,
         params.pseudobulk,
-        params.pseudobulk_groupby_labels,
         params.pseudobulk_min_num_cells,
+        params.pseudobulk_min_total_counts,
+        params.reference_condition,
         params.prep_cellxgene,
         params.outdir,
         params.multiqc_config,

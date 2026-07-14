@@ -10,11 +10,12 @@ process SCANPY_COMBAT {
     input:
     tuple val(meta), path(h5ad)
     val batch_col
+    val input_layer
+    val log_normalize
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
     path "*.pkl"                   , emit: obsm
-    path "*.npy"                   , emit: layers
     path "versions.yml"            , emit: versions, topic: versions
 
     when:
@@ -29,7 +30,6 @@ process SCANPY_COMBAT {
     """
     touch ${prefix}.h5ad
     touch ${prefix}.pkl
-    touch ${prefix}.npy
     touch versions.yml
     """
 }

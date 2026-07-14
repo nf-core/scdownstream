@@ -1,79 +1,66 @@
-include { SCANPY_RANKGENESGROUPS } from '../../../modules/local/scanpy/rankgenesgroups'
-include { anndata } from 'plugin/nf-anndata'
+include { PSEUDOBULKING       } from '../pseudobulking'
+include { PSEUDOBULK_DE        } from '../pseudobulk_de'
+include { RANK_GENES_GROUPS    } from '../rank_genes_groups'
+include { EDGEPYTHON_SC_DE     } from '../edgepython_sc_de'
+include { rankGenesGroupsMethods         } from '../utils_nfcore_scdownstream_pipeline'
+include { rankGenesGroupsAnalysisEnabled } from '../utils_nfcore_scdownstream_pipeline'
+include { pseudobulkDeMethods            } from '../utils_nfcore_scdownstream_pipeline'
+include { pseudobulkingEnabled           } from '../utils_nfcore_scdownstream_pipeline'
+include { pseudobulkDeEnabled            } from '../utils_nfcore_scdownstream_pipeline'
 
 workflow DIFFERENTIAL_EXPRESSION {
     take:
-    ch_h5ad // channel: [ meta, h5ad ], anndata objects with obs_key and condition_col in meta
+    ch_h5ad                     // channel: [ meta, h5ad ] with de_methods_resolved, obs_key, condition_col, analyses
+    pseudobulk                  //   value: boolean
+    pseudobulk_min_num_cells    //   value: integer
+    pseudobulk_min_total_counts //   value: integer
+    reference_condition         //   value: string
 
     main:
     ch_uns           = channel.empty()
     ch_multiqc_files = channel.empty()
+    ch_h5ad_out      = channel.empty()
 
-    ch_settings = ch_h5ad.map { meta, h5ad ->
-        def obs_key = meta.obs_key
-        def condition_col = meta.condition_col
-        def ad = anndata(h5ad)
+    ch_h5ad_pseudobulk = ch_h5ad
+        .filter { meta, _h5ad -> pseudobulkingEnabled(meta, pseudobulk) }
 
-        def conditions = ad.obs[condition_col].unique().toList()
-        def labels = ad.obs[obs_key].unique().toList()
-
-        return [
-            meta,
-            h5ad,
-            condition_col,
-            conditions.size() > 1 ? conditions : [],
-            obs_key,
-            labels.size() > 1 ? labels : []
-        ]
-    }
-
-    // Structure: [meta, h5ad, filter_col, filter_val, obs_key]
-    ch_global_comparisons = ch_settings
-        .map { meta, h5ad, _condition_col, _conditions, obs_key, _labels ->
-            [meta + [id: obs_key, comparison_scope: 'global'], h5ad, [], [], obs_key]
-        }
-
-    ch_condition_labels = ch_settings.transpose(by: 3)
-        .map { meta, h5ad, condition_col, condition, obs_key, _labels ->
-            [meta, h5ad, condition_col, condition, obs_key]
-        }
-
-    ch_label_conditions = ch_settings.transpose(by: 5)
-        .map { meta, h5ad, condition_col, _conditions, obs_key, label ->
-            [meta, h5ad, obs_key, label, condition_col]
-        }
-
-    ch_filtered_comparisons = ch_label_conditions.mix(ch_condition_labels).map { meta, h5ad, filter_col, filter_val, obs_key ->
-        [
-            meta + [id: "${obs_key}:${filter_col}:${filter_val}", comparison_scope: 'filtered'],
-            h5ad,
-            filter_col,
-            filter_val,
-            obs_key,
-        ]
-    }
-
-    ch_comparisons = ch_global_comparisons.mix(ch_filtered_comparisons)
-
-    ch_rankgenesgroups = ch_comparisons.multiMap { meta, h5ad, filter_col, filter_val, obs_key ->
-        h5ad: [meta, h5ad]
-        obs_key: obs_key
-        filter: [filter_col, filter_val]
-    }
-
-    SCANPY_RANKGENESGROUPS(
-        ch_rankgenesgroups.h5ad,
-        ch_rankgenesgroups.obs_key,
-        ch_rankgenesgroups.filter,
-        params.rankgenesgroups_method
+    PSEUDOBULKING(
+        ch_h5ad_pseudobulk,
+        'donor',
+        pseudobulk_min_num_cells,
+        pseudobulk_min_total_counts,
     )
-    ch_uns           = ch_uns.mix(SCANPY_RANKGENESGROUPS.out.uns)
-    ch_multiqc_files = ch_multiqc_files.mix(SCANPY_RANKGENESGROUPS.out.multiqc_files)
+    ch_multiqc_files = ch_multiqc_files.mix(PSEUDOBULKING.out.multiqc_files)
+
+    PSEUDOBULK_DE(
+        PSEUDOBULKING.out.h5ad
+            .filter { meta, _h5ad -> pseudobulkDeEnabled(meta) },
+        reference_condition,
+    )
+
+    ch_h5ad_rgg = ch_h5ad
+        .filter { meta, _h5ad ->
+            rankGenesGroupsAnalysisEnabled(meta) &&
+                meta.de_methods_resolved.intersect(rankGenesGroupsMethods())
+        }
+
+    RANK_GENES_GROUPS(ch_h5ad_rgg)
+    ch_uns           = ch_uns.mix(RANK_GENES_GROUPS.out.uns)
+    ch_multiqc_files = ch_multiqc_files.mix(RANK_GENES_GROUPS.out.multiqc_files)
+    ch_h5ad_out      = ch_h5ad_out.mix(RANK_GENES_GROUPS.out.h5ad)
+
+    EDGEPYTHON_SC_DE(
+        ch_h5ad
+            .filter { meta, _h5ad ->
+                (meta.analyses == null || 'de' in meta.analyses) &&
+                    'edgepython_sc' in meta.de_methods_resolved
+            },
+        'donor',
+        reference_condition,
+    )
 
     emit:
-    uns           = ch_uns           // channel: [ pkl ]
-    multiqc_files = ch_multiqc_files // channel: [ json ]
-    h5ad          = SCANPY_RANKGENESGROUPS.out.h5ad
-                        .filter { meta, _h5ad -> meta.comparison_scope == 'global' }
-                                     // channel: [ meta, h5ad ] — global comparisons only
+    uns           = ch_uns
+    multiqc_files = ch_multiqc_files
+    h5ad          = ch_h5ad_out
 }

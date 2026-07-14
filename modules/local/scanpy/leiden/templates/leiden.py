@@ -25,7 +25,11 @@ adata = sc.read_h5ad("${h5ad}", backed="r")
 prefix = "${prefix}"
 key_added = "${key_added}"
 
-kwargs = {"resolution": float("${resolution}"), "key_added": key_added}
+kwargs = {
+    "resolution": float("${resolution}"),
+    "key_added": key_added,
+    "flavor": "igraph",
+}
 
 sc.tl.leiden(adata, **kwargs)
 

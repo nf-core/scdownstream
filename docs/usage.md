@@ -14,7 +14,7 @@ The pipeline can handle the following cases:
 
 1. You have both `filtered` and `unfiltered` matrices: Provide both matrices in the samplesheet and the pipeline will use the `unfiltered` matrix for ambient RNA removal and the `filtered` matrix for all other steps.
 2. You only have the `filtered` matrix: Provide the `filtered` matrix in the samplesheet and the pipeline will use it for all steps.
-   In this case, only `decontX` can be used for ambient RNA removal, as all other methods require the `unfiltered` matrix.
+   SoupX is the default ambient correction method and requires an unfiltered matrix. For filtered-only input, disable ambient correction per sample (`ambient_correction=false`) or set `--ambient_correction decontx`.
 3. You only have the `unfiltered` matrix: Provide the `unfiltered` matrix in the samplesheet and the pipeline will automatically create a `filtered` matrix by identifying empty droplets using `CellBender`.
 
 ## Samplesheet input
@@ -61,27 +61,73 @@ For CSV input files, specifying the `batch_col`, `label_col`, `condition_col`, a
 | `geneid_col`                       | Column in the input file containing gene identifier information. Defaults to `index`. Only used if `symbol_col` is set to `none`.                                                                                                                                                                                                                                                                                                                          |
 | `label_col`                        | Column in the input file containing cell type information. Defaults to `label`. If the column does not exist in the input object, the pipeline will create a new column and put `unknown` in it. If the `label_col` is something else than `label`, it will be renamed to `label` during pipeline execution.                                                                                                                                               |
 | `condition_col`                    | Column in the input file containing condition information (e.g. disease state, treatment). If the column does not exist in the input object, the pipeline will create a new column and put `unknown` in it. If the `condition_col` is something else than `condition`, it will be renamed to `condition` during pipeline execution.                                                                                                                        |
+| `donor_col`                        | Column in the input file containing biological replicate / donor identifiers (e.g. patient, mouse). Required in the samplesheet when pseudobulking is enabled. If the column is something else than `donor`, it will be renamed to `donor` during unification.                                                                                                                                                                                             |
 | `unknown_label`                    | Value in the `label_col` column that should be considered as unknown. Defaults to `unknown`. If the `unknown_label` is something else than `unknown`, it will be renamed to `unknown` during pipeline execution. If trying to perform integration with scANVI, more than one unique label other than `unknown` must exist in the input data.                                                                                                               |
 | `counts_layer`                     | Layer in the input file containing the raw counts matrix. Defaults to `X`.                                                                                                                                                                                                                                                                                                                                                                                 |
-| `min_genes`                        | Minimum number of genes required for a cell to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                                                             |
-| `min_cells`                        | Minimum number of cells required for a gene to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                                                             |
+| `min_genes`                        | Minimum number of genes required for a cell to be considered. Defaults to `0`.                                                                                                                                                                                                                                                                                                                                                                             |
+| `min_cells`                        | Minimum number of cells required for a gene to be considered. Defaults to `20`.                                                                                                                                                                                                                                                                                                                                                                            |
 | `min_counts_cell`                  | Minimum number of counts required for a cell to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                                                            |
 | `min_counts_gene`                  | Minimum number of counts required for a gene to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                                                            |
 | `expected_cells`                   | Number of expected cells, used as input to CellBender for empty droplet detection.                                                                                                                                                                                                                                                                                                                                                                         |
 | `doublet_rate`                     | Optional expected doublet rate (0-1) for `scDblFinder`. If not provided, `scDblFinder` estimates it internally.                                                                                                                                                                                                                                                                                                                                            |
-| `max_mito_percentage`              | Maximum percentage of mitochondrial reads for a cell to be considered. Defaults to `100`.                                                                                                                                                                                                                                                                                                                                                                  |
+| `max_mito_percentage`              | Maximum percentage of mitochondrial reads for a cell to be considered. Defaults to `8`.                                                                                                                                                                                                                                                                                                                                                                    |
 | `min_ribo_percentage`              | Minimum percentage of ribosomal reads for a cell to be considered. Defaults to `0`.                                                                                                                                                                                                                                                                                                                                                                        |
 | `max_hb_percentage`                | Maximum percentage of haemoglobin reads for a cell to be considered. Defaults to `100`.                                                                                                                                                                                                                                                                                                                                                                    |
-| `log1p_total_counts_nmads`         | MAD cutoff for `log1p_total_counts`. Cells outside `median ± n × MAD` are removed. Defaults to `0` (disabled).                                                                                                                                                                                                                                                                                                                                             |
-| `log1p_n_genes_by_counts_nmads`    | MAD cutoff for `log1p_n_genes_by_counts`. Defaults to `0` (disabled).                                                                                                                                                                                                                                                                                                                                                                                      |
-| `pct_counts_in_top_20_genes_nmads` | MAD cutoff for `pct_counts_in_top_20_genes`. Defaults to `0` (disabled).                                                                                                                                                                                                                                                                                                                                                                                   |
-| `pct_counts_mt_nmads`              | MAD cutoff for `pct_counts_mt`. Defaults to `0` (disabled).                                                                                                                                                                                                                                                                                                                                                                                                |
+| `log1p_total_counts_nmads`         | MAD cutoff for `log1p_total_counts`. Cells outside `median ± n × MAD` are removed. Defaults to `5`. Set to `0` to disable.                                                                                                                                                                                                                                                                                                                                 |
+| `log1p_n_genes_by_counts_nmads`    | MAD cutoff for `log1p_n_genes_by_counts`. Defaults to `5`. Set to `0` to disable.                                                                                                                                                                                                                                                                                                                                                                          |
+| `pct_counts_in_top_20_genes_nmads` | MAD cutoff for `pct_counts_in_top_20_genes`. Defaults to `5`. Set to `0` to disable.                                                                                                                                                                                                                                                                                                                                                                       |
+| `pct_counts_mt_nmads`              | MAD cutoff for `pct_counts_mt`. Defaults to `3`. Set to `0` to disable.                                                                                                                                                                                                                                                                                                                                                                                    |
 | `ambient_correction`               | Whether to perform ambient RNA correction for this sample. Set to `true` to use the globally configured method, `false` to skip ambient correction for this sample. Defaults to `true`.                                                                                                                                                                                                                                                                    |
 | `ambient_corrected_integration`    | Whether to use ambient-corrected counts for integration for this sample. Set to `true` to use corrected counts in downstream integration, `false` to store them only as additional layers. Can override the global `--ambient_corrected_integration` parameter. Defaults to global setting.                                                                                                                                                                |
 
-MAD-based filtering follows the [sc-best-practices recipe](https://www.sc-best-practices.org/preprocessing_visualization/quality_control.html#filtering-low-quality-cells). Each MAD column is independent; set a value to `0` to skip that metric. Absolute thresholds (`max_mito_percentage`, `min_ribo_percentage`, `max_hb_percentage`, `min_genes`, etc.) are always applied alongside any enabled MAD filters. To reproduce the sc-best-practices defaults for a sample, set `log1p_total_counts_nmads`, `log1p_n_genes_by_counts_nmads`, and `pct_counts_in_top_20_genes_nmads` to `5`, `pct_counts_mt_nmads` to `3`, and `max_mito_percentage` to `8`.
+MAD-based filtering follows the [sc-best-practices recipe](https://www.sc-best-practices.org/preprocessing_visualization/quality_control.html#filtering-low-quality-cells). QC thresholds are defined in the [input schema](../assets/schema_input.json) and applied per sample when the samplesheet is read; omitted columns receive those schema defaults. Each MAD column is independent; set a value to `0` to disable that metric for a sample.
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+
+### sc-best-practices defaults
+
+Pipeline defaults match the [sc-best-practices QC chapter](https://www.sc-best-practices.org/preprocessing_visualization/quality_control.html) out of the box. A minimal samplesheet with only `sample` and matrix paths is sufficient:
+
+```csv title="samplesheet.csv"
+sample,filtered
+sample1,/path/to/sample1_filtered.h5ad
+```
+
+With no QC columns, each sample receives:
+
+- MAD filtering: `log1p_total_counts_nmads=5`, `log1p_n_genes_by_counts_nmads=5`, `pct_counts_in_top_20_genes_nmads=5`, `pct_counts_mt_nmads=3`
+- `max_mito_percentage=8`
+- `min_cells=20` (gene filter after ambient correction)
+
+Doublet handling also follows the book: `--doublet_detection` defaults to `scdblfinder`, and `--doublet_removal` defaults to `false`, so doublet scores are written to `adata.obs` without removing cells until you opt in. Ambient RNA correction defaults to SoupX and requires an unfiltered matrix for each corrected sample.
+
+Before integration, merged raw counts are subset to informative genes. By default, [`feature_selection`](https://nf-co.re/scdownstream/parameters#feature_selection) is `deviance` (binomial deviance via scry, ~4,000 genes when [`integration_n_features`](https://nf-co.re/scdownstream/parameters#integration_n_features) is `0`). Use `--feature_selection hvgs` for scanpy highly variable genes, `--feature_selection pearson_residuals_hvgs` for Pearson-residual HVG selection on raw counts, or `--feature_selection none` to skip gene filtering. The `python_only` profile sets `feature_selection` to `hvgs` automatically.
+
+Before integration, the merged outer union of genes is normalised once via [`normalization_method`](https://nf-co.re/scdownstream/parameters#normalization_method) (`log1p` or `scran`). Raw counts remain in `X`; normalised expression is stored in a matching AnnData layer (`log1p` or `scran`) inside the parent H5AD. Integration then uses the gene intersection recorded in `var["intersection"]`, applied after normalisation through a dedicated subsetting step. The finalised merged object keeps the full outer gene axis with embedded normalisation layers. In base-only per-label mode (`integrate_per_label`), the complete base is normalised once before splitting by label. Reference extension runs do not fit a new cohort normalisation on the query data. Layer-aware integrations read the embedded normalisation layer directly. The `python_only` profile overrides the default `scran` with `log1p`, avoiding the R-based scran dependency.
+
+| Integration method              | Uses `normalization_method` layer       |
+| ------------------------------- | --------------------------------------- |
+| `pca`                           | Yes                                     |
+| `symphony` (reference building) | No (internal normalisation from counts) |
+| `scanorama`                     | Yes                                     |
+| `bbknn`                         | Yes                                     |
+| `combat`                        | Yes                                     |
+| `scvi`, `scanvi`                | No (raw counts)                         |
+| `seurat`                        | No (counts via SCTransform)             |
+| `expimap`                       | No (raw counts)                         |
+| `scimilarity`                   | No (internal log-normalisation)         |
+| `symphony` (reference mapping)  | No (reference normalisation target)     |
+
+Count-model integrations (`scvi`, `scanvi`) and all differential expression engines continue to use raw counts.
+
+To disable individual filters for a sample, set the corresponding samplesheet column to `0` (for MAD metrics or `min_cells`) or a permissive value (e.g. `max_mito_percentage=100`):
+
+```csv title="samplesheet.csv"
+sample,filtered,log1p_total_counts_nmads,pct_counts_mt_nmads,max_mito_percentage,min_cells
+sample1,/path/to/sample1.h5ad,0,0,100,0
+```
+
+To remove detected doublets after inspection, pass `--doublet_removal true` (optionally with `--doublet_detection_threshold` to require agreement across multiple tools).
 
 ## Running the pipeline
 
@@ -162,7 +208,7 @@ Example tar archives can be found [here](https://github.com/nf-core/test-dataset
 
 [CyteType](https://github.com/NygenAnalytics/cytetype) is a multi-agent LLM-driven annotator that takes per-cluster marker genes and a free-text study description and returns predicted cell type labels. The pipeline runs CyteType on merged data after integration, clustering, and global differential expression — once per grouping (each Leiden resolution and label column). Cluster labels and marker genes are taken automatically from each grouping's obs column and `uns['rank_genes_groups']`.
 
-To enable CyteType, set [`cytetype_study_context`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_study_context) to a short free-text description of your study (the more specific, the better). When this parameter is empty (the default), CyteType is skipped. CyteType is also skipped when [`skip_rankgenesgroups`](https://nf-co.re/scdownstream/dev/parameters/#skip_rankgenesgroups) is enabled, because marker genes are required.
+To enable CyteType, set [`cytetype_study_context`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_study_context) to a short free-text description of your study (the more specific, the better). When this parameter is empty (the default), CyteType is skipped. In the analysis plan, CyteType is controlled by the `cytetype` token. CyteType always reads Wilcoxon `rank_genes_groups` results; when `cytetype` is active, `wilcoxon` is added to the resolved `de_methods` for each eligible clustering if not already present.
 
 ```bash
 nextflow run nf-core/scdownstream \
@@ -254,9 +300,9 @@ After integration, the pipeline builds a neighbour graph and UMAP for every inte
 
 For each integration method, the pipeline:
 
-1. Computes a **KNN neighbour graph** (using the reduced embedding, e.g. PCA or scVI latent space).
-2. Generates a **UMAP** layout.
-3. Runs **Leiden clustering** at every resolution listed in [`clustering_resolutions`](https://nf-co.re/scdownstream/parameters#clustering_resolutions) (default `0.5,1.0`).
+1. Computes a **KNN neighbour graph** (using the reduced embedding, e.g. PCA or scVI latent space). Use [`neighbors_n_pcs`](https://nf-co.re/scdownstream/parameters#neighbors_n_pcs) to limit the number of principal components (for example `30` on PCA/Symphony embeddings); when omitted, scanpy uses its default.
+2. Generates a **UMAP** layout. Set [`tsne`](https://nf-co.re/scdownstream/parameters#tsne) to `true` to also compute a t-SNE embedding for each integration.
+3. Runs **Leiden clustering** at every resolution listed in [`clustering_resolutions`](https://nf-co.re/scdownstream/parameters#clustering_resolutions) (default `0.25,0.5,1.0`).
 
 Steps 1 and 2 always run for every integration and every subset (global and per-label). Step 3 is controlled by the analysis plan (see below).
 
@@ -266,14 +312,37 @@ Steps 1 and 2 always run for every integration and every subset (global and per-
 
 For each Leiden clustering result the pipeline runs a configurable set of downstream analyses:
 
-| Analysis     | What it does                                                 | Skip parameter                                                                                       |
-| ------------ | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| **PAGA**     | Trajectory / connectivity graph between clusters             | —                                                                                                    |
-| **LIANA**    | Ligand–receptor interaction analysis                         | [`skip_liana`](https://nf-co.re/scdownstream/parameters#skip_liana)                                  |
-| **DE**       | Differential expression / marker genes (`rank_genes_groups`) | [`skip_rankgenesgroups`](https://nf-co.re/scdownstream/parameters#skip_rankgenesgroups)              |
-| **CyteType** | LLM-based cluster cell type annotation                       | requires [`cytetype_study_context`](https://nf-co.re/scdownstream/parameters#cytetype_study_context) |
+| Analysis                          | What it does                                                                                               | Skip parameter                                                                                                                                        |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **PAGA**                          | Trajectory / connectivity graph between clusters                                                           | —                                                                                                                                                     |
+| **LIANA**                         | Ligand–receptor interaction analysis                                                                       | [`skip_liana`](https://nf-co.re/scdownstream/parameters#skip_liana)                                                                                   |
+| **DE**                            | Cell-level and sample-level differential expression via `de_methods`                                       | omit `de` from the analysis plan and/or set [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) to an empty string                    |
+| **Aggregate per-cell annotation** | Majority vote of per-cell SingleR/CellTypist labels per cluster (columns derived from annotator manifests) | omit `aggregate_per_cell_annotation` from the analysis plan and/or do not run per-cell annotators                                                     |
+| **CyteType**                      | LLM-based cluster cell type annotation                                                                     | omit `cytetype` from the analysis plan and/or leave [`cytetype_study_context`](https://nf-co.re/scdownstream/parameters#cytetype_study_context) empty |
 
-By default (no `--analysis_plan`), all four analyses run for every clustering result, subject to the skip flags and `cytetype_study_context` above.
+By default (no `--analysis_plan`), `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, and `cytetype` run for every clustering result, subject to `skip_liana`, `de_methods`, and `cytetype_study_context` above. Sample-level pseudobulk DE runs automatically when `pydeseq2` or `edgepython` are included in the resolved `de_methods` for a clustering.
+
+Per-cell SingleR and CellTypist annotation runs earlier in the pipeline (before sample merge) when [`celldex_reference`](https://nf-co.re/scdownstream/parameters#celldex_reference) and/or [`celltypist_model`](https://nf-co.re/scdownstream/parameters#celltypist_model) are set. `aggregate_per_cell_annotation` summarises those per-cell predictions per cluster using columns declared in each annotator's manifest. `cytetype` is an independent cluster-level annotator.
+
+### Differential expression methods
+
+The [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) parameter selects which engines run when the corresponding analysis token is active:
+
+| Method                 | Purpose                                                                                      |
+| ---------------------- | -------------------------------------------------------------------------------------------- |
+| `wilcoxon`             | Scanpy `rank_genes_groups` with the Wilcoxon test (default)                                  |
+| `t-test`               | Scanpy `rank_genes_groups` with Student's t-test                                             |
+| `t-test_overestim_var` | Scanpy `rank_genes_groups` with t-test (overestimated variance)                              |
+| `logreg`               | Scanpy `rank_genes_groups` with logistic regression                                          |
+| `edgepython_sc`        | Donor-aware single-cell mixed model ([edgePython](https://github.com/pachterlab/edgePython)) |
+| `pydeseq2`             | Sample-level PyDESeq2 on pseudobulk counts (triggers pseudobulk aggregation)                 |
+| `edgepython`           | Sample-level edgeR-style QL F-test on pseudobulk counts (triggers pseudobulk aggregation)    |
+
+Use multiple comma-separated values to compare methods in one run, for example `--de_methods wilcoxon,pydeseq2,edgepython`. To disable all DE engines globally, pass an empty value: `--de_methods ''`. DE still runs for a clustering when a matching `--analysis_plan` row supplies `de_methods`.
+
+**Rank-genes-groups comparisons:** each selected Scanpy method (`wilcoxon`, `t-test`, `t-test_overestim_var`, `logreg`) runs `rank_genes_groups` for global cluster markers, per-condition cluster markers, and per-cluster condition contrasts when those columns are present. Multiple Scanpy methods produce parallel outputs (separate `uns` keys and plots per method). For donor-aware modelling across biological replicates, add `pydeseq2` and/or `edgepython` to `de_methods`, or use `edgepython_sc`.
+
+**Pseudobulk settings:** aggregation follows the [sc-best-practices DGE tutorial](https://www.sc-best-practices.org/conditions/differential_gene_expression.html) using [decoupler](https://decoupler.readthedocs.io/) (`pp.pseudobulk` + `filter_samples`). Biological replicate identifiers are unified to a `donor` column during QC unification. Set the source column per sample with `donor_col` in the samplesheet (required when pseudobulking is enabled). When extending a previous run, `base_adata` must already contain a `donor` column. Minimum cells per pseudobulk sample ([`pseudobulk_min_num_cells`](https://nf-co.re/scdownstream/parameters#pseudobulk_min_num_cells), default `10`) and minimum total counts ([`pseudobulk_min_total_counts`](https://nf-co.re/scdownstream/parameters#pseudobulk_min_total_counts), default `1000`) filter low-coverage pseudobulk profiles. Sample-level DE uses a fixed `~ donor + condition` design per cell-type stratum. Set [`reference_condition`](https://nf-co.re/scdownstream/parameters#reference_condition) to choose the baseline condition for pseudobulk and `edgepython_sc` contrasts (defaults to the first level alphabetically). Use [`pseudobulk`](https://nf-co.re/scdownstream/parameters#pseudobulk) to export pseudobulk count matrices without running pseudobulk DE methods.
 
 ### Analysis plan
 
@@ -281,22 +350,22 @@ With many integration methods and resolutions the full downstream suite can gene
 
 Each row in the CSV selects a subset of clusterings. **All columns are optional** — an empty cell acts as a wildcard that matches everything:
 
-| Column        | Empty means                                                         |
-| ------------- | ------------------------------------------------------------------- |
-| `integration` | match all integration methods                                       |
-| `subset`      | match all subsets (`global` and per-label)                          |
-| `resolution`  | match all resolutions (still bounded by `--clustering_resolutions`) |
-| `analyses`    | run all four: `paga`, `liana`, `de`, `cytetype`                     |
+| Column        | Empty means                                                                                |
+| ------------- | ------------------------------------------------------------------------------------------ |
+| `integration` | match all integration methods                                                              |
+| `subset`      | match all subsets (`global` and per-label)                                                 |
+| `resolution`  | match all resolutions (still bounded by `--clustering_resolutions`)                        |
+| `analyses`    | run `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, and `cytetype`                 |
+| `de_methods`  | use the global [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) default |
 
 When multiple rows match a clustering result, their `analyses` lists are **combined** (duplicates removed). If any matching row leaves `analyses` empty, all analyses run for that clustering. Clusterings that match **no** row are excluded from Leiden and all downstream analyses — but their UMAP and neighbour graph are still computed.
 
 Example plan: full analysis on Symphony at resolution 0.5, DE-only at resolution 1.0 for every integration, and DE-only for scVI at any resolution:
 
 ```csv title="analysis_plan.csv"
-integration,subset,resolution,analyses
-symphony,global,0.5,"paga,de,cytetype"
-,,1.0,de
-scvi,,,de
+integration,subset,resolution,analyses,de_methods
+scvi,global,0.5,"de","wilcoxon,pydeseq2,edgepython"
+,,,de,wilcoxon
 ```
 
 ```bash
@@ -400,10 +469,14 @@ Ambient RNA correction removes contaminating RNA from cell-free droplets that ca
 The pipeline supports multiple ambient RNA correction methods that can be configured both globally and per-sample.
 
 The pipeline allows you to select an ambient RNA correction method globally using the `--ambient_correction` parameter.
-Available methods include `decontx` (default), `cellbender`, `soupx`, `scar`, or `none` to skip correction entirely:
+Available methods include `soupx` (default), `decontx`, `cellbender`, `scar`, or `none` to skip correction entirely.
+SoupX requires an unfiltered matrix for each sample where ambient correction is enabled. For filtered-only samples, disable correction in the samplesheet or use `--ambient_correction decontx`.
+
+> [!WARNING]
+> If nf-core/scrnaseq already ran CellBender and you also enable downstream ambient correction on the same count matrix, you may apply two correction steps. Inspect the upstream outputs and disable one stage when appropriate.
 
 ```bash
-nextflow run nf-core/scdownstream --ambient_correction cellbender --input samplesheet.csv --outdir results
+nextflow run nf-core/scdownstream --ambient_correction decontx --input samplesheet.csv --outdir results
 ```
 
 For finer control, you can disable ambient RNA correction for specific samples by setting `ambient_correction` to `false` in your samplesheet:
@@ -414,7 +487,7 @@ sample1,/path/to/sample1_filtered.h5ad,/path/to/sample1.h5ad,true
 sample2,/path/to/sample2_filtered.h5ad,/path/to/sample2.h5ad,false
 ```
 
-By default, the pipeline stores ambient-corrected counts as additional layers in the AnnData object (e.g., `ambient_corrected_decontx`) while keeping the original raw counts in the `X` layer.
+By default, the pipeline stores ambient-corrected counts as additional layers in the AnnData object (e.g., `ambient_corrected_soupx`) while keeping the original raw counts in the `X` layer.
 This means all downstream analysis including integration uses the raw counts, with corrected counts available for optional inspection.
 
 If you want to use the ambient-corrected counts for integration instead, you can enable this behavior globally or per sample:
@@ -488,6 +561,10 @@ This is _not_ recommended, since it can lead to different results on different m
 - `test`
   - A profile with a complete configuration for automated testing
   - Includes links to test data so needs no other parameters
+- `python_only`
+  - Swaps R-based QC defaults for Python tools: scAR (`--ambient_correction`) instead of decontX, Scrublet (`--doublet_detection`) instead of scDblFinder, and scanpy HVGs (`--feature_selection hvgs`) instead of deviance feature selection
+  - Combine with a software profile, e.g. `-profile docker,python_only`
+  - scAR requires filtered and unfiltered matrices; use `--ambient_correction none` for filtered-only samples
 - `docker`
   - A generic configuration profile to be used with [Docker](https://docker.com/)
 - `singularity`

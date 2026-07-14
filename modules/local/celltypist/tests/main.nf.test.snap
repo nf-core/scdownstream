@@ -10,15 +10,15 @@
                 }
             },
             [
-                "celltypist:Adult_COVID19_PBMC",
-                "celltypist:Adult_COVID19_PBMC:conf",
+                "annotation:celltypist:Adult_COVID19_PBMC:per_cell",
+                "annotation:celltypist:Adult_COVID19_PBMC:per_cell:confidence",
                 "sample"
             ]
         ],
-        "timestamp": "2026-03-25T15:44:41.940273199",
+        "timestamp": "2026-07-10T09:14:01.085481",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without failures - stub": {
@@ -41,7 +41,23 @@
                     ]
                 ],
                 "2": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_celltypist_annotation_columns.csv:md5,844397d2b335534df33b2700210dd8d3"
+                    ]
+                ],
+                "3": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "annotation_columns": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_celltypist_annotation_columns.csv:md5,844397d2b335534df33b2700210dd8d3"
+                    ]
                 ],
                 "h5ad": [
                     [
@@ -64,10 +80,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-25T15:45:36.6350805",
+        "timestamp": "2026-07-11T13:24:17.743672",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without failures": {
@@ -81,15 +97,15 @@
                 }
             },
             [
-                "celltypist:Adult_COVID19_PBMC",
-                "celltypist:Adult_COVID19_PBMC:conf",
+                "annotation:celltypist:Adult_COVID19_PBMC:per_cell",
+                "annotation:celltypist:Adult_COVID19_PBMC:per_cell:confidence",
                 "sample"
             ]
         ],
-        "timestamp": "2026-03-25T15:44:12.70140271",
+        "timestamp": "2026-07-10T09:13:52.821435",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.2"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     }
 }

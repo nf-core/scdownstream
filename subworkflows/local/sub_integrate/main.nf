@@ -1,13 +1,16 @@
 include { ADATA_SPLITCOL as SPLITCOL } from '../../../modules/local/adata/splitcol'
 include { INTEGRATE                  } from '../integrate'
+include { NORMALIZATION              } from '../normalization'
 include { anndata                      } from 'plugin/nf-anndata'
 
 workflow SUB_INTEGRATE {
     take:
     ch_h5ad                     // channel: [ val(meta), path(h5ad) ]
     split_col                   //   value: string
-    n_hvgs                      //   value: integer
+    feature_selection           //   value: string
+    n_features                  //   value: integer
     excluded_genes              //    path: file or []
+    normalization_method        //   value: string
     methods                     //   value: list of string
     scvi_model                  //   value: string
     scanvi_model                //   value: string
@@ -62,8 +65,14 @@ workflow SUB_INTEGRATE {
         }
     }
 
-    SPLITCOL (
+    NORMALIZATION(
         ch_h5ad,
+        normalization_method,
+    )
+    ch_h5ad_normalized = NORMALIZATION.out.h5ad
+
+    SPLITCOL (
+        ch_h5ad_normalized,
         split_col
     )
 
@@ -88,8 +97,10 @@ workflow SUB_INTEGRATE {
     INTEGRATE (
         ch_h5ad_split,
         false,
-        n_hvgs,
+        feature_selection,
+        n_features,
         excluded_genes,
+        normalization_method,
         methods,
         scvi_model,
         scanvi_model,
@@ -107,6 +118,7 @@ workflow SUB_INTEGRATE {
         }
 
     emit:
+    h5ad         = ch_h5ad_normalized            // channel: [ meta, h5ad ]
     integrations = ch_integrations            // channel: [ meta, h5ad ]
     obs          = INTEGRATE.out.obs          // channel: [ pkl ]
     var          = INTEGRATE.out.var          // channel: [ pkl ]

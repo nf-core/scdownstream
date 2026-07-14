@@ -25,6 +25,7 @@ sc.settings.n_jobs = int("${task.cpus}")
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 method = "${method}"
+rank_key = "${rank_key}"
 
 filter_col = "${filter_col ?: ''}"
 filter_val = "${filter_val ?: ''}"
@@ -32,10 +33,13 @@ filter_val = "${filter_val ?: ''}"
 meta_id = "${meta.id}"
 obs_key = "${obs_key}"
 
+adata.obs[obs_key] = adata.obs[obs_key].astype(str)
+
 if filter_col and filter_val:
     adata = adata[adata.obs[filter_col] == filter_val].copy()
 
-kwargs = {"groupby": obs_key, "method": method, "pts": True}
+kwargs = {"groupby": obs_key, "method": method, "pts": True, "key_added": rank_key}
+filtered_rank_key = f"{rank_key}_filtered"
 
 # Check value counts for each group
 value_counts = adata.obs[obs_key].value_counts()
@@ -53,21 +57,43 @@ if len(valid_groups) >= 2:
 
     sc.pp.log1p(adata)
     sc.tl.rank_genes_groups(adata, **kwargs)
+    sc.tl.filter_rank_genes_groups(
+        adata,
+        key=rank_key,
+        key_added=filtered_rank_key,
+        min_in_group_fraction=0.2,
+        max_out_group_fraction=0.2,
+    )
 
-    rgg_dict = adata.uns["rank_genes_groups"]
+    marker_df = sc.get.rank_genes_groups_df(adata, group=None, key=filtered_rank_key)
+    marker_df = marker_df[marker_df["names"].notna()].copy()
 
-    pickle.dump(rgg_dict, open(f"{prefix}.pkl", "wb"))
-    adata.write_h5ad(f"{prefix}.h5ad")
+    if marker_df.empty:
+        print(f"Warning: no genes passed filter for {obs_key}; skipping plots and H5AD output.")
+        adata.uns.pop(filtered_rank_key, None)
+        adata.uns.pop(rank_key, None)
+    else:
+        marker_df.to_csv(f"{prefix}_markers.csv", index=False)
 
-    # Plot
-    sc.pl.rank_genes_groups(adata, show=False)
-    path = f"{prefix}.png"
-    plt.savefig(path)
+        # Store filtered markers under rank_key for downstream consumers such as CyteType.
+        rgg_dict = dict(adata.uns.pop(filtered_rank_key))
+        adata.uns.pop(rank_key, None)
+        # Scanpy marks filtered-out genes as missing names; replace them so H5AD serialisation works.
+        names_df = pd.DataFrame(rgg_dict["names"]).fillna("").astype(str)
+        rgg_dict["names"] = names_df.to_records(index=False)
+        adata.uns[rank_key] = rgg_dict
 
-    # MultiQC
-    with open(path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
-        image_string = base64.b64encode(f_plot.read()).decode("utf-8")
-        image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
+        pickle.dump(rgg_dict, open(f"{prefix}.pkl", "wb"))
+        adata.write_h5ad(f"{prefix}.h5ad")
+
+        # Plot
+        sc.pl.rank_genes_groups(adata, key=rank_key, show=False)
+        path = f"{prefix}.png"
+        plt.savefig(path)
+
+        sc.pl.rank_genes_groups_dotplot(adata, key=rank_key, show=False)
+        dotplot_path = f"{prefix}_dotplot.png"
+        plt.savefig(dotplot_path)
 
         # Build section name with filter and obs_key information
         if filter_col and filter_val:
@@ -77,18 +103,27 @@ if len(valid_groups) >= 2:
             section_name = f"Characteristic genes (grouped by: {obs_key})"
             description = f"Characteristic genes, grouped by <code>{obs_key}</code>."
 
-        custom_json = {
-            "id": "${prefix}",
-            "parent_id": "${meta.integration}",
-            "parent_name": "${meta.integration}",
-            "parent_description": "Results of the ${meta.integration} integration.",
-            "section_name": section_name,
-            "description": description,
-            "plot_type": "image",
-            "data": image_html,
-        }
+        def write_mqc_plot(plot_path, plot_id, plot_label):
+            with open(plot_path, "rb") as f_plot:
+                image_string = base64.b64encode(f_plot.read()).decode("utf-8")
+            image_html = (
+                f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
+            )
+            custom_json = {
+                "id": plot_id,
+                "parent_id": "${meta.integration}",
+                "parent_name": "${meta.integration}",
+                "parent_description": "Results of the ${meta.integration} integration.",
+                "section_name": f"{section_name} ({plot_label})",
+                "description": f"{description} {plot_label.capitalize()}.",
+                "plot_type": "image",
+                "data": image_html,
+            }
+            with open(f"{plot_id}_mqc.json", "w") as f_json:
+                json.dump(custom_json, f_json)
 
-        json.dump(custom_json, f_json)
+        write_mqc_plot(path, "${prefix}", "rank plot")
+        write_mqc_plot(dotplot_path, "${prefix}_dotplot", "dot plot")
 else:
     if len(valid_groups) == 0:
         print("Skipping rank_genes_groups computation: no groups have >= 2 samples.")

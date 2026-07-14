@@ -72,6 +72,7 @@ workflow UNIFY {
         unknown_label: meta.unknown_label ?: "unknown"
         symbol_col: meta.symbol_col ?: "index"
         counts_layer: meta.counts_layer ?: "X"
+        donor_col: meta.donor_col ?: ""
     }
     ADATA_UNIFY(
         ch_adata_unify.h5ad,
@@ -82,13 +83,15 @@ workflow UNIFY {
         ch_adata_unify.symbol_col,
         ch_adata_unify.counts_layer,
         duplicate_var_resolution,
-        aggregate_isoforms
+        aggregate_isoforms,
+        ch_adata_unify.donor_col,
     )
     ch_h5ad = ADATA_UNIFY.out.h5ad.map { meta, h5ad -> [
         meta + [
             batch_col: 'batch',
             label_col: 'label',
             condition_col: 'condition',
+            donor_col: 'donor',
             unknown_label: 'unknown',
             symbol_col: 'index',
             counts_layer: 'X'

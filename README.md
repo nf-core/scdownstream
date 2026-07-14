@@ -60,6 +60,7 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
       - [scANVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scanvi.html)
       - [Symphony](https://github.com/immunogenomics/symphony) / Harmony (via [symphonypy](https://pypi.org/project/symphonypy/))
       - [BBKNN](https://github.com/Teichlab/bbknn)
+      - [Scanorama](https://github.com/brianhie/scanorama)
       - [Combat](https://scanpy.readthedocs.io/en/latest/api/generated/scanpy.pp.combat.html)
       - [Seurat](https://satijalab.org/seurat/articles/integration_introduction)
       - [PCA](https://scanpy.readthedocs.io/en/stable/generated/scanpy.pp.pca.html)
@@ -72,6 +73,7 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
 4. Clustering and dimensionality reduction
    1. [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html)
    2. [UMAP](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.umap.html)
+   3. [t-SNE](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.tsne.html) (optional via `--tsne`)
 5. Create [Quarto](https://quarto.org/) and ([`MultiQC`](http://multiqc.info/)) reports
 
 ## Usage

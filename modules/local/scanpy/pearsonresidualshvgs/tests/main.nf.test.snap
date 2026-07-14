@@ -1,0 +1,94 @@
+{
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_pearson_residuals_hvgs.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "test_pearson_residuals_hvgs.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_pearson_residuals_hvgs.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "var": [
+                    "test_pearson_residuals_hvgs.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-11T09:16:51.965641",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run without failures": {
+        "content": [
+            {
+                "SCANPY_PEARSONRESIDUALS_HVGS": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12.2"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 100,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "highly_variable",
+                        "highly_variable_rank",
+                        "means",
+                        "residual_variances",
+                        "variances"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-11T09:32:48.226626",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    }
+}

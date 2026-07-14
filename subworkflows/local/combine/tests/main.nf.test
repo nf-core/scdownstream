@@ -23,22 +23,24 @@ nextflow_workflow {
                 )
                 input[1]  = channel.value([[], []])
                 input[2]  = false
-                input[3]  = 0
-                input[4]  = 'scvi'
-                input[5]  = null
+                input[3]  = 'deviance'
+                input[4]  = 0
+                input[5]  = 'scvi'
                 input[6]  = null
-                input[7]  = null
-                input[8]  = ''
-                input[9]  = ''
-                input[10] = 'https://zenodo.org/records/10685499/files/model_v1.1.tar.gz'
-                input[11] = null
-                input[12] = null
-                input[13] = 'condition'
-                input[14] = false
-                input[15] = 0
-                input[16] = 'stratified_label_batch'
-                input[17] = 42
-                input[18] = 'fast'
+                input[7]  = 'log1p'
+                input[8]  = null
+                input[9]  = null
+                input[10] = ''
+                input[11] = ''
+                input[12] = 'https://zenodo.org/records/10685499/files/model_v1.1.tar.gz'
+                input[13] = null
+                input[14] = null
+                input[15] = 'condition'
+                input[16] = false
+                input[17] = 0
+                input[18] = 'stratified_label_batch'
+                input[19] = 42
+                input[20] = 'fast'
                 """
             }
         }
@@ -64,22 +66,24 @@ nextflow_workflow {
                 )
                 input[1]  = channel.value([[], []])
                 input[2]  = false
-                input[3]  = 0
-                input[4]  = 'scvi'
-                input[5]  = null
+                input[3]  = 'deviance'
+                input[4]  = 0
+                input[5]  = 'scvi'
                 input[6]  = null
-                input[7]  = null
-                input[8]  = ''
-                input[9]  = ''
-                input[10] = 'https://zenodo.org/records/10685499/files/model_v1.1.tar.gz'
-                input[11] = null
-                input[12] = null
-                input[13] = 'condition'
-                input[14] = false
-                input[15] = 0
-                input[16] = 'stratified_label_batch'
-                input[17] = 42
-                input[18] = 'fast'
+                input[7]  = 'log1p'
+                input[8]  = null
+                input[9]  = null
+                input[10] = ''
+                input[11] = ''
+                input[12] = 'https://zenodo.org/records/10685499/files/model_v1.1.tar.gz'
+                input[13] = null
+                input[14] = null
+                input[15] = 'condition'
+                input[16] = false
+                input[17] = 0
+                input[18] = 'stratified_label_batch'
+                input[19] = 42
+                input[20] = 'fast'
                 """
             }
         }
@@ -88,6 +92,8 @@ nextflow_workflow {
             def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
             assert "batch" in adata.obs.colnames
+            assert "intersection" in adata.var.colnames || adata.n_vars > 0
+            assert "log1p" in adata.layers
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml },
                 adata.yaml

@@ -30,8 +30,8 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
             with(adata) {
-                assert "celltypist:Adult_COVID19_PBMC" in obs.colnames
-                assert "celltypist:Adult_COVID19_PBMC:conf" in obs.colnames
+                assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell" in obs.colnames
+                assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell:confidence" in obs.colnames
             }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
@@ -64,8 +64,8 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
             with(adata) {
-                assert "celltypist:Adult_COVID19_PBMC" in obs.colnames
-                assert "celltypist:Adult_COVID19_PBMC:conf" in obs.colnames
+                assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell" in obs.colnames
+                assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell:confidence" in obs.colnames
             }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
@@ -112,7 +112,8 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index"
                     ]
                 )
                 input[1] = ["Adult_COVID19_PBMC"]

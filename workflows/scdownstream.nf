@@ -6,14 +6,13 @@
 
 include { LOAD_H5AD                            } from '../subworkflows/local/load_h5ad'
 include { QUALITY_CONTROL                      } from '../subworkflows/local/quality_control'
-include { CELLTYPE_ASSIGNMENT                  } from '../subworkflows/local/celltype_assignment'
+include { PER_CELL_ANNOTATION                  } from '../subworkflows/local/per_cell_annotation'
 include { ADATA_EXTEND as FINALIZE_QC_ANNDATAS } from '../modules/local/adata/extend'
 include { QUARTONOTEBOOK as QC_REPORT          } from '../modules/nf-core/quartonotebook'
 include { COMBINE                              } from '../subworkflows/local/combine'
 include { ADATA_SPLITEMBEDDINGS                } from '../modules/local/adata/splitembeddings'
 include { SUB_INTEGRATE                        } from '../subworkflows/local/sub_integrate'
 include { CLUSTER                              } from '../subworkflows/local/cluster'
-include { PSEUDOBULKING                        } from '../subworkflows/local/pseudobulking'
 include { PER_GROUP                            } from '../subworkflows/local/per_group'
 include { FINALIZE                             } from '../subworkflows/local/finalize'
 include { MULTIQC                              } from '../modules/nf-core/multiqc'
@@ -38,6 +37,7 @@ workflow SCDOWNSTREAM {
     ambient_corrected_integration //   value: boolean
     doublet_detection             //   value: string
     doublet_detection_threshold   //   value: integer
+    doublet_removal               //   value: boolean
     scvi_max_epochs               //   value: integer
     mito_genes                    //   value: string
     sample_n                      //   value: string
@@ -53,9 +53,11 @@ workflow SCDOWNSTREAM {
     unify_gene_symbols            //   value: boolean
     duplicate_var_resolution      //   value: string
     aggregate_isoforms            //   value: boolean
-    integration_hvgs              //   value: integer
+    feature_selection             //   value: string
+    integration_n_features              //   value: integer
     integration_methods           //   value: string
     integration_excluded_genes    //   value: string
+    normalization_method          //   value: string
     scvi_model                    //   value: string
     scanvi_model                  //   value: string
     scvi_categorical_covariates   //   value: string
@@ -64,7 +66,6 @@ workflow SCDOWNSTREAM {
     symphony_reference             //   value: string
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
-    skip_rankgenesgroups          //   value: boolean
     skip_qc_report                //   value: boolean
     scib                          //   value: boolean
     scib_max_cells                //   value: integer or null
@@ -79,10 +80,14 @@ workflow SCDOWNSTREAM {
     cluster_per_label             //   value: boolean
     cluster_global                //   value: boolean
     clustering_resolutions        //   value: string
+    neighbors_n_pcs               //   value: integer or null
+    tsne                          //   value: boolean
     analysis_plan                 //   value: list of plan rows parsed in main.nf
+    de_methods                    //   value: string
     pseudobulk                    //   value: boolean
-    pseudobulk_groupby_labels     //   value: string
     pseudobulk_min_num_cells      //   value: integer
+    pseudobulk_min_total_counts   //   value: integer
+    reference_condition           //   value: string
     prep_cellxgene                //   value: boolean
     outdir                        //   value: string
     multiqc_config                //   value: string
@@ -98,8 +103,8 @@ workflow SCDOWNSTREAM {
     ch_obsm = channel.empty()
     ch_obsp = channel.empty()
     ch_uns = channel.empty()
-    ch_layers = channel.empty()
     ch_multiqc_files = channel.empty()
+    ch_per_cell_annotation_columns = channel.empty()
 
     if (ch_input) {
         ch_obs_per_sample = channel.empty()
@@ -131,6 +136,7 @@ workflow SCDOWNSTREAM {
                     .split(',')
                     .collect { it -> it.trim().toLowerCase() },
             doublet_detection_threshold,
+            doublet_removal,
             scvi_max_epochs,
             mito_genes,
             sample_n,
@@ -145,14 +151,19 @@ workflow SCDOWNSTREAM {
         ch_obs_per_sample = ch_obs_per_sample.mix(QUALITY_CONTROL.out.obs)
 
         //
-        // Perform automated celltype assignment
+        // Perform per-cell annotation with SingleR and CellTypist
         //
-        CELLTYPE_ASSIGNMENT (
+        PER_CELL_ANNOTATION (
             ch_h5ad.map { meta, h5ad -> [meta, h5ad, meta.symbol_col, meta.counts_layer ?: "X"] },
             celldex_reference,
             celltypist_model
         )
-        ch_obs_per_sample = ch_obs_per_sample.mix(CELLTYPE_ASSIGNMENT.out.obs)
+        ch_obs_per_sample = ch_obs_per_sample.mix(PER_CELL_ANNOTATION.out.obs)
+
+        ch_per_cell_annotation_columns = PER_CELL_ANNOTATION.out.annotation_column_rows
+            .filter { row -> row.aggregatable == 'true' }
+            .map { row -> row.obs_column }
+            .unique()
 
         FINALIZE_QC_ANNDATAS (
             ch_h5ad
@@ -181,9 +192,11 @@ workflow SCDOWNSTREAM {
                 ch_h5ad,
                 ch_base,
                 is_extension,
-                integration_hvgs,
+                feature_selection,
+                integration_n_features,
                 integration_methods,
                 integration_excluded_genes,
+                normalization_method,
                 scvi_model,
                 scanvi_model,
                 scvi_categorical_covariates,
@@ -199,7 +212,6 @@ workflow SCDOWNSTREAM {
                 scib_metric_profile,
             )
             ch_obs = ch_obs.mix(COMBINE.out.obs)
-            ch_var = ch_var.mix(COMBINE.out.var)
             ch_obsm = ch_obsm.mix(COMBINE.out.obsm)
             ch_integrations = ch_integrations.mix(COMBINE.out.integrations)
             ch_finalization_base = COMBINE.out.h5ad
@@ -240,8 +252,10 @@ workflow SCDOWNSTREAM {
             SUB_INTEGRATE (
                 ch_base,
                 base_label_col,
-                integration_hvgs,
+                feature_selection,
+                integration_n_features,
                 integration_excluded_genes ? file(integration_excluded_genes) : [],
+                normalization_method,
                 integration_methods
                     .split(',')
                     .collect { it -> it.trim().toLowerCase() },
@@ -257,8 +271,9 @@ workflow SCDOWNSTREAM {
             )
             ch_integrations = ch_integrations.mix(SUB_INTEGRATE.out.integrations)
             ch_obs = ch_obs.mix(SUB_INTEGRATE.out.obs)
-            ch_var = ch_var.mix(SUB_INTEGRATE.out.var)
             ch_obsm = ch_obsm.mix(SUB_INTEGRATE.out.obsm)
+            ch_finalization_base = SUB_INTEGRATE.out.h5ad
+            ch_label_grouping = SUB_INTEGRATE.out.h5ad
         }
     }
 
@@ -275,19 +290,12 @@ workflow SCDOWNSTREAM {
             clustering_resolutions.split(',').collect { res -> res.trim() },
             "batch",
             "X_emb",
+            neighbors_n_pcs,
+            tsne,
         )
         ch_obs = ch_obs.mix(CLUSTER.out.obs)
         ch_obsm = ch_obsm.mix(CLUSTER.out.obsm)
         ch_multiqc_files = ch_multiqc_files.mix(CLUSTER.out.multiqc_files)
-
-        if (pseudobulk) {
-            PSEUDOBULKING (
-                CLUSTER.out.h5ad_clustering,
-                pseudobulk_groupby_labels.split(','),
-                pseudobulk_min_num_cells,
-                "X",
-            )
-        }
 
         ch_h5ad_both = CLUSTER.out.h5ad_clustering
             .map { meta, h5ad ->
@@ -318,8 +326,13 @@ workflow SCDOWNSTREAM {
                 [meta + [condition_col: condition_col], h5ad]
             },
             skip_liana,
-            skip_rankgenesgroups,
             cytetype_study_context,
+            de_methods,
+            pseudobulk,
+            pseudobulk_min_num_cells,
+            pseudobulk_min_total_counts,
+            ch_per_cell_annotation_columns,
+            reference_condition ?: '',
         )
 
         ch_uns = ch_uns.mix(PER_GROUP.out.uns)
@@ -333,7 +346,6 @@ workflow SCDOWNSTREAM {
             ch_obsm,
             ch_obsp,
             ch_uns,
-            ch_layers,
             prep_cellxgene
         )
     }

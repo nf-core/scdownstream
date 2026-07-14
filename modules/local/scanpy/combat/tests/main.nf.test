@@ -8,17 +8,15 @@ nextflow_process {
     tag "modules_local"
 
     setup {
-        run("SCANPY_HVGS") {
-            script "modules/local/scanpy/hvgs/main.nf"
+        run("SCANPY_LOG1PNORM") {
+            script "modules/local/scanpy/log1pnorm/main.nf"
             process {
                 """
                 input[0] = channel.of([
                         [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
                     ]
                 )
-                input[1] = 100
-                input[2] = []
                 """
             }
         }
@@ -32,8 +30,10 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = SCANPY_HVGS.out.h5ad
-                input[1] = "sample"
+                input[0] = SCANPY_LOG1PNORM.out.h5ad
+                input[1] = "batch"
+                input[2] = "log1p"
+                input[3] = false
                 """
             }
         }
@@ -43,7 +43,7 @@ nextflow_process {
             assert process.success
             with(adata) {
                 assert "X_emb" in obsm
-                assert "X_pca" in obsm
+                assert "combat" in layers
             }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
@@ -63,8 +63,10 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = SCANPY_HVGS.out.h5ad
-                input[1] = "sample"
+                input[0] = SCANPY_LOG1PNORM.out.h5ad
+                input[1] = "batch"
+                input[2] = "log1p"
+                input[3] = false
                 """
             }
         }

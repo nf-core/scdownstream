@@ -21,13 +21,22 @@ study_context = "${study_context}"
 if not study_context.strip():
     raise ValueError("cytetype_study_context must be a non-empty string when CyteType is enabled.")
 
+integration = "${integration}"
+resolution = "${resolution}"
 symbol_col = "${symbol_col}"
 group_key = "${group_key}"
 rank_key = "${rank_key}"
 _auth = os.environ.get("CYTETYPE_API_KEY")
 auth_token_arg = _auth.strip() if _auth and _auth.strip() else None
 
+cytetype_base = f"annotation:cytetype:{integration}:{resolution}"
 output_cols = [
+    f"{cytetype_base}:cell_type",
+    f"{cytetype_base}:ontology_term",
+    f"{cytetype_base}:ontology_term_id",
+    f"{cytetype_base}:cell_state",
+]
+library_cols = [
     f"cytetype_annotation_{group_key}",
     f"cytetype_cellOntologyTerm_{group_key}",
     f"cytetype_cellOntologyTermID_{group_key}",
@@ -61,11 +70,11 @@ adata_work = annotator.run(
     require_artifacts=True,
 )
 
-missing_cols = [c for c in output_cols if c not in adata_work.obs.columns]
+missing_cols = [c for c in library_cols if c not in adata_work.obs.columns]
 if missing_cols:
     raise RuntimeError(f"CyteType did not add expected obs columns: {missing_cols}. Check logs and study_context.")
 
-df_out = adata_work.obs[output_cols].reindex(adata.obs.index)
+df_out = adata_work.obs[library_cols].rename(columns=dict(zip(library_cols, output_cols))).reindex(adata.obs.index)
 df_out.to_pickle(f"{prefix}.pkl")
 
 adata.obs = pd.concat([adata.obs, df_out], axis=1)
