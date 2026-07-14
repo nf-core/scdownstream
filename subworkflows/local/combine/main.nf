@@ -46,8 +46,6 @@ workflow COMBINE {
         ch_base,
     )
     ch_outer = ADATA_MERGE.out.outer
-    ch_inner = channel.empty()
-    ch_integrate_input = channel.empty()
 
     if (!is_extension) {
         NORMALIZATION(
