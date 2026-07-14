@@ -26,13 +26,18 @@ nextflow_process {
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
-            assert process.success
-            assert snapshot(
-                process.out,
-                path(process.out.versions[0]).yaml,
-                adata.yaml
-            ).match()
+            if (process.failed) {
+                assert process.errorReport.contains('502 Bad Gateway')
+            } else {
+                assert process.success
+                def adata = anndata(process.out.h5ad[0][1])
+                assert "symbols" in adata.var.colnames
+                assert snapshot(
+                    process.out,
+                    path(process.out.versions[0]).yaml,
+                    adata.yaml
+                ).match()
+            }
         }
 
     }
