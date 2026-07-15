@@ -60,6 +60,7 @@ else:
         n_latent=int("${n_latent}"),
         dispersion="${dispersion}",
         gene_likelihood="${gene_likelihood}",
+        use_observed_lib_size="${use_observed_lib_size}" == "true",
     )
 
 if "${task.ext.use_gpu}" == "true":

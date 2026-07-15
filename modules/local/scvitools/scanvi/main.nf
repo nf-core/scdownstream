@@ -37,6 +37,7 @@ process SCVITOOLS_SCANVI {
     dispersion = task.ext.dispersion ?: 'gene'
     gene_likelihood = task.ext.gene_likelihood ?: 'zinb'
     max_epochs = task.ext.max_epochs ?: null
+    use_observed_lib_size = task.ext.use_observed_lib_size != null ? task.ext.use_observed_lib_size : true
 
     if ("${h5ad}" == "${prefix}.h5ad") {
         error("Input and output names are the same, set prefix in module configuration to disambiguate!")
