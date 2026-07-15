@@ -19,6 +19,8 @@ workflow INTEGRATE {
     feature_selection           // string: hvgs | deviance | pearson_residuals_hvgs | none
     n_features                  // integer
     excluded_genes              // path
+    exclude_mt                  // boolean
+    mito_genes                  // path or []
     normalization_method        // string
     methods                     // list of string
     scvi_model                  // path
@@ -44,6 +46,8 @@ workflow INTEGRATE {
             feature_selection,
             n_features,
             excluded_genes,
+            exclude_mt,
+            mito_genes,
             normalization_method,
         )
         ch_h5ad_hvg = FEATURE_SELECTION.out.h5ad

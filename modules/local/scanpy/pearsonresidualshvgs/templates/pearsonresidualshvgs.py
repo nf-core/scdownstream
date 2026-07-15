@@ -20,6 +20,19 @@ prefix = "${prefix}"
 n_genes = int("${n_genes}")
 batch_key = "${batch_key}"
 counts_layer = "${counts_layer}"
+exclude_mt = "${exclude_mt}" == "true"
+symbol_col = "${symbol_col}"
+mito_genes_path = "${mito_genes}"
+
+if exclude_mt:
+    symbols = adata.var_names if symbol_col == "index" else adata.var[symbol_col]
+    if mito_genes_path:
+        with open(mito_genes_path) as f:
+            mito_set = {line.strip().lower() for line in f if line.strip() and not line.startswith("#")}
+        mt_mask = symbols.str.lower().isin(mito_set)
+    else:
+        mt_mask = symbols.str.lower().str.startswith("mt-")
+    adata = adata[:, ~mt_mask].copy()
 
 if n_genes < 0:
     raise ValueError(

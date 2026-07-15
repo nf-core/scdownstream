@@ -16,6 +16,8 @@ workflow COMBINE {
     integration_n_features      //   value: integer
     integration_methods         //   value: string
     integration_excluded_genes  //   value: string
+    integration_exclude_mt      //   value: boolean
+    mito_genes                  //   value: string
     normalization_method        //   value: string
     scvi_model                  //   value: string
     scanvi_model                //   value: string
@@ -81,6 +83,8 @@ workflow COMBINE {
         feature_selection,
         integration_n_features,
         integration_excluded_genes ? file(integration_excluded_genes) : [],
+        integration_exclude_mt,
+        mito_genes ? file(mito_genes) : [],
         normalization_method,
         integration_methods
             .split(',')

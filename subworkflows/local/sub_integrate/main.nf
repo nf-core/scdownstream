@@ -10,6 +10,8 @@ workflow SUB_INTEGRATE {
     feature_selection           //   value: string
     n_features                  //   value: integer
     excluded_genes              //    path: file or []
+    exclude_mt                  //   value: boolean
+    mito_genes                  //    path: file or []
     normalization_method        //   value: string
     methods                     //   value: list of string
     scvi_model                  //   value: string
@@ -100,6 +102,8 @@ workflow SUB_INTEGRATE {
         feature_selection,
         n_features,
         excluded_genes,
+        exclude_mt,
+        mito_genes,
         normalization_method,
         methods,
         scvi_model,

@@ -23,6 +23,9 @@ nextflow_process {
                 input[1] = 0
                 input[2] = []
                 input[3] = ''
+                input[4] = false
+                input[5] = 'index'
+                input[6] = []
                 """
             }
         }
@@ -60,6 +63,9 @@ nextflow_process {
                 input[1] = 100
                 input[2] = []
                 input[3] = ''
+                input[4] = false
+                input[5] = 'index'
+                input[6] = []
                 """
             }
         }
@@ -97,6 +103,9 @@ nextflow_process {
                 input[2] = channel.of('ANXA1\\nJCHAIN\\nGPNMB\\nHSPA12B\\nVCAN')
                     .collectFile(name: 'excluded_genes.txt')
                 input[3] = ''
+                input[4] = false
+                input[5] = 'index'
+                input[6] = []
                 """
             }
         }
@@ -108,6 +117,42 @@ nextflow_process {
                 assert "highly_deviant" in var.colnames
                 assert !var_names.contains('ANXA1')
             }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should exclude mitochondrial genes when exclude_mt is true") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = ''
+                input[4] = true
+                input[5] = 'index'
+                input[6] = []
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert !adata.var_names.any { gene -> gene.toLowerCase().startsWith('mt-') }
             assert snapshot(
                 process.out,
                 path(process.out.versions[0]).yaml,
@@ -135,6 +180,9 @@ nextflow_process {
                 input[1] = 100
                 input[2] = []
                 input[3] = ''
+                input[4] = false
+                input[5] = 'index'
+                input[6] = []
                 """
             }
         }

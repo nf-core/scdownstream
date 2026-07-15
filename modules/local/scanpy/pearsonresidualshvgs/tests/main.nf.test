@@ -24,6 +24,9 @@ nextflow_process {
                 input[2] = []
                 input[3] = ''
                 input[4] = 'X'
+                input[5] = false
+                input[6] = 'index'
+                input[7] = []
                 """
             }
         }
@@ -33,6 +36,43 @@ nextflow_process {
             assert process.success
             assert adata.n_vars == 100
             assert "highly_variable" in adata.var.colnames
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should exclude mitochondrial genes when exclude_mt is true") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = ''
+                input[4] = 'X'
+                input[5] = true
+                input[6] = 'index'
+                input[7] = []
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.n_vars == 100
+            assert !adata.var_names.any { gene -> gene.toLowerCase().startsWith('mt-') }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml
@@ -60,6 +100,9 @@ nextflow_process {
                 input[2] = []
                 input[3] = ''
                 input[4] = 'X'
+                input[5] = false
+                input[6] = 'index'
+                input[7] = []
                 """
             }
         }

@@ -9,6 +9,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Added`
 
+- Add `--integration_exclude_mt` to optionally exclude mitochondrial genes from pre-integration feature selection.
 - Add CyteType module for automated cell type annotation.
 - Add ribosomal/haemoglobin QC metrics [[#277]https://github.com/nf-core/scdownstream/pull/277]
 - Add reporting using Quarto [[#258](https://github.com/nf-core/scdownstream/pull/258)]

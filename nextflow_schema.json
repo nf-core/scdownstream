@@ -179,6 +179,12 @@
                     "description": "Optional file containing a list of gene symbols (one per line). If provided, these genes will be excluded from feature selection for integration.",
                     "exists": true
                 },
+                "integration_exclude_mt": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Exclude mitochondrial genes from feature selection before integration.",
+                    "help_text": "When true, mitochondrial genes are removed before `hvgs`, `deviance`, or `pearson_residuals_hvgs` feature selection. Gene symbols are matched using the `mt-` prefix heuristic, or the gene list in `--mito_genes` when provided."
+                },
                 "normalization_method": {
                     "type": "string",
                     "default": "scran",

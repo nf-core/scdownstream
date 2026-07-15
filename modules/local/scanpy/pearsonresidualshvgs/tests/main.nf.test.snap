@@ -1,4 +1,57 @@
 {
+    "Should exclude mitochondrial genes when exclude_mt is true": {
+        "content": [
+            {
+                "SCANPY_PEARSONRESIDUALS_HVGS": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12.2"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 100,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "highly_variable",
+                        "highly_variable_rank",
+                        "means",
+                        "residual_variances",
+                        "variances"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-15T11:37:08.914774",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
     "Should run without failures - stub": {
         "content": [
             {

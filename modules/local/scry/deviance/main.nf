@@ -12,6 +12,9 @@ process SCRY_DEVIANCE {
     val n_genes
     path excluded_genes
     val batch_col
+    val exclude_mt
+    val symbol_col
+    path mito_genes
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad

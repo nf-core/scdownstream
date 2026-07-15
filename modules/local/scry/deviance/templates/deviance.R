@@ -7,6 +7,31 @@ library(anndataR)
 set.seed(123)
 
 adata <- read_h5ad("${h5ad}")
+
+exclude_mt <- as.logical("${exclude_mt}")
+symbol_col <- "${symbol_col}"
+mito_genes_path <- "${mito_genes}"
+
+if (exclude_mt) {
+    if (symbol_col == "index") {
+        symbols <- adata\$var_names
+    } else {
+        if (!(symbol_col %in% colnames(adata\$var))) {
+            stop(paste0("Symbol column ", symbol_col, " not found in adata.var"))
+        }
+        symbols <- adata\$var[[symbol_col]]
+    }
+    symbols_lower <- tolower(symbols)
+    if (nzchar(mito_genes_path) && file.exists(mito_genes_path)) {
+        mito_lines <- trimws(readLines(mito_genes_path))
+        mito_set <- tolower(mito_lines[nzchar(mito_lines) & !grepl("^#", mito_lines)])
+        mt_mask <- symbols_lower %in% mito_set
+    } else {
+        mt_mask <- grepl("^mt-", symbols_lower)
+    }
+    adata <- adata[, !mt_mask]
+}
+
 sce <- adata\$as_SingleCellExperiment(x_mapping = "counts", assays_mapping = FALSE)
 
 n_genes <- as.integer("${n_genes}")

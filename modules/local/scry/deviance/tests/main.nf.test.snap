@@ -1,4 +1,84 @@
 {
+    "Should exclude mitochondrial genes when exclude_mt is true": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_deviance.h5ad:md5,8aa1481da6311ed1f4fb7b313bd935b8"
+                    ]
+                ],
+                "1": [
+                    "test_deviance_features.csv:md5,edc464aacdaa8e7ec8c0083d264e9bfd"
+                ],
+                "2": [
+                    "versions.yml:md5,4a3f9cbeeb0fb3f69921bb3d8a2b6c43"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_deviance.h5ad:md5,8aa1481da6311ed1f4fb7b313bd935b8"
+                    ]
+                ],
+                "var": [
+                    "test_deviance_features.csv:md5,edc464aacdaa8e7ec8c0083d264e9bfd"
+                ],
+                "versions": [
+                    "versions.yml:md5,4a3f9cbeeb0fb3f69921bb3d8a2b6c43"
+                ]
+            },
+            {
+                "SCRY_DEVIANCE": {
+                    "R": "4.5.3",
+                    "scry": "1.22.0"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 100,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "binomial_deviance",
+                        "highly_deviant"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-07-15T11:45:43.393885",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
     "Should run without a specified number of deviant genes": {
         "content": [
             {

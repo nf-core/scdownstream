@@ -13,6 +13,9 @@ process SCANPY_PEARSONRESIDUALS_HVGS {
     path excluded_genes
     val(batch_key)
     val(counts_layer)
+    val exclude_mt
+    val symbol_col
+    path mito_genes
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
