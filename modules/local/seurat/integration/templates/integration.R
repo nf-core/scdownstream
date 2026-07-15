@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-options(future.globals.maxSize = 8 * 1024^3)
+options(future.globals.maxSize = as.numeric("${task.memory.toBytes()}"))
 
 library(future)
 library(Seurat)
