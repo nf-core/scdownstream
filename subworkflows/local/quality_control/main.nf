@@ -156,9 +156,11 @@ workflow QUALITY_CONTROL {
         ch_filtering.log1p_n_genes_by_counts_nmads,
         ch_filtering.pct_counts_in_top_20_genes_nmads,
         ch_filtering.pct_counts_mt_nmads,
-        mito_genes ?: []
+        mito_genes ?: [],
+        true
     )
     ch_h5ad = SCANPY_FILTER.out.h5ad
+    ch_multiqc_files = ch_multiqc_files.mix(SCANPY_FILTER.out.multiqc_files.flatten())
 
     // Only run SCANPY_SAMPLE if sample_n or sample_fraction is set
     if (sample_n || sample_fraction) {

@@ -22,9 +22,12 @@ process SCANPY_FILTER {
     val pct_counts_in_top_20_genes_nmads
     val pct_counts_mt_nmads
     path mito_genes
+    val plot
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
+    path "*.png"                           , emit: plots, optional: true
+    path "*_mqc.json"                      , emit: multiqc_files, optional: true
     path "versions.yml"                    , emit: versions, topic: versions
 
     when:
@@ -32,6 +35,8 @@ process SCANPY_FILTER {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
+    section_name = task.ext.section_name ?: "Filter threshold histograms"
+    description = task.ext.description ?: "QC metric histograms with applied filter thresholds"
     if ("${prefix}.h5ad" == "${h5ad}") {
         error("Input and output names are the same, use \"task.ext.prefix\" to disambiguate!")
     }
@@ -39,8 +44,17 @@ process SCANPY_FILTER {
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
+    section_name = task.ext.section_name ?: "Filter threshold histograms"
+    description = task.ext.description ?: "QC metric histograms with applied filter thresholds"
     """
     touch ${prefix}.h5ad
     touch versions.yml
+
+    if [ "${plot}" = "true" ]; then
+        for metric in log1p_total_counts log1p_n_genes_by_counts pct_counts_in_top_20_genes pct_counts_mt pct_counts_ribo pct_counts_hb total_counts n_genes_by_counts; do
+            touch ${prefix}_\${metric}.png
+            touch ${prefix}_\${metric}_mqc.json
+        done
+    fi
     """
 }
