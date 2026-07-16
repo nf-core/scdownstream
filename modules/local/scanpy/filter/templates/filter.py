@@ -58,49 +58,75 @@ def parse_optional_int(value):
     return None if parsed is None else int(parsed)
 
 
-def mad_thresholds(values, nmads):
+def mad_bounds(values, nmads):
     median = np.median(values)
     mad = median_abs_deviation(values)
-    return [median - nmads * mad, median + nmads * mad]
+    return median - nmads * mad, median + nmads * mad
 
 
-def threshold_lines(metric, thresholds):
-    """Return dashed threshold lines for a metric."""
-    lines = []
-
+def nmads_for_metric(metric, thresholds):
     mad_nmads = {
         "log1p_total_counts": thresholds["log1p_total_counts_nmads"],
         "log1p_n_genes_by_counts": thresholds["log1p_n_genes_by_counts_nmads"],
         "pct_counts_in_top_20_genes": thresholds["pct_counts_in_top_20_genes_nmads"],
         "pct_counts_mt": thresholds["pct_counts_mt_nmads"],
     }
-    if metric in mad_nmads:
-        nmads = mad_nmads[metric]
-        if nmads is not None and nmads > 0:
-            lines.extend(mad_thresholds(thresholds["values"][metric], nmads))
+    return mad_nmads.get(metric)
+
+
+LOWER_BOUND_COLOR = "#1f77b4"
+UPPER_BOUND_COLOR = "#d62728"
+MAD_LINESTYLE = "--"
+ABSOLUTE_LINESTYLE = ":"
+
+
+def threshold_bounds(metric, thresholds):
+    """Return all configured bounds to plot (MAD and absolute when both are set)."""
+    values = thresholds["values"][metric]
+    bounds = []
+    nmads = nmads_for_metric(metric, thresholds)
+
+    if nmads is not None and nmads > 0:
+        mad_lower, mad_upper = mad_bounds(values, nmads)
+        bounds.append({"value": mad_lower, "side": "lower", "source": "MAD"})
+        bounds.append({"value": mad_upper, "side": "upper", "source": "MAD"})
+
+    manual_lower = None
+    manual_upper = None
 
     if metric == "pct_counts_mt":
         max_mito = thresholds["max_mito_percentage"]
         if max_mito is not None and max_mito < 100:
-            lines.append(max_mito)
+            manual_upper = float(max_mito)
     elif metric == "pct_counts_ribo":
         min_ribo = thresholds["min_ribo_percentage"]
         if min_ribo is not None and min_ribo > 0:
-            lines.append(min_ribo)
+            manual_lower = float(min_ribo)
     elif metric == "pct_counts_hb":
         max_hb = thresholds["max_hb_percentage"]
         if max_hb is not None and max_hb < 100:
-            lines.append(max_hb)
+            manual_upper = float(max_hb)
     elif metric == "total_counts":
         min_counts_cell = thresholds["min_counts_cell"]
         if min_counts_cell is not None and min_counts_cell > 0:
-            lines.append(min_counts_cell)
+            manual_lower = float(min_counts_cell)
     elif metric == "n_genes_by_counts":
         min_genes = thresholds["min_genes"]
         if min_genes is not None and min_genes > 0:
-            lines.append(min_genes)
+            manual_lower = float(min_genes)
 
-    return lines
+    if manual_lower is not None:
+        bounds.append({"value": manual_lower, "side": "lower", "source": "absolute"})
+    if manual_upper is not None:
+        bounds.append({"value": manual_upper, "side": "upper", "source": "absolute"})
+
+    return bounds
+
+
+def bound_legend_label(side, source):
+    bound_side = "Lower" if side == "lower" else "Upper"
+    bound_type = "MAD" if source == "MAD" else "absolute"
+    return f"{bound_side} bound ({bound_type})"
 
 
 def plot_qc_histogram(metric, values, prefix, section_name, description, thresholds):
@@ -111,8 +137,18 @@ def plot_qc_histogram(metric, values, prefix, section_name, description, thresho
     median = np.median(values)
     ax.axvline(median, color="black", linestyle="-.", linewidth=1.5, label="Median")
 
-    for threshold in threshold_lines(metric, thresholds):
-        ax.axvline(threshold, color="crimson", linestyle="--", linewidth=1.5)
+    for bound in threshold_bounds(metric, thresholds):
+        side = bound["side"]
+        source = bound["source"]
+        color = LOWER_BOUND_COLOR if side == "lower" else UPPER_BOUND_COLOR
+        linestyle = MAD_LINESTYLE if source == "MAD" else ABSOLUTE_LINESTYLE
+        ax.axvline(
+            bound["value"],
+            color=color,
+            linestyle=linestyle,
+            linewidth=1.5,
+            label=bound_legend_label(side, source),
+        )
 
     ax.set_xlabel(metric)
     ax.set_ylabel("Cells")
