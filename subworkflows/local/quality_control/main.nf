@@ -13,6 +13,7 @@ include { SCANPY_SAMPLE                                                         
 include { DOUBLET_DETECTION                                                          } from '../doublet_detection'
 include { SCANPY_PLOTQC as QC_FILTERED                                               } from '../../../modules/local/scanpy/plotqc'
 include { CUSTOM_COLLECTSIZES as COLLECT_SIZES                                       } from '../../../modules/local/custom/collectsizes'
+include { anndata                                                                    } from 'plugin/nf-anndata'
 
 workflow QUALITY_CONTROL {
     take:
@@ -160,6 +161,15 @@ workflow QUALITY_CONTROL {
         true
     )
     ch_h5ad = SCANPY_FILTER.out.h5ad
+        .map { meta, h5ad ->
+            if (!workflow.stubRun) {
+                def ad = anndata(h5ad)
+                if (ad.n_obs == 0) {
+                    error("No cells remaining after filtering for sample '${meta.id}'")
+                }
+            }
+            [meta, h5ad]
+        }
     ch_multiqc_files = ch_multiqc_files.mix(SCANPY_FILTER.out.multiqc_files.flatten())
 
     // Only run SCANPY_SAMPLE if sample_n or sample_fraction is set
