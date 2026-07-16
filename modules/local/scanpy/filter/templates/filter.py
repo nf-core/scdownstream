@@ -76,6 +76,8 @@ def nmads_for_metric(metric, thresholds):
 
 LOWER_BOUND_COLOR = "#1f77b4"
 UPPER_BOUND_COLOR = "#d62728"
+KEPT_COLOR = "#4daf4a"
+FILTERED_COLOR = "#e41a1c"
 MAD_LINESTYLE = "--"
 ABSOLUTE_LINESTYLE = ":"
 
@@ -129,10 +131,58 @@ def bound_legend_label(side, source):
     return f"{bound_side} bound ({bound_type})"
 
 
-def plot_qc_histogram(metric, values, prefix, section_name, description, thresholds):
+def cell_keep_mask(adata, mad_filters):
+    """Whether each cell is retained after all cell-removing filter steps."""
+    keep = np.ones(adata.n_obs, dtype=bool)
+
+    mad_outlier = np.zeros(adata.n_obs, dtype=bool)
+    for metric, nmads in mad_filters:
+        if nmads is not None and nmads > 0:
+            mad_outlier |= is_outlier(adata, metric, nmads)
+    keep &= ~mad_outlier
+
+    if max_mito_percentage is not None:
+        keep &= adata.obs.pct_counts_mt < max_mito_percentage
+    if min_ribo_percentage is not None:
+        keep &= adata.obs.pct_counts_ribo >= min_ribo_percentage
+    if max_hb_percentage is not None:
+        keep &= adata.obs.pct_counts_hb < max_hb_percentage
+    if min_counts_cell is not None:
+        keep &= adata.obs.total_counts >= min_counts_cell
+    if min_genes is not None:
+        keep &= adata.obs.n_genes_by_counts >= min_genes
+
+    return keep
+
+
+def plot_qc_histogram(metric, values, cell_keep, prefix, section_name, description, thresholds):
     """Plot a QC metric histogram with median and threshold lines."""
     fig, ax = plt.subplots(figsize=(6, 4))
-    ax.hist(values, bins=50, color="steelblue", edgecolor="white", linewidth=0.5)
+    bins = np.histogram_bin_edges(values, bins=50)
+    values_kept = values[cell_keep]
+    values_filtered = values[~cell_keep]
+
+    hist_series = []
+    hist_colors = []
+    hist_labels = []
+    if values_kept.size > 0:
+        hist_series.append(values_kept)
+        hist_colors.append(KEPT_COLOR)
+        hist_labels.append("Kept")
+    if values_filtered.size > 0:
+        hist_series.append(values_filtered)
+        hist_colors.append(FILTERED_COLOR)
+        hist_labels.append("Filtered out")
+
+    ax.hist(
+        hist_series,
+        bins=bins,
+        stacked=len(hist_series) > 1,
+        color=hist_colors,
+        edgecolor="white",
+        linewidth=0.5,
+        label=hist_labels,
+    )
 
     median = np.median(values)
     ax.axvline(median, color="black", linestyle="-.", linewidth=1.5, label="Median")
@@ -225,6 +275,7 @@ sc.pp.calculate_qc_metrics(
 )
 
 if plot:
+    cell_keep = cell_keep_mask(adata, mad_filters)
     threshold_context = {
         "values": {metric: adata.obs[metric].to_numpy() for metric in PLOT_METRICS},
         "log1p_total_counts_nmads": log1p_total_counts_nmads,
@@ -241,6 +292,7 @@ if plot:
         plot_qc_histogram(
             metric,
             threshold_context["values"][metric],
+            cell_keep,
             prefix,
             section_name,
             description,
