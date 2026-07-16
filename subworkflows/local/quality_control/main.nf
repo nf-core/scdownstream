@@ -82,8 +82,15 @@ workflow QUALITY_CONTROL {
         }
     )
 
+    ch_qc_plot = ch_complete.multiMap {
+        meta, filtered, _unfiltered ->
+        h5ad: [meta, filtered]
+        symbol_col: meta.symbol_col ?: "index"
+    }
     QC_RAW (
-        ch_complete.map { meta, filtered, _unfiltered -> [meta, filtered] }
+        ch_qc_plot.h5ad,
+        ch_qc_plot.symbol_col,
+        mito_genes ?: []
     )
     ch_multiqc_files = ch_multiqc_files.mix(QC_RAW.out.multiqc_files)
 
@@ -195,8 +202,15 @@ workflow QUALITY_CONTROL {
         )
     }
 
+    ch_qc_filtered_plot = ch_h5ad.multiMap {
+        meta, h5ad ->
+        h5ad: [meta, h5ad]
+        symbol_col: meta.symbol_col ?: "index"
+    }
     QC_FILTERED (
-        ch_h5ad
+        ch_qc_filtered_plot.h5ad,
+        ch_qc_filtered_plot.symbol_col,
+        mito_genes ?: []
     )
     ch_multiqc_files = ch_multiqc_files.mix(QC_FILTERED.out.multiqc_files)
 
