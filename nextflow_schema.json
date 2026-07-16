@@ -374,6 +374,28 @@
                     "type": "boolean",
                     "description": "Skip the LIANA step. For large datasets, the pipeline might fail due to high memory usage in this step. Use this option to skip it."
                 },
+                "liana_n_perms": {
+                    "type": "integer",
+                    "default": 1000,
+                    "minimum": 0,
+                    "description": "Number of permutations for LIANA rank_aggregate specificity testing. Set to 0 to disable permutation testing and speed up large runs."
+                },
+                "liana_max_cells": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Optional maximum number of cells for LIANA rank_aggregate. When set, cells are subsampled stratified by the LIANA grouping column (and batch when using stratified_obs_batch) before analysis."
+                },
+                "liana_subsample_strategy": {
+                    "type": "string",
+                    "default": "stratified_obs",
+                    "enum": ["none", "stratified_obs", "stratified_obs_batch"],
+                    "description": "Stratified subsampling strategy used when liana_max_cells is set. Uniform sampling is not used; if strategy is 'none' while liana_max_cells is set, stratified_obs is applied with a warning."
+                },
+                "liana_subsample_seed": {
+                    "type": "integer",
+                    "default": 42,
+                    "description": "Random seed for reproducible LIANA cell subsampling."
+                },
                 "skip_qc_report": {
                     "type": "boolean",
                     "description": "Skip rendering the Quarto QC HTML report in reports/."

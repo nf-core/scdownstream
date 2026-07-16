@@ -68,6 +68,10 @@ workflow NFCORE_SCDOWNSTREAM {
     symphony_reference            //   value: string
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
+    liana_n_perms                 //   value: integer
+    liana_max_cells               //   value: integer or null
+    liana_subsample_strategy      //   value: string
+    liana_subsample_seed          //   value: integer
     skip_qc_report                //   value: boolean
     scib                          //   value: boolean
     scib_max_cells                //   value: integer or null
@@ -139,6 +143,10 @@ workflow NFCORE_SCDOWNSTREAM {
         symphony_reference,
         expimap_gmt,
         skip_liana,
+        liana_n_perms,
+        liana_max_cells,
+        liana_subsample_strategy,
+        liana_subsample_seed,
         skip_qc_report,
         scib,
         scib_max_cells,
@@ -253,6 +261,10 @@ workflow {
         symphony_reference,
         params.expimap_gmt,
         params.skip_liana,
+        params.liana_n_perms,
+        params.liana_max_cells,
+        params.liana_subsample_strategy,
+        params.liana_subsample_seed,
         params.skip_qc_report,
         params.scib,
         params.scib_max_cells,

@@ -122,7 +122,7 @@ The **Test strategy (this branch)** column describes what the tests on this bran
 
 | Module                | Description                                                                                   | Reproducibility                                                                                                                          | Test strategy (this branch)         |
 | --------------------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| `liana/rankaggregate` | Runs LIANA rank-aggregate ligand–receptor interaction analysis on a clustered AnnData object. | **Seeded / quasi-deterministic** — scoring methods are deterministic but floating-point aggregation can vary across BLAS/NumPy backends. | structural — versions + schema only |
+| `liana/rankaggregate` | Runs LIANA rank-aggregate ligand–receptor interaction analysis on a clustered AnnData object. | **Seeded / quasi-deterministic** — optional stratified subsampling (`liana_max_cells`, `liana_subsample_seed`) and LIANA `seed`/`n_perms`; magnitude ranks are less affected than specificity ranks when `liana_n_perms` is reduced or set to `0`. Floating-point aggregation can vary across BLAS/NumPy backends. | structural — versions + schema only |
 
 ### `scanpy/`
 

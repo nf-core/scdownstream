@@ -66,6 +66,10 @@ workflow SCDOWNSTREAM {
     symphony_reference             //   value: string
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
+    liana_n_perms                 //   value: integer
+    liana_max_cells               //   value: integer or null
+    liana_subsample_strategy      //   value: string
+    liana_subsample_seed          //   value: integer
     skip_qc_report                //   value: boolean
     scib                          //   value: boolean
     scib_max_cells                //   value: integer or null
@@ -326,6 +330,10 @@ workflow SCDOWNSTREAM {
                 [meta + [condition_col: condition_col], h5ad]
             },
             skip_liana,
+            liana_n_perms,
+            liana_max_cells,
+            liana_subsample_strategy,
+            liana_subsample_seed,
             cytetype_study_context,
             de_methods,
             pseudobulk,

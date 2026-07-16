@@ -12,6 +12,10 @@ workflow PER_GROUP {
     ch_h5ad_with_neighbors         // channel: [ meta, h5ad ]
     ch_h5ad_no_neighbors           // channel: [ meta, h5ad ]
     skip_liana                     //   value: boolean
+    liana_n_perms                  //   value: integer
+    liana_max_cells                //   value: integer or null
+    liana_subsample_strategy       //   value: string
+    liana_subsample_seed           //   value: integer
     cytetype_study_context         //   value: string
     de_methods_default             //   value: string
     pseudobulk                     //   value: boolean
@@ -35,7 +39,11 @@ workflow PER_GROUP {
     if (!skip_liana) {
         LIANA_RANKAGGREGATE(
             ch_h5ad_no_neighbors
-                .filter { meta, _h5ad -> meta.analyses == null || 'liana' in meta.analyses }
+                .filter { meta, _h5ad -> meta.analyses == null || 'liana' in meta.analyses },
+            liana_n_perms,
+            liana_max_cells ?: 0,
+            liana_subsample_strategy,
+            liana_subsample_seed,
         )
         ch_uns = ch_uns.mix(LIANA_RANKAGGREGATE.out.uns)
     }
