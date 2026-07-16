@@ -131,35 +131,45 @@ def bound_legend_label(side, source):
     return f"{bound_side} bound ({bound_type})"
 
 
-def cell_keep_mask(adata, mad_filters):
-    """Whether each cell is retained after all cell-removing filter steps."""
-    keep = np.ones(adata.n_obs, dtype=bool)
+def metric_pass_mask(adata, metric, thresholds):
+    """Whether each cell passes thresholds that apply only to this metric."""
+    pass_mask = np.ones(adata.n_obs, dtype=bool)
 
-    mad_outlier = np.zeros(adata.n_obs, dtype=bool)
-    for metric, nmads in mad_filters:
-        if nmads is not None and nmads > 0:
-            mad_outlier |= is_outlier(adata, metric, nmads)
-    keep &= ~mad_outlier
+    nmads = nmads_for_metric(metric, thresholds)
+    if nmads is not None and nmads > 0:
+        pass_mask &= ~is_outlier(adata, metric, nmads)
 
-    if max_mito_percentage is not None:
-        keep &= adata.obs.pct_counts_mt < max_mito_percentage
-    if min_ribo_percentage is not None:
-        keep &= adata.obs.pct_counts_ribo >= min_ribo_percentage
-    if max_hb_percentage is not None:
-        keep &= adata.obs.pct_counts_hb < max_hb_percentage
-    if min_counts_cell is not None:
-        keep &= adata.obs.total_counts >= min_counts_cell
-    if min_genes is not None:
-        keep &= adata.obs.n_genes_by_counts >= min_genes
+    if metric == "pct_counts_mt":
+        max_mito = thresholds["max_mito_percentage"]
+        if max_mito is not None and max_mito < 100:
+            pass_mask &= adata.obs.pct_counts_mt < max_mito
+    elif metric == "pct_counts_ribo":
+        min_ribo = thresholds["min_ribo_percentage"]
+        if min_ribo is not None and min_ribo > 0:
+            pass_mask &= adata.obs.pct_counts_ribo >= min_ribo
+    elif metric == "pct_counts_hb":
+        max_hb = thresholds["max_hb_percentage"]
+        if max_hb is not None and max_hb < 100:
+            pass_mask &= adata.obs.pct_counts_hb < max_hb
+    elif metric == "total_counts":
+        min_counts_cell = thresholds["min_counts_cell"]
+        if min_counts_cell is not None and min_counts_cell > 0:
+            pass_mask &= adata.obs.total_counts >= min_counts_cell
+    elif metric == "n_genes_by_counts":
+        min_genes = thresholds["min_genes"]
+        if min_genes is not None and min_genes > 0:
+            pass_mask &= adata.obs.n_genes_by_counts >= min_genes
 
-    return keep
+    return pass_mask
 
 
-def plot_metric_histogram(ax, metric, values, cell_keep, thresholds):
+def plot_metric_histogram(ax, metric, adata, thresholds):
     """Draw a QC metric histogram on the given axes."""
+    values = thresholds["values"][metric]
+    cell_pass = metric_pass_mask(adata, metric, thresholds)
     bins = np.histogram_bin_edges(values, bins=50)
-    values_kept = values[cell_keep]
-    values_filtered = values[~cell_keep]
+    values_kept = values[cell_pass]
+    values_filtered = values[~cell_pass]
 
     hist_series = []
     hist_colors = []
@@ -206,7 +216,7 @@ def plot_metric_histogram(ax, metric, values, cell_keep, thresholds):
     ax.legend(loc="upper right", fontsize=6)
 
 
-def plot_qc_histogram_panel(prefix, section_name, description, cell_keep, thresholds):
+def plot_qc_histogram_panel(prefix, section_name, description, adata, thresholds):
     """Plot all QC metric histograms on a 3x3 grid (bottom-right panel empty)."""
     fig, axes = plt.subplots(3, 3, figsize=(14, 12))
     axes = axes.flatten()
@@ -215,8 +225,7 @@ def plot_qc_histogram_panel(prefix, section_name, description, cell_keep, thresh
         plot_metric_histogram(
             axes[index],
             metric,
-            thresholds["values"][metric],
-            cell_keep,
+            adata,
             thresholds,
         )
 
@@ -293,7 +302,6 @@ sc.pp.calculate_qc_metrics(
 )
 
 if plot:
-    cell_keep = cell_keep_mask(adata, mad_filters)
     threshold_context = {
         "values": {metric: adata.obs[metric].to_numpy() for metric in PLOT_METRICS},
         "log1p_total_counts_nmads": log1p_total_counts_nmads,
@@ -310,7 +318,7 @@ if plot:
         prefix,
         section_name,
         description,
-        cell_keep,
+        adata,
         threshold_context,
     )
 
