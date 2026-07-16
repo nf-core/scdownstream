@@ -164,9 +164,11 @@ workflow QUALITY_CONTROL {
         .map { meta, h5ad ->
             if (!workflow.stubRun) {
                 def ad = anndata(h5ad)
-                log.info("${meta.id} has ${ad.n_obs} cells after filtering")
                 if (ad.n_obs == 0) {
                     error("No cells remaining after filtering for sample '${meta.id}'")
+                }
+                if (ad.n_vars == 0) {
+                    error("No genes remaining after filtering for sample '${meta.id}'")
                 }
             }
             [meta, h5ad]
