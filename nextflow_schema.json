@@ -212,7 +212,6 @@
                 },
                 "scimilarity_model": {
                     "type": "string",
-                    "format": "file-path",
                     "default": "https://zenodo.org/records/10685499/files/model_v1.1.tar.gz",
                     "description": "Path to a pre-trained scimilarity model, only relevant if scimilarity is selected in `integration_methods`. If provided, the model will be used for integration. Otherwise, a new model will be trained.",
                     "help_text": "The file can be a .tar.gz file or the corresponding unzipped directory. The official models are shared via [Zenodo](https://zenodo.org/record/10685499)."
