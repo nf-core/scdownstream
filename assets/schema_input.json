@@ -118,8 +118,8 @@
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 100,
-                "default": 8,
-                "description": "Maximum mitochondrial read percentage per cell. Follows sc-best-practices (https://www.sc-best-practices.org/preprocessing_visualization/quality_control.html).",
+                "default": 100,
+                "description": "Maximum mitochondrial read percentage per cell. Values below 100 apply an absolute cutoff; 100 disables this filter (MAD-based mito filtering remains controlled by pct_counts_mt_nmads).",
                 "errorMessage": "Max mitochondrial percentage must be an integer between 0 and 100.",
                 "meta": ["max_mito_percentage"]
             },

@@ -336,7 +336,7 @@ if mad_enabled:
     adata = adata[~mad_outlier].copy()
     print(f"Number of cells after MAD filtering: {adata.n_obs}")
 
-if max_mito_percentage is not None:
+if max_mito_percentage is not None and max_mito_percentage < 100:
     adata = adata[adata.obs.pct_counts_mt < max_mito_percentage, :].copy()
 if min_ribo_percentage is not None:
     adata = adata[adata.obs.pct_counts_ribo >= min_ribo_percentage, :].copy()
