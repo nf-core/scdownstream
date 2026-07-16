@@ -21,7 +21,10 @@ adata = sc.read_h5ad("${h5ad}")
 symbol_col = "${symbol_col}"
 mito_genes = "${mito_genes}"
 
-symbols = adata.var_names if symbol_col == "index" else adata.var[symbol_col]
+if symbol_col in ("index", "none", ""):
+    symbols = adata.var_names
+else:
+    symbols = adata.var[symbol_col]
 
 if mito_genes:
     with open(mito_genes) as f:

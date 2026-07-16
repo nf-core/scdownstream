@@ -281,7 +281,10 @@ mad_filters = [
 ]
 mad_enabled = any(nmads is not None and nmads > 0 for _, nmads in mad_filters)
 
-symbols = adata.var_names if symbol_col == "index" else adata.var[symbol_col]
+if symbol_col in ("index", "none", ""):
+    symbols = adata.var_names
+else:
+    symbols = adata.var[symbol_col]
 
 if mito_genes:
     with open(mito_genes) as f:
