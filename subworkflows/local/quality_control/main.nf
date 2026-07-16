@@ -1,10 +1,5 @@
 include { SCANPY_CELLCYCLE                                                           } from '../../../modules/local/scanpy/cellcycle'
 include { H5AD_REMOVEBACKGROUND_BARCODES_CELLBENDER_ANNDATA as EMPTY_DROPLET_REMOVAL } from '../../nf-core/h5ad_removebackground_barcodes_cellbender_anndata'
-include { ANNDATA_GETSIZE as GET_UNFILTERED_SIZE                                     } from '../../../modules/nf-core/anndata/getsize'
-include { ANNDATA_GETSIZE as GET_FILTERED_SIZE                                       } from '../../../modules/nf-core/anndata/getsize'
-include { ANNDATA_GETSIZE as GET_THRESHOLDED_SIZE                                    } from '../../../modules/nf-core/anndata/getsize'
-include { ANNDATA_GETSIZE as GET_DEDOUBLETED_SIZE                                    } from '../../../modules/nf-core/anndata/getsize'
-include { ANNDATA_GETSIZE as GET_SAMPLED_SIZE                                        } from '../../../modules/nf-core/anndata/getsize'
 include { SCANPY_PLOTQC as QC_RAW                                                    } from '../../../modules/local/scanpy/plotqc'
 include { AMBIENT_CORRECTION                                                         } from '../ambient_correction'
 include { UNIFY                                                                      } from '../unify'
@@ -14,6 +9,10 @@ include { DOUBLET_DETECTION                                                     
 include { SCANPY_PLOTQC as QC_FILTERED                                               } from '../../../modules/local/scanpy/plotqc'
 include { CUSTOM_COLLECTSIZES as COLLECT_SIZES                                       } from '../../../modules/local/custom/collectsizes'
 include { anndata                                                                    } from 'plugin/nf-anndata'
+
+def countCells(h5ad) {
+    workflow.stubRun ? 0 : anndata(h5ad).n_obs
+}
 
 workflow QUALITY_CONTROL {
     take:
@@ -40,18 +39,9 @@ workflow QUALITY_CONTROL {
     ch_sizes = channel.empty()
     ch_obs_per_sample = channel.empty()
 
-    GET_UNFILTERED_SIZE (
-        ch_h5ad
-        .map {
-            meta, filtered, unfiltered ->
-            [meta, unfiltered ?: filtered] },
-        "cells",
-    )
     ch_sizes = ch_sizes.mix(
-        GET_UNFILTERED_SIZE.out.size
-        .map {
-            meta, size ->
-            [meta.id, 'unfiltered', (size.text ?: "0").toInteger()]
+        ch_h5ad.map { meta, filtered, unfiltered ->
+            [meta.id, 'unfiltered', countCells(unfiltered ?: filtered)]
         }
     )
 
@@ -86,19 +76,9 @@ workflow QUALITY_CONTROL {
         }
     )
 
-    GET_FILTERED_SIZE (
-        ch_complete
-            .map {
-                meta, filtered, _unfiltered ->
-                [meta, filtered]
-            },
-        "cells",
-    )
     ch_sizes = ch_sizes.mix(
-        GET_FILTERED_SIZE.out.size
-        .map {
-            meta, size ->
-            [meta.id, 'filtered', (size.text ?: "0").toInteger()]
+        ch_complete.map { meta, filtered, _unfiltered ->
+            [meta.id, 'filtered', countCells(filtered)]
         }
     )
 
@@ -184,28 +164,16 @@ workflow QUALITY_CONTROL {
         )
         ch_h5ad = SCANPY_SAMPLE.out.h5ad
 
-        GET_SAMPLED_SIZE (
-            ch_h5ad,
-            "cells"
-        )
         ch_sizes = ch_sizes.mix(
-            GET_SAMPLED_SIZE.out.size
-            .map {
-                meta, size ->
-                [meta.id, 'sampled', (size.text ?: "0").toInteger()]
+            ch_h5ad.map { meta, h5ad ->
+                [meta.id, 'sampled', countCells(h5ad)]
             }
         )
     }
 
-    GET_THRESHOLDED_SIZE (
-        ch_h5ad,
-        "cells"
-    )
     ch_sizes = ch_sizes.mix(
-        GET_THRESHOLDED_SIZE.out.size
-        .map {
-            meta, size ->
-            [meta.id, 'thresholded', (size.text ?: "0").toInteger()]
+        ch_h5ad.map { meta, h5ad ->
+            [meta.id, 'thresholded', countCells(h5ad)]
         }
     )
 
@@ -220,15 +188,9 @@ workflow QUALITY_CONTROL {
     ch_multiqc_files = ch_multiqc_files.mix(DOUBLET_DETECTION.out.multiqc_files)
 
     if (doublet_detection_methods.size() > 0 && doublet_removal) {
-        GET_DEDOUBLETED_SIZE (
-            ch_h5ad,
-            "cells"
-        )
         ch_sizes = ch_sizes.mix(
-            GET_DEDOUBLETED_SIZE.out.size
-            .map {
-                meta, size ->
-                [meta.id, 'dedoubleted', (size.text ?: "0").toInteger()]
+            ch_h5ad.map { meta, h5ad ->
+                [meta.id, 'dedoubleted', countCells(h5ad)]
             }
         )
     }
