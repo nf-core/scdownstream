@@ -26,7 +26,6 @@ workflow DIFFERENTIAL_EXPRESSION {
 
     PSEUDOBULKING(
         ch_h5ad_pseudobulk,
-        'donor',
         pseudobulk_min_num_cells,
         pseudobulk_min_total_counts,
     )
@@ -55,7 +54,6 @@ workflow DIFFERENTIAL_EXPRESSION {
                 (meta.analyses == null || 'de' in meta.analyses) &&
                     'edgepython_sc' in meta.de_methods_resolved
             },
-        'donor',
         reference_condition,
     )
 

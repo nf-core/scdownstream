@@ -81,6 +81,7 @@ workflow NFCORE_SCDOWNSTREAM {
     base_embeddings               //   value: string
     base_label_col                //   value: string
     base_condition_col            //   value: string
+    base_donor_col                //   value: string
     integrate_per_label           //   value: boolean
     integrate_per_label_whitelist //   value: string
     cluster_per_label             //   value: boolean
@@ -156,6 +157,7 @@ workflow NFCORE_SCDOWNSTREAM {
         base_embeddings,
         base_label_col,
         base_condition_col,
+        base_donor_col,
         integrate_per_label,
         integrate_per_label_whitelist,
         cluster_per_label,
@@ -274,6 +276,7 @@ workflow {
         params.base_embeddings,
         params.base_label_col,
         params.base_condition_col,
+        params.base_donor_col,
         params.integrate_per_label,
         params.integrate_per_label_whitelist,
         params.cluster_per_label,

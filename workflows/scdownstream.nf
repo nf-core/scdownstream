@@ -79,6 +79,7 @@ workflow SCDOWNSTREAM {
     base_embeddings               //   value: string
     base_label_col                //   value: string
     base_condition_col            //   value: string
+    base_donor_col                //   value: string
     integrate_per_label           //   value: boolean
     integrate_per_label_whitelist //   value: string
     cluster_per_label             //   value: boolean
@@ -191,6 +192,7 @@ workflow SCDOWNSTREAM {
             //
             grouping_col = "label"
             condition_col = "condition"
+            donor_col = "donor"
 
             COMBINE (
                 ch_h5ad,
@@ -230,6 +232,7 @@ workflow SCDOWNSTREAM {
         ch_label_grouping = ch_base
         grouping_col = base_label_col
         condition_col = base_condition_col
+        donor_col = base_donor_col
 
         if (base_embeddings) {
             ch_embeddings = channel.value(
@@ -316,7 +319,7 @@ workflow SCDOWNSTREAM {
                 }
             ).map {
                 meta, h5ad ->
-                [meta + [condition_col: condition_col], h5ad]
+                [meta + [condition_col: condition_col, donor_col: donor_col], h5ad]
             },
             // Run on each clustering (there is one clustering per embedding and resolution)
             ch_h5ad_both.mix(
@@ -327,7 +330,7 @@ workflow SCDOWNSTREAM {
                 }
             ).map {
                 meta, h5ad ->
-                [meta + [condition_col: condition_col], h5ad]
+                [meta + [condition_col: condition_col, donor_col: donor_col], h5ad]
             },
             skip_liana,
             liana_n_perms,

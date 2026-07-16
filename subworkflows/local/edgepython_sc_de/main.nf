@@ -3,8 +3,7 @@ include { anndata       } from 'plugin/nf-anndata'
 
 workflow EDGEPYTHON_SC_DE {
     take:
-    ch_h5ad               // channel: [ meta, h5ad ] with meta.condition_col and meta.obs_key
-    donor_col             //   value: string
+    ch_h5ad               // channel: [ meta, h5ad ] with meta.condition_col, meta.donor_col, and meta.obs_key
     reference_condition   //   value: string
 
     main:
@@ -27,7 +26,7 @@ workflow EDGEPYTHON_SC_DE {
 
     ch_edgepython = ch_strata.multiMap { meta, h5ad, celltype_col, celltype ->
         h5ad: [meta, h5ad]
-        donor_col: donor_col
+        donor_col: meta.donor_col
         condition_col: meta.condition_col
         celltype_col: celltype_col
         celltype_value: celltype

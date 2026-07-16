@@ -22,13 +22,13 @@ nextflow_workflow {
                             id: 'test',
                             obs_key: 'leiden',
                             condition_col: 'condition',
+                            donor_col: 'batch',
                         ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
-                input[1] = 'batch'
-                input[2] = 10
-                input[3] = 1000
+                input[1] = 10
+                input[2] = 1000
                 """
             }
         }

@@ -250,6 +250,11 @@
                     "default": "condition",
                     "description": "The column in the base AnnData object that contains the condition (e.g. disease state, treatment) information."
                 },
+                "base_donor_col": {
+                    "type": "string",
+                    "default": "donor",
+                    "description": "The column in the base AnnData object that contains biological replicate / donor identifiers. Used for pseudobulking and sample-level differential expression on base_adata-only runs."
+                },
                 "integrate_per_label": {
                     "type": "boolean",
                     "default": false,
