@@ -26,8 +26,8 @@ process SCANPY_FILTER {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path "*.png"                           , emit: plots, optional: true
-    path "*_mqc.json"                      , emit: multiqc_files, optional: true
+    path "${prefix}_qc_histograms.png"     , emit: plots, optional: true
+    path "${prefix}_qc_histograms_mqc.json", emit: multiqc_files, optional: true
     path "versions.yml"                    , emit: versions, topic: versions
 
     when:
@@ -51,10 +51,8 @@ process SCANPY_FILTER {
     touch versions.yml
 
     if [ "${plot}" = "true" ]; then
-        for metric in log1p_total_counts log1p_n_genes_by_counts pct_counts_in_top_20_genes pct_counts_mt pct_counts_ribo pct_counts_hb total_counts n_genes_by_counts; do
-            touch ${prefix}_\${metric}.png
-            touch ${prefix}_\${metric}_mqc.json
-        done
+        touch ${prefix}_qc_histograms.png
+        touch ${prefix}_qc_histograms_mqc.json
     fi
     """
 }

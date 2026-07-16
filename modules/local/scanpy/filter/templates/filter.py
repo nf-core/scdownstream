@@ -155,9 +155,8 @@ def cell_keep_mask(adata, mad_filters):
     return keep
 
 
-def plot_qc_histogram(metric, values, cell_keep, prefix, section_name, description, thresholds):
-    """Plot a QC metric histogram with median and threshold lines."""
-    fig, ax = plt.subplots(figsize=(6, 4))
+def plot_metric_histogram(ax, metric, values, cell_keep, thresholds):
+    """Draw a QC metric histogram on the given axes."""
     bins = np.histogram_bin_edges(values, bins=50)
     values_kept = values[cell_keep]
     values_filtered = values[~cell_keep]
@@ -185,7 +184,7 @@ def plot_qc_histogram(metric, values, cell_keep, prefix, section_name, descripti
     )
 
     median = np.median(values)
-    ax.axvline(median, color="black", linestyle="-.", linewidth=1.5, label="Median")
+    ax.axvline(median, color="black", linestyle="-.", linewidth=1.2, label="Median")
 
     for bound in threshold_bounds(metric, thresholds):
         side = bound["side"]
@@ -196,29 +195,48 @@ def plot_qc_histogram(metric, values, cell_keep, prefix, section_name, descripti
             bound["value"],
             color=color,
             linestyle=linestyle,
-            linewidth=1.5,
+            linewidth=1.2,
             label=bound_legend_label(side, source),
         )
 
-    ax.set_xlabel(metric)
-    ax.set_ylabel("Cells")
-    ax.set_title(metric)
-    ax.legend(loc="upper right")
+    ax.set_xlabel(metric, fontsize=8)
+    ax.set_ylabel("Cells", fontsize=8)
+    ax.set_title(metric, fontsize=9)
+    ax.tick_params(labelsize=7)
+    ax.legend(loc="upper right", fontsize=6)
 
-    path = f"{prefix}_{metric}.png"
+
+def plot_qc_histogram_panel(prefix, section_name, description, cell_keep, thresholds):
+    """Plot all QC metric histograms on a 3x3 grid (bottom-right panel empty)."""
+    fig, axes = plt.subplots(3, 3, figsize=(14, 12))
+    axes = axes.flatten()
+
+    for index, metric in enumerate(PLOT_METRICS):
+        plot_metric_histogram(
+            axes[index],
+            metric,
+            thresholds["values"][metric],
+            cell_keep,
+            thresholds,
+        )
+
+    axes[8].set_visible(False)
+    fig.tight_layout()
+
+    path = f"{prefix}_qc_histograms.png"
     fig.savefig(path, bbox_inches="tight")
     plt.close(fig)
 
-    with open(path, "rb") as f_plot, open(f"{prefix}_{metric}_mqc.json", "w") as f_json:
+    with open(path, "rb") as f_plot, open(f"{prefix}_qc_histograms_mqc.json", "w") as f_json:
         image_string = base64.b64encode(f_plot.read()).decode("utf-8")
         image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
 
         custom_json = {
-            "id": f"{prefix}_{metric}",
+            "id": f"{prefix}_qc_histograms",
             "parent_id": section_name.replace(" ", "_"),
             "parent_name": section_name,
             "parent_description": description,
-            "section_name": "${meta.id} " + metric,
+            "section_name": "${meta.id}",
             "plot_type": "image",
             "data": image_html,
         }
@@ -288,16 +306,13 @@ if plot:
         "min_counts_cell": min_counts_cell,
         "min_genes": min_genes,
     }
-    for metric in PLOT_METRICS:
-        plot_qc_histogram(
-            metric,
-            threshold_context["values"][metric],
-            cell_keep,
-            prefix,
-            section_name,
-            description,
-            threshold_context,
-        )
+    plot_qc_histogram_panel(
+        prefix,
+        section_name,
+        description,
+        cell_keep,
+        threshold_context,
+    )
 
 if mad_enabled:
     mad_outlier = np.zeros(adata.n_obs, dtype=bool)
