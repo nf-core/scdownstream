@@ -45,7 +45,11 @@ for celltype, celltype_data in adata.obs.groupby("celltype", observed=True):
     counts = sub.X
     if hasattr(counts, "toarray"):
         counts = counts.toarray()
-    counts_df = pd.DataFrame(np.asarray(counts).T, index=sub.var_names, columns=sub.obs_names)
+    counts_df = pd.DataFrame(
+        np.asarray(counts),
+        index=sub.obs_names,
+        columns=sub.var_names,
+    )
 
     dds = DeseqDataSet(
         counts=counts_df,
