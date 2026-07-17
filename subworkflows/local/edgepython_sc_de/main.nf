@@ -8,7 +8,7 @@ workflow EDGEPYTHON_SC_DE {
 
     main:
     ch_strata = ch_h5ad
-        .map { meta, h5ad ->
+        .flatMap { meta, h5ad ->
             def ad = anndata(h5ad)
             def celltype_col = meta.obs_key
             def condition_col = meta.condition_col
@@ -22,7 +22,6 @@ workflow EDGEPYTHON_SC_DE {
                 ]
             }
         }
-        .flatten()
 
     ch_edgepython = ch_strata.multiMap { meta, h5ad, celltype_col, celltype ->
         h5ad: [meta, h5ad]
