@@ -24,6 +24,14 @@ def safe_name(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9._-]+", "_", str(value))
 
 
+def donors_span_conditions(metadata: pd.DataFrame) -> bool:
+    """True when at least one donor appears in more than one condition (paired design)."""
+    conditions_per_donor = metadata.groupby("donor", observed=True)["condition"].apply(
+        lambda values: values.astype(str).nunique()
+    )
+    return bool((conditions_per_donor > 1).any())
+
+
 required_cols = ["donor", "condition", "celltype"]
 for col in required_cols:
     if col not in adata.obs.columns:
@@ -33,8 +41,10 @@ written = []
 for celltype, celltype_data in adata.obs.groupby("celltype", observed=True):
     sub = adata[celltype_data.index].copy()
     metadata = sub.obs[["donor", "condition"]].copy()
-    conditions = sorted(metadata["condition"].astype(str).unique())
-    donors = sorted(metadata["donor"].astype(str).unique())
+    metadata["donor"] = metadata["donor"].astype(str)
+    metadata["condition"] = metadata["condition"].astype(str)
+    conditions = sorted(metadata["condition"].unique())
+    donors = sorted(metadata["donor"].unique())
     if len(conditions) < 2 or len(donors) < 2:
         continue
 
@@ -51,10 +61,12 @@ for celltype, celltype_data in adata.obs.groupby("celltype", observed=True):
         columns=sub.var_names,
     )
 
+    design_factors = ["donor", "condition"] if donors_span_conditions(metadata) else ["condition"]
+
     dds = DeseqDataSet(
         counts=counts_df,
         metadata=metadata,
-        design_factors=["donor", "condition"],
+        design_factors=design_factors,
         ref_level=["condition", reference_condition],
     )
     dds.deseq2()

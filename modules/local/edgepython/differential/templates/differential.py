@@ -20,6 +20,28 @@ def safe_name(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9._-]+", "_", str(value))
 
 
+def donors_span_conditions(metadata: pd.DataFrame) -> bool:
+    """True when at least one donor appears in more than one condition (paired design)."""
+    conditions_per_donor = metadata.groupby("donor", observed=True)["condition"].apply(
+        lambda values: values.astype(str).nunique()
+    )
+    return bool((conditions_per_donor > 1).any())
+
+
+def condition_coef_column(design: pd.DataFrame, treatment: str) -> str | None:
+    for name in (
+        f"condition{treatment}",
+        f"condition[T.{treatment}]",
+        f"condition[{treatment}]",
+    ):
+        if name in design.columns:
+            return name
+    for name in design.columns:
+        if name.startswith("condition") and treatment in name:
+            return name
+    return None
+
+
 required_cols = ["donor", "condition", "celltype"]
 for col in required_cols:
     if col not in adata.obs.columns:
@@ -51,7 +73,10 @@ for celltype, celltype_data in adata.obs.groupby("celltype", observed=True):
         categories=[reference_condition] + treatments,
     )
 
-    design = ep.model_matrix("~ donor + condition", metadata)
+    design_formula = (
+        "~ donor + condition" if donors_span_conditions(metadata) else "~ condition"
+    )
+    design = ep.model_matrix(design_formula, metadata)
     y = ep.make_dgelist(counts=counts, samples=metadata)
     y = ep.calc_norm_factors(y)
     y = ep.estimate_disp(y)
@@ -59,8 +84,8 @@ for celltype, celltype_data in adata.obs.groupby("celltype", observed=True):
     safe_celltype = safe_name(celltype)
 
     for treatment in treatments:
-        coef_name = f"condition{treatment}"
-        if coef_name not in design.columns:
+        coef_name = condition_coef_column(design, treatment)
+        if coef_name is None:
             continue
         coef_index = list(design.columns).index(coef_name)
         res = ep.glm_ql_ftest(fit, coef=coef_index)
