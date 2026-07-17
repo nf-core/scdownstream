@@ -36,7 +36,8 @@ subset = adata[adata.obs[celltype_col].astype(str) == str(celltype_value)].copy(
 if subset.n_obs < 10:
     raise ValueError(f"Too few cells ({subset.n_obs}) in cell type '{celltype_value}'")
 
-conditions = sorted(subset.obs[condition_col].astype(str).unique())
+condition_values = subset.obs[condition_col].astype(str)
+conditions = sorted(condition_values.unique())
 donors = sorted(subset.obs[donor_col].astype(str).unique())
 if len(conditions) < 2:
     raise ValueError("At least two conditions are required for differential expression")
@@ -52,20 +53,27 @@ if sp.issparse(counts):
     counts = counts.toarray()
 counts = np.asarray(counts).T
 
-metadata = subset.obs[[donor_col, condition_col]].copy()
-metadata.columns = ["donor", "condition"]
-metadata["donor"] = metadata["donor"].astype(str)
-metadata["condition"] = pd.Categorical(
-    metadata["condition"].astype(str),
-    categories=[reference_condition] + treatments,
+design = pd.DataFrame(
+    {"Intercept": np.ones(subset.n_obs, dtype=float)},
+    index=subset.obs_names,
 )
+for treatment in treatments:
+    design[treatment] = (condition_values == treatment).astype(float)
 
-fit = ep.glm_sc_fit(counts=counts, metadata=metadata, formula="~ condition", group_col="donor")
-fit = ep.shrink_sc_disp(fit)
+sample_ids = subset.obs[donor_col].astype(str).to_numpy()
+
+fit = ep.glm_sc_fit(
+    counts,
+    design=design,
+    sample=sample_ids,
+    norm_method="TMM",
+)
+fit = ep.shrink_sc_disp(fit, robust=True)
 
 written = []
 for treatment in treatments:
-    res = ep.glm_sc_test(fit, coef="condition", contrast=[treatment, reference_condition])
+    coef = design.columns.get_loc(treatment)
+    res = ep.glm_sc_test(fit, coef=coef)
     results = res["table"] if isinstance(res, dict) else res
     out_path = f"{prefix}_{safe_name(treatment)}_results.csv"
     if hasattr(results, "to_csv"):
