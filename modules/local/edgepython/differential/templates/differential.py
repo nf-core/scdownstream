@@ -51,7 +51,7 @@ for celltype, celltype_data in adata.obs.groupby("celltype", observed=True):
         categories=[reference_condition] + treatments,
     )
 
-    design = ep.model_matrix(metadata, formula="~ donor + condition")
+    design = ep.model_matrix("~ donor + condition", metadata)
     y = ep.make_dgelist(counts=counts, samples=metadata)
     y = ep.calc_norm_factors(y)
     y = ep.estimate_disp(y)
