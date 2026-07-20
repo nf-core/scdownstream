@@ -246,7 +246,7 @@ nextflow_workflow {
             assert workflow.success
             assert workflow.out.h5ad.size() >= 1
             assert workflow.out.obs.size() >= 1
-            assert workflow.out.obs.any { _meta, pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
+            assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml },
                 workflow.out.obs.size()
@@ -496,7 +496,7 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
-            assert workflow.out.obs.any { _meta, pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
+            assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
         }
 
     }
@@ -548,7 +548,7 @@ nextflow_workflow {
             assert workflow.success
             assert workflow.out.h5ad.any { meta, _h5ad -> meta.de_method == 'wilcoxon' }
             assert workflow.out.h5ad.any { meta, _h5ad -> meta.de_method == 'logreg' }
-            assert workflow.out.obs.any { _meta, pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
+            assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
         }
 
     }
