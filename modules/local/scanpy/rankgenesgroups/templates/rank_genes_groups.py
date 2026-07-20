@@ -89,11 +89,11 @@ if len(valid_groups) >= 2:
         # Plot
         sc.pl.rank_genes_groups(adata, key=rank_key, show=False)
         path = f"{prefix}.png"
-        plt.savefig(path)
+        plt.savefig(path, bbox_inches="tight")
 
         sc.pl.rank_genes_groups_dotplot(adata, key=rank_key, show=False)
         dotplot_path = f"{prefix}_dotplot.png"
-        plt.savefig(dotplot_path)
+        plt.savefig(dotplot_path, bbox_inches="tight")
 
         # Build section name with filter and obs_key information
         if filter_col and filter_val:
