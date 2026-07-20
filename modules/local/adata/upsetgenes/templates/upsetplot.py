@@ -62,7 +62,10 @@ with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
 
     custom_json = {
         "id": "${prefix}",
-        "section_name": "Genes upset: ${prefix}",
+        "parent_id": "genes_upset",
+        "parent_name": "Genes upset",
+        "parent_description": "UpSet plots of gene set overlaps across samples before and after gene unification.",
+        "section_name": "${prefix}",
         "plot_type": "image",
         "data": image_html,
     }
