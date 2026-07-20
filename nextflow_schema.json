@@ -190,7 +190,7 @@
                     "type": "string",
                     "format": "file-path",
                     "description": "Path to a Symphony reference AnnData, only relevant if Symphony is selected in `integration_methods`. If provided, query cells will be mapped onto this reference instead of running de novo Symphony integration.",
-                    "help_text": "The file should be in the .h5ad format. It is produced by a prior de novo Symphony run as `{outdir}/combine/integrate/symphony/symphony_reference.h5ad` and contains the compact Symphony reference metadata required for query mapping. Required for Symphony reference mapping and when extending an atlas with `--base_adata`.",
+                    "help_text": "The file should be in the .h5ad format. It is produced by a prior de novo Symphony run as `{outdir}/03_combine/integrate/symphony/symphony_reference.h5ad` and contains the compact Symphony reference metadata required for query mapping. Required for Symphony reference mapping and when extending an atlas with `--base_adata`.",
                     "pattern": "^\\S+\\.h5ad$",
                     "exists": true
                 },
@@ -402,7 +402,7 @@
                 },
                 "skip_qc_report": {
                     "type": "boolean",
-                    "description": "Skip rendering the Quarto QC HTML report in reports/."
+                    "description": "Skip rendering the Quarto QC HTML report in 10_reports/."
                 },
                 "scib": {
                     "type": "boolean",
