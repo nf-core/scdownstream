@@ -192,7 +192,8 @@ The metadata of the final H5AD file is stored in the `merged_metadata.csv` file.
 - `06_per_group/`
   - `${integration}_${subset}_${resolution}/characteristic_genes/`
     - `*_markers.csv`: Filtered marker-gene tables from Scanpy `rank_genes_groups`.
-    - `*.png`: Marker summary and dot plots for MultiQC and inspection.
+    - `*.png`: Marker summary, dot plots, and per-group volcano plots for MultiQC and inspection.
+    - `*_volcano.png`: Volcano plots from unfiltered `rank_genes_groups` results (one per group).
     - `*.pkl`: Serialised `rank_genes_groups` results merged into the final AnnData `uns` slot.
 - `07_pseudobulk_de/`
   - `aggregation/${integration}/${clustering}/`
@@ -200,8 +201,13 @@ The metadata of the final H5AD file is stored in the `merged_metadata.csv` file.
     - `*_samples.tsv`: Pseudobulk sample metadata (donor, cell type, condition, cell and count totals).
   - `pydeseq2/${integration}/${clustering}/`
     - `*_results.csv`: PyDESeq2 result tables per cell-type stratum.
+    - `*_volcano.png`: Volcano plots for each PyDESeq2 contrast.
   - `edgepython/${integration}/${clustering}/`
     - `*_results.csv`: edgePython pseudobulk result tables per cell-type stratum.
+    - `*_volcano.png`: Volcano plots for each edgePython contrast.
+  - `edgepython_sc/${integration}/${clustering}/`
+    - `*_results.csv`: edgePython single-cell DE result tables.
+    - `*_volcano.png`: Volcano plots for each edgepython_sc contrast.
 
 </details>
 

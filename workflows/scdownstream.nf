@@ -89,6 +89,7 @@ workflow SCDOWNSTREAM {
     tsne                          //   value: boolean
     analysis_plan                 //   value: list of plan rows parsed in main.nf
     de_methods                    //   value: string
+    interesting_genes             //   value: string
     pseudobulk                    //   value: boolean
     pseudobulk_min_num_cells      //   value: integer
     pseudobulk_min_total_counts   //   value: integer
@@ -344,6 +345,7 @@ workflow SCDOWNSTREAM {
             pseudobulk_min_total_counts,
             ch_per_cell_annotation_columns,
             reference_condition ?: '',
+            interesting_genes ?: [],
         )
 
         ch_uns = ch_uns.mix(PER_GROUP.out.uns)

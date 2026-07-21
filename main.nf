@@ -91,6 +91,7 @@ workflow NFCORE_SCDOWNSTREAM {
     tsne                          //   value: boolean
     analysis_plan                 //   value: list of plan rows parsed in main.nf
     de_methods                    //   value: string
+    interesting_genes             //   value: string
     pseudobulk                    //   value: boolean
     pseudobulk_min_num_cells      //   value: integer
     pseudobulk_min_total_counts   //   value: integer
@@ -167,6 +168,7 @@ workflow NFCORE_SCDOWNSTREAM {
         tsne,
         analysis_plan,
         de_methods,
+        interesting_genes,
         pseudobulk,
         pseudobulk_min_num_cells,
         pseudobulk_min_total_counts,
@@ -286,6 +288,7 @@ workflow {
         params.tsne,
         analysis_plan,
         params.de_methods,
+        params.interesting_genes,
         params.pseudobulk,
         params.pseudobulk_min_num_cells,
         params.pseudobulk_min_total_counts,

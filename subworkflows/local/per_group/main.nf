@@ -23,6 +23,7 @@ workflow PER_GROUP {
     pseudobulk_min_total_counts    //   value: integer
     ch_per_cell_annotation_columns // channel: string
     reference_condition            //   value: string
+    interesting_genes              //   value: string (path) or []
 
     main:
     ch_uns           = channel.empty()
@@ -69,6 +70,7 @@ workflow PER_GROUP {
         pseudobulk_min_num_cells,
         pseudobulk_min_total_counts,
         reference_condition,
+        interesting_genes,
     )
     ch_uns           = ch_uns.mix(DIFFERENTIAL_EXPRESSION.out.uns)
     ch_multiqc_files = ch_multiqc_files.mix(DIFFERENTIAL_EXPRESSION.out.multiqc_files)

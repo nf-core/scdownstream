@@ -23,6 +23,10 @@ input:
     - reference_condition:
         type: string
         description: Reference condition level for contrasts
+    - interesting_genes:
+        type: file
+        description: Optional CSV of gene symbols to highlight on volcano plots
+        pattern: "*.{csv,tsv,txt}"
 
 output:
   results:
@@ -33,6 +37,16 @@ output:
           type: file
           description: edgePython results per cell-type stratum
           pattern: "*_results.csv"
+  plots:
+    - "*.png":
+        type: file
+        description: Volcano plots for each contrast
+        pattern: "*.png"
+  multiqc_files:
+    - "*_mqc.json":
+        type: file
+        description: MultiQC custom content for volcano plots
+        pattern: "*_mqc.json"
   versions:
     - versions.yml:
         type: file
@@ -45,25 +59,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/amd64:
-      name: community.wave.seqera.io/library/edgepython_pseudobulk:d8a69e7fb7ac4371
-      build_id: bd-d8a69e7fb7ac4371_1
-      scan_id: sc-227ad04d1609dec6_1
     linux/arm64:
-      name: community.wave.seqera.io/library/edgepython_pseudobulk:d808932ae0bffdc2
-      build_id: bd-d808932ae0bffdc2_1
-      scan_id: sc-3996540718377fad_1
+      name: community.wave.seqera.io/library/edgepython_differential:0c7c10180bff3f10
+      build_id: bd-0c7c10180bff3f10_1
+      scan_id: sc-e09f31dbf658325d_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/edgepython_differential:02c681a3d671c936
+      build_id: bd-02c681a3d671c936_1
+      scan_id: sc-b8177d15620b71af_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/edgepython_pseudobulk:58e953af5e9ecdbd
-      build_id: bd-58e953af5e9ecdbd_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ef/eff49ff9ce5ae24018eb162cdd5b32761901b28514fff1f61781ac1825a44c61/data
+      name: oras://community.wave.seqera.io/library/edgepython_differential:f0f51eb2589399e5
+      build_id: bd-f0f51eb2589399e5_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8f/8f6c59e278677cbe149c30e0937df1c4e6732f937e4a1a97050b4b5c17eb8898/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/edgepython_pseudobulk:709d18f57c0a0aa0
-      build_id: bd-709d18f57c0a0aa0_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ae/ae73afffd0ffa1f7d1ca51d6c31f2d52400c1bb2dcf4bc2a936331cbd7d9bbd0/data
+      name: oras://community.wave.seqera.io/library/edgepython_differential:01a8333f079eaaa4
+      build_id: bd-01a8333f079eaaa4_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a2/a23d56f7e94a4c3668dd3fc5a6c8f359db980145dcc658ccae289e7734e7c242/data
   conda:
     linux/amd64:
-      lock_file: modules/local/edgepython/differential/.conda-lock/linux_amd64-bd-d8a69e7fb7ac4371_1.txt
+      lock_file: modules/local/edgepython/differential/.conda-lock/linux_amd64-bd-02c681a3d671c936_1.txt
     linux/arm64:
-      lock_file: modules/local/edgepython/differential/.conda-lock/linux_arm64-bd-d808932ae0bffdc2_1.txt
+      lock_file: modules/local/edgepython/differential/.conda-lock/linux_arm64-bd-0c7c10180bff3f10_1.txt

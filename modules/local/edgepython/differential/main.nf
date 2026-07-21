@@ -4,16 +4,19 @@ process EDGEPYTHON_DIFFERENTIAL {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ef/eff49ff9ce5ae24018eb162cdd5b32761901b28514fff1f61781ac1825a44c61/data'
-        : 'community.wave.seqera.io/library/edgepython_pseudobulk:d8a69e7fb7ac4371' }"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8f/8f6c59e278677cbe149c30e0937df1c4e6732f937e4a1a97050b4b5c17eb8898/data'
+        : 'community.wave.seqera.io/library/edgepython_differential:02c681a3d671c936' }"
 
     input:
     tuple val(meta), path(h5ad)
     val(reference_condition)
+    path interesting_genes
 
     output:
     tuple val(meta), path("${prefix}_*_results.csv"), emit: results
-    path "versions.yml"                                , emit: versions, topic: versions
+    path "*.png"                                    , emit: plots, optional: true
+    path "*_mqc.json"                               , emit: multiqc_files, optional: true
+    path "versions.yml"                             , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -26,6 +29,8 @@ process EDGEPYTHON_DIFFERENTIAL {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}_stratum_results.csv
+    touch ${prefix}_stratum_volcano.png
+    touch ${prefix}_stratum_volcano_mqc.json
     touch versions.yml
     """
 }

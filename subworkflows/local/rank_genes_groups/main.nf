@@ -6,7 +6,8 @@ include { rankGenesGroupsMethodKey  } from '../utils_nfcore_scdownstream_pipelin
 
 workflow RANK_GENES_GROUPS {
     take:
-    ch_h5ad // channel: [ meta, h5ad ], anndata objects with obs_key and condition_col in meta
+    ch_h5ad           // channel: [ meta, h5ad ], anndata objects with obs_key and condition_col in meta
+    interesting_genes //   value: string (path) or []
 
     main:
     ch_uns           = channel.empty()
@@ -94,6 +95,7 @@ workflow RANK_GENES_GROUPS {
         ch_rankgenesgroups.filter,
         ch_rankgenesgroups.method,
         ch_rankgenesgroups.rank_key,
+        interesting_genes ?: [],
     )
     ch_uns           = ch_uns.mix(SCANPY_RANKGENESGROUPS.out.uns)
     ch_multiqc_files = ch_multiqc_files.mix(SCANPY_RANKGENESGROUPS.out.multiqc_files)

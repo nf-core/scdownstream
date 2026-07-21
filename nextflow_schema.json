@@ -443,6 +443,12 @@
                     "description": "Reference condition level for condition-based differential expression contrasts.",
                     "help_text": "Required for pseudobulk DE (`pydeseq2`, `edgepython`) and donor-aware `edgepython_sc` when those methods are enabled. Must match a condition level in the data."
                 },
+                "interesting_genes": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Optional CSV of gene symbols to mark with a distinct shape on differential expression volcano plots. First column is used; optional header gene/symbol/names. Blank and # lines are ignored.",
+                    "exists": true
+                },
                 "prep_cellxgene": {
                     "type": "boolean",
                     "description": "Prepare the output for visualisation in cellxgene",

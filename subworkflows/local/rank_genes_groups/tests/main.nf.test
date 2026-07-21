@@ -19,6 +19,7 @@ nextflow_workflow {
                     [id: 'test'],
                     file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                 ]).map { meta, h5ad -> [meta + [obs_key: 'leiden', condition_col: 'condition', de_methods_resolved: ['wilcoxon'] as Set], h5ad] }
+                input[1] = []
                 """
             }
         }
@@ -51,6 +52,7 @@ nextflow_workflow {
                     [id: 'test'],
                     file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                 ]).map { meta, h5ad -> [meta + [obs_key: 'label', condition_col: 'condition', de_methods_resolved: ['wilcoxon'] as Set], h5ad] }
+                input[1] = []
                 """
             }
         }
@@ -76,6 +78,7 @@ nextflow_workflow {
                     [id: 'test'],
                     file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                 ]).map { meta, h5ad -> [meta + [obs_key: 'leiden', condition_col: 'condition', de_methods_resolved: ['wilcoxon', 't-test'] as Set], h5ad] }
+                input[1] = []
                 """
             }
         }
