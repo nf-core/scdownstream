@@ -69,6 +69,16 @@ def load_interesting_genes(path_str):
     return genes
 
 
+def mqc_parent(method_slug, method_label):
+    integration = "${meta.integration}"
+    parent_id = re.sub(r"[^A-Za-z0-9._-]+", "_", f"{integration}_{method_slug}")
+    return {
+        "parent_id": parent_id,
+        "parent_name": f"{integration}: {method_label}",
+        "parent_description": f"Differential expression volcano plots from {method_label} ({integration} integration).",
+    }
+
+
 def write_volcano(
     df,
     gene_col,
@@ -80,6 +90,7 @@ def write_volcano(
     out_mqc_id,
     section_name,
     description,
+    parent,
 ):
     plot_df = df.copy()
     if gene_col is None:
@@ -159,9 +170,9 @@ def write_volcano(
     image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
     custom_json = {
         "id": out_mqc_id,
-        "parent_id": "${meta.integration}",
-        "parent_name": "${meta.integration}",
-        "parent_description": "Results of the ${meta.integration} integration.",
+        "parent_id": parent["parent_id"],
+        "parent_name": parent["parent_name"],
+        "parent_description": parent["parent_description"],
         "section_name": section_name,
         "description": description,
         "plot_type": "image",
@@ -177,6 +188,7 @@ for col in required_cols:
         raise ValueError(f"Column '{col}' not found in pseudobulk adata.obs")
 
 interesting = load_interesting_genes("${interesting_genes}")
+volcano_parent = mqc_parent("edgepython", "edgePython")
 written = []
 for celltype, celltype_data in adata.obs.groupby("celltype", observed=True):
     sub = adata[celltype_data.index].copy()
@@ -232,8 +244,12 @@ for celltype, celltype_data in adata.obs.groupby("celltype", observed=True):
             interesting,
             f"{stem}_volcano.png",
             f"{stem}_volcano",
-            f"edgePython volcano ({celltype}, {treatment} vs {reference_condition})",
-            f"edgePython volcano for <code>{celltype}</code>, contrast <code>{treatment}</code> vs <code>{reference_condition}</code>.",
+            f"edgePython volcano: {treatment} vs {reference_condition} (within celltype={celltype})",
+            (
+                f"edgePython volcano for contrast <code>{treatment}</code> versus <code>{reference_condition}</code> "
+                f"within <code>celltype={celltype}</code>."
+            ),
+            volcano_parent,
         )
 
 if not written:

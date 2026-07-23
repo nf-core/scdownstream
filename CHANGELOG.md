@@ -12,6 +12,8 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Prefix published result directories with numeric stage IDs (`01_load_h5ad` through `11_multiqc`) so lexical sort matches pipeline order; nest gene unification under `02_quality_control/unify`.
 - Align MultiQC section order with the same pipeline sequence via `report_section_order` and `custom_content.order` in `assets/multiqc_config.yml`.
 - Group raw and unified gene UpSet plots under a shared MultiQC parent section (`genes_upset`).
+- Group differential expression volcano plots under method-specific MultiQC parents (`{integration}: {method}`) and include the DE method (including Scanpy statistical tests) in section titles.
+- Use contrast-first MultiQC volcano titles: Scanpy `{groupby}={group} vs rest` with optional within-filter, and PyDESeq2 / edgePython / edgepython_sc `{treatment} vs {reference} (within celltype=...)`.
 
 ### `Added`
 

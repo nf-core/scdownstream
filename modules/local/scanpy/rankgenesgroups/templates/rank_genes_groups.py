@@ -65,6 +65,16 @@ def load_interesting_genes(path_str):
     return genes
 
 
+def mqc_parent(method_slug, method_label):
+    integration = "${meta.integration}"
+    parent_id = re.sub(r"[^A-Za-z0-9._-]+", "_", f"{integration}_{method_slug}")
+    return {
+        "parent_id": parent_id,
+        "parent_name": f"{integration}: {method_label}",
+        "parent_description": f"Differential expression volcano plots from {method_label} ({integration} integration).",
+    }
+
+
 def write_volcano(
     df,
     gene_col,
@@ -76,6 +86,7 @@ def write_volcano(
     out_mqc_id,
     section_name,
     description,
+    parent,
 ):
     plot_df = df.copy()
     if gene_col is None:
@@ -152,9 +163,9 @@ def write_volcano(
     image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
     custom_json = {
         "id": out_mqc_id,
-        "parent_id": "${meta.integration}",
-        "parent_name": "${meta.integration}",
-        "parent_description": "Results of the ${meta.integration} integration.",
+        "parent_id": parent["parent_id"],
+        "parent_name": parent["parent_name"],
+        "parent_description": parent["parent_description"],
         "section_name": section_name,
         "description": description,
         "plot_type": "image",
@@ -189,14 +200,26 @@ if len(valid_groups) >= 2:
     )
 
     interesting = load_interesting_genes("${interesting_genes}")
+    method_label = f"Scanpy {method}"
+    method_slug = re.sub(r"[^A-Za-z0-9._-]+", "_", f"scanpy_{method}")
+    volcano_parent = mqc_parent(method_slug, method_label)
     try:
         full_df = sc.get.rank_genes_groups_df(adata, group=None, key=rank_key)
         for group_name, gdf in full_df.groupby("group"):
             safe = re.sub(r"[^A-Za-z0-9._-]+", "_", str(group_name))
             stem = f"{prefix}_{safe}"
-            volcano_section = f"Volcano ({obs_key}={group_name})"
+            volcano_section = f"{method_label} volcano: {obs_key}={group_name} vs rest"
+            volcano_description = (
+                f"{method_label} volcano for <code>{obs_key}={group_name}</code> versus the rest of the cells."
+            )
             if filter_col and filter_val:
-                volcano_section = f"Volcano ({obs_key}={group_name}, {filter_col}={filter_val})"
+                volcano_section = (
+                    f"{method_label} volcano: {obs_key}={group_name} vs rest (within {filter_col}={filter_val})"
+                )
+                volcano_description = (
+                    f"{method_label} volcano for <code>{obs_key}={group_name}</code> versus the rest of the cells "
+                    f"within <code>{filter_col}={filter_val}</code>."
+                )
             write_volcano(
                 gdf,
                 "names",
@@ -207,7 +230,8 @@ if len(valid_groups) >= 2:
                 f"{stem}_volcano.png",
                 f"{stem}_volcano",
                 volcano_section,
-                f"Volcano plot for group <code>{group_name}</code>.",
+                volcano_description,
+                volcano_parent,
             )
     except Exception as exc:
         print(f"Warning: skipping volcano plots: {exc}")
