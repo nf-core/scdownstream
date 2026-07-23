@@ -39,7 +39,7 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.obs.size() >= 1
-            assert workflow.out.obs.any { _meta, pkl -> file(pkl).name == 'test:annotation:celltypist:Adult_COVID19_PBMC:per_cell.pkl' }
+            assert workflow.out.obs.any { pkl -> file(pkl).name == 'test:annotation:celltypist:Adult_COVID19_PBMC:per_cell.pkl' }
         }
 
     }
@@ -204,12 +204,10 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.obs.size() == 2
-            assert workflow.out.obs.any { item ->
-                def pkl = item instanceof Collection ? item[1] : item
+            assert workflow.out.obs.any { pkl ->
                 file(pkl).name == 'test:annotation:celltypist:Adult_COVID19_PBMC:per_cell.pkl'
             }
-            assert workflow.out.obs.any { item ->
-                def pkl = item instanceof Collection ? item[1] : item
+            assert workflow.out.obs.any { pkl ->
                 file(pkl).name.endsWith('_cytetype.pkl')
             }
         }

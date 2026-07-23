@@ -33,7 +33,7 @@ workflow CLUSTER_ANNOTATION {
         ch_aggregate_per_cell_annotations.integration,
         ch_aggregate_per_cell_annotations.resolution,
     )
-    ch_obs = ch_obs.mix(CUSTOM_AGGREGATE_PER_CELL_ANNOTATIONS.out.obs)
+    ch_obs = ch_obs.mix(CUSTOM_AGGREGATE_PER_CELL_ANNOTATIONS.out.obs.map { _meta, pkl -> pkl })
 
     if (cytetype_study_context) {
         ch_cytetype = ch_h5ad_de
