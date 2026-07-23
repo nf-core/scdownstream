@@ -57,8 +57,7 @@ def _subsample_groupby(strategy, obs_key, adata, batch_key="batch"):
 
     if strategy not in strategies:
         raise SystemExit(
-            f"Unknown liana_subsample_strategy '{strategy}'; "
-            "expected stratified_obs or stratified_obs_batch."
+            f"Unknown liana_subsample_strategy '{strategy}'; expected stratified_obs or stratified_obs_batch."
         )
 
     groupby_keys = strategies[strategy]
@@ -68,9 +67,7 @@ def _subsample_groupby(strategy, obs_key, adata, batch_key="batch"):
             f"available: {list(adata.obs.columns)}"
         )
     if obs_key not in adata.obs:
-        raise SystemExit(
-            f"LIANA grouping column '{obs_key}' not in obs; available: {list(adata.obs.columns)}"
-        )
+        raise SystemExit(f"LIANA grouping column '{obs_key}' not in obs; available: {list(adata.obs.columns)}")
 
     return strategy, groupby_keys
 
