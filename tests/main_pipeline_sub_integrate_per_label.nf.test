@@ -1,0 +1,82 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf - integrate per label"
+    script "main.nf"
+    tag "pipeline"
+
+    test("Should integrate each label in sub mode") {
+
+        when {
+            params {
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/e3a7f43eb802a090affac918026d2ba5dce8fcd5/'
+                outdir                       = "$outputDir"
+                input                        = null
+                base_adata                   = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                base_embeddings              = null
+                base_label_col               = 'sample'
+                integrate_per_label          = true
+                integration_methods          = 'pca'
+                integration_n_features       = -1
+                cluster_global               = false
+                cluster_per_label            = false
+                skip_liana                   = true
+                de_methods                   = ''
+                analysis_plan                = "${projectDir}/tests/analysis_plan_sub.csv"
+            }
+        }
+
+        then {
+            assert workflow.success
+            def adata = anndata("$outputDir/09_finalized/base.h5ad")
+            def pcaKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_pca") }
+            def umapKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_umap") }
+            assert "sample" in adata.obs.colnames
+            assert pcaKeys.size() > 1
+            assert umapKeys.size() > 1
+            assert file("$outputDir/10_reports/qc-report.html").text.contains("Each integration method run by the pipeline")
+            // stable_name: All files + folders in ${params.outdir}/ with a stable name
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', '06_per_group/**', '11_multiqc/**'])
+            // stable_path: All files in ${params.outdir}/ with stable content
+            def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            assert snapshot(
+                removeNextflowVersion("$outputDir/pipeline_info/nf_core_scdownstream_software_mqc_versions.yml"),
+                stable_name,
+                stable_path
+            ).match()
+        }
+    }
+
+    test("Should integrate only whitelisted labels in sub mode") {
+
+        when {
+            params {
+                pipelines_testdata_base_path  = 'https://raw.githubusercontent.com/nictru/test-datasets/e3a7f43eb802a090affac918026d2ba5dce8fcd5/'
+                outdir                        = "$outputDir"
+                input                         = null
+                base_adata                    = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                base_embeddings               = null
+                base_label_col                = 'sample'
+                integrate_per_label           = true
+                integrate_per_label_whitelist = 'SRR28679756'
+                integration_methods           = 'pca'
+                integration_n_features        = -1
+                cluster_global                = false
+                cluster_per_label             = false
+                skip_liana                    = true
+                de_methods                    = ''
+                analysis_plan                 = "${projectDir}/tests/analysis_plan_sub.csv"
+            }
+        }
+
+        then {
+            assert workflow.success
+            def adata = anndata("$outputDir/09_finalized/base.h5ad")
+            def pcaKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_pca") }
+            def umapKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_umap") }
+            assert pcaKeys.size() == 1
+            assert pcaKeys[0] == 'X_pca-SRR28679756_pca'
+            assert umapKeys.size() == 1
+            assert umapKeys[0] == 'X_pca-SRR28679756_umap'
+        }
+    }
+}

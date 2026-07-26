@@ -1,0 +1,117 @@
+{
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-25T15:46:56.458125743",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run without failures": {
+        "content": [
+            {
+                "SEURAT_INTEGRATION": {
+                    "R": "4.5.3",
+                    "Seurat": "5.5.0",
+                    "anndataR": "1.0.2"
+                }
+            },
+            {
+                "n_obs": 12381,
+                "n_vars": 100,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "sample",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "hb",
+                        "highly_variable",
+                        "log1p_mean_counts",
+                        "log1p_total_counts",
+                        "mean_counts",
+                        "means",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "counts",
+                    "log1p"
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "log1p"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-13T13:10:51.409590337",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    }
+}

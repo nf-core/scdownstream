@@ -1,0 +1,68 @@
+nextflow_process {
+
+    name "Test Process SCANORAMA_INTEGRATE"
+    script "modules/local/scanorama/integrate/main.nf"
+    process "SCANORAMA_INTEGRATE"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'batch'
+                input[2] = 'X'
+                input[3] = true
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.h5ad.size() == 1
+            assert process.out.obsm.size() == 1
+            assert snapshot(path(process.out.versions[0]).yaml).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'batch'
+                input[2] = 'X'
+                input[3] = true
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

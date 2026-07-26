@@ -1,0 +1,319 @@
+{
+    "Should run without failures without batch column": {
+        "content": [
+            {
+                "CELDA_DECONTX": {
+                    "r": "4.5.3",
+                    "anndataR": "1.0.2",
+                    "celda": "1.26.0"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-03-29T11:18:08.048436803",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run without failures without raw - single batch": {
+        "content": [
+            {
+                "CELDA_DECONTX": {
+                    "r": "4.5.3",
+                    "anndataR": "1.0.2",
+                    "celda": "1.26.0"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-03-29T11:21:17.900019258",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run without failures with raw": {
+        "content": [
+            {
+                "CELDA_DECONTX": {
+                    "r": "4.5.3",
+                    "anndataR": "1.0.2",
+                    "celda": "1.26.0"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-03-29T11:24:51.060377162",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should write to a custom output layer": {
+        "content": [
+            {
+                "CELDA_DECONTX": {
+                    "r": "4.5.3",
+                    "anndataR": "1.0.2",
+                    "celda": "1.26.0"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_decontx",
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-03-29T11:25:48.190196709",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run without failures with raw - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_decontx.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_decontx.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-25T16:08:49.849468757",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run without failures without raw - multi-batch": {
+        "content": [
+            {
+                "CELDA_DECONTX": {
+                    "r": "4.5.3",
+                    "anndataR": "1.0.2",
+                    "celda": "1.26.0"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-03-29T11:23:38.441578672",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should run without failures without raw - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_decontx.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_decontx.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-25T16:06:07.366572356",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.2"
+        }
+    }
+}

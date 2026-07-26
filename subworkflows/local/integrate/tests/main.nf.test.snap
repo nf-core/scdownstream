@@ -1,0 +1,847 @@
+{
+    "Should run without failures - bbknn - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "bbknn"
+                        },
+                        "bbknn.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "bbknn"
+                        },
+                        "bbknn.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "var": [
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-13T13:10:59.281587038",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - combat": {
+        "content": [
+            {
+                "n_obs": 12940,
+                "n_vars": 2000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "hb",
+                        "highly_variable",
+                        "log1p_mean_counts",
+                        "log1p_total_counts",
+                        "mean_counts",
+                        "means",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "combat",
+                    "counts",
+                    "log1p"
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-11T10:30:30.811996",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run without failures - pca - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-13T13:18:21.829636671",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - scanorama - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "scanorama"
+                        },
+                        "scanorama.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "X_scanorama.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "scanorama"
+                        },
+                        "scanorama.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_scanorama.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-13T13:27:38.728580289",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - combat - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "combat"
+                        },
+                        "combat.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "combat.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "combat"
+                        },
+                        "combat.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "combat.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-13T13:14:10.185229916",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - bbknn": {
+        "content": [
+            {
+                "n_obs": 12940,
+                "n_vars": 2000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "hb",
+                        "highly_variable",
+                        "log1p_mean_counts",
+                        "log1p_total_counts",
+                        "mean_counts",
+                        "means",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "counts",
+                    "log1p"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "neighbors",
+                    "pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-11T10:29:37.232594",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run without failures - deviance - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "test_deviance_features.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "test_deviance_features.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-13T13:23:48.617774516",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - deviance": {
+        "content": [
+            {
+                "n_obs": 12940,
+                "n_vars": 500,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "binomial_deviance",
+                        "hb",
+                        "highly_deviant",
+                        "log1p_mean_counts",
+                        "log1p_total_counts",
+                        "mean_counts",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "counts",
+                    "log1p"
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    "X_emb"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_emb"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-11T20:38:27.688068306",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - symphony - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "symphony"
+                        },
+                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "symphony"
+                        },
+                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-13T13:07:46.892986083",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - symphony": {
+        "content": [
+            {
+                "n_obs": 12940,
+                "n_vars": 2000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "hb",
+                        "highly_variable",
+                        "log1p_mean_counts",
+                        "log1p_total_counts",
+                        "mean_counts",
+                        "means",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "counts",
+                    "log1p"
+                ],
+                "obsm": [
+                    "X_emb",
+                    "X_symphony"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-11T10:28:53.438523",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run without failures - extension mode - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "symphony"
+                        },
+                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "symphony"
+                        },
+                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-07-13T13:17:44.283871808",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - pca": {
+        "content": [
+            {
+                "n_obs": 12940,
+                "n_vars": 2000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "hb",
+                        "highly_variable",
+                        "log1p_mean_counts",
+                        "log1p_total_counts",
+                        "mean_counts",
+                        "means",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "n_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "counts",
+                    "log1p"
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    "X_emb"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_emb",
+                    "hvg"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-11T10:31:19.244859",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run without failures - expimap": {
+        "content": [
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-06-21T21:58:37.690022279",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - expimap - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "expimap"
+                        },
+                        "expimap.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    "X_expimap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "expimap"
+                        },
+                        "expimap.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_expimap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-07-13T13:21:20.899603145",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - pearson_residuals_hvgs - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "test_pearson_residuals_hvgs.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "test_pearson_residuals_hvgs.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-13T13:24:26.780689917",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    }
+}

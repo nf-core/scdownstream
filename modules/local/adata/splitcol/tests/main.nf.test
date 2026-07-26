@@ -1,0 +1,59 @@
+nextflow_process {
+
+    name "Test Process ADATA_SPLITCOL"
+    script "modules/local/adata/splitcol/main.nf"
+    process "ADATA_SPLITCOL"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without failures") {
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'sample'
+                """
+            }
+        }
+
+        then {
+            def adatas = process.out.h5ad[0][1].collect { anndata(it) }
+            assert process.success
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adatas.collect { it.yaml }
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'sample'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

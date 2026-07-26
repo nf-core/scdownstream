@@ -1,0 +1,193 @@
+{
+    "Should run with a symbol column other than index": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test_singler_predictions.csv:md5,f965079ac68a2c5d2da32cea95b191d2"
+                ]
+            ],
+            "test_singler_hpca_distribution.pdf",
+            "test_singler_hpca_heatmap.pdf",
+            {
+                "CELLTYPES_SINGLER": {
+                    "R": "R version 4.5.3 (2026-03-11)",
+                    "SingleR": "2.12.0",
+                    "celldex": "1.20.0",
+                    "anndataR": "1.0.2",
+                    "ggplot2": "4.0.2"
+                }
+            }
+        ],
+        "timestamp": "2026-07-10T15:35:20.464419",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run after celldex reference is fetched": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test_singler_predictions.csv:md5,14c2143bae8ee4ed52dcc82b8ae3c47b"
+                ]
+            ],
+            "test_singler_test_distribution.pdf",
+            "test_singler_test_heatmap.pdf",
+            {
+                "CELLTYPES_SINGLER": {
+                    "R": "R version 4.5.3 (2026-03-11)",
+                    "SingleR": "2.12.0",
+                    "celldex": "1.20.0",
+                    "anndataR": "1.0.2",
+                    "ggplot2": "4.0.2"
+                }
+            }
+        ],
+        "timestamp": "2026-07-10T15:31:42.636103",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run with a single reference": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test_singler_predictions.csv:md5,f965079ac68a2c5d2da32cea95b191d2"
+                ]
+            ],
+            "test_singler_hpca_distribution.pdf",
+            "test_singler_hpca_heatmap.pdf",
+            {
+                "CELLTYPES_SINGLER": {
+                    "R": "R version 4.5.3 (2026-03-11)",
+                    "SingleR": "2.12.0",
+                    "celldex": "1.20.0",
+                    "anndataR": "1.0.2",
+                    "ggplot2": "4.0.2"
+                }
+            }
+        ],
+        "timestamp": "2026-07-10T15:33:31.321156",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run with a single reference - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_predictions.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_annotation_columns.csv:md5,844397d2b335534df33b2700210dd8d3"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_distribution.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_heatmap.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "annotation_columns": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_annotation_columns.csv:md5,844397d2b335534df33b2700210dd8d3"
+                    ]
+                ],
+                "distribution": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_distribution.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "heatmap": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_heatmap.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_predictions.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-10T14:09:29.60511",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run with two references": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test_singler_predictions.csv:md5,d255bd1693d569b0263aaffd5605bc9a"
+                ]
+            ],
+            {
+                "CELLTYPES_SINGLER": {
+                    "R": "R version 4.5.3 (2026-03-11)",
+                    "SingleR": "2.12.0",
+                    "celldex": "1.20.0",
+                    "anndataR": "1.0.2",
+                    "ggplot2": "4.0.2"
+                }
+            }
+        ],
+        "timestamp": "2026-07-10T15:37:40.936496",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    }
+}

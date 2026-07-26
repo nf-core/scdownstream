@@ -13,21 +13,198 @@
                 "errorMessage": "Sample name must be provided and cannot contain spaces",
                 "meta": ["id"]
             },
-            "fastq_1": {
+            "filtered": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^\\S+\\.(h5ad|h5|rds|RDS|csv)$",
+                "errorMessage": "Filtered file must be a .h5ad, .h5, .rds or .csv file."
             },
-            "fastq_2": {
+            "unfiltered": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^\\S+\\.(h5ad|h5|rds|RDS|csv)$",
+                "errorMessage": "Unfiltered file must be a .h5ad, .h5, .rds or .csv file."
+            },
+            "unified": {
+                "type": "boolean",
+                "default": false,
+                "errorMessage": "Unified must be a boolean.",
+                "meta": ["unified"]
+            },
+            "batch_col": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                "errorMessage": "Batch column needs to start with a letter and can contain letters, numbers, underlines and dashes.",
+                "meta": ["batch_col"]
+            },
+            "symbol_col": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                "default": "index",
+                "errorMessage": "Symbol column needs to start with a letter and can contain letters, numbers, underlines and dashes.",
+                "meta": ["symbol_col"]
+            },
+            "geneid_col": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                "default": "index",
+                "errorMessage": "Gene ID column needs to start with a letter and can contain letters, numbers, underlines and dashes.",
+                "meta": ["geneid_col"]
+            },
+            "label_col": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                "errorMessage": "Label column needs to start with a letter and can contain letters, numbers, underlines and dashes.",
+                "meta": ["label_col"]
+            },
+            "condition_col": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                "errorMessage": "Condition column needs to start with a letter and can contain letters, numbers, underlines and dashes.",
+                "meta": ["condition_col"]
+            },
+            "donor_col": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                "errorMessage": "Donor column needs to start with a letter and can contain letters, numbers, underlines and dashes.",
+                "meta": ["donor_col"]
+            },
+            "unknown_label": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                "default": "unknown",
+                "errorMessage": "Unknown label needs to start with a letter and can contain letters, numbers, underlines and dashes.",
+                "meta": ["unknown_label"]
+            },
+            "counts_layer": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                "default": "X",
+                "errorMessage": "Counts layer needs to start with a letter and can contain letters, numbers, underlines and dashes.",
+                "meta": ["counts_layer"]
+            },
+            "min_genes": {
+                "type": "integer",
+                "minimum": 0,
+                "default": 0,
+                "errorMessage": "Minimum number of genes must be an integer greater than 0.",
+                "meta": ["min_genes"]
+            },
+            "min_cells": {
+                "type": "integer",
+                "minimum": 0,
+                "default": 20,
+                "description": "Minimum number of cells a gene must be detected in to be retained. Follows sc-best-practices (https://www.sc-best-practices.org/preprocessing_visualization/quality_control.html). Set to 0 to disable.",
+                "errorMessage": "Minimum number of cells must be a non-negative integer.",
+                "meta": ["min_cells"]
+            },
+            "min_counts_cell": {
+                "type": "integer",
+                "minimum": 0,
+                "default": 0,
+                "errorMessage": "Minimum number of counts per cell must be an integer greater than 0.",
+                "meta": ["min_counts_cell"]
+            },
+            "min_counts_gene": {
+                "type": "integer",
+                "minimum": 0,
+                "default": 0,
+                "errorMessage": "Minimum number of counts per gene must be an integer greater than 0.",
+                "meta": ["min_counts_gene"]
+            },
+            "max_mito_percentage": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "default": 100,
+                "description": "Maximum mitochondrial read percentage per cell. Values below 100 apply an absolute cutoff; 100 disables this filter (MAD-based mito filtering remains controlled by pct_counts_mt_nmads).",
+                "errorMessage": "Max mitochondrial percentage must be an integer between 0 and 100.",
+                "meta": ["max_mito_percentage"]
+            },
+            "min_ribo_percentage": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "default": 0,
+                "errorMessage": "Min ribosomal percentage must be an integer between 0 and 100.",
+                "meta": ["min_ribo_percentage"]
+            },
+            "max_hb_percentage": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "default": 100,
+                "errorMessage": "Max haemoglobin percentage must be an integer between 0 and 100.",
+                "meta": ["max_hb_percentage"]
+            },
+            "log1p_total_counts_nmads": {
+                "type": "number",
+                "minimum": 0,
+                "default": 5,
+                "description": "MAD cutoff for log1p_total_counts. Cells outside median ± n × MAD are removed. Follows sc-best-practices. Set to 0 to disable for this sample.",
+                "errorMessage": "MAD cutoff for log1p_total_counts must be a non-negative number. 0 disables MAD filtering for this metric.",
+                "meta": ["log1p_total_counts_nmads"]
+            },
+            "log1p_n_genes_by_counts_nmads": {
+                "type": "number",
+                "minimum": 0,
+                "default": 5,
+                "description": "MAD cutoff for log1p_n_genes_by_counts. Set to 0 to disable for this sample.",
+                "errorMessage": "MAD cutoff for log1p_n_genes_by_counts must be a non-negative number. 0 disables MAD filtering for this metric.",
+                "meta": ["log1p_n_genes_by_counts_nmads"]
+            },
+            "pct_counts_in_top_20_genes_nmads": {
+                "type": "number",
+                "minimum": 0,
+                "default": 5,
+                "description": "MAD cutoff for pct_counts_in_top_20_genes. Set to 0 to disable for this sample.",
+                "errorMessage": "MAD cutoff for pct_counts_in_top_20_genes must be a non-negative number. 0 disables MAD filtering for this metric.",
+                "meta": ["pct_counts_in_top_20_genes_nmads"]
+            },
+            "pct_counts_mt_nmads": {
+                "type": "number",
+                "minimum": 0,
+                "default": 3,
+                "description": "MAD cutoff for pct_counts_mt. Set to 0 to disable for this sample.",
+                "errorMessage": "MAD cutoff for pct_counts_mt must be a non-negative number. 0 disables MAD filtering for this metric.",
+                "meta": ["pct_counts_mt_nmads"]
+            },
+            "expected_cells": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 0,
+                "errorMessage": "Number of cells expected from the experimental design, used as input to cellbender.",
+                "meta": ["expected_cells"]
+            },
+            "doublet_rate": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "errorMessage": "doublet_rate must be a number between 0 and 1.",
+                "meta": ["doublet_rate"]
+            },
+            "ambient_correction": {
+                "type": "boolean",
+                "default": true,
+                "errorMessage": "'ambient_correction' must be a boolean.",
+                "meta": ["ambient_correction"]
+            },
+            "ambient_corrected_integration": {
+                "type": "boolean",
+                "errorMessage": "'ambient_corrected_integration' must be a boolean.",
+                "meta": ["ambient_corrected_integration"]
             }
         },
-        "required": ["sample", "fastq_1"]
+        "anyOf": [
+            {
+                "required": ["filtered"]
+            },
+            {
+                "required": ["unfiltered"]
+            }
+        ],
+        "required": ["sample"]
     }
 }

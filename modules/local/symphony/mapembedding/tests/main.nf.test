@@ -1,0 +1,93 @@
+nextflow_process {
+
+    name "Test Process SYMPHONY_MAPEMBEDDING"
+    script "modules/local/symphony/mapembedding/main.nf"
+    process "SYMPHONY_MAPEMBEDDING"
+
+    tag "modules"
+    tag "modules_local"
+
+    setup {
+        run("SYMPHONY_HARMONYINTEGRATE") {
+            script "modules/local/symphony/harmonyintegrate/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'symphony' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "sample"
+                input[2] = "X"
+                """
+            }
+        }
+    }
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'symphony' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = SYMPHONY_HARMONYINTEGRATE.out.reference
+                input[2] = "sample"
+                input[3] = "X"
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert "X_emb" in adata.obsm
+            assert "X_symphony" in adata.obsm
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'symphony' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = channel.of([
+                        [ id: 'symphony' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[2] = "sample"
+                input[3] = "X"
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

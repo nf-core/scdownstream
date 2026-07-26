@@ -1,0 +1,72 @@
+nextflow_process {
+
+    name "Test Process SCANPY_CELLCYCLE"
+    script "modules/local/scanpy/cellcycle/main.nf"
+    process "SCANPY_CELLCYCLE"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without failures - human") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = file("${projectDir}/assets/cell_cycle_genes/human_s_genes.txt")
+                input[2] = file("${projectDir}/assets/cell_cycle_genes/human_g2m_genes.txt")
+                input[3] = 'symbols'
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = file("${projectDir}/assets/cell_cycle_genes/human_s_genes.txt")
+                input[2] = file("${projectDir}/assets/cell_cycle_genes/human_g2m_genes.txt")
+                input[3] = 'index'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

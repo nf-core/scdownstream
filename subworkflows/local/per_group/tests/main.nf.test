@@ -1,0 +1,663 @@
+nextflow_workflow {
+
+    name "Test Workflow PER_GROUP"
+    script "subworkflows/local/per_group/main.nf"
+    workflow "PER_GROUP"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should run without failures - PAGA only - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', obs_key: 'leiden', condition_col: 'condition', integration: 'scvi', resolution: '0.5', analyses: ['paga'] as Set],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.empty()
+                input[2] = true
+                input[3] = 1000
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = ''
+                input[8] = 'wilcoxon'
+                input[9] = 'batch'
+                input[10] = 10
+                input[11] = 1000
+                input[12] = channel.empty()
+                input[13] = ''
+                input[14] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad.size() == 0
+            assert workflow.out.obs.size() == 0
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - PAGA only") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', obs_key: 'leiden', condition_col: 'condition', integration: 'scvi', resolution: '0.5', analyses: ['paga'] as Set],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.empty()
+                input[2] = true
+                input[3] = 1000
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = ''
+                input[8] = 'wilcoxon'
+                input[9] = 'batch'
+                input[10] = 10
+                input[11] = 1000
+                input[12] = channel.empty()
+                input[13] = ''
+                input[14] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            // PAGA produces exactly one uns pkl
+            assert workflow.out.uns.size() == 1
+            assert workflow.out.uns.any { file(it).name == "test_paga.pkl" }
+            assert workflow.out.multiqc_files.size() == 1
+            assert workflow.out.h5ad.size() == 0
+            assert workflow.out.obs.size() == 0
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml }
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - full run - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = false
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        comparison_scope: 'global',
+                        de_method: 'wilcoxon',
+                        rank_key: 'rank_genes_groups',
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = false
+                input[3] = 1000
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = ''
+                input[8] = 'wilcoxon'
+                input[9] = 'batch'
+                input[10] = 10
+                input[11] = 1000
+                input[12] = channel.empty()
+                input[13] = ''
+                input[14] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad.size() >= 1
+            assert workflow.out.obs.size() == 0
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - full run") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = false
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        comparison_scope: 'global',
+                        de_method: 'wilcoxon',
+                        rank_key: 'rank_genes_groups',
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = false
+                input[3] = 1000
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = ''
+                input[8] = 'wilcoxon'
+                input[9] = false
+                input[10] = 10
+                input[11] = 1000
+                input[12] = channel.empty()
+                input[13] = ''
+                input[14] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            // PAGA + LIANA + RANKGENESGROUPS all produce uns pkls
+            assert workflow.out.uns.size() >= 1
+            assert workflow.out.uns.any { file(it).name == "test_paga.pkl" }
+            assert workflow.out.uns.any { file(it).name == "test_liana.pkl" }
+            assert workflow.out.multiqc_files.size() >= 1
+            assert workflow.out.h5ad.size() >= 1
+            assert workflow.out.obs.size() == 0
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml }
+            ).match()
+        }
+
+    }
+
+    test("Should run cytetype when study context is set - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = false
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        comparison_scope: 'global',
+                        de_method: 'wilcoxon',
+                        rank_key: 'rank_genes_groups',
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = false
+                input[3] = 1000
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[8] = 'wilcoxon'
+                input[9] = 'batch'
+                input[10] = 10
+                input[11] = 1000
+                input[12] = channel.empty()
+                input[13] = ''
+                input[14] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad.size() >= 1
+            assert workflow.out.obs.size() >= 1
+            assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml },
+                workflow.out.obs.size()
+            ).match()
+        }
+
+    }
+
+    test("Should run only DE when analyses is restricted - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        analyses: ['de'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = true
+                input[3] = 1000
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = ''
+                input[8] = 'wilcoxon'
+                input[9] = 'batch'
+                input[10] = 10
+                input[11] = 1000
+                input[12] = channel.empty()
+                input[13] = ''
+                input[14] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.uns.size() >= 1
+            assert workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
+            assert !workflow.out.uns.any { file(it).name == 'test_paga.pkl' }
+            assert !workflow.out.uns.any { file(it).name == 'test_liana.pkl' }
+            assert workflow.out.obs.size() == 0
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml }
+            ).match()
+        }
+
+    }
+
+    test("Should run only PAGA and LIANA when analyses is restricted - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = false
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        analyses: ['paga', 'liana'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = false
+                input[3] = 1000
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = ''
+                input[8] = 'wilcoxon'
+                input[9] = 'batch'
+                input[10] = 10
+                input[11] = 1000
+                input[12] = channel.empty()
+                input[13] = ''
+                input[14] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.uns.any { file(it).name == 'test_paga.pkl' }
+            assert workflow.out.uns.any { file(it).name == 'test_liana.pkl' }
+            assert !workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
+            assert workflow.out.h5ad.size() == 0
+            assert workflow.out.obs.size() == 0
+        }
+
+    }
+
+    test("Should union analyses from combined meta analyses set - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        analyses: ['paga', 'de'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = true
+                input[3] = 1000
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = ''
+                input[8] = 'wilcoxon'
+                input[9] = 'batch'
+                input[10] = 10
+                input[11] = 1000
+                input[12] = channel.empty()
+                input[13] = ''
+                input[14] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.uns.any { file(it).name == 'test_paga.pkl' }
+            assert workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
+            assert !workflow.out.uns.any { file(it).name == 'test_liana.pkl' }
+            assert workflow.out.obs.size() == 0
+        }
+
+    }
+
+    test("Should skip cytetype when not listed in analyses - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        analyses: ['de'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = true
+                input[3] = 1000
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[8] = 'wilcoxon'
+                input[9] = 'batch'
+                input[10] = 10
+                input[11] = 1000
+                input[12] = channel.empty()
+                input[13] = ''
+                input[14] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
+            assert workflow.out.obs.size() == 0
+        }
+
+    }
+
+    test("Should force wilcoxon for cytetype when de_methods is empty - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        comparison_scope: 'global',
+                        de_method: 'wilcoxon',
+                        rank_key: 'rank_genes_groups',
+                        analyses: ['cytetype'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = true
+                input[3] = 1000
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[8] = ''
+                input[9] = 'batch'
+                input[10] = 10
+                input[11] = 1000
+                input[12] = channel.empty()
+                input[13] = ''
+                input[14] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
+            assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
+        }
+
+    }
+
+    test("Should force wilcoxon for cytetype when another rgg method is configured - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        comparison_scope: 'global',
+                        de_method: 'wilcoxon',
+                        rank_key: 'rank_genes_groups',
+                        analyses: ['de', 'cytetype'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = true
+                input[3] = 1000
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[8] = 'logreg'
+                input[9] = 'batch'
+                input[10] = 10
+                input[11] = 1000
+                input[12] = channel.empty()
+                input[13] = ''
+                input[14] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad.any { meta, _h5ad -> meta.de_method == 'wilcoxon' }
+            assert workflow.out.h5ad.any { meta, _h5ad -> meta.de_method == 'logreg' }
+            assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
+        }
+
+    }
+
+    test("Should run aggregate_per_cell_annotation when analyses includes aggregate_per_cell_annotation - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        analyses: ['aggregate_per_cell_annotation'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = channel.empty()
+                input[1] = h5ad
+                input[2] = true
+                input[3] = 1000
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = ''
+                input[8] = 'wilcoxon'
+                input[9] = 'batch'
+                input[10] = 10
+                input[11] = 1000
+                input[12] = channel.of('annotation:celltypist:Adult_COVID19_PBMC:per_cell')
+                input[13] = 'label'
+                input[14] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.obs.size() >= 1
+            assert workflow.out.obs.any { pkl -> file(pkl).name == 'test:annotation:celltypist:Adult_COVID19_PBMC:per_cell.pkl' }
+            assert workflow.out.uns.size() == 0
+        }
+
+    }
+
+    test("Should skip aggregate_per_cell_annotation when not listed in analyses - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = true
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        analyses: ['paga'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.empty()
+                input[2] = true
+                input[3] = 1000
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = ''
+                input[8] = 'wilcoxon'
+                input[9] = 'batch'
+                input[10] = 10
+                input[11] = 1000
+                input[12] = channel.empty()
+                input[13] = ''
+                input[14] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.obs.size() == 0
+            assert workflow.out.uns.any { file(it).name == 'test_paga.pkl' }
+        }
+
+    }
+
+}

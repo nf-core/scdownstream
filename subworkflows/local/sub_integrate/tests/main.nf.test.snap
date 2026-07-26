@@ -1,0 +1,210 @@
+{
+    "Should pair scVI models with scANVI by subset - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "base"
+                        },
+                        "base_log1pnorm.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "scanvi-A",
+                            "subset": "A",
+                            "integration": "scanvi"
+                        },
+                        "scanvi-A.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "scanvi-B",
+                            "subset": "B",
+                            "integration": "scanvi"
+                        },
+                        "scanvi-B.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "scvi-A",
+                            "subset": "A",
+                            "integration": "scvi"
+                        },
+                        "scvi-A.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "scvi-B",
+                            "subset": "B",
+                            "integration": "scvi"
+                        },
+                        "scvi-B.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    "scanvi-A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "scanvi-B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "A_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "B_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    "X_scanvi-A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_scanvi-B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_scvi-A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_scvi-B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "base"
+                        },
+                        "base_log1pnorm.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "scanvi-A",
+                            "subset": "A",
+                            "integration": "scanvi"
+                        },
+                        "scanvi-A.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "scanvi-B",
+                            "subset": "B",
+                            "integration": "scanvi"
+                        },
+                        "scanvi-B.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "scvi-A",
+                            "subset": "A",
+                            "integration": "scvi"
+                        },
+                        "scvi-A.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "scvi-B",
+                            "subset": "B",
+                            "integration": "scvi"
+                        },
+                        "scvi-B.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    "scanvi-A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "scanvi-B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "obsm": [
+                    "X_scanvi-A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_scanvi-B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_scvi-A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_scvi-B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "A_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "B_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-13T13:11:39.049845508",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "base"
+                        },
+                        "base_log1pnorm.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "pca-A",
+                            "subset": "A",
+                            "integration": "pca"
+                        },
+                        "pca-A_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-B",
+                            "subset": "B",
+                            "integration": "pca"
+                        },
+                        "pca-B_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    "A_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "B_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    "X_pca-A_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_pca-B_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "base"
+                        },
+                        "base_log1pnorm.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "pca-A",
+                            "subset": "A",
+                            "integration": "pca"
+                        },
+                        "pca-A_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-B",
+                            "subset": "B",
+                            "integration": "pca"
+                        },
+                        "pca-B_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_pca-A_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_pca-B_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "A_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "B_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-13T13:16:12.784846429",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    }
+}

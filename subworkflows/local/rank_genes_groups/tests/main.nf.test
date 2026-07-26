@@ -1,0 +1,96 @@
+nextflow_workflow {
+
+    name "Test Workflow RANK_GENES_GROUPS"
+    script "subworkflows/local/rank_genes_groups/main.nf"
+    workflow "RANK_GENES_GROUPS"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should run differential expression with leiden clustering") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ]).map { meta, h5ad -> [meta + [obs_key: 'leiden', condition_col: 'condition', de_methods_resolved: ['wilcoxon'] as Set], h5ad] }
+                input[1] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.uns.size() >= 1
+            assert workflow.out.multiqc_files.size() >= 1
+            assert workflow.out.uns.any { file(it).name.endsWith("_characteristic_genes.pkl") }
+            assert workflow.out.h5ad.size() >= 1
+            assert workflow.out.h5ad.every { meta, _h5ad -> meta.comparison_scope == 'global' }
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert "rank_genes_groups" in adata.uns
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml }
+            ).match()
+        }
+
+    }
+
+    test("Should run differential expression with label column") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ]).map { meta, h5ad -> [meta + [obs_key: 'label', condition_col: 'condition', de_methods_resolved: ['wilcoxon'] as Set], h5ad] }
+                input[1] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml }
+            ).match()
+        }
+
+    }
+
+    test("Should run multiple rank-genes-groups methods in parallel") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ]).map { meta, h5ad -> [meta + [obs_key: 'leiden', condition_col: 'condition', de_methods_resolved: ['wilcoxon', 't-test'] as Set], h5ad] }
+                input[1] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.uns.size() >= 2
+            assert workflow.out.h5ad.size() == 2
+            assert workflow.out.h5ad.every { meta, _h5ad -> meta.comparison_scope == 'global' }
+            assert workflow.out.h5ad.collect { meta, _h5ad -> meta.de_method }.toSet() == ['wilcoxon', 't-test'] as Set
+        }
+
+    }
+
+}

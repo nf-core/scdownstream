@@ -2,8 +2,7 @@ nf_core_version: 4.0.3
 repository_type: pipeline
 template:
   author: Nico Trummer
-  description: A single cell transcriptomics pipeline for QC, integration and making
-    the results presentable
+  description: A single cell transcriptomics pipeline for QC, integration and making the results presentable
   force: false
   is_nfcore: true
   name: scdownstream
@@ -13,3 +12,9 @@ template:
     - fastqc
     - igenomes
   version: 0.0.1dev
+lint:
+  files_exist:
+    - .github/workflows/linting_comment.yml
+  files_unchanged:
+    - .github/workflows/branch.yml
+    - .github/workflows/linting.yml

@@ -3,11 +3,23 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { MULTIQC                } from '../modules/nf-core/multiqc/main'
-include { paramsSummaryMap       } from 'plugin/nf-schema'
-include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_scdownstream_pipeline'
+
+include { LOAD_H5AD                            } from '../subworkflows/local/load_h5ad'
+include { QUALITY_CONTROL                      } from '../subworkflows/local/quality_control'
+include { PER_CELL_ANNOTATION                  } from '../subworkflows/local/per_cell_annotation'
+include { ADATA_EXTEND as FINALIZE_QC_ANNDATAS } from '../modules/local/adata/extend'
+include { QUARTONOTEBOOK as QC_REPORT          } from '../modules/nf-core/quartonotebook'
+include { COMBINE                              } from '../subworkflows/local/combine'
+include { ADATA_SPLITEMBEDDINGS                } from '../modules/local/adata/splitembeddings'
+include { SUB_INTEGRATE                        } from '../subworkflows/local/sub_integrate'
+include { CLUSTER                              } from '../subworkflows/local/cluster'
+include { PER_GROUP                            } from '../subworkflows/local/per_group'
+include { FINALIZE                             } from '../subworkflows/local/finalize'
+include { MULTIQC                              } from '../modules/nf-core/multiqc'
+include { paramsSummaryMap                     } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc                 } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML               } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText               } from '../subworkflows/local/utils_nfcore_scdownstream_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,18 +28,372 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_scdo
 */
 
 workflow SCDOWNSTREAM {
-
     take:
-    ch_samplesheet // channel: samplesheet read in from --input
-    multiqc_config
-    multiqc_logo
-    multiqc_methods_description
-    outdir
+    ch_samplesheet                // channel: samplesheet read in from --input
+    ch_base                       // channel: [ val(meta), path(h5ad) ]
+    is_extension                  //   value: boolean
+    ch_input                      //    file: samplesheet.csv
+    ambient_correction            //   value: string
+    ambient_corrected_integration //   value: boolean
+    doublet_detection             //   value: string
+    doublet_detection_threshold   //   value: integer
+    doublet_removal               //   value: boolean
+    scvi_max_epochs               //   value: integer
+    mito_genes                    //   value: string
+    sample_n                      //   value: string
+    sample_fraction               //   value: string
+    cell_cycle_scoring            //   value: boolean
+    s_genes                       //    path: file or []
+    g2m_genes                     //    path: file or []
+    species                       //   value: string
+    qc_only                       //   value: boolean
+    celldex_reference              //   value: string
+    celltypist_model               //   value: string
+    cytetype_study_context         //   value: string
+    unify_gene_symbols            //   value: boolean
+    duplicate_var_resolution      //   value: string
+    aggregate_isoforms            //   value: boolean
+    feature_selection             //   value: string
+    integration_n_features              //   value: integer
+    integration_methods           //   value: string
+    integration_excluded_genes    //   value: string
+    normalization_method          //   value: string
+    scvi_model                    //   value: string
+    scanvi_model                  //   value: string
+    scvi_categorical_covariates   //   value: string
+    scvi_continuous_covariates    //   value: string
+    scimilarity_model             //   value: string
+    symphony_reference             //   value: string
+    expimap_gmt                   //   value: string
+    skip_liana                    //   value: boolean
+    liana_n_perms                 //   value: integer
+    liana_max_cells               //   value: integer or null
+    liana_subsample_strategy      //   value: string
+    liana_subsample_seed          //   value: integer
+    skip_qc_report                //   value: boolean
+    scib                          //   value: boolean
+    scib_max_cells                //   value: integer or null
+    scib_subsample_strategy       //   value: string
+    scib_subsample_seed           //   value: integer
+    scib_metric_profile           //   value: string
+    base_embeddings               //   value: string
+    base_label_col                //   value: string
+    base_condition_col            //   value: string
+    base_donor_col                //   value: string
+    integrate_per_label           //   value: boolean
+    integrate_per_label_whitelist //   value: string
+    cluster_per_label             //   value: boolean
+    cluster_global                //   value: boolean
+    clustering_resolutions        //   value: string
+    neighbors_n_pcs               //   value: integer or null
+    tsne                          //   value: boolean
+    analysis_plan                 //   value: list of plan rows parsed in main.nf
+    de_methods                    //   value: string
+    interesting_genes             //   value: string
+    pseudobulk                    //   value: boolean
+    pseudobulk_min_num_cells      //   value: integer
+    pseudobulk_min_total_counts   //   value: integer
+    reference_condition           //   value: string
+    prep_cellxgene                //   value: boolean
+    outdir                        //   value: string
+    multiqc_config                //   value: string
+    multiqc_logo                  //   value: string
+    multiqc_methods_description   //   value: string
 
     main:
 
-    def ch_versions = channel.empty()
-    def ch_multiqc_files = channel.empty()
+    ch_versions = channel.empty()
+    ch_integrations = channel.empty()
+    ch_obs = channel.empty()
+    ch_var = channel.empty()
+    ch_obsm = channel.empty()
+    ch_obsp = channel.empty()
+    ch_uns = channel.empty()
+    ch_multiqc_files = channel.empty()
+    ch_per_cell_annotation_columns = channel.empty()
+
+    if (ch_input) {
+        ch_obs_per_sample = channel.empty()
+        ch_var_per_sample = channel.empty()
+        ch_obsm_per_sample = channel.empty()
+        ch_obsp_per_sample = channel.empty()
+        ch_uns_per_sample = channel.empty()
+        ch_layers_per_sample = channel.empty()
+
+        //
+        // Load/Convert input to h5ad
+        //
+        LOAD_H5AD ( ch_samplesheet )
+        ch_h5ad = LOAD_H5AD.out.h5ad
+
+        //
+        // Quality control per sample
+        //
+        QUALITY_CONTROL (
+            ch_h5ad,
+            ambient_correction,
+            ambient_corrected_integration,
+            unify_gene_symbols,
+            duplicate_var_resolution,
+            aggregate_isoforms,
+            (!doublet_detection || doublet_detection == 'none')
+                ? []
+                : doublet_detection
+                    .split(',')
+                    .collect { it -> it.trim().toLowerCase() },
+            doublet_detection_threshold,
+            doublet_removal,
+            scvi_max_epochs,
+            mito_genes,
+            sample_n,
+            sample_fraction,
+            cell_cycle_scoring,
+            s_genes,
+            g2m_genes,
+            species,
+        )
+        ch_multiqc_files = ch_multiqc_files.mix(QUALITY_CONTROL.out.multiqc_files)
+        ch_h5ad = QUALITY_CONTROL.out.h5ad
+        ch_obs_per_sample = ch_obs_per_sample.mix(QUALITY_CONTROL.out.obs)
+
+        //
+        // Perform per-cell annotation with SingleR and CellTypist
+        //
+        PER_CELL_ANNOTATION (
+            ch_h5ad.map { meta, h5ad -> [meta, h5ad, meta.symbol_col, meta.counts_layer ?: "X"] },
+            celldex_reference,
+            celltypist_model
+        )
+        ch_obs_per_sample = ch_obs_per_sample.mix(PER_CELL_ANNOTATION.out.obs)
+
+        ch_per_cell_annotation_columns = PER_CELL_ANNOTATION.out.annotation_column_rows
+            .filter { row -> row.aggregatable == 'true' }
+            .map { row -> row.obs_column }
+            .unique()
+
+        FINALIZE_QC_ANNDATAS (
+            ch_h5ad
+            .join(ch_obs_per_sample.groupTuple(), remainder: true)
+            .join(ch_var_per_sample.groupTuple(), remainder: true)
+            .join(ch_obsm_per_sample.groupTuple(), remainder: true)
+            .join(ch_obsp_per_sample.groupTuple(), remainder: true)
+            .join(ch_uns_per_sample.groupTuple(), remainder: true)
+            .join(ch_layers_per_sample.groupTuple(), remainder: true)
+            .map {
+                meta, h5ad, obs, var, obsm, obsp, uns, layers ->
+                [meta, h5ad, obs ?: [], var ?: [], obsm ?: [], obsp ?: [],
+                    uns ?: [], layers ?: []]
+            }
+        )
+        ch_h5ad = FINALIZE_QC_ANNDATAS.out.h5ad
+
+        if (!qc_only) {
+            //
+            // Combine samples and perform integration
+            //
+            grouping_col = "label"
+            condition_col = "condition"
+            donor_col = "donor"
+
+            COMBINE (
+                ch_h5ad,
+                ch_base,
+                is_extension,
+                feature_selection,
+                integration_n_features,
+                integration_methods,
+                integration_excluded_genes,
+                normalization_method,
+                scvi_model,
+                scanvi_model,
+                scvi_categorical_covariates,
+                scvi_continuous_covariates,
+                scimilarity_model,
+                symphony_reference,
+                expimap_gmt,
+                condition_col,
+                scib,
+                scib_max_cells,
+                scib_subsample_strategy,
+                scib_subsample_seed,
+                scib_metric_profile,
+            )
+            ch_obs = ch_obs.mix(COMBINE.out.obs)
+            ch_obsm = ch_obsm.mix(COMBINE.out.obsm)
+            ch_integrations = ch_integrations.mix(COMBINE.out.integrations)
+            ch_finalization_base = COMBINE.out.h5ad
+
+            ch_label_grouping = COMBINE.out.h5ad_inner
+
+            ch_multiqc_files = ch_multiqc_files.mix(COMBINE.out.multiqc_files)
+        }
+    }
+    else {
+        ch_finalization_base = ch_base
+        ch_label_grouping = ch_base
+        grouping_col = base_label_col
+        condition_col = base_condition_col
+        donor_col = base_donor_col
+
+        if (base_embeddings) {
+            ch_embeddings = channel.value(
+                base_embeddings.split(',')
+                .collect { it -> it.trim() }
+            )
+
+            ADATA_SPLITEMBEDDINGS (
+                ch_base,
+                ch_embeddings
+            )
+            ch_integrations = ch_integrations.mix(
+                ADATA_SPLITEMBEDDINGS.out.h5ad
+                .map { _meta, h5ads -> h5ads }
+                .flatten()
+                .map {
+                    h5ad ->
+                    [[id: h5ad.simpleName, integration: h5ad.simpleName], h5ad]
+                }
+            )
+        }
+
+        if (integrate_per_label) {
+            SUB_INTEGRATE (
+                ch_base,
+                base_label_col,
+                feature_selection,
+                integration_n_features,
+                integration_excluded_genes ? file(integration_excluded_genes) : [],
+                normalization_method,
+                integration_methods
+                    .split(',')
+                    .collect { it -> it.trim().toLowerCase() },
+                scvi_model,
+                scanvi_model,
+                scvi_categorical_covariates,
+                scvi_continuous_covariates,
+                scimilarity_model,
+                symphony_reference,
+                expimap_gmt,
+                condition_col,
+                integrate_per_label_whitelist
+            )
+            ch_integrations = ch_integrations.mix(SUB_INTEGRATE.out.integrations)
+            ch_obs = ch_obs.mix(SUB_INTEGRATE.out.obs)
+            ch_obsm = ch_obsm.mix(SUB_INTEGRATE.out.obsm)
+            ch_finalization_base = SUB_INTEGRATE.out.h5ad
+            ch_label_grouping = SUB_INTEGRATE.out.h5ad
+        }
+    }
+
+    //
+    // Perform clustering and per-cluster analysis
+    //
+    if (!qc_only) {
+        CLUSTER(
+            ch_integrations,
+            cluster_per_label,
+            cluster_global,
+            ch_input ? "label" : base_label_col,
+            analysis_plan,
+            clustering_resolutions.split(',').collect { res -> res.trim() },
+            "batch",
+            "X_emb",
+            neighbors_n_pcs,
+            tsne,
+        )
+        ch_obs = ch_obs.mix(CLUSTER.out.obs)
+        ch_obsm = ch_obsm.mix(CLUSTER.out.obsm)
+        ch_multiqc_files = ch_multiqc_files.mix(CLUSTER.out.multiqc_files)
+
+        ch_h5ad_both = CLUSTER.out.h5ad_clustering
+            .map { meta, h5ad ->
+                [meta + [obs_key: "${meta.id}_leiden"], h5ad]
+            }
+
+        PER_GROUP (
+            // Run on each clustering resolution for each embedding
+            ch_h5ad_both.mix(
+                // And on the label column for each embedding
+                CLUSTER.out.h5ad_neighbors.map {
+                    meta, h5ad ->
+                    [meta + [obs_key: grouping_col], h5ad]
+                }
+            ).map {
+                meta, h5ad ->
+                [meta + [condition_col: condition_col, donor_col: donor_col], h5ad]
+            },
+            // Run on each clustering (there is one clustering per embedding and resolution)
+            ch_h5ad_both.mix(
+                // And on the label column
+                ch_label_grouping.map {
+                    meta, h5ad ->
+                    [meta + [obs_key: grouping_col], h5ad]
+                }
+            ).map {
+                meta, h5ad ->
+                [meta + [condition_col: condition_col, donor_col: donor_col], h5ad]
+            },
+            skip_liana,
+            liana_n_perms,
+            liana_max_cells,
+            liana_subsample_strategy,
+            liana_subsample_seed,
+            cytetype_study_context,
+            de_methods,
+            pseudobulk,
+            pseudobulk_min_num_cells,
+            pseudobulk_min_total_counts,
+            ch_per_cell_annotation_columns,
+            reference_condition ?: '',
+            interesting_genes ?: [],
+        )
+
+        ch_uns = ch_uns.mix(PER_GROUP.out.uns)
+        ch_multiqc_files = ch_multiqc_files.mix(PER_GROUP.out.multiqc_files)
+        ch_obs = ch_obs.mix(PER_GROUP.out.obs)
+
+        FINALIZE (
+            ch_finalization_base,
+            ch_obs,
+            ch_var,
+            ch_obsm,
+            ch_obsp,
+            ch_uns,
+            prep_cellxgene
+        )
+    }
+
+    //
+    // Render quality control report
+    //
+    if (!skip_qc_report) {
+        qc_report_notebook = file("${projectDir}/bin/qc-report.qmd", checkIfExists: true)
+        extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
+        if (!qc_only) {
+            ch_qc_report_input_base = FINALIZE.out.h5ad
+        } else {
+            ch_qc_report_input_base = ch_h5ad
+        }
+        if (ch_input) {
+            ch_sizes = QUALITY_CONTROL.out.sizes.map { _meta, tsv -> tsv }
+        } else {
+            ch_sizes = channel.empty()
+        }
+        ch_qc_report_input_data = ch_qc_report_input_base
+            .map { _meta, h5ad -> h5ad }
+            .mix ( ch_sizes )
+            .collect()
+        qc_report_params = [
+            qc_only: qc_only,
+            has_input: ch_input != null
+        ]
+        QC_REPORT (
+            [[id: 'qc-report'], qc_report_notebook],
+            qc_report_params,
+            ch_qc_report_input_data,
+            extensions
+        )
+    }
 
     //
     // Collate and save software versions
@@ -87,9 +453,3 @@ workflow SCDOWNSTREAM {
     emit:multiqc_report = MULTIQC.out.report.map { _meta, report -> [report] }.toList() // channel: /path/to/multiqc_report.html
     versions       = ch_versions                 // channel: [ path(versions.yml) ]
 }
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/

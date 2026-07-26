@@ -1,0 +1,78 @@
+nextflow_process {
+
+    name "Test Process SYMPHONY_HARMONYINTEGRATE"
+    script "modules/local/symphony/harmonyintegrate/main.nf"
+    process "SYMPHONY_HARMONYINTEGRATE"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "sample"
+                input[2] = "X"
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            def reference = anndata(process.out.reference[0][1])
+            assert process.success
+            assert "X_emb" in adata.obsm
+            assert "harmony" in reference.uns
+            assert "normalize" in reference.uns
+            assert "mean" in reference.var.colnames
+            assert "std" in reference.var.colnames
+            assert "highly_variable" in reference.var.colnames
+            assert "PCs" in reference.varm
+            assert reference.n_obs == 0
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml,
+                reference.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "sample"
+                input[2] = "X"
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

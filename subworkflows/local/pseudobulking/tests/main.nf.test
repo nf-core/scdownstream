@@ -1,0 +1,43 @@
+nextflow_workflow {
+
+    name "Test Workflow PSEUDOBULKING"
+    script "subworkflows/local/pseudobulking/main.nf"
+    workflow "PSEUDOBULKING"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [
+                            id: 'test',
+                            obs_key: 'leiden',
+                            condition_col: 'condition',
+                            donor_col: 'batch',
+                        ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 10
+                input[2] = 1000
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+}

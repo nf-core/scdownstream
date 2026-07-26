@@ -1,0 +1,87 @@
+nextflow_process {
+
+    name "Test Process DECOUPLER_PSEUDOBULK"
+    script "modules/local/decoupler/pseudobulk/main.nf"
+    process "DECOUPLER_PSEUDOBULK"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [
+                            id: 'test',
+                            obs_key: 'leiden',
+                            condition_col: 'condition',
+                        ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'X'
+                input[2] = 'batch'
+                input[3] = 'leiden'
+                input[4] = 'condition'
+                input[5] = 10
+                input[6] = 1000
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+    test("Should aggregate pseudobulk profiles with decoupler") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'X'
+                input[2] = 'sample'
+                input[3] = 'leiden'
+                input[4] = 'condition'
+                input[5] = 10
+                input[6] = 1000
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert n_obs > 0
+                assert "donor" in obs.colnames
+                assert "celltype" in obs.colnames
+                assert "condition" in obs.colnames
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+}

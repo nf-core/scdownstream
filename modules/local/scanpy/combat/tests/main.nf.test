@@ -1,0 +1,82 @@
+nextflow_process {
+
+    name "Test Process SCANPY_COMBAT"
+    script "modules/local/scanpy/combat/main.nf"
+    process "SCANPY_COMBAT"
+
+    tag "modules"
+    tag "modules_local"
+
+    setup {
+        run("SCANPY_LOG1PNORM") {
+            script "modules/local/scanpy/log1pnorm/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                    ]
+                )
+                """
+            }
+        }
+    }
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_LOG1PNORM.out.h5ad
+                input[1] = "batch"
+                input[2] = "log1p"
+                input[3] = false
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "X_emb" in obsm
+                assert "combat" in layers
+            }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_LOG1PNORM.out.h5ad
+                input[1] = "batch"
+                input[2] = "log1p"
+                input[3] = false
+                """
+            }
+        }
+
+        then {
+            assert process.success
+
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

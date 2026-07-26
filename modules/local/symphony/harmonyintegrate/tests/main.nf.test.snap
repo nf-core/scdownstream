@@ -1,0 +1,146 @@
+{
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_reference.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    "X_test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obsm": [
+                    "X_test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "reference": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_reference.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-05-28T13:28:41.939214142",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
+        }
+    },
+    "Should run without failures": {
+        "content": [
+            {
+                "SYMPHONY_HARMONYINTEGRATE": {
+                    "pandas": "2.3.3",
+                    "python": "3.13.13",
+                    "scanpy": "1.12.1",
+                    "symphonypy": "0.2.4"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_emb",
+                    "X_symphony"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            },
+            {
+                "n_obs": 0,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "highly_variable",
+                        "mean",
+                        "std"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "harmony",
+                    "normalize"
+                ]
+            }
+        ],
+        "timestamp": "2026-05-28T14:41:42.365043934",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
+        }
+    }
+}

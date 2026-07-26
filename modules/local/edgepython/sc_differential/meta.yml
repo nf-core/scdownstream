@@ -1,0 +1,95 @@
+name: "edgepython_sc_differential"
+description: Run edgePython single-cell mixed model DE for one cell-type stratum
+keywords:
+  - differential-expression
+  - single-cell
+  - edgepython
+tools:
+  - "edgepython":
+      description: "Python implementation of edgeR-style differential expression"
+      homepage: "https://github.com/pachterlab/edgePython"
+      documentation: "https://github.com/pachterlab/edgePython"
+      tool_dev_url: "https://github.com/pachterlab/edgePython"
+      licence: ["GPL-3.0"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - h5ad:
+        type: file
+        description: Single-cell AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+    - donor_col:
+        type: string
+        description: obs column with biological replicate identifiers
+    - condition_col:
+        type: string
+        description: obs column with condition labels
+    - celltype_col:
+        type: string
+        description: obs column with cell type or cluster labels
+    - celltype_value:
+        type: string
+        description: Cell type stratum to test
+    - reference_condition:
+        type: string
+        description: Reference condition level for contrasts
+    - interesting_genes:
+        type: file
+        description: Optional CSV of gene symbols to highlight on volcano plots
+        pattern: "*.{csv,tsv,txt}"
+
+output:
+  results:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*_results.csv":
+          type: file
+          description: edgePython single-cell DE results
+          pattern: "*_results.csv"
+  plots:
+    - "*.png":
+        type: file
+        description: Volcano plots for each contrast
+        pattern: "*.png"
+  multiqc_files:
+    - "*_mqc.json":
+        type: file
+        description: MultiQC custom content for volcano plots
+        pattern: "*_mqc.json"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/edgepython_sc_differential:ebc200814cba178c
+      build_id: bd-ebc200814cba178c_1
+      scan_id: sc-6a2780edf4e1377b_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/edgepython_sc_differential:afdfca98d0c566b3
+      build_id: bd-afdfca98d0c566b3_1
+      scan_id: sc-cec2e63044911208_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/edgepython_sc_differential:c056113fcbfe0f26
+      build_id: bd-c056113fcbfe0f26_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/50/5061ec6a602be93926c3bb5a5e1f760d93a599b6a165a3c902d60de78bfc9953/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/edgepython_sc_differential:c77bb2a465db4f67
+      build_id: bd-c77bb2a465db4f67_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/63/633641a5a0db67790d891566571c9f9f9675b304d4ca5ac7fa6423614c394f45/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/edgepython/sc_differential/.conda-lock/linux_amd64-bd-ebc200814cba178c_1.txt
+    linux/arm64:
+      lock_file: modules/local/edgepython/sc_differential/.conda-lock/linux_arm64-bd-afdfca98d0c566b3_1.txt

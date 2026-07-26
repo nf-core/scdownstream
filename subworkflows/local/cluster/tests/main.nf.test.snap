@@ -1,0 +1,515 @@
+{
+    "Should run without failures - per-label - stub": {
+        "content": [
+            {
+                "0": [
+                    "pca-A-0.5_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-0.5_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "1": [
+                    "X_pca-A_umap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_pca-B_umap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "pca-A",
+                            "integration": "pca",
+                            "subset": "A"
+                        },
+                        "pca-A_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-B",
+                            "integration": "pca",
+                            "subset": "B"
+                        },
+                        "pca-B_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "pca-A-0.5",
+                            "integration": "pca",
+                            "subset": "A",
+                            "resolution": "0.5"
+                        },
+                        "pca-A-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-A-1",
+                            "integration": "pca",
+                            "subset": "A",
+                            "resolution": "1"
+                        },
+                        "pca-A-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-B-0.5",
+                            "integration": "pca",
+                            "subset": "B",
+                            "resolution": "0.5"
+                        },
+                        "pca-B-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-B-1",
+                            "integration": "pca",
+                            "subset": "B",
+                            "resolution": "1"
+                        },
+                        "pca-B-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
+                    "pca-A-0.5_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-0.5_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad_clustering": [
+                    [
+                        {
+                            "id": "pca-A-0.5",
+                            "integration": "pca",
+                            "subset": "A",
+                            "resolution": "0.5"
+                        },
+                        "pca-A-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-A-1",
+                            "integration": "pca",
+                            "subset": "A",
+                            "resolution": "1"
+                        },
+                        "pca-A-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-B-0.5",
+                            "integration": "pca",
+                            "subset": "B",
+                            "resolution": "0.5"
+                        },
+                        "pca-B-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-B-1",
+                            "integration": "pca",
+                            "subset": "B",
+                            "resolution": "1"
+                        },
+                        "pca-B-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "h5ad_neighbors": [
+                    [
+                        {
+                            "id": "pca-A",
+                            "integration": "pca",
+                            "subset": "A"
+                        },
+                        "pca-A_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-B",
+                            "integration": "pca",
+                            "subset": "B"
+                        },
+                        "pca-B_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "pca-A-0.5_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-0.5_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "obs": [
+                    "pca-A-0.5_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-0.5_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "obsm": [
+                    "X_pca-A_umap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_pca-B_umap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-09T16:34:02.880204",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run without failures - global - stub": {
+        "content": [
+            {
+                "0": [
+                    "pca-global-0.5_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-0.5_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "1": [
+                    "X_pca-global_umap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "pca-global",
+                            "integration": "pca",
+                            "subset": "global"
+                        },
+                        "pca-global_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "pca-global-0.5",
+                            "integration": "pca",
+                            "subset": "global",
+                            "resolution": "0.5"
+                        },
+                        "pca-global-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-global-1",
+                            "integration": "pca",
+                            "subset": "global",
+                            "resolution": "1"
+                        },
+                        "pca-global-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
+                    "pca-global-0.5_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-0.5_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad_clustering": [
+                    [
+                        {
+                            "id": "pca-global-0.5",
+                            "integration": "pca",
+                            "subset": "global",
+                            "resolution": "0.5"
+                        },
+                        "pca-global-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-global-1",
+                            "integration": "pca",
+                            "subset": "global",
+                            "resolution": "1"
+                        },
+                        "pca-global-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "h5ad_neighbors": [
+                    [
+                        {
+                            "id": "pca-global",
+                            "integration": "pca",
+                            "subset": "global"
+                        },
+                        "pca-global_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "pca-global-0.5_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-0.5_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "obs": [
+                    "pca-global-0.5_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-0.5_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "obsm": [
+                    "X_pca-global_umap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-09T16:32:48.789312",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run without failures - both - stub": {
+        "content": [
+            {
+                "0": [
+                    "pca-A-0.5_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-0.5_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-0.5_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-0.5_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "1": [
+                    "X_pca-A_umap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_pca-B_umap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_pca-global_umap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "pca-A",
+                            "integration": "pca",
+                            "subset": "A"
+                        },
+                        "pca-A_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-B",
+                            "integration": "pca",
+                            "subset": "B"
+                        },
+                        "pca-B_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-global",
+                            "integration": "pca",
+                            "subset": "global"
+                        },
+                        "pca-global_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "pca-A-0.5",
+                            "integration": "pca",
+                            "subset": "A",
+                            "resolution": "0.5"
+                        },
+                        "pca-A-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-A-1",
+                            "integration": "pca",
+                            "subset": "A",
+                            "resolution": "1"
+                        },
+                        "pca-A-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-B-0.5",
+                            "integration": "pca",
+                            "subset": "B",
+                            "resolution": "0.5"
+                        },
+                        "pca-B-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-B-1",
+                            "integration": "pca",
+                            "subset": "B",
+                            "resolution": "1"
+                        },
+                        "pca-B-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-global-0.5",
+                            "integration": "pca",
+                            "subset": "global",
+                            "resolution": "0.5"
+                        },
+                        "pca-global-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-global-1",
+                            "integration": "pca",
+                            "subset": "global",
+                            "resolution": "1"
+                        },
+                        "pca-global-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
+                    "pca-A-0.5_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-0.5_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-0.5_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-0.5_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad_clustering": [
+                    [
+                        {
+                            "id": "pca-A-0.5",
+                            "integration": "pca",
+                            "subset": "A",
+                            "resolution": "0.5"
+                        },
+                        "pca-A-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-A-1",
+                            "integration": "pca",
+                            "subset": "A",
+                            "resolution": "1"
+                        },
+                        "pca-A-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-B-0.5",
+                            "integration": "pca",
+                            "subset": "B",
+                            "resolution": "0.5"
+                        },
+                        "pca-B-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-B-1",
+                            "integration": "pca",
+                            "subset": "B",
+                            "resolution": "1"
+                        },
+                        "pca-B-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-global-0.5",
+                            "integration": "pca",
+                            "subset": "global",
+                            "resolution": "0.5"
+                        },
+                        "pca-global-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-global-1",
+                            "integration": "pca",
+                            "subset": "global",
+                            "resolution": "1"
+                        },
+                        "pca-global-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "h5ad_neighbors": [
+                    [
+                        {
+                            "id": "pca-A",
+                            "integration": "pca",
+                            "subset": "A"
+                        },
+                        "pca-A_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-B",
+                            "integration": "pca",
+                            "subset": "B"
+                        },
+                        "pca-B_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "pca-global",
+                            "integration": "pca",
+                            "subset": "global"
+                        },
+                        "pca-global_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "pca-A-0.5_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-0.5_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-0.5_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-0.5_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "obs": [
+                    "pca-A-0.5_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-0.5_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-A-1_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-0.5_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-B-1_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-0.5_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-0.5_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_entropy.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "pca-global-1_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "obsm": [
+                    "X_pca-A_umap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_pca-B_umap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_pca-global_umap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-09T16:35:40.516635",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    }
+}

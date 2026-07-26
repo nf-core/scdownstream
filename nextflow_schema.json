@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": ["outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -29,6 +29,11 @@
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
                 },
+                "save_intermediates": {
+                    "type": "boolean",
+                    "description": "Save intermediate files to the output directory",
+                    "fa_icon": "fas fa-save"
+                },
                 "email": {
                     "type": "string",
                     "description": "Email address for completion summary.",
@@ -40,6 +45,512 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
+                }
+            }
+        },
+        "unify_options": {
+            "title": "Unify options",
+            "type": "object",
+            "fa_icon": "fas fa-database",
+            "description": "Options for converting the input data to the unified format.",
+            "properties": {
+                "unify_gene_symbols": {
+                    "type": "boolean",
+                    "description": "Unify gene symbols to the latest version of the Ensembl database"
+                },
+                "duplicate_var_resolution": {
+                    "type": "string",
+                    "default": "sum",
+                    "description": "Method to aggregate gene expression values for non-unique genes",
+                    "help_text": "Method to aggregate gene expression values for non-unique genes. Available methods are: mean, sum, max, make_unique",
+                    "enum": ["mean", "sum", "max", "make_unique"]
+                },
+                "force_obs_cols": {
+                    "type": "string",
+                    "description": "Force keeping certain columns in the merged AnnData object, even if they are not present in all samples",
+                    "help_text": "If you want to keep certain columns in the merged AnnData object, even if they are not present in all samples, specify them here. Separate them with a comma.",
+                    "pattern": "^([a-zA-Z0-9_]*(,[a-zA-Z0-9_]*)*)?$"
+                },
+                "aggregate_isoforms": {
+                    "type": "boolean",
+                    "description": "Aggregate isoforms of the same gene. If set to true, genes like 'SOD2.1' will be renamed to 'SOD2' before `duplicate_var_resolution` is applied. All numeric suffixes following a dot will be removed."
+                }
+            }
+        },
+        "quality_conrol_options": {
+            "title": "Quality control options",
+            "type": "object",
+            "fa_icon": "fas fa-check-circle",
+            "description": "Options for quality control of the input data.",
+            "properties": {
+                "species": {
+                    "type": "string",
+                    "default": "human",
+                    "description": "Species of the input data. Used to auto-select bundled cell cycle gene lists (assets/cell_cycle_genes/<species>_s_genes.txt and _g2m_genes.txt) and as the MyGene.info taxonomy when converting gene identifiers (samplesheet symbol_col: none). Bundled cell cycle lists are provided for 'human' and 'mouse'. Ignored when --s_genes and --g2m_genes are set explicitly."
+                },
+                "cell_cycle_scoring": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Whether to perform cell cycle scoring. If true, S and G2M phase scores and a predicted phase label are added to each cell in adata.obs. Requires the gene index (or symbol_col) to use standard gene symbols matching the selected species."
+                },
+                "s_genes": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Optional path to a plain-text file of S phase gene symbols (one per line, # lines ignored). Overrides the species-derived default from assets/cell_cycle_genes/. Only used when cell_cycle_scoring is true.",
+                    "exists": true
+                },
+                "g2m_genes": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Optional path to a plain-text file of G2M phase gene symbols (one per line, # lines ignored). Overrides the species-derived default from assets/cell_cycle_genes/. Only used when cell_cycle_scoring is true.",
+                    "exists": true
+                },
+                "mito_genes": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Optional file containing a list of mitochondrial gene symbols (one per line). If provided, it overrides the default 'mt-' prefix heuristic.",
+                    "exists": true
+                },
+                "ambient_correction": {
+                    "type": "string",
+                    "default": "soupx",
+                    "enum": ["none", "decontx", "cellbender", "soupx", "scar"],
+                    "description": "Specify the tool to use for ambient RNA correction. SoupX is the default and requires an unfiltered matrix for each corrected sample. If 'none' is selected, no ambient RNA correction will be performed. Per-sample overrides are available via the samplesheet `ambient_correction` column."
+                },
+                "ambient_corrected_integration": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to use the ambient-corrected counts for integration. Can be overridden by the `ambient_corrected_integration` in the sample sheet.",
+                    "help_text": "ambient_corrected_integration must be a boolean."
+                },
+                "doublet_detection": {
+                    "type": "string",
+                    "default": "scdblfinder",
+                    "description": "Specify the tools to use for doublet detection. Setting to 'none' will skip this step. Default scDblFinder follows sc-best-practices recommendations.",
+                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: solo, scrublet, doubletdetection, scdblfinder",
+                    "pattern": "^(none|(solo|scrublet|doubletdetection|scdblfinder)(,(solo|scrublet|doubletdetection|scdblfinder))*)$"
+                },
+                "doublet_detection_threshold": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Number of tools that need to agree on a doublet for it to be removed when `doublet_removal` is true"
+                },
+                "doublet_removal": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to remove cells flagged as doublets. When false (default), doublet scores are stored in `adata.obs` for inspection, following sc-best-practices guidance to review doublets before filtering."
+                },
+                "cellbender_epochs": {
+                    "type": "integer",
+                    "default": 150,
+                    "description": "Number of epochs to train the CellBender model"
+                }
+            }
+        },
+        "integration_options": {
+            "title": "Integration options",
+            "type": "object",
+            "fa_icon": "fas fa-plug",
+            "description": "Options for integration of the input data. For configuration of the scVI/scANVI models, see the `scVI_options` section.",
+            "properties": {
+                "integration_methods": {
+                    "type": "string",
+                    "default": "scvi",
+                    "description": "Specify the tool to use for integration",
+                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, symphony, bbknn, combat, seurat, scimilarity, pca, expimap, scanorama",
+                    "pattern": "^((scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap|scanorama)(,(scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap|scanorama))*)?$"
+                },
+                "feature_selection": {
+                    "type": "string",
+                    "default": "deviance",
+                    "enum": ["hvgs", "deviance", "pearson_residuals_hvgs", "none"],
+                    "description": "Gene selection method applied before integration on merged counts.",
+                    "help_text": "Default is binomial deviance via scry (`deviance`), as recommended in sc-best-practices. Use `hvgs` for scanpy highly variable genes, `pearson_residuals_hvgs` for Pearson-residual HVG selection on raw counts, or `none` to skip feature selection. The `python_only` profile overrides this to `hvgs`. Gene count is controlled by `integration_n_features` (`0` = auto: scanpy auto for HVGs, 4000 for deviance and pearson_residuals_hvgs). Ignored when a reference model defines the gene set."
+                },
+                "integration_n_features": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "Number of genes to retain for integration feature selection.",
+                    "help_text": "Applies to `hvgs`, `deviance`, and `pearson_residuals_hvgs`. If set to 0, the number of genes is chosen automatically (scanpy default for HVGs, 4000 for deviance and pearson_residuals_hvgs). If set to a negative number, all genes are used when `feature_selection` is `hvgs` or `none`; negative values are not supported for `pearson_residuals_hvgs`. If a reference model is provided, this does not have any effect because the reference model defines the gene set."
+                },
+                "integration_excluded_genes": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Optional file containing a list of gene symbols (one per line). If provided, these genes will be excluded from feature selection for integration.",
+                    "exists": true
+                },
+                "normalization_method": {
+                    "type": "string",
+                    "default": "scran",
+                    "description": "Normalisation method to compute before feature selection and integration.",
+                    "help_text": "Supported methods: `log1p` (shifted-log layer `log1p`) and `scran` (scran-normalised layer `scran`). Raw counts remain in `X`. Layer-aware integrations (PCA, BBKNN, Combat, Scanorama, scanpy HVGs) read the matching layer. Count-model integrations and differential expression always use raw counts. Default: `scran`. The `python_only` profile overrides this to `log1p`.",
+                    "pattern": "^(log1p|scran)$"
+                },
+                "symphony_reference": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to a Symphony reference AnnData, only relevant if Symphony is selected in `integration_methods`. If provided, query cells will be mapped onto this reference instead of running de novo Symphony integration.",
+                    "help_text": "The file should be in the .h5ad format. It is produced by a prior de novo Symphony run as `{outdir}/03_combine/integrate/symphony/symphony_reference.h5ad` and contains the compact Symphony reference metadata required for query mapping. Required for Symphony reference mapping and when extending an atlas with `--base_adata`.",
+                    "pattern": "^\\S+\\.h5ad$",
+                    "exists": true
+                },
+                "scvi_model": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to a pre-trained scVI model, only relevant if scVI is selected in `integration_methods`. If provided, the model will be used for integration. Otherwise, a new model will be trained.",
+                    "help_text": "The file should be in the .pt format.",
+                    "pattern": "^\\S+\\.pt$",
+                    "exists": true
+                },
+                "scanvi_model": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to a pre-trained scANVI model, only relevant if scANVI is selected in `integration_methods`. If provided, the model will be used for integration. Otherwise, a new model will be trained.",
+                    "help_text": "The file should be in the .pt format.",
+                    "pattern": "^\\S+\\.pt$",
+                    "exists": true
+                },
+                "scimilarity_model": {
+                    "type": "string",
+                    "default": "https://zenodo.org/records/10685499/files/model_v1.1.tar.gz",
+                    "description": "Path to a pre-trained scimilarity model, only relevant if scimilarity is selected in `integration_methods`. If provided, the model will be used for integration. Otherwise, a new model will be trained.",
+                    "help_text": "The file can be a .tar.gz file or the corresponding unzipped directory. The official models are shared via [Zenodo](https://zenodo.org/record/10685499)."
+                },
+                "expimap_gmt": {
+                    "type": "string",
+                    "description": "Path to pathway database file (GMT format) for EXPIMAP, only relevant if expimap is selected in `integration_methods`. If not provided, the default Reactome pathways will be used.",
+                    "help_text": "Other EXPIMAP training options are not pipeline parameters. Set them with `process.withName: SCARCHES_EXPIMAP { ext.args = '...' }` in a custom config (see the module Python template for flags).",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.gmt$",
+                    "exists": true
+                }
+            }
+        },
+        "extension_options": {
+            "title": "Extension options",
+            "type": "object",
+            "fa_icon": "fas fa-layer-group",
+            "description": "If you already produced an integrated AnnData object with this pipeline and want to add new data to it, you can specify the path to the base AnnData object and some information about it here. This will allow you to project the new data onto the existing integrated object.",
+            "properties": {
+                "base_adata": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "If you want to project new data onto an already integrated object, specify the path to the base AnnData object here",
+                    "help_text": "The file should be in the .h5ad format.",
+                    "pattern": "^\\S+\\.h5ad$",
+                    "exists": true
+                },
+                "base_label_col": {
+                    "type": "string",
+                    "default": "label",
+                    "description": "The column in the base AnnData object used to group cells for downstream per-label analysis and, when integrate_per_label is true, to split the object before integration."
+                },
+                "base_condition_col": {
+                    "type": "string",
+                    "default": "condition",
+                    "description": "The column in the base AnnData object that contains the condition (e.g. disease state, treatment) information."
+                },
+                "base_donor_col": {
+                    "type": "string",
+                    "default": "donor",
+                    "description": "The column in the base AnnData object that contains biological replicate / donor identifiers. Used for pseudobulking and sample-level differential expression on base_adata-only runs."
+                },
+                "integrate_per_label": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "In base_adata-only runs, split the base AnnData by base_label_col and run the selected integration_methods independently for each group before clustering."
+                },
+                "integrate_per_label_whitelist": {
+                    "type": "string",
+                    "description": "Optional comma-separated list of group values from base_label_col for which per-label integration should be run. When not provided, integration is run for all groups. Only used when integrate_per_label is true. Values must match the filesystem-safe subset names produced when splitting (spaces are replaced with underscores)."
+                },
+                "base_embeddings": {
+                    "type": "string",
+                    "description": "The keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`). Required if input is not provided and integrate_per_label is false; otherwise it is ignored.",
+                    "help_text": "If the `input` parameter is not provided (no new data to add), integration is skipped unless `integrate_per_label` is true. To reuse existing integration results, provide the keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`).",
+                    "pattern": "^((scvi|scanvi|symphony|bbknn|combat|seurat)(,(scvi|scanvi|symphony|bbknn|combat|seurat))*)?$"
+                }
+            }
+        },
+        "clustering_options": {
+            "title": "Clustering options",
+            "type": "object",
+            "fa_icon": "fas fa-users",
+            "description": "Options for clustering the integrated data.",
+            "properties": {
+                "clustering_resolutions": {
+                    "type": "string",
+                    "default": "0.25,0.5,1.0",
+                    "description": "Specify the resolutions for clustering",
+                    "help_text": "Specify the resolutions for clustering. If you want to use multiple resolutions, separate them with a comma.",
+                    "pattern": "^\\d+(\\.\\d+)?(,\\d+(\\.\\d+)?)*$"
+                },
+                "neighbors_n_pcs": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Number of principal components used to build the neighbour graph before UMAP and Leiden clustering.",
+                    "help_text": "When omitted, scanpy uses its default (`n_pcs`). Set to `30` to follow the sc-best-practices clustering tutorial when using PCA or Symphony embeddings."
+                },
+                "tsne": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Compute a t-SNE embedding alongside UMAP for each integration method."
+                },
+                "cluster_per_label": {
+                    "type": "boolean",
+                    "description": "Create a UMAP and a clustering for each unique value in the label column (and for each integration method)"
+                },
+                "cluster_global": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Create a global UMAP and clustering (for each integration method)"
+                },
+                "analysis_plan": {
+                    "type": "string",
+                    "description": "Path to a CSV file controlling which integration × resolution combinations feed into downstream analyses (PAGA, LIANA, DE, cluster-level annotation).",
+                    "help_text": "All columns are optional — empty values act as wildcards. When provided, rows are matched against each clustering result; analyses from all matching rows are combined. When --analysis_plan is not set, all combinations run paga, liana, de, aggregate_per_cell_annotation, and cytetype (subject to skip_liana, --de_methods, and cytetype_study_context). Cluster-level annotation tokens: aggregate_per_cell_annotation (majority vote of per-cell SingleR/CellTypist labels) and cytetype (CyteType LLM). See the usage docs for the full schema.",
+                    "mimetype": "text/csv",
+                    "schema": "assets/schema_analysis_plan.json",
+                    "pattern": "^\\S+\\.csv$"
+                }
+            }
+        },
+        "tool_options": {
+            "title": "Tool options",
+            "type": "object",
+            "fa_icon": "fas fa-tools",
+            "description": "Options for various tools used in the pipeline.",
+            "properties": {
+                "celltypist_model": {
+                    "type": "string",
+                    "description": "Specify the models to use for the celltypist cell type annotation",
+                    "help_text": "If you want to use multiple models, separate them with a comma. Available models can be found [here](https://www.celltypist.org/models).",
+                    "pattern": "^([a-zA-Z0-9_]*(,[a-zA-Z0-9_]*)*)?$"
+                },
+                "celldex_reference": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "schema": "assets/schema_singler.json",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "description": "Path to comma-separated file containing information about the celldex references to use for the singleR cell type annotation.",
+                    "help_text": "You will need to create a design file with information about the celldex references to use for the singleR cell type annotation before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 or 4 columns, and a header row. See [usage docs](https://nf-co.re/scdownstream/usage#cell-type-annotation).",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "cytetype_study_context": {
+                    "type": "string",
+                    "description": "Study description passed to CyteType for LLM-based cell type annotation (after integration, clustering, and global DE).",
+                    "help_text": "When set, the pipeline runs [CyteType](https://github.com/NygenAnalytics/cytetype) on merged data after global differential expression — **internet access is required**. Cluster labels and marker genes are taken from each grouping's obs column and `uns['rank_genes_groups']`. Example: `Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq`. Leave empty to skip."
+                }
+            }
+        },
+        "resource_options": {
+            "title": "Resource options",
+            "type": "object",
+            "fa_icon": "fas fa-cogs",
+            "description": "Options for resource allocation and CPU usage.",
+            "properties": {
+                "memory_scale": {
+                    "type": "integer",
+                    "default": 1,
+                    "minimum": 1,
+                    "description": "Scale the memory requirements for each process by this factor. Should be increased if you have a large number of cells.",
+                    "fa_icon": "fas fa-memory"
+                },
+                "use_gpu": {
+                    "type": "boolean",
+                    "description": "Use GPU acceleration for tasks that support it",
+                    "hidden": true
+                }
+            }
+        },
+        "pipeline_options": {
+            "title": "Pipeline options",
+            "type": "object",
+            "description": "Options for selecting which tools should be used for certain tasks",
+            "properties": {
+                "qc_only": {
+                    "type": "boolean",
+                    "description": "Only run the preprocessing steps, skip the integration and clustering steps"
+                },
+                "skip_liana": {
+                    "type": "boolean",
+                    "description": "Skip the LIANA step. For large datasets, the pipeline might fail due to high memory usage in this step. Use this option to skip it."
+                },
+                "liana_n_perms": {
+                    "type": "integer",
+                    "default": 1000,
+                    "minimum": 0,
+                    "description": "Number of permutations for LIANA rank_aggregate specificity testing. Set to 0 to disable permutation testing and speed up large runs."
+                },
+                "liana_max_cells": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Optional maximum number of cells for LIANA rank_aggregate. When set, cells are subsampled stratified by the LIANA grouping column (and batch when using stratified_obs_batch) before analysis."
+                },
+                "liana_subsample_strategy": {
+                    "type": "string",
+                    "default": "stratified_obs",
+                    "enum": ["none", "stratified_obs", "stratified_obs_batch"],
+                    "description": "Stratified subsampling strategy used when liana_max_cells is set. Uniform sampling is not used; if strategy is 'none' while liana_max_cells is set, stratified_obs is applied with a warning."
+                },
+                "liana_subsample_seed": {
+                    "type": "integer",
+                    "default": 42,
+                    "description": "Random seed for reproducible LIANA cell subsampling."
+                },
+                "skip_qc_report": {
+                    "type": "boolean",
+                    "description": "Skip rendering the Quarto QC HTML report in 10_reports/."
+                },
+                "scib": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Run scib-metrics integration benchmarking on each integration output (samplesheet / --input runs only; not run for base_adata-only extension without --input)."
+                },
+                "scib_max_cells": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Optional maximum number of cells for scib-metrics benchmarking after integration. When set, cells are subsampled stratified by label and batch before metric computation."
+                },
+                "scib_subsample_strategy": {
+                    "type": "string",
+                    "default": "stratified_label_batch",
+                    "enum": ["none", "stratified_label", "stratified_label_batch"],
+                    "description": "Stratified subsampling strategy used when scib_max_cells is set. Uniform sampling is not used; if strategy is 'none' while scib_max_cells is set, stratified_label_batch is applied with a warning."
+                },
+                "scib_subsample_seed": {
+                    "type": "integer",
+                    "default": 42,
+                    "description": "Random seed for reproducible scib-metrics cell subsampling."
+                },
+                "scib_metric_profile": {
+                    "type": "string",
+                    "default": "fast",
+                    "enum": ["fast", "full"],
+                    "description": "scib-metrics metric set. 'fast' disables expensive metrics (isolated labels, k-means NMI/ARI, PCR comparison) for routine runs; 'full' runs the default scib-metrics benchmark suite for publication-style scoring."
+                },
+                "de_methods": {
+                    "type": "string",
+                    "default": "wilcoxon",
+                    "pattern": "^(|wilcoxon|t-test|t-test_overestim_var|logreg|pydeseq2|edgepython|edgepython_sc)(,(wilcoxon|t-test|t-test_overestim_var|logreg|pydeseq2|edgepython|edgepython_sc))*$",
+                    "description": "Comma-separated differential expression engines to run when enabled by the analysis plan.",
+                    "help_text": "Rank-genes-groups methods: `wilcoxon`, `t-test`, `t-test_overestim_var`, `logreg` (cluster, condition, and label-stratified comparisons via Scanpy). Pseudobulk sample-level methods: `pydeseq2`, `edgepython` (automatically run pseudobulk aggregation when `de` is enabled). Donor-aware single-cell: `edgepython_sc`. Set to an empty string (`--de_methods ''`) to disable all DE engines unless a matching `--analysis_plan` row supplies `de_methods`. Per-row overrides are supported in `--analysis_plan`."
+                },
+                "reference_condition": {
+                    "type": "string",
+                    "description": "Reference condition level for condition-based differential expression contrasts.",
+                    "help_text": "Required for pseudobulk DE (`pydeseq2`, `edgepython`) and donor-aware `edgepython_sc` when those methods are enabled. Must match a condition level in the data."
+                },
+                "interesting_genes": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Optional CSV of gene symbols to mark with a distinct shape on differential expression volcano plots. First column is used; optional header gene/symbol/names. Blank and # lines are ignored.",
+                    "exists": true
+                },
+                "prep_cellxgene": {
+                    "type": "boolean",
+                    "description": "Prepare the output for visualisation in cellxgene",
+                    "fa_icon": "fas fa-chart-line"
+                }
+            }
+        },
+        "sampling_options": {
+            "title": "Sampling options",
+            "type": "object",
+            "fa_icon": "fas fa-filter",
+            "description": "Options for subsampling cells for faster testing or smaller output.",
+            "properties": {
+                "sample_n": {
+                    "type": "integer",
+                    "minimum": 50,
+                    "description": "Subsample to a constant number of cells. Cannot be used together with sample_fraction."
+                },
+                "sample_fraction": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Subsample to a fraction of cells. Use a float between 0 and 1 (e.g., 0.5 for 50% of cells). Cannot be used together with sample_n."
+                }
+            }
+        },
+        "scVI_options": {
+            "title": "scVI/scANVI options",
+            "type": "object",
+            "fa_icon": "fas fa-microscope",
+            "description": "Options for the scVI and scANVI integration methods",
+            "properties": {
+                "scvi_n_latent": {
+                    "type": "integer",
+                    "default": 30,
+                    "description": "Number of latent dimensions for scVI/scANVI"
+                },
+                "scvi_n_hidden": {
+                    "type": "integer",
+                    "default": 128,
+                    "description": "Number of hidden units in the neural network for scVI/scANVI"
+                },
+                "scvi_n_layers": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "Number of layers in the neural network for scVI/scANVI"
+                },
+                "scvi_dispersion": {
+                    "type": "string",
+                    "default": "gene",
+                    "enum": ["gene", "gene-batch", "gene-label", "gene-cell"],
+                    "description": "Dispersion parameter for scVI/scANVI",
+                    "help_text": "Dispersion parameter for scVI/scANVI. Can be 'gene', 'gene-batch', 'gene-label', or 'gene-cell'."
+                },
+                "scvi_gene_likelihood": {
+                    "type": "string",
+                    "default": "zinb",
+                    "enum": ["zinb", "nb", "poisson", "normal"],
+                    "description": "Gene likelihood for scVI/scANVI",
+                    "help_text": "Gene likelihood for scVI/scANVI. Can be 'zinb', 'nb', 'poisson', or 'normal'."
+                },
+                "scvi_max_epochs": {
+                    "type": "integer",
+                    "description": "Maximum number of epochs for training scVI/scANVI. If not set, a heuristic provided by scVI/scANVI will be used."
+                },
+                "scvi_categorical_covariates": {
+                    "type": "string",
+                    "description": "Categorical covariates for scVI/scANVI",
+                    "help_text": "If you want to use multiple covariates, separate them with a comma."
+                },
+                "scvi_continuous_covariates": {
+                    "type": "string",
+                    "description": "Continuous covariates for scVI/scANVI",
+                    "help_text": "If you want to use multiple covariates, separate them with a comma."
+                },
+                "scvi_use_observed_lib_size": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Use the observed library size for RNA as the scaling factor in scVI/scANVI"
+                }
+            }
+        },
+        "pseudobulking_options": {
+            "title": "Pseudobulk differential expression options",
+            "type": "object",
+            "description": "Options for pseudobulk aggregation and sample-level differential expression",
+            "fa_icon": "fas fa-users",
+            "properties": {
+                "pseudobulk": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Run pseudobulk aggregation even when no pseudobulk DE method is selected in de_methods."
+                },
+                "pseudobulk_min_num_cells": {
+                    "type": "integer",
+                    "description": "Minimum number of cells per pseudobulk sample",
+                    "default": 10
+                },
+                "pseudobulk_min_total_counts": {
+                    "type": "integer",
+                    "description": "Minimum total UMI counts per pseudobulk sample",
+                    "default": 1000
                 }
             }
         },
@@ -170,7 +681,7 @@
                     "type": "string",
                     "fa_icon": "far fa-check-circle",
                     "description": "Base URL or local path to location of pipeline test dataset files",
-                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/",
+                    "default": "https://raw.githubusercontent.com/nictru/test-datasets/97addfb0946c0e51dbb70ee1391142d12e70f085/",
                     "hidden": true
                 },
                 "trace_report_suffix": {
@@ -197,6 +708,39 @@
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/unify_options"
+        },
+        {
+            "$ref": "#/$defs/quality_conrol_options"
+        },
+        {
+            "$ref": "#/$defs/integration_options"
+        },
+        {
+            "$ref": "#/$defs/extension_options"
+        },
+        {
+            "$ref": "#/$defs/clustering_options"
+        },
+        {
+            "$ref": "#/$defs/tool_options"
+        },
+        {
+            "$ref": "#/$defs/resource_options"
+        },
+        {
+            "$ref": "#/$defs/pipeline_options"
+        },
+        {
+            "$ref": "#/$defs/sampling_options"
+        },
+        {
+            "$ref": "#/$defs/scVI_options"
+        },
+        {
+            "$ref": "#/$defs/pseudobulking_options"
         },
         {
             "$ref": "#/$defs/institutional_config_options"
