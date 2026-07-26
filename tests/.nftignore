@@ -1,24 +1,24 @@
 .DS_Store
-multiqc/multiqc_data/multiqc.parquet
-multiqc/multiqc_data/multiqc.log
-multiqc/multiqc_data/multiqc_data.json
-multiqc/multiqc_data/multiqc_sources.txt
-multiqc/multiqc_data/multiqc_software_versions.txt
-multiqc/multiqc_data/llms-full.txt
-multiqc/multiqc_plots/{svg,pdf,png}/*.{svg,pdf,png}
-multiqc/multiqc_report.html
+11_multiqc/multiqc_data/multiqc.parquet
+11_multiqc/multiqc_data/multiqc.log
+11_multiqc/multiqc_data/multiqc_data.json
+11_multiqc/multiqc_data/multiqc_sources.txt
+11_multiqc/multiqc_data/multiqc_software_versions.txt
+11_multiqc/multiqc_data/llms-full.txt
+11_multiqc/multiqc_plots/{svg,pdf,png}/*.{svg,pdf,png}
+11_multiqc/multiqc_report.html
 pipeline_info/*.{html,json,txt,yml}
-celltypes/singler/**
+04_celltypes/singler/**
 **/llms-full.txt
 
 **/*.{png,pt,h5ad,rds}
-finalized/merged_metadata.csv
+09_finalized/merged_metadata.csv
 **/multiqc_sizes.txt
 **/sizes.tsv
 **/base_metadata.csv
-per_group/**
+06_per_group/**
 
-combine/integrate/scib_metrics/**
+03_combine/integrate/scib_metrics/**
 **/multiqc_scib_metrics_benchmark.txt
 
-reports/*.html
+10_reports/*.html

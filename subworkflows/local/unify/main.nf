@@ -53,7 +53,7 @@ workflow UNIFY {
 
         UPSET_GENES_RAW (
             ch_h5ad
-                .map { meta, h5ad -> [[id: 'upset_raw'], meta.id, h5ad] }
+                .map { meta, h5ad -> [[id: 'raw'], meta.id, h5ad] }
                 .groupTuple()
         )
         ch_multiqc_files = ch_multiqc_files.mix(UPSET_GENES_RAW.out.multiqc_files)
@@ -101,7 +101,7 @@ workflow UNIFY {
 
     UPSET_GENES (
         ch_h5ad
-            .map { meta, h5ad -> [[id: 'upset'], meta.id, h5ad] }
+            .map { meta, h5ad -> [[id: 'unified'], meta.id, h5ad] }
             .groupTuple()
     )
     ch_multiqc_files = ch_multiqc_files.mix(UPSET_GENES.out.multiqc_files)

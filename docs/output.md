@@ -55,9 +55,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 <details markdown="1">
 <summary>Output files</summary>
 
-- `preprocess/${sample_id}/`
-  - `converted/`: Contains the result of converting input file formats to H5AD.
-  - `unified/`: Versions of the input files that have been optimized for usage in the pipeline.
+- `01_load_h5ad/` (when `--save_intermediates` is enabled)
+  - Converted H5AD files from RDS, 10x H5, or CSV inputs.
+- `02_quality_control/`
+  - `converted/`: legacy alias in docs; see `01_load_h5ad/` for format conversion outputs when intermediates are saved.
+  - `unify/`: Gene symbol unification and metadata standardisation (also `unify/hugounifier/` when HUGO-unifier runs).
   - `empty_droplet_removal/`: Results of empty droplet removal. Only if no `filtered` matrix is provided in the samplesheet.
   - `qc_raw/`: QC plots for the raw input data.
   - `ambient_rna_removal/`: Results of ambient RNA removal.
@@ -68,24 +70,25 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
       Each directory contains a filtered `h5ad`/`rds` and a `csv`/`pkl` file
       with the doublet annotations.
     - `${sample_id}.h5ad`: The H5AD without doublets.
-  - `qc_preprocessed/`: QC plots for the preprocessed data.
+  - `qc_filtered/`: QC plots for the preprocessed data.
   - `cell_cycle/`: Cell cycle scoring results.
     - `${sample_id}_cellcycle.pkl`: `S_score`, `G2M_score`, and `phase` columns
       for each cell. Merged into the final H5AD via `FINALIZE_QC_ANNDATAS`.
     - `${sample_id}_cellcycle.h5ad`: Intermediate H5AD with cell cycle scores added, available for inspection.
+  - `sizes/`: Cell counts at each QC stage (MultiQC table input).
+  - `finalized/`: Per-sample QC AnnData objects when `--save_intermediates` is enabled.
 
 </details>
 
-`nf-core/scdownstream` covers a range of preprocessing methods.
-The output of each step is stored in the `preprocess` directory.
-The `preprocess` directory contains a subdirectory for each sample, which contains the results of the preprocessing steps.
+The output of each step is stored under numbered stage directories in the results folder.
+Per-sample QC outputs live under `02_quality_control/`.
 
 ### Sample aggregation
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `combine/`
+- `03_combine/`
   - `merge/`
     - `merged_inner.h5ad`: The merged H5AD file with only the intersection of the genes. Will be used for integration.
     - `merged_outer.h5ad`: The merged H5AD file with all genes. Will be used as
@@ -102,7 +105,7 @@ The `preprocess` directory contains a subdirectory for each sample, which contai
 
 </details>
 
-The `combine` directory contains the results of the sample aggregation step.
+The `03_combine` directory contains the results of the sample aggregation step.
 The `merge` directory contains the merged H5AD files, which are used as input to the integration tools.
 The `integrate` directory contains the results of the integration step.
 The integrated H5AD files are stored in subdirectories named after the integration tool used.
@@ -112,7 +115,7 @@ The integrated H5AD files are stored in subdirectories named after the integrati
 <details markdown="1">
 <summary>Output files</summary>
 
-- `celltypes/`
+- `04_celltypes/`
   - `celltypist/`
     - `*.h5ad`: The H5AD file with cell type annotations.
     - `*.pkl`: The cell type annotations in a pickle file.
@@ -125,14 +128,14 @@ The integrated H5AD files are stored in subdirectories named after the integrati
 
 </details>
 
-The `celltypes` directory contains the results of the per-sample cell type annotation step. Annotations from `celltypist` and `singleR` are merged back into the final per-sample AnnData object via the `FINALIZE_QC_ANNDATAS` step.
+The `04_celltypes` directory contains the results of the per-sample cell type annotation step. Annotations from `celltypist` and `singleR` are merged back into the final per-sample AnnData object via the `FINALIZE_QC_ANNDATAS` step.
 
 ### CyteType
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `cytetype/`
+- `08_cytetype/`
   - `*.h5ad`: The H5AD file with CyteType annotations merged into `adata.obs` (only if `--save_intermediates` is enabled).
   - `*.pkl`: The CyteType-added obs columns in a pickle file (always emitted; merged into the final merged cohort H5AD by `FINALIZE`).
 
@@ -145,7 +148,7 @@ CyteType runs after integration, clustering, and global differential expression.
 <details markdown="1">
 <summary>Output files</summary>
 
-- `cluster_dimred/`
+- `05_cluster_dimred/`
   - `${integration}/`
     - `neighbors/`
       - `*.h5ad`: The H5AD file with the neighbourhood graph.
@@ -162,7 +165,7 @@ CyteType runs after integration, clustering, and global differential expression.
 
 </details>
 
-The `cluster_dimred` directory contains the results of the clustering and dimensionality reduction step.
+The `05_cluster_dimred` directory contains the results of the clustering and dimensionality reduction step.
 The results are stored in subdirectories named after the integration tool used.
 
 ### Finalize
@@ -170,14 +173,14 @@ The results are stored in subdirectories named after the integration tool used.
 <details markdown="1">
 <summary>Output files</summary>
 
-- `finalize/`
+- `09_finalized/`
   - `merged.h5ad`: The final H5AD file with all results.
   - `merged.rds`: RDS version of the final H5AD file.
   - `merged_metadata.csv`: Metadata of the final H5AD file.
 
 </details>
 
-The `finalize` directory contains the final results of the pipeline.
+The `09_finalized` directory contains the final results of the pipeline.
 The final H5AD file contains all results from the pipeline and is stored in the `merged.h5ad` file.
 The metadata of the final H5AD file is stored in the `merged_metadata.csv` file.
 
@@ -186,30 +189,36 @@ The metadata of the final H5AD file is stored in the `merged_metadata.csv` file.
 <details markdown="1">
 <summary>Output files</summary>
 
-- `per_group/`
+- `06_per_group/`
   - `${integration}_${subset}_${resolution}/characteristic_genes/`
     - `*_markers.csv`: Filtered marker-gene tables from Scanpy `rank_genes_groups`.
-    - `*.png`: Marker summary and dot plots for MultiQC and inspection.
+    - `*.png`: Marker summary, dot plots, and multi-panel volcano plots for MultiQC and inspection.
+    - `*_volcano.png`: Multi-panel volcano figure from unfiltered `rank_genes_groups` results (one panel per group).
     - `*.pkl`: Serialised `rank_genes_groups` results merged into the final AnnData `uns` slot.
-- `pseudobulk_de/`
+- `07_pseudobulk_de/`
   - `aggregation/${integration}/${clustering}/`
     - `*.h5ad`: Pseudobulk count matrices per cell-type stratum.
     - `*_samples.tsv`: Pseudobulk sample metadata (donor, cell type, condition, cell and count totals).
   - `pydeseq2/${integration}/${clustering}/`
     - `*_results.csv`: PyDESeq2 result tables per cell-type stratum.
+    - `*_volcano.png`: Volcano plots for each PyDESeq2 contrast.
   - `edgepython/${integration}/${clustering}/`
     - `*_results.csv`: edgePython pseudobulk result tables per cell-type stratum.
+    - `*_volcano.png`: Volcano plots for each edgePython contrast.
+  - `edgepython_sc/${integration}/${clustering}/`
+    - `*_results.csv`: edgePython single-cell DE result tables.
+    - `*_volcano.png`: Volcano plots for each edgepython_sc contrast.
 
 </details>
 
-All differential expression is requested through the `de` analysis token and [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods). Scanpy methods write cluster-marker results into the merged AnnData object and under `per_group/.../characteristic_genes/`. Pseudobulk aggregation runs automatically when `pydeseq2` or `edgepython` are selected, or when [`pseudobulk`](https://nf-co.re/scdownstream/parameters#pseudobulk) is enabled.
+All differential expression is requested through the `de` analysis token and [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods). Scanpy methods write cluster-marker results into the merged AnnData object and under `06_per_group/.../characteristic_genes/`. Pseudobulk aggregation runs automatically when `pydeseq2` or `edgepython` are selected, or when [`pseudobulk`](https://nf-co.re/scdownstream/parameters#pseudobulk) is enabled.
 
 ### MultiQC
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `multiqc/`
+- `11_multiqc/`
   - `multiqc_report.html`: a stand-alone HTML file that can be viewed in your web browser.
   - `multiqc_data/`: directory containing parsed statistics from the different tools used in the pipeline.
   - `multiqc_plots/`: directory containing static images from the report in various formats.
@@ -229,7 +238,7 @@ For more information about how to use MultiQC reports, see <http://multiqc.info>
 <details markdown="1">
 <summary>Output files</summary>
 
-- `reports/`
+- `10_reports/`
   - `qc-report.html`: a stand-alone HTML file that can be viewed in your web browser.
   - `qc-report.qmd`: a Quarto document containing all code used to render the report.
   - `_extensions/`: directory containing the Quarto extension used to render the report, which includes the nf-core visual identity.

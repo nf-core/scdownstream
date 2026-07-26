@@ -3,13 +3,13 @@ include { anndata       } from 'plugin/nf-anndata'
 
 workflow EDGEPYTHON_SC_DE {
     take:
-    ch_h5ad               // channel: [ meta, h5ad ] with meta.condition_col and meta.obs_key
-    donor_col             //   value: string
-    reference_condition   //   value: string
+    ch_h5ad             // channel: [ meta, h5ad ] with meta.condition_col, meta.donor_col, and meta.obs_key
+    reference_condition //   value: string
+    interesting_genes   //   value: string (path) or []
 
     main:
     ch_strata = ch_h5ad
-        .map { meta, h5ad ->
+        .flatMap { meta, h5ad ->
             def ad = anndata(h5ad)
             def celltype_col = meta.obs_key
             def condition_col = meta.condition_col
@@ -23,11 +23,10 @@ workflow EDGEPYTHON_SC_DE {
                 ]
             }
         }
-        .flatten()
 
     ch_edgepython = ch_strata.multiMap { meta, h5ad, celltype_col, celltype ->
         h5ad: [meta, h5ad]
-        donor_col: donor_col
+        donor_col: meta.donor_col
         condition_col: meta.condition_col
         celltype_col: celltype_col
         celltype_value: celltype
@@ -41,8 +40,10 @@ workflow EDGEPYTHON_SC_DE {
         ch_edgepython.celltype_col,
         ch_edgepython.celltype_value,
         ch_edgepython.reference_condition,
+        interesting_genes ?: [],
     )
 
     emit:
-    results = EDGEPYTHON_SCDIFFERENTIAL.out.results
+    results       = EDGEPYTHON_SCDIFFERENTIAL.out.results
+    multiqc_files = EDGEPYTHON_SCDIFFERENTIAL.out.multiqc_files
 }

@@ -18,12 +18,33 @@ import scanpy as sc
 import yaml
 
 adata = sc.read_h5ad("${h5ad}")
+symbol_col = "${symbol_col}"
+mito_genes = "${mito_genes}"
 
-sc.pp.calculate_qc_metrics(adata, percent_top=None, log1p=False, inplace=True)
+if symbol_col in ("index", "none", ""):
+    symbols = adata.var_names
+else:
+    symbols = adata.var[symbol_col]
 
-sc.pl.scatter(adata, x="total_counts", y="n_genes_by_counts", show=False)
+if mito_genes:
+    with open(mito_genes) as f:
+        mito_genes = {line.strip().lower() for line in f if line.strip() and not line.startswith("#")}
+    adata.var["mt"] = symbols.str.lower().isin(mito_genes)
+else:
+    adata.var["mt"] = symbols.str.lower().str.startswith("mt-")
+
+has_mito = adata.var["mt"].any()
+
+scatter_kwargs = {"x": "total_counts", "y": "n_genes_by_counts", "show": False}
+if has_mito:
+    sc.pp.calculate_qc_metrics(adata, qc_vars=["mt"], percent_top=None, log1p=False, inplace=True)
+    scatter_kwargs["color"] = "pct_counts_mt"
+else:
+    sc.pp.calculate_qc_metrics(adata, percent_top=None, log1p=False, inplace=True)
+
+sc.pl.scatter(adata, **scatter_kwargs)
 path = "${prefix}_total_counts_vs_n_genes_by_counts.png"
-plt.savefig(path)
+plt.savefig(path, bbox_inches="tight")
 
 # MultiQC
 

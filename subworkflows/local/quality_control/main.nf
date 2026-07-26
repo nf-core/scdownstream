@@ -1,10 +1,5 @@
 include { SCANPY_CELLCYCLE                                                           } from '../../../modules/local/scanpy/cellcycle'
 include { H5AD_REMOVEBACKGROUND_BARCODES_CELLBENDER_ANNDATA as EMPTY_DROPLET_REMOVAL } from '../../nf-core/h5ad_removebackground_barcodes_cellbender_anndata'
-include { ANNDATA_GETSIZE as GET_UNFILTERED_SIZE                                     } from '../../../modules/nf-core/anndata/getsize'
-include { ANNDATA_GETSIZE as GET_FILTERED_SIZE                                       } from '../../../modules/nf-core/anndata/getsize'
-include { ANNDATA_GETSIZE as GET_THRESHOLDED_SIZE                                    } from '../../../modules/nf-core/anndata/getsize'
-include { ANNDATA_GETSIZE as GET_DEDOUBLETED_SIZE                                    } from '../../../modules/nf-core/anndata/getsize'
-include { ANNDATA_GETSIZE as GET_SAMPLED_SIZE                                        } from '../../../modules/nf-core/anndata/getsize'
 include { SCANPY_PLOTQC as QC_RAW                                                    } from '../../../modules/local/scanpy/plotqc'
 include { AMBIENT_CORRECTION                                                         } from '../ambient_correction'
 include { UNIFY                                                                      } from '../unify'
@@ -13,6 +8,11 @@ include { SCANPY_SAMPLE                                                         
 include { DOUBLET_DETECTION                                                          } from '../doublet_detection'
 include { SCANPY_PLOTQC as QC_FILTERED                                               } from '../../../modules/local/scanpy/plotqc'
 include { CUSTOM_COLLECTSIZES as COLLECT_SIZES                                       } from '../../../modules/local/custom/collectsizes'
+include { anndata                                                                    } from 'plugin/nf-anndata'
+
+def countCells(h5ad) {
+    workflow.stubRun ? 0 : anndata(h5ad).n_obs
+}
 
 workflow QUALITY_CONTROL {
     take:
@@ -39,18 +39,9 @@ workflow QUALITY_CONTROL {
     ch_sizes = channel.empty()
     ch_obs_per_sample = channel.empty()
 
-    GET_UNFILTERED_SIZE (
-        ch_h5ad
-        .map {
-            meta, filtered, unfiltered ->
-            [meta, unfiltered ?: filtered] },
-        "cells",
-    )
     ch_sizes = ch_sizes.mix(
-        GET_UNFILTERED_SIZE.out.size
-        .map {
-            meta, size ->
-            [meta.id, 'unfiltered', (size.text ?: "0").toInteger()]
+        ch_h5ad.map { meta, filtered, unfiltered ->
+            [meta.id, 'unfiltered', countCells(unfiltered ?: filtered)]
         }
     )
 
@@ -85,24 +76,21 @@ workflow QUALITY_CONTROL {
         }
     )
 
-    GET_FILTERED_SIZE (
-        ch_complete
-            .map {
-                meta, filtered, _unfiltered ->
-                [meta, filtered]
-            },
-        "cells",
-    )
     ch_sizes = ch_sizes.mix(
-        GET_FILTERED_SIZE.out.size
-        .map {
-            meta, size ->
-            [meta.id, 'filtered', (size.text ?: "0").toInteger()]
+        ch_complete.map { meta, filtered, _unfiltered ->
+            [meta.id, 'filtered', countCells(filtered)]
         }
     )
 
+    ch_qc_plot = ch_complete.multiMap {
+        meta, filtered, _unfiltered ->
+        h5ad: [meta, filtered]
+        symbol_col: meta.symbol_col ?: "index"
+    }
     QC_RAW (
-        ch_complete.map { meta, filtered, _unfiltered -> [meta, filtered] }
+        ch_qc_plot.h5ad,
+        ch_qc_plot.symbol_col,
+        mito_genes ?: []
     )
     ch_multiqc_files = ch_multiqc_files.mix(QC_RAW.out.multiqc_files)
 
@@ -156,9 +144,23 @@ workflow QUALITY_CONTROL {
         ch_filtering.log1p_n_genes_by_counts_nmads,
         ch_filtering.pct_counts_in_top_20_genes_nmads,
         ch_filtering.pct_counts_mt_nmads,
-        mito_genes ?: []
+        mito_genes ?: [],
+        true
     )
     ch_h5ad = SCANPY_FILTER.out.h5ad
+        .map { meta, h5ad ->
+            if (!workflow.stubRun) {
+                def ad = anndata(h5ad)
+                if (ad.n_obs == 0) {
+                    error("No cells remaining after filtering for sample '${meta.id}'")
+                }
+                if (ad.n_vars == 0) {
+                    error("No genes remaining after filtering for sample '${meta.id}'")
+                }
+            }
+            [meta, h5ad]
+        }
+    ch_multiqc_files = ch_multiqc_files.mix(SCANPY_FILTER.out.multiqc_files.flatten())
 
     // Only run SCANPY_SAMPLE if sample_n or sample_fraction is set
     if (sample_n || sample_fraction) {
@@ -169,28 +171,16 @@ workflow QUALITY_CONTROL {
         )
         ch_h5ad = SCANPY_SAMPLE.out.h5ad
 
-        GET_SAMPLED_SIZE (
-            ch_h5ad,
-            "cells"
-        )
         ch_sizes = ch_sizes.mix(
-            GET_SAMPLED_SIZE.out.size
-            .map {
-                meta, size ->
-                [meta.id, 'sampled', (size.text ?: "0").toInteger()]
+            ch_h5ad.map { meta, h5ad ->
+                [meta.id, 'sampled', countCells(h5ad)]
             }
         )
     }
 
-    GET_THRESHOLDED_SIZE (
-        ch_h5ad,
-        "cells"
-    )
     ch_sizes = ch_sizes.mix(
-        GET_THRESHOLDED_SIZE.out.size
-        .map {
-            meta, size ->
-            [meta.id, 'thresholded', (size.text ?: "0").toInteger()]
+        ch_h5ad.map { meta, h5ad ->
+            [meta.id, 'thresholded', countCells(h5ad)]
         }
     )
 
@@ -205,21 +195,22 @@ workflow QUALITY_CONTROL {
     ch_multiqc_files = ch_multiqc_files.mix(DOUBLET_DETECTION.out.multiqc_files)
 
     if (doublet_detection_methods.size() > 0 && doublet_removal) {
-        GET_DEDOUBLETED_SIZE (
-            ch_h5ad,
-            "cells"
-        )
         ch_sizes = ch_sizes.mix(
-            GET_DEDOUBLETED_SIZE.out.size
-            .map {
-                meta, size ->
-                [meta.id, 'dedoubleted', (size.text ?: "0").toInteger()]
+            ch_h5ad.map { meta, h5ad ->
+                [meta.id, 'dedoubleted', countCells(h5ad)]
             }
         )
     }
 
+    ch_qc_filtered_plot = ch_h5ad.multiMap {
+        meta, h5ad ->
+        h5ad: [meta, h5ad]
+        symbol_col: meta.symbol_col ?: "index"
+    }
     QC_FILTERED (
-        ch_h5ad
+        ch_qc_filtered_plot.h5ad,
+        ch_qc_filtered_plot.symbol_col,
+        mito_genes ?: []
     )
     ch_multiqc_files = ch_multiqc_files.mix(QC_FILTERED.out.multiqc_files)
 

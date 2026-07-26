@@ -190,7 +190,7 @@
                     "type": "string",
                     "format": "file-path",
                     "description": "Path to a Symphony reference AnnData, only relevant if Symphony is selected in `integration_methods`. If provided, query cells will be mapped onto this reference instead of running de novo Symphony integration.",
-                    "help_text": "The file should be in the .h5ad format. It is produced by a prior de novo Symphony run as `{outdir}/combine/integrate/symphony/symphony_reference.h5ad` and contains the compact Symphony reference metadata required for query mapping. Required for Symphony reference mapping and when extending an atlas with `--base_adata`.",
+                    "help_text": "The file should be in the .h5ad format. It is produced by a prior de novo Symphony run as `{outdir}/03_combine/integrate/symphony/symphony_reference.h5ad` and contains the compact Symphony reference metadata required for query mapping. Required for Symphony reference mapping and when extending an atlas with `--base_adata`.",
                     "pattern": "^\\S+\\.h5ad$",
                     "exists": true
                 },
@@ -212,7 +212,6 @@
                 },
                 "scimilarity_model": {
                     "type": "string",
-                    "format": "file-path",
                     "default": "https://zenodo.org/records/10685499/files/model_v1.1.tar.gz",
                     "description": "Path to a pre-trained scimilarity model, only relevant if scimilarity is selected in `integration_methods`. If provided, the model will be used for integration. Otherwise, a new model will be trained.",
                     "help_text": "The file can be a .tar.gz file or the corresponding unzipped directory. The official models are shared via [Zenodo](https://zenodo.org/record/10685499)."
@@ -250,6 +249,11 @@
                     "type": "string",
                     "default": "condition",
                     "description": "The column in the base AnnData object that contains the condition (e.g. disease state, treatment) information."
+                },
+                "base_donor_col": {
+                    "type": "string",
+                    "default": "donor",
+                    "description": "The column in the base AnnData object that contains biological replicate / donor identifiers. Used for pseudobulking and sample-level differential expression on base_adata-only runs."
                 },
                 "integrate_per_label": {
                     "type": "boolean",
@@ -374,9 +378,31 @@
                     "type": "boolean",
                     "description": "Skip the LIANA step. For large datasets, the pipeline might fail due to high memory usage in this step. Use this option to skip it."
                 },
+                "liana_n_perms": {
+                    "type": "integer",
+                    "default": 1000,
+                    "minimum": 0,
+                    "description": "Number of permutations for LIANA rank_aggregate specificity testing. Set to 0 to disable permutation testing and speed up large runs."
+                },
+                "liana_max_cells": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Optional maximum number of cells for LIANA rank_aggregate. When set, cells are subsampled stratified by the LIANA grouping column (and batch when using stratified_obs_batch) before analysis."
+                },
+                "liana_subsample_strategy": {
+                    "type": "string",
+                    "default": "stratified_obs",
+                    "enum": ["none", "stratified_obs", "stratified_obs_batch"],
+                    "description": "Stratified subsampling strategy used when liana_max_cells is set. Uniform sampling is not used; if strategy is 'none' while liana_max_cells is set, stratified_obs is applied with a warning."
+                },
+                "liana_subsample_seed": {
+                    "type": "integer",
+                    "default": 42,
+                    "description": "Random seed for reproducible LIANA cell subsampling."
+                },
                 "skip_qc_report": {
                     "type": "boolean",
-                    "description": "Skip rendering the Quarto QC HTML report in reports/."
+                    "description": "Skip rendering the Quarto QC HTML report in 10_reports/."
                 },
                 "scib": {
                     "type": "boolean",
@@ -416,6 +442,12 @@
                     "type": "string",
                     "description": "Reference condition level for condition-based differential expression contrasts.",
                     "help_text": "Required for pseudobulk DE (`pydeseq2`, `edgepython`) and donor-aware `edgepython_sc` when those methods are enabled. Must match a condition level in the data."
+                },
+                "interesting_genes": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Optional CSV of gene symbols to mark with a distinct shape on differential expression volcano plots. First column is used; optional header gene/symbol/names. Blank and # lines are ignored.",
+                    "exists": true
                 },
                 "prep_cellxgene": {
                     "type": "boolean",

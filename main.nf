@@ -68,6 +68,10 @@ workflow NFCORE_SCDOWNSTREAM {
     symphony_reference            //   value: string
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
+    liana_n_perms                 //   value: integer
+    liana_max_cells               //   value: integer or null
+    liana_subsample_strategy      //   value: string
+    liana_subsample_seed          //   value: integer
     skip_qc_report                //   value: boolean
     scib                          //   value: boolean
     scib_max_cells                //   value: integer or null
@@ -77,6 +81,7 @@ workflow NFCORE_SCDOWNSTREAM {
     base_embeddings               //   value: string
     base_label_col                //   value: string
     base_condition_col            //   value: string
+    base_donor_col                //   value: string
     integrate_per_label           //   value: boolean
     integrate_per_label_whitelist //   value: string
     cluster_per_label             //   value: boolean
@@ -86,6 +91,7 @@ workflow NFCORE_SCDOWNSTREAM {
     tsne                          //   value: boolean
     analysis_plan                 //   value: list of plan rows parsed in main.nf
     de_methods                    //   value: string
+    interesting_genes             //   value: string
     pseudobulk                    //   value: boolean
     pseudobulk_min_num_cells      //   value: integer
     pseudobulk_min_total_counts   //   value: integer
@@ -139,6 +145,10 @@ workflow NFCORE_SCDOWNSTREAM {
         symphony_reference,
         expimap_gmt,
         skip_liana,
+        liana_n_perms,
+        liana_max_cells,
+        liana_subsample_strategy,
+        liana_subsample_seed,
         skip_qc_report,
         scib,
         scib_max_cells,
@@ -148,6 +158,7 @@ workflow NFCORE_SCDOWNSTREAM {
         base_embeddings,
         base_label_col,
         base_condition_col,
+        base_donor_col,
         integrate_per_label,
         integrate_per_label_whitelist,
         cluster_per_label,
@@ -157,6 +168,7 @@ workflow NFCORE_SCDOWNSTREAM {
         tsne,
         analysis_plan,
         de_methods,
+        interesting_genes,
         pseudobulk,
         pseudobulk_min_num_cells,
         pseudobulk_min_total_counts,
@@ -253,6 +265,10 @@ workflow {
         symphony_reference,
         params.expimap_gmt,
         params.skip_liana,
+        params.liana_n_perms,
+        params.liana_max_cells,
+        params.liana_subsample_strategy,
+        params.liana_subsample_seed,
         params.skip_qc_report,
         params.scib,
         params.scib_max_cells,
@@ -262,6 +278,7 @@ workflow {
         params.base_embeddings,
         params.base_label_col,
         params.base_condition_col,
+        params.base_donor_col,
         params.integrate_per_label,
         params.integrate_per_label_whitelist,
         params.cluster_per_label,
@@ -271,6 +288,7 @@ workflow {
         params.tsne,
         analysis_plan,
         params.de_methods,
+        params.interesting_genes,
         params.pseudobulk,
         params.pseudobulk_min_num_cells,
         params.pseudobulk_min_total_counts,

@@ -20,6 +20,8 @@ nextflow_process {
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
+                input[1] = 'index'
+                input[2] = []
                 """
             }
         }
@@ -49,6 +51,8 @@ nextflow_process {
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
+                input[1] = 'index'
+                input[2] = []
                 """
             }
         }

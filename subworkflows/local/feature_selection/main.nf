@@ -67,7 +67,8 @@ workflow FEATURE_SELECTION {
         0,
         0,
         0,
-        []
+        [],
+        false
     )
     ch_h5ad = SCANPY_FILTER.out.h5ad
 

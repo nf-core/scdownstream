@@ -22,10 +22,14 @@ input:
         pattern: "*.{h5ad}"
     - design_formula:
         type: string
-        description: Unused; design is fixed to donor and condition
+        description: Unused; design uses condition only, or donor and condition when donors span conditions
     - reference_condition:
         type: string
         description: Reference condition level for contrasts
+    - interesting_genes:
+        type: file
+        description: Optional CSV of gene symbols to highlight on volcano plots
+        pattern: "*.{csv,tsv,txt}"
 
 output:
   results:
@@ -36,6 +40,16 @@ output:
           type: file
           description: PyDESeq2 results per cell-type stratum
           pattern: "*_results.csv"
+  plots:
+    - "*.png":
+        type: file
+        description: Volcano plots for each contrast
+        pattern: "*.png"
+  multiqc_files:
+    - "*_mqc.json":
+        type: file
+        description: MultiQC custom content for volcano plots
+        pattern: "*_mqc.json"
   versions:
     - versions.yml:
         type: file
@@ -49,24 +63,24 @@ maintainers:
 containers:
   docker:
     linux/amd64:
-      name: community.wave.seqera.io/library/pydeseq2_differential:15a563a547b5b3bd
-      build_id: bd-15a563a547b5b3bd_1
-      scan_id: sc-e4e79eb4c22498fd_1
+      name: community.wave.seqera.io/library/pydeseq2_differential:f091151479129920
+      build_id: bd-f091151479129920_1
+      scan_id: sc-6ca19b82f0f1da52_1
     linux/arm64:
-      name: community.wave.seqera.io/library/pydeseq2_differential:0c73f27feb737df2
-      build_id: bd-0c73f27feb737df2_1
-      scan_id: sc-49976cbea0bd3d79_1
+      name: community.wave.seqera.io/library/pydeseq2_differential:bfcf97158c3e29aa
+      build_id: bd-bfcf97158c3e29aa_1
+      scan_id: sc-ce893d0166adc684_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/pydeseq2_differential:576b9533c9cb8559
-      build_id: bd-576b9533c9cb8559_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b8/b8787e6a23696ee360a647491dcbf90375d67ab0d273f671696636299738ece6/data
+      name: oras://community.wave.seqera.io/library/pydeseq2_differential:23f3e98e4dbb9c32
+      build_id: bd-23f3e98e4dbb9c32_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f4/f4122eda0637bd0b402a2d6a17bf002658a06fd0a35796ec81828edb3d8edb2c/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/pydeseq2_differential:45402202146782a6
-      build_id: bd-45402202146782a6_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f0/f0874e359ef3583e43aedc9efdcf65d6568e2e69c9cd88ef2080f41d28c52d4e/data
+      name: oras://community.wave.seqera.io/library/pydeseq2_differential:f3982590d678542c
+      build_id: bd-f3982590d678542c_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a7/a7b64621af41893871e0e6d95ad98bcfe825fc78151e33b6a78976c247bbc0d4/data
   conda:
     linux/amd64:
-      lock_file: modules/local/pydeseq2/differential/.conda-lock/linux_amd64-bd-15a563a547b5b3bd_1.txt
+      lock_file: modules/local/pydeseq2/differential/.conda-lock/linux_amd64-bd-f091151479129920_1.txt
     linux/arm64:
-      lock_file: modules/local/pydeseq2/differential/.conda-lock/linux_arm64-bd-0c73f27feb737df2_1.txt
+      lock_file: modules/local/pydeseq2/differential/.conda-lock/linux_arm64-bd-bfcf97158c3e29aa_1.txt

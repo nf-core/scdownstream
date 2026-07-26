@@ -9,6 +9,10 @@ process LIANA_RANKAGGREGATE {
 
     input:
     tuple val(meta), path(h5ad)
+    val n_perms
+    val max_cells
+    val subsample_strategy
+    val subsample_seed
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad, optional: true

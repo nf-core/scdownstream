@@ -13,6 +13,7 @@ process SCANPY_RANKGENESGROUPS {
     tuple val(filter_col), val(filter_val)
     val(method)
     val(rank_key)
+    path interesting_genes
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad, optional: true
@@ -36,8 +37,10 @@ process SCANPY_RANKGENESGROUPS {
     touch "${prefix}.pkl"
     touch "${prefix}.png"
     touch "${prefix}_dotplot.png"
+    touch "${prefix}_volcano.png"
     touch "${prefix}_mqc.json"
     touch "${prefix}_dotplot_mqc.json"
+    touch "${prefix}_volcano_mqc.json"
     touch "versions.yml"
     """
 }

@@ -1,4 +1,58 @@
 {
+    "Should subsample and use reduced permutations": {
+        "content": [
+            {
+                "liana": "1.6.1",
+                "python": "3.12.12",
+                "scanpy": "1.11.5"
+            },
+            {
+                "n_obs": 500,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "leiden",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "X_pca"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_pca",
+                    "leiden",
+                    "liana_res",
+                    "log1p",
+                    "neighbors"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-16T20:13:14.173398",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
     "Should run without failures - stub": {
         "content": [
             {
@@ -58,11 +112,11 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-
+                        
                     ]
                 },
                 "layers": [
-
+                    
                 ],
                 "obsm": [
                     "X_pca"
@@ -75,7 +129,7 @@
                     "distances"
                 ],
                 "varp": [
-
+                    
                 ],
                 "uns": [
                     "X_pca",

@@ -15,7 +15,7 @@ import scanpy as sc
 import yaml
 from cytetype import CyteType
 
-adata = sc.read_h5ad("${h5ad}")
+adata = sc.read_h5ad("input.h5ad")
 prefix = "${prefix}"
 study_context = "${study_context}"
 if not study_context.strip():

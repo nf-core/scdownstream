@@ -4,17 +4,20 @@ process PYDESEQ2_DIFFERENTIAL {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b8/b8787e6a23696ee360a647491dcbf90375d67ab0d273f671696636299738ece6/data'
-        : 'community.wave.seqera.io/library/pydeseq2_differential:15a563a547b5b3bd' }"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f4/f4122eda0637bd0b402a2d6a17bf002658a06fd0a35796ec81828edb3d8edb2c/data'
+        : 'community.wave.seqera.io/library/pydeseq2_differential:f091151479129920' }"
 
     input:
     tuple val(meta), path(h5ad)
     val(design_formula)
     val(reference_condition)
+    path interesting_genes
 
     output:
     tuple val(meta), path("${prefix}_*_results.csv"), emit: results
-    path "versions.yml"                                , emit: versions, topic: versions
+    path "*.png"                                    , emit: plots, optional: true
+    path "*_mqc.json"                               , emit: multiqc_files, optional: true
+    path "versions.yml"                             , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -27,6 +30,8 @@ process PYDESEQ2_DIFFERENTIAL {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}_stratum_results.csv
+    touch ${prefix}_stratum_volcano.png
+    touch ${prefix}_stratum_volcano_mqc.json
     touch versions.yml
     """
 }

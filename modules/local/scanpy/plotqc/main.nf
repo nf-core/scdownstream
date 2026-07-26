@@ -9,6 +9,8 @@ process SCANPY_PLOTQC {
 
     input:
     tuple val(meta), path(h5ad)
+    val symbol_col
+    path mito_genes
 
     output:
     tuple val(meta), path("*.png"), emit: plots

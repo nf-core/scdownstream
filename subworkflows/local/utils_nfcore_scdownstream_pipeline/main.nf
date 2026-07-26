@@ -394,9 +394,10 @@ def validateInputParameters() {
 
     if (pseudobulkingRequired() && params.base_adata) {
         def ad = anndata(file(params.base_adata, checkIfExists: true))
-        if (!('donor' in ad.obs.colnames)) {
+        def donor_col = params.input ? 'donor' : (params.base_donor_col ?: 'donor')
+        if (!(donor_col in ad.obs.colnames)) {
             throw new Exception(
-                "Pseudobulking requires a 'donor' column in base_adata. Available obs columns: ${ad.obs.colnames.join(', ')}."
+                "Pseudobulking requires column '${donor_col}' in base_adata. Available obs columns: ${ad.obs.colnames.join(', ')}."
             )
         }
     }

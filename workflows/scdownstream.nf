@@ -66,6 +66,10 @@ workflow SCDOWNSTREAM {
     symphony_reference             //   value: string
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
+    liana_n_perms                 //   value: integer
+    liana_max_cells               //   value: integer or null
+    liana_subsample_strategy      //   value: string
+    liana_subsample_seed          //   value: integer
     skip_qc_report                //   value: boolean
     scib                          //   value: boolean
     scib_max_cells                //   value: integer or null
@@ -75,6 +79,7 @@ workflow SCDOWNSTREAM {
     base_embeddings               //   value: string
     base_label_col                //   value: string
     base_condition_col            //   value: string
+    base_donor_col                //   value: string
     integrate_per_label           //   value: boolean
     integrate_per_label_whitelist //   value: string
     cluster_per_label             //   value: boolean
@@ -84,6 +89,7 @@ workflow SCDOWNSTREAM {
     tsne                          //   value: boolean
     analysis_plan                 //   value: list of plan rows parsed in main.nf
     de_methods                    //   value: string
+    interesting_genes             //   value: string
     pseudobulk                    //   value: boolean
     pseudobulk_min_num_cells      //   value: integer
     pseudobulk_min_total_counts   //   value: integer
@@ -187,6 +193,7 @@ workflow SCDOWNSTREAM {
             //
             grouping_col = "label"
             condition_col = "condition"
+            donor_col = "donor"
 
             COMBINE (
                 ch_h5ad,
@@ -226,6 +233,7 @@ workflow SCDOWNSTREAM {
         ch_label_grouping = ch_base
         grouping_col = base_label_col
         condition_col = base_condition_col
+        donor_col = base_donor_col
 
         if (base_embeddings) {
             ch_embeddings = channel.value(
@@ -312,7 +320,7 @@ workflow SCDOWNSTREAM {
                 }
             ).map {
                 meta, h5ad ->
-                [meta + [condition_col: condition_col], h5ad]
+                [meta + [condition_col: condition_col, donor_col: donor_col], h5ad]
             },
             // Run on each clustering (there is one clustering per embedding and resolution)
             ch_h5ad_both.mix(
@@ -323,9 +331,13 @@ workflow SCDOWNSTREAM {
                 }
             ).map {
                 meta, h5ad ->
-                [meta + [condition_col: condition_col], h5ad]
+                [meta + [condition_col: condition_col, donor_col: donor_col], h5ad]
             },
             skip_liana,
+            liana_n_perms,
+            liana_max_cells,
+            liana_subsample_strategy,
+            liana_subsample_seed,
             cytetype_study_context,
             de_methods,
             pseudobulk,
@@ -333,6 +345,7 @@ workflow SCDOWNSTREAM {
             pseudobulk_min_total_counts,
             ch_per_cell_annotation_columns,
             reference_condition ?: '',
+            interesting_genes ?: [],
         )
 
         ch_uns = ch_uns.mix(PER_GROUP.out.uns)

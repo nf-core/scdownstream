@@ -2,15 +2,14 @@ include { DECOUPLER_PSEUDOBULK as PSEUDOBULK } from '../../../modules/local/deco
 
 workflow PSEUDOBULKING {
     take:
-    ch_h5ad            // channel: [ meta, h5ad ]
-    donor_col          //   value: string
+    ch_h5ad            // channel: [ meta, h5ad ] with meta.donor_col, meta.obs_key, meta.condition_col
     min_num_cells      //   value: integer
     min_total_counts   //   value: integer
 
     main:
     ch_pseudobulk = ch_h5ad.multiMap { meta, h5ad ->
         h5ad: [meta, h5ad]
-        donor_col: donor_col
+        donor_col: meta.donor_col
         celltype_col: meta.obs_key
         condition_col: meta.condition_col
         counts_layer: meta.counts_layer ?: 'X'

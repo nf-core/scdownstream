@@ -10,7 +10,7 @@ process CYTETYPE {
         : 'community.wave.seqera.io/library/python_pyyaml_scanpy_pip_cytetype:05f936cdbbebf101'}"
 
     input:
-    tuple val(meta), path(h5ad)
+    tuple val(meta), path(h5ad, stageAs: 'input.h5ad')
     val symbol_col
     val study_context
     val group_key
@@ -20,7 +20,7 @@ process CYTETYPE {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    tuple val(meta), path("${prefix}.pkl") , emit: obs
+    path "${prefix}.pkl"                   , emit: obs
     path "versions.yml"                    , emit: versions, topic: versions
 
     when:

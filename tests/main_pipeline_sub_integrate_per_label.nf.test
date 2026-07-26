@@ -27,15 +27,15 @@ nextflow_pipeline {
 
         then {
             assert workflow.success
-            def adata = anndata("$outputDir/finalized/base.h5ad")
+            def adata = anndata("$outputDir/09_finalized/base.h5ad")
             def pcaKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_pca") }
             def umapKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_umap") }
             assert "sample" in adata.obs.colnames
             assert pcaKeys.size() > 1
             assert umapKeys.size() > 1
-            assert file("$outputDir/reports/qc-report.html").text.contains("Each integration method run by the pipeline")
+            assert file("$outputDir/10_reports/qc-report.html").text.contains("Each integration method run by the pipeline")
             // stable_name: All files + folders in ${params.outdir}/ with a stable name
-            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', 'per_group/**', 'multiqc/**'])
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', '06_per_group/**', '11_multiqc/**'])
             // stable_path: All files in ${params.outdir}/ with stable content
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
             assert snapshot(
@@ -70,7 +70,7 @@ nextflow_pipeline {
 
         then {
             assert workflow.success
-            def adata = anndata("$outputDir/finalized/base.h5ad")
+            def adata = anndata("$outputDir/09_finalized/base.h5ad")
             def pcaKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_pca") }
             def umapKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_umap") }
             assert pcaKeys.size() == 1

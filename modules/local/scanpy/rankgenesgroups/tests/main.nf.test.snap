@@ -1,4 +1,60 @@
 {
+    "Should run with interesting genes": {
+        "content": [
+            {
+                "SCANPY_RANKGENESGROUPS": {
+                    "pandas": "2.3.3",
+                    "python": "3.13.12",
+                    "scanpy": "1.12"
+                }
+            },
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "leiden",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "X_pca"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_pca",
+                    "leiden",
+                    "log1p",
+                    "neighbors",
+                    "rank_genes_groups"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-21T12:09:56.992007",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
     "Should run without failures - stub": {
         "content": [
             {
@@ -16,7 +72,8 @@
                 "2": [
                     [
                         "test_characteristic_genes.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "test_characteristic_genes_dotplot.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_characteristic_genes_dotplot.png:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test_characteristic_genes_volcano.png:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "3": [
@@ -25,7 +82,8 @@
                 "4": [
                     [
                         "test_characteristic_genes_dotplot_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "test_characteristic_genes_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_characteristic_genes_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test_characteristic_genes_volcano_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "5": [
@@ -45,13 +103,15 @@
                 "multiqc_files": [
                     [
                         "test_characteristic_genes_dotplot_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "test_characteristic_genes_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_characteristic_genes_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test_characteristic_genes_volcano_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "plots": [
                     [
                         "test_characteristic_genes.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "test_characteristic_genes_dotplot.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_characteristic_genes_dotplot.png:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test_characteristic_genes_volcano.png:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "uns": [
@@ -62,7 +122,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:39:39.42261",
+        "timestamp": "2026-07-21T12:10:02.837714",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.4"
