@@ -94,7 +94,7 @@ workflow NFCORE_SCDOWNSTREAM {
     tsne                          //   value: boolean
     analysis_plan                 //   value: list of plan rows parsed in main.nf
     de_methods                    //   value: string
-    interesting_genes             //   value: string
+    interesting_genes             //    path: file or []
     pseudobulk                    //   value: boolean
     pseudobulk_min_num_cells      //   value: integer
     pseudobulk_min_total_counts   //   value: integer
@@ -233,6 +233,10 @@ workflow {
         ? file(params.symphony_reference, checkIfExists: true)
         : null
 
+    def interesting_genes_file = params.interesting_genes
+        ? file(params.interesting_genes, checkIfExists: true)
+        : []
+
     NFCORE_SCDOWNSTREAM (
         PIPELINE_INITIALISATION.out.samplesheet,
         ch_base_adata,
@@ -297,7 +301,7 @@ workflow {
         params.tsne,
         analysis_plan,
         params.de_methods,
-        params.interesting_genes,
+        interesting_genes_file,
         params.pseudobulk,
         params.pseudobulk_min_num_cells,
         params.pseudobulk_min_total_counts,

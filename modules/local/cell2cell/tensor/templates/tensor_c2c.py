@@ -300,7 +300,7 @@ for factor_name in factor_names:
     plt.close("all")
     _write_mqc(
         outfile,
-        "${meta.id} Cell2cell {factor_name}",
+        "${meta.id} Cell2cell " + factor_name,
         plot_id=f"{prefix}_{factor_slug}",
     )
 
