@@ -17,14 +17,32 @@ import yaml
 from cytetype import CyteType
 
 
-def _obs_for_h5ad(obs: pd.DataFrame) -> pd.DataFrame:
-    """Cast nullable pandas string dtypes so anndata can write obs without opt-in."""
-    obs = obs.copy()
-    obs.index = pd.Index(obs.index.to_numpy(dtype=object), name=obs.index.name)
-    for col in obs.columns:
-        if isinstance(obs[col].dtype, pd.StringDtype):
-            obs[col] = obs[col].astype(object)
-    return obs
+def _dataframe_for_h5ad(df: pd.DataFrame) -> pd.DataFrame:
+    """Rewrite string indexes/columns so nft-anndata can read the written H5AD.
+
+    Newer anndata writes plain string indexes as nullable-string-array groups.
+    nft-anndata treats every index group as categorical and NPEs without categories.
+    Categorical indexes encode as categories/codes, which nft-anndata supports.
+    """
+    df = df.copy()
+    df.index = pd.CategoricalIndex(df.index.astype(str).to_list(), name=df.index.name)
+    for col in df.columns:
+        if isinstance(df[col].dtype, pd.StringDtype) or df[col].dtype == object:
+            df[col] = pd.Series(df[col].astype(str).to_list(), index=df.index, name=col, dtype=object)
+    return df
+
+
+def _prepare_adata_for_h5ad(adata_obj):
+    """Avoid nullable-string-array encodings that nft-anndata misreads as categoricals."""
+    adata_obj.obs = _dataframe_for_h5ad(adata_obj.obs)
+    adata_obj.var = _dataframe_for_h5ad(adata_obj.var)
+    for uns_key, uns_value in list(adata_obj.uns.items()):
+        if isinstance(uns_value, pd.DataFrame):
+            adata_obj.uns[uns_key] = _dataframe_for_h5ad(uns_value)
+        elif isinstance(uns_value, dict):
+            for key, value in list(uns_value.items()):
+                if isinstance(value, pd.DataFrame):
+                    uns_value[key] = _dataframe_for_h5ad(value)
 
 
 adata = sc.read_h5ad("input.h5ad")
@@ -89,8 +107,9 @@ if missing_cols:
 df_out = adata_work.obs[library_cols].rename(columns=dict(zip(library_cols, output_cols))).reindex(adata.obs.index)
 df_out.to_pickle(f"{prefix}.pkl")
 
-adata.obs = _obs_for_h5ad(pd.concat([adata.obs, df_out], axis=1))
-# CyteType may promote the obs index to pandas StringDtype; allow writing if any remain.
+adata.obs = pd.concat([adata.obs, df_out], axis=1)
+_prepare_adata_for_h5ad(adata)
+# Safety net if any nullable strings remain after CategoricalIndex sanitisation.
 ad.settings.allow_write_nullable_strings = True
 adata.write_h5ad(f"{prefix}.h5ad")
 

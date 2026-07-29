@@ -14,6 +14,7 @@ import re
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
+import anndata as ad
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -42,6 +43,32 @@ if filter_col and filter_val:
 
 kwargs = {"groupby": obs_key, "method": method, "pts": True, "key_added": rank_key}
 filtered_rank_key = f"{rank_key}_filtered"
+
+
+def _dataframe_for_h5ad(df: pd.DataFrame) -> pd.DataFrame:
+    """Rewrite string indexes/columns so nft-anndata can read the written H5AD.
+
+    Newer anndata writes plain string indexes as nullable-string-array groups.
+    nft-anndata treats every index group as categorical and NPEs without categories.
+    Categorical indexes encode as categories/codes, which nft-anndata supports.
+    """
+    df = df.copy()
+    df.index = pd.CategoricalIndex(df.index.astype(str).to_list(), name=df.index.name)
+    for col in df.columns:
+        if isinstance(df[col].dtype, pd.StringDtype) or df[col].dtype == object:
+            df[col] = pd.Series(df[col].astype(str).to_list(), index=df.index, name=col, dtype=object)
+    return df
+
+
+def _prepare_adata_for_h5ad(adata_obj, uns_key):
+    """Avoid nullable-string-array encodings that nft-anndata misreads as categoricals."""
+    adata_obj.obs = _dataframe_for_h5ad(adata_obj.obs)
+    adata_obj.var = _dataframe_for_h5ad(adata_obj.var)
+    uns_entry = adata_obj.uns.get(uns_key)
+    if isinstance(uns_entry, dict):
+        for key, value in list(uns_entry.items()):
+            if isinstance(value, pd.DataFrame):
+                uns_entry[key] = _dataframe_for_h5ad(value)
 
 
 def load_interesting_genes(path_str):
@@ -341,8 +368,11 @@ if len(valid_groups) >= 2:
         names_df = pd.DataFrame(rgg_dict["names"]).fillna("").astype(str)
         rgg_dict["names"] = names_df.to_records(index=False)
         adata.uns[rank_key] = rgg_dict
+        _prepare_adata_for_h5ad(adata, rank_key)
 
         pickle.dump(rgg_dict, open(f"{prefix}.pkl", "wb"))
+        # Safety net if any nullable strings remain after CategoricalIndex sanitisation.
+        ad.settings.allow_write_nullable_strings = True
         adata.write_h5ad(f"{prefix}.h5ad")
 
         # Plot
