@@ -205,7 +205,7 @@ else:
             )
 
         df.to_csv(f"{prefix}.csv.gz", index=False, compression="gzip")
-        contexts.to_csv(f"{prefix}_contexts.tsv", sep="\t", index=False)
+        contexts.to_csv(f"{prefix}_contexts.tsv", sep="\\t", index=False)
     except ValueError as e:
         if "cannot set a frame with no defined index and a scalar" in str(e):
             print(f"Error: {e}")
