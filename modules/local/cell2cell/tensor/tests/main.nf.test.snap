@@ -1,0 +1,132 @@
+{
+    "Should decompose by-sample LIANA results": {
+        "content": [
+            {
+                "CELL2CELL_TENSOR": {
+                    "cell2cell": "0.8.4",
+                    "decoupler": "2.1.6",
+                    "liana": "1.6.1",
+                    "python": "3.12.13"
+                }
+            },
+            [
+                "test_cell2cell_context_boxplots.png",
+                "test_cell2cell_factor_1_loadings_product.png",
+                "test_cell2cell_factor_2_loadings_product.png",
+                "test_cell2cell_loadings_contexts_clustermap.png",
+                "test_cell2cell_loadings_lr_clustermap.png",
+                "test_cell2cell_tensor_factors.png"
+            ],
+            [
+                "test_cell2cell_loadings_contexts.csv",
+                "test_cell2cell_loadings_ligand_receptor_pairs.csv",
+                "test_cell2cell_loadings_receiver_cells.csv",
+                "test_cell2cell_loadings_sender_cells.csv"
+            ],
+            [
+                "test_cell2cell_context_boxplots_mqc.json",
+                "test_cell2cell_factor_1_mqc.json",
+                "test_cell2cell_factor_2_mqc.json",
+                "test_cell2cell_loadings_contexts_clustermap_mqc.json",
+                "test_cell2cell_loadings_lr_clustermap_mqc.json",
+                "test_cell2cell_tensor_factors_mqc.json"
+            ]
+        ],
+        "timestamp": "2026-07-29T16:58:01.129713293",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "test_cell2cell_factor_1_loadings_product.png:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test_cell2cell_loadings_contexts_clustermap.png:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test_cell2cell_loadings_lr_clustermap.png:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test_cell2cell_pathway_enrichment_dotplot.png:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test_cell2cell_tensor_factors.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        "test_cell2cell_loadings_contexts.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test_cell2cell_loadings_ligand_receptor_pairs.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test_cell2cell_loadings_receiver_cells.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test_cell2cell_loadings_sender_cells.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    "test_cell2cell_tensor.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    [
+                        "test_cell2cell_factor_1_mqc.json:md5,8a80554c91d9fca8acb82f023de02f11",
+                        "test_cell2cell_loadings_contexts_clustermap_mqc.json:md5,8a80554c91d9fca8acb82f023de02f11",
+                        "test_cell2cell_loadings_lr_clustermap_mqc.json:md5,8a80554c91d9fca8acb82f023de02f11",
+                        "test_cell2cell_pathway_enrichment_dotplot_mqc.json:md5,8a80554c91d9fca8acb82f023de02f11",
+                        "test_cell2cell_tensor_factors_mqc.json:md5,8a80554c91d9fca8acb82f023de02f11"
+                    ]
+                ],
+                "5": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "enrichment": [
+                    
+                ],
+                "loadings": [
+                    [
+                        "test_cell2cell_loadings_contexts.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test_cell2cell_loadings_ligand_receptor_pairs.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test_cell2cell_loadings_receiver_cells.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test_cell2cell_loadings_sender_cells.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    [
+                        "test_cell2cell_factor_1_mqc.json:md5,8a80554c91d9fca8acb82f023de02f11",
+                        "test_cell2cell_loadings_contexts_clustermap_mqc.json:md5,8a80554c91d9fca8acb82f023de02f11",
+                        "test_cell2cell_loadings_lr_clustermap_mqc.json:md5,8a80554c91d9fca8acb82f023de02f11",
+                        "test_cell2cell_pathway_enrichment_dotplot_mqc.json:md5,8a80554c91d9fca8acb82f023de02f11",
+                        "test_cell2cell_tensor_factors_mqc.json:md5,8a80554c91d9fca8acb82f023de02f11"
+                    ]
+                ],
+                "plots": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "test_cell2cell_factor_1_loadings_product.png:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test_cell2cell_loadings_contexts_clustermap.png:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test_cell2cell_loadings_lr_clustermap.png:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test_cell2cell_pathway_enrichment_dotplot.png:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test_cell2cell_tensor_factors.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "tensor": [
+                    "test_cell2cell_tensor.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-29T16:58:14.370734434",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

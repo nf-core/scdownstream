@@ -72,6 +72,9 @@ workflow NFCORE_SCDOWNSTREAM {
     liana_max_cells               //   value: integer or null
     liana_subsample_strategy      //   value: string
     liana_subsample_seed          //   value: integer
+    cell2cell                     //   value: boolean
+    cell2cell_rank                //   value: integer or null
+    cell2cell_seed                //   value: integer
     skip_qc_report                //   value: boolean
     scib                          //   value: boolean
     scib_max_cells                //   value: integer or null
@@ -149,6 +152,9 @@ workflow NFCORE_SCDOWNSTREAM {
         liana_max_cells,
         liana_subsample_strategy,
         liana_subsample_seed,
+        cell2cell,
+        cell2cell_rank,
+        cell2cell_seed,
         skip_qc_report,
         scib,
         scib_max_cells,
@@ -269,6 +275,9 @@ workflow {
         params.liana_max_cells,
         params.liana_subsample_strategy,
         params.liana_subsample_seed,
+        params.cell2cell,
+        params.cell2cell_rank,
+        params.cell2cell_seed,
         params.skip_qc_report,
         params.scib,
         params.scib_max_cells,

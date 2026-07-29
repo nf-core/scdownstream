@@ -184,6 +184,30 @@ The `09_finalized` directory contains the final results of the pipeline.
 The final H5AD file contains all results from the pipeline and is stored in the `merged.h5ad` file.
 The metadata of the final H5AD file is stored in the `merged_metadata.csv` file.
 
+### Tensor-cell2cell
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `06_per_group/`
+  - `${integration}_${subset}_${resolution}/liana/by_sample/` (when `--save_intermediates`)
+    - `*.csv.gz`: Long-format LIANA results per context.
+    - `*_contexts.tsv`: Context metadata with optional condition labels.
+  - `${integration}_${subset}_${resolution}/cell2cell/`
+    - `*_tensor_factors.png`: Factor overview across contexts, LR pairs, senders and receivers.
+    - `*_loadings_lr_clustermap.png`: Ligand-receptor loadings heatmap across factors.
+    - `*_loadings_contexts_clustermap.png`: Context loadings heatmap across factors.
+    - `*_context_boxplots.png`: Context loadings by condition (only when each context maps to one condition).
+    - `*_pathway_enrichment_dotplot.png`: PROGENy pathway enrichment across factors (requires network access to Omnipath).
+    - `*_pathway_enrichment.csv`: Enrichment scores and p-values (when `--save_intermediates`).
+    - `*_factor_*_loadings_product.png`: Sender-receiver loadings-product heatmaps.
+    - `*_loadings_*.csv`: Factor loading tables (when `--save_intermediates`).
+    - `*_tensor.pkl`: Serialised Tensor-cell2cell object (when `--save_intermediates`).
+
+</details>
+
+Tensor-cell2cell is opt-in (`--cell2cell true`). It consumes by-sample LIANA results and writes factor overview, LR/context loadings heatmaps, and one loadings-product heatmap per factor. These plots are also embedded in the MultiQC report under the corresponding integration section.
+
 ### Differential expression
 
 <details markdown="1">

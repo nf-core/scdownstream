@@ -21,6 +21,7 @@ n_perms_raw = int("${n_perms}")
 max_cells_raw = "${max_cells}"
 subsample_strategy = "${subsample_strategy}"
 subsample_seed = int("${subsample_seed}")
+context_key = "${context_key}"
 
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
@@ -110,18 +111,68 @@ def _stratified_subsample(adata, n_max, strategy, seed, obs_key):
 def _log_subsample_info(info):
     if info["subsampled"]:
         print(
-            "LIANA subsampled "
+            "LIANA by-sample subsampled "
             f"{info['n_cells_before']} -> {info['n_cells_after']} cells "
             f"(strategy={info['strategy']}, seed={info['seed']}, max_cells={info['max_cells']})."
         )
     else:
-        print(f"LIANA using all {info['n_cells_before']} cells (no subsampling).")
+        print(f"LIANA by-sample using all {info['n_cells_before']} cells (no subsampling).")
+
+
+def _build_contexts(adata, context_key):
+    if context_key not in adata.obs.columns:
+        raise SystemExit(f"Context column '{context_key}' not in obs; available: {list(adata.obs.columns)}")
+
+    context_series = adata.obs[context_key].astype(str)
+    if "condition" in adata.obs.columns:
+        condition_series = adata.obs["condition"].astype(str)
+        n_conditions = (
+            pd.DataFrame({context_key: context_series, "condition": condition_series})
+            .groupby(context_key, observed=True)["condition"]
+            .nunique()
+        )
+        multi = n_conditions[n_conditions > 1]
+        if not multi.empty:
+            print(
+                "Warning: omitting condition from context metadata because some contexts "
+                f"map to multiple conditions: {multi.index.tolist()}"
+            )
+            contexts = pd.DataFrame({context_key: sorted(context_series.unique())})
+        else:
+            contexts = (
+                pd.DataFrame({context_key: context_series, "condition": condition_series})
+                .drop_duplicates()
+                .sort_values(context_key)
+                .reset_index(drop=True)
+            )
+    else:
+        contexts = pd.DataFrame({context_key: sorted(context_series.unique())})
+
+    return contexts
 
 
 max_cells = _optional_int(max_cells_raw)
 n_perms = None if n_perms_raw <= 0 else n_perms_raw
 
-if adata.obs[obs_key].nunique() > 1:
+if context_key not in adata.obs.columns:
+    raise SystemExit(f"Context column '{context_key}' not in obs; available: {list(adata.obs.columns)}")
+if obs_key not in adata.obs.columns:
+    raise SystemExit(f"LIANA grouping column '{obs_key}' not in obs; available: {list(adata.obs.columns)}")
+
+n_contexts = adata.obs[context_key].nunique()
+n_groups = adata.obs[obs_key].nunique()
+
+if n_contexts < 2:
+    print(
+        f"Skipping LIANA by-sample because context column '{context_key}' "
+        f"has {n_contexts} unique value(s); at least 2 are required."
+    )
+elif n_groups < 2:
+    print(
+        f"Skipping LIANA by-sample because grouping column '{obs_key}' "
+        f"has {n_groups} unique value(s); at least 2 are required."
+    )
+else:
     adata, subsample_info = _stratified_subsample(
         adata,
         max_cells,
@@ -132,35 +183,41 @@ if adata.obs[obs_key].nunique() > 1:
     _log_subsample_info(subsample_info)
 
     sc.pp.log1p(adata)
+
+    contexts = _build_contexts(adata, context_key)
+
     try:
-        li.mt.rank_aggregate(
+        li.mt.rank_aggregate.by_sample(
             adata,
-            obs_key,
+            groupby=obs_key,
+            sample_key=context_key,
             use_raw=False,
             verbose=True,
             n_jobs=int("${task.cpus}"),
             n_perms=n_perms,
             seed=subsample_seed,
+            inplace=True,
         )
         df: pd.DataFrame = adata.uns["liana_res"]
+        if context_key not in df.columns:
+            raise SystemExit(
+                f"Expected context column '{context_key}' in by-sample results; columns: {list(df.columns)}"
+            )
 
-        df.to_pickle(f"{prefix}.pkl")
-        adata.write_h5ad(f"{prefix}.h5ad")
-
+        df.to_csv(f"{prefix}.csv.gz", index=False, compression="gzip")
+        contexts.to_csv(f"{prefix}_contexts.tsv", sep="\t", index=False)
     except ValueError as e:
         if "cannot set a frame with no defined index and a scalar" in str(e):
             print(f"Error: {e}")
         else:
             raise e
-else:
-    print(f"Skipping rank aggregation because the column {obs_key} has only one unique value.")
-
-# Versions
 
 versions = {
-    "python": platform.python_version(),
-    "scanpy": sc.__version__,
-    "liana": li.__version__,
+    "${task.process}": {
+        "python": platform.python_version(),
+        "scanpy": sc.__version__,
+        "liana": li.__version__,
+    }
 }
 
 with open("versions.yml", "w") as f:

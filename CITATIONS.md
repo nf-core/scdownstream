@@ -55,6 +55,14 @@
 
   > Wolf, F. A., Angerer, P., & Theis, F. J. (2018). SCANPY: large-scale single-cell gene expression data analysis. Genome biology, 19(1), 15. https://doi.org/10.1186/s13059-017-1382-0
 
+- [LIANA+](https://doi.org/10.1038/s41556-024-01469-w)
+
+  > Dimitrov D, Schäfer PSL, Farr E, et al. LIANA+ provides an all-in-one framework for cell–cell communication inference. Nat Cell Biol. 2024;26:1613–1622. doi:10.1038/s41556-024-01469-w
+
+- [Tensor-cell2cell](https://doi.org/10.1038/s41467-022-31369-2)
+
+  > Armingol E, Baghdassarian HM, Martino C, et al. Context-aware deconvolution of cell–cell communication with Tensor-cell2cell. Nat Commun. 2022;13:3665. doi:10.1038/s41467-022-31369-2
+
 - [scarches](https://pypi.org/project/scArches/)
 
   > Lotfollahi, M., Naghipourfar, M., Luecken, M.D. et al. Mapping single-cell data to reference atlases by transfer learning. Nat Biotechnol 40, 121–130 (2022). https://doi.org/10.1038/s41587-021-01001-7

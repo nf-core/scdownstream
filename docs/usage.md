@@ -237,7 +237,7 @@ nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results --cel
 #### Species
 
 Bundled gene lists are provided for human and mouse.
-`--species` also selects the MyGene.info taxonomy used when samples have `symbol_col: none` and gene identifiers are converted via MyGene.info.
+`--species` also selects the MyGene.info taxonomy used when samples have `symbol_col: none` and gene identifiers are converted via MyGene.info, and the PROGENy organism for Tensor-cell2cell pathway enrichment.
 Select the appropriate species with `--species`:
 
 ```bash
@@ -316,13 +316,16 @@ For each Leiden clustering result the pipeline runs a configurable set of downst
 | --------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **PAGA**                          | Trajectory / connectivity graph between clusters                                                           | —                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | **LIANA**                         | Ligand–receptor interaction analysis                                                                       | [`skip_liana`](https://nf-co.re/scdownstream/parameters#skip_liana); optional [`liana_max_cells`](https://nf-co.re/scdownstream/parameters#liana_max_cells), [`liana_subsample_strategy`](https://nf-co.re/scdownstream/parameters#liana_subsample_strategy), [`liana_subsample_seed`](https://nf-co.re/scdownstream/parameters#liana_subsample_seed), [`liana_n_perms`](https://nf-co.re/scdownstream/parameters#liana_n_perms) |
+| **Tensor-cell2cell**              | By-sample LIANA followed by tensor factorisation and sender-receiver loadings-product heatmaps             | opt-in: set [`cell2cell`](https://nf-co.re/scdownstream/parameters#cell2cell) to `true`; optional [`cell2cell_rank`](https://nf-co.re/scdownstream/parameters#cell2cell_rank), [`cell2cell_seed`](https://nf-co.re/scdownstream/parameters#cell2cell_seed); analysis-plan token `cell2cell`                                                                                                                                      |
 | **DE**                            | Cell-level and sample-level differential expression via `de_methods`                                       | omit `de` from the analysis plan and/or set [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) to an empty string                                                                                                                                                                                                                                                                                               |
 | **Aggregate per-cell annotation** | Majority vote of per-cell SingleR/CellTypist labels per cluster (columns derived from annotator manifests) | omit `aggregate_per_cell_annotation` from the analysis plan and/or do not run per-cell annotators                                                                                                                                                                                                                                                                                                                                |
 | **CyteType**                      | LLM-based cluster cell type annotation                                                                     | omit `cytetype` from the analysis plan and/or leave [`cytetype_study_context`](https://nf-co.re/scdownstream/parameters#cytetype_study_context) empty                                                                                                                                                                                                                                                                            |
 
-By default (no `--analysis_plan`), `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, and `cytetype` run for every clustering result, subject to `skip_liana`, `de_methods`, and `cytetype_study_context` above. Sample-level pseudobulk DE runs automatically when `pydeseq2` or `edgepython` are included in the resolved `de_methods` for a clustering.
+By default (no `--analysis_plan`), `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, and `cytetype` run for every clustering result, subject to `skip_liana`, `de_methods`, and `cytetype_study_context` above. Tensor-cell2cell is opt-in (`cell2cell` defaults to `false`). Sample-level pseudobulk DE runs automatically when `pydeseq2` or `edgepython` are included in the resolved `de_methods` for a clustering.
 
-For large objects, set [`liana_max_cells`](https://nf-co.re/scdownstream/parameters#liana_max_cells) to cap cells before LIANA. Subsampling is stratified by the LIANA grouping column (`leiden` or `label`); use [`liana_subsample_strategy`](https://nf-co.re/scdownstream/parameters#liana_subsample_strategy) `stratified_obs_batch` to stratify additionally by `batch`. Set [`liana_n_perms`](https://nf-co.re/scdownstream/parameters#liana_n_perms) to `0` to skip permutation testing and speed up runs (specificity ranks are then not permutation-based).
+For large objects, set [`liana_max_cells`](https://nf-co.re/scdownstream/parameters#liana_max_cells) to cap cells before LIANA. Subsampling is stratified by the LIANA grouping column (`leiden` or `label`); use [`liana_subsample_strategy`](https://nf-co.re/scdownstream/parameters#liana_subsample_strategy) `stratified_obs_batch` to stratify additionally by `batch`. Set [`liana_n_perms`](https://nf-co.re/scdownstream/parameters#liana_n_perms) to `0` to skip permutation testing and speed up runs (specificity ranks are then not permutation-based). The same LIANA inference settings are reused for the by-sample LIANA step that feeds Tensor-cell2cell.
+
+To enable Tensor-cell2cell, set `--cell2cell true`. The pipeline then runs by-sample LIANA in parallel with standard LIANA and chains the by-sample table into Tensor-cell2cell. Contexts are always the unified `donor` column (patient / biological replicate via `donor_col`), so each context maps cleanly to a condition. At least two donors and two cell groups are required. Optionally fix the factorisation rank with `--cell2cell_rank` (otherwise Cell2cell estimates it) and control randomness with `--cell2cell_seed`.
 
 Per-cell SingleR and CellTypist annotation runs earlier in the pipeline (before sample merge) when [`celldex_reference`](https://nf-co.re/scdownstream/parameters#celldex_reference) and/or [`celltypist_model`](https://nf-co.re/scdownstream/parameters#celltypist_model) are set. `aggregate_per_cell_annotation` summarises those per-cell predictions per cluster using columns declared in each annotator's manifest. `cytetype` is an independent cluster-level annotator.
 
@@ -354,13 +357,13 @@ With many integration methods and resolutions the full downstream suite can gene
 
 Each row in the CSV selects a subset of clusterings. **All columns are optional** — an empty cell acts as a wildcard that matches everything:
 
-| Column        | Empty means                                                                                |
-| ------------- | ------------------------------------------------------------------------------------------ |
-| `integration` | match all integration methods                                                              |
-| `subset`      | match all subsets (`global` and per-label)                                                 |
-| `resolution`  | match all resolutions (still bounded by `--clustering_resolutions`)                        |
-| `analyses`    | run `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, and `cytetype`                 |
-| `de_methods`  | use the global [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) default |
+| Column        | Empty means                                                                                                               |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `integration` | match all integration methods                                                                                             |
+| `subset`      | match all subsets (`global` and per-label)                                                                                |
+| `resolution`  | match all resolutions (still bounded by `--clustering_resolutions`)                                                       |
+| `analyses`    | run `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, and `cytetype` (`cell2cell` is opt-in via `--cell2cell true`) |
+| `de_methods`  | use the global [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) default                                |
 
 When multiple rows match a clustering result, their `analyses` lists are **combined** (duplicates removed). If any matching row leaves `analyses` empty, all analyses run for that clustering. Clusterings that match **no** row are excluded from Leiden and all downstream analyses — but their UMAP and neighbour graph are still computed.
 
@@ -380,7 +383,7 @@ nextflow run nf-core/scdownstream \
 ```
 
 :::note
-Label-column analyses (PAGA / LIANA / DE run on the merged `label` column rather than on Leiden clusters) are not controlled by the analysis plan; they always run subject to the global skip flags.
+Label-column analyses (PAGA / LIANA / Tensor-cell2cell / DE run on the merged `label` column rather than on Leiden clusters) are not controlled by the analysis plan; they always run subject to the global skip flags.
 :::
 
 ### Skipping integration
