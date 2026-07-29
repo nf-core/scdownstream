@@ -70,6 +70,9 @@ workflow SCDOWNSTREAM {
     liana_max_cells               //   value: integer or null
     liana_subsample_strategy      //   value: string
     liana_subsample_seed          //   value: integer
+    cell2cell                     //   value: boolean
+    cell2cell_rank                //   value: integer or null
+    cell2cell_seed                //   value: integer
     skip_qc_report                //   value: boolean
     scib                          //   value: boolean
     scib_max_cells                //   value: integer or null
@@ -89,7 +92,7 @@ workflow SCDOWNSTREAM {
     tsne                          //   value: boolean
     analysis_plan                 //   value: list of plan rows parsed in main.nf
     de_methods                    //   value: string
-    interesting_genes             //   value: string
+    interesting_genes             //    path: file or []
     pseudobulk                    //   value: boolean
     pseudobulk_min_num_cells      //   value: integer
     pseudobulk_min_total_counts   //   value: integer
@@ -338,6 +341,9 @@ workflow SCDOWNSTREAM {
             liana_max_cells,
             liana_subsample_strategy,
             liana_subsample_seed,
+            cell2cell,
+            cell2cell_rank,
+            cell2cell_seed,
             cytetype_study_context,
             de_methods,
             pseudobulk,
@@ -346,6 +352,7 @@ workflow SCDOWNSTREAM {
             ch_per_cell_annotation_columns,
             reference_condition ?: '',
             interesting_genes ?: [],
+            species,
         )
 
         ch_uns = ch_uns.mix(PER_GROUP.out.uns)

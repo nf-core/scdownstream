@@ -31,6 +31,9 @@ for layer in adata.layers.keys():
 adata.X = csc_matrix(adata.X).astype(np.float32)
 sc.pp.log1p(adata)
 
+# Merged uns may still contain pandas StringDtype indexes (e.g. scanpy pts).
+# Prefer source-side CategoricalIndex sanitisation; keep True as a write safety net.
+ad.settings.allow_write_nullable_strings = True
 adata.write_h5ad("${prefix}.h5ad")
 
 # Versions

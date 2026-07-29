@@ -86,7 +86,7 @@
                 "species": {
                     "type": "string",
                     "default": "human",
-                    "description": "Species of the input data. Used to auto-select bundled cell cycle gene lists (assets/cell_cycle_genes/<species>_s_genes.txt and _g2m_genes.txt) and as the MyGene.info taxonomy when converting gene identifiers (samplesheet symbol_col: none). Bundled cell cycle lists are provided for 'human' and 'mouse'. Ignored when --s_genes and --g2m_genes are set explicitly."
+                    "description": "Species of the input data. Used to auto-select bundled cell cycle gene lists (assets/cell_cycle_genes/<species>_s_genes.txt and _g2m_genes.txt), as the MyGene.info taxonomy when converting gene identifiers (samplesheet symbol_col: none), and for PROGENy pathway enrichment in Tensor-cell2cell. Bundled cell cycle lists are provided for 'human' and 'mouse'. Ignored when --s_genes and --g2m_genes are set explicitly."
                 },
                 "cell_cycle_scoring": {
                     "type": "boolean",
@@ -308,7 +308,7 @@
                 "analysis_plan": {
                     "type": "string",
                     "description": "Path to a CSV file controlling which integration × resolution combinations feed into downstream analyses (PAGA, LIANA, DE, cluster-level annotation).",
-                    "help_text": "All columns are optional — empty values act as wildcards. When provided, rows are matched against each clustering result; analyses from all matching rows are combined. When --analysis_plan is not set, all combinations run paga, liana, de, aggregate_per_cell_annotation, and cytetype (subject to skip_liana, --de_methods, and cytetype_study_context). Cluster-level annotation tokens: aggregate_per_cell_annotation (majority vote of per-cell SingleR/CellTypist labels) and cytetype (CyteType LLM). See the usage docs for the full schema.",
+                    "help_text": "All columns are optional — empty values act as wildcards. When provided, rows are matched against each clustering result; analyses from all matching rows are combined. When --analysis_plan is not set, all combinations run paga, liana, de, aggregate_per_cell_annotation, and cytetype (subject to skip_liana, --de_methods, and cytetype_study_context). Add the cell2cell token and set --cell2cell true to run by-sample LIANA plus Tensor-cell2cell. Cluster-level annotation tokens: aggregate_per_cell_annotation (majority vote of per-cell SingleR/CellTypist labels) and cytetype (CyteType LLM). See the usage docs for the full schema.",
                     "mimetype": "text/csv",
                     "schema": "assets/schema_analysis_plan.json",
                     "pattern": "^\\S+\\.csv$"
@@ -399,6 +399,21 @@
                     "type": "integer",
                     "default": 42,
                     "description": "Random seed for reproducible LIANA cell subsampling."
+                },
+                "cell2cell": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Run Tensor-cell2cell (by-sample LIANA followed by tensor factorisation). Uses the unified donor column as context and requires at least two donors."
+                },
+                "cell2cell_rank": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Optional Tensor-cell2cell factorisation rank. When unset, Cell2cell estimates the rank automatically."
+                },
+                "cell2cell_seed": {
+                    "type": "integer",
+                    "default": 42,
+                    "description": "Random seed for Tensor-cell2cell factorisation."
                 },
                 "skip_qc_report": {
                     "type": "boolean",

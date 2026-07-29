@@ -1,0 +1,131 @@
+name: "cell2cell_tensor"
+description: Decompose LIANA by-sample scores with Tensor-cell2cell and plot loadings-product heatmaps
+keywords:
+  - single-cell
+  - cell-cell-communication
+  - tensor
+  - cell2cell
+tools:
+  - "cell2cell":
+      description: "Inferring cell-cell interactions from transcriptomes with cell2cell."
+      homepage: "https://github.com/earmingol/cell2cell"
+      documentation: "https://earmingol.github.io/cell2cell"
+      tool_dev_url: "https://github.com/earmingol/cell2cell"
+      doi: "10.1038/s41467-022-31369-2"
+      licence: ["BSD-3-Clause"]
+      identifier: null
+  - "liana":
+      description: "LIANA+: a one-stop-shop framework for cell-cell communication."
+      homepage: "https://liana-py.readthedocs.io"
+      documentation: "https://liana-py.readthedocs.io"
+      tool_dev_url: "https://github.com/saezlab/liana-py"
+      doi: "10.1038/s41556-024-01469-w"
+      licence: ["GPL-3.0-or-later"]
+      identifier: biotools:liana
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - liana_bysample:
+        type: file
+        description: Compressed LIANA by-sample results table
+        pattern: "*.csv.gz"
+        ontologies:
+          - edam: "http://edamontology.org/format_3752"
+    - contexts:
+        type: file
+        description: Context metadata table
+        pattern: "*_contexts.tsv"
+        ontologies:
+          - edam: "http://edamontology.org/format_3475"
+  - context_key:
+      type: string
+      description: Context column name shared by the by-sample table and contexts metadata
+  - rank:
+      type: integer
+      description: Tensor rank; null/empty triggers Cell2cell elbow rank estimation
+  - seed:
+      type: integer
+      description: Random seed for tensor factorisation
+  - species:
+      type: string
+      description: Species for PROGENy pathway enrichment (e.g. human, mouse)
+
+output:
+  plots:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.png":
+          type: file
+          description: Tensor-cell2cell plots (factor overview, LR/context loadings, sender-receiver loadings-product)
+          pattern: "*.png"
+          ontologies:
+            - edam: "http://edamontology.org/format_3603"
+  loadings:
+    - "*_loadings_*.csv":
+        type: file
+        description: Factor loading tables for each tensor dimension
+        pattern: "*_loadings_*.csv"
+        ontologies:
+          - edam: "http://edamontology.org/format_3752"
+  tensor:
+    - "*_tensor.pkl":
+        type: file
+        description: Serialised Tensor-cell2cell interaction tensor
+        pattern: "*_tensor.pkl"
+  enrichment:
+    - "*_pathway_enrichment.csv":
+        type: file
+        description: PROGENy pathway enrichment scores and p-values across factors
+        pattern: "*_pathway_enrichment.csv"
+        ontologies:
+          - edam: "http://edamontology.org/format_3752"
+  multiqc_files:
+    - "*_mqc.json":
+        type: file
+        description: MultiQC custom content JSON embedding Cell2cell plots
+        pattern: "*_mqc.json"
+        ontologies:
+          - edam: "http://edamontology.org/format_3464"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/liana_cell2cell_pyyaml:50d977636ad3e43e
+      build_id: bd-50d977636ad3e43e_1
+      scan_id: sc-2973b11a32f8b3c4_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/liana_cell2cell_pyyaml:e1c79b6f5219622d
+      build_id: bd-e1c79b6f5219622d_1
+      scan_id: sc-09d609e6be51282f_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/liana_cell2cell_pyyaml:a49db141391430fc
+      build_id: bd-a49db141391430fc_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ef/efdbfc407c90653e8754fdece7cd06498feccae7098260c5e57dfbfca693234b/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/liana_cell2cell_pyyaml:4aa21e57bc12ba82
+      build_id: bd-4aa21e57bc12ba82_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/10/10d2843fde28026d17f6faffc136aaa352f85d91fec25d658f793e062f14f349/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/cell2cell/tensor/.conda-lock/linux_amd64-bd-50d977636ad3e43e_1.txt
+    linux/arm64:
+      lock_file: modules/local/cell2cell/tensor/.conda-lock/linux_arm64-bd-e1c79b6f5219622d_1.txt

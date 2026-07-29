@@ -72,6 +72,9 @@ workflow NFCORE_SCDOWNSTREAM {
     liana_max_cells               //   value: integer or null
     liana_subsample_strategy      //   value: string
     liana_subsample_seed          //   value: integer
+    cell2cell                     //   value: boolean
+    cell2cell_rank                //   value: integer or null
+    cell2cell_seed                //   value: integer
     skip_qc_report                //   value: boolean
     scib                          //   value: boolean
     scib_max_cells                //   value: integer or null
@@ -91,7 +94,7 @@ workflow NFCORE_SCDOWNSTREAM {
     tsne                          //   value: boolean
     analysis_plan                 //   value: list of plan rows parsed in main.nf
     de_methods                    //   value: string
-    interesting_genes             //   value: string
+    interesting_genes             //    path: file or []
     pseudobulk                    //   value: boolean
     pseudobulk_min_num_cells      //   value: integer
     pseudobulk_min_total_counts   //   value: integer
@@ -149,6 +152,9 @@ workflow NFCORE_SCDOWNSTREAM {
         liana_max_cells,
         liana_subsample_strategy,
         liana_subsample_seed,
+        cell2cell,
+        cell2cell_rank,
+        cell2cell_seed,
         skip_qc_report,
         scib,
         scib_max_cells,
@@ -227,6 +233,10 @@ workflow {
         ? file(params.symphony_reference, checkIfExists: true)
         : null
 
+    def interesting_genes_file = params.interesting_genes
+        ? file(params.interesting_genes, checkIfExists: true)
+        : []
+
     NFCORE_SCDOWNSTREAM (
         PIPELINE_INITIALISATION.out.samplesheet,
         ch_base_adata,
@@ -269,6 +279,9 @@ workflow {
         params.liana_max_cells,
         params.liana_subsample_strategy,
         params.liana_subsample_seed,
+        params.cell2cell,
+        params.cell2cell_rank,
+        params.cell2cell_seed,
         params.skip_qc_report,
         params.scib,
         params.scib_max_cells,
@@ -288,7 +301,7 @@ workflow {
         params.tsne,
         analysis_plan,
         params.de_methods,
-        params.interesting_genes,
+        interesting_genes_file,
         params.pseudobulk,
         params.pseudobulk_min_num_cells,
         params.pseudobulk_min_total_counts,

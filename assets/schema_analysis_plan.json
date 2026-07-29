@@ -32,10 +32,10 @@
             },
             "analyses": {
                 "type": "string",
-                "pattern": "^(|paga|liana|de|aggregate_per_cell_annotation|cytetype)(,(paga|liana|de|aggregate_per_cell_annotation|cytetype))*$",
+                "pattern": "^(|paga|liana|cell2cell|de|aggregate_per_cell_annotation|cytetype)(,(paga|liana|cell2cell|de|aggregate_per_cell_annotation|cytetype))*$",
                 "default": null,
-                "errorMessage": "Analyses must be a comma-separated list of paga, liana, de, aggregate_per_cell_annotation, and/or cytetype",
-                "description": "Downstream analyses to run for matching clusterings, or empty to run all analyses. Cluster-level cell type annotation uses aggregate_per_cell_annotation (majority vote of per-cell SingleR/CellTypist labels) and/or cytetype (CyteType LLM; requires cytetype_study_context).",
+                "errorMessage": "Analyses must be a comma-separated list of paga, liana, cell2cell, de, aggregate_per_cell_annotation, and/or cytetype",
+                "description": "Downstream analyses to run for matching clusterings, or empty to run all analyses. cell2cell additionally requires --cell2cell true. Cluster-level cell type annotation uses aggregate_per_cell_annotation (majority vote of per-cell SingleR/CellTypist labels) and/or cytetype (CyteType LLM; requires cytetype_study_context).",
                 "meta": ["analyses"]
             },
             "de_methods": {

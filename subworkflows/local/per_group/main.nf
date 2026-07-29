@@ -1,5 +1,7 @@
 include { SCANPY_PAGA                       } from '../../../modules/local/scanpy/paga'
 include { LIANA_RANKAGGREGATE               } from '../../../modules/local/liana/rankaggregate'
+include { LIANA_BYSAMPLE                    } from '../../../modules/local/liana/bysample'
+include { CELL2CELL_TENSOR                  } from '../../../modules/local/cell2cell/tensor'
 include { DIFFERENTIAL_EXPRESSION           } from '../differential_expression'
 include { CLUSTER_ANNOTATION                } from '../cluster_annotation'
 include { resolveDeMethodsWithPrerequisites } from '../utils_nfcore_scdownstream_pipeline'
@@ -16,6 +18,9 @@ workflow PER_GROUP {
     liana_max_cells                //   value: integer or null
     liana_subsample_strategy       //   value: string
     liana_subsample_seed           //   value: integer
+    cell2cell                      //   value: boolean
+    cell2cell_rank                 //   value: integer or null
+    cell2cell_seed                 //   value: integer
     cytetype_study_context         //   value: string
     de_methods_default             //   value: string
     pseudobulk                     //   value: boolean
@@ -24,6 +29,7 @@ workflow PER_GROUP {
     ch_per_cell_annotation_columns // channel: string
     reference_condition            //   value: string
     interesting_genes              //   value: string (path) or []
+    species                        //   value: string
 
     main:
     ch_uns           = channel.empty()
@@ -47,6 +53,35 @@ workflow PER_GROUP {
             liana_subsample_seed,
         )
         ch_uns = ch_uns.mix(LIANA_RANKAGGREGATE.out.uns)
+    }
+
+    if (cell2cell) {
+        ch_cell2cell = ch_h5ad_no_neighbors
+            .filter { meta, _h5ad -> meta.analyses == null || 'cell2cell' in meta.analyses }
+            .multiMap { meta, h5ad ->
+                adata: [meta, h5ad]
+                obs_key: meta.obs_key ?: 'leiden'
+            }
+        LIANA_BYSAMPLE(
+            ch_cell2cell.adata,
+            ch_cell2cell.obs_key,
+            'donor',
+            liana_n_perms,
+            liana_max_cells ?: 0,
+            liana_subsample_strategy,
+            liana_subsample_seed,
+        )
+
+        CELL2CELL_TENSOR(
+            LIANA_BYSAMPLE.out.results
+                .join(LIANA_BYSAMPLE.out.contexts)
+                .map { meta, results, contexts -> [meta, results, contexts] },
+            'donor',
+            cell2cell_rank ?: '',
+            cell2cell_seed,
+            species,
+        )
+        ch_multiqc_files = ch_multiqc_files.mix(CELL2CELL_TENSOR.out.multiqc_files)
     }
 
     ch_h5ad_for_de = ch_h5ad_no_neighbors

@@ -3,9 +3,9 @@ process PYDESEQ2_DIFFERENTIAL {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f4/f4122eda0637bd0b402a2d6a17bf002658a06fd0a35796ec81828edb3d8edb2c/data'
-        : 'community.wave.seqera.io/library/pydeseq2_differential:f091151479129920' }"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/de/ded0dc26fe39d71f6eb1d888077b1abfa9fca33bd36fb51c295c5429abb4dc04/data' :
+        'community.wave.seqera.io/library/pydeseq2_differential:c83f772671389253' }"
 
     input:
     tuple val(meta), path(h5ad)

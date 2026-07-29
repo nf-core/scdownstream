@@ -70,6 +70,9 @@ for path in layers_paths:
         layer = np.asarray(layer, dtype=np.float32)
     adata.layers[path.stem] = layer
 
+# Merged obs/uns may still contain pandas StringDtype indexes (e.g. scanpy pts).
+# Prefer source-side CategoricalIndex sanitisation; keep True as a write safety net.
+ad.settings.allow_write_nullable_strings = True
 adata.write_h5ad(f"{prefix}.h5ad")
 adata.obs.to_csv(f"{prefix}_metadata.csv")
 

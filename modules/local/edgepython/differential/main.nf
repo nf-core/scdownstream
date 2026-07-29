@@ -3,9 +3,9 @@ process EDGEPYTHON_DIFFERENTIAL {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8f/8f6c59e278677cbe149c30e0937df1c4e6732f937e4a1a97050b4b5c17eb8898/data'
-        : 'community.wave.seqera.io/library/edgepython_differential:02c681a3d671c936' }"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/dd/dd2bdd0dd3afef572c1ae41ca13cc1cd7a3e5ca62410c39934b10964ee916f71/data' :
+        'community.wave.seqera.io/library/edgepython_differential:663a87cf9609bfbd' }"
 
     input:
     tuple val(meta), path(h5ad)

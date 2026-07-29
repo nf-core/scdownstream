@@ -1,0 +1,85 @@
+{
+    "Should skip when fewer than two contexts": {
+        "content": [
+            {
+                "LIANA_BYSAMPLE": {
+                    "liana": "1.6.1",
+                    "python": "3.12.13",
+                    "scanpy": "1.12.3"
+                }
+            }
+        ],
+        "timestamp": "2026-07-29T12:03:18.407321476",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_liana_bysample.csv.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_liana_bysample_contexts.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "contexts": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_liana_bysample_contexts.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "results": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_liana_bysample.csv.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-29T12:10:57.59297614",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run by-sample LIANA with multi-context input": {
+        "content": [
+            {
+                "LIANA_BYSAMPLE": {
+                    "liana": "1.6.1",
+                    "python": "3.12.13",
+                    "scanpy": "1.12.3"
+                }
+            },
+            "test_liana_bysample.csv.gz",
+            "test_liana_bysample_contexts.tsv"
+        ],
+        "timestamp": "2026-07-29T15:47:04.514569295",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}
