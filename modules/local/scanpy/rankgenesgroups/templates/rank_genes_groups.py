@@ -107,7 +107,40 @@ def prepare_volcano_df(df, gene_col, lfc_col, p_col, padj_col, interesting):
     return plot_df, gene_col, p_use, use_padj
 
 
-def draw_volcano_ax(ax, plot_df, gene_col, lfc_col, p_use, use_padj, title, max_labels=3):
+def _genes_to_label(plot_df, p_use, max_labels=10):
+    """Label significant genes only. Prefer interesting when provided; never label grey points."""
+    significant = plot_df[plot_df["significant"]].sort_values(p_use, ascending=True)
+    if significant.empty:
+        return significant
+    if plot_df["interesting"].any():
+        return significant[significant["interesting"]].head(max_labels)
+    return significant.head(max_labels)
+
+
+def _annotate_genes(ax, to_label, gene_col, lfc_col, fontsize=6):
+    if to_label.empty:
+        return
+    # Place labels at data coordinates; adjustText needs this (not offset-point annotations).
+    texts = [
+        ax.text(row[lfc_col], row["neglog10"], row[gene_col], fontsize=fontsize, alpha=0.9)
+        for _, row in to_label.iterrows()
+    ]
+    try:
+        from adjustText import adjust_text
+
+        adjust_text(
+            texts,
+            ax=ax,
+            arrowprops=dict(arrowstyle="-", color="#888888", lw=0.35),
+            expand=(1.2, 1.4),
+            force_text=(0.5, 0.8),
+            ensure_inside_axes=True,
+        )
+    except Exception:
+        pass
+
+
+def draw_volcano_ax(ax, plot_df, gene_col, lfc_col, p_use, use_padj, title):
     colours = plot_df["significant"].map({True: "#d62728", False: "#7f7f7f"})
     other = plot_df[~plot_df["interesting"]]
     marked = plot_df[plot_df["interesting"]]
@@ -132,16 +165,7 @@ def draw_volcano_ax(ax, plot_df, gene_col, lfc_col, p_use, use_padj, title, max_
     ax.set_ylabel("-log10(padj)" if use_padj else "-log10(p)", fontsize=8)
     ax.set_title(title, fontsize=9)
     ax.tick_params(labelsize=7)
-
-    label_pool = plot_df[plot_df["significant"]].copy()
-    if label_pool.empty:
-        label_pool = plot_df.copy()
-    label_pool = label_pool.sort_values(p_use, ascending=True)
-    prefer = label_pool[label_pool["interesting"]]
-    rest = label_pool[~label_pool["interesting"]]
-    to_label = pd.concat([prefer, rest]).head(max_labels)
-    for _, row in to_label.iterrows():
-        ax.annotate(row[gene_col], (row[lfc_col], row["neglog10"]), fontsize=6, alpha=0.9)
+    _annotate_genes(ax, _genes_to_label(plot_df, p_use), gene_col, lfc_col, fontsize=6)
 
 
 def write_volcano_grid(
@@ -164,11 +188,22 @@ def write_volcano_grid(
         )
         if plot_df is None:
             continue
-        panels.append((group_name, plot_df, resolved_gene_col, p_use, use_padj))
+        panels.append((str(group_name), plot_df, resolved_gene_col, p_use, use_padj))
 
     if not panels:
         print(f"Warning: no plottable volcano panels for {out_png}; skipping.")
         return
+
+    # Two groups: A vs rest and B vs rest are mirrors; keep a single A vs B panel.
+    if len(panels) == 2:
+        group_a, plot_df, resolved_gene_col, p_use, use_padj = panels[0]
+        group_b = panels[1][0]
+        panels = [(f"{group_a} vs {group_b}", plot_df, resolved_gene_col, p_use, use_padj)]
+    else:
+        panels = [
+            (f"{group_name} vs rest", plot_df, resolved_gene_col, p_use, use_padj)
+            for group_name, plot_df, resolved_gene_col, p_use, use_padj in panels
+        ]
 
     n = len(panels)
     ncols = min(4, max(1, int(np.ceil(np.sqrt(n)))))
@@ -180,7 +215,7 @@ def write_volcano_grid(
         squeeze=False,
         constrained_layout=True,
     )
-    for idx, (group_name, plot_df, resolved_gene_col, p_use, use_padj) in enumerate(panels):
+    for idx, (title, plot_df, resolved_gene_col, p_use, use_padj) in enumerate(panels):
         row, col = divmod(idx, ncols)
         draw_volcano_ax(
             axes[row][col],
@@ -189,7 +224,7 @@ def write_volcano_grid(
             lfc_col,
             p_use,
             use_padj,
-            f"{group_name} vs rest",
+            title,
         )
     for idx in range(n, nrows * ncols):
         row, col = divmod(idx, ncols)
@@ -246,18 +281,35 @@ if len(valid_groups) >= 2:
     volcano_parent = mqc_parent(method_slug, method_label)
     try:
         full_df = sc.get.rank_genes_groups_df(adata, group=None, key=rank_key)
-        volcano_section = f"{method_label} volcanoes: {obs_key} vs rest"
-        volcano_description = (
-            f"{method_label} volcano panels for each <code>{obs_key}</code> group versus the rest of the cells."
-        )
-        if filter_col and filter_val:
-            volcano_section = f"{method_label} volcanoes: {obs_key} vs rest (within {filter_col}={filter_val})"
+        group_frames = list(full_df.groupby("group", sort=True))
+        binary = len(group_frames) == 2
+        if binary:
+            group_a, group_b = str(group_frames[0][0]), str(group_frames[1][0])
+            volcano_section = f"{method_label} volcano: {group_a} vs {group_b}"
             volcano_description = (
-                f"{method_label} volcano panels for each <code>{obs_key}</code> group versus the rest of the cells "
-                f"within <code>{filter_col}={filter_val}</code>."
+                f"{method_label} volcano for <code>{obs_key}</code> contrast "
+                f"<code>{group_a}</code> versus <code>{group_b}</code>."
             )
+            if filter_col and filter_val:
+                volcano_section = f"{method_label} volcano: {group_a} vs {group_b} (within {filter_col}={filter_val})"
+                volcano_description = (
+                    f"{method_label} volcano for <code>{obs_key}</code> contrast "
+                    f"<code>{group_a}</code> versus <code>{group_b}</code> "
+                    f"within <code>{filter_col}={filter_val}</code>."
+                )
+        else:
+            volcano_section = f"{method_label} volcanoes: {obs_key} vs rest"
+            volcano_description = (
+                f"{method_label} volcano panels for each <code>{obs_key}</code> group versus the rest of the cells."
+            )
+            if filter_col and filter_val:
+                volcano_section = f"{method_label} volcanoes: {obs_key} vs rest (within {filter_col}={filter_val})"
+                volcano_description = (
+                    f"{method_label} volcano panels for each <code>{obs_key}</code> group versus the rest of the cells "
+                    f"within <code>{filter_col}={filter_val}</code>."
+                )
         write_volcano_grid(
-            list(full_df.groupby("group", sort=True)),
+            group_frames,
             "names",
             "logfoldchanges",
             "pvals",

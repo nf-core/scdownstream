@@ -137,15 +137,27 @@ def write_volcano(
     ax.set_ylabel("-log10(adjusted p-value)" if use_padj else "-log10(p-value)")
     ax.set_title(section_name)
 
-    label_pool = plot_df[plot_df["significant"]].copy()
-    if label_pool.empty:
-        label_pool = plot_df.copy()
-    label_pool = label_pool.sort_values(p_use, ascending=True)
-    prefer = label_pool[label_pool["interesting"]]
-    rest = label_pool[~label_pool["interesting"]]
-    to_label = pd.concat([prefer, rest]).head(10)
-    for _, row in to_label.iterrows():
-        ax.annotate(row[gene_col], (row[lfc_col], row["neglog10"]), fontsize=7, alpha=0.9)
+    significant = plot_df[plot_df["significant"]].sort_values(p_use, ascending=True)
+    if plot_df["interesting"].any():
+        to_label = significant[significant["interesting"]].head(10)
+    else:
+        to_label = significant.head(10)
+    texts = [
+        ax.text(row[lfc_col], row["neglog10"], row[gene_col], fontsize=7, alpha=0.9) for _, row in to_label.iterrows()
+    ]
+    try:
+        from adjustText import adjust_text
+
+        adjust_text(
+            texts,
+            ax=ax,
+            arrowprops=dict(arrowstyle="-", color="#888888", lw=0.35),
+            expand=(1.2, 1.4),
+            force_text=(0.5, 0.8),
+            ensure_inside_axes=True,
+        )
+    except Exception:
+        pass
 
     plt.savefig(out_png, bbox_inches="tight")
     plt.close(fig)

@@ -217,7 +217,7 @@ Tensor-cell2cell is opt-in (`--cell2cell true`). It consumes by-sample LIANA res
   - `${integration}_${subset}_${resolution}/characteristic_genes/`
     - `*_markers.csv`: Filtered marker-gene tables from Scanpy `rank_genes_groups`.
     - `*.png`: Marker summary, dot plots, and multi-panel volcano plots for MultiQC and inspection.
-    - `*_volcano.png`: Multi-panel volcano figure from unfiltered `rank_genes_groups` results (one panel per group).
+    - `*_volcano.png`: Multi-panel volcano figure from unfiltered `rank_genes_groups` results (one panel per group, or a single `{A} vs {B}` panel when there are exactly two groups).
     - `*.pkl`: Serialised `rank_genes_groups` results merged into the final AnnData `uns` slot.
 - `07_pseudobulk_de/`
   - `aggregation/${integration}/${clustering}/`
