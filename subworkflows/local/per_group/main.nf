@@ -61,11 +61,12 @@ workflow PER_GROUP {
             .multiMap { meta, h5ad ->
                 adata: [meta, h5ad]
                 obs_key: meta.obs_key ?: 'leiden'
+                context_key: meta.donor_col ?: 'donor'
             }
         LIANA_BYSAMPLE(
             ch_cell2cell.adata,
             ch_cell2cell.obs_key,
-            'donor',
+            ch_cell2cell.context_key,
             liana_n_perms,
             liana_max_cells ?: 0,
             liana_subsample_strategy,
@@ -76,7 +77,7 @@ workflow PER_GROUP {
             LIANA_BYSAMPLE.out.results
                 .join(LIANA_BYSAMPLE.out.contexts)
                 .map { meta, results, contexts -> [meta, results, contexts] },
-            'donor',
+            LIANA_BYSAMPLE.out.results.map { meta, _results -> meta.donor_col ?: 'donor' },
             cell2cell_rank ?: '',
             cell2cell_seed,
             species,
