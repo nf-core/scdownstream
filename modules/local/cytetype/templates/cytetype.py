@@ -9,11 +9,23 @@ os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
 from importlib.metadata import version
 
+import anndata as ad
 import numpy as np
 import pandas as pd
 import scanpy as sc
 import yaml
 from cytetype import CyteType
+
+
+def _obs_for_h5ad(obs: pd.DataFrame) -> pd.DataFrame:
+    """Cast nullable pandas string dtypes so anndata can write obs without opt-in."""
+    obs = obs.copy()
+    obs.index = pd.Index(obs.index.to_numpy(dtype=object), name=obs.index.name)
+    for col in obs.columns:
+        if isinstance(obs[col].dtype, pd.StringDtype):
+            obs[col] = obs[col].astype(object)
+    return obs
+
 
 adata = sc.read_h5ad("input.h5ad")
 prefix = "${prefix}"
@@ -77,7 +89,9 @@ if missing_cols:
 df_out = adata_work.obs[library_cols].rename(columns=dict(zip(library_cols, output_cols))).reindex(adata.obs.index)
 df_out.to_pickle(f"{prefix}.pkl")
 
-adata.obs = pd.concat([adata.obs, df_out], axis=1)
+adata.obs = _obs_for_h5ad(pd.concat([adata.obs, df_out], axis=1))
+# CyteType may promote the obs index to pandas StringDtype; allow writing if any remain.
+ad.settings.allow_write_nullable_strings = True
 adata.write_h5ad(f"{prefix}.h5ad")
 
 versions = {
