@@ -13,6 +13,7 @@ import edgepython as ep
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import patsy
 import yaml
 
 adata = ad.read_h5ad("${h5ad}")
@@ -228,7 +229,9 @@ for celltype, celltype_data in adata.obs.groupby("celltype", observed=True):
     )
 
     design_formula = "~ donor + condition" if donors_span_conditions(metadata) else "~ condition"
-    design = ep.model_matrix(design_formula, metadata)
+    # edgepython.model_matrix drops coefficient names; keep a patsy DataFrame for lookup.
+    design_df = patsy.dmatrix(design_formula, data=metadata, return_type="dataframe")
+    design = np.asarray(design_df, dtype=np.float64)
     y = ep.make_dgelist(counts=counts, samples=metadata)
     y = ep.calc_norm_factors(y)
     y = ep.estimate_disp(y)
@@ -236,10 +239,10 @@ for celltype, celltype_data in adata.obs.groupby("celltype", observed=True):
     safe_celltype = safe_name(celltype)
 
     for treatment in treatments:
-        coef_name = condition_coef_column(design, treatment)
+        coef_name = condition_coef_column(design_df, treatment)
         if coef_name is None:
             continue
-        coef_index = list(design.columns).index(coef_name)
+        coef_index = list(design_df.columns).index(coef_name)
         res = ep.glm_ql_ftest(fit, coef=coef_index)
         top = ep.top_tags(res, n=sub.n_vars)
         out_path = f"{prefix}_{safe_celltype}_{safe_name(treatment)}_results.csv"
