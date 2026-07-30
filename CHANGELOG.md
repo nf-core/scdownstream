@@ -33,6 +33,8 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Pass gene symbols into edgePython DE so volcano labels use gene names instead of row indices.
+
 - Make by-sample LIANA subsampling context/donor-aware and drop contexts with too few cells per group before calling LIANA.
 - Updated `scDblFinder` to use internal `dbr` estimation when `doublet_rate` is not provided, and to use provided `doublet_rate` when available.
 

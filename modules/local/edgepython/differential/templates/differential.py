@@ -232,7 +232,11 @@ for celltype, celltype_data in adata.obs.groupby("celltype", observed=True):
     # edgepython.model_matrix drops coefficient names; keep a patsy DataFrame for lookup.
     design_df = patsy.dmatrix(design_formula, data=metadata, return_type="dataframe")
     design = np.asarray(design_df, dtype=np.float64)
-    y = ep.make_dgelist(counts=counts, samples=metadata)
+    y = ep.make_dgelist(
+        counts=counts,
+        samples=metadata,
+        genes=pd.DataFrame({"genes": np.asarray(sub.var_names.astype(str))}),
+    )
     y = ep.calc_norm_factors(y)
     y = ep.estimate_disp(y)
     fit = ep.glm_ql_fit(y, design)

@@ -223,15 +223,23 @@ fit = ep.shrink_sc_disp(fit, robust=True)
 interesting = load_interesting_genes("${interesting_genes}")
 volcano_parent = mqc_parent("edgepython_sc", "edgepython_sc")
 written = []
+gene_mask = fit.get("gene_mask")
+if gene_mask is not None:
+    gene_labels = np.asarray(subset.var_names.astype(str))[np.asarray(gene_mask, dtype=bool)]
+else:
+    gene_labels = np.asarray(subset.var_names.astype(str))
+
 for treatment in treatments:
     coef = design.columns.get_loc(treatment)
     res = ep.glm_sc_test(fit, coef=coef)
     results = res["table"] if isinstance(res, dict) else res
+    results = results.copy() if hasattr(results, "copy") else pd.DataFrame(results)
+    if "genes" not in results.columns:
+        if len(gene_labels) != len(results):
+            raise ValueError(f"Gene label length ({len(gene_labels)}) does not match results ({len(results)})")
+        results.insert(0, "genes", gene_labels)
     out_path = f"{prefix}_{safe_name(treatment)}_results.csv"
-    if hasattr(results, "to_csv"):
-        results.to_csv(out_path)
-    else:
-        pd.DataFrame(results).to_csv(out_path)
+    results.to_csv(out_path)
     written.append(out_path)
     stem = out_path.replace("_results.csv", "")
     results_df = pd.read_csv(out_path, index_col=0)
