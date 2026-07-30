@@ -19,15 +19,24 @@ from scipy.sparse import csc_matrix
 
 adata = ad.read_h5ad("${h5ad}")
 
-integration_methods = ["symphony", "scvi", "scanvi", "scimilarity", "seurat", "bbknn", "combat", "pca", "expimap"]
+integration_methods = ["scanvi", "scvi", "symphony", "scimilarity", "seurat", "bbknn", "combat", "pca", "expimap"]
 
-for integration in integration_methods:
-    embedding_key = f"X_{integration}"
-    if embedding_key in adata.obsm.keys():
-        adata.obsm[integration] = adata.obsm.pop(embedding_key)
+dim_reds = ["umap", "tsne"]
 
-for layer in adata.layers.keys():
-    adata.layers[layer] = csc_matrix(adata.layers[layer]).astype(np.float32)
+for key in list(adata.obsm.keys()):
+    if not any(key.endswith(dim_red) for dim_red in dim_reds):
+        del adata.obsm[key]
+
+# Delete everything in uns and layers (CELLxGENE can't display these anyway)
+adata.uns = {}
+adata.layers = {}
+
+# Convert all float64 columns to float32
+for df in [adata.obs, adata.var]:
+    for col in df.columns:
+        if df[col].dtype == np.float64:
+            df[col] = df[col].astype(np.float32)
+
 adata.X = csc_matrix(adata.X).astype(np.float32)
 sc.pp.log1p(adata)
 
