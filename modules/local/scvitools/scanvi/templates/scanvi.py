@@ -26,7 +26,8 @@ scvi.settings.seed = 0
 
 adata = ad.read_h5ad("${h5ad}")
 adata_work = adata.copy()
-reference_model_path = "reference_model"
+reference_model_dir = "reference_model"
+reference_model_file = f"{reference_model_dir}/model.pt"
 reference_model_type = "${reference_model_type}"
 
 plan_kwargs = {}
@@ -35,7 +36,7 @@ if reference_model_type and reference_model_type not in ["scvi", "scanvi"]:
     raise ValueError(f"Invalid reference model type: {reference_model_type}")
 
 if reference_model_type == "scanvi":
-    state = torch.load(reference_model_path, map_location="cpu", weights_only=False)
+    state = torch.load(reference_model_file, map_location="cpu", weights_only=False)
     setup = state["attr_dict"]["registry_"]["setup_args"]
 
     batch_key = setup["batch_key"]
@@ -50,8 +51,8 @@ if reference_model_type == "scanvi":
     if unknwon_label != "Unknown":
         adata_work.obs[labels_key].replace("Unknown", unknwon_label, inplace=True)
 
-    SCANVI.prepare_query_anndata(adata_work, reference_model_path)
-    model = SCANVI.load_query_data(adata_work, reference_model_path)
+    SCANVI.prepare_query_anndata(adata_work, reference_model_dir)
+    model = SCANVI.load_query_data(adata_work, reference_model_dir)
     plan_kwargs["weight_decay"] = 0.0
 else:
     unlabeled_category = "${unlabeled_category}"
@@ -62,8 +63,8 @@ else:
         raise ValueError("Not enough labels to run scANVI.")
 
     if reference_model_type == "scvi":
-        SCVI.prepare_query_anndata(adata_work, reference_model_path)
-        model = SCVI.load(reference_model_path, adata_work)
+        SCVI.prepare_query_anndata(adata_work, reference_model_dir)
+        model = SCVI.load(reference_model_dir, adata_work)
         model = SCANVI.from_scvi_model(
             scvi_model=model, labels_key="${label_col}", unlabeled_category=unlabeled_category
         )

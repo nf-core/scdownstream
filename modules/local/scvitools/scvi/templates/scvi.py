@@ -26,7 +26,8 @@ scvi.settings.seed = 0
 
 adata = ad.read_h5ad("${h5ad}")
 adata_work = adata.copy()
-reference_model_path = "reference_model"
+reference_model_dir = "reference_model"
+reference_model_file = f"{reference_model_dir}/model.pt"
 reference_model_type = "${meta2.id ?: ''}"
 
 plan_kwargs = {}
@@ -35,13 +36,13 @@ if reference_model_type:
     if reference_model_type == "scanvi":
         raise ValueError("scVI does not support scANVI models.")
     elif reference_model_type == "scvi":
-        state = torch.load(reference_model_path, map_location="cpu", weights_only=False)
+        state = torch.load(reference_model_file, map_location="cpu", weights_only=False)
         setup = state["attr_dict"]["registry_"]["setup_args"]
         batch_key = setup["batch_key"]
         if batch_key != "batch":
             adata_work.obs[batch_key] = adata_work.obs["batch"]
-        SCVI.prepare_query_anndata(adata_work, reference_model_path)
-        model = SCVI.load_query_data(adata_work, reference_model_path)
+        SCVI.prepare_query_anndata(adata_work, reference_model_dir)
+        model = SCVI.load_query_data(adata_work, reference_model_dir)
         plan_kwargs["weight_decay"] = 0.0
     else:
         raise ValueError(f"Invalid reference model type: {reference_model_type}")
