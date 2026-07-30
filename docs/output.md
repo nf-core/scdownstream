@@ -168,6 +168,62 @@ CyteType runs after integration, clustering, and global differential expression.
 The `05_cluster_dimred` directory contains the results of the clustering and dimensionality reduction step.
 The results are stored in subdirectories named after the integration tool used.
 
+### Per-group analyses
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `06_per_group/`
+  - `{integration}/{subset}/{grouping}/`
+    - Context path: `{integration}` (or `merged`), `{subset}` (or `global`), then either `leiden/{resolution}` or the grouping column (usually `label`).
+    - Example Leiden context: `scvi/global/leiden/1.0/`
+    - Example label context: `merged/global/label/`
+    - `paga/`
+      - `*.png`: PAGA graph plot (always published).
+      - `*.h5ad` / `*.pkl` / `*_connectivities.npy`: Intermediate PAGA artefacts (when `--save_intermediates`).
+    - `liana/`
+      - `*_dotplot.png`: Dotplot of top ligand-receptor interactions (always published).
+      - `*_circle.png`: Circle plot of interaction counts between cell groups (always published).
+      - `*_tileplot.png`: Tileplot of the top ligand-receptor interactions (always published).
+      - `*.h5ad` / `*.pkl`: Rank-aggregate AnnData and results table (when `--save_intermediates`).
+      - `by_sample/` (when `--cell2cell` and `--save_intermediates`)
+        - `*.csv.gz`: Long-format LIANA results per context.
+        - `*_contexts.tsv`: Context metadata with optional condition labels.
+    - `cell2cell/` (when `--cell2cell true`)
+      - `*_tensor_factors.png`: Factor overview across contexts, LR pairs, senders and receivers.
+      - `*_loadings_lr_clustermap.png`: Ligand-receptor loadings heatmap across factors.
+      - `*_loadings_contexts_clustermap.png`: Context loadings heatmap across factors.
+      - `*_context_boxplots.png`: Context loadings by condition (only when each context maps to one condition).
+      - `*_pathway_enrichment_dotplot.png`: PROGENy pathway enrichment across factors (requires network access to Omnipath).
+      - `*_pathway_enrichment.csv`: Enrichment scores and p-values (when `--save_intermediates`).
+      - `*_factor_*_loadings_product.png`: Sender-receiver loadings-product heatmaps.
+      - `*_loadings_*.csv`: Factor loading tables (when `--save_intermediates`).
+      - `*_tensor.pkl`: Serialised Tensor-cell2cell object (when `--save_intermediates`).
+    - `differential_expression/`
+      - `scanpy/{method}/{global|filtered}/`
+        - `*_markers.csv`: Filtered marker-gene tables from Scanpy `rank_genes_groups`.
+        - `*.png`: Marker summary, dot plots, and multi-panel volcano plots.
+        - `*_volcano.png`: Multi-panel volcano figure (one panel per group, or a single `{A} vs {B}` panel when there are exactly two groups).
+        - `*.pkl`: Serialised `rank_genes_groups` results merged into the final AnnData `uns` slot (when `--save_intermediates`).
+      - `pseudobulk/aggregation/`
+        - `*.h5ad`: Pseudobulk count matrices per cell-type stratum.
+        - `*_samples.tsv`: Pseudobulk sample metadata (donor, cell type, condition, cell and count totals).
+      - `pseudobulk/pydeseq2/`
+        - `*_results.csv`: PyDESeq2 result tables per cell-type stratum.
+        - `*_volcano.png`: Volcano plots for each PyDESeq2 contrast.
+      - `pseudobulk/edgepython/`
+        - `*_results.csv`: edgePython pseudobulk result tables per cell-type stratum.
+        - `*_volcano.png`: Volcano plots for each edgePython contrast.
+      - `single_cell/edgepython/`
+        - `*_results.csv`: edgePython single-cell DE result tables.
+        - `*_volcano.png`: Volcano plots for each edgepython_sc contrast.
+
+</details>
+
+Per-group analyses are organised by integration context first, then by analysis type. Resuming into an existing outdir may leave directories from the previous flat `{integration}-{subset}-{resolution}` layout; use a clean outdir for a tidy tree.
+
+LIANA rank-aggregate writes a dotplot and tileplot of top interactions by `magnitude_rank`, and a circle plot of interactions with `specificity_rank <= 0.05`. Tensor-cell2cell is opt-in (`--cell2cell true`) and consumes by-sample LIANA results. All differential expression is requested through the `de` analysis token and [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods). Pseudobulk aggregation runs automatically when `pydeseq2` or `edgepython` are selected, or when [`pseudobulk`](https://nf-co.re/scdownstream/parameters#pseudobulk) is enabled. Summary plots are also embedded in MultiQC under the corresponding integration section.
+
 ### Finalize
 
 <details markdown="1">
@@ -183,75 +239,6 @@ The results are stored in subdirectories named after the integration tool used.
 The `09_finalized` directory contains the final results of the pipeline.
 The final H5AD file contains all results from the pipeline and is stored in the `merged.h5ad` file.
 The metadata of the final H5AD file is stored in the `merged_metadata.csv` file.
-
-### LIANA
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `06_per_group/`
-  - `${integration}_${subset}_${resolution}/liana/`
-    - `*_dotplot.png`: Dotplot of top ligand-receptor interactions (always published).
-    - `*_circle.png`: Circle plot of interaction counts between cell groups (always published).
-    - `*_tileplot.png`: Tileplot of the top ligand-receptor interactions (always published).
-    - `*.h5ad` / `*.pkl`: Rank-aggregate AnnData and results table (when `--save_intermediates`).
-
-</details>
-
-LIANA rank-aggregate writes a dotplot and tileplot of top interactions by `magnitude_rank`, and a circle plot of interactions with `specificity_rank <= 0.05`. All three plots are also embedded in the MultiQC report under the corresponding integration section.
-
-### Tensor-cell2cell
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `06_per_group/`
-  - `${integration}_${subset}_${resolution}/liana/by_sample/` (when `--save_intermediates`)
-    - `*.csv.gz`: Long-format LIANA results per context.
-    - `*_contexts.tsv`: Context metadata with optional condition labels.
-  - `${integration}_${subset}_${resolution}/cell2cell/`
-    - `*_tensor_factors.png`: Factor overview across contexts, LR pairs, senders and receivers.
-    - `*_loadings_lr_clustermap.png`: Ligand-receptor loadings heatmap across factors.
-    - `*_loadings_contexts_clustermap.png`: Context loadings heatmap across factors.
-    - `*_context_boxplots.png`: Context loadings by condition (only when each context maps to one condition).
-    - `*_pathway_enrichment_dotplot.png`: PROGENy pathway enrichment across factors (requires network access to Omnipath).
-    - `*_pathway_enrichment.csv`: Enrichment scores and p-values (when `--save_intermediates`).
-    - `*_factor_*_loadings_product.png`: Sender-receiver loadings-product heatmaps.
-    - `*_loadings_*.csv`: Factor loading tables (when `--save_intermediates`).
-    - `*_tensor.pkl`: Serialised Tensor-cell2cell object (when `--save_intermediates`).
-
-</details>
-
-Tensor-cell2cell is opt-in (`--cell2cell true`). It consumes by-sample LIANA results and writes factor overview, LR/context loadings heatmaps, and one loadings-product heatmap per factor. These plots are also embedded in the MultiQC report under the corresponding integration section.
-
-### Differential expression
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `06_per_group/`
-  - `${integration}_${subset}_${resolution}/characteristic_genes/`
-    - `*_markers.csv`: Filtered marker-gene tables from Scanpy `rank_genes_groups`.
-    - `*.png`: Marker summary, dot plots, and multi-panel volcano plots for MultiQC and inspection.
-    - `*_volcano.png`: Multi-panel volcano figure from unfiltered `rank_genes_groups` results (one panel per group, or a single `{A} vs {B}` panel when there are exactly two groups).
-    - `*.pkl`: Serialised `rank_genes_groups` results merged into the final AnnData `uns` slot.
-- `07_pseudobulk_de/`
-  - `aggregation/${integration}/${clustering}/`
-    - `*.h5ad`: Pseudobulk count matrices per cell-type stratum.
-    - `*_samples.tsv`: Pseudobulk sample metadata (donor, cell type, condition, cell and count totals).
-  - `pydeseq2/${integration}/${clustering}/`
-    - `*_results.csv`: PyDESeq2 result tables per cell-type stratum.
-    - `*_volcano.png`: Volcano plots for each PyDESeq2 contrast.
-  - `edgepython/${integration}/${clustering}/`
-    - `*_results.csv`: edgePython pseudobulk result tables per cell-type stratum.
-    - `*_volcano.png`: Volcano plots for each edgePython contrast.
-  - `edgepython_sc/${integration}/${clustering}/`
-    - `*_results.csv`: edgePython single-cell DE result tables.
-    - `*_volcano.png`: Volcano plots for each edgepython_sc contrast.
-
-</details>
-
-All differential expression is requested through the `de` analysis token and [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods). Scanpy methods write cluster-marker results into the merged AnnData object and under `06_per_group/.../characteristic_genes/`. Pseudobulk aggregation runs automatically when `pydeseq2` or `edgepython` are selected, or when [`pseudobulk`](https://nf-co.re/scdownstream/parameters#pseudobulk) is enabled.
 
 ### MultiQC
 
