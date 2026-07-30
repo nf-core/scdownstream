@@ -387,13 +387,13 @@
                 "liana_max_cells": {
                     "type": "integer",
                     "minimum": 1,
-                    "description": "Optional maximum number of cells for LIANA rank_aggregate. When set, cells are subsampled stratified by the LIANA grouping column (and batch when using stratified_obs_batch) before analysis."
+                    "description": "Optional maximum number of cells for LIANA rank_aggregate and by-sample LIANA. When set, cells are subsampled stratified by the LIANA grouping column (and batch when using stratified_obs_batch) before analysis. By-sample LIANA also stratifies by the context/donor column."
                 },
                 "liana_subsample_strategy": {
                     "type": "string",
                     "default": "stratified_obs",
                     "enum": ["none", "stratified_obs", "stratified_obs_batch"],
-                    "description": "Stratified subsampling strategy used when liana_max_cells is set. Uniform sampling is not used; if strategy is 'none' while liana_max_cells is set, stratified_obs is applied with a warning."
+                    "description": "Stratified subsampling strategy used when liana_max_cells is set. Uniform sampling is not used; if strategy is 'none' while liana_max_cells is set, stratified_obs is applied with a warning. By-sample LIANA always includes the context/donor column in the strata."
                 },
                 "liana_subsample_seed": {
                     "type": "integer",

@@ -41,7 +41,10 @@ input:
       description: Optional maximum cells before stratified subsampling; 0 disables subsampling
   - subsample_strategy:
       type: string
-      description: Stratified subsampling strategy when max_cells is set
+      description: |
+        Stratified subsampling strategy when max_cells is set.
+        By-sample always includes the context column in the strata, then drops contexts
+        with fewer than two cell groups of at least five cells.
   - subsample_seed:
       type: integer
       description: Random seed for subsampling and LIANA
