@@ -18,10 +18,6 @@ import numpy as np
 import scanpy as sc
 import yaml
 from scipy.stats import median_abs_deviation
-from threadpoolctl import threadpool_limits
-
-threadpool_limits(int("${task.cpus}"))
-sc.settings.n_jobs = int("${task.cpus}")
 
 PLOT_METRICS = [
     "log1p_total_counts",
