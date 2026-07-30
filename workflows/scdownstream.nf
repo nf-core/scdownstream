@@ -98,6 +98,7 @@ workflow SCDOWNSTREAM {
     pseudobulk_min_total_counts   //   value: integer
     reference_condition           //   value: string
     prep_cellxgene                //   value: boolean
+    tords                         //   value: boolean
     outdir                        //   value: string
     multiqc_config                //   value: string
     multiqc_logo                  //   value: string
@@ -366,7 +367,8 @@ workflow SCDOWNSTREAM {
             ch_obsm,
             ch_obsp,
             ch_uns,
-            prep_cellxgene
+            prep_cellxgene,
+            tords
         )
     }
 

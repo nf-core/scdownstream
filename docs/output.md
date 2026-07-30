@@ -231,7 +231,7 @@ LIANA rank-aggregate writes a dotplot and tileplot of top interactions by `magni
 
 - `09_finalized/`
   - `merged.h5ad`: The final H5AD file with all results.
-  - `merged.rds`: RDS version of the final H5AD file.
+  - `merged.rds`: RDS version of the final H5AD file (only when `--tords` is enabled).
   - `merged_metadata.csv`: Metadata of the final H5AD file.
 
 </details>

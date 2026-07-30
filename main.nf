@@ -100,6 +100,7 @@ workflow NFCORE_SCDOWNSTREAM {
     pseudobulk_min_total_counts   //   value: integer
     reference_condition           //   value: string
     prep_cellxgene                //   value: boolean
+    tords                         //   value: boolean
     outdir                        //   value: string
     multiqc_config                //   value: string
     multiqc_logo                  //   value: string
@@ -180,6 +181,7 @@ workflow NFCORE_SCDOWNSTREAM {
         pseudobulk_min_total_counts,
         reference_condition,
         prep_cellxgene,
+        tords,
         outdir,
         multiqc_config,
         multiqc_logo,
@@ -307,6 +309,7 @@ workflow {
         params.pseudobulk_min_total_counts,
         params.reference_condition,
         params.prep_cellxgene,
+        params.tords,
         params.outdir,
         params.multiqc_config,
         params.multiqc_logo,
