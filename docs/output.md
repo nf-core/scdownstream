@@ -184,6 +184,22 @@ The `09_finalized` directory contains the final results of the pipeline.
 The final H5AD file contains all results from the pipeline and is stored in the `merged.h5ad` file.
 The metadata of the final H5AD file is stored in the `merged_metadata.csv` file.
 
+### LIANA
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `06_per_group/`
+  - `${integration}_${subset}_${resolution}/liana/`
+    - `*_dotplot.png`: Dotplot of top ligand-receptor interactions (always published).
+    - `*_circle.png`: Circle plot of interaction counts between cell groups (always published).
+    - `*_tileplot.png`: Tileplot of the top ligand-receptor interactions (always published).
+    - `*.h5ad` / `*.pkl`: Rank-aggregate AnnData and results table (when `--save_intermediates`).
+
+</details>
+
+LIANA rank-aggregate writes a dotplot and tileplot of top interactions by `magnitude_rank`, and a circle plot of interactions with `specificity_rank <= 0.05`. All three plots are also embedded in the MultiQC report under the corresponding integration section.
+
 ### Tensor-cell2cell
 
 <details markdown="1">

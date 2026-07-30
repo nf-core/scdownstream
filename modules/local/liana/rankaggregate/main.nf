@@ -15,9 +15,11 @@ process LIANA_RANKAGGREGATE {
     val subsample_seed
 
     output:
-    tuple val(meta), path("*.h5ad"), emit: h5ad, optional: true
-    path("*.pkl")                  , emit: uns, optional: true
-    path "versions.yml"            , emit: versions, topic: versions
+    tuple val(meta), path("*.h5ad"), emit: h5ad         , optional: true
+    path("*.pkl")                  , emit: uns          , optional: true
+    path("*.png")                  , emit: plots        , optional: true
+    path("*_mqc.json")             , emit: multiqc_files, optional: true
+    path "versions.yml"            , emit: versions     , topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -32,6 +34,12 @@ process LIANA_RANKAGGREGATE {
     """
     touch "${prefix}.h5ad"
     touch "${prefix}.pkl"
+    touch "${prefix}_dotplot.png"
+    touch "${prefix}_circle.png"
+    touch "${prefix}_tileplot.png"
+    touch "${prefix}_dotplot_mqc.json"
+    touch "${prefix}_circle_mqc.json"
+    touch "${prefix}_tileplot_mqc.json"
     touch "versions.yml"
     """
 }

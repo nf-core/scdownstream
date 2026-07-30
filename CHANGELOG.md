@@ -19,6 +19,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Added`
 
+- Add LIANA rank-aggregate dotplot, circle, and tileplot PNGs with MultiQC embedding.
 - Add opt-in Tensor-cell2cell analysis: by-sample LIANA (`liana/bysample`) followed by tensor factorisation and sender-receiver loadings-product heatmaps (`cell2cell/tensor`).
 - Add volcano plots and optional `--interesting_genes` highlighting for Scanpy, PyDESeq2, edgePython, and edgepython_sc differential expression.
 - Add CyteType module for automated cell type annotation.

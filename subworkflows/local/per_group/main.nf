@@ -52,7 +52,8 @@ workflow PER_GROUP {
             liana_subsample_strategy,
             liana_subsample_seed,
         )
-        ch_uns = ch_uns.mix(LIANA_RANKAGGREGATE.out.uns)
+        ch_uns           = ch_uns.mix(LIANA_RANKAGGREGATE.out.uns)
+        ch_multiqc_files = ch_multiqc_files.mix(LIANA_RANKAGGREGATE.out.multiqc_files)
     }
 
     if (cell2cell) {
