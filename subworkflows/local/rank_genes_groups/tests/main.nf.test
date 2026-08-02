@@ -66,6 +66,35 @@ nextflow_workflow {
 
     }
 
+    test("Should filter comparisons when the grouping has fewer than two values") {
+
+        tag "eligibility"
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ]).map { meta, h5ad -> [meta + [obs_key: 'batch', condition_col: 'condition', de_methods_resolved: ['wilcoxon'] as Set], h5ad] }
+                input[1] = []
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.trace.tasks().size() == 0
+            assert workflow.out.uns.size() == 0
+            assert workflow.out.h5ad.size() == 0
+            assert workflow.stdout.any { it.contains("Skipping SCANPY_RANKGENESGROUPS") }
+        }
+
+    }
+
     test("Should run multiple rank-genes-groups methods in parallel") {
 
         when {

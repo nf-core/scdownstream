@@ -11,6 +11,7 @@ workflow FINALIZE {
     ch_obsp
     ch_uns         // channel: [ pkl ]
     prep_cellxgene //   value: boolean
+    tords          //   value: boolean
 
     main:
 
@@ -23,10 +24,12 @@ workflow FINALIZE {
         .combine(channel.value([[]]))
     )
 
-    ADATA_TORDS (
-        ADATA_EXTEND.out.h5ad,
-        'X'
-    )
+    if (tords) {
+        ADATA_TORDS (
+            ADATA_EXTEND.out.h5ad,
+            'X'
+        )
+    }
 
     ch_h5ad_cellxgene = channel.empty()
     if (prep_cellxgene) {

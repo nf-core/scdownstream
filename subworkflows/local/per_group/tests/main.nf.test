@@ -105,6 +105,60 @@ nextflow_workflow {
 
     }
 
+    test("Should filter PAGA and LIANA when the grouping has fewer than two values") {
+
+        tag "eligibility"
+
+        when {
+            params {
+                outdir = "$outputDir"
+                skip_liana = false
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'batch',
+                        condition_col: 'condition',
+                        integration: 'merged',
+                        analyses: ['paga', 'liana'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = h5ad
+                input[2] = false
+                input[3] = 1000
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = false
+                input[8] = ''
+                input[9] = 42
+                input[10] = ''
+                input[11] = 'wilcoxon'
+                input[12] = false
+                input[13] = 10
+                input[14] = 1000
+                input[15] = channel.empty()
+                input[16] = ''
+                input[17] = []
+                input[18] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.trace.tasks().size() == 0
+            assert workflow.out.uns.size() == 0
+            assert workflow.stdout.any { it.contains("Skipping SCANPY_PAGA") }
+            assert workflow.stdout.any { it.contains("Skipping LIANA_RANKAGGREGATE") }
+        }
+
+    }
+
     test("Should run without failures - full run - stub") {
 
         tag "stub"

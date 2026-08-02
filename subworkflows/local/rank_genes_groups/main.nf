@@ -1,8 +1,9 @@
-include { SCANPY_RANKGENESGROUPS } from '../../../modules/local/scanpy/rankgenesgroups'
+include { SCANPY_RANKGENESGROUPS   } from '../../../modules/local/scanpy/rankgenesgroups'
 include { anndata                   } from 'plugin/nf-anndata'
 include { rankGenesGroupsMethods    } from '../utils_nfcore_scdownstream_pipeline'
 include { rankGenesGroupsMethodSlug } from '../utils_nfcore_scdownstream_pipeline'
 include { rankGenesGroupsMethodKey  } from '../utils_nfcore_scdownstream_pipeline'
+include { hasMultipleObsGroups      } from '../utils_nfcore_scdownstream_pipeline'
 
 workflow RANK_GENES_GROUPS {
     take:
@@ -55,7 +56,9 @@ workflow RANK_GENES_GROUPS {
 
     ch_comparisons = ch_global_comparisons.mix(ch_filtered_comparisons)
 
-    ch_rankgenesgroups = ch_comparisons
+    ch_rankgenesgroups = ch_comparisons.filter { meta, h5ad, filter_col, filter_val, obs_key ->
+            hasMultipleObsGroups(meta, h5ad, 'SCANPY_RANKGENESGROUPS', obs_key, filter_col, filter_val, 2)
+        }
         .flatMap { meta, h5ad, filter_col, filter_val, obs_key ->
             def rgg_methods = meta.de_methods_resolved.intersect(rankGenesGroupsMethods())
             def single_method = rgg_methods.size() == 1

@@ -8,6 +8,7 @@ include { resolveDeMethodsWithPrerequisites } from '../utils_nfcore_scdownstream
 include { cellLevelDeMethods                } from '../utils_nfcore_scdownstream_pipeline'
 include { pseudobulkingEnabled              } from '../utils_nfcore_scdownstream_pipeline'
 include { rankGenesGroupsAnalysisEnabled    } from '../utils_nfcore_scdownstream_pipeline'
+include { hasMultipleObsGroups              } from '../utils_nfcore_scdownstream_pipeline'
 
 workflow PER_GROUP {
     take:
@@ -39,6 +40,7 @@ workflow PER_GROUP {
     SCANPY_PAGA(
         ch_h5ad_with_neighbors
             .filter { meta, _h5ad -> meta.analyses == null || 'paga' in meta.analyses }
+            .filter { meta, h5ad -> hasMultipleObsGroups(meta, h5ad, 'SCANPY_PAGA') }
     )
     ch_uns           = ch_uns.mix(SCANPY_PAGA.out.uns)
     ch_multiqc_files = ch_multiqc_files.mix(SCANPY_PAGA.out.multiqc_files)
@@ -46,13 +48,15 @@ workflow PER_GROUP {
     if (!skip_liana) {
         LIANA_RANKAGGREGATE(
             ch_h5ad_no_neighbors
-                .filter { meta, _h5ad -> meta.analyses == null || 'liana' in meta.analyses },
+                .filter { meta, _h5ad -> meta.analyses == null || 'liana' in meta.analyses }
+                .filter { meta, h5ad -> hasMultipleObsGroups(meta, h5ad, 'LIANA_RANKAGGREGATE') },
             liana_n_perms,
             liana_max_cells ?: 0,
             liana_subsample_strategy,
             liana_subsample_seed,
         )
-        ch_uns = ch_uns.mix(LIANA_RANKAGGREGATE.out.uns)
+        ch_uns           = ch_uns.mix(LIANA_RANKAGGREGATE.out.uns)
+        ch_multiqc_files = ch_multiqc_files.mix(LIANA_RANKAGGREGATE.out.multiqc_files)
     }
 
     if (cell2cell) {
