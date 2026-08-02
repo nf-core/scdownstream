@@ -21,9 +21,15 @@ workflow UNIFY {
         needs_symbol_conversion: true
     }
 
+    ch_mygene = ch_h5ad.needs_symbol_conversion.multiMap { meta, h5ad ->
+        h5ad: [meta, h5ad]
+        input_col: meta.geneid_col ?: 'index'
+    }
     MYGENE (
-        ch_h5ad.needs_symbol_conversion,
-        species
+        ch_mygene.h5ad,
+        species,
+        ch_mygene.input_col,
+        'symbols',
     )
     ch_h5ad = ch_h5ad.has_symbol_col.mix(
         MYGENE.out.h5ad.map { meta, h5ad -> [meta + [symbol_col: 'symbols'], h5ad] }

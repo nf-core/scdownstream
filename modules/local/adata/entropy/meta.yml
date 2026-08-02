@@ -31,6 +31,9 @@ input:
   - entropy_col:
       type: string
       description: Categorical obs column whose distribution entropy is computed within each group
+  - plot_basis:
+      type: string
+      description: Optional embedding basis for an entropy scatter plot; empty string disables plotting
 
 output:
   h5ad:

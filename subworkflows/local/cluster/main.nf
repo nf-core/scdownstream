@@ -102,7 +102,8 @@ workflow CLUSTER {
     ENTROPY (
         ch_entropy.h5ad,
         ch_entropy.group_col,
-        entropy_col
+        entropy_col,
+        'umap',
     )
     ch_obs = ch_obs.mix(ENTROPY.out.obs)
     ch_multiqc_files = ch_multiqc_files.mix(ENTROPY.out.multiqc_files)

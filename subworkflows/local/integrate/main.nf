@@ -75,6 +75,13 @@ workflow INTEGRATE {
             "batch",
             scvi_categorical_covariates,
             scvi_continuous_covariates,
+            params.scvi_n_hidden,
+            params.scvi_n_layers,
+            params.scvi_n_latent,
+            params.scvi_dispersion,
+            params.scvi_gene_likelihood,
+            params.scvi_max_epochs ?: [],
+            params.scvi_use_observed_lib_size,
         )
         ch_integrations = ch_integrations.mix(SCVITOOLS_SCVI.out.h5ad)
         ch_obsm = ch_obsm.mix(SCVITOOLS_SCVI.out.obsm)
@@ -120,6 +127,13 @@ workflow INTEGRATE {
             "batch",
             scvi_categorical_covariates,
             scvi_continuous_covariates,
+            params.scvi_n_hidden,
+            params.scvi_n_layers,
+            params.scvi_n_latent,
+            params.scvi_dispersion,
+            params.scvi_gene_likelihood,
+            params.scvi_max_epochs ?: [],
+            params.scvi_use_observed_lib_size,
         )
         ch_integrations = ch_integrations.mix(SCVITOOLS_SCANVI.out.h5ad)
         ch_obs = ch_obs.mix(SCVITOOLS_SCANVI.out.obs)

@@ -68,6 +68,12 @@ input:
   - plot:
       type: boolean
       description: When true, generate QC threshold histogram plots and MultiQC JSON
+  - section_name:
+      type: string
+      description: MultiQC parent section name for the QC histogram plots
+  - description:
+      type: string
+      description: MultiQC parent section description for the QC histogram plots
 
 output:
   h5ad:

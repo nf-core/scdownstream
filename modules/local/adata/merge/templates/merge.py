@@ -76,6 +76,7 @@ adata_outer.X = csr_matrix(adata_outer.X)
 # Sort obs columns alphabetically to make reproducible
 adata_outer.obs = adata_outer.obs.reindex(sorted(adata_outer.obs.columns), axis=1)
 
+ad.settings.allow_write_nullable_strings = True
 adata_outer.write("${prefix}_outer.h5ad")
 
 if base_path:

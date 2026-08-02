@@ -28,6 +28,12 @@ input:
   - species:
       type: string
       description: Species name passed to MyGene.info for identifier lookup
+  - input_col:
+      type: string
+      description: var column containing gene identifiers to look up; use `index` for the var index
+  - output_col:
+      type: string
+      description: var column name for mapped gene symbols; use `index` to replace the var index
 
 output:
   h5ad:

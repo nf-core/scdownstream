@@ -6,6 +6,7 @@ import platform
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 
+import anndata as ad
 import scanpy as sc
 import yaml
 
@@ -22,6 +23,7 @@ sc.pp.log1p(adata_norm)
 
 adata.layers["log1p"] = adata_norm.X.copy()
 
+ad.settings.allow_write_nullable_strings = True
 adata.write_h5ad(f"{prefix}.h5ad")
 
 versions = {"${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}}

@@ -37,6 +37,9 @@ input:
         pattern: "*.{h5ad}"
         ontologies:
           - edam: "http://edamontology.org/format_3590"
+  - force_obs_cols:
+      type: string
+      description: Comma-separated obs columns to retain even when they are not shared across all samples
 
 output:
   outer:

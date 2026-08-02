@@ -99,7 +99,7 @@ if "${task.ext.use_gpu}" == "true":
     model.to_device(0)
 
 model.train(
-    early_stopping=True, max_epochs=int("${max_epochs}") if "${max_epochs?:''}" else None, plan_kwargs=plan_kwargs
+    early_stopping=True, max_epochs=int("${max_epochs}") if "${max_epochs ?: ''}" else None, plan_kwargs=plan_kwargs
 )
 
 # Round to ensure hashes are stable

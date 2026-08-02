@@ -11,6 +11,8 @@ process SCANPY_PLOTQC {
     tuple val(meta), path(h5ad)
     val symbol_col
     path mito_genes
+    val section_name
+    val description
 
     output:
     tuple val(meta), path("*.png"), emit: plots
@@ -22,14 +24,10 @@ process SCANPY_PLOTQC {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    section_name = task.ext.section_name ?: "QC Plots"
-    description = task.ext.description ?: "Quality control plots"
     template('plotqc.py')
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
-    section_name = task.ext.section_name ?: "QC Plots"
-    description = task.ext.description ?: "Quality control plots"
     """
     touch ${prefix}_total_counts_vs_n_genes_by_counts.png
     touch ${prefix}_mqc.json

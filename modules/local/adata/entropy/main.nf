@@ -11,6 +11,7 @@ process ADATA_ENTROPY {
     tuple val(meta), path(h5ad)
     val(group_col)
     val(entropy_col)
+    val(plot_basis)
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
@@ -21,12 +22,10 @@ process ADATA_ENTROPY {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}_entropy"
-    plot_basis = task.ext.plot_basis ?: null
     template 'entropy.py'
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}_entropy"
-    plot_basis = task.ext.plot_basis ?: null
     """
     touch ${prefix}.h5ad
     touch ${prefix}.pkl

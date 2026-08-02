@@ -10,6 +10,8 @@ process ADATA_MYGENE {
     input:
     tuple val(meta), path(h5ad)
     val(species)
+    val(input_col)
+    val(output_col)
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
@@ -20,8 +22,6 @@ process ADATA_MYGENE {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    input_col = task.ext.input_col ?: "index"
-    output_col = task.ext.output_col ?: "symbols"
 
     if ("${prefix}.h5ad" == "${h5ad}")
         error "Input and output names are the same, use \"task.ext.prefix\" to disambiguate!"

@@ -23,7 +23,7 @@ process ADATA_SETINDEX {
     prefix = task.ext.prefix ?: "${meta.id}"
 
     if (!(axis in ["obs", "var"])) {
-        error("Axis must be either 'obs' or 'var', but got '${axis}'! Use \"task.ext.axis\" to set it!")
+        error("Axis must be either 'obs' or 'var', but got '${axis}'!")
     }
     if ("${prefix}.h5ad" == "${h5ad}") {
         error("Input and output names are the same, use \"task.ext.prefix\" to disambiguate!")

@@ -44,6 +44,7 @@ workflow COMBINE {
             .groupTuple()
             .map { meta, h5ads -> [meta, h5ads.sort { a, b -> a.name <=> b.name }] },
         ch_base,
+        params.force_obs_cols ?: '',
     )
     ch_outer = ADATA_MERGE.out.outer
 

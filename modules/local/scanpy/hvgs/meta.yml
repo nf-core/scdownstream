@@ -38,6 +38,9 @@ input:
   - log_normalize:
       type: boolean
       description: When true, log-normalise counts from input_layer before HVG selection; when false, use input_layer as pre-normalised expression
+  - batch_key:
+      type: string
+      description: Optional obs column with batch labels for batch-aware HVG selection; empty string disables batch awareness
 
 output:
   h5ad:

@@ -90,7 +90,9 @@ workflow QUALITY_CONTROL {
     QC_RAW (
         ch_qc_plot.h5ad,
         ch_qc_plot.symbol_col,
-        mito_genes ?: []
+        mito_genes ?: [],
+        'Unfiltered QC plots',
+        'Quality control plots',
     )
     ch_multiqc_files = ch_multiqc_files.mix(QC_RAW.out.multiqc_files)
 
@@ -145,7 +147,9 @@ workflow QUALITY_CONTROL {
         ch_filtering.pct_counts_in_top_20_genes_nmads,
         ch_filtering.pct_counts_mt_nmads,
         mito_genes ?: [],
-        true
+        true,
+        'Filter threshold histograms',
+        'QC metric histograms with applied filter thresholds',
     )
     ch_h5ad = SCANPY_FILTER.out.h5ad
         .map { meta, h5ad ->
@@ -210,7 +214,9 @@ workflow QUALITY_CONTROL {
     QC_FILTERED (
         ch_qc_filtered_plot.h5ad,
         ch_qc_filtered_plot.symbol_col,
-        mito_genes ?: []
+        mito_genes ?: [],
+        'Filtered QC plots',
+        'Quality control plots',
     )
     ch_multiqc_files = ch_multiqc_files.mix(QC_FILTERED.out.multiqc_files)
 

@@ -44,6 +44,7 @@ nextflow_process {
                 """
                 input[0] = ADATA_UNIFY.out.h5ad.map{ _meta, h5ad -> [[id: 'combined'], h5ad] }.groupTuple().map{ meta, h5ads -> [meta, h5ads.sort{ a, b -> a.name <=> b.name }] }
                 input[1] = [[], []]
+                input[2] = ''
                 """
             }
         }
@@ -80,6 +81,7 @@ nextflow_process {
                 """
                 input[0] = ADATA_UNIFY.out.h5ad.map{ _meta, h5ad -> [[id: 'combined'], h5ad] }.groupTuple().map{ meta, h5ads -> [meta, h5ads.sort{ it.name }] }
                 input[1] = [[], []]
+                input[2] = ''
                 """
             }
         }
@@ -105,6 +107,7 @@ nextflow_process {
                 }
                 input[0] = ch_h5ad.sample1
                 input[1] = ch_h5ad.sample2
+                input[2] = ''
                 """
             }
         }
@@ -148,6 +151,7 @@ nextflow_process {
                 }
                 input[0] = ch_h5ad.sample1
                 input[1] = ch_h5ad.sample2
+                input[2] = ''
                 """
             }
         }

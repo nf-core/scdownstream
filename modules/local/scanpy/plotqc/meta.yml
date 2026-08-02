@@ -32,6 +32,12 @@ input:
       type: file
       description: File listing mitochondrial gene symbols, one per line
       pattern: "*.{txt,tsv,csv}"
+  - section_name:
+      type: string
+      description: MultiQC parent section name for the QC plots
+  - description:
+      type: string
+      description: MultiQC parent section description for the QC plots
 
 output:
   plots:

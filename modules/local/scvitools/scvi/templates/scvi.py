@@ -75,7 +75,7 @@ if "${task.ext.use_gpu}" == "true":
 
 model.train(
     early_stopping=True,
-    max_epochs=int("${max_epochs}") if "${max_epochs?:''}" else None,
+    max_epochs=int("${max_epochs}") if "${max_epochs ?: ''}" else None,
     plan_kwargs=plan_kwargs,
 )
 

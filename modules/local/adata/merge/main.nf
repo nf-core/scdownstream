@@ -10,6 +10,7 @@ process ADATA_MERGE {
     input:
     tuple val(meta),  path(h5ads, stageAs: 'input/sample_?.h5ad')
     tuple val(meta2), path(base)
+    val force_obs_cols
 
     output:
     tuple val(meta), path("*_outer.h5ad")    , emit: outer
@@ -21,7 +22,6 @@ process ADATA_MERGE {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    force_obs_cols = task.ext.force_obs_cols ?: params.force_obs_cols ?: ""
     template 'merge.py'
 
     stub:
