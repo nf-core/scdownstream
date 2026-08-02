@@ -165,6 +165,40 @@ workflow PIPELINE_COMPLETION {
     FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+
+def hasMultipleObsGroups(meta, h5ad, processName, obsKey = null, filterCol = '', filterVal = '', minGroupSize = 1) {
+    // Inspect observation metadata before scheduling a process that requires at least two groups.
+    // This prevents unnecessary tasks from being scheduled when the data does not meet the minimum requirements.
+    // Also it prevents the creation of empty subdirectories in the output directory, which happens if a task finishes successfully but all outputs are filtered out by saveAs directive in modules.config.
+    // Optional filtering supports comparisons restricted to one observation-column value.
+    obsKey = obsKey ?: meta.obs_key ?: 'leiden'
+    def ad = anndata(h5ad)
+    def groupCounts = [:].withDefault { 0 }
+    def groupValues = ad.obs.get(obsKey).data
+
+    // If filtering is requested, use the filter values to restrict the count to only the rows that match the filter.
+    def filterValues = (filterCol && filterVal) ? ad.obs.get(filterCol).data : null
+
+    // Count observations per group, considering only rows selected by the optional filter.
+    groupValues.eachWithIndex { group, index ->
+        if (filterValues == null || filterValues[index].toString() == filterVal) {
+            def groupName = group.toString()
+            groupCounts[groupName] = groupCounts[groupName] + 1
+        }
+    }
+    ad.close()
+
+    // Prevent no-op tasks when fewer than two groups satisfy the process-specific minimum size.
+    def nValidGroups = groupCounts.count { _group, count -> count >= minGroupSize }
+    if (nValidGroups < 2) {
+        def filterDescription = filterCol && filterVal ? " after filtering ${filterCol}=${filterVal}" : ''
+        def observationWord = minGroupSize == 1 ? 'observation' : 'observations'
+        log.warn "Skipping ${processName} for '${meta.id}'${filterDescription}: observation column '${obsKey}' has ${nValidGroups} group(s) with at least ${minGroupSize} ${observationWord}; at least 2 groups are required."
+        return false
+    }
+    true
+}
+
 //
 // Default analysis plan: one row with empty wildcards (match all clusterings, all analyses)
 //
