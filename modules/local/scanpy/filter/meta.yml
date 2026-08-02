@@ -1,0 +1,130 @@
+name: "scanpy_filter"
+description: Filter cells and genes using QC thresholds and MAD-based outlier detection
+keywords:
+  - quality-control
+  - filtering
+  - single-cell
+  - scanpy
+tools:
+  - "scanpy":
+      description: "Single-cell analysis in Python"
+      homepage: "https://scanpy.readthedocs.io"
+      documentation: "https://scanpy.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/scanpy"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - symbol_col:
+      type: string
+      description: var column containing gene symbols used for mitochondrial, ribosomal, and haemoglobin filtering
+  - min_genes:
+      type: integer
+      description: Minimum number of genes expressed per cell
+  - min_cells:
+      type: integer
+      description: Minimum number of cells expressing a gene
+  - min_counts_gene:
+      type: integer
+      description: Minimum total counts per gene across all cells
+  - min_counts_cell:
+      type: integer
+      description: Minimum total counts per cell
+  - max_mito_percentage:
+      type: number
+      description: Maximum mitochondrial read percentage per cell
+  - min_ribo_percentage:
+      type: number
+      description: Minimum ribosomal read percentage per cell
+  - max_hb_percentage:
+      type: number
+      description: Maximum haemoglobin read percentage per cell
+  - log1p_total_counts_nmads:
+      type: number
+      description: Number of MADs for log1p total counts outlier filtering; use 0 to disable
+  - log1p_n_genes_by_counts_nmads:
+      type: number
+      description: Number of MADs for log1p genes-by-counts outlier filtering; use 0 to disable
+  - pct_counts_in_top_20_genes_nmads:
+      type: number
+      description: Number of MADs for top-20-gene percentage outlier filtering; use 0 to disable
+  - pct_counts_mt_nmads:
+      type: number
+      description: Number of MADs for mitochondrial percentage outlier filtering; use 0 to disable
+  - mito_genes:
+      type: file
+      description: File listing mitochondrial gene symbols, one per line
+      pattern: "*.{txt,tsv,csv}"
+  - plot:
+      type: boolean
+      description: When true, generate QC threshold histogram plots and MultiQC JSON
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: Filtered AnnData object
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  plots:
+    - "*_qc_histograms.png":
+        type: file
+        description: QC metric histograms with applied filter thresholds
+        pattern: "*_qc_histograms.png"
+  multiqc_files:
+    - "*_qc_histograms_mqc.json":
+        type: file
+        description: MultiQC custom content JSON for QC histogram plots
+        pattern: "*_qc_histograms_mqc.json"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:af082f9e9d3ce8b9
+      build_id: bd-af082f9e9d3ce8b9_1
+      scan_id: sc-f46d4d4bc0b05212_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:f7441a003c01f440
+      build_id: bd-f7441a003c01f440_1
+      scan_id: sc-88ee1099deea1021_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:b4afdfc029cd97f9
+      build_id: bd-b4afdfc029cd97f9_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f4/f4046c811cf4df04aa2f9e7039f452117ea355ba87b2a7505b2c444e3c577e3e/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:a59923ae1a7fdb2b
+      build_id: bd-a59923ae1a7fdb2b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/18/18c80f8d095824aeb3ecff7aa79235418c94bef3862c5f7cc0892d2f1e22aabb/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scanpy/filter/.conda-lock/linux_amd64-bd-f7441a003c01f440_1.txt
+    linux/arm64:
+      lock_file: modules/local/scanpy/filter/.conda-lock/linux_arm64-bd-af082f9e9d3ce8b9_1.txt

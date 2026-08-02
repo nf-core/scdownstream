@@ -1,0 +1,83 @@
+name: "scanpy_neighbors"
+description: Compute a k-nearest neighbours graph on a PCA or other representation
+keywords:
+  - neighbours
+  - graph
+  - single-cell
+  - scanpy
+tools:
+  - "scanpy":
+      description: "Single-cell analysis in Python"
+      homepage: "https://scanpy.readthedocs.io"
+      documentation: "https://scanpy.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/scanpy"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format with a representation in obsm
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - rep:
+      type: string
+      description: obsm key of the representation used to compute neighbours
+  - n_pcs:
+      type: integer
+      description: Number of principal components to use when rep is a PCA embedding; use 0 to use all dimensions
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with neighbour graph stored in obsp
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:cba17212864ed5a5
+      build_id: bd-cba17212864ed5a5_1
+      scan_id: sc-5157b0fb80f7b9fb_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:e5a54bd2b6c9720d
+      build_id: bd-e5a54bd2b6c9720d_1
+      scan_id: sc-39d861970c4bd205_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:a4e8b5c0aa66b012
+      build_id: bd-a4e8b5c0aa66b012_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/50/50dcd170b7530455e14f1721aad03cb89343ae18b0d803476cdb96c4c2239540/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:b4a348276df1bb40
+      build_id: bd-b4a348276df1bb40_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c4/c43892b5ea2991c98bd69e6da333b902a1e54635e24ca2cf3fd4c5972efb4384/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scanpy/neighbors/.conda-lock/linux_amd64-bd-e5a54bd2b6c9720d_1.txt
+    linux/arm64:
+      lock_file: modules/local/scanpy/neighbors/.conda-lock/linux_arm64-bd-cba17212864ed5a5_1.txt

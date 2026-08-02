@@ -1,0 +1,95 @@
+name: "scanpy_hvgs"
+description: Select highly variable genes using Scanpy highly_variable_genes
+keywords:
+  - feature-selection
+  - highly-variable-genes
+  - single-cell
+  - scanpy
+tools:
+  - "scanpy":
+      description: "Single-cell analysis in Python"
+      homepage: "https://scanpy.readthedocs.io"
+      documentation: "https://scanpy.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/scanpy"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - n_hvgs:
+      type: integer
+      description: Number of highly variable genes to retain
+  - excluded_genes:
+      type: file
+      description: File with one gene symbol per line to exclude before feature selection
+      pattern: "*.{txt,tsv,csv}"
+  - input_layer:
+      type: string
+      description: AnnData layer to read expression from (`X` or a layer name)
+  - log_normalize:
+      type: boolean
+      description: When true, log-normalise counts from input_layer before HVG selection; when false, use input_layer as pre-normalised expression
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object subset to highly variable genes
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  var:
+    - "*.pkl":
+        type: file
+        description: Pickled DataFrame with highly variable gene annotations
+        pattern: "*.pkl"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:af082f9e9d3ce8b9
+      build_id: bd-af082f9e9d3ce8b9_1
+      scan_id: sc-f46d4d4bc0b05212_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:f7441a003c01f440
+      build_id: bd-f7441a003c01f440_1
+      scan_id: sc-88ee1099deea1021_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:a59923ae1a7fdb2b
+      build_id: bd-a59923ae1a7fdb2b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/18/18c80f8d095824aeb3ecff7aa79235418c94bef3862c5f7cc0892d2f1e22aabb/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:b4afdfc029cd97f9
+      build_id: bd-b4afdfc029cd97f9_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f4/f4046c811cf4df04aa2f9e7039f452117ea355ba87b2a7505b2c444e3c577e3e/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scanpy/hvgs/.conda-lock/linux_amd64-bd-f7441a003c01f440_1.txt
+    linux/arm64:
+      lock_file: modules/local/scanpy/hvgs/.conda-lock/linux_arm64-bd-af082f9e9d3ce8b9_1.txt

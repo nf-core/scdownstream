@@ -1,0 +1,119 @@
+name: "singler"
+description: Annotate single-cell profiles with SingleR using celldex reference datasets
+keywords:
+  - cell-type
+  - annotation
+  - single-cell
+  - singler
+tools:
+  - "singler":
+      description: "Reference-based cell type annotation for single-cell RNA-seq data"
+      homepage: "https://bioconductor.org/packages/SingleR"
+      documentation: "https://bioconductor.org/packages/release/bioc/html/SingleR.html"
+      tool_dev_url: "https://github.com/LTLA/SingleR"
+      doi: "10.1038/s41587-019-0348-2"
+      licence: ["GPL-3.0-or-later"]
+      identifier: biotools:singler
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+    - symbol_col:
+        type: string
+        description: var column containing gene symbols used for SingleR annotation
+    - counts_layer:
+        type: string
+        description: AnnData layer to read counts from (`X` or a layer name)
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing reference dataset information
+          e.g. `[ id:'reference1' ]`
+    - names:
+        type: list
+        description: Reference dataset names corresponding to the celldex references
+    - labels:
+        type: list
+        description: Reference label columns to use for each celldex dataset
+    - references:
+        type: list
+        description: celldex reference tar archives produced by celldex fetchreference
+        pattern: "*.{tar,tar.gz}"
+
+output:
+  obs:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_predictions.csv":
+          type: file
+          description: CSV file containing SingleR cell type predictions per cell
+          pattern: "*_predictions.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752"
+  annotation_columns:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_annotation_columns.csv":
+          type: file
+          description: CSV listing obs columns produced by SingleR and whether they are aggregatable
+          pattern: "*_annotation_columns.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752"
+  distribution:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_distribution.pdf":
+          type: file
+          description: PDF plot showing the distribution of SingleR prediction scores
+          pattern: "*_distribution.pdf"
+  heatmap:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_heatmap.pdf":
+          type: file
+          description: PDF heatmap of SingleR scores across reference cell types
+          pattern: "*_heatmap.pdf"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-celldex_bioconductor-hdf5array_bioconductor-rhdf5_pruned:74e0a8e51f7ab89c
+      build_id: bd-74e0a8e51f7ab89c_1
+      scan_id: sc-321061f9883adbd1_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-celldex_bioconductor-hdf5array_bioconductor-rhdf5_pruned:74e0a8e51f7ab89c
+      build_id: bd-74e0a8e51f7ab89c_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1e/1e1ca6a1732f3fc19cdbcd1ec1872fabb868109dc29fc3e530c1be05d5bc0e5f/data

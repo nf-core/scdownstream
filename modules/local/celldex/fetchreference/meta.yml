@@ -1,0 +1,65 @@
+name: "celldex_fetchreference"
+description: Download a celldex reference dataset and package it as a tar archive
+keywords:
+  - reference
+  - cell-type
+  - annotation
+  - celldex
+tools:
+  - "celldex":
+      description: "Reference datasets for automated cell type annotation"
+      homepage: "https://bioconductor.org/packages/celldex"
+      documentation: "https://bioconductor.org/packages/release/bioc/html/celldex.html"
+      tool_dev_url: "https://github.com/LTLA/celldex"
+      licence: ["GPL-3.0-or-later"]
+      identifier: biotools:celldex
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - ref:
+        type: string
+        description: celldex reference dataset name to download
+    - version:
+        type: string
+        description: Optional celldex reference version or release tag
+
+output:
+  tar:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.tar":
+          type: file
+          description: Tar archive containing the downloaded celldex reference dataset
+          pattern: "*.tar"
+          ontologies:
+            - edam: "http://edamontology.org/format_3981"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/bioconductor-celldex_bioconductor-hdf5array_bioconductor-singlecellexperiment_r-yaml:13bf33457e3e7490
+      build_id: bd-13bf33457e3e7490_1
+      scan_id: sc-ddb1706ee496b849_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/bioconductor-celldex_bioconductor-hdf5array_bioconductor-singlecellexperiment_r-yaml:c4e76f99d7b45118
+      build_id: bd-c4e76f99d7b45118_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/09/099c0913c33b36eef620b0b1733c2717bbf7d8e25a91558f6d2d6d8856279d84/data

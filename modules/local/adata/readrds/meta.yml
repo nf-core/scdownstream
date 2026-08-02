@@ -1,0 +1,62 @@
+name: "adata_readrds"
+description: Convert a Seurat or SingleCellExperiment RDS object to h5ad format
+keywords:
+  - single-cell
+  - anndata
+  - seurat
+  - rds
+  - import
+tools:
+  - "anndata2ri":
+      description: "Conversion between AnnData and Bioconductor SingleCellExperiment objects"
+      homepage: "https://github.com/theislab/anndata2ri"
+      documentation: "https://github.com/theislab/anndata2ri"
+      tool_dev_url: "https://github.com/theislab/anndata2ri"
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - rds:
+        type: file
+        description: RDS file containing a Seurat or SingleCellExperiment object
+        pattern: "*.{rds,RDS}"
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object converted from the input RDS file
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/anndata2ri_bioconductor-singlecellexperiment_anndata_r-seurat:5fae42aabf7a1c5f
+      build_id: bd-5fae42aabf7a1c5f_1
+      scan_id: sc-20b35b327cba4ca3_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata2ri_bioconductor-singlecellexperiment_anndata_r-seurat:c4b75a61a89ec006
+      build_id: bd-c4b75a61a89ec006_1

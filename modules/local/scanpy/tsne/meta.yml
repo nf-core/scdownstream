@@ -1,0 +1,82 @@
+name: "scanpy_tsne"
+description: Compute t-SNE embedding from a neighbour graph using Scanpy
+keywords:
+  - dimensionality-reduction
+  - tsne
+  - single-cell
+  - scanpy
+tools:
+  - "scanpy":
+      description: "Single-cell analysis in Python"
+      homepage: "https://scanpy.readthedocs.io"
+      documentation: "https://scanpy.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/scanpy"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format with a neighbour graph in obsp
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with t-SNE coordinates stored in obsm
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  obsm:
+    - "X_*.pkl":
+        type: file
+        description: Pickled t-SNE embedding stored in obsm
+        pattern: "X_*.pkl"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/python_pyyaml_scanpy:ddf5f0922ae7dcec
+      build_id: bd-ddf5f0922ae7dcec_1
+      scan_id: sc-62c2fefc1f6b16eb_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/python_pyyaml_scanpy:ab265932a4ff2ebf
+      build_id: bd-ab265932a4ff2ebf_1
+      scan_id: sc-60115e741406cbbf_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy:3c6583657518f105
+      build_id: bd-3c6583657518f105_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/bc/bc763fc46b9e3046fec418cc394fe447fd6a323f0f6f34a63b5528216eaa4f5c/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy:d182b95b1ec879c8
+      build_id: bd-d182b95b1ec879c8_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/38/386e532a346d91ce6e59118da064b9367024f807fb7a52d1e13457a0d01107f2/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scanpy/tsne/.conda-lock/linux_amd64-bd-ab265932a4ff2ebf_1.txt
+    linux/arm64:
+      lock_file: modules/local/scanpy/tsne/.conda-lock/linux_arm64-bd-ddf5f0922ae7dcec_1.txt

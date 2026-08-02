@@ -1,0 +1,107 @@
+name: "celltypist"
+description: Annotate single-cell profiles with pretrained CellTypist models
+keywords:
+  - cell-type
+  - annotation
+  - single-cell
+  - celltypist
+tools:
+  - "celltypist":
+      description: "Automated cell type annotation for single-cell RNA-seq data"
+      homepage: "https://www.celltypist.org"
+      documentation: "https://celltypist.readthedocs.io"
+      tool_dev_url: "https://github.com/Teichlab/celltypist"
+      doi: "10.1126/science.abl5197"
+      licence: ["MIT"]
+      identifier: biotools:celltypist
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+    - symbol_col:
+        type: string
+        description: var column containing gene symbols used for CellTypist annotation
+  - models:
+      type: string
+      description: Comma-separated list of CellTypist model names to apply
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with CellTypist annotation columns added to obs
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  obs:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.pkl":
+          type: file
+          description: Pickled obs subset containing CellTypist annotation columns
+          pattern: "*.pkl"
+  annotation_columns:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_annotation_columns.csv":
+          type: file
+          description: CSV listing obs columns produced by CellTypist and whether they are aggregatable
+          pattern: "*_annotation_columns.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/celltypist:5c8a1d7b51207f8e
+      build_id: bd-5c8a1d7b51207f8e_1
+      scan_id: sc-0d97a53e3efda237_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/celltypist:d95dd53106a463cc
+      build_id: bd-d95dd53106a463cc_1
+      scan_id: sc-58feaa77fee0f2f8_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/celltypist:f54d15faff6d295c
+      build_id: bd-f54d15faff6d295c_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cb/cb0b40342ced5d0b963803016966c024757ffa84bb3514f20347bbc1de113c97/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/celltypist:049f700f187a0acb
+      build_id: bd-049f700f187a0acb_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d6/d68de3aa1f537c180318fa82a54ce0a68192e1ffef647cd0762f817b289b0538/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/celltypist/.conda-lock/linux_amd64-bd-5c8a1d7b51207f8e_1.txt
+    linux/arm64:
+      lock_file: modules/local/celltypist/.conda-lock/linux_arm64-bd-d95dd53106a463cc_1.txt

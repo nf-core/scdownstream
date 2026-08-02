@@ -29,6 +29,7 @@ if not selected.any():
     raise ValueError(f"Column '{column}' selects zero genes")
 
 adata_subset = adata[:, selected].copy()
+ad.settings.allow_write_nullable_strings = True
 adata_subset.write_h5ad("${prefix}.h5ad")
 
 versions = {

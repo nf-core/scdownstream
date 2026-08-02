@@ -4,7 +4,7 @@
             {
                 "SCANPY_HVGS": {
                     "python": "3.13.12",
-                    "scanpy": "1.12"
+                    "scanpy": "1.12.3"
                 }
             },
             {
@@ -19,10 +19,10 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "dispersions",
-                        "dispersions_norm",
                         "highly_variable",
-                        "means"
+                        "means",
+                        "dispersions",
+                        "dispersions_norm"
                     ]
                 },
                 "layers": [
@@ -46,10 +46,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-05-28T12:02:56.794195774",
+        "timestamp": "2026-08-02T17:11:41.0964",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without a specified number of HVGs": {
@@ -57,7 +57,7 @@
             {
                 "SCANPY_HVGS": {
                     "python": "3.13.12",
-                    "scanpy": "1.12"
+                    "scanpy": "1.12.3"
                 }
             },
             {
@@ -72,10 +72,10 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "dispersions",
-                        "dispersions_norm",
                         "highly_variable",
-                        "means"
+                        "means",
+                        "dispersions",
+                        "dispersions_norm"
                     ]
                 },
                 "layers": [
@@ -99,10 +99,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-05-28T12:02:32.511106972",
+        "timestamp": "2026-08-02T17:10:12.365917",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without failures - stub": {
@@ -149,7 +149,7 @@
             {
                 "SCANPY_HVGS": {
                     "python": "3.13.12",
-                    "scanpy": "1.12"
+                    "scanpy": "1.12.3"
                 }
             },
             {
@@ -164,10 +164,10 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "dispersions",
-                        "dispersions_norm",
                         "highly_variable",
-                        "means"
+                        "means",
+                        "dispersions",
+                        "dispersions_norm"
                     ]
                 },
                 "layers": [
@@ -191,10 +191,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-05-31T10:13:07.459491579",
+        "timestamp": "2026-08-02T17:12:50.444181",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     }
 }

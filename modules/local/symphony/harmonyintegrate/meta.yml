@@ -1,0 +1,88 @@
+name: "symphony_harmonyintegrate"
+description: Build a Symphony reference from single-cell data with Harmony batch correction
+keywords:
+  - integration
+  - batch-correction
+  - single-cell
+  - symphony
+tools:
+  - "symphonypy":
+      description: "Fast, accurate, and scalable batch-correction of single-cell data with Symphony"
+      homepage: "https://github.com/immunogenomics/symphony"
+      documentation: "https://github.com/immunogenomics/symphony"
+      tool_dev_url: "https://github.com/immunogenomics/symphony"
+      doi: "10.1038/s41467-021-25928-x"
+      licence: ["GPL-3.0-or-later"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - batch_col:
+      type: string
+      description: obs column containing batch labels used for Harmony integration
+  - counts_layer:
+      type: string
+      description: AnnData layer to read counts from (`X` or a layer name)
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with Symphony Harmony-corrected embedding stored in obsm
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  reference:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_reference.h5ad":
+          type: file
+          description: Symphony reference AnnData object for downstream query mapping
+          pattern: "*_reference.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  obsm:
+    - "X_*.pkl":
+        type: file
+        description: Pickled Symphony Harmony-corrected embedding stored in obsm
+        pattern: "X_*.pkl"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:2198c27c5c9392d5
+      build_id: bd-2198c27c5c9392d5_1
+      scan_id: sc-2cf6ad461f4366ff_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:2198c27c5c9392d5
+      build_id: bd-2198c27c5c9392d5_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/51/512121548a21b4d1bb8acfd5e30a75c5c2103ddd00cf1de4713c682b7e6b5387/data

@@ -1,0 +1,100 @@
+name: "cytetype"
+description: Annotate cell types in single-cell data with the CyteType API
+keywords:
+  - cell-type
+  - annotation
+  - single-cell
+  - cytetype
+tools:
+  - "cytetype":
+      description: "AI-powered cell type annotation for single-cell RNA-seq data"
+      homepage: "https://cytetype.app"
+      documentation: "https://cytetype.readthedocs.io"
+      tool_dev_url: "https://github.com/cytetype/cytetype"
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - symbol_col:
+      type: string
+      description: var column containing gene symbols used for CyteType annotation
+  - study_context:
+      type: string
+      description: Free-text study context passed to the CyteType API
+  - group_key:
+      type: string
+      description: obs column used to group cells for differential expression ranking
+  - rank_key:
+      type: string
+      description: obs column whose groups are ranked for marker gene selection
+  - integration:
+      type: string
+      description: obsm key used for neighbourhood graph construction before clustering
+  - resolution:
+      type: number
+      description: Leiden clustering resolution when cluster labels are derived within the module
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with CyteType annotation columns added to obs
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  obs:
+    - "*.pkl":
+        type: file
+        description: Pickled obs subset containing CyteType annotation columns
+        pattern: "*.pkl"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/python_pyyaml_pydantic_anndata_pruned:2b8faa0a0bad36a5
+      build_id: bd-2b8faa0a0bad36a5_1
+      scan_id: sc-da2e9cee3f5c0c0a_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/python_pyyaml_pydantic_anndata_pruned:c5e32374cbaee1c4
+      build_id: bd-c5e32374cbaee1c4_1
+      scan_id: sc-5878457666a6f9e1_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python_pyyaml_pydantic_anndata_pruned:85209daf09d493e5
+      build_id: bd-85209daf09d493e5_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f5/f595bc70c9a78589276871c3ecd03eb9eaa7e2ca019ae34ffc2e98030a2b0fa2/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python_pyyaml_pydantic_anndata_pruned:7a052a7e4a4f6c55
+      build_id: bd-7a052a7e4a4f6c55_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b2/b24aee9072d4f8cd6ea77a3e30d02ef114a2a2e3de34d2bfb5bb113543730c29/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/cytetype/.conda-lock/linux_amd64-bd-c5e32374cbaee1c4_1.txt
+    linux/arm64:
+      lock_file: modules/local/cytetype/.conda-lock/linux_arm64-bd-2b8faa0a0bad36a5_1.txt

@@ -6,9 +6,9 @@ process CYTETYPE {
     errorStrategy 'ignore'
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ea/ea6fe0f3aff9f5097236faa2a8975d4ad2ced9764032c64f4acd56b59aa37cd3/data'
-        : 'community.wave.seqera.io/library/python_pyyaml_scanpy_pip_cytetype:05f936cdbbebf101'}"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b2/b24aee9072d4f8cd6ea77a3e30d02ef114a2a2e3de34d2bfb5bb113543730c29/data' :
+        'community.wave.seqera.io/library/python_pyyaml_pydantic_anndata_pruned:c5e32374cbaee1c4' }"
 
     input:
     tuple val(meta), path(h5ad, stageAs: 'input.h5ad')

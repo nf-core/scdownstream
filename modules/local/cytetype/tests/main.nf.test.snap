@@ -121,16 +121,16 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "annotation:cytetype:scvi:0.5:cell_state",
+                        "sample",
+                        "label",
+                        "condition",
+                        "batch",
+                        "sample_original",
+                        "leiden",
                         "annotation:cytetype:scvi:0.5:cell_type",
                         "annotation:cytetype:scvi:0.5:ontology_term",
                         "annotation:cytetype:scvi:0.5:ontology_term_id",
-                        "batch",
-                        "condition",
-                        "label",
-                        "leiden",
-                        "sample",
-                        "sample_original"
+                        "annotation:cytetype:scvi:0.5:cell_state"
                     ]
                 },
                 "var": {
@@ -164,10 +164,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-11T11:06:06.621638659",
+        "timestamp": "2026-08-02T17:35:20.321344",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     }
 }

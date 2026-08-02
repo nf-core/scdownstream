@@ -1,0 +1,79 @@
+name: "adata_tords"
+description: Convert an AnnData object to a SingleCellExperiment RDS file
+keywords:
+  - single-cell
+  - anndata
+  - rds
+  - export
+  - bioconductor
+tools:
+  - "anndataR":
+      description: "R package for reading and writing AnnData objects"
+      homepage: "https://bioconductor.org/packages/anndataR"
+      documentation: "https://bioconductor.org/packages/release/bioc/html/anndataR.html"
+      tool_dev_url: "https://github.com/scverse/anndataR"
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - counts_layer:
+      type: string
+      description: Layer or X matrix to use as the counts assay in the output SingleCellExperiment
+
+output:
+  rds:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.rds":
+          type: file
+          description: SingleCellExperiment object saved as an RDS file
+          pattern: "*.rds"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-rhdf5_bioconductor-singlecellexperiment:4536d1d3eeed2542
+      build_id: bd-4536d1d3eeed2542_1
+      scan_id: sc-88ff6f257712cf15_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-rhdf5_bioconductor-singlecellexperiment:7f4fd121bcbeb705
+      build_id: bd-7f4fd121bcbeb705_1
+      scan_id: sc-f89a3464c851718b_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-rhdf5_bioconductor-singlecellexperiment:1a865f9d6b840c65
+      build_id: bd-1a865f9d6b840c65_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/63/63ce18f987c08fe48ed9a5ec7fee64561a63297771bda7bcb6d9f591162be4c3/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-rhdf5_bioconductor-singlecellexperiment:ce2194e4f5c6255b
+      build_id: bd-ce2194e4f5c6255b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/2d/2d4d29d7ed9cf3cc735c979edd8f16ba7b8ea3b7daae545e431d187c34cb1e31/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/adata/tords/.conda-lock/linux_amd64-bd-7f4fd121bcbeb705_1.txt
+    linux/arm64:
+      lock_file: modules/local/adata/tords/.conda-lock/linux_arm64-bd-4536d1d3eeed2542_1.txt

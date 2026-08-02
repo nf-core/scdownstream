@@ -3,9 +3,9 @@ process ADATA_UPSETGENES {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/45/45339bf761a2cf0cdb058492bc37f3df8b05b363731d491d1d3a14e9ba0b8f55/data'
-        : 'community.wave.seqera.io/library/harmonypy_anndata_leidenalg_numpy_pruned:43066d5f86f18261'}"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/aa/aaf19a9486ad197d2a9b4976f5ee359f26c2e4aa76824cb36d8c44725cad8df4/data' :
+        'community.wave.seqera.io/library/adata_upsetgenes:34d3926eec711cfc' }"
 
     input:
     tuple val(meta), val(names), path(h5ads)

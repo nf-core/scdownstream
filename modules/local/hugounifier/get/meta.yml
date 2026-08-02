@@ -1,0 +1,95 @@
+name: "hugounifier_get"
+description: Compute HUGO gene symbol unification changes for one or more AnnData objects
+keywords:
+  - gene-symbols
+  - annotation
+  - single-cell
+  - hugo
+tools:
+  - "hugo-unifier":
+      description: "Unify gene symbols to HUGO nomenclature across AnnData objects"
+      homepage: "https://github.com/nictru/hugo-unifier"
+      documentation: "https://github.com/nictru/hugo-unifier"
+      tool_dev_url: "https://github.com/nictru/hugo-unifier"
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - names:
+        type: list
+        description: Sample names corresponding to the input AnnData objects
+    - h5ads:
+        type: list
+        description: AnnData objects in h5ad format to inspect for gene symbol unification
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+
+output:
+  changes:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${meta.id}/*.csv":
+          type: file
+          description: CSV files listing proposed HUGO gene symbol changes per input object
+          pattern: "*.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752"
+  versions_hugo_unifier:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - hugo-unifier:
+          type: string
+          description: The name of the tool
+      - hugo-unifier --version | grep -oP "(?<=version )[\d.]+":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - hugo-unifier:
+          type: string
+          description: The name of the tool
+      - hugo-unifier --version | grep -oP "(?<=version )[\d.]+":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/pip_hugo-unifier:7f38d07e2bd2533f
+      build_id: bd-7f38d07e2bd2533f_1
+      scan_id: sc-1a31fe62ed42ffcc_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/pip_hugo-unifier:559c1bb3b4aa3398
+      build_id: bd-559c1bb3b4aa3398_1
+      scan_id: sc-6038eac8f5682ec0_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/pip_hugo-unifier:a8600ca75fe2638f
+      build_id: bd-a8600ca75fe2638f_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/85/8582151f42fb1e528aa81b41124085363160b8f58b4c6d23fa51de2c4ac2f231/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/pip_hugo-unifier:ed3394b1215b5018
+      build_id: bd-ed3394b1215b5018_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1f/1fea37c351cbec51dc375e5778be550a5378f842ebdc816c69ff8d7d15c4b8ee/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/hugounifier/get/.conda-lock/linux_amd64-bd-559c1bb3b4aa3398_1.txt
+    linux/arm64:
+      lock_file: modules/local/hugounifier/get/.conda-lock/linux_arm64-bd-7f38d07e2bd2533f_1.txt

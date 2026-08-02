@@ -1,0 +1,86 @@
+name: "scarches_expimap"
+description: Map query single-cell data onto a scArches expiMap reference model
+keywords:
+  - integration
+  - reference-mapping
+  - single-cell
+  - scarches
+tools:
+  - "scarches":
+      description: "Single-cell architecture surgery for integration, transfer learning and reference mapping"
+      homepage: "https://scarches.readthedocs.io"
+      documentation: "https://scarches.readthedocs.io"
+      tool_dev_url: "https://github.com/theislab/scarches"
+      doi: "10.1038/s41592-021-01355-8"
+      licence: ["BSD-3-Clause"]
+      identifier: biotools:scarches
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: Query AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing reference model information
+          e.g. `[ id:'reference1' ]`
+    - reference_model:
+        type: file
+        description: Pretrained scArches expiMap reference model directory or archive
+  - condition_col:
+      type: string
+      description: obs column containing condition labels used during reference mapping
+  - counts_layer:
+      type: string
+      description: AnnData layer to read counts from (`X` or a layer name)
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with expiMap latent representation and mapped annotations
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  obsm:
+    - "X_*.pkl":
+        type: file
+        description: Pickled expiMap latent embedding stored in obsm
+        pattern: "X_*.pkl"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/anndata_lightning_numpy_pip_pruned:08aebf94dee8bc48
+      build_id: bd-08aebf94dee8bc48_1
+      scan_id: sc-0105b6206780671b_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_lightning_numpy_pip_pruned:08aebf94dee8bc48
+      build_id: bd-08aebf94dee8bc48_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0b/0b05bb6176023b06058cc9bc6c99a63d72456b51b6f3eb86a720106aa77d022b/data

@@ -1,0 +1,69 @@
+name: "seurat_integration"
+description: Integrate single-cell batches with Seurat anchor-based integration
+keywords:
+  - integration
+  - batch-correction
+  - single-cell
+  - seurat
+tools:
+  - "seurat":
+      description: "Integrated analysis of multimodal single-cell data"
+      homepage: "https://satijalab.org/seurat"
+      documentation: "https://satijalab.org/seurat/articles"
+      tool_dev_url: "https://github.com/satijalab/seurat"
+      doi: "10.1038/s41596-021-00934-9"
+      licence: ["MIT"]
+      identifier: biotools:seurat
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - batch_col:
+      type: string
+      description: obs column containing batch labels used for Seurat integration
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with Seurat integrated embedding stored in obsm
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-glmgampoi_bioconductor-rhdf5_r-seurat:a0acfd4813d44adc
+      build_id: bd-a0acfd4813d44adc_1
+      scan_id: sc-46adb547e8e0f244_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-glmgampoi_bioconductor-rhdf5_r-seurat:a0acfd4813d44adc
+      build_id: bd-a0acfd4813d44adc_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7b/7bbad8d18ada67c2ca1dfaec11c5acb0fcd355713fec10331b0e202f1d6165f1/data

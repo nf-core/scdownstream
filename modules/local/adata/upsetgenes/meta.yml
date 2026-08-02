@@ -1,0 +1,84 @@
+name: "adata_upsetgenes"
+description: Generate an UpSet plot of gene set overlaps across multiple AnnData objects
+keywords:
+  - single-cell
+  - anndata
+  - upset
+  - visualisation
+  - genes
+tools:
+  - "upsetplot":
+      description: "Library for creating UpSet plots of set intersections"
+      homepage: "https://upsetplot.readthedocs.io"
+      documentation: "https://upsetplot.readthedocs.io"
+      tool_dev_url: "https://github.com/jnothman/UpSetPlot"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - names:
+        type: string
+        description: Sample names corresponding to each input AnnData object
+    - h5ads:
+        type: file
+        description: AnnData objects in h5ad format whose gene sets are compared
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+
+output:
+  plot:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.png":
+          type: file
+          description: UpSet plot of gene set overlaps across samples
+          pattern: "*.png"
+  multiqc_files:
+    - "*_mqc.json":
+        type: file
+        description: Optional MultiQC custom content JSON for the UpSet plot
+        pattern: "*_mqc.json"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/adata_upsetgenes:34d3926eec711cfc
+      build_id: bd-34d3926eec711cfc_1
+      scan_id: sc-4bac44376ae3e9f2_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/adata_upsetgenes:52a19fec4bb396d8
+      build_id: bd-52a19fec4bb396d8_1
+      scan_id: sc-4415a6c918d9791b_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/adata_upsetgenes:989df1545a5511d1
+      build_id: bd-989df1545a5511d1_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/aa/aaf19a9486ad197d2a9b4976f5ee359f26c2e4aa76824cb36d8c44725cad8df4/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/adata_upsetgenes:8e8550521fba6879
+      build_id: bd-8e8550521fba6879_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/51/51ff048034a827846d3a8c6fa7e799bf7d52fa9f45275d8f80b132574d037fdb/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/adata/upsetgenes/.conda-lock/linux_amd64-bd-34d3926eec711cfc_1.txt
+    linux/arm64:
+      lock_file: modules/local/adata/upsetgenes/.conda-lock/linux_arm64-bd-52a19fec4bb396d8_1.txt

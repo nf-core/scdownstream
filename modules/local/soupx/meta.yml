@@ -1,0 +1,93 @@
+name: "soupx"
+description: Estimate and remove ambient RNA contamination with SoupX
+keywords:
+  - ambient-rna
+  - decontamination
+  - single-cell
+  - soupx
+tools:
+  - "soupx":
+      description: "Removal of ambient RNA from single-cell RNA-seq data"
+      homepage: "https://github.com/constantAmateur/SoupX"
+      documentation: "https://github.com/constantAmateur/SoupX"
+      tool_dev_url: "https://github.com/constantAmateur/SoupX"
+      doi: "10.1093/gigascience/giaa151"
+      licence: ["GPL-3.0-or-later"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: Filtered AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+    - raw:
+        type: file
+        description: Raw counts AnnData object in h5ad format used to estimate the soup profile
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - cluster_resolution:
+      type: number
+      description: Clustering resolution used by SoupX to define expression clusters
+  - input_layer:
+      type: string
+      description: AnnData layer to read counts from (`X` or a layer name)
+  - output_layer:
+      type: string
+      description: AnnData layer name where corrected counts are stored
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with SoupX-corrected counts in the specified output layer
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-rhdf5_r-seurat_r-soupx:50aef4aa28333b3c
+      build_id: bd-50aef4aa28333b3c_1
+      scan_id: sc-135b12688e2745d0_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-rhdf5_r-seurat_r-soupx:8205f9868101cbe2
+      build_id: bd-8205f9868101cbe2_1
+      scan_id: sc-9b067f4071ac01f6_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-rhdf5_r-seurat_r-soupx:6066c4514711b26b
+      build_id: bd-6066c4514711b26b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7f/7f7c86baec26b736bdccdc3ee2bcd862b919ced4a82bbe9ef09c646fa6b94117/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-rhdf5_r-seurat_r-soupx:9a6d531ff05aaa6f
+      build_id: bd-9a6d531ff05aaa6f_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7c/7cf62793779fd9a355add43948edd15d3fd6b53efe5a29d0917151d6a742275d/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/soupx/.conda-lock/linux_amd64-bd-50aef4aa28333b3c_1.txt
+    linux/arm64:
+      lock_file: modules/local/soupx/.conda-lock/linux_arm64-bd-8205f9868101cbe2_1.txt
