@@ -53,10 +53,24 @@ maintainers:
 containers:
   docker:
     linux/amd64:
-      name: community.wave.seqera.io/library/anndata2ri_bioconductor-singlecellexperiment_anndata_r-seurat:5fae42aabf7a1c5f
-      build_id: bd-5fae42aabf7a1c5f_1
-      scan_id: sc-20b35b327cba4ca3_1
+      name: community.wave.seqera.io/library/adata_readrds:771ff9c89e1f71db
+      build_id: bd-771ff9c89e1f71db_1
+      scan_id: sc-f87e2058c623a682_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/adata_readrds:517c46f7c9acffeb
+      build_id: bd-517c46f7c9acffeb_1
+      scan_id: sc-aa91a17e4d649d7b_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/anndata2ri_bioconductor-singlecellexperiment_anndata_r-seurat:c4b75a61a89ec006
-      build_id: bd-c4b75a61a89ec006_1
+      name: oras://community.wave.seqera.io/library/adata_readrds:db22c74dc38cafad
+      build_id: bd-db22c74dc38cafad_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/2863a57333ed9d21fa87f18cb37310d747f777fd4a2b4749298edd4d2d4ed92f/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/adata_readrds:356aea1a69c0f81b
+      build_id: bd-356aea1a69c0f81b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/e5/e5b2f3286197c38b9a736afe05962602ecadb55747d5da26e115df7b6eb64d83/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/adata/readrds/.conda-lock/linux_amd64-bd-771ff9c89e1f71db_1.txt
+    linux/arm64:
+      lock_file: modules/local/adata/readrds/.conda-lock/linux_arm64-bd-517c46f7c9acffeb_1.txt

@@ -54,24 +54,24 @@ maintainers:
 containers:
   docker:
     linux/arm64:
-      name: community.wave.seqera.io/library/anndata_python_pyyaml:6059343947c64b2b
-      build_id: bd-6059343947c64b2b_1
-      scan_id: sc-6c978256fc1b9bc8_1
+      name: community.wave.seqera.io/library/anndata_python_pyyaml:301adaa9ed22ba3a
+      build_id: bd-301adaa9ed22ba3a_1
+      scan_id: sc-02f8af7be214837c_1
     linux/amd64:
-      name: community.wave.seqera.io/library/anndata_python_pyyaml:5ac0fd4d280528a5
-      build_id: bd-5ac0fd4d280528a5_1
-      scan_id: sc-15371a7932310801_1
+      name: community.wave.seqera.io/library/anndata_python_pyyaml:eec9fad329c5006d
+      build_id: bd-eec9fad329c5006d_1
+      scan_id: sc-e62473eb42bc2b1c_1
   singularity:
-    linux/amd64:
-      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:d4fa1bed84690377
-      build_id: bd-d4fa1bed84690377_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a0/a0d347e0d943cb8d0624a8c73247db0c8e96e7c130fe0fb3125aeb7d1b140e79/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:72ec1c0689f619a5
-      build_id: bd-72ec1c0689f619a5_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/56/56a42f6f5e1d7d9aec93ae546b21b3af0c424dfbda6385b018bab9c51ff95f0f/data
+      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:efa43f748b169deb
+      build_id: bd-efa43f748b169deb_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cb/cba7e92411338805897f2d9e6c705b1ec323ee1055bb2844fa8386b589754505/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:1b7ad0ce87fa1eee
+      build_id: bd-1b7ad0ce87fa1eee_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/bc/bc259b0f0471f937af0396cdcb3834de97ca1fefa5563f160a217187600f69bc/data
   conda:
     linux/amd64:
-      lock_file: modules/local/adata/readcsv/.conda-lock/linux_amd64-bd-5ac0fd4d280528a5_1.txt
+      lock_file: modules/local/adata/readcsv/.conda-lock/linux_amd64-bd-eec9fad329c5006d_1.txt
     linux/arm64:
-      lock_file: modules/local/adata/readcsv/.conda-lock/linux_arm64-bd-6059343947c64b2b_1.txt
+      lock_file: modules/local/adata/readcsv/.conda-lock/linux_arm64-bd-301adaa9ed22ba3a_1.txt

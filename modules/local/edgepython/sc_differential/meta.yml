@@ -71,25 +71,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/amd64:
-      name: community.wave.seqera.io/library/edgepython_sc_differential:2fe5a778fe82c638
-      build_id: bd-2fe5a778fe82c638_1
-      scan_id: sc-9f6f5e3f87395d16_1
     linux/arm64:
-      name: community.wave.seqera.io/library/edgepython_sc_differential:17a2c60695274850
-      build_id: bd-17a2c60695274850_1
-      scan_id: sc-c4f95c8c66c7068d_1
+      name: community.wave.seqera.io/library/edgepython_sc_differential:ab5a3cf195f3b9e2
+      build_id: bd-ab5a3cf195f3b9e2_2
+      scan_id: sc-3077558925ee4c76_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/edgepython_sc_differential:cd9a9abd8ba6d7e3
+      build_id: bd-cd9a9abd8ba6d7e3_2
+      scan_id: sc-f7011742dac2a658_1
   singularity:
-    linux/arm64:
-      name: oras://community.wave.seqera.io/library/edgepython_sc_differential:c0dfacdd1042cbbc
-      build_id: bd-c0dfacdd1042cbbc_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1f/1f93c6968a50adcc9c7d7d7459c041a2fa9cbdfdb6a9169d85252cdff4205720/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/edgepython_sc_differential:241b3471c1a90886
-      build_id: bd-241b3471c1a90886_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/38/387ee8bae78078479f4247c84d00dd1a6f97ba49315f807d953d409b19be9823/data
+      name: oras://community.wave.seqera.io/library/edgepython_sc_differential:a14f4342be48ebc0
+      build_id: bd-a14f4342be48ebc0_2
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/87/87a749bb9c8ad16304e40157f02c982f316c8ba6e7f194f4823636545d23c0f4/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/edgepython_sc_differential:86826b2845e71ff9
+      build_id: bd-86826b2845e71ff9_2
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8c/8c1e5a284bd3002dd63620e01b2eec3864d091dead0461126a6f3fe163303c72/data
   conda:
     linux/amd64:
-      lock_file: modules/local/edgepython/sc_differential/.conda-lock/linux_amd64-bd-2fe5a778fe82c638_1.txt
+      lock_file: modules/local/edgepython/sc_differential/.conda-lock/linux_amd64-bd-cd9a9abd8ba6d7e3_2.txt
     linux/arm64:
-      lock_file: modules/local/edgepython/sc_differential/.conda-lock/linux_arm64-bd-17a2c60695274850_1.txt
+      lock_file: modules/local/edgepython/sc_differential/.conda-lock/linux_arm64-bd-ab5a3cf195f3b9e2_2.txt

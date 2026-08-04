@@ -11,8 +11,9 @@ tools:
       homepage: "https://scanpy.readthedocs.io"
       documentation: "https://scanpy.readthedocs.io"
       tool_dev_url: "https://github.com/scverse/scanpy"
-      licence: ["BSD-3-Clause"]
-
+      licence:
+        - "BSD-3-Clause"
+      identifier: biotools:scanpy
 input:
   - - meta:
         type: map
@@ -42,35 +43,25 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.h5ad":
-          type: file
-          description: AnnData object with Leiden cluster labels in obs
-          pattern: "*.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590"
+      - ${prefix}.h5ad: {}
   obs:
-    - "*.pkl":
-        type: file
-        description: Pickled obs subset containing cluster labels
-        pattern: "*.pkl"
+    - ${prefix}.pkl: {}
   plots:
-    - "*.png":
-        type: file
-        description: UMAP plot coloured by Leiden clusters
-        pattern: "*.png"
+    - ${prefix}.png: {}
   multiqc_files:
-    - "*_mqc.json":
-        type: file
-        description: MultiQC custom content JSON for the Leiden UMAP plot
-        pattern: "*_mqc.json"
+    - ${prefix}_mqc.json: {}
   versions:
     - versions.yml:
         type: file
         description: File containing software versions
         pattern: "versions.yml"
         ontologies:
-          - edam: http://edamontology.org/format_3750
-
+          - edam: http://edamontology.org/format_3750 # YAML
+topics:
+  versions:
+    - versions.yml:
+        type: string
+        description: The name of the process
 authors:
   - "@nictru"
 maintainers:
@@ -78,24 +69,24 @@ maintainers:
 containers:
   docker:
     linux/arm64:
-      name: community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:31e5c9d4aa830c6e
-      build_id: bd-31e5c9d4aa830c6e_1
-      scan_id: sc-3b2e42c8f0b553e0_1
+      name: community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:e95dfba0e421f8af
+      build_id: bd-e95dfba0e421f8af_1
+      scan_id: sc-991fc92ee16eb05f_1
     linux/amd64:
-      name: community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:ce926a86f015211a
-      build_id: bd-ce926a86f015211a_1
-      scan_id: sc-5a4f68a112b1dca0_1
+      name: community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:db5a47fcaf777dbc
+      build_id: bd-db5a47fcaf777dbc_1
+      scan_id: sc-7e110e087de64f10_1
   singularity:
-    linux/arm64:
-      name: oras://community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:46f198136eb937c0
-      build_id: bd-46f198136eb937c0_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8e/8e1b5af758a6affaf729c39cd892232f40ad3a26b8e0cfd39c695dbfe2f42909/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:5947fe0b8b0892f8
-      build_id: bd-5947fe0b8b0892f8_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f9/f905954a8298dd4d0c74515b14dc542d4ff9d5e16ac0328ca31b5fac553b6c39/data
+      name: oras://community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:68abdcce1b0cc56e
+      build_id: bd-68abdcce1b0cc56e_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/56/56a1103127c0ca81835ba9961301242dfcdfd0aa6b931e4e6bf093301fe67d1f/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:e2bce640e0d02dfa
+      build_id: bd-e2bce640e0d02dfa_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/2c/2cbeb703ee3eee6cc88d31debee9e3b097a4000861b13845c8a01f7e3eb72afa/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/leiden/.conda-lock/linux_amd64-bd-ce926a86f015211a_1.txt
+      lock_file: modules/local/scanpy/leiden/.conda-lock/linux_amd64-bd-db5a47fcaf777dbc_1.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/leiden/.conda-lock/linux_arm64-bd-31e5c9d4aa830c6e_1.txt
+      lock_file: modules/local/scanpy/leiden/.conda-lock/linux_arm64-bd-e95dfba0e421f8af_1.txt

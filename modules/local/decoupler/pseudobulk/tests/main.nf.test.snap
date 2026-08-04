@@ -51,19 +51,19 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "batch",
-                        "celltype",
-                        "condition",
-                        "donor",
-                        "leiden",
+                        "sample",
                         "leiden_condition",
-                        "n_cells",
+                        "condition",
+                        "batch",
+                        "sample_original",
+                        "leiden",
                         "psbulk_cells",
                         "psbulk_counts",
-                        "sample",
-                        "sample_id",
-                        "sample_original",
-                        "total_counts"
+                        "donor",
+                        "celltype",
+                        "n_cells",
+                        "total_counts",
+                        "sample_id"
                     ]
                 },
                 "var": {
@@ -92,10 +92,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-11T10:51:27.118055569",
+        "timestamp": "2026-08-03T17:01:36.522499",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
         }
     },
     "Should run without failures - stub": {

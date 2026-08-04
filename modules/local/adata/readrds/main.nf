@@ -4,8 +4,8 @@ process ADATA_READRDS {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'oras://community.wave.seqera.io/library/anndata2ri_bioconductor-singlecellexperiment_anndata_r-seurat:c4b75a61a89ec006' :
-        'community.wave.seqera.io/library/anndata2ri_bioconductor-singlecellexperiment_anndata_r-seurat:5fae42aabf7a1c5f' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/2863a57333ed9d21fa87f18cb37310d747f777fd4a2b4749298edd4d2d4ed92f/data' :
+        'community.wave.seqera.io/library/adata_readrds:771ff9c89e1f71db' }"
 
     input:
     tuple val(meta), path(rds)

@@ -4,8 +4,8 @@ process CUSTOM_AGGREGATE_PER_CELL_ANNOTATIONS {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/38/386e532a346d91ce6e59118da064b9367024f807fb7a52d1e13457a0d01107f2/data' :
-        'community.wave.seqera.io/library/python_pyyaml_scanpy:ab265932a4ff2ebf' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ed/ed34e104367da9d7fa40b39d78d86dce36948d95dbd2571abe923bc857bf192f/data' :
+        'community.wave.seqera.io/library/python_pyyaml_scanpy:ec0559841ac88fb2' }"
 
     input:
     tuple val(meta), path(h5ad)

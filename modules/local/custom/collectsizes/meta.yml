@@ -11,8 +11,9 @@ tools:
       homepage: "https://pandas.pydata.org"
       documentation: "https://pandas.pydata.org/docs"
       tool_dev_url: "https://github.com/pandas-dev/pandas"
-      licence: ["BSD-3-Clause"]
-
+      licence:
+        - "BSD-3-Clause"
+      identifier: biotools:pandas
 input:
   - - meta:
         type: map
@@ -24,8 +25,7 @@ input:
         description: Tab-separated file listing cell counts per filtering stage
         pattern: "*.{tsv,txt}"
         ontologies:
-          - edam: "http://edamontology.org/format_3475"
-
+          - edam: "http://edamontology.org/format_3475" # TSV
 output:
   tsv:
     - - meta:
@@ -38,20 +38,26 @@ output:
           description: Pivot table of cell counts per sample and filtering stage
           pattern: "*.tsv"
           ontologies:
-            - edam: "http://edamontology.org/format_3475"
+            - edam: "http://edamontology.org/format_3475" # TSV
   multiqc_files:
     - "*_mqc.json":
         type: file
         description: MultiQC custom content JSON for the cell count table
         pattern: "*_mqc.json"
+        ontologies:
+          - edam: http://edamontology.org/format_3464 # JSON
   versions:
     - versions.yml:
         type: file
         description: File containing software versions
         pattern: "versions.yml"
         ontologies:
-          - edam: "http://edamontology.org/format_3750"
-
+          - edam: "http://edamontology.org/format_3750" # YAML
+topics:
+  versions:
+    - versions.yml:
+        type: string
+        description: The name of the process
 authors:
   - "@nictru"
 maintainers:
@@ -59,24 +65,24 @@ maintainers:
 containers:
   docker:
     linux/arm64:
-      name: community.wave.seqera.io/library/custom_collectsizes:9a9f757c45c9247d
-      build_id: bd-9a9f757c45c9247d_1
-      scan_id: sc-9d57a77b223e1d2b_1
+      name: community.wave.seqera.io/library/custom_collectsizes:394c38f6d11bac0a
+      build_id: bd-394c38f6d11bac0a_1
+      scan_id: sc-b2c2064112eaa6f2_1
     linux/amd64:
-      name: community.wave.seqera.io/library/custom_collectsizes:ddf7b396f2bfaa5d
-      build_id: bd-ddf7b396f2bfaa5d_1
-      scan_id: sc-b6514041380fa98d_1
+      name: community.wave.seqera.io/library/custom_collectsizes:5b6a03eb50fdf124
+      build_id: bd-5b6a03eb50fdf124_1
+      scan_id: sc-e2993d29b3998134_1
   singularity:
-    linux/amd64:
-      name: oras://community.wave.seqera.io/library/custom_collectsizes:d7f8aacabc8954e3
-      build_id: bd-d7f8aacabc8954e3_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/68/68c5022a4fc1d7a52acf4d7ce0201540ff4f72b4eea2c5598ab31326b98a1206/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/custom_collectsizes:44c5a50729347cb5
-      build_id: bd-44c5a50729347cb5_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/07/0719bb0bb9930b7d4dc21d543caaef2a93bdaca922a54bc11b9239caf17c58da/data
+      name: oras://community.wave.seqera.io/library/custom_collectsizes:c4b9127793cf0088
+      build_id: bd-c4b9127793cf0088_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d3/d338ff78da2b90b0e94c36fd3c91a6f8cabadef4509d92c98e6d0cd6b8b0fdba/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/custom_collectsizes:58264c9b93af280a
+      build_id: bd-58264c9b93af280a_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/3f/3ff2a833e55ecf43bf445ce4a63faa9388ee7fceb8d51e603479572694b6b9b4/data
   conda:
     linux/amd64:
-      lock_file: modules/local/custom/collectsizes/.conda-lock/linux_amd64-bd-ddf7b396f2bfaa5d_1.txt
+      lock_file: modules/local/custom/collectsizes/.conda-lock/linux_amd64-bd-5b6a03eb50fdf124_1.txt
     linux/arm64:
-      lock_file: modules/local/custom/collectsizes/.conda-lock/linux_arm64-bd-9a9f757c45c9247d_1.txt
+      lock_file: modules/local/custom/collectsizes/.conda-lock/linux_arm64-bd-394c38f6d11bac0a_1.txt

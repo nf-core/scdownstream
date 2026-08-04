@@ -62,25 +62,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/amd64:
-      name: community.wave.seqera.io/library/pydeseq2_differential:c83f772671389253
-      build_id: bd-c83f772671389253_1
-      scan_id: sc-1d65e9311423ee53_1
     linux/arm64:
-      name: community.wave.seqera.io/library/pydeseq2_differential:69037b7710c45dd5
-      build_id: bd-69037b7710c45dd5_1
-      scan_id: sc-f98e520d35f19087_1
+      name: community.wave.seqera.io/library/pydeseq2_differential:0a33917ef32b8155
+      build_id: bd-0a33917ef32b8155_2
+      scan_id: sc-7c9c67ff427f3f78_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/pydeseq2_differential:c4673c2cbf3ec8a7
+      build_id: bd-c4673c2cbf3ec8a7_2
+      scan_id: sc-447731b75dd3232e_1
   singularity:
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/pydeseq2_differential:761b8160fda17ff2
-      build_id: bd-761b8160fda17ff2_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/92/923cd4f4b1777f1c886cffbdd3aa61daa7b8b50e19a5ccd46bf59decc252708c/data
+      name: oras://community.wave.seqera.io/library/pydeseq2_differential:f041d17bea43df15
+      build_id: bd-f041d17bea43df15_2
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/13/1383d394af67e221a56319823db7bc7f170c29ba24c2b9868f9572499966f452/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/pydeseq2_differential:543ffbafdc9f4cfb
-      build_id: bd-543ffbafdc9f4cfb_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/de/ded0dc26fe39d71f6eb1d888077b1abfa9fca33bd36fb51c295c5429abb4dc04/data
+      name: oras://community.wave.seqera.io/library/pydeseq2_differential:7b3db7d69f6a270e
+      build_id: bd-7b3db7d69f6a270e_2
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/68/68c0e497efe3034c4b76ebd1bbbb16e0e68fbb3a823ebe8086302bdb142c337c/data
   conda:
     linux/amd64:
-      lock_file: modules/local/pydeseq2/differential/.conda-lock/linux_amd64-bd-c83f772671389253_1.txt
+      lock_file: modules/local/pydeseq2/differential/.conda-lock/linux_amd64-bd-c4673c2cbf3ec8a7_2.txt
     linux/arm64:
-      lock_file: modules/local/pydeseq2/differential/.conda-lock/linux_arm64-bd-69037b7710c45dd5_1.txt
+      lock_file: modules/local/pydeseq2/differential/.conda-lock/linux_arm64-bd-0a33917ef32b8155_2.txt

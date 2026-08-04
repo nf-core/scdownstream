@@ -32,7 +32,7 @@ def load(path: str) -> pd.DataFrame:
 
 
 predictions = pd.concat([load(f) for f in "${predictions}".split()], axis=1)
-predictions = predictions.reindex(adata.obs_names)
+predictions = predictions.reindex(adata.obs_names).fillna(False).astype(bool)
 for column in predictions.columns:
     adata.obs[column] = predictions[column]
 
@@ -87,7 +87,7 @@ if not len(predictions.columns) > 1:
 
 # Plot
 
-contents = {column: predictions[column][predictions[column]].index.tolist() for column in predictions.columns}
+contents = {column: predictions.index[predictions[column]].tolist() for column in predictions.columns}
 
 plot_data = upsetplot.from_contents(contents)
 

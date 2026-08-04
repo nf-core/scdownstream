@@ -77,11 +77,24 @@ maintainers:
 containers:
   docker:
     linux/amd64:
-      name: community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:2198c27c5c9392d5
-      build_id: bd-2198c27c5c9392d5_1
-      scan_id: sc-2cf6ad461f4366ff_1
+      name: community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:8beba38368c4707a
+      build_id: bd-8beba38368c4707a_5
+      scan_id: sc-0eb77876281c1987_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:1955ea21957841c8
+      build_id: bd-1955ea21957841c8_5
+      scan_id: sc-c8ea12805762ab36_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:2198c27c5c9392d5
-      build_id: bd-2198c27c5c9392d5_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/51/512121548a21b4d1bb8acfd5e30a75c5c2103ddd00cf1de4713c682b7e6b5387/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:9f4c1784a34b6ffb
+      build_id: bd-9f4c1784a34b6ffb_5
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/03/030584aaddf5d1234484c2164777ef3c2fd63562331676ea134937e98bd82373/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:cb3f601337484bf1
+      build_id: bd-cb3f601337484bf1_5
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/af/af61acbf7e485c202c57412614e66bb99c60622455a5e71d2f6a3b0f2625c615/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/symphony/mapembedding/.conda-lock/linux_amd64-bd-8beba38368c4707a_5.txt
+    linux/arm64:
+      lock_file: modules/local/symphony/mapembedding/.conda-lock/linux_arm64-bd-1955ea21957841c8_5.txt

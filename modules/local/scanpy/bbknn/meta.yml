@@ -11,8 +11,9 @@ tools:
       homepage: "https://github.com/Teichlab/bbknn"
       documentation: "https://github.com/Teichlab/bbknn"
       tool_dev_url: "https://github.com/Teichlab/bbknn"
-      licence: ["MIT"]
-
+      licence:
+        - "MIT"
+      identifier: biotools:bbknn
 input:
   - - meta:
         type: map
@@ -54,33 +55,37 @@ output:
         description: File containing software versions
         pattern: "versions.yml"
         ontologies:
-          - edam: http://edamontology.org/format_3750
-
+          - edam: http://edamontology.org/format_3750 # YAML
+topics:
+  versions:
+    - versions.yml:
+        type: string
+        description: The name of the process
 authors:
   - "@nictru"
 maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/bbknn_python_pyyaml_scanpy:bbf75a6be9350368
-      build_id: bd-bbf75a6be9350368_1
-      scan_id: sc-c7f7929f2e81d586_1
     linux/amd64:
-      name: community.wave.seqera.io/library/bbknn_python_pyyaml_scanpy:a0553ec6ac27f462
-      build_id: bd-a0553ec6ac27f462_1
-      scan_id: sc-89902720c519ae86_1
+      name: community.wave.seqera.io/library/bbknn_python_pyyaml_scanpy:adc0dbad6ddd2876
+      build_id: bd-adc0dbad6ddd2876_2
+      scan_id: sc-acfbb569242407a7_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/bbknn_python_pyyaml_scanpy:bfcefc05f2cb0882
+      build_id: bd-bfcefc05f2cb0882_2
+      scan_id: sc-d1e780e99979be97_1
   singularity:
-    linux/arm64:
-      name: oras://community.wave.seqera.io/library/bbknn_python_pyyaml_scanpy:5bb44164ae30431a
-      build_id: bd-5bb44164ae30431a_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/70/70d04458c3efda6ff4c0b21f1b238e87acab81553344f12c7f0401bdbc60d403/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/bbknn_python_pyyaml_scanpy:73e640fb2394bccd
-      build_id: bd-73e640fb2394bccd_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/62/621bef06a28747bbbcb674392625dfee9b04b51e54293357d3f12fe55ffb689f/data
+      name: oras://community.wave.seqera.io/library/bbknn_python_pyyaml_scanpy:842392c97280209a
+      build_id: bd-842392c97280209a_2
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/92/92cfd1aa3ab8886c89cc35fd3d8dd538e92843852f8f4d81f5d406ec4748e9e5/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/bbknn_python_pyyaml_scanpy:85e6deba87055ec4
+      build_id: bd-85e6deba87055ec4_2
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8c/8c0e53285fa5d147e8990d86d075db7baa7c02bd76c8bd6563b561c0f3b7d933/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/bbknn/.conda-lock/linux_amd64-bd-a0553ec6ac27f462_1.txt
+      lock_file: modules/local/scanpy/bbknn/.conda-lock/linux_amd64-bd-adc0dbad6ddd2876_2.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/bbknn/.conda-lock/linux_arm64-bd-bbf75a6be9350368_1.txt
+      lock_file: modules/local/scanpy/bbknn/.conda-lock/linux_arm64-bd-bfcefc05f2cb0882_2.txt

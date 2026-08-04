@@ -11,8 +11,9 @@ tools:
       homepage: "https://scanpy.readthedocs.io"
       documentation: "https://scanpy.readthedocs.io"
       tool_dev_url: "https://github.com/scverse/scanpy"
-      licence: ["BSD-3-Clause"]
-
+      licence:
+        - "BSD-3-Clause"
+      identifier: biotools:scanpy
 input:
   - - meta:
         type: map
@@ -33,45 +34,44 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.h5ad":
-          type: file
-          description: AnnData object with log1p-normalised expression in X
-          pattern: "*.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590"
+      - ${prefix}.h5ad: {}
   versions:
     - versions.yml:
         type: file
         description: File containing software versions
         pattern: "versions.yml"
         ontologies:
-          - edam: http://edamontology.org/format_3750
-
+          - edam: http://edamontology.org/format_3750 # YAML
+topics:
+  versions:
+    - versions.yml:
+        type: string
+        description: The name of the process
 authors:
   - "@nictru"
 maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/amd64:
-      name: community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:f7441a003c01f440
-      build_id: bd-f7441a003c01f440_1
-      scan_id: sc-88ee1099deea1021_1
     linux/arm64:
-      name: community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:af082f9e9d3ce8b9
-      build_id: bd-af082f9e9d3ce8b9_1
-      scan_id: sc-f46d4d4bc0b05212_1
+      name: community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:78841aafc4e2a25a
+      build_id: bd-78841aafc4e2a25a_1
+      scan_id: sc-036935070350f78e_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:7df6225e45ce62d7
+      build_id: bd-7df6225e45ce62d7_1
+      scan_id: sc-8c5fc60a7ab7f9b6_1
   singularity:
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:a59923ae1a7fdb2b
-      build_id: bd-a59923ae1a7fdb2b_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/18/18c80f8d095824aeb3ecff7aa79235418c94bef3862c5f7cc0892d2f1e22aabb/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:ae892d590e8b2d23
+      build_id: bd-ae892d590e8b2d23_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8e/8ee13ecdaa99dce07a579e1d2fdb44fe541679c272ca78ad23752e6884fe05b7/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:b4afdfc029cd97f9
-      build_id: bd-b4afdfc029cd97f9_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f4/f4046c811cf4df04aa2f9e7039f452117ea355ba87b2a7505b2c444e3c577e3e/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:31c818cf3b5a8073
+      build_id: bd-31c818cf3b5a8073_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/35/354081f1aea522edf9eb2503417bfd3ac227e5f6cc419192042d47a1457bfb15/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/log1pnorm/.conda-lock/linux_amd64-bd-f7441a003c01f440_1.txt
+      lock_file: modules/local/scanpy/log1pnorm/.conda-lock/linux_amd64-bd-7df6225e45ce62d7_1.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/log1pnorm/.conda-lock/linux_arm64-bd-af082f9e9d3ce8b9_1.txt
+      lock_file: modules/local/scanpy/log1pnorm/.conda-lock/linux_arm64-bd-78841aafc4e2a25a_1.txt

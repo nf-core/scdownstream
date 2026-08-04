@@ -11,8 +11,9 @@ tools:
       homepage: "https://scanpy.readthedocs.io"
       documentation: "https://scanpy.readthedocs.io"
       tool_dev_url: "https://github.com/scverse/scanpy"
-      licence: ["BSD-3-Clause"]
-
+      licence:
+        - "BSD-3-Clause"
+      identifier: biotools:scanpy
 input:
   - - meta:
         type: map
@@ -44,29 +45,39 @@ output:
         type: file
         description: Pickled uns contents including PAGA graph and layout
         pattern: "*.pkl"
+        ontologies: []
   obsp:
     - "*.npy":
         type: file
         description: PAGA connectivities matrix saved as NumPy array
         pattern: "*.npy"
+        ontologies:
+          - edam: http://edamontology.org/format_4003 # NumPy format
   plot:
     - "*.png":
         type: file
         description: PAGA graph plot
         pattern: "*.png"
+        ontologies: []
   multiqc_files:
     - "*_mqc.json":
         type: file
         description: MultiQC custom content JSON for the PAGA plot
         pattern: "*_mqc.json"
+        ontologies:
+          - edam: http://edamontology.org/format_3464 # JSON
   versions:
     - versions.yml:
         type: file
         description: File containing software versions
         pattern: "versions.yml"
         ontologies:
-          - edam: http://edamontology.org/format_3750
-
+          - edam: http://edamontology.org/format_3750 # YAML
+topics:
+  versions:
+    - versions.yml:
+        type: string
+        description: The name of the process
 authors:
   - "@nictru"
 maintainers:
@@ -74,24 +85,24 @@ maintainers:
 containers:
   docker:
     linux/arm64:
-      name: community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:cba17212864ed5a5
-      build_id: bd-cba17212864ed5a5_1
-      scan_id: sc-5157b0fb80f7b9fb_1
+      name: community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:00dca50fd1f8bfe6
+      build_id: bd-00dca50fd1f8bfe6_1
+      scan_id: sc-ebd5e03fd6eb36ba_1
     linux/amd64:
-      name: community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:e5a54bd2b6c9720d
-      build_id: bd-e5a54bd2b6c9720d_1
-      scan_id: sc-39d861970c4bd205_1
+      name: community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:53120062012176bc
+      build_id: bd-53120062012176bc_1
+      scan_id: sc-2e5de486b4ecb8e9_1
   singularity:
-    linux/arm64:
-      name: oras://community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:a4e8b5c0aa66b012
-      build_id: bd-a4e8b5c0aa66b012_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/50/50dcd170b7530455e14f1721aad03cb89343ae18b0d803476cdb96c4c2239540/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:b4a348276df1bb40
-      build_id: bd-b4a348276df1bb40_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c4/c43892b5ea2991c98bd69e6da333b902a1e54635e24ca2cf3fd4c5972efb4384/data
+      name: oras://community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:9c4c54f819274de5
+      build_id: bd-9c4c54f819274de5_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f3/f36c00fcbaa1da1aaa6cf25cd8a562efb6728457d4a54b46fa06395aebd2083e/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:b071bcea269804c4
+      build_id: bd-b071bcea269804c4_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0b/0bee94d9c751f8e4e66087403f279fc5653099009bf604cea7a8df716e424796/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/paga/.conda-lock/linux_amd64-bd-e5a54bd2b6c9720d_1.txt
+      lock_file: modules/local/scanpy/paga/.conda-lock/linux_amd64-bd-53120062012176bc_1.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/paga/.conda-lock/linux_arm64-bd-cba17212864ed5a5_1.txt
+      lock_file: modules/local/scanpy/paga/.conda-lock/linux_arm64-bd-00dca50fd1f8bfe6_1.txt

@@ -62,25 +62,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/mygene_anndata_pyyaml:af5e64044d0c7e2b
-      build_id: bd-af5e64044d0c7e2b_1
-      scan_id: sc-7626e5183eb00a82_1
     linux/amd64:
-      name: community.wave.seqera.io/library/mygene_anndata_pyyaml:98db2848ee7bb9d4
-      build_id: bd-98db2848ee7bb9d4_1
-      scan_id: sc-dacae917d165f8ad_1
+      name: community.wave.seqera.io/library/mygene_anndata_pyyaml:2078fdff1608539a
+      build_id: bd-2078fdff1608539a_1
+      scan_id: sc-4916abdfe163dd8d_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/mygene_anndata_pyyaml:e90481ed3d99b9e5
+      build_id: bd-e90481ed3d99b9e5_1
+      scan_id: sc-911abbbff3dd05ca_1
   singularity:
-    linux/arm64:
-      name: oras://community.wave.seqera.io/library/mygene_anndata_pyyaml:7fef85eb9cc50e7c
-      build_id: bd-7fef85eb9cc50e7c_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/00/0057488efc92b187cec53970ee3f2a6bd669eae375b6cc3e15badd989226f9fb/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/mygene_anndata_pyyaml:9ef340356cb8598e
-      build_id: bd-9ef340356cb8598e_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/17/17edc6c2851bac2d0d288f94c7e91ab644c9c413654777511deca6379cfa7203/data
+      name: oras://community.wave.seqera.io/library/mygene_anndata_pyyaml:5ff926cf5f78b7f3
+      build_id: bd-5ff926cf5f78b7f3_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f1/f121d9538b02d70d9d7770a37b50c34f7e6db07b57699b00877c8227927f6054/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/mygene_anndata_pyyaml:1da61920622a5b63
+      build_id: bd-1da61920622a5b63_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c1/c17b26923bcddab42b6c29663588f42b6b3d42c4c75deacc14a28851979d180e/data
   conda:
     linux/amd64:
-      lock_file: modules/local/adata/mygene/.conda-lock/linux_amd64-bd-98db2848ee7bb9d4_1.txt
+      lock_file: modules/local/adata/mygene/.conda-lock/linux_amd64-bd-2078fdff1608539a_1.txt
     linux/arm64:
-      lock_file: modules/local/adata/mygene/.conda-lock/linux_arm64-bd-af5e64044d0c7e2b_1.txt
+      lock_file: modules/local/adata/mygene/.conda-lock/linux_arm64-bd-e90481ed3d99b9e5_1.txt

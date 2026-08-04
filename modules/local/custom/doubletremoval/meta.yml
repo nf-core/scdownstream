@@ -11,8 +11,9 @@ tools:
       homepage: "https://scanpy.readthedocs.io"
       documentation: "https://scanpy.readthedocs.io"
       tool_dev_url: "https://github.com/scverse/scanpy"
-      licence: ["BSD-3-Clause"]
-
+      licence:
+        - "BSD-3-Clause"
+      identifier: biotools:scanpy
 input:
   - - meta:
         type: map
@@ -30,7 +31,7 @@ input:
         description: CSV file containing doublet predictions from scDblFinder
         pattern: "*.csv"
         ontologies:
-          - edam: "http://edamontology.org/format_3752"
+          - edam: "http://edamontology.org/format_3752" # CSV
   - threshold:
       type: number
       description: Score threshold above which cells are classified as doublets
@@ -56,39 +57,45 @@ output:
         type: file
         description: Optional MultiQC custom content JSON summarising doublet removal
         pattern: "*_mqc.json"
+        ontologies:
+          - edam: http://edamontology.org/format_3464 # JSON
   versions:
     - versions.yml:
         type: file
         description: File containing software versions
         pattern: "versions.yml"
         ontologies:
-          - edam: "http://edamontology.org/format_3750"
-
+          - edam: "http://edamontology.org/format_3750" # YAML
+topics:
+  versions:
+    - versions.yml:
+        type: string
+        description: The name of the process
 authors:
   - "@nictru"
 maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/doublet_removal:600e58acb27a85dd
-      build_id: bd-600e58acb27a85dd_1
-      scan_id: sc-35495ef13f986183_1
     linux/amd64:
-      name: community.wave.seqera.io/library/doublet_removal:be35baa3d64eb9b7
-      build_id: bd-be35baa3d64eb9b7_1
-      scan_id: sc-ccdcf588fdc37bb8_1
+      name: community.wave.seqera.io/library/doublet_removal:81c2fac7b14cd21d
+      build_id: bd-81c2fac7b14cd21d_1
+      scan_id: sc-03793d3fc05ec940_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/doublet_removal:0c37d3ab714cd54a
+      build_id: bd-0c37d3ab714cd54a_1
+      scan_id: sc-482b3733cb89f48b_1
   singularity:
-    linux/amd64:
-      name: oras://community.wave.seqera.io/library/doublet_removal:4df6b76062dbef38
-      build_id: bd-4df6b76062dbef38_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7f/7f257d17ec38c213802f67cbe15cb9928b46d1aca4f492154b958f8b9195681c/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/doublet_removal:e4f376f41190cfe2
-      build_id: bd-e4f376f41190cfe2_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/13/1398c273f0185c9ededa9e012a62b07d030a103f84f2939191559a528e2c654a/data
+      name: oras://community.wave.seqera.io/library/doublet_removal:a416a662ecdb4e03
+      build_id: bd-a416a662ecdb4e03_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8e/8e223b38bb63708674b1f94de1f834432f39e51814568d50ea9f80e5af387dbf/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/doublet_removal:726e7c73c19b71e8
+      build_id: bd-726e7c73c19b71e8_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1c/1cda35bb187ad93a5ad29cd0a0340e1c4c5e3e84e8189dbbfca98e3bd4eef16b/data
   conda:
     linux/amd64:
-      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_amd64-bd-be35baa3d64eb9b7_1.txt
+      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_amd64-bd-81c2fac7b14cd21d_1.txt
     linux/arm64:
-      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_arm64-bd-600e58acb27a85dd_1.txt
+      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_arm64-bd-0c37d3ab714cd54a_1.txt

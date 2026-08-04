@@ -4,8 +4,8 @@ process SCANPY_RANKGENESGROUPS {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/66/66561a1d6ec23b4fb6ab22ac3b0d2245cbee572efd91c4160ad7e56dc7d52940/data' :
-        'community.wave.seqera.io/library/python_pyyaml_scanpy_adjusttext:c1e4685cda2d8cf3' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/3b/3bfaa458a82be5af0d36e828f85c953789fa66f088bfc57b48e6f2fd6e77a79a/data' :
+        'community.wave.seqera.io/library/adjusttext_python_pyyaml_scanpy:bb9fae9f02f816e2' }"
 
     input:
     tuple val(meta), path(h5ad)

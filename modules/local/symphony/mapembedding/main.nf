@@ -4,8 +4,8 @@ process SYMPHONY_MAPEMBEDDING {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/51/512121548a21b4d1bb8acfd5e30a75c5c2103ddd00cf1de4713c682b7e6b5387/data' :
-        'community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:2198c27c5c9392d5' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/03/030584aaddf5d1234484c2164777ef3c2fd63562331676ea134937e98bd82373/data' :
+        'community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:8beba38368c4707a' }"
 
     input:
     tuple val(meta), path(h5ad)

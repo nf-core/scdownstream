@@ -59,11 +59,24 @@ maintainers:
 containers:
   docker:
     linux/amd64:
-      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-glmgampoi_bioconductor-rhdf5_r-seurat:a0acfd4813d44adc
-      build_id: bd-a0acfd4813d44adc_1
-      scan_id: sc-46adb547e8e0f244_1
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-glmgampoi_bioconductor-rhdf5_r-seurat:219408537f886c16
+      build_id: bd-219408537f886c16_3
+      scan_id: sc-939bf9850e21b0e7_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-glmgampoi_bioconductor-rhdf5_r-seurat:3a989b7e727c7057
+      build_id: bd-3a989b7e727c7057_3
+      scan_id: sc-a53bde362f9b3723_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-glmgampoi_bioconductor-rhdf5_r-seurat:a0acfd4813d44adc
-      build_id: bd-a0acfd4813d44adc_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7b/7bbad8d18ada67c2ca1dfaec11c5acb0fcd355713fec10331b0e202f1d6165f1/data
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-glmgampoi_bioconductor-rhdf5_r-seurat:0947a67237d086a8
+      build_id: bd-0947a67237d086a8_3
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ba/ba95c9e79901d212e616821dccbabd8998d5620e7bd9cf2ab804df0f96bf037b/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-glmgampoi_bioconductor-rhdf5_r-seurat:6c8951a64f4d7a1c
+      build_id: bd-6c8951a64f4d7a1c_3
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/e7/e75a5f63d3d46360abc68805e2ccd853ba2217792c02e90ab9e9169476bd933c/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/seurat/integration/.conda-lock/linux_amd64-bd-219408537f886c16_3.txt
+    linux/arm64:
+      lock_file: modules/local/seurat/integration/.conda-lock/linux_arm64-bd-3a989b7e727c7057_3.txt

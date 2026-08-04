@@ -3,9 +3,9 @@ process SCANORAMA_INTEGRATE {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ee/ee5ffb0917263d09101dd05dc45c76aa239af97c58f2f5a368ac8a67a3eede3c/data'
-:         'community.wave.seqera.io/library/python_pyyaml_scanpy_scanorama:095181a9ed452380' }"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8b/8be87af1ee23560defd75bb3817bc0e615466bfcdd9d7ffc5814ea2fa6b15952/data' :
+        'community.wave.seqera.io/library/python_pyyaml_scanpy_scanorama:ad64f41f792ea3b3' }"
 
     input:
     tuple val(meta), path(h5ad, arity: 1)

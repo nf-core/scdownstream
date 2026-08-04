@@ -4,8 +4,8 @@ process SOUPX {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7f/7f7c86baec26b736bdccdc3ee2bcd862b919ced4a82bbe9ef09c646fa6b94117/data' :
-        'community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-rhdf5_r-seurat_r-soupx:50aef4aa28333b3c' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/05/0548abb55390a26542b5dc872a1da12ed9aa5e9ea914a79601e5c12b698223c0/data' :
+        'community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-rhdf5_r-seurat_r-soupx:476949c3c02c399d' }"
 
     input:
     tuple val(meta), path(h5ad), path(raw)

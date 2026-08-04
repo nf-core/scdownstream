@@ -81,9 +81,10 @@ def unify_obs_column(
             del adata.obs[source_col]
 
         if unknown_label is not None and unknown_label != "unknown":
-            if "unknown" in adata.obs[target_name]:
+            series = adata.obs[target_name].astype(str)
+            if "unknown" in series.values:
                 raise ValueError(f"The {target_name} column already contains 'unknown' values.")
-            adata.obs[target_name].replace({unknown_label: "unknown"}, inplace=True)
+            adata.obs[target_name] = series.replace({unknown_label: "unknown"})
 
         adata.obs[target_name] = adata.obs[target_name].astype(str)
         adata.obs[target_name] = adata.obs[target_name].fillna("unknown")

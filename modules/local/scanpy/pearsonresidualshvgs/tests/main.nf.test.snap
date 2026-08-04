@@ -42,8 +42,8 @@
         "content": [
             {
                 "SCANPY_PEARSONRESIDUALS_HVGS": {
-                    "python": "3.13.12",
-                    "scanpy": "1.12.2"
+                    "python": "3.13.14",
+                    "scanpy": "1.12.3"
                 }
             },
             {
@@ -58,11 +58,11 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "highly_variable",
-                        "highly_variable_rank",
                         "means",
+                        "variances",
                         "residual_variances",
-                        "variances"
+                        "highly_variable_rank",
+                        "highly_variable"
                     ]
                 },
                 "layers": [
@@ -85,7 +85,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-11T09:32:48.226626",
+        "timestamp": "2026-08-04T07:40:35.578126",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.4"

@@ -11,7 +11,8 @@ tools:
       homepage: "https://scanpy.readthedocs.io/"
       documentation: "https://scanpy.readthedocs.io/"
       tool_dev_url: "https://github.com/scverse/scanpy"
-      licence: ["BSD-3-clause"]
+      licence:
+        - "BSD-3-clause"
       identifier: biotools:scanpy
 
 input:
@@ -26,22 +27,23 @@ input:
         pattern: "*.{h5ad}"
         ontologies:
           - edam: "http://edamontology.org/format_3590"
-    - n_genes:
-        type: integer
-        description: |
-          Number of highly variable genes to retain. If 0, defaults to 4000.
-    - excluded_genes:
-        type: file
-        description: |
-          Optional file with one gene symbol per line to exclude before feature selection.
-    - batch_key:
-        type: string
-        description: |
-          Optional column in obs for batch-aware Pearson residual HVG selection.
-    - counts_layer:
-        type: string
-        description: |
-          Layer containing raw counts, or `X` to use the main matrix.
+  - n_genes:
+      type: integer
+      description: |
+        Number of highly variable genes to retain. If 0, defaults to 4000.
+  - excluded_genes:
+      type: file
+      description: |
+        Optional file with one gene symbol per line to exclude before feature selection.
+      ontologies: []
+  - batch_key:
+      type: string
+      description: |
+        Optional column in obs for batch-aware Pearson residual HVG selection.
+  - counts_layer:
+      type: string
+      description: |
+        Layer containing raw counts, or `X` to use the main matrix.
 
 output:
   h5ad:
@@ -50,25 +52,21 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.h5ad":
-          type: file
-          description: AnnData object subset to highly variable genes with raw counts in `X`
-          pattern: "*.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590"
+      - ${prefix}.h5ad: {}
   var:
-    - "*.pkl":
-        type: file
-        description: Pickled DataFrame with highly variable gene annotations
-        pattern: "*.pkl"
+    - ${prefix}.pkl: {}
   versions:
     - versions.yml:
         type: file
         description: File containing software versions
         pattern: "versions.yml"
         ontologies:
-          - edam: http://edamontology.org/format_3750
-
+          - edam: http://edamontology.org/format_3750 # YAML
+topics:
+  versions:
+    - versions.yml:
+        type: string
+        description: The name of the process
 authors:
   - "@nictru"
 maintainers:
@@ -76,24 +74,24 @@ maintainers:
 containers:
   docker:
     linux/arm64:
-      name: community.wave.seqera.io/library/python_pyyaml_scanpy:1ffabec2e58c5ef2
-      build_id: bd-1ffabec2e58c5ef2_1
-      scan_id: sc-11af35eb64ff8b64_1
+      name: community.wave.seqera.io/library/python_pyyaml_scanpy:7f19b28d786b0222
+      build_id: bd-7f19b28d786b0222_1
+      scan_id: sc-b3c44c3ae7152a6d_1
     linux/amd64:
-      name: community.wave.seqera.io/library/python_pyyaml_scanpy:641b33efb395c24e
-      build_id: bd-641b33efb395c24e_1
-      scan_id: sc-e813ca3671686f02_1
+      name: community.wave.seqera.io/library/python_pyyaml_scanpy:ec0559841ac88fb2
+      build_id: bd-ec0559841ac88fb2_1
+      scan_id: sc-f0395f3488ec7c75_1
   singularity:
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy:4b54127cdfe403f0
-      build_id: bd-4b54127cdfe403f0_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/18/188995f4986086c3b17bdefed71c7241576caa857a4388900df1313464893d2f/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy:d69da01942cb3bc7
+      build_id: bd-d69da01942cb3bc7_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/61/61239a82cb89944ca962bc7be4bbfc5e3761b7a708c1110881d3569fc3c6b7bb/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy:e4262d9e523d875f
-      build_id: bd-e4262d9e523d875f_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f6/f692c0c793f5ac7da42963b22084153c26be689e512864095832318e77dee2f9/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy:0177c1b99592b0c0
+      build_id: bd-0177c1b99592b0c0_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ed/ed34e104367da9d7fa40b39d78d86dce36948d95dbd2571abe923bc857bf192f/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/pearsonresidualshvgs/.conda-lock/linux_amd64-bd-641b33efb395c24e_1.txt
+      lock_file: modules/local/scanpy/pearsonresidualshvgs/.conda-lock/linux_amd64-bd-ec0559841ac88fb2_1.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/pearsonresidualshvgs/.conda-lock/linux_arm64-bd-1ffabec2e58c5ef2_1.txt
+      lock_file: modules/local/scanpy/pearsonresidualshvgs/.conda-lock/linux_arm64-bd-7f19b28d786b0222_1.txt

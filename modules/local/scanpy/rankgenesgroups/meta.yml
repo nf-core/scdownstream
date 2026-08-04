@@ -10,8 +10,9 @@ tools:
       homepage: "https://scanpy.readthedocs.io"
       documentation: "https://scanpy.readthedocs.io"
       tool_dev_url: "https://github.com/scverse/scanpy"
-      licence: ["BSD-3-Clause"]
-
+      licence:
+        - "BSD-3-Clause"
+      identifier: biotools:scanpy
 input:
   - - meta:
         type: map
@@ -20,6 +21,7 @@ input:
         type: file
         description: AnnData object in h5ad format
         pattern: "*.{h5ad}"
+        ontologies: []
   - obs_key:
       type: string
       description: obs column used to group cells for differential expression
@@ -40,6 +42,9 @@ input:
       description: Optional CSV of gene symbols to highlight on volcano plots
       pattern: "*.{csv,tsv,txt}"
 
+      ontologies:
+        - edam: http://edamontology.org/format_3752 # CSV
+        - edam: http://edamontology.org/format_3475 # TSV
 output:
   h5ad:
     - - meta:
@@ -49,32 +54,46 @@ output:
           type: file
           description: AnnData with rank_genes_groups results
           pattern: "*.h5ad"
+          ontologies: []
   uns:
     - "*.pkl":
         type: file
         description: Pickled uns contents including rank_genes_groups
         pattern: "*.pkl"
+        ontologies: []
   plots:
     - "*.png":
         type: file
         description: Differential expression plots including volcanoes
         pattern: "*.png"
+        ontologies: []
   markers:
     - "*.csv":
         type: file
         description: Marker gene tables
         pattern: "*.csv"
+        ontologies:
+          - edam: http://edamontology.org/format_3752 # CSV
   multiqc_files:
     - "*_mqc.json":
         type: file
         description: MultiQC custom content JSON for volcano plots
         pattern: "*_mqc.json"
+        ontologies:
+          - edam: http://edamontology.org/format_3464 # JSON
   versions:
     - versions.yml:
         type: file
         description: File containing software versions
         pattern: "versions.yml"
 
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+topics:
+  versions:
+    - versions.yml:
+        type: string
+        description: The name of the process
 authors:
   - "@nictru"
 maintainers:
@@ -82,24 +101,24 @@ maintainers:
 containers:
   docker:
     linux/amd64:
-      name: community.wave.seqera.io/library/python_pyyaml_scanpy_adjusttext:c1e4685cda2d8cf3
-      build_id: bd-c1e4685cda2d8cf3_1
-      scan_id: sc-230d15685437d02f_1
+      name: community.wave.seqera.io/library/adjusttext_python_pyyaml_scanpy:bb9fae9f02f816e2
+      build_id: bd-bb9fae9f02f816e2_2
+      scan_id: sc-6b6eb5263769c9cd_1
     linux/arm64:
-      name: community.wave.seqera.io/library/python_pyyaml_scanpy_adjusttext:cc5ee0c272fe022f
-      build_id: bd-cc5ee0c272fe022f_1
-      scan_id: sc-8bf5ea631b117915_2
+      name: community.wave.seqera.io/library/adjusttext_python_pyyaml_scanpy:aad81ffa527bab2f
+      build_id: bd-aad81ffa527bab2f_2
+      scan_id: sc-101e1afa57ef40b1_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_adjusttext:75fa8d6fc536ce50
-      build_id: bd-75fa8d6fc536ce50_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/66/66561a1d6ec23b4fb6ab22ac3b0d2245cbee572efd91c4160ad7e56dc7d52940/data
+      name: oras://community.wave.seqera.io/library/adjusttext_python_pyyaml_scanpy:1bc06fc3a3fcc9c9
+      build_id: bd-1bc06fc3a3fcc9c9_2
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/3b/3bfaa458a82be5af0d36e828f85c953789fa66f088bfc57b48e6f2fd6e77a79a/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_adjusttext:99473890245d5c0a
-      build_id: bd-99473890245d5c0a_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/2e/2ec3b68c9f887c4f0b9a7afb0670bf3c042d3f16fdea8e4ce14e543d9231d339/data
+      name: oras://community.wave.seqera.io/library/adjusttext_python_pyyaml_scanpy:7cdede327432e8a3
+      build_id: bd-7cdede327432e8a3_2
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/be/beed093de9e7e6198e68e74342f702003c0fc4643e611a1782bc5cb03c5622af/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_amd64-bd-c1e4685cda2d8cf3_1.txt
+      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_amd64-bd-bb9fae9f02f816e2_2.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_arm64-bd-cc5ee0c272fe022f_1.txt
+      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_arm64-bd-aad81ffa527bab2f_2.txt

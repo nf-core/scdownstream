@@ -12,7 +12,8 @@ tools:
       documentation: "https://celltypist.readthedocs.io"
       tool_dev_url: "https://github.com/Teichlab/celltypist"
       doi: "10.1126/science.abl5197"
-      licence: ["MIT"]
+      licence:
+        - "MIT"
       identifier: biotools:celltypist
 
 input:
@@ -57,6 +58,7 @@ output:
           type: file
           description: Pickled obs subset containing CellTypist annotation columns
           pattern: "*.pkl"
+          ontologies: []
   annotation_columns:
     - - meta:
           type: map
@@ -68,15 +70,19 @@ output:
           description: CSV listing obs columns produced by CellTypist and whether they are aggregatable
           pattern: "*_annotation_columns.csv"
           ontologies:
-            - edam: "http://edamontology.org/format_3752"
+            - edam: "http://edamontology.org/format_3752" # CSV
   versions:
     - versions.yml:
         type: file
         description: File containing software versions
         pattern: "versions.yml"
         ontologies:
-          - edam: "http://edamontology.org/format_3750"
-
+          - edam: "http://edamontology.org/format_3750" # YAML
+topics:
+  versions:
+    - versions.yml:
+        type: string
+        description: The name of the process
 authors:
   - "@nictru"
 maintainers:
@@ -84,24 +90,24 @@ maintainers:
 containers:
   docker:
     linux/amd64:
-      name: community.wave.seqera.io/library/celltypist:5c8a1d7b51207f8e
-      build_id: bd-5c8a1d7b51207f8e_1
-      scan_id: sc-0d97a53e3efda237_1
+      name: community.wave.seqera.io/library/celltypist:34649e0085cf7125
+      build_id: bd-34649e0085cf7125_1
+      scan_id: sc-834f1e371a5b6bf2_1
     linux/arm64:
-      name: community.wave.seqera.io/library/celltypist:d95dd53106a463cc
-      build_id: bd-d95dd53106a463cc_1
-      scan_id: sc-58feaa77fee0f2f8_1
+      name: community.wave.seqera.io/library/celltypist:104e8c35bb960a72
+      build_id: bd-104e8c35bb960a72_1
+      scan_id: sc-07daa16cc319475a_1
   singularity:
-    linux/amd64:
-      name: oras://community.wave.seqera.io/library/celltypist:f54d15faff6d295c
-      build_id: bd-f54d15faff6d295c_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cb/cb0b40342ced5d0b963803016966c024757ffa84bb3514f20347bbc1de113c97/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/celltypist:049f700f187a0acb
-      build_id: bd-049f700f187a0acb_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d6/d68de3aa1f537c180318fa82a54ce0a68192e1ffef647cd0762f817b289b0538/data
+      name: oras://community.wave.seqera.io/library/celltypist:127b6a274d2c83a2
+      build_id: bd-127b6a274d2c83a2_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/df/dfd8224b7dd7b8dab35beb555b7d3a0d066ed10173754b237916e0167d4682c7/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/celltypist:e29563d65e3f71d6
+      build_id: bd-e29563d65e3f71d6_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/88/88d5c1e86b7599bee9d80818628a4d9dc5de36b9e0915522b170919bc742bcd2/data
   conda:
     linux/amd64:
-      lock_file: modules/local/celltypist/.conda-lock/linux_amd64-bd-5c8a1d7b51207f8e_1.txt
+      lock_file: modules/local/celltypist/.conda-lock/linux_amd64-bd-34649e0085cf7125_1.txt
     linux/arm64:
-      lock_file: modules/local/celltypist/.conda-lock/linux_arm64-bd-d95dd53106a463cc_1.txt
+      lock_file: modules/local/celltypist/.conda-lock/linux_arm64-bd-104e8c35bb960a72_1.txt

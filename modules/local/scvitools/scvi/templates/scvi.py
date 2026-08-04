@@ -82,6 +82,7 @@ model.train(
 # Round to ensure hashes are stable
 adata.obsm["X_emb"] = model.get_latent_representation()
 
+ad.settings.allow_write_nullable_strings = True
 adata.write_h5ad("${prefix}.h5ad")
 model.save("${prefix}_model")
 
