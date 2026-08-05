@@ -4,15 +4,15 @@ process DOUBLETDETECTION {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/96/96f52092a8472acb59ded59ab5ec4a29a56627f0c78e3cc8a0b916c6bedd67d6/data'
-        : 'community.wave.seqera.io/library/pyyaml_pip_doubletdetection:5af145ffec01d7da'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/43/43aae6490abfa26eab86e0f827f2d278fc5460712669f0146d6163fd27875275/data'
+        : 'community.wave.seqera.io/library/anndata_pip_python_pyyaml_pruned:7bde77eb6c6fbc17'}"
 
     input:
     tuple val(meta), path(h5ad)
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    tuple val(meta), path("*.pkl") , emit: predictions
+    tuple val(meta), path("*.parquet") , emit: predictions
     path "versions.yml"            , emit: versions, topic: versions
 
     when:
@@ -26,7 +26,7 @@ process DOUBLETDETECTION {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
-    touch ${prefix}.pkl
+    touch ${prefix}.parquet
 
     cat <<-END_VERSIONS > versions.yml
     ${task.process}:

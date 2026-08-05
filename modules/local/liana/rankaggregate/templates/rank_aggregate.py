@@ -284,7 +284,7 @@ if adata.obs[obs_key].nunique() > 1:
         )
         df: pd.DataFrame = adata.uns["liana_res"]
 
-        df.to_pickle(f"{prefix}.pkl")
+        df.to_parquet(f"{prefix}.parquet", index=True)
         adata.write_h5ad(f"{prefix}.h5ad")
         _write_liana_plots(adata, df, obs_key)
 

@@ -1,0 +1,80 @@
+name: "scimilarity_annotate"
+description: Annotate single-cell profiles with SCimilarity cell type labels via kNN lookup
+keywords:
+  - annotation
+  - cell-type
+  - single-cell
+  - scimilarity
+tools:
+  - "scimilarity":
+      description: "Metric learning for efficient and accurate comparison of single-cell profiles"
+      homepage: "https://github.com/Genentech/scimilarity"
+      documentation: "https://github.com/Genentech/scimilarity"
+      tool_dev_url: "https://github.com/Genentech/scimilarity"
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format with SCimilarity embeddings in obsm
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing model information
+          e.g. `[ id:'model' ]`
+    - model:
+        type: file
+        description: Pretrained SCimilarity model directory
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with SCimilarity annotation column added to obs
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  obs:
+    - "*.parquet":
+        type: file
+        description: Parquet file containing SCimilarity annotation column
+        pattern: "*.parquet"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/python_anndata_pyyaml_zarr_pruned:e48f77182189ae52
+      build_id: bd-e48f77182189ae52_1
+      scan_id: sc-ea3d29d109ca1544_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python_anndata_pyyaml_zarr_pruned:71db3798e7fe12c3
+      build_id: bd-71db3798e7fe12c3_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a2/a20638c4d888db74810c8cc68e6f9335f736caaa4c5593cba63c524b6f301e66/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scimilarity/annotate/.conda-lock/linux_amd64-bd-e48f77182189ae52_1.txt

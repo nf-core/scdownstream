@@ -54,10 +54,10 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.pkl":
+      - "*.parquet":
           type: file
           description: Pickled obs subset containing CellTypist annotation columns
-          pattern: "*.pkl"
+          pattern: "*.parquet"
           ontologies: []
   annotation_columns:
     - - meta:
@@ -90,24 +90,24 @@ maintainers:
 containers:
   docker:
     linux/amd64:
-      name: community.wave.seqera.io/library/celltypist:34649e0085cf7125
-      build_id: bd-34649e0085cf7125_1
-      scan_id: sc-834f1e371a5b6bf2_1
+      name: community.wave.seqera.io/library/celltypist:a4fa2621f1596f41
+      build_id: bd-a4fa2621f1596f41_1
+      scan_id: sc-d06982f52536f82b_1
     linux/arm64:
-      name: community.wave.seqera.io/library/celltypist:104e8c35bb960a72
-      build_id: bd-104e8c35bb960a72_1
-      scan_id: sc-07daa16cc319475a_1
+      name: community.wave.seqera.io/library/celltypist:21b32fb84be0624e
+      build_id: bd-21b32fb84be0624e_1
+      scan_id: sc-d920839b642e55c0_1
   singularity:
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/celltypist:127b6a274d2c83a2
-      build_id: bd-127b6a274d2c83a2_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/df/dfd8224b7dd7b8dab35beb555b7d3a0d066ed10173754b237916e0167d4682c7/data
+      name: oras://community.wave.seqera.io/library/celltypist:b9c638802296d2db
+      build_id: bd-b9c638802296d2db_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1e/1ed4807ab4f0f17c59bec5c273701305d92c9735336ab4f1b265eaf1e970717d/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/celltypist:e29563d65e3f71d6
-      build_id: bd-e29563d65e3f71d6_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/88/88d5c1e86b7599bee9d80818628a4d9dc5de36b9e0915522b170919bc742bcd2/data
+      name: oras://community.wave.seqera.io/library/celltypist:a39c4883c4156923
+      build_id: bd-a39c4883c4156923_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/39/39223737b9353409f4db6c18e7143b106ad9f322cd3a82d7741d89e49a5ba2fa/data
   conda:
     linux/amd64:
-      lock_file: modules/local/celltypist/.conda-lock/linux_amd64-bd-34649e0085cf7125_1.txt
+      lock_file: modules/local/celltypist/.conda-lock/linux_amd64-bd-a4fa2621f1596f41_1.txt
     linux/arm64:
-      lock_file: modules/local/celltypist/.conda-lock/linux_arm64-bd-104e8c35bb960a72_1.txt
+      lock_file: modules/local/celltypist/.conda-lock/linux_arm64-bd-21b32fb84be0624e_1.txt

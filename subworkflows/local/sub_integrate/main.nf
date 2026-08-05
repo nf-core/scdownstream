@@ -120,7 +120,7 @@ workflow SUB_INTEGRATE {
     emit:
     h5ad         = ch_h5ad_normalized            // channel: [ meta, h5ad ]
     integrations = ch_integrations            // channel: [ meta, h5ad ]
-    obs          = INTEGRATE.out.obs          // channel: [ pkl ]
-    var          = INTEGRATE.out.var          // channel: [ pkl ]
-    obsm         = INTEGRATE.out.obsm         // channel: [ pkl ]
+    obs          = INTEGRATE.out.obs          // channel: [ parquet ]
+    var          = INTEGRATE.out.var          // channel: [ parquet ]
+    obsm         = INTEGRATE.out.obsm         // channel: [ parquet ]
 }

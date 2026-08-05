@@ -87,7 +87,7 @@ adata.write_h5ad("${prefix}.h5ad")
 model.save("${prefix}_model")
 
 df = pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names)
-df.to_pickle("X_${prefix}.pkl")
+df.to_parquet("X_${prefix}.parquet", index=True)
 
 # Versions
 

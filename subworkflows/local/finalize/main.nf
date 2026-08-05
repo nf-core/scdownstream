@@ -5,11 +5,11 @@ include { ADATA_PREPCELLXGENE } from '../../../modules/local/adata/prepcellxgene
 workflow FINALIZE {
     take:
     ch_h5ad        // channel: [ merged, h5ad ]
-    ch_obs         // channel: [ pkl ]
-    ch_var         // channel: [ pkl ]
-    ch_obsm        // channel: [ pkl ]
+    ch_obs         // channel: [ parquet ]
+    ch_var         // channel: [ parquet ]
+    ch_obsm        // channel: [ parquet ]
     ch_obsp
-    ch_uns         // channel: [ pkl ]
+    ch_uns         // channel: [ parquet ]
     prep_cellxgene //   value: boolean
     tords          //   value: boolean
 

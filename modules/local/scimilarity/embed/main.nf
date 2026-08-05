@@ -4,9 +4,9 @@ process SCIMILARITY_EMBED {
     label 'process_gpu'
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0b/0b07b44946319f0a77889ca315e4a48bef70c67bae06ce2603039a4995c75f0a/data'
-        : 'community.wave.seqera.io/library/anndata_hnswlib_numcodecs_python_pruned:3f8ef15250e4fea7'}"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a2/a20638c4d888db74810c8cc68e6f9335f736caaa4c5593cba63c524b6f301e66/data'
+:         'community.wave.seqera.io/library/python_anndata_pyyaml_zarr_pruned:e48f77182189ae52' }"
 
     input:
     tuple val(meta), path(h5ad)
@@ -14,7 +14,7 @@ process SCIMILARITY_EMBED {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path ("X_${prefix}.pkl")               , emit: obsm
+    path ("X_${prefix}.parquet")               , emit: obsm
     path "versions.yml"                    , emit: versions, topic: versions
 
     when:
@@ -28,7 +28,7 @@ process SCIMILARITY_EMBED {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch "${prefix}.h5ad"
-    touch "X_${prefix}.pkl"
+    touch "X_${prefix}.parquet"
     touch "versions.yml"
     """
 }

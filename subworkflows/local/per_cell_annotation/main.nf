@@ -42,6 +42,6 @@ workflow PER_CELL_ANNOTATION {
         .splitCsv(header: true, elem: 1)
 
     emit:
-    obs                    = ch_obs                    // channel: [ meta, pkl ]
+    obs                    = ch_obs                    // channel: [ meta, parquet ]
     annotation_column_rows = ch_annotation_column_rows // channel: [ obs_column, aggregatable ]
 }

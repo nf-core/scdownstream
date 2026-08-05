@@ -321,7 +321,7 @@ nextflow_workflow {
             // PAGA + LIANA + RANKGENESGROUPS all produce uns pkls
             assert workflow.out.uns.size() >= 1
             assert workflow.out.uns.any { file(it).name == "test_paga.pkl" }
-            assert workflow.out.uns.any { file(it).name == "test_liana.pkl" }
+            assert workflow.out.uns.any { file(it).name == "test_liana.parquet" }
             assert workflow.out.multiqc_files.size() >= 1
             assert workflow.out.h5ad.size() >= 1
             assert workflow.out.obs.size() == 0
@@ -385,7 +385,7 @@ nextflow_workflow {
             assert workflow.success
             assert workflow.out.h5ad.size() >= 1
             assert workflow.out.obs.size() >= 1
-            assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
+            assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.parquet') }
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml },
                 workflow.out.obs.size()
@@ -444,7 +444,7 @@ nextflow_workflow {
             assert workflow.out.uns.size() >= 1
             assert workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
             assert !workflow.out.uns.any { file(it).name == 'test_paga.pkl' }
-            assert !workflow.out.uns.any { file(it).name == 'test_liana.pkl' }
+            assert !workflow.out.uns.any { file(it).name == 'test_liana.parquet' }
             assert workflow.out.obs.size() == 0
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml }
@@ -501,7 +501,7 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.uns.any { file(it).name == 'test_paga.pkl' }
-            assert workflow.out.uns.any { file(it).name == 'test_liana.pkl' }
+            assert workflow.out.uns.any { file(it).name == 'test_liana.parquet' }
             assert !workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
             assert workflow.out.h5ad.size() == 0
             assert workflow.out.obs.size() == 0
@@ -558,7 +558,7 @@ nextflow_workflow {
             assert workflow.success
             assert workflow.out.uns.any { file(it).name == 'test_paga.pkl' }
             assert workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
-            assert !workflow.out.uns.any { file(it).name == 'test_liana.pkl' }
+            assert !workflow.out.uns.any { file(it).name == 'test_liana.parquet' }
             assert workflow.out.obs.size() == 0
         }
 
@@ -670,7 +670,7 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
-            assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
+            assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.parquet') }
         }
 
     }
@@ -729,7 +729,7 @@ nextflow_workflow {
             assert workflow.success
             assert workflow.out.h5ad.any { meta, _h5ad -> meta.de_method == 'wilcoxon' }
             assert workflow.out.h5ad.any { meta, _h5ad -> meta.de_method == 'logreg' }
-            assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
+            assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.parquet') }
         }
 
     }
@@ -784,7 +784,7 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.obs.size() >= 1
-            assert workflow.out.obs.any { pkl -> file(pkl).name == 'test:annotation:celltypist:Adult_COVID19_PBMC:per_cell.pkl' }
+            assert workflow.out.obs.any { pkl -> file(pkl).name == 'test:annotation:celltypist:Adult_COVID19_PBMC:per_cell.parquet' }
             assert workflow.out.uns.size() == 0
         }
 

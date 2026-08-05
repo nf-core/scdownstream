@@ -1,0 +1,315 @@
+Changes in component 'nf-core/scvitools/solo'
+Changes in 'scvitools/solo/environment.yml':
+--- modules/nf-core/scvitools/solo/environment.yml
++++ modules/nf-core/scvitools/solo/environment.yml
+@@ -5,3 +5,4 @@
+   - bioconda
+ dependencies:
+   - conda-forge::scvi-tools=1.4.3
++  - conda-forge::pyarrow=25.0.0
+
+Changes in 'scvitools/solo/meta.yml':
+--- modules/nf-core/scvitools/solo/meta.yml
++++ modules/nf-core/scvitools/solo/meta.yml
+@@ -1,74 +1,97 @@
+ name: scvitools_solo
+ description: Detect doublets in single-cell RNA-Seq data
+ keywords:
+-  - scvi
+-  - solo
+-  - doublets
++- scvi
++- solo
++- doublets
+ tools:
+-  - scvitools:
+-      description: "A scalable toolkit for probabilistic modeling applied to single-cell
+-        omics data"
+-      homepage: "https://scvi-tools.org"
+-      documentation: "https://docs.scvi-tools.org/en/stable/"
+-      tool_dev_url: "https://github.com/scverse/scvi-tools"
+-      licence:
+-        - "MIT"
+-      identifier: ""
++- scvitools:
++    description: "A scalable toolkit for probabilistic modeling applied to single-cell omics data"
++    homepage: "https://scvi-tools.org"
++    documentation: "https://docs.scvi-tools.org/en/stable/"
++    tool_dev_url: "https://github.com/scverse/scvi-tools"
++    licence:
++    - "MIT"
++    identifier: ""
+ input:
++- - meta:
++      type: map
++      description: |
++        Groovy Map containing sample information
++        e.g. `[ id:'sample1' ]`
++  - h5ad:
++      type: file
++      description: H5AD anndata object
++      pattern: "*.h5ad"
++      ontologies:
++      - edam: "http://edamontology.org/format_3590"     # HDF5 format
++- batch_key:
++    type: string
++    description: Column in adata.obs to use as batch. If not provided, the entire dataset is treated as a single batch.
++- max_epochs:
++    type: integer
++    description: Maximum number of epochs to train the model. Defaults to the [heuristic default](https://docs.scvi-tools.org/en/stable/api/reference/scvi.model.get_max_epochs_heuristic.html#scvi.model.get_max_epochs_heuristic).
++output:
++  h5ad:
+   - - meta:
+         type: map
+         description: |
+           Groovy Map containing sample information
+           e.g. `[ id:'sample1' ]`
+-    - h5ad:
++    - "*.h5ad":
+         type: file
+-        description: H5AD anndata object
++        description: H5AD anndata object without doublets
+         pattern: "*.h5ad"
+         ontologies:
+-          - edam: "http://edamontology.org/format_3590" # HDF5 format
+-  - batch_key:
+-      type: string
+-      description: Column in adata.obs to use as batch. If not provided, the entire dataset is treated as a single batch.
+-  - max_epochs:
+-      type: integer
+-      description: Maximum number of epochs to train the model. Defaults to the [heuristic default](https://docs.scvi-tools.org/en/stable/api/reference/scvi.model.get_max_epochs_heuristic.html#scvi.model.get_max_epochs_heuristic).
+-output:
+-  h5ad:
+-    - - meta:
+-          type: map
+-          description: |
+-            Groovy Map containing sample information
+-            e.g. `[ id:'sample1' ]`
+-      - "*.h5ad":
+-          type: file
+-          description: H5AD anndata object without doublets
+-          pattern: "*.h5ad"
+-          ontologies:
+-            - edam: "http://edamontology.org/format_3590" # HDF5 format
++        - edam: "http://edamontology.org/format_3590"     # HDF5 format
+   predictions:
+-    - - meta:
+-          type: map
+-          description: |
+-            Groovy Map containing sample information
+-            e.g. `[ id:'sample1' ]`
+-      - "*.pkl":
+-          type: file
+-          description: pandas dataframe containing the doublet classification
+-          pattern: "*.pkl"
+-          ontologies: []
++  - - meta:
++        type: map
++        description: |
++          Groovy Map containing sample information
++          e.g. `[ id:'sample1' ]`
++    - "*.parquet":
++        type: file
++        description: pandas dataframe containing the doublet classification
++        pattern: "*.parquet"
++        ontologies: []
+   versions:
+-    - versions.yml:
+-        type: file
+-        description: File containing software versions
+-        pattern: "versions.yml"
+-        ontologies:
+-          - edam: http://edamontology.org/format_3750 # YAML
++  - versions.yml:
++      type: file
++      description: File containing software versions
++      pattern: "versions.yml"
++      ontologies:
++      - edam: http://edamontology.org/format_3750     # YAML
+ topics:
+   versions:
+-    - versions.yml:
+-        type: string
+-        description: The name of the process
++  - versions.yml:
++      type: string
++      description: The name of the process
+ authors:
+-  - "@LeonHafner"
++- "@LeonHafner"
+ maintainers:
+-  - "@LeonHafner"
++- "@LeonHafner"
++containers:
++  docker:
++    linux/arm64:
++      name: community.wave.seqera.io/library/scvi-tools_pyarrow:aca905fd8d74c4bc
++      build_id: bd-aca905fd8d74c4bc_1
++      scan_id: sc-5fc3e6c87aebd954_1
++    linux/amd64:
++      name: community.wave.seqera.io/library/scvi-tools_pyarrow:1734dedd3c3d134b
++      build_id: bd-1734dedd3c3d134b_1
++      scan_id: sc-902d4871d385ceb1_1
++  singularity:
++    linux/amd64:
++      name: oras://community.wave.seqera.io/library/scvi-tools_pyarrow:47052f91e0d38119
++      build_id: bd-47052f91e0d38119_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/21/21c048694d2a9bc03c17a310c79c5691d2fc83df62e5e2654791a2105da8b09f/data
++    linux/arm64:
++      name: oras://community.wave.seqera.io/library/scvi-tools_pyarrow:c666fb85b3a53a0e
++      build_id: bd-c666fb85b3a53a0e_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/72/72725d93ae508bba1686efde0a23b47e4fb011d0abf55f364eebe29e643d5708/data
++  conda:
++    linux/amd64:
++      lock_file: modules/nf-core/scvitools/solo/.conda-lock/linux_amd64-bd-1734dedd3c3d134b_1.txt
++    linux/arm64:
++      lock_file: modules/nf-core/scvitools/solo/.conda-lock/linux_arm64-bd-aca905fd8d74c4bc_1.txt
+
+Changes in 'scvitools/solo/main.nf':
+--- modules/nf-core/scvitools/solo/main.nf
++++ modules/nf-core/scvitools/solo/main.nf
+@@ -4,10 +4,9 @@
+     label 'process_gpu'
+ 
+     conda "${moduleDir}/environment.yml"
+-    container "${ task.ext.use_gpu ? 'ghcr.io/scverse/scvi-tools:py3.13-cu12-1.4.3-' :
+-        workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/df/dfb4b54fd5cb5c5624d947914f5ab8ac86eeaa5f762ebc52c034fbd36cf30250/data':
+-        'community.wave.seqera.io/library/scvi-tools:1.4.3--cce8c95b58ececa6' }"
++    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
++?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/21/21c048694d2a9bc03c17a310c79c5691d2fc83df62e5e2654791a2105da8b09f/data'
++:         'community.wave.seqera.io/library/scvi-tools_pyarrow:1734dedd3c3d134b' }"
+ 
+     input:
+     tuple val(meta), path(h5ad)
+@@ -16,7 +15,7 @@
+ 
+     output:
+     tuple val(meta), path("*.h5ad"), emit: h5ad
+-    tuple val(meta), path("*.pkl") , emit: predictions
++    tuple val(meta), path("*.parquet") , emit: predictions
+     path "versions.yml"            , emit: versions, topic: versions
+ 
+     when:
+@@ -32,7 +31,7 @@
+     export MPLCONFIGDIR=./tmp
+ 
+     touch ${prefix}.h5ad
+-    touch ${prefix}.pkl
++    touch ${prefix}.parquet
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+
+Changes in 'scvitools/solo/tests/main.nf.test.snap':
+--- modules/nf-core/scvitools/solo/tests/main.nf.test.snap
++++ modules/nf-core/scvitools/solo/tests/main.nf.test.snap
+@@ -4,28 +4,28 @@
+             [
+                 "versions.yml:md5,bb88327d1a949a186e1a243a4ff14ce0"
+             ],
+-            "test.h5ad",
+-            "test.pkl"
++            "test_solo.h5ad",
++            "test_solo.parquet"
+         ],
++        "timestamp": "2026-08-05T12:42:45.783564",
+         "meta": {
+-            "nf-test": "0.9.2",
+-            "nextflow": "25.04.3"
+-        },
+-        "timestamp": "2025-08-03T22:24:09.611388977"
++            "nf-test": "0.9.5",
++            "nextflow": "26.04.6"
++        }
+     },
+     "Should run with batch column": {
+         "content": [
+             [
+                 "versions.yml:md5,bb88327d1a949a186e1a243a4ff14ce0"
+             ],
+-            "test.h5ad",
+-            "test.pkl"
++            "test_solo.h5ad",
++            "test_solo.parquet"
+         ],
++        "timestamp": "2026-08-05T12:44:16.448134",
+         "meta": {
+-            "nf-test": "0.9.2",
+-            "nextflow": "25.04.3"
+-        },
+-        "timestamp": "2025-08-03T22:24:40.875872995"
++            "nf-test": "0.9.5",
++            "nextflow": "26.04.6"
++        }
+     },
+     "Should run with batch column - stub": {
+         "content": [
+@@ -35,7 +35,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_solo.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "1": [
+@@ -43,7 +43,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_solo.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "2": [
+@@ -54,7 +54,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_solo.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "predictions": [
+@@ -62,7 +62,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_solo.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "versions": [
+@@ -70,10 +70,10 @@
+                 ]
+             }
+         ],
++        "timestamp": "2026-08-05T12:46:00.475659",
+         "meta": {
+-            "nf-test": "0.9.2",
+-            "nextflow": "25.04.3"
+-        },
+-        "timestamp": "2025-08-03T17:44:44.007844551"
++            "nf-test": "0.9.5",
++            "nextflow": "26.04.6"
++        }
+     }
+ }
+'modules/nf-core/scvitools/solo/tests/main.nf.test' is unchanged
+Changes in 'scvitools/solo/templates/solo.py':
+--- modules/nf-core/scvitools/solo/templates/solo.py
++++ modules/nf-core/scvitools/solo/templates/solo.py
+@@ -56,7 +56,7 @@
+ 
+ df = adata.obs[["doublet"]]
+ df.columns = ["${prefix}"]
+-df.to_pickle("${prefix}.pkl")
++df.to_parquet("${prefix}.parquet", index=True)
+ 
+ adata = adata[~adata.obs["doublet"]].copy()
+ adata.obs.drop("doublet", axis=1, inplace=True)
+
+'modules/nf-core/scvitools/solo/.conda-lock/linux_amd64-bd-1734dedd3c3d134b_1.txt' was created
+'modules/nf-core/scvitools/solo/.conda-lock/linux_arm64-bd-aca905fd8d74c4bc_1.txt' was created
+************************************************************

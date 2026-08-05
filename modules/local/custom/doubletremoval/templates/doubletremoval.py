@@ -25,10 +25,13 @@ prefix = "${prefix}"
 
 
 def load(path: str) -> pd.DataFrame:
+    if path.endswith(".parquet"):
+        return pd.read_parquet(path)
     if path.endswith(".pkl"):
         return pd.read_pickle(path)
     if path.endswith(".csv"):
         return pd.read_csv(path, index_col=0)
+    raise ValueError(f"Unsupported prediction file extension: {path}")
 
 
 predictions = pd.concat([load(f) for f in "${predictions}".split()], axis=1)

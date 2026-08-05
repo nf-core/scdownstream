@@ -2,7 +2,7 @@
     "scdownsteam - h5ad": {
         "content": [
             3262106,
-            148146,
+            66414,
             {
                 "DOUBLETDETECTION": {
                     "anndata": "0.11.4",
@@ -11,21 +11,40 @@
                 }
             }
         ],
-        "timestamp": "2026-04-23T17:14:06.033746024",
+        "timestamp": "2026-08-05T12:29:23.460423",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.03.2"
+            "nextflow": "26.04.6"
         }
     },
     "scdownstream - h5ad - stub": {
         "content": [
             {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_doubletdetection.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_doubletdetection.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,3ed20fc4bca7372f427cb84f3e689992"
+                ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_doubletdetection.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "predictions": [
@@ -33,25 +52,18 @@
                         {
                             "id": "test"
                         },
-                        "test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_doubletdetection.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions": [
                     "versions.yml:md5,3ed20fc4bca7372f427cb84f3e689992"
                 ]
-            },
-            {
-                "DOUBLETDETECTION": {
-                    "python": "3.13.3",
-                    "anndata": "0.11.4",
-                    "doubletdetection": null
-                }
             }
         ],
-        "timestamp": "2026-04-23T17:14:23.856426678",
+        "timestamp": "2026-08-05T12:30:17.762937",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.03.2"
+            "nextflow": "26.04.6"
         }
     }
 }

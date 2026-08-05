@@ -33,7 +33,7 @@ kwargs = {
 
 sc.tl.leiden(adata, **kwargs)
 
-adata.obs[[key_added]].to_pickle(f"{prefix}.pkl")
+adata.obs[[key_added]].to_parquet(f"{prefix}.parquet", index=True)
 adata.write_h5ad(f"{prefix}.h5ad")
 
 if "${plot_umap}" == "true":

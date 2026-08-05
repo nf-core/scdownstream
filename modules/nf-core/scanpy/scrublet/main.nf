@@ -3,9 +3,9 @@ process SCANPY_SCRUBLET {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cc/cc499354bb89be6429cfc8d8416a340c2327a72732fb6ae33c346feef17b5ffb/data'
-        : 'community.wave.seqera.io/library/python_pyyaml_scanpy_scikit-image:750e7b74b6d036e4'}"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ad/ad3a426f2f091efbfe0bb359c19dfabe53799ed71b330279e194a6920b3683b8/data'
+:         'community.wave.seqera.io/library/python_pyyaml_scanpy_scikit-image_pyarrow:baaeebe49bb1193e' }"
 
     input:
     tuple val(meta), path(h5ad)
@@ -13,7 +13,7 @@ process SCANPY_SCRUBLET {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    tuple val(meta), path("*.pkl") , emit: predictions
+    tuple val(meta), path("*.parquet") , emit: predictions
     path "versions.yml"            , emit: versions, topic: versions
 
     when:
@@ -38,7 +38,7 @@ process SCANPY_SCRUBLET {
     export NUMBA_CACHE_DIR=./tmp/numba
 
     touch ${prefix}.h5ad
-    touch ${prefix}.pkl
+    touch ${prefix}.parquet
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

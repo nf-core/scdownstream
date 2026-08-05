@@ -59,7 +59,7 @@ if adata.n_vars > n_hvgs:
 
     sc.pp.highly_variable_genes(adata, **kwargs)
 
-    adata.var[["highly_variable"]].to_pickle(f"{prefix}.pkl")
+    adata.var[["highly_variable"]].to_parquet(f"{prefix}.parquet", index=True)
 
     adata.X = raw_counts
     adata = adata[:, adata.var["highly_variable"]]

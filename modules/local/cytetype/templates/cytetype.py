@@ -105,7 +105,7 @@ if missing_cols:
     raise RuntimeError(f"CyteType did not add expected obs columns: {missing_cols}. Check logs and study_context.")
 
 df_out = adata_work.obs[library_cols].rename(columns=dict(zip(library_cols, output_cols))).reindex(adata.obs.index)
-df_out.to_pickle(f"{prefix}.pkl")
+df_out.to_parquet(f"{prefix}.parquet", index=True)
 
 adata.obs = pd.concat([adata.obs, df_out], axis=1)
 _prepare_adata_for_h5ad(adata)

@@ -3,9 +3,9 @@ process ADATA_EXTEND {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/bc/bc259b0f0471f937af0396cdcb3834de97ca1fefa5563f160a217187600f69bc/data' :
-        'community.wave.seqera.io/library/anndata_python_pyyaml:eec9fad329c5006d' }"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8c/8c079b996dc7408bd09c0a854ae9618c8b0f6a2c70c527118a1d789871cf6af8/data'
+:         'community.wave.seqera.io/library/anndata_python_pyyaml_pyarrow:6427a8e8cd0e418b' }"
 
     input:
     tuple (

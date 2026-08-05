@@ -4,10 +4,9 @@ process SCVITOOLS_SOLO {
     label 'process_gpu'
 
     conda "${moduleDir}/environment.yml"
-    container "${ task.ext.use_gpu ? 'ghcr.io/scverse/scvi-tools:py3.13-cu12-1.4.3-' :
-        workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/df/dfb4b54fd5cb5c5624d947914f5ab8ac86eeaa5f762ebc52c034fbd36cf30250/data':
-        'community.wave.seqera.io/library/scvi-tools:1.4.3--cce8c95b58ececa6' }"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/21/21c048694d2a9bc03c17a310c79c5691d2fc83df62e5e2654791a2105da8b09f/data'
+:         'community.wave.seqera.io/library/scvi-tools_pyarrow:1734dedd3c3d134b' }"
 
     input:
     tuple val(meta), path(h5ad)
@@ -16,7 +15,7 @@ process SCVITOOLS_SOLO {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    tuple val(meta), path("*.pkl") , emit: predictions
+    tuple val(meta), path("*.parquet") , emit: predictions
     path "versions.yml"            , emit: versions, topic: versions
 
     when:
@@ -32,7 +31,7 @@ process SCVITOOLS_SOLO {
     export MPLCONFIGDIR=./tmp
 
     touch ${prefix}.h5ad
-    touch ${prefix}.pkl
+    touch ${prefix}.parquet
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

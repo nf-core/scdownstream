@@ -109,11 +109,11 @@ adata.obs["label:scANVI"] = model.predict()
 
 ad.settings.allow_write_nullable_strings = True
 adata.write_h5ad("${prefix}.h5ad")
-adata.obs[["label:scANVI"]].to_pickle("${prefix}.pkl")
+adata.obs[["label:scANVI"]].to_parquet("${prefix}.parquet", index=True)
 model.save("${prefix}_model")
 
 df = pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names)
-df.to_pickle("X_${prefix}.pkl")
+df.to_parquet("X_${prefix}.parquet", index=True)
 
 # Versions
 

@@ -41,10 +41,10 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1', single_end:false ]`
-      - "*.pkl":
+      - "*.parquet":
           type: file
           description: pandas dataframe containing the doublet classification
-          pattern: "*.pkl"
+          pattern: "*.parquet"
           ontologies: []
   versions:
     - versions.yml:
@@ -65,3 +65,27 @@ authors:
   - "@LeonHafner"
 maintainers:
   - "@LeonHafner"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/anndata_pip_python_pyyaml_pruned:7bde77eb6c6fbc17
+      build_id: bd-7bde77eb6c6fbc17_1
+      scan_id: sc-f0fb1a1b308d56c7_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/anndata_pip_python_pyyaml_pruned:8a6efd8ece04ea17
+      build_id: bd-8a6efd8ece04ea17_1
+      scan_id: sc-ba5d1b2f96ab2a8e_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_pip_python_pyyaml_pruned:a70277637be003b0
+      build_id: bd-a70277637be003b0_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/43/43aae6490abfa26eab86e0f827f2d278fc5460712669f0146d6163fd27875275/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/anndata_pip_python_pyyaml_pruned:486f1e794acfab7b
+      build_id: bd-486f1e794acfab7b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b1/b1791a513fcfc8e90c287f4c0dfba7fdf465b277bf52aca4f7ace34af3078562/data
+  conda:
+    linux/amd64:
+      lock_file: modules/nf-core/doubletdetection/.conda-lock/linux_amd64-bd-7bde77eb6c6fbc17_1.txt
+    linux/arm64:
+      lock_file: modules/nf-core/doubletdetection/.conda-lock/linux_arm64-bd-8a6efd8ece04ea17_1.txt

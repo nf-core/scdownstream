@@ -10,6 +10,7 @@ import anndata as ad
 import doubletdetection
 import yaml
 
+
 adata = ad.read_h5ad("${h5ad}")
 
 clf = doubletdetection.BoostClassifier(n_jobs=int("${task.cpus}"))
@@ -23,7 +24,7 @@ adata.write_h5ad("${prefix}.h5ad")
 
 df = adata.obs[["doublet"]]
 df.columns = ["${prefix}"]
-df.to_pickle("${prefix}.pkl")
+df.to_parquet("${prefix}.parquet", index=True)
 
 # Versions
 versions = {

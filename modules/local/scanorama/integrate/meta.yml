@@ -40,10 +40,10 @@ output:
           description: Integrated AnnData with Scanorama embedding in obsm
           pattern: "*.h5ad"
   obsm:
-    - "X_*.pkl":
+    - "X_*.parquet":
         type: file
         description: Integrated embedding as pickle
-        pattern: "X_*.pkl"
+        pattern: "X_*.parquet"
   versions:
     - versions.yml:
         type: file
@@ -56,25 +56,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/python_pyyaml_scanpy_scanorama:8f34a2bdc7e69b98
-      build_id: bd-8f34a2bdc7e69b98_1
-      scan_id: sc-ff649370e5867343_1
     linux/amd64:
-      name: community.wave.seqera.io/library/python_pyyaml_scanpy_scanorama:ad64f41f792ea3b3
-      build_id: bd-ad64f41f792ea3b3_1
-      scan_id: sc-bdd4262835d10d28_1
+      name: community.wave.seqera.io/library/python_pyyaml_scanpy_scanorama_pyarrow:100d7fce0082a614
+      build_id: bd-100d7fce0082a614_1
+      scan_id: sc-628354f56215bca7_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/python_pyyaml_scanpy_scanorama_pyarrow:55b96af153fb3cbe
+      build_id: bd-55b96af153fb3cbe_1
+      scan_id: sc-c79afd5f6c042c6c_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_scanorama:e26d41ff5750f6b6
-      build_id: bd-e26d41ff5750f6b6_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8b/8be87af1ee23560defd75bb3817bc0e615466bfcdd9d7ffc5814ea2fa6b15952/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_scanorama_pyarrow:0ac84c412eb5d0e7
+      build_id: bd-0ac84c412eb5d0e7_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/34/345eb2fb37907b25b7b18f33c7a933799874b9177a89abdff6478b28f414cdcc/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_scanorama:71e726d01941b7cf
-      build_id: bd-71e726d01941b7cf_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1d/1d36c37a48d0551eb06620fdf24bba7a07cbfc50df4834c65e84a3d2ec796c84/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_scanorama_pyarrow:a9296adf551afc6a
+      build_id: bd-a9296adf551afc6a_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/40/40e69e31edb6f4a5da2458b0c93a3dd51ee3ff95fb7700d22b09e730028e4cdd/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanorama/integrate/.conda-lock/linux_amd64-bd-ad64f41f792ea3b3_1.txt
+      lock_file: modules/local/scanorama/integrate/.conda-lock/linux_amd64-bd-100d7fce0082a614_1.txt
     linux/arm64:
-      lock_file: modules/local/scanorama/integrate/.conda-lock/linux_arm64-bd-8f34a2bdc7e69b98_1.txt
+      lock_file: modules/local/scanorama/integrate/.conda-lock/linux_arm64-bd-55b96af153fb3cbe_1.txt

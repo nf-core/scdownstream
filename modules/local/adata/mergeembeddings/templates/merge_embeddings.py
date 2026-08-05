@@ -43,10 +43,10 @@ if integration == "scanvi":
 
     adata_combined.obs["label:scANVI"] = labels.loc[adata_combined.obs_names]
 
-    adata_combined.obs[["label:scANVI"]].to_pickle("${prefix}.pkl")
+    adata_combined.obs[["label:scANVI"]].to_parquet("${prefix}.parquet", index=True)
 
 df = pd.DataFrame(adata_combined.obsm["X_emb"], index=adata_combined.obs_names)
-df.to_pickle("X_${prefix}.pkl")
+df.to_parquet("X_${prefix}.parquet", index=True)
 
 adata_combined.write_h5ad("${prefix}.h5ad")
 

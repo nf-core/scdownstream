@@ -56,10 +56,10 @@ output:
           ontologies:
             - edam: "http://edamontology.org/format_3590"
   obsm:
-    - "X_*.pkl":
+    - "X_*.parquet":
         type: file
         description: Pickled expiMap latent embedding stored in obsm
-        pattern: "X_*.pkl"
+        pattern: "X_*.parquet"
   versions:
     - versions.yml:
         type: file
@@ -75,12 +75,25 @@ maintainers:
 
 containers:
   docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/scvi-tools_scanpy_scipy_pyarrow_pruned:4c08567d3e9481e2
+      build_id: bd-4c08567d3e9481e2_1
+      scan_id: sc-1ebaa17d1791ec45_1
     linux/amd64:
-      name: community.wave.seqera.io/library/anndata_lightning_numpy_pip_pruned:08aebf94dee8bc48
-      build_id: bd-08aebf94dee8bc48_1
-      scan_id: sc-0105b6206780671b_1
+      name: community.wave.seqera.io/library/scvi-tools_scanpy_scipy_pyarrow_pruned:fb32ad9bb2dc1d4b
+      build_id: bd-fb32ad9bb2dc1d4b_1
+      scan_id: sc-ccba8c9377f99c64_1
   singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/scvi-tools_scanpy_scipy_pyarrow_pruned:93b4fc1433a8523d
+      build_id: bd-93b4fc1433a8523d_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ec/eced41b6961fd16c2ca17ebb38fa8094ac0ddd1130675c94d8ade8cfb0ecedb9/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/anndata_lightning_numpy_pip_pruned:08aebf94dee8bc48
-      build_id: bd-08aebf94dee8bc48_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0b/0b05bb6176023b06058cc9bc6c99a63d72456b51b6f3eb86a720106aa77d022b/data
+      name: oras://community.wave.seqera.io/library/scvi-tools_scanpy_scipy_pyarrow_pruned:27f4791c7bea57d5
+      build_id: bd-27f4791c7bea57d5_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/42/428246e3461701389de9078cfd82b3084dad6642adc31f09e09eb65409e31840/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scarches/expimap/.conda-lock/linux_amd64-bd-fb32ad9bb2dc1d4b_1.txt
+    linux/arm64:
+      lock_file: modules/local/scarches/expimap/.conda-lock/linux_arm64-bd-4c08567d3e9481e2_1.txt

@@ -3,9 +3,9 @@ process SCANPY_PEARSONRESIDUALS_HVGS {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ed/ed34e104367da9d7fa40b39d78d86dce36948d95dbd2571abe923bc857bf192f/data' :
-        'community.wave.seqera.io/library/python_pyyaml_scanpy:ec0559841ac88fb2' }"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f4/f4cb85cb4a864e74997f047afb5f16ecd6e106cc8793edfc3e91945501b41bbd/data'
+:         'community.wave.seqera.io/library/python_pyyaml_scanpy_pyarrow:4be15c4d717947be' }"
 
     input:
     tuple val(meta), path(h5ad)
@@ -16,7 +16,7 @@ process SCANPY_PEARSONRESIDUALS_HVGS {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path ("${prefix}.pkl")                 , emit: var
+    path ("${prefix}.parquet")                 , emit: var
     path "versions.yml"                    , emit: versions, topic: versions
 
     when:
@@ -30,7 +30,7 @@ process SCANPY_PEARSONRESIDUALS_HVGS {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
-    touch ${prefix}.pkl
+    touch ${prefix}.parquet
     touch versions.yml
     """
 }

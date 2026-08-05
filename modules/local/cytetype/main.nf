@@ -6,9 +6,9 @@ process CYTETYPE {
     errorStrategy 'ignore'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b2/b24aee9072d4f8cd6ea77a3e30d02ef114a2a2e3de34d2bfb5bb113543730c29/data' :
-        'community.wave.seqera.io/library/python_pyyaml_pydantic_anndata_pruned:c5e32374cbaee1c4' }"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b1/b1379602a1a1febd0d1715e90506c05aa7945d541538c1f431684be97878dcfa/data'
+:         'community.wave.seqera.io/library/python_pyyaml_pydantic_anndata_pruned:87cef5886d0c62d2' }"
 
     input:
     tuple val(meta), path(h5ad, stageAs: 'input.h5ad')
@@ -21,7 +21,7 @@ process CYTETYPE {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path "${prefix}.pkl"                   , emit: obs
+    path "${prefix}.parquet"                   , emit: obs
     path "versions.yml"                    , emit: versions, topic: versions
 
     when:
@@ -39,7 +39,7 @@ process CYTETYPE {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
-    touch ${prefix}.pkl
+    touch ${prefix}.parquet
     touch versions.yml
     """
 }

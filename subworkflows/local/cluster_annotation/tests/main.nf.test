@@ -39,7 +39,7 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.obs.size() >= 1
-            assert workflow.out.obs.any { pkl -> file(pkl).name == 'test:annotation:celltypist:Adult_COVID19_PBMC:per_cell.pkl' }
+            assert workflow.out.obs.any { pkl -> file(pkl).name == 'test:annotation:celltypist:Adult_COVID19_PBMC:per_cell.parquet' }
         }
 
     }
@@ -112,7 +112,7 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.obs.size() >= 1
-            assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
+            assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.parquet') }
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml },
                 workflow.out.obs.size()
@@ -205,10 +205,10 @@ nextflow_workflow {
             assert workflow.success
             assert workflow.out.obs.size() == 2
             assert workflow.out.obs.any { pkl ->
-                file(pkl).name == 'test:annotation:celltypist:Adult_COVID19_PBMC:per_cell.pkl'
+                file(pkl).name == 'test:annotation:celltypist:Adult_COVID19_PBMC:per_cell.parquet'
             }
             assert workflow.out.obs.any { pkl ->
-                file(pkl).name.endsWith('_cytetype.pkl')
+                file(pkl).name.endsWith('_cytetype.parquet')
             }
         }
 

@@ -3,9 +3,9 @@ process CELLTYPES_CELLTYPIST {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/88/88d5c1e86b7599bee9d80818628a4d9dc5de36b9e0915522b170919bc742bcd2/data' :
-        'community.wave.seqera.io/library/celltypist:34649e0085cf7125' }"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/39/39223737b9353409f4db6c18e7143b106ad9f322cd3a82d7741d89e49a5ba2fa/data'
+:         'community.wave.seqera.io/library/celltypist:a4fa2621f1596f41' }"
 
     input:
     tuple val(meta), path(h5ad), val(symbol_col)
@@ -13,7 +13,7 @@ process CELLTYPES_CELLTYPIST {
 
     output:
     tuple val(meta), path("*.h5ad")                  , emit: h5ad
-    tuple val(meta), path("*.pkl")                   , emit: obs
+    tuple val(meta), path("*.parquet")                   , emit: obs
     tuple val(meta), path("*_annotation_columns.csv"), emit: annotation_columns
     path "versions.yml"                              , emit: versions, topic: versions
 
@@ -28,7 +28,7 @@ process CELLTYPES_CELLTYPIST {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
-    touch ${prefix}.pkl
+    touch ${prefix}.parquet
     echo "obs_column,aggregatable" > ${prefix}_annotation_columns.csv
     touch versions.yml
     """

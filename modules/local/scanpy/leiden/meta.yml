@@ -45,7 +45,7 @@ output:
             e.g. `[ id:'sample1' ]`
       - ${prefix}.h5ad: {}
   obs:
-    - ${prefix}.pkl: {}
+    - ${prefix}.parquet: {}
   plots:
     - ${prefix}.png: {}
   multiqc_files:
@@ -68,25 +68,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:e95dfba0e421f8af
-      build_id: bd-e95dfba0e421f8af_1
-      scan_id: sc-991fc92ee16eb05f_1
     linux/amd64:
-      name: community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:db5a47fcaf777dbc
-      build_id: bd-db5a47fcaf777dbc_1
-      scan_id: sc-7e110e087de64f10_1
+      name: community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_pruned:bcac6e9b185de544
+      build_id: bd-bcac6e9b185de544_1
+      scan_id: sc-f15a0e8e596cd1c6_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_pruned:ea2b7eed06775603
+      build_id: bd-ea2b7eed06775603_1
+      scan_id: sc-600a228b5c57c52d_1
   singularity:
-    linux/amd64:
-      name: oras://community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:68abdcce1b0cc56e
-      build_id: bd-68abdcce1b0cc56e_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/56/56a1103127c0ca81835ba9961301242dfcdfd0aa6b931e4e6bf093301fe67d1f/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:e2bce640e0d02dfa
-      build_id: bd-e2bce640e0d02dfa_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/2c/2cbeb703ee3eee6cc88d31debee9e3b097a4000861b13845c8a01f7e3eb72afa/data
+      name: oras://community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_pruned:8c539db23fec94a9
+      build_id: bd-8c539db23fec94a9_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f0/f0c0e9e4f38c6f223208a422e2f691294571a7c8200627e6484fcb31ed44ff85/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_pruned:965e5c103be89904
+      build_id: bd-965e5c103be89904_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/e5/e50341d870b17e250b38810a2b4f488f3e73a60e3cb5cd67c90fe0d0bd0f8938/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/leiden/.conda-lock/linux_amd64-bd-db5a47fcaf777dbc_1.txt
+      lock_file: modules/local/scanpy/leiden/.conda-lock/linux_amd64-bd-bcac6e9b185de544_1.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/leiden/.conda-lock/linux_arm64-bd-e95dfba0e421f8af_1.txt
+      lock_file: modules/local/scanpy/leiden/.conda-lock/linux_arm64-bd-ea2b7eed06775603_1.txt

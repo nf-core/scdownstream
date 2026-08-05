@@ -1,4 +1,4 @@
-name: "scanpy_hvgs"
+name: scanpy_hvgs
 description: Select highly variable genes using Scanpy highly_variable_genes
 keywords:
   - feature-selection
@@ -6,26 +6,24 @@ keywords:
   - single-cell
   - scanpy
 tools:
-  - "scanpy":
-      description: "Single-cell analysis in Python"
-      homepage: "https://scanpy.readthedocs.io"
-      documentation: "https://scanpy.readthedocs.io"
-      tool_dev_url: "https://github.com/scverse/scanpy"
+  - scanpy:
+      description: Single-cell analysis in Python
+      homepage: https://scanpy.readthedocs.io
+      documentation: https://scanpy.readthedocs.io
+      tool_dev_url: https://github.com/scverse/scanpy
       licence:
-        - "BSD-3-Clause"
+        - BSD-3-Clause
       identifier: biotools:scanpy
 input:
   - - meta:
         type: map
-        description: |
-          Groovy Map containing sample information
-          e.g. `[ id:'sample1' ]`
+        description: "Groovy Map containing sample information\ne.g. `[ id:'sample1' ]`\n"
     - h5ad:
         type: file
         description: AnnData object in h5ad format
         pattern: "*.{h5ad}"
         ontologies:
-          - edam: "http://edamontology.org/format_3590"
+          - edam: http://edamontology.org/format_3590
   - n_hvgs:
       type: integer
       description: Number of highly variable genes to retain
@@ -34,8 +32,8 @@ input:
       description: File with one gene symbol per line to exclude before feature selection
       pattern: "*.{txt,tsv,csv}"
       ontologies:
-        - edam: http://edamontology.org/format_3475 # TSV
-        - edam: http://edamontology.org/format_3752 # CSV
+        - edam: http://edamontology.org/format_3475
+        - edam: http://edamontology.org/format_3752
   - input_layer:
       type: string
       description: AnnData layer to read expression from (`X` or a layer name)
@@ -45,24 +43,21 @@ input:
   - batch_key:
       type: string
       description: Optional obs column with batch labels for batch-aware HVG selection; empty string disables batch awareness
-
 output:
   h5ad:
     - - meta:
           type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1' ]`
+          description: "Groovy Map containing sample information\ne.g. `[ id:'sample1' ]`\n"
       - ${prefix}.h5ad: {}
   var:
-    - ${prefix}.pkl: {}
+    - ${prefix}.parquet: {}
   versions:
     - versions.yml:
         type: file
         description: File containing software versions
-        pattern: "versions.yml"
+        pattern: versions.yml
         ontologies:
-          - edam: http://edamontology.org/format_3750 # YAML
+          - edam: http://edamontology.org/format_3750
 topics:
   versions:
     - versions.yml:
@@ -74,25 +69,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:78841aafc4e2a25a
-      build_id: bd-78841aafc4e2a25a_1
-      scan_id: sc-036935070350f78e_1
     linux/amd64:
-      name: community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:7df6225e45ce62d7
-      build_id: bd-7df6225e45ce62d7_1
-      scan_id: sc-8c5fc60a7ab7f9b6_1
+      name: community.wave.seqera.io/library/python_pyyaml_anndata_scanpy_pyarrow:803778b2933f5bc9
+      build_id: bd-803778b2933f5bc9_1
+      scan_id: sc-0215fa4380f362e3_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/python_pyyaml_anndata_scanpy_pyarrow:a35a5a8ebc6b3c95
+      build_id: bd-a35a5a8ebc6b3c95_1
+      scan_id: sc-37b5af3b47d46158_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:31c818cf3b5a8073
-      build_id: bd-31c818cf3b5a8073_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/35/354081f1aea522edf9eb2503417bfd3ac227e5f6cc419192042d47a1457bfb15/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_anndata_scanpy_pyarrow:75a54395abc3f1c1
+      build_id: bd-75a54395abc3f1c1_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/95/95e4cab1b5bbd9a3eb7a4139eac85d2440c6816ab8bdcede3944464ad5974843/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_anndata_scanpy:ae892d590e8b2d23
-      build_id: bd-ae892d590e8b2d23_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8e/8ee13ecdaa99dce07a579e1d2fdb44fe541679c272ca78ad23752e6884fe05b7/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_anndata_scanpy_pyarrow:1cf9b8c3602bfa6f
+      build_id: bd-1cf9b8c3602bfa6f_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/6c/6c7d23c670769d5bd110658d0e2977627fcc153b29d6d4a2a3d90e9f83b31cf2/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/hvgs/.conda-lock/linux_amd64-bd-7df6225e45ce62d7_1.txt
+      lock_file: modules/local/scanpy/hvgs/.conda-lock/linux_amd64-bd-803778b2933f5bc9_1.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/hvgs/.conda-lock/linux_arm64-bd-78841aafc4e2a25a_1.txt
+      lock_file: modules/local/scanpy/hvgs/.conda-lock/linux_arm64-bd-a35a5a8ebc6b3c95_1.txt

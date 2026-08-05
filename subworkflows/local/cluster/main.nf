@@ -109,8 +109,8 @@ workflow CLUSTER {
     ch_multiqc_files = ch_multiqc_files.mix(ENTROPY.out.multiqc_files)
 
     emit:
-    obs             = ch_obs             // channel: [ pkl ]
-    obsm            = ch_obsm            // channel: [ pkl ]
+    obs             = ch_obs             // channel: [ parquet ]
+    obsm            = ch_obsm            // channel: [ parquet ]
     h5ad_neighbors  = ch_h5ad_graph      // channel: [ meta, h5ad ]
     h5ad_clustering = ch_h5ad_clustering // channel: [ meta, h5ad ]
     multiqc_files   = ch_multiqc_files   // channel: [ json ]

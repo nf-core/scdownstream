@@ -1,0 +1,45 @@
+name: scvitools_scvi
+description: Train or apply an scVI model for single-cell integration
+keywords:
+  - scvi
+  - integration
+  - single-cell
+tools:
+  - scvitools:
+      description: "A scalable toolkit for probabilistic modeling applied to single-cell omics data"
+      homepage: "https://scvi-tools.org"
+      documentation: "https://docs.scvi-tools.org/en/stable/"
+      tool_dev_url: "https://github.com/scverse/scvi-tools"
+      licence:
+        - "MIT"
+      identifier: ""
+input: []
+output: []
+authors:
+  - "@LeonHafner"
+maintainers:
+  - "@LeonHafner"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/scvi-tools_pyarrow:aca905fd8d74c4bc
+      build_id: bd-aca905fd8d74c4bc_1
+      scan_id: sc-5fc3e6c87aebd954_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/scvi-tools_pyarrow:1734dedd3c3d134b
+      build_id: bd-1734dedd3c3d134b_1
+      scan_id: sc-902d4871d385ceb1_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/scvi-tools_pyarrow:47052f91e0d38119
+      build_id: bd-47052f91e0d38119_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/21/21c048694d2a9bc03c17a310c79c5691d2fc83df62e5e2654791a2105da8b09f/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/scvi-tools_pyarrow:c666fb85b3a53a0e
+      build_id: bd-c666fb85b3a53a0e_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/72/72725d93ae508bba1686efde0a23b47e4fb011d0abf55f364eebe29e643d5708/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scvitools/scvi/.conda-lock/linux_amd64-bd-1734dedd3c3d134b_1.txt
+    linux/arm64:
+      lock_file: modules/local/scvitools/scvi/.conda-lock/linux_arm64-bd-aca905fd8d74c4bc_1.txt

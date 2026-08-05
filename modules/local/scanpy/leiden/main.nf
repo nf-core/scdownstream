@@ -3,9 +3,9 @@ process SCANPY_LEIDEN {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/56/56a1103127c0ca81835ba9961301242dfcdfd0aa6b931e4e6bf093301fe67d1f/data' :
-        'community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:db5a47fcaf777dbc' }"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/e5/e50341d870b17e250b38810a2b4f488f3e73a60e3cb5cd67c90fe0d0bd0f8938/data'
+:         'community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_pruned:bcac6e9b185de544' }"
 
     input:
     tuple val(meta), path(h5ad, arity: 1)
@@ -15,7 +15,7 @@ process SCANPY_LEIDEN {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path "${prefix}.pkl"                   , emit: obs
+    path "${prefix}.parquet"                   , emit: obs
     path "${prefix}.png"                   , emit: plots, optional: true
     path "${prefix}_mqc.json"              , emit: multiqc_files, optional: true
     path "versions.yml"                    , emit: versions, topic: versions
@@ -31,7 +31,7 @@ process SCANPY_LEIDEN {
     prefix = task.ext.prefix ?: "${meta.id}_leiden"
     """
     touch "${prefix}.h5ad"
-    touch "${prefix}.pkl"
+    touch "${prefix}.parquet"
     touch "versions.yml"
 
     if [ "${plot_umap}" = "true" ]; then

@@ -9,6 +9,8 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
+- Migrate tabular AnnData fragment outputs (`obs`, `var`, `obsm`, and LIANA `uns` tables) from pickle to Parquet; keep pickle for nested `uns` dicts (PAGA, `rank_genes_groups`) and cell2cell tensor artefacts. `ADATA_EXTEND` and `DOUBLETREMOVAL` accept Parquet, pickle, and CSV inputs.
+
 - Make final AnnData-to-RDS conversion (`ADATA_TORDS`) opt-in via `--tords` (previously always run).
 - Restructure `06_per_group` to a context-first hierarchy (`{integration}/{subset}/{leiden|label}/...`) and move former `07_pseudobulk_de` outputs under `06_per_group/.../differential_expression/`.
 - Prefix published result directories with numeric stage IDs (`01_load_h5ad` through `11_multiqc`) so lexical sort matches pipeline order; nest gene unification under `02_quality_control/unify`.

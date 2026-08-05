@@ -37,7 +37,7 @@ n_unique = adata.obs[entropy_col].nunique()
 colname = "${meta.id}:entropy"
 adata.obs[colname] = adata.obs[group_col].map(entropies).astype(float) / np.log2(n_unique)
 
-adata.obs[[colname]].to_pickle(f"{prefix}.pkl")
+adata.obs[[colname]].to_parquet(f"{prefix}.parquet", index=True)
 adata.write_h5ad(f"{prefix}.h5ad")
 
 if "${plot_basis ? 'true' : 'false'}" == "true":

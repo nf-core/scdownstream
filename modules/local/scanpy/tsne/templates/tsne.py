@@ -25,7 +25,7 @@ sc.tl.tsne(adata, random_state=0)
 
 adata.write_h5ad(f"{prefix}.h5ad")
 df = pd.DataFrame(adata.obsm["X_tsne"], index=adata.obs_names)
-df.to_pickle(f"X_{prefix}.pkl")
+df.to_parquet(f"X_{prefix}.parquet", index=True)
 
 # Versions
 

@@ -3,9 +3,9 @@ process CUSTOM_DOUBLETREMOVAL {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1c/1cda35bb187ad93a5ad29cd0a0340e1c4c5e3e84e8189dbbfca98e3bd4eef16b/data' :
-        'community.wave.seqera.io/library/doublet_removal:81c2fac7b14cd21d' }"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/04/0495a76c5a63a915bb85924adae267a7304d1c56d6e8229e8760d98e64fc0d74/data'
+:         'community.wave.seqera.io/library/doublet_removal:e440f2e80dfdf805' }"
 
     input:
     tuple val(meta), path(h5ad), path(predictions)

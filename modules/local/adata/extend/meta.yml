@@ -28,20 +28,20 @@ input:
         - edam: "http://edamontology.org/format_3590"
   - obs:
       type: file
-      description: Directory of obs tables to append, as pickle or CSV files
-      pattern: "*.{pkl,csv}"
+      description: Directory of obs tables to append, as Parquet, pickle, or CSV files
+      pattern: "*.{pkl,csv,parquet}"
       ontologies:
         - edam: http://edamontology.org/format_3752 # CSV
   - var:
       type: file
-      description: Directory of var tables to append, as pickle or CSV files
-      pattern: "*.{pkl,csv}"
+      description: Directory of var tables to append, as Parquet, pickle, or CSV files
+      pattern: "*.{pkl,csv,parquet}"
       ontologies:
         - edam: http://edamontology.org/format_3752 # CSV
   - obsm:
       type: file
-      description: Directory of obsm matrices to append, as pickle files
-      pattern: "*.pkl"
+      description: Directory of obsm matrices to append, as Parquet or pickle files
+      pattern: "*.{pkl,parquet}"
       ontologies: []
   - obsp:
       type: file
@@ -51,8 +51,8 @@ input:
         - edam: http://edamontology.org/format_4003 # NumPy format
   - uns:
       type: file
-      description: Directory of uns entries to append, as pickle files
-      pattern: "*.pkl"
+      description: Directory of uns entries to append, as Parquet or pickle files
+      pattern: "*.{pkl,parquet}"
       ontologies: []
   - layers:
       type: file
@@ -105,25 +105,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/anndata_python_pyyaml:301adaa9ed22ba3a
-      build_id: bd-301adaa9ed22ba3a_1
-      scan_id: sc-02f8af7be214837c_1
     linux/amd64:
-      name: community.wave.seqera.io/library/anndata_python_pyyaml:eec9fad329c5006d
-      build_id: bd-eec9fad329c5006d_1
-      scan_id: sc-e62473eb42bc2b1c_1
+      name: community.wave.seqera.io/library/anndata_python_pyyaml_pyarrow:6427a8e8cd0e418b
+      build_id: bd-6427a8e8cd0e418b_1
+      scan_id: sc-78481f568198366d_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/anndata_python_pyyaml_pyarrow:066a95cc9d707ff7
+      build_id: bd-066a95cc9d707ff7_1
+      scan_id: sc-58256f7d70e1f12f_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:1b7ad0ce87fa1eee
-      build_id: bd-1b7ad0ce87fa1eee_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/bc/bc259b0f0471f937af0396cdcb3834de97ca1fefa5563f160a217187600f69bc/data
+      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml_pyarrow:04b435f473791af6
+      build_id: bd-04b435f473791af6_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8c/8c079b996dc7408bd09c0a854ae9618c8b0f6a2c70c527118a1d789871cf6af8/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:efa43f748b169deb
-      build_id: bd-efa43f748b169deb_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cb/cba7e92411338805897f2d9e6c705b1ec323ee1055bb2844fa8386b589754505/data
+      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml_pyarrow:f61370a5b5501fb8
+      build_id: bd-f61370a5b5501fb8_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/17/17a9c5e7440eed45044281ad7216d4f0cf97d503bd1aa940692e79d9980182af/data
   conda:
     linux/amd64:
-      lock_file: modules/local/adata/extend/.conda-lock/linux_amd64-bd-eec9fad329c5006d_1.txt
+      lock_file: modules/local/adata/extend/.conda-lock/linux_amd64-bd-6427a8e8cd0e418b_1.txt
     linux/arm64:
-      lock_file: modules/local/adata/extend/.conda-lock/linux_arm64-bd-301adaa9ed22ba3a_1.txt
+      lock_file: modules/local/adata/extend/.conda-lock/linux_arm64-bd-066a95cc9d707ff7_1.txt

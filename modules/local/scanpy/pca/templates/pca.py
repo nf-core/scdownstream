@@ -44,7 +44,7 @@ sc.pp.pca(
 
 adata.write_h5ad(f"{prefix}.h5ad")
 df = pd.DataFrame(adata.obsm[key_added], index=adata.obs_names)
-df.to_pickle(f"X_{prefix}.pkl")
+df.to_parquet(f"X_{prefix}.parquet", index=True)
 
 # Versions
 versions = {

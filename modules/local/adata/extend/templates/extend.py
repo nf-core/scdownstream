@@ -27,13 +27,14 @@ uns_paths = sorted(Path("uns/").glob("*"))
 layers_paths = sorted(Path("layers/").glob("*"))
 
 
-def load_pickle_or_csv(path):
+def load_dataframe(path):
+    if path.suffix == ".parquet":
+        return pd.read_parquet(path)
     if path.suffix == ".pkl":
         return pd.read_pickle(path)
-    elif path.suffix == ".csv":
+    if path.suffix == ".csv":
         return pd.read_csv(path, index_col=0)
-    else:
-        raise ValueError(f"Unsupported file extension: {path}")
+    raise ValueError(f"Unsupported file extension: {path}")
 
 
 def load_layer(path):
@@ -47,22 +48,27 @@ def load_layer(path):
 
 
 for path in obs_paths:
-    df = load_pickle_or_csv(path).reindex(adata.obs_names)
+    df = load_dataframe(path).reindex(adata.obs_names)
     adata.obs = pd.concat([adata.obs, df], axis=1)
 
 for path in var_paths:
-    df = load_pickle_or_csv(path).reindex(adata.var_names)
+    df = load_dataframe(path).reindex(adata.var_names)
     adata.var = pd.concat([adata.var, df], axis=1)
 
 for path in obsm_paths:
-    df = pd.read_pickle(path).reindex(adata.obs_names)
+    df = load_dataframe(path).reindex(adata.obs_names)
     adata.obsm[path.stem] = np.float32(df.to_numpy())
 
 for path in obsp_paths:
     adata.obsp[path.stem] = np.load(path, allow_pickle=True).item()
 
 for path in uns_paths:
-    adata.uns[path.stem] = pickle.load(open(path, "rb"))
+    if path.suffix == ".parquet":
+        adata.uns[path.stem] = pd.read_parquet(path)
+    elif path.suffix == ".pkl":
+        adata.uns[path.stem] = pickle.load(open(path, "rb"))
+    else:
+        raise ValueError(f"Unsupported uns file extension: {path}")
 
 for path in layers_paths:
     layer = load_layer(path)

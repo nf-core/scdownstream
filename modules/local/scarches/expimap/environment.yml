@@ -1,18 +1,11 @@
 channels:
   - conda-forge
+  - bioconda
 dependencies:
-  - conda-forge::python=3.11.10
-  - conda-forge::anndata=0.12.10
-  - conda-forge::numpy=1.26.4
-  - conda-forge::scipy=1.12.0
-  - conda-forge::pytorch=2.4.1
-  - conda-forge::lightning=2.0.9
+  - conda-forge::scvi-tools=1.4.3
   - conda-forge::scanpy=1.11.4
-  - conda-forge::setuptools=75.8.2
+  - conda-forge::scipy=1.12.0
+  - conda-forge::pyarrow=25.0.0
   - pip
   - pip:
-      - flax==0.6.11
-      - jax==0.4.17
-      - jaxlib==0.4.17
-      - scvi-tools==1.0.4
       - scArches==0.6.1

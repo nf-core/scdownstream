@@ -246,7 +246,7 @@ workflow INTEGRATE {
 
     emit:
     integrations = ch_integrations // channel: [ integration, h5ad ]
-    obs          = ch_obs // channel: [ pkl ]
-    var          = ch_var // channel: [ pkl ]
-    obsm         = ch_obsm // channel: [ pkl ]
+    obs          = ch_obs // channel: [ parquet ]
+    var          = ch_var // channel: [ parquet ]
+    obsm         = ch_obsm // channel: [ parquet ]
 }

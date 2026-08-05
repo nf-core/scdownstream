@@ -77,25 +77,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/amd64:
-      name: community.wave.seqera.io/library/doublet_removal:81c2fac7b14cd21d
-      build_id: bd-81c2fac7b14cd21d_1
-      scan_id: sc-03793d3fc05ec940_1
     linux/arm64:
-      name: community.wave.seqera.io/library/doublet_removal:0c37d3ab714cd54a
-      build_id: bd-0c37d3ab714cd54a_1
-      scan_id: sc-482b3733cb89f48b_1
+      name: community.wave.seqera.io/library/doublet_removal:c1d446ee7a9354d2
+      build_id: bd-c1d446ee7a9354d2_1
+      scan_id: sc-cf00053660d93296_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/doublet_removal:e440f2e80dfdf805
+      build_id: bd-e440f2e80dfdf805_1
+      scan_id: sc-c4616dc0dc0a3db8_1
   singularity:
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/doublet_removal:a416a662ecdb4e03
-      build_id: bd-a416a662ecdb4e03_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8e/8e223b38bb63708674b1f94de1f834432f39e51814568d50ea9f80e5af387dbf/data
+      name: oras://community.wave.seqera.io/library/doublet_removal:85857a80e63f2f99
+      build_id: bd-85857a80e63f2f99_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ba/ba4eb68c2349d8a161b0c911f1d2ca2d7b0d902664071bdf7406c3947a84d0c0/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/doublet_removal:726e7c73c19b71e8
-      build_id: bd-726e7c73c19b71e8_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1c/1cda35bb187ad93a5ad29cd0a0340e1c4c5e3e84e8189dbbfca98e3bd4eef16b/data
+      name: oras://community.wave.seqera.io/library/doublet_removal:ada23adf745a0f92
+      build_id: bd-ada23adf745a0f92_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/04/0495a76c5a63a915bb85924adae267a7304d1c56d6e8229e8760d98e64fc0d74/data
   conda:
     linux/amd64:
-      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_amd64-bd-81c2fac7b14cd21d_1.txt
+      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_amd64-bd-e440f2e80dfdf805_1.txt
     linux/arm64:
-      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_arm64-bd-0c37d3ab714cd54a_1.txt
+      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_arm64-bd-c1d446ee7a9354d2_1.txt

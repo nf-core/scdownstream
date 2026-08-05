@@ -23,7 +23,7 @@ adata_raw.obs["annotation:scimilarity"] = predictions.values
 
 # Write the output
 adata_raw.write_h5ad("${prefix}.h5ad")
-adata_raw.obs[["annotation:scimilarity"]].to_pickle("${prefix}.pkl")
+adata_raw.obs[["annotation:scimilarity"]].to_parquet("${prefix}.parquet", index=True)
 
 versions = {
     "${task.process}": {

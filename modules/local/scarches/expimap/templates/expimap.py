@@ -108,7 +108,7 @@ adata.obsm["X_emb"] = emb
 
 adata.write_h5ad(f"{prefix}.h5ad")
 df = pd.DataFrame(emb, index=adata.obs_names)
-df.to_pickle(f"X_{prefix}.pkl")
+df.to_parquet(f"X_{prefix}.parquet", index=True)
 
 versions = {
     "${task.process}": {

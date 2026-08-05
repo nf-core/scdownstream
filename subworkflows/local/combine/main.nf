@@ -137,8 +137,8 @@ workflow COMBINE {
     h5ad             = ch_outer         // channel: [ merged, h5ad ]
     h5ad_inner       = ch_inner         // channel: [ merged, h5ad ]
     integrations     = ch_integrations  // channel: [ integration, h5ad ]
-    var              = ch_var           // channel: [ pkl ]
-    obs              = ch_obs           // channel: [ pkl ]
-    obsm             = ch_obsm          // channel: [ pkl ]
+    var              = ch_var           // channel: [ parquet ]
+    obs              = ch_obs           // channel: [ parquet ]
+    obsm             = ch_obsm          // channel: [ parquet ]
     multiqc_files    = ch_multiqc_files // channel: [ *_mqc.json ]
 }

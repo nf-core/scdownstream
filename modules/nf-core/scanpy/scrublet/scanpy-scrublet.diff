@@ -1,20 +1,422 @@
 Changes in component 'nf-core/scanpy/scrublet'
+Changes in 'scanpy/scrublet/environment.yml':
+--- modules/nf-core/scanpy/scrublet/environment.yml
++++ modules/nf-core/scanpy/scrublet/environment.yml
+@@ -8,3 +8,4 @@
+   - conda-forge::pyyaml=6.0.2
+   - conda-forge::scanpy=1.11.2
+   - conda-forge::scikit-image=0.25.2
++  - conda-forge::pyarrow=25.0.0
+
+Changes in 'scanpy/scrublet/meta.yml':
+--- modules/nf-core/scanpy/scrublet/meta.yml
++++ modules/nf-core/scanpy/scrublet/meta.yml
+@@ -1,73 +1,96 @@
+-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+ name: scanpy_scrublet
+ description: Detect doublets in single-cell RNA-seq data using Scrublet via Scanpy
+ keywords:
+-  - scrublet
+-  - doublet-detection
+-  - scanpy
+-  - single-cell
++- scrublet
++- doublet-detection
++- scanpy
++- single-cell
+ tools:
+-  - scanpy:
+-      description: Single-Cell Analysis in Python
+-      homepage: https://scanpy.readthedocs.io
+-      documentation: https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html
+-      tool_dev_url: https://github.com/scverse/scanpy
+-      doi: 10.1186/s13059-017-1382-0
+-      licence: ["BSD-3-Clause"]
+-      identifier: biotools:scanpy
++- scanpy:
++    description: Single-Cell Analysis in Python
++    homepage: https://scanpy.readthedocs.io
++    documentation: https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html
++    tool_dev_url: https://github.com/scverse/scanpy
++    doi: 10.1186/s13059-017-1382-0
++    licence: ["BSD-3-Clause"]
++    identifier: biotools:scanpy
+ 
+ input:
++- - meta:
++      type: map
++      description: |
++        Groovy Map containing sample information
++        e.g. [ id:'test' ]
++  - h5ad:
++      type: file
++      description: AnnData object in h5ad format
++      pattern: "*.{h5ad}"
++      ontologies:
++      - edam: "http://edamontology.org/format_3590"     # HDF5 format
++- batch_col:
++    type: string
++    description: |
++      Optional column name in adata.obs containing batch information
++      If provided and contains multiple batches, will be used as batch_key parameter
++
++output:
++  h5ad:
+   - - meta:
+         type: map
+         description: |
+           Groovy Map containing sample information
+           e.g. [ id:'test' ]
+-    - h5ad:
++    - "*.h5ad":
+         type: file
+-        description: AnnData object in h5ad format
+-        pattern: "*.{h5ad}"
++        description: AnnData object with doublets removed
++        pattern: "*.h5ad"
+         ontologies:
+-          - edam: "http://edamontology.org/format_3590" # HDF5 format
+-  - batch_col:
+-      type: string
+-      description: |
+-        Optional column name in adata.obs containing batch information
+-        If provided and contains multiple batches, will be used as batch_key parameter
++        - edam: "http://edamontology.org/format_3590"     # HDF5 format
++  predictions:
++  - - meta:
++        type: map
++        description: |
++          Groovy Map containing sample information
++          e.g. [ id:'test' ]
++    - "*.parquet":
++        type: file
++        description: Pickle file containing doublet predictions
++        pattern: "*.parquet"
++        ontologies:
++        - edam: "http://edamontology.org/format_3553"     # Pickle format
++  versions:
++  - versions.yml:
++      type: file
++      description: File containing software versions
++      pattern: "versions.yml"
+ 
+-output:
+-  h5ad:
+-    - - meta:
+-          type: map
+-          description: |
+-            Groovy Map containing sample information
+-            e.g. [ id:'test' ]
+-      - "*.h5ad":
+-          type: file
+-          description: AnnData object with doublets removed
+-          pattern: "*.h5ad"
+-          ontologies:
+-            - edam: "http://edamontology.org/format_3590" # HDF5 format
+-  predictions:
+-    - - meta:
+-          type: map
+-          description: |
+-            Groovy Map containing sample information
+-            e.g. [ id:'test' ]
+-      - "*.pkl":
+-          type: file
+-          description: Pickle file containing doublet predictions
+-          pattern: "*.pkl"
+-          ontologies:
+-            - edam: "http://edamontology.org/format_3553" # Pickle format
+-  versions:
+-    - versions.yml:
+-        type: file
+-        description: File containing software versions
+-        pattern: "versions.yml"
+-
+-        ontologies:
+-          - edam: http://edamontology.org/format_3750 # YAML
++      ontologies:
++      - edam: http://edamontology.org/format_3750     # YAML
+ authors:
+-  - "@nictru"
++- "@nictru"
+ maintainers:
+-  - "@nictru"
++- "@nictru"
++containers:
++  docker:
++    linux/amd64:
++      name: community.wave.seqera.io/library/python_pyyaml_scanpy_scikit-image_pyarrow:baaeebe49bb1193e
++      build_id: bd-baaeebe49bb1193e_1
++      scan_id: sc-330dfee2c6d5104b_1
++    linux/arm64:
++      name: community.wave.seqera.io/library/python_pyyaml_scanpy_scikit-image_pyarrow:6b513bb03985cbb7
++      build_id: bd-6b513bb03985cbb7_1
++      scan_id: sc-8ffc25febb8c94d1_1
++  singularity:
++    linux/amd64:
++      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_scikit-image_pyarrow:b1336aefc4ae1230
++      build_id: bd-b1336aefc4ae1230_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ad/ad3a426f2f091efbfe0bb359c19dfabe53799ed71b330279e194a6920b3683b8/data
++    linux/arm64:
++      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_scikit-image_pyarrow:d14333d267e5b823
++      build_id: bd-d14333d267e5b823_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d8/d8a2f975cb02bb94c835371a52f43b16a2a5e80e60ae1541968b71d2da0e95e3/data
++  conda:
++    linux/amd64:
++      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_amd64-bd-baaeebe49bb1193e_1.txt
++    linux/arm64:
++      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_arm64-bd-6b513bb03985cbb7_1.txt
+
 Changes in 'scanpy/scrublet/main.nf':
 --- modules/nf-core/scanpy/scrublet/main.nf
 +++ modules/nf-core/scanpy/scrublet/main.nf
-@@ -14,7 +14,7 @@
+@@ -3,9 +3,9 @@
+     label 'process_medium'
+ 
+     conda "${moduleDir}/environment.yml"
+-    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cc/cc499354bb89be6429cfc8d8416a340c2327a72732fb6ae33c346feef17b5ffb/data'
+-        : 'community.wave.seqera.io/library/python_pyyaml_scanpy_scikit-image:750e7b74b6d036e4'}"
++    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
++?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ad/ad3a426f2f091efbfe0bb359c19dfabe53799ed71b330279e194a6920b3683b8/data'
++:         'community.wave.seqera.io/library/python_pyyaml_scanpy_scikit-image_pyarrow:baaeebe49bb1193e' }"
+ 
+     input:
+     tuple val(meta), path(h5ad)
+@@ -13,8 +13,8 @@
+ 
      output:
      tuple val(meta), path("*.h5ad"), emit: h5ad
-     tuple val(meta), path("*.pkl") , emit: predictions
+-    tuple val(meta), path("*.pkl") , emit: predictions
 -    path "versions.yml"            , emit: versions
++    tuple val(meta), path("*.parquet") , emit: predictions
 +    path "versions.yml"            , emit: versions, topic: versions
  
      when:
      task.ext.when == null || task.ext.when
+@@ -38,7 +38,7 @@
+     export NUMBA_CACHE_DIR=./tmp/numba
+ 
+     touch ${prefix}.h5ad
+-    touch ${prefix}.pkl
++    touch ${prefix}.parquet
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
 
-'modules/nf-core/scanpy/scrublet/meta.yml' is unchanged
-'modules/nf-core/scanpy/scrublet/environment.yml' is unchanged
-'modules/nf-core/scanpy/scrublet/templates/scrublet.py' is unchanged
+Changes in 'scanpy/scrublet/tests/main.nf.test.snap':
+--- modules/nf-core/scanpy/scrublet/tests/main.nf.test.snap
++++ modules/nf-core/scanpy/scrublet/tests/main.nf.test.snap
+@@ -15,7 +15,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_scrublet.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "2": [
+@@ -34,7 +34,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_scrublet.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "versions": [
+@@ -42,11 +42,11 @@
+                 ]
+             }
+         ],
++        "timestamp": "2026-08-05T12:41:02.591478",
+         "meta": {
+-            "nf-test": "0.9.2",
+-            "nextflow": "25.04.3"
+-        },
+-        "timestamp": "2025-06-22T12:42:07.301969648"
++            "nf-test": "0.9.5",
++            "nextflow": "26.04.6"
++        }
+     },
+     "Should run without failures": {
+         "content": [
+@@ -56,7 +56,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.h5ad:md5,e0a7fa8f6e9804ca967a3741bebc7d20"
++                        "test_scrublet.h5ad:md5,82ad8f9bebf502e3c5f745282999c1c5"
+                     ]
+                 ],
+                 "1": [
+@@ -64,7 +64,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl:md5,43a48e4d0db3979e88a617ec7549fab5"
++                        "test_scrublet.parquet:md5,1e0b9bc89842af633939830b2ac349c1"
+                     ]
+                 ],
+                 "2": [
+@@ -75,7 +75,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.h5ad:md5,e0a7fa8f6e9804ca967a3741bebc7d20"
++                        "test_scrublet.h5ad:md5,82ad8f9bebf502e3c5f745282999c1c5"
+                     ]
+                 ],
+                 "predictions": [
+@@ -83,7 +83,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl:md5,43a48e4d0db3979e88a617ec7549fab5"
++                        "test_scrublet.parquet:md5,1e0b9bc89842af633939830b2ac349c1"
+                     ]
+                 ],
+                 "versions": [
+@@ -91,11 +91,11 @@
+                 ]
+             }
+         ],
++        "timestamp": "2026-08-05T12:34:38.819711",
+         "meta": {
+-            "nf-test": "0.9.2",
+-            "nextflow": "25.04.3"
+-        },
+-        "timestamp": "2025-06-23T09:34:50.239866068"
++            "nf-test": "0.9.5",
++            "nextflow": "26.04.6"
++        }
+     },
+     "Should run with empty string for batch_col": {
+         "content": [
+@@ -105,7 +105,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.h5ad:md5,e0a7fa8f6e9804ca967a3741bebc7d20"
++                        "test_scrublet.h5ad:md5,82ad8f9bebf502e3c5f745282999c1c5"
+                     ]
+                 ],
+                 "1": [
+@@ -113,7 +113,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl:md5,43a48e4d0db3979e88a617ec7549fab5"
++                        "test_scrublet.parquet:md5,1e0b9bc89842af633939830b2ac349c1"
+                     ]
+                 ],
+                 "2": [
+@@ -124,7 +124,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.h5ad:md5,e0a7fa8f6e9804ca967a3741bebc7d20"
++                        "test_scrublet.h5ad:md5,82ad8f9bebf502e3c5f745282999c1c5"
+                     ]
+                 ],
+                 "predictions": [
+@@ -132,7 +132,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl:md5,43a48e4d0db3979e88a617ec7549fab5"
++                        "test_scrublet.parquet:md5,1e0b9bc89842af633939830b2ac349c1"
+                     ]
+                 ],
+                 "versions": [
+@@ -140,11 +140,11 @@
+                 ]
+             }
+         ],
++        "timestamp": "2026-08-05T12:37:42.275137",
+         "meta": {
+-            "nf-test": "0.9.2",
+-            "nextflow": "25.04.3"
+-        },
+-        "timestamp": "2025-08-02T14:06:47.499404197"
++            "nf-test": "0.9.5",
++            "nextflow": "26.04.6"
++        }
+     },
+     "Should run with empty array for batch_col": {
+         "content": [
+@@ -154,7 +154,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.h5ad:md5,e0a7fa8f6e9804ca967a3741bebc7d20"
++                        "test_scrublet.h5ad:md5,82ad8f9bebf502e3c5f745282999c1c5"
+                     ]
+                 ],
+                 "1": [
+@@ -162,7 +162,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl:md5,43a48e4d0db3979e88a617ec7549fab5"
++                        "test_scrublet.parquet:md5,1e0b9bc89842af633939830b2ac349c1"
+                     ]
+                 ],
+                 "2": [
+@@ -173,7 +173,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.h5ad:md5,e0a7fa8f6e9804ca967a3741bebc7d20"
++                        "test_scrublet.h5ad:md5,82ad8f9bebf502e3c5f745282999c1c5"
+                     ]
+                 ],
+                 "predictions": [
+@@ -181,7 +181,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl:md5,43a48e4d0db3979e88a617ec7549fab5"
++                        "test_scrublet.parquet:md5,1e0b9bc89842af633939830b2ac349c1"
+                     ]
+                 ],
+                 "versions": [
+@@ -189,10 +189,10 @@
+                 ]
+             }
+         ],
++        "timestamp": "2026-08-05T12:40:11.00897",
+         "meta": {
+-            "nf-test": "0.9.2",
+-            "nextflow": "25.04.3"
+-        },
+-        "timestamp": "2025-08-02T14:07:36.218370923"
++            "nf-test": "0.9.5",
++            "nextflow": "26.04.6"
++        }
+     }
+ }
 'modules/nf-core/scanpy/scrublet/tests/main.nf.test' is unchanged
-'modules/nf-core/scanpy/scrublet/tests/main.nf.test.snap' is unchanged
+Changes in 'scanpy/scrublet/templates/scrublet.py':
+--- modules/nf-core/scanpy/scrublet/templates/scrublet.py
++++ modules/nf-core/scanpy/scrublet/templates/scrublet.py
+@@ -12,6 +12,7 @@
+ import scanpy as sc
+ import yaml
+ from threadpoolctl import threadpool_limits
++
+ 
+ threadpool_limits(int("${task.cpus}"))
+ sc.settings.n_jobs = int("${task.cpus}")
+@@ -29,7 +30,7 @@
+ adata.obs["predicted_doublet"] = adata.obs["predicted_doublet"].astype(bool)
+ df = adata.obs[["predicted_doublet"]]
+ df.columns = ["${prefix}"]
+-df.to_pickle("${prefix}.pkl")
++df.to_parquet("${prefix}.parquet", index=True)
+ 
+ adata = adata[~adata.obs["predicted_doublet"]].copy()
+ 
+
+'modules/nf-core/scanpy/scrublet/.conda-lock/linux_arm64-bd-6b513bb03985cbb7_1.txt' was created
+'modules/nf-core/scanpy/scrublet/.conda-lock/linux_amd64-bd-baaeebe49bb1193e_1.txt' was created
 ************************************************************

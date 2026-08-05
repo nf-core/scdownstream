@@ -33,7 +33,7 @@ nextflow_process {
                 assert "X_emb" in obsm
                 assert obs.rownames.size() == 80
             }
-            assert file(process.out.obsm[0]).name == "X_scvi.pkl"
+            assert file(process.out.obsm[0]).name == "X_scvi.parquet"
             assert process.out.obs.size() == 0
             assert snapshot(
                 process.out,
@@ -71,8 +71,8 @@ nextflow_process {
                 assert "label:scANVI" in obs.colnames
                 assert obs.rownames.size() == 80
             }
-            assert file(process.out.obsm[0]).name == "X_scanvi.pkl"
-            assert file(process.out.obs[0]).name == "scanvi.pkl"
+            assert file(process.out.obsm[0]).name == "X_scanvi.parquet"
+            assert file(process.out.obs[0]).name == "scanvi.parquet"
             assert snapshot(
                 process.out,
                 path(process.out.versions[0]).yaml,

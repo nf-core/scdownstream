@@ -54,10 +54,10 @@ output:
           ontologies:
             - edam: "http://edamontology.org/format_3590"
   uns:
-    - "*.pkl":
+    - "*.parquet":
         type: file
         description: Optional pickled LIANA rank_aggregate results for downstream use
-        pattern: "*.pkl"
+        pattern: "*.parquet"
   plots:
     - "*.png":
         type: file
@@ -83,24 +83,24 @@ maintainers:
 containers:
   docker:
     linux/arm64:
-      name: community.wave.seqera.io/library/liana_pyyaml:8505a353f9fdc1f5
-      build_id: bd-8505a353f9fdc1f5_1
-      scan_id: sc-aee9098bc5971cf2_1
+      name: community.wave.seqera.io/library/liana_pyyaml_pyarrow:0f7537a515b9cfb4
+      build_id: bd-0f7537a515b9cfb4_1
+      scan_id: sc-457a7da7de244b5f_1
     linux/amd64:
-      name: community.wave.seqera.io/library/liana_pyyaml:c2bc77d30223be1f
-      build_id: bd-c2bc77d30223be1f_1
-      scan_id: sc-ba6dd7b0578d9cd3_1
+      name: community.wave.seqera.io/library/liana_pyyaml_pyarrow:5fc198487f068dd6
+      build_id: bd-5fc198487f068dd6_1
+      scan_id: sc-fe1611c6fc3808c5_1
   singularity:
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/liana_pyyaml:7e6acef60d8044bc
-      build_id: bd-7e6acef60d8044bc_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5e/5e5ac3750642933ecd34611b40f517bc5118351d734c8059a3ca29c29a50418d/data
+      name: oras://community.wave.seqera.io/library/liana_pyyaml_pyarrow:a142feb0a47e969b
+      build_id: bd-a142feb0a47e969b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/85/8590ad072fb1266878d3a1d12815762892b0336861c5ecff0ceff723844206b2/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/liana_pyyaml:0bd9764a267aa0cb
-      build_id: bd-0bd9764a267aa0cb_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/00/00a0832cf7999e945fe1eea426fb5a59d4718af37c8e97b1768d7257904bfadb/data
+      name: oras://community.wave.seqera.io/library/liana_pyyaml_pyarrow:e3b6b0c512e925dc
+      build_id: bd-e3b6b0c512e925dc_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/35/35fa059b36b97f47fb2dafbb573ab9505647f08dd673efbd9913f74f1556ce68/data
   conda:
     linux/amd64:
-      lock_file: modules/local/liana/rankaggregate/.conda-lock/linux_amd64-bd-c2bc77d30223be1f_1.txt
+      lock_file: modules/local/liana/rankaggregate/.conda-lock/linux_amd64-bd-5fc198487f068dd6_1.txt
     linux/arm64:
-      lock_file: modules/local/liana/rankaggregate/.conda-lock/linux_arm64-bd-8505a353f9fdc1f5_1.txt
+      lock_file: modules/local/liana/rankaggregate/.conda-lock/linux_arm64-bd-0f7537a515b9cfb4_1.txt

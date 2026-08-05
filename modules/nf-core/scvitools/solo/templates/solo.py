@@ -56,7 +56,7 @@ for batch in batches:
 
 df = adata.obs[["doublet"]]
 df.columns = ["${prefix}"]
-df.to_pickle("${prefix}.pkl")
+df.to_parquet("${prefix}.parquet", index=True)
 
 adata = adata[~adata.obs["doublet"]].copy()
 adata.obs.drop("doublet", axis=1, inplace=True)

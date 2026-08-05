@@ -1,0 +1,215 @@
+Changes in component 'nf-core/doubletdetection'
+Changes in 'doubletdetection/environment.yml':
+--- modules/nf-core/doubletdetection/environment.yml
++++ modules/nf-core/doubletdetection/environment.yml
+@@ -7,5 +7,7 @@
+   - conda-forge::pip=25.0.1
+   - conda-forge::python=3.13.3
+   - conda-forge::pyyaml=6.0.2
++  - conda-forge::scanpy=1.11.2
++  - conda-forge::pyarrow=25.0.0
+   - pip:
+       - doubletdetection==4.3.0.post1
+
+Changes in 'doubletdetection/meta.yml':
+--- modules/nf-core/doubletdetection/meta.yml
++++ modules/nf-core/doubletdetection/meta.yml
+@@ -41,10 +41,10 @@
+           description: |
+             Groovy Map containing sample information
+             e.g. `[ id:'sample1', single_end:false ]`
+-      - "*.pkl":
++      - "*.parquet":
+           type: file
+           description: pandas dataframe containing the doublet classification
+-          pattern: "*.pkl"
++          pattern: "*.parquet"
+           ontologies: []
+   versions:
+     - versions.yml:
+@@ -65,3 +65,27 @@
+   - "@LeonHafner"
+ maintainers:
+   - "@LeonHafner"
++containers:
++  docker:
++    linux/amd64:
++      name: community.wave.seqera.io/library/anndata_pip_python_pyyaml_pruned:7bde77eb6c6fbc17
++      build_id: bd-7bde77eb6c6fbc17_1
++      scan_id: sc-f0fb1a1b308d56c7_1
++    linux/arm64:
++      name: community.wave.seqera.io/library/anndata_pip_python_pyyaml_pruned:8a6efd8ece04ea17
++      build_id: bd-8a6efd8ece04ea17_1
++      scan_id: sc-ba5d1b2f96ab2a8e_1
++  singularity:
++    linux/amd64:
++      name: oras://community.wave.seqera.io/library/anndata_pip_python_pyyaml_pruned:a70277637be003b0
++      build_id: bd-a70277637be003b0_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/43/43aae6490abfa26eab86e0f827f2d278fc5460712669f0146d6163fd27875275/data
++    linux/arm64:
++      name: oras://community.wave.seqera.io/library/anndata_pip_python_pyyaml_pruned:486f1e794acfab7b
++      build_id: bd-486f1e794acfab7b_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b1/b1791a513fcfc8e90c287f4c0dfba7fdf465b277bf52aca4f7ace34af3078562/data
++  conda:
++    linux/amd64:
++      lock_file: modules/nf-core/doubletdetection/.conda-lock/linux_amd64-bd-7bde77eb6c6fbc17_1.txt
++    linux/arm64:
++      lock_file: modules/nf-core/doubletdetection/.conda-lock/linux_arm64-bd-8a6efd8ece04ea17_1.txt
+
+Changes in 'doubletdetection/main.nf':
+--- modules/nf-core/doubletdetection/main.nf
++++ modules/nf-core/doubletdetection/main.nf
+@@ -4,15 +4,15 @@
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/96/96f52092a8472acb59ded59ab5ec4a29a56627f0c78e3cc8a0b916c6bedd67d6/data'
+-        : 'community.wave.seqera.io/library/pyyaml_pip_doubletdetection:5af145ffec01d7da'}"
++        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/43/43aae6490abfa26eab86e0f827f2d278fc5460712669f0146d6163fd27875275/data'
++        : 'community.wave.seqera.io/library/anndata_pip_python_pyyaml_pruned:7bde77eb6c6fbc17'}"
+ 
+     input:
+     tuple val(meta), path(h5ad)
+ 
+     output:
+     tuple val(meta), path("*.h5ad"), emit: h5ad
+-    tuple val(meta), path("*.pkl") , emit: predictions
++    tuple val(meta), path("*.parquet") , emit: predictions
+     path "versions.yml"            , emit: versions, topic: versions
+ 
+     when:
+@@ -26,7 +26,7 @@
+     prefix = task.ext.prefix ?: "${meta.id}"
+     """
+     touch ${prefix}.h5ad
+-    touch ${prefix}.pkl
++    touch ${prefix}.parquet
+ 
+     cat <<-END_VERSIONS > versions.yml
+     ${task.process}:
+
+Changes in 'doubletdetection/tests/main.nf.test.snap':
+--- modules/nf-core/doubletdetection/tests/main.nf.test.snap
++++ modules/nf-core/doubletdetection/tests/main.nf.test.snap
+@@ -2,7 +2,7 @@
+     "scdownsteam - h5ad": {
+         "content": [
+             3262106,
+-            148146,
++            66414,
+             {
+                 "DOUBLETDETECTION": {
+                     "anndata": "0.11.4",
+@@ -11,21 +11,40 @@
+                 }
+             }
+         ],
+-        "timestamp": "2026-04-23T17:14:06.033746024",
++        "timestamp": "2026-08-05T12:29:23.460423",
+         "meta": {
+             "nf-test": "0.9.5",
+-            "nextflow": "26.03.2"
++            "nextflow": "26.04.6"
+         }
+     },
+     "scdownstream - h5ad - stub": {
+         "content": [
+             {
++                "0": [
++                    [
++                        {
++                            "id": "test"
++                        },
++                        "test_doubletdetection.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
++                    ]
++                ],
++                "1": [
++                    [
++                        {
++                            "id": "test"
++                        },
++                        "test_doubletdetection.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
++                    ]
++                ],
++                "2": [
++                    "versions.yml:md5,3ed20fc4bca7372f427cb84f3e689992"
++                ],
+                 "h5ad": [
+                     [
+                         {
+                             "id": "test"
+                         },
+-                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_doubletdetection.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "predictions": [
+@@ -33,25 +52,18 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_doubletdetection.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "versions": [
+                     "versions.yml:md5,3ed20fc4bca7372f427cb84f3e689992"
+                 ]
+-            },
+-            {
+-                "DOUBLETDETECTION": {
+-                    "python": "3.13.3",
+-                    "anndata": "0.11.4",
+-                    "doubletdetection": null
+-                }
+             }
+         ],
+-        "timestamp": "2026-04-23T17:14:23.856426678",
++        "timestamp": "2026-08-05T12:30:17.762937",
+         "meta": {
+             "nf-test": "0.9.5",
+-            "nextflow": "26.03.2"
++            "nextflow": "26.04.6"
+         }
+     }
+ }
+Changes in 'doubletdetection/tests/main.nf.test':
+--- modules/nf-core/doubletdetection/tests/main.nf.test
++++ modules/nf-core/doubletdetection/tests/main.nf.test
+@@ -58,10 +58,7 @@
+         then {
+             assertAll(
+                 { assert process.success },
+-                { assert snapshot(
+-                    sanitizeOutput(process.out),
+-                    path(process.out.versions[0]).yaml
+-                ).match() }
++                { assert snapshot(process.out).match() }
+             )
+         }
+ 
+
+Changes in 'doubletdetection/templates/doubletdetection.py':
+--- modules/nf-core/doubletdetection/templates/doubletdetection.py
++++ modules/nf-core/doubletdetection/templates/doubletdetection.py
+@@ -9,6 +9,7 @@
+ import anndata as ad
+ import doubletdetection
+ import yaml
++
+ 
+ adata = ad.read_h5ad("${h5ad}")
+ 
+@@ -23,7 +24,7 @@
+ 
+ df = adata.obs[["doublet"]]
+ df.columns = ["${prefix}"]
+-df.to_pickle("${prefix}.pkl")
++df.to_parquet("${prefix}.parquet", index=True)
+ 
+ # Versions
+ versions = {
+
+'modules/nf-core/doubletdetection/.conda-lock/linux_arm64-bd-8a6efd8ece04ea17_1.txt' was created
+'modules/nf-core/doubletdetection/.conda-lock/linux_amd64-bd-7bde77eb6c6fbc17_1.txt' was created
+************************************************************

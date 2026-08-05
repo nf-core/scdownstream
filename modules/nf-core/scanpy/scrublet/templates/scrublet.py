@@ -13,6 +13,7 @@ import scanpy as sc
 import yaml
 from threadpoolctl import threadpool_limits
 
+
 threadpool_limits(int("${task.cpus}"))
 sc.settings.n_jobs = int("${task.cpus}")
 
@@ -29,7 +30,7 @@ sc.pp.scrublet(adata, **kwargs)
 adata.obs["predicted_doublet"] = adata.obs["predicted_doublet"].astype(bool)
 df = adata.obs[["predicted_doublet"]]
 df.columns = ["${prefix}"]
-df.to_pickle("${prefix}.pkl")
+df.to_parquet("${prefix}.parquet", index=True)
 
 adata = adata[~adata.obs["predicted_doublet"]].copy()
 

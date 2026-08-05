@@ -59,10 +59,10 @@ output:
           ontologies:
             - edam: "http://edamontology.org/format_3590"
   obsm:
-    - "X_*.pkl":
+    - "X_*.parquet":
         type: file
         description: Pickled Symphony Harmony-corrected embedding stored in obsm
-        pattern: "X_*.pkl"
+        pattern: "X_*.parquet"
   versions:
     - versions.yml:
         type: file
@@ -77,25 +77,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:1955ea21957841c8
-      build_id: bd-1955ea21957841c8_5
-      scan_id: sc-c8ea12805762ab36_1
     linux/amd64:
-      name: community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:8beba38368c4707a
-      build_id: bd-8beba38368c4707a_5
-      scan_id: sc-0eb77876281c1987_1
+      name: community.wave.seqera.io/library/python_pyyaml_scanpy_pip_pruned:b85ec8f003db501a
+      build_id: bd-b85ec8f003db501a_1
+      scan_id: sc-b9912fec05cd3042_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/python_pyyaml_scanpy_pip_pruned:1b5be9d434d75f47
+      build_id: bd-1b5be9d434d75f47_1
+      scan_id: sc-73b167b2fe02c828_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:9f4c1784a34b6ffb
-      build_id: bd-9f4c1784a34b6ffb_5
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/03/030584aaddf5d1234484c2164777ef3c2fd63562331676ea134937e98bd82373/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_pip_pruned:5e17030b1a67eacf
+      build_id: bd-5e17030b1a67eacf_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/fe/fef1581af3ad5950a2e168b8bf07dacefd670a2877a53d0b16196a4ce3f7ac56/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:cb3f601337484bf1
-      build_id: bd-cb3f601337484bf1_5
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/af/af61acbf7e485c202c57412614e66bb99c60622455a5e71d2f6a3b0f2625c615/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_pip_pruned:54aa538dce6431c3
+      build_id: bd-54aa538dce6431c3_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/37/3744522911b0b006bae0047a24877bc3c33c6b161b9dda22f4caeac249bffd18/data
   conda:
     linux/amd64:
-      lock_file: modules/local/symphony/harmonyintegrate/.conda-lock/linux_amd64-bd-8beba38368c4707a_5.txt
+      lock_file: modules/local/symphony/harmonyintegrate/.conda-lock/linux_amd64-bd-b85ec8f003db501a_1.txt
     linux/arm64:
-      lock_file: modules/local/symphony/harmonyintegrate/.conda-lock/linux_arm64-bd-1955ea21957841c8_5.txt
+      lock_file: modules/local/symphony/harmonyintegrate/.conda-lock/linux_arm64-bd-1b5be9d434d75f47_1.txt

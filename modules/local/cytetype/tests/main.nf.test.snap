@@ -16,16 +16,16 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "annotation:cytetype:scvi:0.5:cell_state",
+                        "sample",
+                        "label",
+                        "condition",
+                        "batch",
+                        "sample_original",
+                        "leiden",
                         "annotation:cytetype:scvi:0.5:cell_type",
                         "annotation:cytetype:scvi:0.5:ontology_term",
                         "annotation:cytetype:scvi:0.5:ontology_term_id",
-                        "batch",
-                        "condition",
-                        "label",
-                        "leiden",
-                        "sample",
-                        "sample_original"
+                        "annotation:cytetype:scvi:0.5:cell_state"
                     ]
                 },
                 "var": {
@@ -59,10 +59,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-11T11:25:34.578273296",
+        "timestamp": "2026-08-05T10:16:20.480261",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures - stub": {
@@ -77,7 +77,7 @@
                     ]
                 ],
                 "1": [
-                    "test_cytetype.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "test_cytetype.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "2": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -91,16 +91,16 @@
                     ]
                 ],
                 "obs": [
-                    "test_cytetype.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "test_cytetype.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-07-19T15:40:50.9731317",
+        "timestamp": "2026-08-05T10:18:29.817561",
         "meta": {
-            "nf-test": "0.9.4",
+            "nf-test": "0.9.5",
             "nextflow": "26.04.6"
         }
     },

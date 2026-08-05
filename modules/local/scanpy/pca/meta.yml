@@ -1,4 +1,4 @@
-name: "scanpy_pca"
+name: scanpy_pca
 description: Compute principal component analysis on normalised single-cell expression
 keywords:
   - dimensionality-reduction
@@ -6,26 +6,28 @@ keywords:
   - single-cell
   - scanpy
 tools:
-  - "scanpy":
-      description: "Single-cell analysis in Python"
-      homepage: "https://scanpy.readthedocs.io"
-      documentation: "https://scanpy.readthedocs.io"
-      tool_dev_url: "https://github.com/scverse/scanpy"
+  - scanpy:
+      description: Single-cell analysis in Python
+      homepage: https://scanpy.readthedocs.io
+      documentation: https://scanpy.readthedocs.io
+      tool_dev_url: https://github.com/scverse/scanpy
       licence:
-        - "BSD-3-Clause"
+        - BSD-3-Clause
       identifier: biotools:scanpy
 input:
   - - meta:
         type: map
-        description: |
-          Groovy Map containing sample information
+        description: "Groovy Map containing sample information
+
           e.g. `[ id:'sample1' ]`
+
+          "
     - h5ad:
         type: file
         description: AnnData object in h5ad format
         pattern: "*.{h5ad}"
         ontologies:
-          - edam: "http://edamontology.org/format_3590"
+          - edam: http://edamontology.org/format_3590
   - key_added:
       type: string
       description: obsm key under which PCA coordinates are stored
@@ -35,24 +37,25 @@ input:
   - log_normalize:
       type: boolean
       description: When true, log-normalise counts from input_layer before PCA; when false, use input_layer as pre-normalised expression
-
 output:
   h5ad:
     - - meta:
           type: map
-          description: |
-            Groovy Map containing sample information
+          description: "Groovy Map containing sample information
+
             e.g. `[ id:'sample1' ]`
+
+            "
       - ${prefix}.h5ad: {}
   obsm:
-    - X_${prefix}.pkl: {}
+    - X_${prefix}.parquet: {}
   versions:
     - versions.yml:
         type: file
         description: File containing software versions
-        pattern: "versions.yml"
+        pattern: versions.yml
         ontologies:
-          - edam: http://edamontology.org/format_3750 # YAML
+          - edam: http://edamontology.org/format_3750
 topics:
   versions:
     - versions.yml:
@@ -65,24 +68,24 @@ maintainers:
 containers:
   docker:
     linux/arm64:
-      name: community.wave.seqera.io/library/python_pyyaml_scanpy:7f19b28d786b0222
-      build_id: bd-7f19b28d786b0222_1
-      scan_id: sc-b3c44c3ae7152a6d_1
+      name: community.wave.seqera.io/library/python_pyyaml_scanpy_pyarrow:c7da41c72b48c5cc
+      build_id: bd-c7da41c72b48c5cc_1
+      scan_id: sc-73b100421e482a98_1
     linux/amd64:
-      name: community.wave.seqera.io/library/python_pyyaml_scanpy:ec0559841ac88fb2
-      build_id: bd-ec0559841ac88fb2_1
-      scan_id: sc-f0395f3488ec7c75_1
+      name: community.wave.seqera.io/library/python_pyyaml_scanpy_pyarrow:4be15c4d717947be
+      build_id: bd-4be15c4d717947be_1
+      scan_id: sc-cc6db834c01f2f66_1
   singularity:
-    linux/amd64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy:0177c1b99592b0c0
-      build_id: bd-0177c1b99592b0c0_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ed/ed34e104367da9d7fa40b39d78d86dce36948d95dbd2571abe923bc857bf192f/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy:d69da01942cb3bc7
-      build_id: bd-d69da01942cb3bc7_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/61/61239a82cb89944ca962bc7be4bbfc5e3761b7a708c1110881d3569fc3c6b7bb/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_pyarrow:058ae7e3e4850797
+      build_id: bd-058ae7e3e4850797_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a1/a1faf9321a7483071cb34c7556e87e3084491da6f9b75868f2644eea4a43cf3b/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_pyarrow:1c0f78a99fc3c95e
+      build_id: bd-1c0f78a99fc3c95e_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f4/f4cb85cb4a864e74997f047afb5f16ecd6e106cc8793edfc3e91945501b41bbd/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/pca/.conda-lock/linux_amd64-bd-ec0559841ac88fb2_1.txt
+      lock_file: modules/local/scanpy/pca/.conda-lock/linux_amd64-bd-4be15c4d717947be_1.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/pca/.conda-lock/linux_arm64-bd-7f19b28d786b0222_1.txt
+      lock_file: modules/local/scanpy/pca/.conda-lock/linux_arm64-bd-c7da41c72b48c5cc_1.txt

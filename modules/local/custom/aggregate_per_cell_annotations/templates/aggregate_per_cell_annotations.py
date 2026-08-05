@@ -61,7 +61,7 @@ obs_cols = {
 if summary_rows:
     pd.DataFrame(summary_rows).to_csv(f"{prefix}_aggregate_per_cell_annotations.csv", index=False)
 
-pd.DataFrame(obs_cols, index=adata.obs.index).to_pickle(f"{prefix}.pkl")
+pd.DataFrame(obs_cols, index=adata.obs.index).to_parquet(f"{prefix}.parquet", index=True)
 adata.write_h5ad(f"{prefix}.h5ad")
 
 versions = {"${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}}

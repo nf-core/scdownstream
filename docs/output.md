@@ -67,12 +67,12 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - `doublet_detection/`: Directories related to doublet detection.
     - `input_rds/`: RDS version of the H5AD file that is used as input to the doublet detection tools.
     - `(doubletdetection|scdblfinder|scrublet|solo)/`: Results of doublet detection.
-      Each directory contains a filtered `h5ad`/`rds` and a `csv`/`pkl` file
+      Each directory contains a filtered `h5ad`/`rds` and a `parquet` file
       with the doublet annotations.
     - `${sample_id}.h5ad`: The H5AD without doublets.
   - `qc_filtered/`: QC plots for the preprocessed data.
   - `cell_cycle/`: Cell cycle scoring results.
-    - `${sample_id}_cellcycle.pkl`: `S_score`, `G2M_score`, and `phase` columns
+    - `${sample_id}_cellcycle.parquet`: `S_score`, `G2M_score`, and `phase` columns
       for each cell. Merged into the final H5AD via `FINALIZE_QC_ANNDATAS`.
     - `${sample_id}_cellcycle.h5ad`: Intermediate H5AD with cell cycle scores added, available for inspection.
   - `sizes/`: Cell counts at each QC stage (MultiQC table input).
@@ -100,7 +100,7 @@ Per-sample QC outputs live under `02_quality_control/`.
       - `*.rds`: RDS version of the H5AD file.
     - `${tool}`
       - `*.h5ad/*.rds`: The integrated H5AD or RDS file.
-      - `X_${tool}.pkl`: Low-dimensional representation of the integrated data.
+      - `X_${tool}.parquet`: Low-dimensional representation of the integrated data.
       - `symphony_reference.h5ad` (Symphony only): Compact Symphony reference AnnData for query mapping, published from de novo Symphony runs.
 
 </details>
@@ -118,7 +118,7 @@ The integrated H5AD files are stored in subdirectories named after the integrati
 - `04_celltypes/`
   - `celltypist/`
     - `*.h5ad`: The H5AD file with cell type annotations.
-    - `*.pkl`: The cell type annotations in a pickle file.
+    - `*.parquet`: The cell type annotations in a Parquet file.
   - `singleR`
     - `*.h5ad`: The H5AD file with cell type annotations.
     - `*.csv`: The cell type annotations in a CSV file.
@@ -137,7 +137,7 @@ The `04_celltypes` directory contains the results of the per-sample cell type an
 
 - `08_cytetype/`
   - `*.h5ad`: The H5AD file with CyteType annotations merged into `adata.obs` (only if `--save_intermediates` is enabled).
-  - `*.pkl`: The CyteType-added obs columns in a pickle file (always emitted; merged into the final merged cohort H5AD by `FINALIZE`).
+  - `*.parquet`: The CyteType-added obs columns in a Parquet file (always emitted; merged into the final merged cohort H5AD by `FINALIZE`).
 
 </details>
 
@@ -155,13 +155,13 @@ CyteType runs after integration, clustering, and global differential expression.
     - `leiden/`
       - ${resolution}/`
         - `*.h5ad`: The H5AD file with the Leiden clustering.
-        - `*.pkl`: The Leiden clustering in a pickle file.
+        - `*.parquet`: The Leiden clustering in a Parquet file.
     - `umap/`
       - `*.h5ad`: The H5AD file with the UMAP coordinates.
-      - `*.pkl`: The UMAP coordinates in a pickle file.
+      - `*.parquet`: The UMAP coordinates in a Parquet file.
     - `tsne/` (when `--tsne` is enabled)
       - `*.h5ad`: The H5AD file with the t-SNE coordinates.
-      - `*.pkl`: The t-SNE coordinates in a pickle file.
+      - `*.parquet`: The t-SNE coordinates in a Parquet file.
 
 </details>
 
@@ -185,7 +185,7 @@ The results are stored in subdirectories named after the integration tool used.
       - `*_dotplot.png`: Dotplot of top ligand-receptor interactions (always published).
       - `*_circle.png`: Circle plot of interaction counts between cell groups (always published).
       - `*_tileplot.png`: Tileplot of the top ligand-receptor interactions (always published).
-      - `*.h5ad` / `*.pkl`: Rank-aggregate AnnData and results table (when `--save_intermediates`).
+      - `*.h5ad` / `*.parquet`: Rank-aggregate AnnData and results table (when `--save_intermediates`).
       - `by_sample/` (when `--cell2cell` and `--save_intermediates`)
         - `*.csv.gz`: Long-format LIANA results per context.
         - `*_contexts.tsv`: Context metadata with optional condition labels.

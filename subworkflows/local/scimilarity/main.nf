@@ -45,6 +45,6 @@ workflow SCIMILARITY {
 
     emit:
     integrations = ch_integrations // channel: [ integration, h5ad ]
-    obs          = ch_obs          // channel: [ pkl ]
-    obsm         = ch_obsm         // channel: [ pkl ]
+    obs          = ch_obs          // channel: [ parquet ]
+    obsm         = ch_obsm         // channel: [ parquet ]
 }

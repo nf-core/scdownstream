@@ -58,10 +58,10 @@ output:
           ontologies:
             - edam: "http://edamontology.org/format_3590"
   obs:
-    - "*.pkl":
+    - "*.parquet":
         type: file
         description: Pickled obs subset containing CyteType annotation columns
-        pattern: "*.pkl"
+        pattern: "*.parquet"
   versions:
     - versions.yml:
         type: file
@@ -77,24 +77,24 @@ maintainers:
 containers:
   docker:
     linux/arm64:
-      name: community.wave.seqera.io/library/python_pyyaml_pydantic_anndata_pruned:2b8faa0a0bad36a5
-      build_id: bd-2b8faa0a0bad36a5_1
-      scan_id: sc-da2e9cee3f5c0c0a_1
+      name: community.wave.seqera.io/library/python_pyyaml_pydantic_anndata_pruned:79d7cf33c8ae0c9f
+      build_id: bd-79d7cf33c8ae0c9f_1
+      scan_id: sc-8da793a327efbfda_1
     linux/amd64:
-      name: community.wave.seqera.io/library/python_pyyaml_pydantic_anndata_pruned:c5e32374cbaee1c4
-      build_id: bd-c5e32374cbaee1c4_1
-      scan_id: sc-5878457666a6f9e1_1
+      name: community.wave.seqera.io/library/python_pyyaml_pydantic_anndata_pruned:87cef5886d0c62d2
+      build_id: bd-87cef5886d0c62d2_1
+      scan_id: sc-ad40982798c51853_1
   singularity:
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_pydantic_anndata_pruned:85209daf09d493e5
-      build_id: bd-85209daf09d493e5_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f5/f595bc70c9a78589276871c3ecd03eb9eaa7e2ca019ae34ffc2e98030a2b0fa2/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_pydantic_anndata_pruned:fa2fd112bfffc1e2
+      build_id: bd-fa2fd112bfffc1e2_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7d/7d5ceecffd20de852f01e91d03c187f9adee247ff8d62991a368f57c13e1fff7/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_pydantic_anndata_pruned:7a052a7e4a4f6c55
-      build_id: bd-7a052a7e4a4f6c55_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b2/b24aee9072d4f8cd6ea77a3e30d02ef114a2a2e3de34d2bfb5bb113543730c29/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_pydantic_anndata_pruned:7739476fcff213a7
+      build_id: bd-7739476fcff213a7_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b1/b1379602a1a1febd0d1715e90506c05aa7945d541538c1f431684be97878dcfa/data
   conda:
     linux/amd64:
-      lock_file: modules/local/cytetype/.conda-lock/linux_amd64-bd-c5e32374cbaee1c4_1.txt
+      lock_file: modules/local/cytetype/.conda-lock/linux_amd64-bd-87cef5886d0c62d2_1.txt
     linux/arm64:
-      lock_file: modules/local/cytetype/.conda-lock/linux_arm64-bd-2b8faa0a0bad36a5_1.txt
+      lock_file: modules/local/cytetype/.conda-lock/linux_arm64-bd-79d7cf33c8ae0c9f_1.txt
