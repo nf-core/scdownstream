@@ -13,10 +13,35 @@ os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
 import anndata as ad
 import numpy as np
+import pandas as pd
 import scanpy as sc
 import scipy
 import yaml
 from scipy.sparse import csr_matrix
+
+
+def _dataframe_for_h5ad(df: pd.DataFrame) -> pd.DataFrame:
+    """Rewrite string indexes/columns so downstream R and nft-anndata can read the H5AD."""
+    df = df.copy()
+    df.index = pd.CategoricalIndex(df.index.astype(str).to_list(), name=df.index.name)
+    for col in df.columns:
+        if isinstance(df[col].dtype, pd.StringDtype) or df[col].dtype == object:
+            df[col] = pd.Series(df[col].astype(str).to_list(), index=df.index, name=col, dtype=object)
+    return df
+
+
+def _prepare_adata_for_h5ad(adata_obj):
+    """Avoid nullable-string-array encodings that downstream tools cannot read."""
+    adata_obj.obs = _dataframe_for_h5ad(adata_obj.obs)
+    adata_obj.var = _dataframe_for_h5ad(adata_obj.var)
+    for uns_key, uns_value in list(adata_obj.uns.items()):
+        if isinstance(uns_value, pd.DataFrame):
+            adata_obj.uns[uns_key] = _dataframe_for_h5ad(uns_value)
+        elif isinstance(uns_value, dict):
+            for key, value in list(uns_value.items()):
+                if isinstance(value, pd.DataFrame):
+                    uns_value[key] = _dataframe_for_h5ad(value)
+
 
 adatas = [sc.read_h5ad(f) for f in sorted("${h5ads}".split())]
 
@@ -76,7 +101,7 @@ adata_outer.X = csr_matrix(adata_outer.X)
 # Sort obs columns alphabetically to make reproducible
 adata_outer.obs = adata_outer.obs.reindex(sorted(adata_outer.obs.columns), axis=1)
 
-ad.settings.allow_write_nullable_strings = True
+_prepare_adata_for_h5ad(adata_outer)
 adata_outer.write("${prefix}_outer.h5ad")
 
 if base_path:
@@ -84,6 +109,7 @@ if base_path:
 
     known_labels = adata_base.obs["label"].unique()
     adata_integrate.obs["label"] = adata_integrate.obs["label"].map(lambda x: x if x in known_labels else "Unknown")
+    _prepare_adata_for_h5ad(adata_integrate)
     adata_integrate.write("${prefix}_integrate.h5ad")
 else:
     os.symlink("${prefix}_outer.h5ad", "${prefix}_integrate.h5ad")

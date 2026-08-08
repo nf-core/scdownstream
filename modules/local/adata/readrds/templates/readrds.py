@@ -56,6 +56,31 @@ with localconverter(anndata2ri.converter):
 adata.obs.index = adata.obs.index.astype(str)
 adata.var.index = adata.var.index.astype(str)
 
+
+def _dataframe_for_h5ad(df: pd.DataFrame) -> pd.DataFrame:
+    """Rewrite string indexes/columns so nft-anndata and R can read the written H5AD."""
+    df = df.copy()
+    df.index = pd.CategoricalIndex(df.index.astype(str).to_list(), name=df.index.name)
+    for col in df.columns:
+        if isinstance(df[col].dtype, pd.StringDtype) or df[col].dtype == object:
+            df[col] = pd.Series(df[col].astype(str).to_list(), index=df.index, name=col, dtype=object)
+    return df
+
+
+def _prepare_adata_for_h5ad(adata_obj):
+    """Avoid nullable-string-array encodings that downstream tools cannot read."""
+    adata_obj.obs = _dataframe_for_h5ad(adata_obj.obs)
+    adata_obj.var = _dataframe_for_h5ad(adata_obj.var)
+    for uns_key, uns_value in list(adata_obj.uns.items()):
+        if isinstance(uns_value, pd.DataFrame):
+            adata_obj.uns[uns_key] = _dataframe_for_h5ad(uns_value)
+        elif isinstance(uns_value, dict):
+            for key, value in list(uns_value.items()):
+                if isinstance(value, pd.DataFrame):
+                    uns_value[key] = _dataframe_for_h5ad(value)
+
+
+_prepare_adata_for_h5ad(adata)
 adata.write_h5ad("${prefix}.h5ad")
 
 versions = {

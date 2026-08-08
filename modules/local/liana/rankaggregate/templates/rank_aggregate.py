@@ -30,6 +30,29 @@ prefix = "${prefix}"
 obs_key = "${obs_key}"
 
 
+def _dataframe_for_h5ad(df: pd.DataFrame) -> pd.DataFrame:
+    """Rewrite string indexes/columns so nft-anndata can read the written H5AD."""
+    df = df.copy()
+    df.index = pd.CategoricalIndex(df.index.astype(str).to_list(), name=df.index.name)
+    for col in df.columns:
+        if isinstance(df[col].dtype, pd.StringDtype) or df[col].dtype == object:
+            df[col] = pd.Series(df[col].astype(str).to_list(), index=df.index, name=col, dtype=object)
+    return df
+
+
+def _prepare_adata_for_h5ad(adata_obj):
+    """Avoid nullable-string-array encodings that nft-anndata misreads as categoricals."""
+    adata_obj.obs = _dataframe_for_h5ad(adata_obj.obs)
+    adata_obj.var = _dataframe_for_h5ad(adata_obj.var)
+    for uns_key, uns_value in list(adata_obj.uns.items()):
+        if isinstance(uns_value, pd.DataFrame):
+            adata_obj.uns[uns_key] = _dataframe_for_h5ad(uns_value)
+        elif isinstance(uns_value, dict):
+            for key, value in list(uns_value.items()):
+                if isinstance(value, pd.DataFrame):
+                    uns_value[key] = _dataframe_for_h5ad(value)
+
+
 def _optional_int(value):
     return None if value in ("", "null", "None") else int(value)
 
@@ -285,6 +308,7 @@ if adata.obs[obs_key].nunique() > 1:
         df: pd.DataFrame = adata.uns["liana_res"]
 
         df.to_parquet(f"{prefix}.parquet", index=True)
+        _prepare_adata_for_h5ad(adata)
         adata.write_h5ad(f"{prefix}.h5ad")
         _write_liana_plots(adata, df, obs_key)
 

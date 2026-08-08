@@ -3,33 +3,33 @@
         "content": [
             [
                 "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
-                "test_filtered_qc_histograms_mqc.json:md5,dbec569601828650ce3bfb287647b923",
-                "test_preprocessed_mqc.json:md5,720d0ba06f05eff78a97cdf375ae3785",
-                "test_raw_mqc.json:md5,7d2588c3a7df9b650c51bbd61a791607"
+                "test_filtered_qc_histograms_mqc.json:md5,6a36624c9ebdc48e60f9439094d248e4",
+                "test_preprocessed_mqc.json:md5,05b6d1b225fd376d6d4708d536f353ea",
+                "test_raw_mqc.json:md5,3b503d120255fd4a2cee945eace83d60"
             ],
             [
                 
             ]
         ],
-        "timestamp": "2026-07-16T20:51:13.624339",
+        "timestamp": "2026-08-08T11:14:56.843203161",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should run without ambient RNA removal and doublet detection, but with custom mito genes": {
         "content": [
             [
                 "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
-                "test_filtered_qc_histograms_mqc.json:md5,dbec569601828650ce3bfb287647b923",
-                "test_preprocessed_mqc.json:md5,720d0ba06f05eff78a97cdf375ae3785",
-                "test_raw_mqc.json:md5,7d2588c3a7df9b650c51bbd61a791607"
+                "test_filtered_qc_histograms_mqc.json:md5,6a36624c9ebdc48e60f9439094d248e4",
+                "test_preprocessed_mqc.json:md5,05b6d1b225fd376d6d4708d536f353ea",
+                "test_raw_mqc.json:md5,3b503d120255fd4a2cee945eace83d60"
             ],
             [
                 
             ]
         ],
-        "timestamp": "2026-07-23T16:02:59.17765264",
+        "timestamp": "2026-08-08T11:16:47.373121113",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -118,9 +118,9 @@
         "content": [
             [
                 "sizes_mqc.json:md5,ac78d5f442533ecb26886d95d03925ac",
-                "test_filtered_qc_histograms_mqc.json:md5,92f76ae05fe8b58afb825e73f8dd213c",
-                "test_preprocessed_mqc.json:md5,2b75b6b244effaa8de3bf163be8c931a",
-                "test_raw_mqc.json:md5,7d2588c3a7df9b650c51bbd61a791607"
+                "test_filtered_qc_histograms_mqc.json:md5,544a41ba9d925d6713be6858df922888",
+                "test_preprocessed_mqc.json:md5,56d75eba4e031a54b2fc381c92b1ed87",
+                "test_raw_mqc.json:md5,3b503d120255fd4a2cee945eace83d60"
             ],
             [
                 
@@ -133,41 +133,41 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "log1p_n_genes_by_counts",
-                        "log1p_total_counts",
-                        "log1p_total_counts_hb",
-                        "log1p_total_counts_mt",
-                        "log1p_total_counts_ribo",
-                        "n_genes_by_counts",
-                        "pct_counts_hb",
-                        "pct_counts_in_top_20_genes",
-                        "pct_counts_mt",
-                        "pct_counts_ribo",
-                        "sample",
                         "sample_original",
+                        "n_genes_by_counts",
+                        "log1p_n_genes_by_counts",
                         "total_counts",
-                        "total_counts_hb",
+                        "log1p_total_counts",
+                        "pct_counts_in_top_20_genes",
                         "total_counts_mt",
-                        "total_counts_ribo"
+                        "log1p_total_counts_mt",
+                        "pct_counts_mt",
+                        "total_counts_ribo",
+                        "log1p_total_counts_ribo",
+                        "pct_counts_ribo",
+                        "total_counts_hb",
+                        "log1p_total_counts_hb",
+                        "pct_counts_hb"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "hb",
-                        "log1p_mean_counts",
-                        "log1p_total_counts",
-                        "mean_counts",
-                        "mt",
-                        "n_cells_by_counts",
-                        "pct_dropout_by_counts",
-                        "ribo",
                         "symbols",
-                        "total_counts"
+                        "mt",
+                        "ribo",
+                        "hb",
+                        "n_cells_by_counts",
+                        "mean_counts",
+                        "log1p_mean_counts",
+                        "pct_dropout_by_counts",
+                        "total_counts",
+                        "log1p_total_counts"
                     ]
                 },
                 "layers": [
@@ -190,7 +190,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-23T16:11:59.55701598",
+        "timestamp": "2026-08-08T11:25:04.967725654",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -200,9 +200,9 @@
         "content": [
             [
                 "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
-                "test_filtered_qc_histograms_mqc.json:md5,3e7d78b50025d8a4db3cc70398a695ce",
-                "test_preprocessed_mqc.json:md5,720d0ba06f05eff78a97cdf375ae3785",
-                "test_raw_mqc.json:md5,7d2588c3a7df9b650c51bbd61a791607"
+                "test_filtered_qc_histograms_mqc.json:md5,f98fa0c08f18318eff3859967676b574",
+                "test_preprocessed_mqc.json:md5,05b6d1b225fd376d6d4708d536f353ea",
+                "test_raw_mqc.json:md5,3b503d120255fd4a2cee945eace83d60"
             ],
             [
                 
@@ -215,42 +215,42 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "log1p_n_genes_by_counts",
-                        "log1p_total_counts",
-                        "log1p_total_counts_hb",
-                        "log1p_total_counts_mt",
-                        "log1p_total_counts_ribo",
-                        "n_genes_by_counts",
-                        "pct_counts_hb",
-                        "pct_counts_in_top_20_genes",
-                        "pct_counts_mt",
-                        "pct_counts_ribo",
-                        "sample",
                         "sample_original",
+                        "n_genes_by_counts",
+                        "log1p_n_genes_by_counts",
                         "total_counts",
-                        "total_counts_hb",
+                        "log1p_total_counts",
+                        "pct_counts_in_top_20_genes",
                         "total_counts_mt",
-                        "total_counts_ribo"
+                        "log1p_total_counts_mt",
+                        "pct_counts_mt",
+                        "total_counts_ribo",
+                        "log1p_total_counts_ribo",
+                        "pct_counts_ribo",
+                        "total_counts_hb",
+                        "log1p_total_counts_hb",
+                        "pct_counts_hb"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "hb",
-                        "log1p_mean_counts",
-                        "log1p_total_counts",
-                        "mean_counts",
-                        "mt",
-                        "n_cells",
-                        "n_cells_by_counts",
-                        "pct_dropout_by_counts",
-                        "ribo",
                         "symbols",
-                        "total_counts"
+                        "mt",
+                        "ribo",
+                        "hb",
+                        "n_cells_by_counts",
+                        "mean_counts",
+                        "log1p_mean_counts",
+                        "pct_dropout_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "n_cells"
                     ]
                 },
                 "layers": [
@@ -273,7 +273,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-23T16:16:24.339580992",
+        "timestamp": "2026-08-08T11:29:07.147183193",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -283,9 +283,9 @@
         "content": [
             [
                 "sizes_mqc.json:md5,1793ebee5833403df06e38d4c73f25c5",
-                "test_filtered_qc_histograms_mqc.json:md5,dbec569601828650ce3bfb287647b923",
-                "test_preprocessed_mqc.json:md5,1855cc72150d8ce1ce70aeec2738499d",
-                "test_raw_mqc.json:md5,7d2588c3a7df9b650c51bbd61a791607"
+                "test_filtered_qc_histograms_mqc.json:md5,6a36624c9ebdc48e60f9439094d248e4",
+                "test_preprocessed_mqc.json:md5,e93799c6c97ab9f7e13de6e061f465ba",
+                "test_raw_mqc.json:md5,3b503d120255fd4a2cee945eace83d60"
             ],
             [
                 
@@ -298,43 +298,43 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "log1p_n_genes_by_counts",
-                        "log1p_total_counts",
-                        "log1p_total_counts_hb",
-                        "log1p_total_counts_mt",
-                        "log1p_total_counts_ribo",
-                        "n_genes_by_counts",
-                        "pct_counts_hb",
-                        "pct_counts_in_top_20_genes",
-                        "pct_counts_mt",
-                        "pct_counts_ribo",
-                        "sample",
                         "sample_original",
-                        "test_scrublet",
+                        "n_genes_by_counts",
+                        "log1p_n_genes_by_counts",
                         "total_counts",
-                        "total_counts_hb",
+                        "log1p_total_counts",
+                        "pct_counts_in_top_20_genes",
                         "total_counts_mt",
-                        "total_counts_ribo"
+                        "log1p_total_counts_mt",
+                        "pct_counts_mt",
+                        "total_counts_ribo",
+                        "log1p_total_counts_ribo",
+                        "pct_counts_ribo",
+                        "total_counts_hb",
+                        "log1p_total_counts_hb",
+                        "pct_counts_hb",
+                        "test_scrublet"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "hb",
-                        "log1p_mean_counts",
-                        "log1p_total_counts",
-                        "mean_counts",
-                        "mt",
-                        "n_cells",
-                        "n_cells_by_counts",
-                        "pct_dropout_by_counts",
-                        "ribo",
                         "symbols",
-                        "total_counts"
+                        "mt",
+                        "ribo",
+                        "hb",
+                        "n_cells_by_counts",
+                        "mean_counts",
+                        "log1p_mean_counts",
+                        "pct_dropout_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "n_cells"
                     ]
                 },
                 "layers": [
@@ -357,7 +357,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-23T16:08:12.963580427",
+        "timestamp": "2026-08-08T14:22:00.840629978",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -367,16 +367,16 @@
         "content": [
             [
                 "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
-                "test_cellcycle_mqc.json:md5,aa10c138547a9edbe40a9676fefd75d9",
-                "test_filtered_qc_histograms_mqc.json:md5,dbec569601828650ce3bfb287647b923",
-                "test_preprocessed_mqc.json:md5,720d0ba06f05eff78a97cdf375ae3785",
-                "test_raw_mqc.json:md5,7d2588c3a7df9b650c51bbd61a791607"
+                "test_cellcycle_mqc.json:md5,a2b63acff78f71583490ac8bfa598564",
+                "test_filtered_qc_histograms_mqc.json:md5,6a36624c9ebdc48e60f9439094d248e4",
+                "test_preprocessed_mqc.json:md5,05b6d1b225fd376d6d4708d536f353ea",
+                "test_raw_mqc.json:md5,3b503d120255fd4a2cee945eace83d60"
             ],
             [
                 
             ]
         ],
-        "timestamp": "2026-07-23T16:18:41.24178205",
+        "timestamp": "2026-08-08T11:31:06.671056457",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

@@ -9,7 +9,6 @@ os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
 from importlib.metadata import version
 
-import anndata as ad
 import numpy as np
 import pandas as pd
 import scanpy as sc
@@ -109,8 +108,6 @@ df_out.to_parquet(f"{prefix}.parquet", index=True)
 
 adata.obs = pd.concat([adata.obs, df_out], axis=1)
 _prepare_adata_for_h5ad(adata)
-# Safety net if any nullable strings remain after CategoricalIndex sanitisation.
-ad.settings.allow_write_nullable_strings = True
 adata.write_h5ad(f"{prefix}.h5ad")
 
 versions = {

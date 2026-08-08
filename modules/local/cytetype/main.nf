@@ -3,7 +3,6 @@ process CYTETYPE {
     label 'process_medium'
 
     secret secrets.CYTETYPE_API_KEY ? ['CYTETYPE_API_KEY'] : ''
-    errorStrategy 'ignore'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container

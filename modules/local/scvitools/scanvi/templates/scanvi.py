@@ -107,7 +107,6 @@ adata.obsm["X_emb"] = model.get_latent_representation()
 
 adata.obs["label:scANVI"] = model.predict()
 
-ad.settings.allow_write_nullable_strings = True
 adata.write_h5ad("${prefix}.h5ad")
 adata.obs[["label:scANVI"]].to_parquet("${prefix}.parquet", index=True)
 model.save("${prefix}_model")

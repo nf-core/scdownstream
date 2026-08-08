@@ -14,7 +14,6 @@ import re
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
-import anndata as ad
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -371,8 +370,6 @@ if len(valid_groups) >= 2:
         _prepare_adata_for_h5ad(adata, rank_key)
 
         pickle.dump(rgg_dict, open(f"{prefix}.pkl", "wb"))
-        # Safety net if any nullable strings remain after CategoricalIndex sanitisation.
-        ad.settings.allow_write_nullable_strings = True
         adata.write_h5ad(f"{prefix}.h5ad")
 
         # Plot

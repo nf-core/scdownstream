@@ -12,9 +12,33 @@ import platform
 
 import anndata as ad
 import numpy as np
+import pandas as pd
 import scipy
 import yaml
 from scipy.sparse import csr_matrix
+
+
+def _dataframe_for_h5ad(df: pd.DataFrame) -> pd.DataFrame:
+    """Rewrite string indexes/columns so downstream R and nft-anndata can read the H5AD."""
+    df = df.copy()
+    df.index = pd.CategoricalIndex(df.index.astype(str).to_list(), name=df.index.name)
+    for col in df.columns:
+        if isinstance(df[col].dtype, pd.StringDtype) or df[col].dtype == object:
+            df[col] = pd.Series(df[col].astype(str).to_list(), index=df.index, name=col, dtype=object)
+    return df
+
+
+def _prepare_adata_for_h5ad(adata_obj):
+    """Avoid nullable-string-array encodings that downstream tools cannot read."""
+    adata_obj.obs = _dataframe_for_h5ad(adata_obj.obs)
+    adata_obj.var = _dataframe_for_h5ad(adata_obj.var)
+    for uns_key, uns_value in list(adata_obj.uns.items()):
+        if isinstance(uns_value, pd.DataFrame):
+            adata_obj.uns[uns_key] = _dataframe_for_h5ad(uns_value)
+        elif isinstance(uns_value, dict):
+            for key, value in list(uns_value.items()):
+                if isinstance(value, pd.DataFrame):
+                    uns_value[key] = _dataframe_for_h5ad(value)
 
 
 # Function borrowed from https://github.com/icbi-lab/luca/blob/5ffb0a4671e9c288b10e73de18d447ee176bef1d/lib/scanpy_helper_submodule/scanpy_helpers/util.py#L122C1-L135C21
@@ -203,6 +227,7 @@ if adata.var.index.name is not None:
 if adata.obs.index.name is not None:
     adata.obs.index.name = None
 
+_prepare_adata_for_h5ad(adata)
 adata.write_h5ad("${prefix}.h5ad")
 
 # Versions
