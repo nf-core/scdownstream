@@ -37,6 +37,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Pin `pandas` and `anndata` in `SCANPY_RANKGENESGROUPS`, `CYTETYPE`, and `ADATA_EXTEND` to avoid nullable-string H5AD writes; remove `allow_write_nullable_strings` opt-ins and cast remaining `StringDtype` columns to plain `object` at write boundaries.
 - Pass gene symbols into edgePython DE so volcano labels use gene names instead of row indices.
 
 - Make by-sample LIANA subsampling context/donor-aware and drop contexts with too few cells per group before calling LIANA.
