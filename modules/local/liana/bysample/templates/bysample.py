@@ -153,11 +153,15 @@ elif n_groups < 2:
     )
 else:
     # Decide the final cell set using obs only, then materialise AnnData once.
-    obs_cols = [context_key, obs_key]
-    if "condition" in adata.obs.columns:
-        obs_cols.append("condition")
-    if "batch" in adata.obs.columns:
-        obs_cols.append("batch")
+    # Deduplicate so context_key == "condition" (or "batch") does not yield a
+    # DataFrame on column select, which breaks pd.DataFrame({...}) construction.
+    obs_cols = list(
+        dict.fromkeys(
+            [context_key, obs_key]
+            + (["condition"] if "condition" in adata.obs.columns else [])
+            + (["batch"] if "batch" in adata.obs.columns else [])
+        )
+    )
     obs = adata.obs.loc[:, obs_cols]
 
     obs = _drop_ineligible_contexts(obs, context_key, obs_key, LIANA_MIN_CELLS, stage="before subsampling")
