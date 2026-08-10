@@ -9,7 +9,6 @@ os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
 from importlib.metadata import version
 
-import anndata as ad
 import numpy as np
 import pandas as pd
 import scanpy as sc
@@ -17,32 +16,27 @@ import yaml
 from cytetype import CyteType
 
 
-def _dataframe_for_h5ad(df: pd.DataFrame) -> pd.DataFrame:
-    """Rewrite string indexes/columns so nft-anndata can read the written H5AD.
-
-    Newer anndata writes plain string indexes as nullable-string-array groups.
-    nft-anndata treats every index group as categorical and NPEs without categories.
-    Categorical indexes encode as categories/codes, which nft-anndata supports.
-    """
+def _dataframe_without_nullable_strings(df: pd.DataFrame) -> pd.DataFrame:
+    """Cast pandas StringDtype columns and indexes to plain object strings."""
     df = df.copy()
-    df.index = pd.CategoricalIndex(df.index.astype(str).to_list(), name=df.index.name)
+    if isinstance(df.index.dtype, pd.StringDtype):
+        df.index = pd.Index(df.index.to_numpy(dtype=object), name=df.index.name)
     for col in df.columns:
-        if isinstance(df[col].dtype, pd.StringDtype) or df[col].dtype == object:
-            df[col] = pd.Series(df[col].astype(str).to_list(), index=df.index, name=col, dtype=object)
+        if isinstance(df[col].dtype, pd.StringDtype):
+            df[col] = df[col].astype(object)
     return df
 
 
 def _prepare_adata_for_h5ad(adata_obj):
-    """Avoid nullable-string-array encodings that nft-anndata misreads as categoricals."""
-    adata_obj.obs = _dataframe_for_h5ad(adata_obj.obs)
-    adata_obj.var = _dataframe_for_h5ad(adata_obj.var)
+    adata_obj.obs = _dataframe_without_nullable_strings(adata_obj.obs)
+    adata_obj.var = _dataframe_without_nullable_strings(adata_obj.var)
     for uns_key, uns_value in list(adata_obj.uns.items()):
         if isinstance(uns_value, pd.DataFrame):
-            adata_obj.uns[uns_key] = _dataframe_for_h5ad(uns_value)
+            adata_obj.uns[uns_key] = _dataframe_without_nullable_strings(uns_value)
         elif isinstance(uns_value, dict):
             for key, value in list(uns_value.items()):
                 if isinstance(value, pd.DataFrame):
-                    uns_value[key] = _dataframe_for_h5ad(value)
+                    uns_value[key] = _dataframe_without_nullable_strings(value)
 
 
 adata = sc.read_h5ad("input.h5ad")
@@ -109,8 +103,6 @@ df_out.to_pickle(f"{prefix}.pkl")
 
 adata.obs = pd.concat([adata.obs, df_out], axis=1)
 _prepare_adata_for_h5ad(adata)
-# Safety net if any nullable strings remain after CategoricalIndex sanitisation.
-ad.settings.allow_write_nullable_strings = True
 adata.write_h5ad(f"{prefix}.h5ad")
 
 versions = {

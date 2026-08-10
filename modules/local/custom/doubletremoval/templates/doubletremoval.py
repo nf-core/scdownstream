@@ -33,6 +33,8 @@ def load(path: str) -> pd.DataFrame:
 
 predictions = pd.concat([load(f) for f in "${predictions}".split()], axis=1)
 predictions = predictions.reindex(adata.obs_names)
+# Stable column order so nf-test snapshots do not depend on process finish order.
+predictions = predictions.reindex(sorted(predictions.columns), axis=1)
 for column in predictions.columns:
     adata.obs[column] = predictions[column]
 

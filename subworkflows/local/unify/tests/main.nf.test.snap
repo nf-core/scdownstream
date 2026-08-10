@@ -92,11 +92,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -126,10 +126,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:30:49.266895",
+        "timestamp": "2026-08-10T10:33:53.21711044",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures - symbol_col index, unify_gene_symbols true": {
@@ -143,11 +143,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -177,10 +177,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:32:25.096169",
+        "timestamp": "2026-08-10T10:38:59.195676019",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures - symbol_col index, unify_gene_symbols false - stub": {
@@ -291,17 +291,17 @@
                     "index": "_index",
                     "columns": [
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
                         "sample"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "original_index",
-                        "symbols"
+                        "symbols",
+                        "original_index"
                     ]
                 },
                 "layers": [
@@ -324,10 +324,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:31:53.675675",
+        "timestamp": "2026-08-10T10:36:20.537132029",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     }
 }

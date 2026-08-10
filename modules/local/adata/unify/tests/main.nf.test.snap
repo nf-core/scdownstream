@@ -39,11 +39,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
+                        "label",
                         "batch",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -73,10 +73,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:28:10.776406",
+        "timestamp": "2026-08-10T10:29:13.146249864",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle sample column with different value": {
@@ -119,11 +119,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -153,10 +153,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:29:52.616541",
+        "timestamp": "2026-08-10T10:34:57.957125458",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle symbols in column": {
@@ -199,19 +199,19 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "original_index",
-                        "symbols"
+                        "symbols",
+                        "original_index"
                     ]
                 },
                 "layers": [
@@ -234,10 +234,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:26:40.704846",
+        "timestamp": "2026-08-10T10:24:36.269027113",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle label column with different name": {
@@ -280,11 +280,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -314,10 +314,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:28:00.792063",
+        "timestamp": "2026-08-10T10:28:54.292739561",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should create condition column when missing": {
@@ -360,11 +360,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -394,10 +394,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:29:07.974021",
+        "timestamp": "2026-08-10T10:31:45.308829757",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle label column with unknown values": {
@@ -440,11 +440,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -474,10 +474,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:28:25.786129",
+        "timestamp": "2026-08-10T10:29:52.416644608",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle duplicates with sum aggregation": {
@@ -520,19 +520,19 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "original_index",
-                        "symbols"
+                        "symbols",
+                        "original_index"
                     ]
                 },
                 "layers": [
@@ -555,10 +555,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:26:58.223569",
+        "timestamp": "2026-08-10T10:25:15.521681751",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should create batch column when missing": {
@@ -602,9 +602,9 @@
                     "index": "_index",
                     "columns": [
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
                         "sample"
                     ]
                 },
@@ -634,10 +634,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:27:48.778374",
+        "timestamp": "2026-08-10T10:28:21.350157017",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures - stub": {
@@ -713,19 +713,19 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "original_index",
-                        "symbols"
+                        "symbols",
+                        "original_index"
                     ]
                 },
                 "layers": [
@@ -748,10 +748,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:27:23.273289",
+        "timestamp": "2026-08-10T10:27:02.97526899",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle condition column with different name": {
@@ -794,11 +794,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -828,10 +828,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:28:52.459004",
+        "timestamp": "2026-08-10T10:31:05.184995997",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle duplicates with mean aggregation": {
@@ -874,19 +874,19 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "original_index",
-                        "symbols"
+                        "symbols",
+                        "original_index"
                     ]
                 },
                 "layers": [
@@ -909,10 +909,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:27:07.800114",
+        "timestamp": "2026-08-10T10:26:14.618359887",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should aggregate isoforms": {
@@ -955,11 +955,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -989,10 +989,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:27:29.390032",
+        "timestamp": "2026-08-10T10:27:22.318650696",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle condition column already named condition": {
@@ -1035,11 +1035,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "batch",
-                        "condition",
-                        "donor",
-                        "label",
                         "sample",
+                        "condition",
+                        "batch",
+                        "label",
+                        "donor",
                         "sample_original"
                     ]
                 },
@@ -1069,10 +1069,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:28:59.376189",
+        "timestamp": "2026-08-10T10:31:25.021636425",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should normalize label column with special characters": {
@@ -1115,11 +1115,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -1149,10 +1149,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:28:39.659686",
+        "timestamp": "2026-08-10T10:30:31.330815342",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should create label column when missing": {
@@ -1195,11 +1195,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -1229,10 +1229,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:28:17.250094",
+        "timestamp": "2026-08-10T10:29:32.430933241",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle CSR sparse matrix": {
@@ -1275,11 +1275,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -1309,10 +1309,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:29:31.851885",
+        "timestamp": "2026-08-10T10:32:56.962943627",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle CSC sparse matrix": {
@@ -1355,11 +1355,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -1389,10 +1389,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:29:38.578669",
+        "timestamp": "2026-08-10T10:33:47.275782807",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle batch column with different name": {
@@ -1436,9 +1436,9 @@
                     "index": "_index",
                     "columns": [
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
                         "sample"
                     ]
                 },
@@ -1468,10 +1468,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:27:36.254976",
+        "timestamp": "2026-08-10T10:27:41.719055838",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle label column with NaN values": {
@@ -1514,11 +1514,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -1548,10 +1548,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:28:32.145753",
+        "timestamp": "2026-08-10T10:30:11.91607688",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should remove obsm, varm, uns, and layers": {
@@ -1594,11 +1594,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -1628,10 +1628,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:30:09.321219",
+        "timestamp": "2026-08-10T10:35:38.975943226",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle duplicates with max aggregation": {
@@ -1674,19 +1674,19 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "original_index",
-                        "symbols"
+                        "symbols",
+                        "original_index"
                     ]
                 },
                 "layers": [
@@ -1709,10 +1709,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:27:17.429055",
+        "timestamp": "2026-08-10T10:26:43.683711327",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should create donor column when missing": {
@@ -1756,9 +1756,9 @@
                     "index": "_index",
                     "columns": [
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
                         "sample"
                     ]
                 },
@@ -1788,10 +1788,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:29:20.23773",
+        "timestamp": "2026-08-10T10:32:24.037869102",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should create sample column when missing": {
@@ -1834,11 +1834,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -1868,10 +1868,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:30:01.964268",
+        "timestamp": "2026-08-10T10:35:18.072878437",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle batch column already named batch": {
@@ -1915,9 +1915,9 @@
                     "index": "_index",
                     "columns": [
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
                         "sample"
                     ]
                 },
@@ -1947,10 +1947,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:27:42.501579",
+        "timestamp": "2026-08-10T10:28:01.562810897",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle complex structure": {
@@ -1993,20 +1993,20 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
+                        "symbols",
                         "gene_id",
-                        "original_index",
-                        "symbols"
+                        "original_index"
                     ]
                 },
                 "layers": [
@@ -2029,10 +2029,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:30:23.916229",
+        "timestamp": "2026-08-10T10:36:49.537995943",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle counts in layer": {
@@ -2075,11 +2075,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -2109,10 +2109,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:26:27.471139",
+        "timestamp": "2026-08-10T10:23:14.394898428",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle counts in X matrix": {
@@ -2155,11 +2155,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -2189,10 +2189,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:26:18.554515",
+        "timestamp": "2026-08-10T10:22:55.029170688",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle symbols as index": {
@@ -2235,11 +2235,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -2269,10 +2269,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:26:33.028949",
+        "timestamp": "2026-08-10T10:24:02.647034061",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle minimal structure": {
@@ -2316,9 +2316,9 @@
                     "index": "_index",
                     "columns": [
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
                         "sample"
                     ]
                 },
@@ -2348,10 +2348,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:30:15.837106",
+        "timestamp": "2026-08-10T10:35:58.822323118",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should handle duplicate cell names": {
@@ -2394,11 +2394,11 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "batch",
+                        "label",
                         "condition",
                         "donor",
-                        "label",
-                        "sample",
                         "sample_original"
                     ]
                 },
@@ -2428,10 +2428,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T12:29:45.551783",
+        "timestamp": "2026-08-10T10:34:07.38132153",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     }
 }

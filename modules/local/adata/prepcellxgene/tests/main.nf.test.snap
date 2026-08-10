@@ -40,7 +40,7 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,1ea9af3fd7a7908e99d6a0ec04f62b89"
+                        "test.h5ad:md5,07ce463f2e1c7b4b62570f8038704503"
                     ]
                 ],
                 "1": [
@@ -51,7 +51,7 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,1ea9af3fd7a7908e99d6a0ec04f62b89"
+                        "test.h5ad:md5,07ce463f2e1c7b4b62570f8038704503"
                     ]
                 ],
                 "versions": [
@@ -73,21 +73,9 @@
                     "index": "_index",
                     "columns": [
                         "batch",
-                        "bbknn-global-0.5:entropy",
-                        "bbknn-global-0.5_leiden",
-                        "bbknn-global-1.0:entropy",
-                        "bbknn-global-1.0_leiden",
                         "celltypist:Adult_Human_Skin",
                         "celltypist:Adult_Human_Skin:conf",
-                        "combat-global-0.5:entropy",
-                        "combat-global-0.5_leiden",
-                        "combat-global-1.0:entropy",
-                        "combat-global-1.0_leiden",
                         "condition",
-                        "harmony-global-0.5:entropy",
-                        "harmony-global-0.5_leiden",
-                        "harmony-global-1.0:entropy",
-                        "harmony-global-1.0_leiden",
                         "label",
                         "n_counts",
                         "n_genes",
@@ -95,12 +83,24 @@
                         "pct_counts_mt",
                         "sample",
                         "sample_original",
+                        "total_counts",
+                        "total_counts_mt",
+                        "bbknn-global-0.5:entropy",
+                        "bbknn-global-0.5_leiden",
+                        "bbknn-global-1.0:entropy",
+                        "bbknn-global-1.0_leiden",
+                        "combat-global-0.5:entropy",
+                        "combat-global-0.5_leiden",
+                        "combat-global-1.0:entropy",
+                        "combat-global-1.0_leiden",
+                        "harmony-global-0.5:entropy",
+                        "harmony-global-0.5_leiden",
+                        "harmony-global-1.0:entropy",
+                        "harmony-global-1.0_leiden",
                         "scvi-global-0.5:entropy",
                         "scvi-global-0.5_leiden",
                         "scvi-global-1.0:entropy",
-                        "scvi-global-1.0_leiden",
-                        "total_counts",
-                        "total_counts_mt"
+                        "scvi-global-1.0_leiden"
                     ]
                 },
                 "var": {
@@ -113,13 +113,10 @@
                     
                 ],
                 "obsm": [
-                    "X_bbknn-global_umap",
-                    "X_combat-global_umap",
-                    "X_harmony",
-                    "X_harmony-global_umap",
-                    "X_scvi-global_umap",
-                    "combat",
-                    "scvi"
+                    "X_1_scvi-global_umap",
+                    "X_2_bbknn-global_umap",
+                    "X_3_combat-global_umap",
+                    "X_harmony-global_umap"
                 ],
                 "varm": [
                     
@@ -131,32 +128,14 @@
                     
                 ],
                 "uns": [
-                    "bbknn-global-0.5_characteristic_genes",
-                    "bbknn-global-0.5_paga",
-                    "bbknn-global-1.0_characteristic_genes",
-                    "bbknn-global-1.0_paga",
-                    "combat-global-0.5_characteristic_genes",
-                    "combat-global-0.5_liana",
-                    "combat-global-0.5_paga",
-                    "combat-global-1.0_characteristic_genes",
-                    "combat-global-1.0_liana",
-                    "combat-global-1.0_paga",
-                    "harmony-global-0.5_characteristic_genes",
-                    "harmony-global-0.5_paga",
-                    "harmony-global-1.0_characteristic_genes",
-                    "harmony-global-1.0_paga",
-                    "log1p",
-                    "scvi-global-0.5_characteristic_genes",
-                    "scvi-global-0.5_paga",
-                    "scvi-global-1.0_characteristic_genes",
-                    "scvi-global-1.0_paga"
+                    "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-05-31T10:12:36.828571877",
+        "timestamp": "2026-08-10T10:22:55.334150457",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     }
 }

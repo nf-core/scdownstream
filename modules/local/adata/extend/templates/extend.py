@@ -46,6 +46,29 @@ def load_layer(path):
     raise ValueError(f"Unsupported layer file extension: {path}")
 
 
+def _dataframe_without_nullable_strings(df: pd.DataFrame) -> pd.DataFrame:
+    """Cast pandas StringDtype columns and indexes to plain object strings."""
+    df = df.copy()
+    if isinstance(df.index.dtype, pd.StringDtype):
+        df.index = pd.Index(df.index.to_numpy(dtype=object), name=df.index.name)
+    for col in df.columns:
+        if isinstance(df[col].dtype, pd.StringDtype):
+            df[col] = df[col].astype(object)
+    return df
+
+
+def _prepare_adata_for_h5ad(adata_obj):
+    adata_obj.obs = _dataframe_without_nullable_strings(adata_obj.obs)
+    adata_obj.var = _dataframe_without_nullable_strings(adata_obj.var)
+    for uns_key, uns_value in list(adata_obj.uns.items()):
+        if isinstance(uns_value, pd.DataFrame):
+            adata_obj.uns[uns_key] = _dataframe_without_nullable_strings(uns_value)
+        elif isinstance(uns_value, dict):
+            for key, value in list(uns_value.items()):
+                if isinstance(value, pd.DataFrame):
+                    uns_value[key] = _dataframe_without_nullable_strings(value)
+
+
 for path in obs_paths:
     df = load_pickle_or_csv(path).reindex(adata.obs_names)
     adata.obs = pd.concat([adata.obs, df], axis=1)
@@ -70,9 +93,7 @@ for path in layers_paths:
         layer = np.asarray(layer, dtype=np.float32)
     adata.layers[path.stem] = layer
 
-# Merged obs/uns may still contain pandas StringDtype indexes (e.g. scanpy pts).
-# Prefer source-side CategoricalIndex sanitisation; keep True as a write safety net.
-ad.settings.allow_write_nullable_strings = True
+_prepare_adata_for_h5ad(adata)
 adata.write_h5ad(f"{prefix}.h5ad")
 adata.obs.to_csv(f"{prefix}_metadata.csv")
 
