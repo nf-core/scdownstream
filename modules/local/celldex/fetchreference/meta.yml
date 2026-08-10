@@ -1,0 +1,78 @@
+name: "celldex_fetchreference"
+description: Download a celldex reference dataset and package it as a tar archive
+keywords:
+  - cell-type
+  - reference
+  - single-cell
+  - annotation
+tools:
+  - "celldex":
+      description: "Index of reference cell type datasets for cell type annotation"
+      homepage: "https://bioconductor.org/packages/celldex"
+      documentation: "https://bioconductor.org/packages/release/data/experiment/html/celldex.html"
+      tool_dev_url: "https://github.com/LTLA/celldex"
+      licence: ["GPL-3.0-or-later"]
+      identifier: biotools:celldex
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - ref:
+        type: string
+        description: Name of the celldex reference to download
+    - version:
+        type: string
+        description: Optional version of the reference dataset
+
+output:
+  tar:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.tar":
+          type: file
+          description: Tar archive containing the downloaded celldex reference
+          pattern: "*.tar"
+          ontologies:
+            - edam: "http://edamontology.org/format_2573"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/bioconductor-celldex_bioconductor-hdf5array_bioconductor-singlecellexperiment_r-yaml:67a4d2a92edb7ecc
+      build_id: bd-67a4d2a92edb7ecc_1
+      scan_id: sc-26f9f199ad0eda1d_3
+    linux/amd64:
+      name: community.wave.seqera.io/library/bioconductor-celldex_bioconductor-hdf5array_bioconductor-singlecellexperiment_r-yaml:a79ef050d924368f
+      build_id: bd-a79ef050d924368f_1
+      scan_id: sc-a84c512f4da3da4a_2
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/bioconductor-celldex_bioconductor-hdf5array_bioconductor-singlecellexperiment_r-yaml:103ca9e6ff8f98cb
+      build_id: bd-103ca9e6ff8f98cb_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1a/1a2bdc1fc7b02e61d83237d201669676f1961299acdc6ece8ffafdae7a7a4678/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/bioconductor-celldex_bioconductor-hdf5array_bioconductor-singlecellexperiment_r-yaml:d0584a423cb1e25f
+      build_id: bd-d0584a423cb1e25f_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/34/342280ffef1e258de52897af412b8123ca62bf9e09198a9dea005258d4ac3da0/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/celldex/fetchreference/.conda-lock/linux_amd64-bd-a79ef050d924368f_1.txt
+    linux/arm64:
+      lock_file: modules/local/celldex/fetchreference/.conda-lock/linux_arm64-bd-67a4d2a92edb7ecc_1.txt

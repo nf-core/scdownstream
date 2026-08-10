@@ -3,9 +3,9 @@ process CELDA_DECONTX {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b6/b65d7d3f33b0423a970eb858e15996b12c901f8277b70ae3feeb7eb3e5e3d868/data':
-        'community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-celda_bioconductor-rhdf5_bioconductor-singlecellexperiment:ae94f059bb2c3e7f' }"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/e4/e438b9343a27be713b293f6187d6473f79075ce269ed20d768820de75b3ad0d4/data'
+:         'community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-celda_bioconductor-rhdf5_bioconductor-singlecellexperiment:195bce13eb18b882' }"
 
     input:
     tuple val(meta), path(h5ad), path(raw)

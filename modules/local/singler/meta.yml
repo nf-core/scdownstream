@@ -1,0 +1,134 @@
+name: "singler"
+description: Annotate cell types with SingleR using one or more reference datasets
+keywords:
+  - cell-type
+  - annotation
+  - single-cell
+  - singler
+tools:
+  - "singler":
+      description: "Reference-based single-cell RNA-seq cell type annotation"
+      homepage: "https://bioconductor.org/packages/SingleR"
+      documentation: "https://bioconductor.org/packages/release/bioc/vignettes/SingleR/inst/doc/SingleR.html"
+      tool_dev_url: "https://github.com/LTLA/SingleR"
+      licence: ["GPL-3.0-or-later"]
+      identifier: biotools:singler
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+    - symbol_col:
+        type: string
+        description: Feature metadata column containing gene symbols
+    - counts_layer:
+        type: string
+        description: AnnData layer containing counts (`X` or a layer name)
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing reference information
+          e.g. `[ id:'reference' ]`
+    - names:
+        type: string
+        description: Names of the reference datasets
+    - labels:
+        type: string
+        description: Label columns to use from each reference
+    - references:
+        type: file
+        description: Tar archives or files containing SingleR reference datasets
+
+output:
+  obs:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_predictions.csv":
+          type: file
+          description: CSV of SingleR predicted labels per cell
+          pattern: "*_predictions.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752"
+  annotation_columns:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_annotation_columns.csv":
+          type: file
+          description: CSV listing annotation columns and whether they are aggregatable
+          pattern: "*_annotation_columns.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752"
+  distribution:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_distribution.pdf":
+          type: file
+          description: PDF showing the distribution of predicted labels
+          pattern: "*_distribution.pdf"
+          ontologies:
+            - edam: "http://edamontology.org/format_3508"
+  heatmap:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_heatmap.pdf":
+          type: file
+          description: PDF heatmap of SingleR scores
+          pattern: "*_heatmap.pdf"
+          ontologies:
+            - edam: "http://edamontology.org/format_3508"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-celldex_bioconductor-hdf5array_bioconductor-rhdf5_pruned:68c5244b81547fbf
+      build_id: bd-68c5244b81547fbf_1
+      scan_id: sc-5e045de132b3072c_2
+    linux/amd64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-celldex_bioconductor-hdf5array_bioconductor-rhdf5_pruned:d7620046ea925cdf
+      build_id: bd-d7620046ea925cdf_1
+      scan_id: sc-ebe2a9f303f12e6c_2
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-celldex_bioconductor-hdf5array_bioconductor-rhdf5_pruned:27da7d5c72fe249b
+      build_id: bd-27da7d5c72fe249b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/35/35702b08ebe1d6c73284401680fd21db7c4c63c85ab317416b608e5bbab2ad01/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-celldex_bioconductor-hdf5array_bioconductor-rhdf5_pruned:74ee3f5a76245bba
+      build_id: bd-74ee3f5a76245bba_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a0/a098a41b46227ab283c844d054a9427d824628685dc42b39fb91874f1bb63cff/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/singler/.conda-lock/linux_amd64-bd-d7620046ea925cdf_1.txt
+    linux/arm64:
+      lock_file: modules/local/singler/.conda-lock/linux_arm64-bd-68c5244b81547fbf_1.txt

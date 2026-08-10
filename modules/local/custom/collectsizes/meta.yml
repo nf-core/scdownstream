@@ -1,0 +1,72 @@
+name: "custom_collectsizes"
+description: Collect and summarise cell counts across pipeline filtering stages
+keywords:
+  - qc
+  - cell-counts
+  - multiqc
+  - single-cell
+tools:
+  - "pandas":
+      description: "Powerful data structures for data analysis, time series, and statistics"
+      homepage: "https://pandas.pydata.org"
+      documentation: "https://pandas.pydata.org/docs"
+      tool_dev_url: "https://github.com/pandas-dev/pandas"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - sizes:
+        type: file
+        description: TSV of cell counts per sample and pipeline stage
+        pattern: "*.{tsv,txt,csv}"
+
+output:
+  tsv:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.tsv":
+          type: file
+          description: Pivoted cell-count table across pipeline stages
+          pattern: "*.tsv"
+  multiqc_files:
+    - "*_mqc.json":
+        type: file
+        description: MultiQC custom content JSON for cell counts
+        pattern: "*_mqc.json"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/custom_collectsizes:ddf7b396f2bfaa5d
+      build_id: bd-ddf7b396f2bfaa5d_1
+      scan_id: sc-b6514041380fa98d_2
+    linux/arm64:
+      name: community.wave.seqera.io/library/custom_collectsizes:9a9f757c45c9247d
+      build_id: bd-9a9f757c45c9247d_1
+      scan_id: sc-9d57a77b223e1d2b_2
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/custom_collectsizes:d7f8aacabc8954e3
+      build_id: bd-d7f8aacabc8954e3_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/68/68c5022a4fc1d7a52acf4d7ce0201540ff4f72b4eea2c5598ab31326b98a1206/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/custom_collectsizes:44c5a50729347cb5
+      build_id: bd-44c5a50729347cb5_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/07/0719bb0bb9930b7d4dc21d543caaef2a93bdaca922a54bc11b9239caf17c58da/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/custom/collectsizes/.conda-lock/linux_amd64-bd-ddf7b396f2bfaa5d_1.txt
+    linux/arm64:
+      lock_file: modules/local/custom/collectsizes/.conda-lock/linux_arm64-bd-9a9f757c45c9247d_1.txt
