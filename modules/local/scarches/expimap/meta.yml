@@ -1,0 +1,73 @@
+name: "scarches_expimap"
+description: Project query AnnData onto an expiMap reference model with scArches
+keywords:
+  - integration
+  - query-mapping
+  - single-cell
+  - scarches
+tools:
+  - "scarches":
+      description: "Single-cell architecture surgery for transfer learning and reference mapping"
+      homepage: "https://scarches.readthedocs.io"
+      documentation: "https://scarches.readthedocs.io"
+      tool_dev_url: "https://github.com/theislab/scarches"
+      licence: ["BSD-3-Clause"]
+      identifier: biotools:scarches
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: Query AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing reference model information
+          e.g. `[ id:'reference' ]`
+    - reference_model:
+        type: file
+        description: Directory or file containing the trained expiMap reference model
+  - condition_col:
+      type: string
+      description: obs column used as the condition or batch covariate
+  - counts_layer:
+      type: string
+      description: AnnData layer containing counts for model training or projection
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: Query AnnData with expiMap latent embedding
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  obsm:
+    - "X_*.pkl":
+        type: file
+        description: Latent embedding stored as a pickle
+        pattern: "X_*.pkl"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"

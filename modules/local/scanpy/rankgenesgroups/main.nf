@@ -3,9 +3,9 @@ process SCANPY_RANKGENESGROUPS {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a4/a497dfbc392812dd3fec43e8c3cdc653e62f868865c25be8805f38ec908ecc69/data'
-        : 'community.wave.seqera.io/library/adjusttext_anndata_pandas_python_pruned:a229cbba149bfd01'}"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a4/a497dfbc392812dd3fec43e8c3cdc653e62f868865c25be8805f38ec908ecc69/data'
+:         'community.wave.seqera.io/library/adjusttext_anndata_pandas_python_pruned:a229cbba149bfd01' }"
 
     input:
     tuple val(meta), path(h5ad)

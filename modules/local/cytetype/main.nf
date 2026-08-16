@@ -5,9 +5,9 @@ process CYTETYPE {
     secret secrets.CYTETYPE_API_KEY ? ['CYTETYPE_API_KEY'] : ''
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/4d/4db5f29d0da08e2bdce05993ae80dc04b7d5e0a032d426ca0cfffb495a8a8841/data'
-        : 'community.wave.seqera.io/library/anndata_pandas_python_pyyaml_pruned:74d512b309c5b8b5'}"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/4d/4db5f29d0da08e2bdce05993ae80dc04b7d5e0a032d426ca0cfffb495a8a8841/data'
+:         'community.wave.seqera.io/library/anndata_pandas_python_pyyaml_pruned:74d512b309c5b8b5' }"
 
     input:
     tuple val(meta), path(h5ad, stageAs: 'input.h5ad')

@@ -1,0 +1,81 @@
+name: "seurat_integration"
+description: Integrate single-cell batches with Seurat and write results to AnnData
+keywords:
+  - integration
+  - batch-correction
+  - single-cell
+  - seurat
+tools:
+  - "seurat":
+      description: "R toolkit for single-cell genomics"
+      homepage: "https://satijalab.org/seurat"
+      documentation: "https://satijalab.org/seurat/articles/integration_introduction.html"
+      tool_dev_url: "https://github.com/satijalab/seurat"
+      licence: ["MIT"]
+      identifier: biotools:seurat
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - batch_col:
+      type: string
+      description: obs column containing batch labels for integration
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with Seurat-integrated embedding
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-glmgampoi_bioconductor-rhdf5_r-seurat:b5d6d965e766ad97
+      build_id: bd-b5d6d965e766ad97_1
+      scan_id: sc-24c4b7e683828d7c_2
+    linux/amd64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-glmgampoi_bioconductor-rhdf5_r-seurat:f5ee10891a499019
+      build_id: bd-f5ee10891a499019_1
+      scan_id: sc-82b8a5ed83551ddd_2
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-glmgampoi_bioconductor-rhdf5_r-seurat:a6729b84b956a3d0
+      build_id: bd-a6729b84b956a3d0_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8b/8b3c0fee2536654dbfc05b399643856f6b1eda44acf9eca8800f727706c883b2/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-glmgampoi_bioconductor-rhdf5_r-seurat:d2fd9a6de4a7051c
+      build_id: bd-d2fd9a6de4a7051c_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/dd/dd515bc3ff127ce8a6379fa0e80d032e45947e017761de7b1bc79ec626065a4d/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/seurat/integration/.conda-lock/linux_amd64-bd-f5ee10891a499019_1.txt
+    linux/arm64:
+      lock_file: modules/local/seurat/integration/.conda-lock/linux_arm64-bd-b5d6d965e766ad97_1.txt

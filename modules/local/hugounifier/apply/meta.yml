@@ -1,0 +1,66 @@
+name: "hugounifier_apply"
+description: Apply HUGO gene symbol unification changes to an AnnData object
+keywords:
+  - gene-symbols
+  - hugo
+  - annotation
+  - single-cell
+tools:
+  - "hugo-unifier":
+      description: "Unify gene symbols across AnnData objects to HUGO nomenclature"
+      homepage: "https://pypi.org/project/hugo-unifier"
+      documentation: "https://pypi.org/project/hugo-unifier"
+      tool_dev_url: "https://github.com/nictru/hugo-unifier"
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+    - changes:
+        type: file
+        description: CSV of gene symbol changes from hugounifier get
+        pattern: "*.{csv}"
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.h5ad":
+          type: file
+          description: AnnData with unified HUGO gene symbols applied
+          pattern: "*.h5ad"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/pip_hugo-unifier:559c1bb3b4aa3398
+      build_id: bd-559c1bb3b4aa3398_1
+      scan_id: sc-6038eac8f5682ec0_2
+    linux/arm64:
+      name: community.wave.seqera.io/library/pip_hugo-unifier:7f38d07e2bd2533f
+      build_id: bd-7f38d07e2bd2533f_1
+      scan_id: sc-1a31fe62ed42ffcc_2
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/pip_hugo-unifier:ed3394b1215b5018
+      build_id: bd-ed3394b1215b5018_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1f/1fea37c351cbec51dc375e5778be550a5378f842ebdc816c69ff8d7d15c4b8ee/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/pip_hugo-unifier:a8600ca75fe2638f
+      build_id: bd-a8600ca75fe2638f_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/85/8582151f42fb1e528aa81b41124085363160b8f58b4c6d23fa51de2c4ac2f231/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/hugounifier/apply/.conda-lock/linux_amd64-bd-559c1bb3b4aa3398_1.txt
+    linux/arm64:
+      lock_file: modules/local/hugounifier/apply/.conda-lock/linux_arm64-bd-7f38d07e2bd2533f_1.txt
