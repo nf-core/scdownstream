@@ -8,7 +8,7 @@ include { LOAD_H5AD                            } from '../subworkflows/local/loa
 include { QUALITY_CONTROL                      } from '../subworkflows/local/quality_control'
 include { PER_CELL_ANNOTATION                  } from '../subworkflows/local/per_cell_annotation'
 include { ADATA_EXTEND as FINALIZE_QC_ANNDATAS } from '../modules/local/adata/extend'
-include { QUARTONOTEBOOK as QC_REPORT          } from '../modules/nf-core/quartonotebook'
+include { QUARTO_NOTEBOOK as QC_REPORT         } from '../modules/nf-core/quarto/notebook'
 include { COMBINE                              } from '../subworkflows/local/combine'
 include { ADATA_SPLITEMBEDDINGS                } from '../modules/local/adata/splitembeddings'
 include { SUB_INTEGRATE                        } from '../subworkflows/local/sub_integrate'
