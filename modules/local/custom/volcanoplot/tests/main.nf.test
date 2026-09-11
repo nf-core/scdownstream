@@ -1,0 +1,99 @@
+nextflow_process {
+
+    name "Test Process CUSTOM_VOLCANOPLOT"
+    script "modules/local/custom/volcanoplot/main.nf"
+    process "CUSTOM_VOLCANOPLOT"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', integration: 'scvi', de_method: 'pydeseq2' ],
+                        file("${projectDir}/modules/local/custom/volcanoplot/tests/test_results.parquet", checkIfExists: true)
+                    ]
+                )
+                input[1] = []
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.plots
+            assert process.out.multiqc_files
+            assert process.out.plots.flatten().any { file(it).name == "test_volcano.png" }
+            assert process.out.multiqc_files.flatten().any { file(it).name == "test_volcano_mqc.json" }
+            assert snapshot(
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with interesting genes") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', integration: 'scvi', de_method: 'pydeseq2' ],
+                        file("${projectDir}/modules/local/custom/volcanoplot/tests/test_results.parquet", checkIfExists: true)
+                    ]
+                )
+                input[1] = file("${projectDir}/modules/local/custom/volcanoplot/tests/interesting_genes.csv", checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.plots
+            assert process.out.multiqc_files
+            assert process.out.plots.flatten().any { file(it).name == "test_volcano.png" }
+            assert process.out.multiqc_files.flatten().any { file(it).name == "test_volcano_mqc.json" }
+            assert snapshot(
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', integration: 'scvi', de_method: 'pydeseq2' ],
+                        file("${projectDir}/modules/local/custom/volcanoplot/tests/test_results.parquet", checkIfExists: true)
+                    ]
+                )
+                input[1] = []
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}
