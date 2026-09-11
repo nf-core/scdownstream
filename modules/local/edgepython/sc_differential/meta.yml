@@ -20,45 +20,31 @@ input:
         type: file
         description: Single-cell AnnData object in h5ad format
         pattern: "*.{h5ad}"
-    - donor_col:
-        type: string
-        description: obs column with biological replicate identifiers
-    - condition_col:
-        type: string
-        description: obs column with condition labels
-    - celltype_col:
-        type: string
-        description: obs column with cell type or cluster labels
-    - celltype_value:
-        type: string
-        description: Cell type stratum to test
-    - reference_condition:
-        type: string
-        description: Reference condition level for contrasts
-    - interesting_genes:
-        type: file
-        description: Optional CSV of gene symbols to highlight on volcano plots
-        pattern: "*.{csv,tsv,txt}"
+  - donor_col:
+      type: string
+      description: obs column with biological replicate identifiers
+  - condition_col:
+      type: string
+      description: obs column with condition labels
+  - celltype_col:
+      type: string
+      description: obs column with cell type or cluster labels
+  - celltype_value:
+      type: string
+      description: Cell type stratum to test
+  - reference_condition:
+      type: string
+      description: Reference condition level for contrasts
 
 output:
   results:
     - - meta:
           type: map
           description: Groovy Map containing sample information
-      - "*_results.csv":
+      - "*_results.parquet":
           type: file
-          description: edgePython single-cell DE results
-          pattern: "*_results.csv"
-  plots:
-    - "*.png":
-        type: file
-        description: Volcano plots for each contrast
-        pattern: "*.png"
-  multiqc_files:
-    - "*_mqc.json":
-        type: file
-        description: MultiQC custom content for volcano plots
-        pattern: "*_mqc.json"
+          description: Standardised edgePython single-cell DE results in parquet format
+          pattern: "*_results.parquet"
   versions:
     - versions.yml:
         type: file
@@ -72,24 +58,24 @@ maintainers:
 containers:
   docker:
     linux/amd64:
-      name: community.wave.seqera.io/library/edgepython_sc_differential:2fe5a778fe82c638
-      build_id: bd-2fe5a778fe82c638_1
-      scan_id: sc-9f6f5e3f87395d16_1
+      name: community.wave.seqera.io/library/edgepython_sc_differential:d3364fef9746874f
+      build_id: bd-d3364fef9746874f_1
+      scan_id: sc-88f110c850f19b4d_1
     linux/arm64:
-      name: community.wave.seqera.io/library/edgepython_sc_differential:17a2c60695274850
-      build_id: bd-17a2c60695274850_1
-      scan_id: sc-c4f95c8c66c7068d_1
+      name: community.wave.seqera.io/library/edgepython_sc_differential:9cc9e503854247a6
+      build_id: bd-9cc9e503854247a6_1
+      scan_id: sc-d83238046979e1f6_1
   singularity:
-    linux/arm64:
-      name: oras://community.wave.seqera.io/library/edgepython_sc_differential:c0dfacdd1042cbbc
-      build_id: bd-c0dfacdd1042cbbc_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1f/1f93c6968a50adcc9c7d7d7459c041a2fa9cbdfdb6a9169d85252cdff4205720/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/edgepython_sc_differential:241b3471c1a90886
-      build_id: bd-241b3471c1a90886_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/38/387ee8bae78078479f4247c84d00dd1a6f97ba49315f807d953d409b19be9823/data
+      name: oras://community.wave.seqera.io/library/edgepython_sc_differential:602cf844d82a7e6d
+      build_id: bd-602cf844d82a7e6d_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/79/7967cbf85b1f33815b4e84540f1ba3486dc6e7a87283b5ea5e5fe10391466851/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/edgepython_sc_differential:7e459833145b1e5d
+      build_id: bd-7e459833145b1e5d_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/e8/e80eb3e42068d302a76b0159e8e91a15109f951dd72892efc1b8d8aa1cb21d5d/data
   conda:
     linux/amd64:
-      lock_file: modules/local/edgepython/sc_differential/.conda-lock/linux_amd64-bd-2fe5a778fe82c638_1.txt
+      lock_file: modules/local/edgepython/sc_differential/.conda-lock/linux_amd64-bd-d3364fef9746874f_1.txt
     linux/arm64:
-      lock_file: modules/local/edgepython/sc_differential/.conda-lock/linux_arm64-bd-17a2c60695274850_1.txt
+      lock_file: modules/local/edgepython/sc_differential/.conda-lock/linux_arm64-bd-9cc9e503854247a6_1.txt

@@ -7,8 +7,7 @@ include { hasMultipleObsGroups      } from '../utils_nfcore_scdownstream_pipelin
 
 workflow RANK_GENES_GROUPS {
     take:
-    ch_h5ad           // channel: [ meta, h5ad ], anndata objects with obs_key and condition_col in meta
-    interesting_genes //   value: string (path) or []
+    ch_h5ad // channel: [ meta, h5ad ], anndata objects with obs_key and condition_col in meta
 
     main:
     ch_uns           = channel.empty()
@@ -98,7 +97,6 @@ workflow RANK_GENES_GROUPS {
         ch_rankgenesgroups.filter,
         ch_rankgenesgroups.method,
         ch_rankgenesgroups.rank_key,
-        interesting_genes ?: [],
     )
     ch_uns           = ch_uns.mix(SCANPY_RANKGENESGROUPS.out.uns.flatten())
     ch_multiqc_files = ch_multiqc_files.mix(SCANPY_RANKGENESGROUPS.out.multiqc_files.flatten())
@@ -106,6 +104,8 @@ workflow RANK_GENES_GROUPS {
     emit:
     uns           = ch_uns           // channel: [ pkl ]
     multiqc_files = ch_multiqc_files // channel: [ json ]
+    results       = SCANPY_RANKGENESGROUPS.out.results
+                                     // channel: [ meta, parquet ]
     h5ad          = SCANPY_RANKGENESGROUPS.out.h5ad
                         .filter { meta, _h5ad -> meta.comparison_scope == 'global' }
                                      // channel: [ meta, h5ad ] — global comparisons only

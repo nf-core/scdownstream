@@ -200,22 +200,24 @@ The results are stored in subdirectories named after the integration tool used.
       - `*_loadings_*.csv`: Factor loading tables (when `--save_intermediates`).
       - `*_tensor.pkl`: Serialised Tensor-cell2cell object (when `--save_intermediates`).
     - `differential_expression/`
+      All DE engines write `*_results.parquet` tables with columns `gene`, `log2fc`, `pvalue`, `padj`, `group`, `contrast`, and `stratum`. Extra method-native columns may be present. Volcano PNGs are produced from these tables by a shared plotting module.
       - `scanpy/{method}/{global|filtered}/`
         - `*_markers.csv`: Filtered marker-gene tables from Scanpy `rank_genes_groups`.
-        - `*.png`: Marker summary, dot plots, and multi-panel volcano plots.
+        - `*_results.parquet`: Standardised Scanpy rank-genes-groups results (all groups, unfiltered).
+        - `*.png`: Marker summary and dot plots.
         - `*_volcano.png`: Multi-panel volcano figure (one panel per group, or a single `{A} vs {B}` panel when there are exactly two groups).
         - `*.pkl`: Serialised `rank_genes_groups` results merged into the final AnnData `uns` slot (when `--save_intermediates`).
       - `pseudobulk/aggregation/`
         - `*.h5ad`: Pseudobulk count matrices per cell-type stratum.
         - `*_samples.tsv`: Pseudobulk sample metadata (donor, cell type, condition, cell and count totals).
       - `pseudobulk/pydeseq2/`
-        - `*_results.csv`: PyDESeq2 result tables per cell-type stratum.
+        - `*_results.parquet`: PyDESeq2 result tables per contrast.
         - `*_volcano.png`: Volcano plots for each PyDESeq2 contrast.
       - `pseudobulk/edgepython/`
-        - `*_results.csv`: edgePython pseudobulk result tables per cell-type stratum.
+        - `*_results.parquet`: edgePython pseudobulk result tables per contrast.
         - `*_volcano.png`: Volcano plots for each edgePython contrast.
       - `single_cell/edgepython/`
-        - `*_results.csv`: edgePython single-cell DE result tables.
+        - `*_results.parquet`: edgePython single-cell DE result tables per contrast.
         - `*_volcano.png`: Volcano plots for each edgepython_sc contrast.
 
 </details>

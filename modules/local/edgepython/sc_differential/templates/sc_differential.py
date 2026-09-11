@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
 
-import base64
-import json
 import os
 import platform
 import re
+from pathlib import Path
 
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
-os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
 import anndata as ad
 import edgepython as ep
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.sparse as sp
@@ -27,155 +24,67 @@ reference_condition = "${reference_condition}"
 if not reference_condition:
     raise ValueError("reference_condition must be set for edgepython_sc differential expression")
 
+STANDARD_DE_COLUMNS = ["gene", "log2fc", "pvalue", "padj", "group", "contrast", "stratum"]
+
+
+def write_standard_de_parquet(
+    df,
+    path,
+    *,
+    gene_col,
+    log2fc_col,
+    pvalue_col,
+    padj_col,
+    group,
+    contrast,
+    stratum="",
+):
+    out = df.copy()
+    if gene_col is None:
+        if "genes" in out.columns:
+            gene_col = "genes"
+        else:
+            out = out.reset_index()
+            gene_col = out.columns[0]
+
+    rename = {gene_col: "gene", log2fc_col: "log2fc"}
+    if pvalue_col and pvalue_col in out.columns:
+        rename[pvalue_col] = "pvalue"
+    if padj_col and padj_col in out.columns:
+        rename[padj_col] = "padj"
+    out = out.rename(columns=rename)
+
+    if "pvalue" not in out.columns:
+        out["pvalue"] = pd.NA
+    if "padj" not in out.columns:
+        out["padj"] = pd.NA
+
+    n_rows = len(out)
+    out["gene"] = out["gene"].astype(str)
+    out["log2fc"] = pd.to_numeric(out["log2fc"], errors="coerce")
+    out["pvalue"] = pd.to_numeric(out["pvalue"], errors="coerce")
+    out["padj"] = pd.to_numeric(out["padj"], errors="coerce")
+
+    def _meta_column(value):
+        if isinstance(value, pd.Series):
+            values = value.astype(str).to_numpy()
+            if len(values) != n_rows:
+                raise ValueError("Metadata length does not match table rows")
+            return values
+        return "" if value is None else str(value)
+
+    out["group"] = _meta_column(group)
+    out["contrast"] = _meta_column(contrast)
+    out["stratum"] = _meta_column(stratum)
+
+    extra = [column for column in out.columns if column not in STANDARD_DE_COLUMNS]
+    out = out[STANDARD_DE_COLUMNS + extra]
+    # Absolute path so pyarrow does not treat colons in Nextflow prefixes as URI schemes
+    out.to_parquet(str(Path(path).resolve()), index=False, engine="pyarrow")
+
 
 def safe_name(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9._-]+", "_", str(value))
-
-
-def load_interesting_genes(path_str):
-    if not path_str or path_str in ("[]", "null", "None"):
-        return set()
-    genes = set()
-    first_data = True
-    with open(path_str) as handle:
-        for line in handle:
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            field = line.split(",")[0].strip().strip('"').strip("'")
-            if not field:
-                continue
-            if first_data and field.lower() in ("gene", "symbol", "names"):
-                first_data = False
-                continue
-            first_data = False
-            genes.add(field.lower())
-    return genes
-
-
-def mqc_parent(method_slug, method_label):
-    integration = "${meta.integration}"
-    parent_id = re.sub(r"[^A-Za-z0-9._-]+", "_", f"{integration}_{method_slug}")
-    return {
-        "parent_id": parent_id,
-        "parent_name": f"{integration}: {method_label}",
-        "parent_description": f"Differential expression volcano plots from {method_label} ({integration} integration).",
-    }
-
-
-def write_volcano(
-    df,
-    gene_col,
-    lfc_col,
-    p_col,
-    padj_col,
-    interesting,
-    out_png,
-    out_mqc_id,
-    section_name,
-    description,
-    parent,
-):
-    plot_df = df.copy()
-    if gene_col is None:
-        if "genes" in plot_df.columns:
-            gene_col = "genes"
-        else:
-            plot_df = plot_df.reset_index()
-            gene_col = plot_df.columns[0]
-    if gene_col not in plot_df.columns or lfc_col not in plot_df.columns:
-        print(f"Warning: missing volcano columns for {out_png}; skipping.")
-        return
-    use_padj = padj_col is not None and padj_col in plot_df.columns
-    p_use = padj_col if use_padj else p_col
-    if p_use not in plot_df.columns:
-        print(f"Warning: missing p-value column for {out_png}; skipping volcano.")
-        return
-
-    plot_df[gene_col] = plot_df[gene_col].astype(str)
-    plot_df[lfc_col] = pd.to_numeric(plot_df[lfc_col], errors="coerce")
-    plot_df[p_use] = pd.to_numeric(plot_df[p_use], errors="coerce")
-    with np.errstate(divide="ignore", invalid="ignore"):
-        plot_df["neglog10"] = -np.log10(plot_df[p_use])
-    plot_df["neglog10"] = plot_df["neglog10"].replace([np.inf, -np.inf], np.nan)
-    plot_df = plot_df.dropna(subset=[lfc_col, "neglog10"])
-    if len(plot_df) < 2:
-        print(f"Warning: fewer than 2 plottable points for {out_png}; skipping volcano.")
-        return
-
-    if use_padj:
-        padj_vals = pd.to_numeric(plot_df[padj_col], errors="coerce")
-        significant = (padj_vals < 0.05) & (plot_df[lfc_col].abs() >= 1)
-    else:
-        significant = (plot_df[p_use] < 0.05) & (plot_df[lfc_col].abs() >= 1)
-    plot_df["significant"] = significant.fillna(False)
-    plot_df["interesting"] = plot_df[gene_col].str.lower().isin(interesting)
-
-    fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
-    colours = plot_df["significant"].map({True: "#d62728", False: "#7f7f7f"})
-    other = plot_df[~plot_df["interesting"]]
-    marked = plot_df[plot_df["interesting"]]
-    if not other.empty:
-        ax.scatter(
-            other[lfc_col], other["neglog10"], c=colours.loc[other.index], marker="o", alpha=0.5, s=16, linewidths=0
-        )
-    if not marked.empty:
-        ax.scatter(
-            marked[lfc_col],
-            marked["neglog10"],
-            c=colours.loc[marked.index],
-            marker="^",
-            alpha=0.9,
-            s=36,
-            linewidths=0,
-        )
-    ax.axhline(-np.log10(0.05), color="#bbbbbb", linestyle="--", linewidth=0.8)
-    ax.axvline(-1, color="#bbbbbb", linestyle="--", linewidth=0.8)
-    ax.axvline(1, color="#bbbbbb", linestyle="--", linewidth=0.8)
-    ax.set_xlabel("log2 fold change")
-    ax.set_ylabel("-log10(adjusted p-value)" if use_padj else "-log10(p-value)")
-    ax.set_title(section_name)
-
-    significant = plot_df[plot_df["significant"]].sort_values(p_use, ascending=True)
-    if plot_df["interesting"].any():
-        to_label = significant[significant["interesting"]].head(10)
-    else:
-        to_label = significant.head(10)
-    texts = [
-        ax.text(row[lfc_col], row["neglog10"], row[gene_col], fontsize=7, alpha=0.9) for _, row in to_label.iterrows()
-    ]
-    try:
-        from adjustText import adjust_text
-
-        adjust_text(
-            texts,
-            ax=ax,
-            arrowprops=dict(arrowstyle="-", color="#888888", lw=0.35),
-            expand=(1.2, 1.4),
-            force_text=(0.5, 0.8),
-            ensure_inside_axes=True,
-        )
-    except Exception:
-        pass
-
-    plt.savefig(out_png, bbox_inches="tight")
-    plt.close(fig)
-
-    with open(out_png, "rb") as f_plot:
-        image_string = base64.b64encode(f_plot.read()).decode("utf-8")
-    image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
-    custom_json = {
-        "id": out_mqc_id,
-        "parent_id": parent["parent_id"],
-        "parent_name": parent["parent_name"],
-        "parent_description": parent["parent_description"],
-        "section_name": section_name,
-        "description": description,
-        "plot_type": "image",
-        "data": image_html,
-    }
-    with open(f"{out_mqc_id}_mqc.json", "w") as f_json:
-        json.dump(custom_json, f_json)
 
 
 for col in [donor_col, condition_col, celltype_col]:
@@ -220,8 +129,6 @@ fit = ep.glm_sc_fit(
 )
 fit = ep.shrink_sc_disp(fit, robust=True)
 
-interesting = load_interesting_genes("${interesting_genes}")
-volcano_parent = mqc_parent("edgepython_sc", "edgepython_sc")
 written = []
 gene_mask = fit.get("gene_mask")
 if gene_mask is not None:
@@ -238,27 +145,19 @@ for treatment in treatments:
         if len(gene_labels) != len(results):
             raise ValueError(f"Gene label length ({len(gene_labels)}) does not match results ({len(results)})")
         results.insert(0, "genes", gene_labels)
-    out_path = f"{prefix}_{safe_name(treatment)}_results.csv"
-    results.to_csv(out_path)
-    written.append(out_path)
-    stem = out_path.replace("_results.csv", "")
-    results_df = pd.read_csv(out_path, index_col=0)
-    write_volcano(
-        results_df,
-        None,
-        "logFC",
-        "PValue",
-        "FDR",
-        interesting,
-        f"{stem}_volcano.png",
-        f"{stem}_volcano",
-        f"edgepython_sc volcano: {treatment} vs {reference_condition} (within celltype={celltype_value})",
-        (
-            f"edgepython_sc volcano for contrast <code>{treatment}</code> versus <code>{reference_condition}</code> "
-            f"within <code>celltype={celltype_value}</code>."
-        ),
-        volcano_parent,
+    out_path = f"{prefix}_{safe_name(treatment)}_results.parquet"
+    write_standard_de_parquet(
+        results,
+        out_path,
+        gene_col=None,
+        log2fc_col="logFC",
+        pvalue_col="PValue",
+        padj_col="FDR",
+        group=treatment,
+        contrast=f"{treatment} vs {reference_condition}",
+        stratum=f"celltype={celltype_value}",
     )
+    written.append(out_path)
 
 if not written:
     raise ValueError("No edgepython_sc contrasts could be tested")
