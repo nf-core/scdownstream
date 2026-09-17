@@ -1,11 +1,10 @@
 include { EDGEPYTHON_SCDIFFERENTIAL } from '../../../modules/local/edgepython/sc_differential'
-include { anndata       } from 'plugin/nf-anndata'
+include { anndata                  } from 'plugin/nf-anndata'
 
 workflow EDGEPYTHON_SC_DE {
     take:
     ch_h5ad             // channel: [ meta, h5ad ] with meta.condition_col, meta.donor_col, and meta.obs_key
     reference_condition //   value: string
-    interesting_genes   //   value: string (path) or []
 
     main:
     ch_strata = ch_h5ad
@@ -16,7 +15,7 @@ workflow EDGEPYTHON_SC_DE {
             def celltypes = ad.obs[celltype_col].unique().toList()
             celltypes.collect { celltype ->
                 [
-                    meta + [celltype: celltype, condition_col: condition_col],
+                    meta + [celltype: celltype, condition_col: condition_col, de_method: 'edgepython_sc'],
                     h5ad,
                     celltype_col,
                     celltype as String,
@@ -40,10 +39,8 @@ workflow EDGEPYTHON_SC_DE {
         ch_edgepython.celltype_col,
         ch_edgepython.celltype_value,
         ch_edgepython.reference_condition,
-        interesting_genes ?: [],
     )
 
     emit:
-    results       = EDGEPYTHON_SCDIFFERENTIAL.out.results
-    multiqc_files = EDGEPYTHON_SCDIFFERENTIAL.out.multiqc_files
+    results = EDGEPYTHON_SCDIFFERENTIAL.out.results
 }

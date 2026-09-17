@@ -4,8 +4,8 @@ process EDGEPYTHON_SCDIFFERENTIAL {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/38/387ee8bae78078479f4247c84d00dd1a6f97ba49315f807d953d409b19be9823/data' :
-        'community.wave.seqera.io/library/edgepython_sc_differential:2fe5a778fe82c638' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/79/7967cbf85b1f33815b4e84540f1ba3486dc6e7a87283b5ea5e5fe10391466851/data':
+        'community.wave.seqera.io/library/edgepython_sc_differential:d3364fef9746874f' }"
 
     input:
     tuple val(meta), path(h5ad)
@@ -14,13 +14,10 @@ process EDGEPYTHON_SCDIFFERENTIAL {
     val(celltype_col)
     val(celltype_value)
     val(reference_condition)
-    path interesting_genes
 
     output:
-    tuple val(meta), path("${prefix}_*_results.csv"), emit: results
-    path "*.png"                                    , emit: plots, optional: true
-    path "*_mqc.json"                               , emit: multiqc_files, optional: true
-    path "versions.yml"                             , emit: versions, topic: versions
+    tuple val(meta), path("${prefix}_*_results.parquet"), emit: results
+    path "versions.yml"                                 , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -32,9 +29,7 @@ process EDGEPYTHON_SCDIFFERENTIAL {
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch ${prefix}_treatment_results.csv
-    touch ${prefix}_treatment_volcano.png
-    touch ${prefix}_treatment_volcano_mqc.json
+    touch ${prefix}_treatment_results.parquet
     touch versions.yml
     """
 }

@@ -19,7 +19,6 @@ nextflow_workflow {
                     [id: 'test'],
                     file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                 ]).map { meta, h5ad -> [meta + [obs_key: 'leiden', condition_col: 'condition', de_methods_resolved: ['wilcoxon'] as Set], h5ad] }
-                input[1] = []
                 """
             }
         }
@@ -28,6 +27,8 @@ nextflow_workflow {
             assert workflow.success
             assert workflow.out.uns.size() >= 1
             assert workflow.out.multiqc_files.size() >= 1
+            assert workflow.out.results.size() >= 1
+            assert workflow.out.results.every { _meta, parquet -> file(parquet).name.contains("_results.parquet") }
             assert workflow.out.uns.any { file(it).name.endsWith("_characteristic_genes.pkl") }
             assert workflow.out.h5ad.size() >= 1
             assert workflow.out.h5ad.every { meta, _h5ad -> meta.comparison_scope == 'global' }
@@ -52,13 +53,14 @@ nextflow_workflow {
                     [id: 'test'],
                     file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                 ]).map { meta, h5ad -> [meta + [obs_key: 'label', condition_col: 'condition', de_methods_resolved: ['wilcoxon'] as Set], h5ad] }
-                input[1] = []
                 """
             }
         }
 
         then {
             assert workflow.success
+            assert workflow.out.results.size() >= 1
+            assert workflow.out.results.every { _meta, parquet -> file(parquet).name.contains("_results.parquet") }
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml }
             ).match()
@@ -80,7 +82,6 @@ nextflow_workflow {
                     [id: 'test'],
                     file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                 ]).map { meta, h5ad -> [meta + [obs_key: 'batch', condition_col: 'condition', de_methods_resolved: ['wilcoxon'] as Set], h5ad] }
-                input[1] = []
                 """
             }
         }
@@ -90,7 +91,7 @@ nextflow_workflow {
             assert workflow.trace.tasks().size() == 0
             assert workflow.out.uns.size() == 0
             assert workflow.out.h5ad.size() == 0
-            assert workflow.stdout.any { it.contains("Skipping SCANPY_RANKGENESGROUPS") }
+            assert workflow.out.results.size() == 0
         }
 
     }
@@ -107,7 +108,6 @@ nextflow_workflow {
                     [id: 'test'],
                     file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                 ]).map { meta, h5ad -> [meta + [obs_key: 'leiden', condition_col: 'condition', de_methods_resolved: ['wilcoxon', 't-test'] as Set], h5ad] }
-                input[1] = []
                 """
             }
         }
@@ -115,6 +115,8 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.uns.size() >= 2
+            assert workflow.out.results.size() >= 2
+            assert workflow.out.results.every { _meta, parquet -> file(parquet).name.contains("_results.parquet") }
             assert workflow.out.h5ad.size() == 2
             assert workflow.out.h5ad.every { meta, _h5ad -> meta.comparison_scope == 'global' }
             assert workflow.out.h5ad.collect { meta, _h5ad -> meta.de_method }.toSet() == ['wilcoxon', 't-test'] as Set

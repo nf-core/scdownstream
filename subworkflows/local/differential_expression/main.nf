@@ -1,7 +1,8 @@
-include { PSEUDOBULKING       } from '../pseudobulking'
-include { PSEUDOBULK_DE        } from '../pseudobulk_de'
-include { RANK_GENES_GROUPS    } from '../rank_genes_groups'
-include { EDGEPYTHON_SC_DE     } from '../edgepython_sc_de'
+include { PSEUDOBULKING      } from '../pseudobulking'
+include { PSEUDOBULK_DE      } from '../pseudobulk_de'
+include { RANK_GENES_GROUPS  } from '../rank_genes_groups'
+include { EDGEPYTHON_SC_DE   } from '../edgepython_sc_de'
+include { CUSTOM_VOLCANOPLOT } from '../../../modules/local/custom/volcanoplot'
 include { rankGenesGroupsMethods         } from '../utils_nfcore_scdownstream_pipeline'
 include { rankGenesGroupsAnalysisEnabled } from '../utils_nfcore_scdownstream_pipeline'
 include { pseudobulkDeMethods            } from '../utils_nfcore_scdownstream_pipeline'
@@ -36,9 +37,7 @@ workflow DIFFERENTIAL_EXPRESSION {
         PSEUDOBULKING.out.h5ad
             .filter { meta, _h5ad -> pseudobulkDeEnabled(meta) },
         reference_condition,
-        interesting_genes,
     )
-    ch_multiqc_files = ch_multiqc_files.mix(PSEUDOBULK_DE.out.multiqc_files)
 
     ch_h5ad_rgg = ch_h5ad
         .filter { meta, _h5ad ->
@@ -46,7 +45,7 @@ workflow DIFFERENTIAL_EXPRESSION {
                 meta.de_methods_resolved.intersect(rankGenesGroupsMethods())
         }
 
-    RANK_GENES_GROUPS(ch_h5ad_rgg, interesting_genes)
+    RANK_GENES_GROUPS(ch_h5ad_rgg)
     ch_uns           = ch_uns.mix(RANK_GENES_GROUPS.out.uns)
     ch_multiqc_files = ch_multiqc_files.mix(RANK_GENES_GROUPS.out.multiqc_files)
     ch_h5ad_out      = ch_h5ad_out.mix(RANK_GENES_GROUPS.out.h5ad)
@@ -58,9 +57,18 @@ workflow DIFFERENTIAL_EXPRESSION {
                     'edgepython_sc' in meta.de_methods_resolved
             },
         reference_condition,
-        interesting_genes,
     )
-    ch_multiqc_files = ch_multiqc_files.mix(EDGEPYTHON_SC_DE.out.multiqc_files)
+
+    ch_de_results = RANK_GENES_GROUPS.out.results
+        .mix(PSEUDOBULK_DE.out.results)
+        .mix(EDGEPYTHON_SC_DE.out.results)
+        .flatMap { meta, files ->
+            def collected = files instanceof Collection ? files : [files]
+            collected.collect { pq -> [meta, pq] }
+        }
+
+    CUSTOM_VOLCANOPLOT(ch_de_results, interesting_genes ?: [])
+    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_VOLCANOPLOT.out.multiqc_files)
 
     emit:
     uns           = ch_uns
