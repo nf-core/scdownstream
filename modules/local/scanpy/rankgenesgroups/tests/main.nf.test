@@ -44,6 +44,44 @@ nextflow_process {
 
     }
 
+    test("Should preserve rank and marker outputs with logreg missing statistics") {
+
+        tag "logreg"
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true)
+                    ])
+                input[1] = "leiden"
+                input[2] = [[], []]
+                input[3] = "logreg"
+                input[4] = "rank_genes_groups"
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert "rank_genes_groups" in adata.uns
+            assert process.out.results
+            assert process.out.markers
+            assert process.out.plots
+            assert process.out.multiqc_files
+            assert file(process.out.results[0][1]).name.contains("_results.parquet")
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+    }
+
     test("Should run without failures - stub") {
 
         options '-stub'

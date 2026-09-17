@@ -1,4 +1,60 @@
 {
+    "Should preserve rank and marker outputs with logreg missing statistics": {
+        "content": [
+            {
+                "SCANPY_RANKGENESGROUPS": {
+                    "pandas": "2.3.3",
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3"
+                }
+            },
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "leiden"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "X_pca"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_pca",
+                    "leiden",
+                    "log1p",
+                    "neighbors",
+                    "rank_genes_groups"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-17T15:58:38.044688474",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
     "Should run without failures - stub": {
         "content": [
             {

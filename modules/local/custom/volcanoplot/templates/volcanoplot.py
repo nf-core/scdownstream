@@ -344,6 +344,7 @@ if padj_all_null and pvalue_all_null:
     print(f"Warning: missing p-values for {out_png}; skipping volcano.")
 else:
     panels = []
+    group_count = df["group"].nunique()
     for group_name, gdf in df.groupby("group", sort=True):
         plot_df, p_use, use_padj = prepare_volcano_df(gdf, interesting)
         if plot_df is None:
@@ -354,9 +355,9 @@ else:
         print(f"Warning: no plottable volcano panels for {out_png}; skipping.")
     else:
         stratum = single_stratum(df)
-        if len(panels) == 1:
+        if len(panels) == 1 and group_count <= 2:
             _group_name, plot_df, p_use, use_padj = panels[0]
-            contrasts = unique_nonempty(df["contrast"])
+            contrasts = unique_nonempty(df.loc[df["group"].astype(str) == _group_name, "contrast"])
             contrast = contrasts[0] if contrasts else str(_group_name)
             section_name = section_with_stratum(f"{method_label} volcano: {contrast}", stratum)
             left, right = split_vs(contrast)
@@ -371,7 +372,7 @@ else:
                 description,
                 volcano_parent,
             )
-        elif len(panels) == 2:
+        elif len(panels) == 2 and group_count == 2:
             # Two groups: A vs rest and B vs rest are mirrors; keep a single A vs B panel.
             group_a, plot_df, p_use, use_padj = panels[0]
             group_b = panels[1][0]

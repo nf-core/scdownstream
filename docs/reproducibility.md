@@ -88,11 +88,11 @@ The **Test strategy (this branch)** column describes what the tests on this bran
 
 ### `custom/`
 
-| Module                  | Description                                                                                                               | Reproducibility     | Test strategy (this branch)                                      |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------- | ---------------------------------------------------------------- |
-| `custom/collectsizes`   | Pivots a TSV of per-sample cell counts at different QC stages into a MultiQC summary table.                               | Fully deterministic | hash (no H5AD output — TSV / MultiQC JSON + versions)            |
-| `custom/doubletremoval` | Merges doublet-caller predictions into `adata.obs` and optionally removes cells when a threshold is met (`removal=true`). | Fully deterministic | hash (removal path); structural assertions on annotate-only path |
-| `custom/volcanoplot`    | Draws volcano PNGs and MultiQC image sections from standardised DE parquet tables.                                        | Fully deterministic | stub + structural versions; PNGs not hashed                      |
+| Module                  | Description                                                                                                               | Reproducibility     | Test strategy (this branch)                                                                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `custom/collectsizes`   | Pivots a TSV of per-sample cell counts at different QC stages into a MultiQC summary table.                               | Fully deterministic | hash (no H5AD output — TSV / MultiQC JSON + versions)                                                                                                |
+| `custom/doubletremoval` | Merges doublet-caller predictions into `adata.obs` and optionally removes cells when a threshold is met (`removal=true`). | Fully deterministic | hash (removal path); structural assertions on annotate-only path                                                                                     |
+| `custom/volcanoplot`    | Draws volcano PNGs and MultiQC image sections from standardised DE parquet tables.                                        | Fully deterministic | stub + structural versions and MultiQC comparison metadata; covers missing statistics, sparse groups and colon-containing filenames; PNGs not hashed |
 
 ### `scdblfinder/`
 

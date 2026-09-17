@@ -200,7 +200,7 @@ The results are stored in subdirectories named after the integration tool used.
       - `*_loadings_*.csv`: Factor loading tables (when `--save_intermediates`).
       - `*_tensor.pkl`: Serialised Tensor-cell2cell object (when `--save_intermediates`).
     - `differential_expression/`
-      All DE engines write `*_results.parquet` tables with columns `gene`, `log2fc`, `pvalue`, `padj`, `group`, `contrast`, and `stratum`. Extra method-native columns may be present. Volcano PNGs are produced from these tables by a shared plotting module.
+      All DE engines write `*_results.parquet` tables with columns `gene`, `log2fc`, `pvalue`, `padj`, `group`, `contrast`, and `stratum`. Extra method-native columns may be present. Statistics that a method does not provide, such as fold changes and p-values for Scanpy `logreg`, are stored as nulls. Volcano PNGs are produced from these tables by a shared plotting module, which skips comparisons without plottable statistics.
       - `scanpy/{method}/{global|filtered}/`
         - `*_markers.csv`: Filtered marker-gene tables from Scanpy `rank_genes_groups`.
         - `*_results.parquet`: Standardised Scanpy rank-genes-groups results (all groups, unfiltered).

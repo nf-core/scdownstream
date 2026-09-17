@@ -65,17 +65,20 @@ def write_standard_de_parquet(
             out = out.reset_index()
             gene_col = out.columns[0]
 
-    rename = {gene_col: "gene", log2fc_col: "log2fc"}
+    rename = {gene_col: "gene"}
+    if log2fc_col and log2fc_col in out.columns:
+        rename[log2fc_col] = "log2fc"
     if pvalue_col and pvalue_col in out.columns:
         rename[pvalue_col] = "pvalue"
     if padj_col and padj_col in out.columns:
         rename[padj_col] = "padj"
     out = out.rename(columns=rename)
 
-    if "pvalue" not in out.columns:
-        out["pvalue"] = pd.NA
-    if "padj" not in out.columns:
-        out["padj"] = pd.NA
+    # Scanpy's logreg method only returns names and scores. Keep the standard
+    # schema so downstream consumers can skip plots when statistics are absent.
+    for column in ("log2fc", "pvalue", "padj"):
+        if column not in out.columns:
+            out[column] = pd.NA
 
     n_rows = len(out)
     out["gene"] = out["gene"].astype(str)
@@ -152,6 +155,7 @@ if len(valid_groups) >= 2:
 
         # Store filtered markers under rank_key for downstream consumers such as CyteType.
         rgg_dict = dict(adata.uns.pop(filtered_rank_key))
+        plot_rgg_dict = dict(rgg_dict)
         adata.uns.pop(rank_key, None)
         # Scanpy marks filtered-out genes as missing names; replace them so H5AD serialisation works.
         names_df = pd.DataFrame(rgg_dict["names"]).fillna("").astype(str)
@@ -162,11 +166,15 @@ if len(valid_groups) >= 2:
         adata.write_h5ad(f"{prefix}.h5ad")
 
         # Plot
+        # Plotting handles the original missing names, whereas empty strings
+        # used for H5AD serialisation are interpreted as invalid genes.
+        adata.uns[rank_key] = plot_rgg_dict
         sc.pl.rank_genes_groups(adata, key=rank_key, show=False)
         path = f"{prefix}.png"
         plt.savefig(path, bbox_inches="tight")
 
         sc.pl.rank_genes_groups_dotplot(adata, key=rank_key, show=False)
+        adata.uns[rank_key] = rgg_dict
         dotplot_path = f"{prefix}_dotplot.png"
         plt.savefig(dotplot_path, bbox_inches="tight")
 
