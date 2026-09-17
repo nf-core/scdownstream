@@ -12,6 +12,7 @@ import platform
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
+import anndata as ad
 import matplotlib.pyplot as plt
 import scanpy as sc
 import yaml
@@ -52,6 +53,7 @@ if original_index is not None:
     adata.var_names = original_index
 
 adata.obs[["S_score", "G2M_score", "phase"]].to_pickle(f"{prefix}.pkl")
+ad.settings.allow_write_nullable_strings = False
 adata.write_h5ad(f"{prefix}.h5ad")
 
 if adata.obs["phase"].nunique() > 1:

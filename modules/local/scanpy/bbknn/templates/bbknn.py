@@ -6,6 +6,7 @@ import platform
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
+import anndata as ad
 import bbknn
 import pandas as pd
 import scanpy as sc
@@ -43,6 +44,7 @@ if adata.n_obs >= 1e5:
 
 adata = bbknn.bbknn(adata, **kwargs)
 
+ad.settings.allow_write_nullable_strings = False
 adata.write_h5ad(f"{prefix}.h5ad")
 
 versions = {

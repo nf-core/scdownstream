@@ -14,6 +14,7 @@ import yaml
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
+import anndata as ad
 import matplotlib.pyplot as plt
 import scanpy as sc
 from threadpoolctl import threadpool_limits
@@ -34,6 +35,7 @@ kwargs = {
 sc.tl.leiden(adata, **kwargs)
 
 adata.obs[[key_added]].to_pickle(f"{prefix}.pkl")
+ad.settings.allow_write_nullable_strings = False
 adata.write_h5ad(f"{prefix}.h5ad")
 
 if "${plot_umap}" == "true":

@@ -35,6 +35,16 @@ output:
           type: file
           description: AnnData with unified HUGO gene symbols applied
           pattern: "*.h5ad"
+  versions_hugo_unifier:
+    - - process:
+          type: string
+          description: Nextflow process name
+      - tool:
+          type: string
+          description: Software name
+      - version:
+          type: string
+          description: Software version
 
 authors:
   - "@nictru"

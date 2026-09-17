@@ -9,6 +9,7 @@ os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 import importlib.metadata
 import platform
 
+import anndata as ad
 import pandas as pd
 import scanpy as sc
 import symphonypy as sp
@@ -42,6 +43,7 @@ sp.tl.map_embedding(
 adata.obsm["X_symphony"] = adata_proc.obsm["X_symphony"]
 adata.obsm["X_emb"] = adata_proc.obsm["X_symphony"]
 
+ad.settings.allow_write_nullable_strings = False
 adata.write_h5ad(f"{prefix}.h5ad")
 pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names).to_pickle(f"X_{prefix}.pkl")
 

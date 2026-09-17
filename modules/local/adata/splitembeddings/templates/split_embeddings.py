@@ -22,6 +22,7 @@ adata.obsm = {}
 
 for embedding in embeddings:
     adata.obsm["X_emb"] = obsm[f"X_{embedding}"]
+    ad.settings.allow_write_nullable_strings = False
     adata.write_h5ad(f"{embedding}.h5ad")
 
 # Versions

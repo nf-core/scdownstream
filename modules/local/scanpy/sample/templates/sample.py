@@ -10,6 +10,7 @@ import platform
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
+import anndata as ad
 import scanpy as sc
 import yaml
 from threadpoolctl import threadpool_limits
@@ -37,6 +38,7 @@ if "n" in kwargs and kwargs["n"] >= adata.n_obs:
 else:
     sc.pp.sample(adata, **kwargs)
 
+ad.settings.allow_write_nullable_strings = False
 adata.write_h5ad(f"{prefix}.h5ad")
 
 # Versions

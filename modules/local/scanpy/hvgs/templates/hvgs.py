@@ -12,6 +12,7 @@ from threadpoolctl import threadpool_limits
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
+import anndata as ad
 import scanpy as sc
 import yaml
 
@@ -64,6 +65,7 @@ if adata.n_vars > n_hvgs:
     adata.X = raw_counts
     adata = adata[:, adata.var["highly_variable"]]
 
+ad.settings.allow_write_nullable_strings = False
 adata.write_h5ad(f"{prefix}.h5ad")
 
 # Versions

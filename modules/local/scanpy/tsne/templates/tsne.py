@@ -10,6 +10,7 @@ import platform
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
+import anndata as ad
 import pandas as pd
 import scanpy as sc
 import yaml
@@ -23,6 +24,7 @@ prefix = "${prefix}"
 
 sc.tl.tsne(adata, random_state=0)
 
+ad.settings.allow_write_nullable_strings = False
 adata.write_h5ad(f"{prefix}.h5ad")
 df = pd.DataFrame(adata.obsm["X_tsne"], index=adata.obs_names)
 df.to_pickle(f"X_{prefix}.pkl")

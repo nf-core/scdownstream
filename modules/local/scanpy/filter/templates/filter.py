@@ -12,6 +12,7 @@ import platform
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
+import anndata as ad
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -348,6 +349,8 @@ if min_genes is not None:
 if min_cells is not None:
     sc.pp.filter_genes(adata, min_cells=min_cells)
 
+# Preserve the legacy string encoding used by anndataR when pandas 3 is present.
+ad.settings.allow_write_nullable_strings = False
 adata.write_h5ad(f"{prefix}.h5ad")
 
 # Versions

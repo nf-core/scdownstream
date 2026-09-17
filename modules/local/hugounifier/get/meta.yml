@@ -34,6 +34,16 @@ output:
           type: file
           description: Per-sample CSV of gene symbol changes
           pattern: "*.csv"
+  versions_hugo_unifier:
+    - - process:
+          type: string
+          description: Nextflow process name
+      - tool:
+          type: string
+          description: Software name
+      - version:
+          type: string
+          description: Software version
 
 authors:
   - "@nictru"
