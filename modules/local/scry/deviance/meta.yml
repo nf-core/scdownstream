@@ -1,0 +1,97 @@
+name: "scry_deviance"
+description: Select highly deviant genes for integration using scry binomial deviance
+keywords:
+  - feature-selection
+  - single-cell
+  - scrnaseq
+  - integration
+tools:
+  - "scry":
+      description: "scry: Single-Cell RNA-Seq Analysis Utilities"
+      homepage: "https://bioconductor.org/packages/scry"
+      documentation: "https://bioconductor.org/packages/release/bioc/html/scry.html"
+      tool_dev_url: "https://github.com/cole-trapnell-lab/scry"
+      licence: ["GPL-3.0"]
+      identifier: biotools:bioconductor-scry
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+    - n_genes:
+        type: integer
+        description: |
+          Number of highly deviant genes to retain. If 0, defaults to 4000.
+    - excluded_genes:
+        type: file
+        description: |
+          Optional file with one gene symbol per line to exclude before feature selection.
+    - batch_col:
+        type: string
+        description: |
+          Optional column in obs / colData for batch-aware deviance feature selection.
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object subset to highly deviant genes
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  var:
+    - "*_features.csv":
+        type: file
+        description: CSV with binomial_deviance and highly_deviant columns per gene
+        pattern: "*_features.csv"
+        ontologies:
+          - edam: "http://edamontology.org/format_3752"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/scry_deviance:42e91d77e88fcfe6
+      build_id: bd-42e91d77e88fcfe6_1
+      scan_id: sc-a3305fea29b1e7b0_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/scry_deviance:e6de94678d508788
+      build_id: bd-e6de94678d508788_1
+      scan_id: sc-fee203c32c2b4626_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/scry_deviance:5d41236dea2d0037
+      build_id: bd-5d41236dea2d0037_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c4/c430d984a431d374c285a7a577f0496d8a514c1ad484feaaa86655259b594eb8/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/scry_deviance:fcc163e55be10858
+      build_id: bd-fcc163e55be10858_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/24/24af11b88761bc7c73f8047cc76358629cc63f527c9a206a885acb35bc49b717/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scry/deviance/.conda-lock/linux_amd64-bd-42e91d77e88fcfe6_1.txt
+    linux/arm64:
+      lock_file: modules/local/scry/deviance/.conda-lock/linux_arm64-bd-e6de94678d508788_1.txt

@@ -1,0 +1,235 @@
+nextflow_workflow {
+
+    name "Test Workflow SUB_INTEGRATE"
+    script "subworkflows/local/sub_integrate/main.nf"
+    workflow "SUB_INTEGRATE"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should integrate each group with PCA") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'base'],
+                    file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'sample'
+                input[2] = 'hvgs'
+                input[3] = -1
+                input[4] = []
+                input[5] = 'log1p'
+                input[6] = ['pca']
+                input[7] = null
+                input[8] = null
+                input[9] = ''
+                input[10] = ''
+                input[11] = 'https://zenodo.org/records/10685499/files/model_v1.1.tar.gz'
+                input[12] = null
+                input[13] = null
+                input[14] = 'condition'
+                input[15] = null
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def adata_parent = anndata(workflow.out.h5ad[0][1])
+            assert "log1p" in adata_parent.layers
+            assert workflow.out.integrations.size() > 1
+            workflow.out.integrations.each { meta, h5ad ->
+                def adata = anndata(h5ad)
+                assert meta.integration == 'pca'
+                assert meta.subset
+                assert meta.id == "pca-${meta.subset}"
+                assert "X_emb" in adata.obsm
+            }
+            workflow.out.obsm.each { obsm ->
+                assert path(obsm).getFileName().toString().startsWith("X_pca-")
+            }
+        }
+
+    }
+
+    test("Should pair scVI models with scANVI by subset - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'base'],
+                    file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'sample'
+                input[2] = 'hvgs'
+                input[3] = -1
+                input[4] = []
+                input[5] = 'log1p'
+                input[6] = ['scvi', 'scanvi']
+                input[7] = null
+                input[8] = null
+                input[9] = ''
+                input[10] = ''
+                input[11] = 'https://zenodo.org/records/10685499/files/model_v1.1.tar.gz'
+                input[12] = null
+                input[13] = null
+                input[14] = 'condition'
+                input[15] = null
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def scanvi_integrations = workflow.out.integrations.findAll { meta, _h5ad -> meta.integration == 'scanvi' }
+            assert scanvi_integrations.size() > 1
+            scanvi_integrations.each { meta, _h5ad ->
+                assert meta.subset
+                assert meta.id == "scanvi-${meta.subset}"
+            }
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should integrate each group with scimilarity - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'base'],
+                    file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'sample'
+                input[2] = 'hvgs'
+                input[3] = -1
+                input[4] = []
+                input[5] = 'log1p'
+                input[6] = ['scimilarity']
+                input[7] = null
+                input[8] = null
+                input[9] = ''
+                input[10] = ''
+                input[11] = params.modules_testdata_base_path + 'generic/tar/hello.tar.gz'
+                input[12] = null
+                input[13] = null
+                input[14] = 'condition'
+                input[15] = null
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.integrations.size() > 1
+            workflow.out.integrations.each { meta, _h5ad ->
+                assert meta.integration == 'scimilarity'
+                assert meta.subset
+                assert meta.id == "scimilarity-${meta.subset}"
+            }
+        }
+
+    }
+
+    test("Should integrate only whitelisted groups with PCA") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'base'],
+                    file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'sample'
+                input[2] = 'hvgs'
+                input[3] = -1
+                input[4] = []
+                input[5] = 'log1p'
+                input[6] = ['pca']
+                input[7] = null
+                input[8] = null
+                input[9] = ''
+                input[10] = ''
+                input[11] = 'https://zenodo.org/records/10685499/files/model_v1.1.tar.gz'
+                input[12] = null
+                input[13] = null
+                input[14] = 'condition'
+                input[15] = 'SRR28679756'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.integrations.size() == 1
+            workflow.out.integrations.each { meta, h5ad ->
+                def adata = anndata(h5ad)
+                assert meta.integration == 'pca'
+                assert meta.subset == 'SRR28679756'
+                assert meta.id == 'pca-SRR28679756'
+                assert "X_emb" in adata.obsm
+            }
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'base'],
+                    file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'sample'
+                input[2] = 'hvgs'
+                input[3] = -1
+                input[4] = []
+                input[5] = 'log1p'
+                input[6] = ['pca']
+                input[7] = null
+                input[8] = null
+                input[9] = ''
+                input[10] = ''
+                input[11] = 'https://zenodo.org/records/10685499/files/model_v1.1.tar.gz'
+                input[12] = null
+                input[13] = null
+                input[14] = 'condition'
+                input[15] = null
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+}

@@ -1,0 +1,134 @@
+{
+    "Should run without failures - without base - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "merged"
+                        },
+                        "merged_log1pnorm.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "merged"
+                        },
+                        "merged_inner.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "scvi",
+                            "integration": "scvi"
+                        },
+                        "scvi.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    "merged_deviance_features.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    
+                ],
+                "5": [
+                    "X_scvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "6": [
+                    
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "merged"
+                        },
+                        "merged_log1pnorm.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "h5ad_inner": [
+                    [
+                        {
+                            "id": "merged"
+                        },
+                        "merged_inner.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "scvi",
+                            "integration": "scvi"
+                        },
+                        "scvi.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_scvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "merged_deviance_features.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-13T13:07:56.091737855",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run without failures - without base": {
+        "content": [
+            [
+                
+            ],
+            {
+                "n_obs": 25880,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "intersection"
+                    ]
+                },
+                "layers": [
+                    "counts",
+                    "log1p"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-07-13T13:13:12.654417921",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    }
+}

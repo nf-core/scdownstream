@@ -1,0 +1,44 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+    tag "pipeline"
+
+    test("Should perform scvi and symphony reference mapping") {
+
+        when {
+            params {
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/9899c2480745ef58ad234c502a622e1a424f8a6c/'
+                input                        = pipelines_testdata_base_path + 'samplesheet_single.csv'
+                integration_methods          = 'scvi,symphony'
+                doublet_detection            = 'scrublet,scdblfinder'
+                celltypist_model             = 'Adult_COVID19_PBMC'
+                integration_n_features       = 500
+                outdir                       = "$outputDir"
+                scvi_model                   = pipelines_testdata_base_path + 'extension_base/model.pt'
+                symphony_reference           = pipelines_testdata_base_path + 'extension_base/symphony_reference.h5ad'
+            }
+        }
+
+        then {
+            // stable_name: All files + folders in ${params.outdir}/ with a stable name
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', '06_per_group/**', '11_multiqc/**'])
+            // stable_path: All files in ${params.outdir}/ with stable content
+            def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    // Number of successful tasks
+                    // workflow.trace.succeeded().size(), disabled, because clustering is not stable and the DIFFERENTIAL_EXPRESSION subworkflow creates tasks based on the number of clusters
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_scdownstream_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_name,
+                    // All files with stable contents
+                    stable_path
+                ).match() },
+                { assert file("$outputDir/10_reports/qc-report.html").text.contains("Each integration method run by the pipeline") }
+            )
+        }
+    }
+}

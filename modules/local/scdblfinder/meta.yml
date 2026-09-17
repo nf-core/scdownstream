@@ -1,0 +1,77 @@
+name: "scdblfinder"
+description: Detect doublets in single-cell RNA-seq data using scDblFinder
+keywords:
+  - doublet-detection
+  - single-cell
+  - scrnaseq
+  - quality-control
+tools:
+  - "scdblfinder":
+      description: "scDblFinder: Computational identification of doublets in single-cell transcriptomics data"
+      homepage: "https://bioconductor.org/packages/scDblFinder"
+      documentation: "https://bioconductor.org/packages/release/bioc/vignettes/scDblFinder/inst/doc/scDblFinder.html"
+      tool_dev_url: "https://github.com/plger/scDblFinder"
+      doi: "10.12688/f1000research.73600.2"
+      licence: ["GPL-3.0"]
+      identifier: biotools:scdblfinder
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590" # HDF5 format
+    - dbr:
+        type: number
+        description: |
+          Optional expected doublet rate (0-1). If null, scDblFinder estimates
+          the doublet rate internally.
+    - batch_col:
+        type: string
+        description: |
+          Optional column in the AnnData obs / SingleCellExperiment colData used
+          to split cells by capture or batch via scDblFinder's samples argument.
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with doublet annotations
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590" # HDF5 format
+  predictions:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.csv":
+          type: file
+          description: CSV file containing doublet predictions (boolean)
+          pattern: "*.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752" # CSV
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+
+authors:
+  - "@KurayiChawatama"
+maintainers:
+  - "@KurayiChawatama"

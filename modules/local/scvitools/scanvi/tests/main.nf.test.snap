@@ -1,0 +1,197 @@
+{
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scanvi.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "model.pt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    "test_scanvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "X_test_scanvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scanvi.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "model": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "model.pt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    "test_scanvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "obsm": [
+                    "X_test_scanvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-01-25T17:12:07.460137485",
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should write label predictions to obs": {
+        "content": [
+            "test_scanvi.h5ad",
+            "model.pt",
+            "X_test_scanvi.pkl",
+            {
+                "SCVITOOLS_SCANVI": {
+                    "scvi": "1.4.3"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 100,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "label",
+                        "condition",
+                        "batch",
+                        "sample_original",
+                        "leiden",
+                        "label:scANVI"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable",
+                        "means",
+                        "dispersions",
+                        "dispersions_norm"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_emb",
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "leiden",
+                    "log1p",
+                    "neighbors",
+                    "pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-08-10T10:30:35.021544296",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures": {
+        "content": [
+            "test_scanvi.h5ad",
+            "model.pt",
+            "X_test_scanvi.pkl",
+            {
+                "SCVITOOLS_SCANVI": {
+                    "scvi": "1.4.3"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 100,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "label",
+                        "condition",
+                        "batch",
+                        "sample_original",
+                        "leiden",
+                        "label:scANVI"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable",
+                        "means",
+                        "dispersions",
+                        "dispersions_norm"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_emb",
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "leiden",
+                    "log1p",
+                    "neighbors",
+                    "pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-08-10T10:28:18.452037604",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

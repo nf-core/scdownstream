@@ -1,0 +1,217 @@
+nextflow_workflow {
+
+    name "Test Workflow CLUSTER_ANNOTATION"
+    script "subworkflows/local/cluster_annotation/main.nf"
+    workflow "CLUSTER_ANNOTATION"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should run aggregate_per_cell_annotation when analyses includes aggregate_per_cell_annotation - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        analyses: ['aggregate_per_cell_annotation'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = h5ad
+                input[1] = channel.empty()
+                input[2] = channel.of('annotation:celltypist:Adult_COVID19_PBMC:per_cell')
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.obs.size() >= 1
+            assert workflow.out.obs.any { pkl -> file(pkl).name == 'test:annotation:celltypist:Adult_COVID19_PBMC:per_cell.pkl' }
+        }
+
+    }
+
+    test("Should skip aggregate_per_cell_annotation when not listed in analyses - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        analyses: ['paga'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.empty()
+                input[2] = channel.of('annotation:celltypist:Adult_COVID19_PBMC:per_cell')
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.obs.size() == 0
+        }
+
+    }
+
+    test("Should run cytetype when study context is set - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'leiden:wilcoxon',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        comparison_scope: 'global',
+                        de_method: 'wilcoxon',
+                        rank_key: 'rank_genes_groups',
+                        analyses: ['cytetype'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = channel.empty()
+                input[1] = h5ad
+                input[2] = channel.empty()
+                input[3] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.obs.size() >= 1
+            assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml },
+                workflow.out.obs.size()
+            ).match()
+        }
+
+    }
+
+    test("Should skip cytetype when not listed in analyses - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                def h5ad = channel.of([
+                    [
+                        id: 'leiden:wilcoxon',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        comparison_scope: 'global',
+                        de_method: 'wilcoxon',
+                        rank_key: 'rank_genes_groups',
+                        analyses: ['de'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = channel.empty()
+                input[1] = h5ad
+                input[2] = channel.empty()
+                input[3] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.obs.size() == 0
+        }
+
+    }
+
+    test("Should run aggregate and cytetype together - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                def cluster_h5ad = channel.of([
+                    [
+                        id: 'test',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        analyses: ['aggregate_per_cell_annotation'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                def de_h5ad = channel.of([
+                    [
+                        id: 'leiden:wilcoxon',
+                        obs_key: 'leiden',
+                        condition_col: 'condition',
+                        integration: 'scvi',
+                        resolution: '0.5',
+                        comparison_scope: 'global',
+                        de_method: 'wilcoxon',
+                        rank_key: 'rank_genes_groups',
+                        analyses: ['cytetype'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[0] = cluster_h5ad
+                input[1] = de_h5ad
+                input[2] = channel.of('annotation:celltypist:Adult_COVID19_PBMC:per_cell')
+                input[3] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.obs.size() == 2
+            assert workflow.out.obs.any { pkl ->
+                file(pkl).name == 'test:annotation:celltypist:Adult_COVID19_PBMC:per_cell.pkl'
+            }
+            assert workflow.out.obs.any { pkl ->
+                file(pkl).name.endsWith('_cytetype.pkl')
+            }
+        }
+
+    }
+
+}

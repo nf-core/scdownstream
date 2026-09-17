@@ -1,0 +1,78 @@
+name: "scran_normalization"
+description: Compute scran size-factor normalisation and store log-normalised counts in an AnnData layer
+keywords:
+  - normalization
+  - single-cell
+  - scrnaseq
+  - scran
+tools:
+  - "scran":
+      description: "Methods for single-cell RNA-seq data analysis"
+      homepage: "https://bioconductor.org/packages/scran/"
+      documentation: "https://bioconductor.org/packages/release/bioc/html/scran.html"
+      tool_dev_url: "https://github.com/libscran/scran"
+      licence: ["GPL-3.0-or-later"]
+      identifier: biotools:scran
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format with raw counts in `X` or a `counts` layer
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with a `scran` layer
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/bioconductor-scran_bioconductor-scater_bioconductor-anndatar_bioconductor-singlecellexperiment_bioconductor-rhdf5:6b7470a8dda01c5a
+      build_id: bd-6b7470a8dda01c5a_1
+      scan_id: sc-725475b458007e58_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/bioconductor-scran_bioconductor-scater_bioconductor-anndatar_bioconductor-singlecellexperiment_bioconductor-rhdf5:88502e87f79b51e8
+      build_id: bd-88502e87f79b51e8_1
+      scan_id: sc-5c65ff608ec1956a_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/bioconductor-scran_bioconductor-scater_bioconductor-anndatar_bioconductor-singlecellexperiment_bioconductor-rhdf5:096fc5b6f231bb68
+      build_id: bd-096fc5b6f231bb68_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/10/1018024c31ecf24d8c52cf9db7610b043dd63053c91def87ab979d345b920330/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/bioconductor-scran_bioconductor-scater_bioconductor-anndatar_bioconductor-singlecellexperiment_bioconductor-rhdf5:9a526df3f432bd30
+      build_id: bd-9a526df3f432bd30_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0b/0b2b49fe343301d4aa2eb471d77a86b7d20be65804b6dca5294b212594abd6b5/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scran/normalization/.conda-lock/linux_amd64-bd-88502e87f79b51e8_1.txt
+    linux/arm64:
+      lock_file: modules/local/scran/normalization/.conda-lock/linux_arm64-bd-6b7470a8dda01c5a_1.txt

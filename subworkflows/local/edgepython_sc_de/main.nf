@@ -1,0 +1,49 @@
+include { EDGEPYTHON_SCDIFFERENTIAL } from '../../../modules/local/edgepython/sc_differential'
+include { anndata       } from 'plugin/nf-anndata'
+
+workflow EDGEPYTHON_SC_DE {
+    take:
+    ch_h5ad             // channel: [ meta, h5ad ] with meta.condition_col, meta.donor_col, and meta.obs_key
+    reference_condition //   value: string
+    interesting_genes   //   value: string (path) or []
+
+    main:
+    ch_strata = ch_h5ad
+        .flatMap { meta, h5ad ->
+            def ad = anndata(h5ad)
+            def celltype_col = meta.obs_key
+            def condition_col = meta.condition_col
+            def celltypes = ad.obs[celltype_col].unique().toList()
+            celltypes.collect { celltype ->
+                [
+                    meta + [celltype: celltype, condition_col: condition_col],
+                    h5ad,
+                    celltype_col,
+                    celltype as String,
+                ]
+            }
+        }
+
+    ch_edgepython = ch_strata.multiMap { meta, h5ad, celltype_col, celltype ->
+        h5ad: [meta, h5ad]
+        donor_col: meta.donor_col
+        condition_col: meta.condition_col
+        celltype_col: celltype_col
+        celltype_value: celltype
+        reference_condition: reference_condition ?: ''
+    }
+
+    EDGEPYTHON_SCDIFFERENTIAL(
+        ch_edgepython.h5ad,
+        ch_edgepython.donor_col,
+        ch_edgepython.condition_col,
+        ch_edgepython.celltype_col,
+        ch_edgepython.celltype_value,
+        ch_edgepython.reference_condition,
+        interesting_genes ?: [],
+    )
+
+    emit:
+    results       = EDGEPYTHON_SCDIFFERENTIAL.out.results
+    multiqc_files = EDGEPYTHON_SCDIFFERENTIAL.out.multiqc_files
+}

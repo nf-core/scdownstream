@@ -1,0 +1,402 @@
+nextflow_workflow {
+
+    name "Test Workflow AMBIENT_CORRECTION"
+    script "subworkflows/local/ambient_correction/main.nf"
+    workflow "AMBIENT_CORRECTION"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should run with 'none' ambient correction") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'none'
+                input[2] = false
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad.size() == 1
+            assert snapshot(
+                workflow.out.versions,
+                workflow.out.h5ad.size()
+            ).match()
+        }
+
+    }
+
+    test("Should fail with unknown ambient correction method") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'test'
+                input[2] = false
+                """
+            }
+        }
+
+        then {
+            assert !workflow.success
+        }
+
+    }
+
+    test("Should not do anything if ambient correction is disabled in meta") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', batch_col: 'sample', counts_layer: 'X', ambient_correction: false ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'decontx'
+                input[2] = false
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad.size() == 1
+            assert snapshot(
+                workflow.out.versions,
+                workflow.out.h5ad.size()
+            ).match()
+        }
+
+    }
+
+    test("Should run with 'decontx' ambient correction") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', batch_col: 'sample', counts_layer: 'X' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'decontx'
+                input[2] = false
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.success
+
+            assert "ambient_corrected_decontx" in adata.layers
+
+            assert snapshot(
+                workflow.out.versions,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with 'decontx' ambient correction and no batch column") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', counts_layer: 'X' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'decontx'
+                input[2] = false
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.success
+
+            assert "ambient_corrected_decontx" in adata.layers
+
+            assert snapshot(
+                workflow.out.versions,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with 'soupx' ambient correction") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', input_layer: 'X' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'soupx'
+                input[2] = false
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.success
+
+            assert "ambient_corrected_soupx" in adata.layers
+
+            assert snapshot(
+                workflow.out.versions,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with 'scar' ambient correction") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                scvi_max_epochs = 2
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'scar'
+                input[2] = false
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.success
+
+            assert "ambient_corrected_scar" in adata.layers
+
+            assert snapshot(
+                workflow.out.versions,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with 'cellbender' ambient correction") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'cellbender'
+                input[2] = false
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.success
+
+            assert "ambient_corrected_cellbender" in adata.layers
+
+            assert snapshot(
+                workflow.out.versions,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with 'decontx' ambient correction to 'X'") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', batch_col: 'sample', counts_layer: 'X' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'decontx'
+                input[2] = true
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.success
+            // output written to X, so no named decontx layer
+            assert !("ambient_corrected_decontx" in adata.layers)
+            assert snapshot(
+                workflow.out.versions,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with 'soupx' ambient correction to 'X'") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', input_layer: 'X' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'soupx'
+                input[2] = true
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.success
+            // output written to X, so no named soupx layer
+            assert !("ambient_corrected_soupx" in adata.layers)
+            assert snapshot(
+                workflow.out.versions,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with 'scar' ambient correction to 'X'") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                scvi_max_epochs = 2
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'scar'
+                input[2] = true
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.success
+            // output written to X, so no named scar layer
+            assert !("ambient_corrected_scar" in adata.layers)
+            assert snapshot(
+                workflow.out.versions,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with 'cellbender' ambient correction to 'X'") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'cellbender'
+                input[2] = true
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.success
+            // output written to X, so no named cellbender layer
+            assert !("ambient_corrected_cellbender" in adata.layers)
+            assert snapshot(
+                workflow.out.versions,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+}

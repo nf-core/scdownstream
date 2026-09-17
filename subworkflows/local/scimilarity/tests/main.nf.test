@@ -1,0 +1,72 @@
+// NOTE: A full test is not feasible because the SCimilarity model
+// file is almost 30GB large, which exceeds practical test data limits.
+// Only stub tests are provided for this subworkflow.
+
+nextflow_workflow {
+
+    name "Test Workflow SCIMILARITY"
+    script "subworkflows/local/scimilarity/main.nf"
+    workflow "SCIMILARITY"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                // NOTE: This is a workaround to avoid the test failing because the model file is too large
+                // But for stub tests, any file can be used
+                input[1] = params.modules_testdata_base_path + 'generic/tar/hello.tar.gz'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - stub - uncompressed model") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                // NOTE: This is a workaround to avoid the test failing because the model file is too large
+                // But for stub tests, any file can be used
+                input[1] = params.modules_testdata_base_path + 'generic/txt/hello.txt'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+}

@@ -1,0 +1,224 @@
+nextflow_workflow {
+
+    name "Test Workflow UNIFY"
+    script "subworkflows/local/unify/main.nf"
+    workflow "UNIFY"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should run without failures - symbol_col index, unify_gene_symbols false - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                unify_gene_symbols = false
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'index', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/symbols_as_index.h5ad', checkIfExists: true)
+                ])
+                input[1] = false
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - symbol_col index, unify_gene_symbols false") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                unify_gene_symbols = false
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'index', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/symbols_as_index.h5ad', checkIfExists: true)
+                ])
+                input[1] = false
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def adata = anndata(workflow.out.h5ad[0][1])
+            with(adata) {
+                assert "batch" in obs.colnames
+                assert "label" in obs.colnames
+                assert "condition" in obs.colnames
+                assert "sample" in obs.colnames
+                assert var.rownames.size() > 0
+                assert obs.rownames.size() > 0
+            }
+            assert snapshot(
+                workflow.out,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - symbol_col none, unify_gene_symbols false - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                unify_gene_symbols = false
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'none', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/minimal_structure.h5ad', checkIfExists: true)
+                ])
+                input[1] = false
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - symbol_col none, unify_gene_symbols false") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                unify_gene_symbols = false
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'none', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/minimal_structure.h5ad', checkIfExists: true)
+                ])
+                input[1] = false
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'human'
+                """
+            }
+        }
+
+        then {
+            if (workflow.failed) {
+                assert workflow.errorReport.contains('502 Bad Gateway')
+            } else {
+                assert workflow.success
+                def adata = anndata(workflow.out.h5ad[0][1])
+                with(adata) {
+                    assert "batch" in obs.colnames
+                    assert "label" in obs.colnames
+                    assert "condition" in obs.colnames
+                    assert "sample" in obs.colnames
+                    assert var.rownames.size() > 0
+                    assert obs.rownames.size() > 0
+                }
+                assert snapshot(
+                    workflow.out.versions.collect { path(it).yaml },
+                    adata.yaml
+                ).match()
+            }
+        }
+
+    }
+
+    test("Should run without failures - symbol_col index, unify_gene_symbols true - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                unify_gene_symbols = true
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'index', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/symbols_as_index.h5ad', checkIfExists: true)
+                ])
+                input[1] = true
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - symbol_col index, unify_gene_symbols true") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                unify_gene_symbols = true
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'index', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/symbols_as_index.h5ad', checkIfExists: true)
+                ])
+                input[1] = true
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def adata = anndata(workflow.out.h5ad[0][1])
+            with(adata) {
+                assert "batch" in obs.colnames
+                assert "label" in obs.colnames
+                assert "condition" in obs.colnames
+                assert "sample" in obs.colnames
+                assert var.rownames.size() > 0
+                assert obs.rownames.size() > 0
+            }
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml },
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+}

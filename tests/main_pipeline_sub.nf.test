@@ -1,0 +1,44 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+    tag "pipeline"
+
+    test("Should be able to perform subclustering") {
+
+        when {
+            params {
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/e3a7f43eb802a090affac918026d2ba5dce8fcd5/'
+                outdir              = "$outputDir"
+                input               = null
+                base_adata          = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                base_embeddings     = 'scvi'
+                cluster_global      = false
+                cluster_per_label   = true
+                base_label_col      = 'sample'
+                analysis_plan       = "${projectDir}/tests/analysis_plan_sub.csv"
+            }
+        }
+
+        then {
+            // stable_name: All files + folders in ${params.outdir}/ with a stable name
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', '06_per_group/**', '11_multiqc/**'])
+            // stable_path: All files in ${params.outdir}/ with stable content
+            def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    // Number of successful tasks
+                    // workflow.trace.succeeded().size(), disabled, because clustering is not stable and the DIFFERENTIAL_EXPRESSION subworkflow creates tasks based on the number of clusters
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_scdownstream_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_name,
+                    // All files with stable contents
+                    stable_path
+                ).match() },
+                { assert file("$outputDir/10_reports/qc-report.html").text.contains("Each integration method run by the pipeline") }
+            )
+        }
+    }
+}

@@ -1,0 +1,20 @@
+Changes in component 'nf-core/scanpy/scrublet'
+Changes in 'scanpy/scrublet/main.nf':
+--- modules/nf-core/scanpy/scrublet/main.nf
++++ modules/nf-core/scanpy/scrublet/main.nf
+@@ -14,7 +14,7 @@
+     output:
+     tuple val(meta), path("*.h5ad"), emit: h5ad
+     tuple val(meta), path("*.pkl") , emit: predictions
+-    path "versions.yml"            , emit: versions
++    path "versions.yml"            , emit: versions, topic: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+
+'modules/nf-core/scanpy/scrublet/meta.yml' is unchanged
+'modules/nf-core/scanpy/scrublet/environment.yml' is unchanged
+'modules/nf-core/scanpy/scrublet/templates/scrublet.py' is unchanged
+'modules/nf-core/scanpy/scrublet/tests/main.nf.test' is unchanged
+'modules/nf-core/scanpy/scrublet/tests/main.nf.test.snap' is unchanged
+************************************************************

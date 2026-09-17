@@ -32,6 +32,9 @@
                     "@id": "assets/"
                 },
                 {
+                    "@id": "bin/"
+                },
+                {
                     "@id": "conf/"
                 },
                 {
@@ -42,6 +45,9 @@
                 },
                 {
                     "@id": "modules/"
+                },
+                {
+                    "@id": "modules/local/"
                 },
                 {
                     "@id": "modules/nf-core/"
@@ -121,10 +127,22 @@
         },
         {
             "@id": "main.nf",
-            "@type": ["File", "SoftwareSourceCode", "ComputationalWorkflow"],
-            "contributor": [
+            "@type": [
+                "File",
+                "SoftwareSourceCode",
+                "ComputationalWorkflow"
+            ],
+            "author": [
                 {
                     "@id": "https://orcid.org/0000-0002-4639-0935"
+                }
+            ],
+            "contributor": [
+                {
+                    "@id": "https://orcid.org/0000-0002-2705-1727"
+                },
+                {
+                    "@id": "https://orcid.org/0000-0003-0492-9960"
                 }
             ],
             "dateCreated": "",
@@ -140,16 +158,30 @@
                 "scverse",
                 "single-cell"
             ],
-            "license": ["MIT"],
-            "name": ["nf-core/scdownstream"],
+            "license": [
+                "MIT"
+            ],
+            "maintainer": [
+                {
+                    "@id": "https://orcid.org/0000-0002-4639-0935"
+                }
+            ],
+            "name": [
+                "nf-core/scdownstream"
+            ],
             "programmingLanguage": {
                 "@id": "https://w3id.org/workflowhub/workflow-ro-crate#nextflow"
             },
             "sdPublisher": {
                 "@id": "https://nf-co.re/"
             },
-            "url": ["https://github.com/nf-core/scdownstream", "https://nf-co.re/scdownstream/dev/"],
-            "version": ["0.0.1dev"]
+            "url": [
+                "https://github.com/nf-core/scdownstream",
+                "https://nf-co.re/scdownstream/dev/"
+            ],
+            "version": [
+                "0.0.1dev"
+            ]
         },
         {
             "@id": "https://w3id.org/workflowhub/workflow-ro-crate#nextflow",
@@ -200,6 +232,11 @@
             "description": "Additional files"
         },
         {
+            "@id": "bin/",
+            "@type": "Dataset",
+            "description": "Scripts that must be callable from a pipeline process"
+        },
+        {
             "@id": "conf/",
             "@type": "Dataset",
             "description": "Configuration files"
@@ -218,6 +255,11 @@
             "@id": "modules/",
             "@type": "Dataset",
             "description": "Modules used by the pipeline"
+        },
+        {
+            "@id": "modules/local/",
+            "@type": "Dataset",
+            "description": "Pipeline-specific modules"
         },
         {
             "@id": "modules/nf-core/",
@@ -308,8 +350,24 @@
         {
             "@id": "https://orcid.org/0000-0002-4639-0935",
             "@type": "Person",
-            "email": "nictru32@gmail.com",
-            "name": "Nico Trummer"
+            "affiliation": "Technical University of Munich",
+            "email": "nico.trummer@tum.de",
+            "name": "Nico Trummer",
+            "url": "https://github.com/nictru"
+        },
+        {
+            "@id": "https://orcid.org/0000-0002-2705-1727",
+            "@type": "Person",
+            "affiliation": "Technical University of Munich",
+            "name": "Leon Hafner",
+            "url": "https://github.com/LeonHafner"
+        },
+        {
+            "@id": "https://orcid.org/0000-0003-0492-9960",
+            "@type": "Person",
+            "affiliation": "National Bioinformatics Infrastructure Sweden",
+            "name": "Erik Fasterius",
+            "url": "https://github.com/fasterius"
         }
     ]
 }

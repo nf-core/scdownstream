@@ -1,0 +1,73 @@
+nextflow_workflow {
+
+    name "Test Workflow PER_CELL_ANNOTATION"
+    script "subworkflows/local/per_cell_annotation/main.nf"
+    workflow "PER_CELL_ANNOTATION"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should run with both celltypist and singler") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                input[1] = "https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/singleR/references.csv"
+                input[2] = "Adult_COVID19_PBMC"
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.obs.size() >= 1
+            assert workflow.out.annotation_column_rows.size() >= 1
+            assert snapshot(
+                workflow.out.obs.size(),
+                workflow.out.annotation_column_rows.collect { row -> [row.obs_column, row.aggregatable] }.unique()
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                input[1] = "https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/singleR/references.csv"
+                input[2] = "Adult_COVID19_PBMC"
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+}

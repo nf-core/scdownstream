@@ -1,0 +1,105 @@
+name: "scanpy_rankgenesgroups"
+description: Run Scanpy rank_genes_groups differential expression and volcano plots
+keywords:
+  - differential-expression
+  - scanpy
+  - single-cell
+tools:
+  - "scanpy":
+      description: "Single-cell analysis in Python"
+      homepage: "https://scanpy.readthedocs.io"
+      documentation: "https://scanpy.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/scanpy"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+  - obs_key:
+      type: string
+      description: obs column used to group cells for differential expression
+  - - filter_col:
+        type: string
+        description: Optional obs column used to subset cells before DE
+    - filter_val:
+        type: string
+        description: Optional value of filter_col to retain
+  - method:
+      type: string
+      description: Scanpy rank_genes_groups statistical method
+  - rank_key:
+      type: string
+      description: uns key for rank_genes_groups results
+  - interesting_genes:
+      type: file
+      description: Optional CSV of gene symbols to highlight on volcano plots
+      pattern: "*.{csv,tsv,txt}"
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.h5ad":
+          type: file
+          description: AnnData with rank_genes_groups results
+          pattern: "*.h5ad"
+  uns:
+    - "*.pkl":
+        type: file
+        description: Pickled uns contents including rank_genes_groups
+        pattern: "*.pkl"
+  plots:
+    - "*.png":
+        type: file
+        description: Differential expression plots including volcanoes
+        pattern: "*.png"
+  markers:
+    - "*.csv":
+        type: file
+        description: Marker gene tables
+        pattern: "*.csv"
+  multiqc_files:
+    - "*_mqc.json":
+        type: file
+        description: MultiQC custom content JSON for volcano plots
+        pattern: "*_mqc.json"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/adjusttext_anndata_pandas_python_pruned:43d695ff26eb12f2
+      build_id: bd-43d695ff26eb12f2_1
+      scan_id: sc-9ab5cea0dfaf420c_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/adjusttext_anndata_pandas_python_pruned:a229cbba149bfd01
+      build_id: bd-a229cbba149bfd01_1
+      scan_id: sc-91cf6573e96ba22c_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/adjusttext_anndata_pandas_python_pruned:b683517039b83998
+      build_id: bd-b683517039b83998_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a4/a497dfbc392812dd3fec43e8c3cdc653e62f868865c25be8805f38ec908ecc69/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/adjusttext_anndata_pandas_python_pruned:99d1e76f63c8da99
+      build_id: bd-99d1e76f63c8da99_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d6/d616aac13dd0724a72c1441536276231701fb8f74558984dff71bfa165f94edc/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_amd64-bd-a229cbba149bfd01_1.txt
+    linux/arm64:
+      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_arm64-bd-43d695ff26eb12f2_1.txt
