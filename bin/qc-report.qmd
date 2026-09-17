@@ -24,6 +24,13 @@ from textwrap import dedent
 from IPython.display import display, Markdown
 ```
 
+```{python export-versions}
+pd.DataFrame({
+    'package': ['pandas', 'scanpy', 'anndata'],
+    'version': [pd.__version__, sc.__version__, ad.__version__],
+}).to_csv('versions.csv', index=False, header=False)
+```
+
 ```{python common-functions}
 def rotate_x_labels(ax, label_size=8):
     """

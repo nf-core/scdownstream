@@ -35,7 +35,7 @@ nextflow_workflow {
                 input[9] = 42
                 input[10] = ''
                 input[11] = 'wilcoxon'
-                input[12] = 'batch'
+                input[12] = false
                 input[13] = 10
                 input[14] = 1000
                 input[15] = channel.empty()
@@ -79,7 +79,7 @@ nextflow_workflow {
                 input[9] = 42
                 input[10] = ''
                 input[11] = 'wilcoxon'
-                input[12] = 'batch'
+                input[12] = false
                 input[13] = 10
                 input[14] = 1000
                 input[15] = channel.empty()
@@ -153,8 +153,6 @@ nextflow_workflow {
             assert workflow.success
             assert workflow.trace.tasks().size() == 0
             assert workflow.out.uns.size() == 0
-            assert workflow.stdout.any { it.contains("Skipping SCANPY_PAGA") }
-            assert workflow.stdout.any { it.contains("Skipping LIANA_RANKAGGREGATE") }
         }
 
     }
@@ -197,7 +195,7 @@ nextflow_workflow {
                 input[9] = 42
                 input[10] = ''
                 input[11] = 'wilcoxon'
-                input[12] = 'batch'
+                input[12] = false
                 input[13] = 10
                 input[14] = 1000
                 input[15] = channel.empty()
@@ -253,7 +251,7 @@ nextflow_workflow {
                 input[9] = 42
                 input[10] = ''
                 input[11] = 'wilcoxon'
-                input[12] = 'batch'
+                input[12] = false
                 input[13] = 10
                 input[14] = 1000
                 input[15] = channel.empty()
@@ -370,7 +368,7 @@ nextflow_workflow {
                 input[9] = 42
                 input[10] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
                 input[11] = 'wilcoxon'
-                input[12] = 'batch'
+                input[12] = false
                 input[13] = 10
                 input[14] = 1000
                 input[15] = channel.empty()
@@ -428,7 +426,7 @@ nextflow_workflow {
                 input[9] = 42
                 input[10] = ''
                 input[11] = 'wilcoxon'
-                input[12] = 'batch'
+                input[12] = false
                 input[13] = 10
                 input[14] = 1000
                 input[15] = channel.empty()
@@ -487,7 +485,7 @@ nextflow_workflow {
                 input[9] = 42
                 input[10] = ''
                 input[11] = 'wilcoxon'
-                input[12] = 'batch'
+                input[12] = false
                 input[13] = 10
                 input[14] = 1000
                 input[15] = channel.empty()
@@ -543,7 +541,7 @@ nextflow_workflow {
                 input[9] = 42
                 input[10] = ''
                 input[11] = 'wilcoxon'
-                input[12] = 'batch'
+                input[12] = false
                 input[13] = 10
                 input[14] = 1000
                 input[15] = channel.empty()
@@ -598,7 +596,7 @@ nextflow_workflow {
                 input[9] = 42
                 input[10] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
                 input[11] = 'wilcoxon'
-                input[12] = 'batch'
+                input[12] = false
                 input[13] = 10
                 input[14] = 1000
                 input[15] = channel.empty()
@@ -656,7 +654,7 @@ nextflow_workflow {
                 input[9] = 42
                 input[10] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
                 input[11] = ''
-                input[12] = 'batch'
+                input[12] = false
                 input[13] = 10
                 input[14] = 1000
                 input[15] = channel.empty()
@@ -714,7 +712,7 @@ nextflow_workflow {
                 input[9] = 42
                 input[10] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
                 input[11] = 'logreg'
-                input[12] = 'batch'
+                input[12] = false
                 input[13] = 10
                 input[14] = 1000
                 input[15] = channel.empty()
@@ -770,7 +768,7 @@ nextflow_workflow {
                 input[9] = 42
                 input[10] = ''
                 input[11] = 'wilcoxon'
-                input[12] = 'batch'
+                input[12] = false
                 input[13] = 10
                 input[14] = 1000
                 input[15] = channel.of('annotation:celltypist:Adult_COVID19_PBMC:per_cell')
@@ -823,7 +821,7 @@ nextflow_workflow {
                 input[9] = 42
                 input[10] = ''
                 input[11] = 'wilcoxon'
-                input[12] = 'batch'
+                input[12] = false
                 input[13] = 10
                 input[14] = 1000
                 input[15] = channel.empty()

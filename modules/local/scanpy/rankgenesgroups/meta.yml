@@ -1,5 +1,5 @@
 name: "scanpy_rankgenesgroups"
-description: Run Scanpy rank_genes_groups differential expression and volcano plots
+description: Run Scanpy rank_genes_groups differential expression
 keywords:
   - differential-expression
   - scanpy
@@ -35,10 +35,6 @@ input:
   - rank_key:
       type: string
       description: uns key for rank_genes_groups results
-  - interesting_genes:
-      type: file
-      description: Optional CSV of gene symbols to highlight on volcano plots
-      pattern: "*.{csv,tsv,txt}"
 
 output:
   h5ad:
@@ -57,17 +53,25 @@ output:
   plots:
     - "*.png":
         type: file
-        description: Differential expression plots including volcanoes
+        description: Rank gene and dot plots
         pattern: "*.png"
   markers:
     - "*.csv":
         type: file
         description: Marker gene tables
         pattern: "*.csv"
+  results:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*_results.parquet":
+          type: file
+          description: Standardised differential expression results in parquet format
+          pattern: "*_results.parquet"
   multiqc_files:
     - "*_mqc.json":
         type: file
-        description: MultiQC custom content JSON for volcano plots
+        description: MultiQC custom content JSON for rank gene and dot plots
         pattern: "*_mqc.json"
   versions:
     - versions.yml:
@@ -81,25 +85,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/adjusttext_anndata_pandas_python_pruned:43d695ff26eb12f2
-      build_id: bd-43d695ff26eb12f2_1
-      scan_id: sc-9ab5cea0dfaf420c_1
     linux/amd64:
-      name: community.wave.seqera.io/library/adjusttext_anndata_pandas_python_pruned:a229cbba149bfd01
-      build_id: bd-a229cbba149bfd01_1
-      scan_id: sc-91cf6573e96ba22c_1
+      name: community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:f7393f16a921c030
+      build_id: bd-f7393f16a921c030_1
+      scan_id: sc-943129a9dd847743_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:945304f1772e9924
+      build_id: bd-945304f1772e9924_1
+      scan_id: sc-ae10e4db1a131d54_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/adjusttext_anndata_pandas_python_pruned:b683517039b83998
-      build_id: bd-b683517039b83998_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a4/a497dfbc392812dd3fec43e8c3cdc653e62f868865c25be8805f38ec908ecc69/data
+      name: oras://community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:5a5b5680dc3b1ecf
+      build_id: bd-5a5b5680dc3b1ecf_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a1/a194f12854e4f73b2b4aab27102b3178bfd4dd50fb1332db413205ef3cbfca90/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/adjusttext_anndata_pandas_python_pruned:99d1e76f63c8da99
-      build_id: bd-99d1e76f63c8da99_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d6/d616aac13dd0724a72c1441536276231701fb8f74558984dff71bfa165f94edc/data
+      name: oras://community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:c397ed9eb14afbe0
+      build_id: bd-c397ed9eb14afbe0_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/76/762b5f0003ccd8b1346ad24a880c1af803023f420f5c7a41acfe123fc71e346c/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_amd64-bd-a229cbba149bfd01_1.txt
+      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_amd64-bd-f7393f16a921c030_1.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_arm64-bd-43d695ff26eb12f2_1.txt
+      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_arm64-bd-945304f1772e9924_1.txt

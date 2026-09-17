@@ -1,0 +1,147 @@
+nextflow_process {
+
+    name "Test Process CUSTOM_VOLCANOPLOT"
+    script "modules/local/custom/volcanoplot/main.nf"
+    process "CUSTOM_VOLCANOPLOT"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should preserve comparison identities and skip missing statistics") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.fromList([
+                    'two_groups', 'two_groups_one_panel', 'three_groups', 'sparse_groups', 'one_panel',
+                    'missing_pvalues', 'raw_pvalues', 'condition:leiden:11:wilcoxon'
+                ]).map { name ->
+                    [
+                        [id: name, integration: 'scvi', de_method: 'wilcoxon'],
+                        file("${projectDir}/modules/local/custom/volcanoplot/tests/\${name}_results.parquet", checkIfExists: true)
+                    ]
+                }
+                input[1] = []
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.versions.size() == 8
+            assert process.out.plots.size() == 7
+            assert process.out.multiqc_files.size() == 7
+            def reports = process.out.multiqc_files.collectEntries { report ->
+                [(file(report).name): path(report).json]
+            }
+            assert reports.keySet() == [
+                'two_groups_volcano_mqc.json', 'two_groups_one_panel_volcano_mqc.json', 'three_groups_volcano_mqc.json',
+                'sparse_groups_volcano_mqc.json', 'one_panel_volcano_mqc.json',
+                'raw_pvalues_volcano_mqc.json', 'condition:leiden:11:wilcoxon_volcano_mqc.json'
+            ] as Set
+            assert reports.values().every { it.parent_name == 'scvi: Scanpy wilcoxon' }
+            assert reports.values().every { it.data.contains('data:image/png;base64,') }
+            assert reports['two_groups_volcano_mqc.json'].section_name == 'Scanpy wilcoxon volcano: A vs B (within condition=Healthy)'
+            assert reports['two_groups_one_panel_volcano_mqc.json'].section_name == 'Scanpy wilcoxon volcano: B vs rest (within condition=Healthy)'
+            assert reports['condition:leiden:11:wilcoxon_volcano_mqc.json'].section_name == reports['two_groups_volcano_mqc.json'].section_name
+            assert ['three_groups', 'sparse_groups', 'one_panel'].every { name ->
+                reports[name + '_volcano_mqc.json'].section_name == 'Scanpy wilcoxon volcanoes: vs rest (within condition=Healthy)'
+            }
+            assert reports['raw_pvalues_volcano_mqc.json'].section_name == 'Scanpy wilcoxon volcano: A vs rest (within condition=Healthy)'
+        }
+
+    }
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', integration: 'scvi', de_method: 'pydeseq2' ],
+                        file("${projectDir}/modules/local/custom/volcanoplot/tests/test_results.parquet", checkIfExists: true)
+                    ]
+                )
+                input[1] = []
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.plots
+            assert process.out.multiqc_files
+            assert process.out.plots.flatten().any { file(it).name == "test_volcano.png" }
+            assert process.out.multiqc_files.flatten().any { file(it).name == "test_volcano_mqc.json" }
+            assert snapshot(
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with interesting genes") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', integration: 'scvi', de_method: 'pydeseq2' ],
+                        file("${projectDir}/modules/local/custom/volcanoplot/tests/test_results.parquet", checkIfExists: true)
+                    ]
+                )
+                input[1] = file("${projectDir}/modules/local/custom/volcanoplot/tests/interesting_genes.csv", checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.plots
+            assert process.out.multiqc_files
+            assert process.out.plots.flatten().any { file(it).name == "test_volcano.png" }
+            assert process.out.multiqc_files.flatten().any { file(it).name == "test_volcano_mqc.json" }
+            assert snapshot(
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', integration: 'scvi', de_method: 'pydeseq2' ],
+                        file("${projectDir}/modules/local/custom/volcanoplot/tests/test_results.parquet", checkIfExists: true)
+                    ]
+                )
+                input[1] = []
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

@@ -3,21 +3,23 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v0.0.1dev - [2024-10-17]
+## v0.0.1dev - [unreleased<!-- TODO nf-core: replace with date on release -->]
 
 Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-co.re/) template.
 
 ### `Changed`
 
+- Replace the deprecated `QUARTONOTEBOOK` module with `QUARTO_NOTEBOOK` for rendering the QC report.
 - Make final AnnData-to-RDS conversion (`ADATA_TORDS`) opt-in via `--tords` (previously always run).
 - Restructure `06_per_group` to a context-first hierarchy (`{integration}/{subset}/{leiden|label}/...`) and move former `07_pseudobulk_de` outputs under `06_per_group/.../differential_expression/`.
 - Prefix published result directories with numeric stage IDs (`01_load_h5ad` through `11_multiqc`) so lexical sort matches pipeline order; nest gene unification under `02_quality_control/unify`.
 - Align MultiQC section order with the same pipeline sequence via `report_section_order` and `custom_content.order` in `assets/multiqc_config.yml`.
 - Group raw and unified gene UpSet plots under a shared MultiQC parent section (`genes_upset`).
-- Group differential expression volcano plots under method-specific MultiQC parents (`{integration}: {method}`) and include the DE method (including Scanpy statistical tests) in section titles.
-- Use contrast-first MultiQC volcano titles: Scanpy `{groupby}={group} vs rest` with optional within-filter, and PyDESeq2 / edgePython / edgepython_sc `{treatment} vs {reference} (within celltype=...)`.
-- Collapse Scanpy `rank_genes_groups` volcanoes into one multi-panel figure per comparison scope instead of one PNG per group.
-- For two-group Scanpy comparisons, show a single `{A} vs {B}` volcano instead of mirrored `{A} vs rest` and `{B} vs rest` panels.
+- Split volcano plotting out of the DE engines into a shared `custom/volcanoplot` module that reads standardised `*_results.parquet` tables [[#315](https://github.com/nf-core/scdownstream/pull/315)].
+- Group differential expression volcano plots under method-specific MultiQC parents (`{integration}: {method}`) and include the DE method (including Scanpy statistical tests) in section titles [[#315](https://github.com/nf-core/scdownstream/pull/315)].
+- Use contrast-first MultiQC volcano titles: Scanpy `{groupby}={group} vs rest` with optional within-filter, and PyDESeq2 / edgePython / edgepython_sc `{treatment} vs {reference} (within celltype=...)` [[#315](https://github.com/nf-core/scdownstream/pull/315)].
+- Collapse Scanpy `rank_genes_groups` volcanoes into one multi-panel figure per comparison scope instead of one PNG per group [[#315](https://github.com/nf-core/scdownstream/pull/315)].
+- For two-group Scanpy comparisons, show a single `{A} vs {B}` volcano instead of mirrored `{A} vs rest` and `{B} vs rest` panels [[#315](https://github.com/nf-core/scdownstream/pull/315)].
 
 ### `Added`
 
