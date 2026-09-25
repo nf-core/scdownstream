@@ -4,15 +4,15 @@ process ADATA_READRDS {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'oras://community.wave.seqera.io/library/anndata2ri_bioconductor-singlecellexperiment_anndata_r-seurat:c4b75a61a89ec006'
-        : 'community.wave.seqera.io/library/anndata2ri_bioconductor-singlecellexperiment_anndata_r-seurat:5fae42aabf7a1c5f'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/96/96bb395431d12e1db60ae56a0788543a29343cea42657c79d548d015ab69e960/data'
+        : 'community.wave.seqera.io/library/adata_readrds:a4ce240ec6f50fd9'}"
 
     input:
     tuple val(meta), path(rds)
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    path "versions.yml", emit: versions, topic: versions
+    path "versions.yml"            , emit: versions, topic: versions
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"

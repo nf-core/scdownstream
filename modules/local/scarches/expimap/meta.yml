@@ -71,3 +71,27 @@ authors:
   - "@nictru"
 maintainers:
   - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/python_anndata_numpy_scipy_pruned:b66546c0fdf718b9
+      build_id: bd-b66546c0fdf718b9_5
+      scan_id: sc-760506f3402e30fe_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/python_anndata_numpy_scipy_pruned:a7fec5b9398b3f76
+      build_id: bd-a7fec5b9398b3f76_5
+      scan_id: sc-0953923f52dd32bf_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python_anndata_numpy_scipy_pruned:3ebe7ea71bfa81ed
+      build_id: bd-3ebe7ea71bfa81ed_5
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/6d/6d0046dded57ef25b360156cb77e1ddd34b95fae8a56b3d56171f6c12c3489c1/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python_anndata_numpy_scipy_pruned:d89f99faef63356e
+      build_id: bd-d89f99faef63356e_5
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/fe/fe5b6fa3c6e2055ebfd8b929f8f77a027125afe6883c61d66c3ecde1d0ac23fa/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scarches/expimap/.conda-lock/linux_amd64-bd-b66546c0fdf718b9_5.txt
+    linux/arm64:
+      lock_file: modules/local/scarches/expimap/.conda-lock/linux_arm64-bd-a7fec5b9398b3f76_5.txt

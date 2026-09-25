@@ -1,7 +1,6 @@
 #!/usr/bin/env Rscript
 
 library(SingleR)
-library(celldex)
 library(yaml)
 library(ggplot2)
 library(anndataR)
@@ -166,7 +165,6 @@ versions <- list(
   "${task.process}" = list(
     R        = R.version.string,
     SingleR  = as.character(packageVersion("SingleR")),
-    celldex  = as.character(packageVersion("celldex")),
     anndataR = as.character(packageVersion("anndataR")),
     ggplot2  = as.character(packageVersion("ggplot2"))
   )
