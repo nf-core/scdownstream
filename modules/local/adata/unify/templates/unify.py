@@ -12,6 +12,7 @@ import platform
 
 import anndata as ad
 import numpy as np
+import pandas as pd
 import scipy
 import yaml
 from scipy.sparse import csr_matrix
@@ -97,7 +98,21 @@ def unify_obs_column(
     adata.obs[target_name] = adata.obs[target_name].astype("category")
 
 
+def to_object_strings(df: pd.DataFrame) -> None:
+    # Inputs written by anndata >= 0.13 load as pandas string arrays, which anndata 0.12 refuses to write.
+    if isinstance(df.index.dtype, pd.StringDtype):
+        df.index = df.index.astype(object)
+    for col in df.columns:
+        dtype = df[col].dtype
+        if isinstance(dtype, pd.StringDtype):
+            df[col] = df[col].astype(object)
+        elif isinstance(dtype, pd.CategoricalDtype) and isinstance(dtype.categories.dtype, pd.StringDtype):
+            df[col] = df[col].cat.rename_categories(dtype.categories.astype(object))
+
+
 adata = ad.read_h5ad("$h5ad")
+to_object_strings(adata.obs)
+to_object_strings(adata.var)
 
 counts_layer = "${counts_layer}"
 if counts_layer != "X":
