@@ -5,6 +5,7 @@ library(scater)
 library(scuttle)
 library(anndataR)
 library(SingleCellExperiment)
+library(BiocParallel)
 
 adata <- read_h5ad("${h5ad}")
 
@@ -21,7 +22,8 @@ if (!all(keep_cells)) {
 }
 
 clusters <- quickCluster(sce)
-sce <- computeSumFactors(sce, clusters = clusters)
+# Deconvolution runs independently per cluster; parallel results are identical to serial.
+sce <- computeSumFactors(sce, clusters = clusters, BPPARAM = MulticoreParam(${task.cpus}))
 size_factors <- sizeFactors(sce)
 # Zero-library cells are removed above. Remaining invalid size factors are
 # replaced with the smallest positive factor so every emitted cell keeps a
