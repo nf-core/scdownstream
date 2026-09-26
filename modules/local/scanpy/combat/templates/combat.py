@@ -10,7 +10,6 @@ import platform
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
-import anndata as ad
 import pandas as pd
 import scanpy as sc
 import yaml
@@ -46,7 +45,6 @@ sc.pp.pca(adata_proc, layer="combat")
 
 adata.layers["combat"] = combat_layer
 adata.obsm["X_emb"] = adata_proc.obsm["X_pca"]
-ad.settings.allow_write_nullable_strings = False
 adata.write_h5ad(f"{prefix}.h5ad")
 
 pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names).to_pickle(f"X_{prefix}.pkl")

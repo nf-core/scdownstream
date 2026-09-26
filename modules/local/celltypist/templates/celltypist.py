@@ -7,7 +7,6 @@ os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["CELLTYPIST_FOLDER"] = "./tmp/celltypist"
 
-import anndata as ad
 import celltypist
 import pandas as pd
 import scanpy as sc
@@ -83,7 +82,6 @@ df_celltypist.to_pickle("${prefix}.pkl")
 pd.DataFrame(manifest_rows).to_csv(f"{prefix}_annotation_columns.csv", index=False)
 
 adata.obs = pd.concat([adata.obs, df_celltypist], axis=1)
-ad.settings.allow_write_nullable_strings = False
 adata.write_h5ad(f"{prefix}.h5ad")
 
 # Versions

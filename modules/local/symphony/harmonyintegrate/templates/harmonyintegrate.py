@@ -9,7 +9,6 @@ os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 import importlib.metadata
 import platform
 
-import anndata as ad
 import numpy as np
 import pandas as pd
 import scanpy as sc
@@ -69,7 +68,6 @@ sp.pp.harmony_integrate(
 adata_proc.uns["symphony"] = adata_proc.uns["harmony"]
 adata_proc.uns["normalize"] = {"target_sum": target_sum}
 
-ad.settings.allow_write_nullable_strings = False
 build_reference(adata_proc, target_sum).write_h5ad(f"{prefix}_reference.h5ad")
 
 adata.obsm["X_symphony"] = adata_proc.obsm["X_symphony"]

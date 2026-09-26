@@ -48,7 +48,6 @@ if integration == "scanvi":
 df = pd.DataFrame(adata_combined.obsm["X_emb"], index=adata_combined.obs_names)
 df.to_pickle("X_${prefix}.pkl")
 
-ad.settings.allow_write_nullable_strings = False
 adata_combined.write_h5ad("${prefix}.h5ad")
 
 # Versions

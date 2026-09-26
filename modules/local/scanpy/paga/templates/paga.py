@@ -15,7 +15,6 @@ import yaml
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
-import anndata as ad
 import matplotlib.pyplot as plt
 import numpy as np
 import scanpy as sc
@@ -37,7 +36,6 @@ if adata.obs[obs_key].value_counts().size > 1:
     pickle.dump(paga_dict, open(f"{prefix}.pkl", "wb"))
 
     np.save(f"{prefix}_connectivities.npy", adata.obsp["connectivities"])
-    ad.settings.allow_write_nullable_strings = False
     adata.write_h5ad(f"{prefix}.h5ad")
 
     # Plot

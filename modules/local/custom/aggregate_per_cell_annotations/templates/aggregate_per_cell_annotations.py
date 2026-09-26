@@ -6,7 +6,6 @@ import platform
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 
-import anndata as ad
 import numpy as np
 import pandas as pd
 import scanpy as sc
@@ -63,7 +62,6 @@ if summary_rows:
     pd.DataFrame(summary_rows).to_csv(f"{prefix}_aggregate_per_cell_annotations.csv", index=False)
 
 pd.DataFrame(obs_cols, index=adata.obs.index).to_pickle(f"{prefix}.pkl")
-ad.settings.allow_write_nullable_strings = False
 adata.write_h5ad(f"{prefix}.h5ad")
 
 versions = {"${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}}

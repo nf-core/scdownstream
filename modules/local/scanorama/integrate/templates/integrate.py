@@ -9,7 +9,6 @@ os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 import importlib.metadata
 import platform
 
-import anndata as ad
 import numpy as np
 import pandas as pd
 import scanpy as sc
@@ -46,7 +45,6 @@ sce.pp.scanorama_integrate(adata_proc, batch_col)
 
 adata.obsm["X_scanorama"] = adata_proc.obsm["X_scanorama"]
 adata.obsm["X_emb"] = adata_proc.obsm["X_scanorama"]
-ad.settings.allow_write_nullable_strings = False
 adata.write_h5ad(f"{prefix}.h5ad")
 
 pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names).to_pickle(f"X_{prefix}.pkl")

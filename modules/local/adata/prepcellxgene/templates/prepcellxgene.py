@@ -48,7 +48,6 @@ for df in [adata.obs, adata.var]:
 adata.X = csc_matrix(adata.X).astype(np.float32)
 sc.pp.log1p(adata)
 
-ad.settings.allow_write_nullable_strings = False
 adata.write_h5ad("${prefix}.h5ad")
 
 # Versions

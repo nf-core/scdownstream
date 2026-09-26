@@ -4,8 +4,8 @@ process ADATA_SETINDEX {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a0/a0d347e0d943cb8d0624a8c73247db0c8e96e7c130fe0fb3125aeb7d1b140e79/data'
-:         'community.wave.seqera.io/library/anndata_python_pyyaml:5ac0fd4d280528a5' }"
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/de/de2455bdcbc53723a8d942ffb0dec7559690ef4bea6b380fea2edba7c5d637b9/data'
+:         'community.wave.seqera.io/library/anndata_python_pyyaml:e77bb4f393d60a08' }"
 
     input:
     tuple val(meta), path(h5ad)

@@ -10,13 +10,11 @@ import platform
 os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
-import anndata as ad
 import pandas as pd
 import scanpy as sc
 import yaml
 
 adata = sc.read_10x_h5("${h5}")
-ad.settings.allow_write_nullable_strings = False
 adata.write_h5ad("${prefix}.h5ad")
 
 # Versions

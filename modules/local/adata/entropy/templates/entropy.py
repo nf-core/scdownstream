@@ -14,7 +14,6 @@ import yaml
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
-import anndata as ad
 import matplotlib.pyplot as plt
 import numpy as np
 import scanpy as sc
@@ -39,7 +38,6 @@ colname = "${meta.id}:entropy"
 adata.obs[colname] = adata.obs[group_col].map(entropies).astype(float) / np.log2(n_unique)
 
 adata.obs[[colname]].to_pickle(f"{prefix}.pkl")
-ad.settings.allow_write_nullable_strings = False
 adata.write_h5ad(f"{prefix}.h5ad")
 
 if "${plot_basis ? 'true' : 'false'}" == "true":
