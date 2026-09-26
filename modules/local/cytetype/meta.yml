@@ -1,0 +1,100 @@
+name: "cytetype"
+description: Annotate cell types via the CyteType API using cluster marker genes
+keywords:
+  - cell-type
+  - annotation
+  - single-cell
+  - scrnaseq
+tools:
+  - "cytetype":
+      description: "LLM-assisted cell type annotation from marker genes"
+      homepage: "https://github.com/cytetype/cytetype"
+      documentation: "https://github.com/cytetype/cytetype"
+      tool_dev_url: "https://github.com/cytetype/cytetype"
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format with cluster labels and marker ranks
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - symbol_col:
+      type: string
+      description: Feature metadata column containing gene symbols
+  - study_context:
+      type: string
+      description: Free-text biological context passed to CyteType
+  - group_key:
+      type: string
+      description: obs column with cluster or group labels to annotate
+  - rank_key:
+      type: string
+      description: uns key containing ranked genes for each group
+  - integration:
+      type: string
+      description: Integration or embedding context used by CyteType
+  - resolution:
+      type: string
+      description: Clustering resolution or related CyteType parameter
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with CyteType annotations
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  obs:
+    - "*.pkl":
+        type: file
+        description: Pickled observation annotations from CyteType
+        pattern: "*.pkl"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/anndata_pandas_python_pyyaml_pruned:c07c66bee7483439
+      build_id: bd-c07c66bee7483439_1
+      scan_id: sc-119bac791dd6e66a_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/anndata_pandas_python_pyyaml_pruned:74d512b309c5b8b5
+      build_id: bd-74d512b309c5b8b5_1
+      scan_id: sc-7464baa88172a0c8_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/anndata_pandas_python_pyyaml_pruned:4cec26df7428b03d
+      build_id: bd-4cec26df7428b03d_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/46/46e953e073b12908acf7707ec8843f69b40d41670be0cde3351f1ec829147e63/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_pandas_python_pyyaml_pruned:7dabe9f9458c93d1
+      build_id: bd-7dabe9f9458c93d1_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/4d/4db5f29d0da08e2bdce05993ae80dc04b7d5e0a032d426ca0cfffb495a8a8841/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/cytetype/.conda-lock/linux_amd64-bd-74d512b309c5b8b5_1.txt
+    linux/arm64:
+      lock_file: modules/local/cytetype/.conda-lock/linux_arm64-bd-c07c66bee7483439_1.txt

@@ -1,0 +1,93 @@
+name: "celda_decontx"
+description: Remove ambient RNA contamination from single-cell counts with decontX
+keywords:
+  - ambient-rna
+  - decontamination
+  - single-cell
+  - scrnaseq
+tools:
+  - "celda":
+      description: "Bayesian hierarchical modelling of latent and composite cell populations"
+      homepage: "https://bioconductor.org/packages/celda"
+      documentation: "https://bioconductor.org/packages/release/bioc/vignettes/celda/inst/doc/decontX.html"
+      tool_dev_url: "https://github.com/campbio/celda"
+      licence: ["MIT"]
+      identifier: biotools:celda
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: Filtered AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+    - raw:
+        type: file
+        description: Optional raw (unfiltered) AnnData object used as the ambient RNA background
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - batch_col:
+      type: string
+      description: Optional obs column used to run decontX per batch
+  - input_layer:
+      type: string
+      description: AnnData layer containing raw counts (`X` or a layer name)
+  - output_layer:
+      type: string
+      description: AnnData layer name for decontaminated counts
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with decontaminated counts in the output layer
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-celda_bioconductor-rhdf5_bioconductor-singlecellexperiment:afe04c8130babd28
+      build_id: bd-afe04c8130babd28_1
+      scan_id: sc-7070372e6ac45778_2
+    linux/amd64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-celda_bioconductor-rhdf5_bioconductor-singlecellexperiment:195bce13eb18b882
+      build_id: bd-195bce13eb18b882_1
+      scan_id: sc-b83fa6b228dee64f_2
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-celda_bioconductor-rhdf5_bioconductor-singlecellexperiment:88650a8823f87eb5
+      build_id: bd-88650a8823f87eb5_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/e4/e438b9343a27be713b293f6187d6473f79075ce269ed20d768820de75b3ad0d4/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-celda_bioconductor-rhdf5_bioconductor-singlecellexperiment:9307c9239b1a245b
+      build_id: bd-9307c9239b1a245b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/79/7984207dd5d85c00e2ee3e04f0ce40161f3a378cb9cb26cc7f1cd36f291ea567/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/celda/decontx/.conda-lock/linux_amd64-bd-195bce13eb18b882_1.txt
+    linux/arm64:
+      lock_file: modules/local/celda/decontx/.conda-lock/linux_arm64-bd-afe04c8130babd28_1.txt

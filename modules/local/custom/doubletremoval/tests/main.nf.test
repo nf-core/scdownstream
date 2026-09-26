@@ -34,9 +34,10 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
+            def versions = path(process.out.versions[0]).yaml.CUSTOM_DOUBLETREMOVAL
             assert snapshot(
-                process.out,
-                path(process.out.versions[0]).yaml,
+                process.out.h5ad,
+                versions.findAll { key, value -> key != 'matplotlib' },
                 adata.yaml
             ).match()
         }

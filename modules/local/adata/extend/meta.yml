@@ -1,0 +1,112 @@
+name: "adata_extend"
+description: Merge obs, var, obsm, obsp, uns and layer artefacts into a base AnnData object
+keywords:
+  - anndata
+  - merge
+  - single-cell
+tools:
+  - "anndata":
+      description: "Annotated data matrices in Python"
+      homepage: "https://anndata.readthedocs.io"
+      documentation: "https://anndata.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/anndata"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - base:
+        type: file
+        description: Base AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+    - obs:
+        type: file
+        description: Optional obs tables as pickle or CSV files
+        pattern: "*.{pkl,csv}"
+    - var:
+        type: file
+        description: Optional var tables as pickle or CSV files
+        pattern: "*.{pkl,csv}"
+    - obsm:
+        type: file
+        description: Optional obsm matrices as pickle or numpy files
+        pattern: "*.{pkl,npy,npz}"
+    - obsp:
+        type: file
+        description: Optional obsp matrices as pickle or numpy files
+        pattern: "*.{pkl,npy,npz}"
+    - uns:
+        type: file
+        description: Optional uns objects as pickle files
+        pattern: "*.pkl"
+    - layers:
+        type: file
+        description: Optional layer matrices as numpy, Matrix Market or sparse files
+        pattern: "*.{npy,npz,mtx}"
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: Extended AnnData object with merged annotations and layers
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  metadata:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.csv":
+          type: file
+          description: Cell metadata table exported from obs
+          pattern: "*.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/anndata_pandas_python_pyyaml:819554d31797a974
+      build_id: bd-819554d31797a974_1
+      scan_id: sc-de573672a7565d1d_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/anndata_pandas_python_pyyaml:f3cd364e43f4f891
+      build_id: bd-f3cd364e43f4f891_1
+      scan_id: sc-20fbcca913f9a369_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_pandas_python_pyyaml:493d8eb5e1099359
+      build_id: bd-493d8eb5e1099359_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/74/74c1dc16cd8944bf1260dd8420da6ae08cfe0f15ac4d382d24e4857d6b5b616a/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/anndata_pandas_python_pyyaml:3f05475ed990d1e9
+      build_id: bd-3f05475ed990d1e9_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/55/558452f4be50922f6ab193cea75018e3ddb14cb7b622328d099e2568e1ea1809/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/adata/extend/.conda-lock/linux_amd64-bd-f3cd364e43f4f891_1.txt
+    linux/arm64:
+      lock_file: modules/local/adata/extend/.conda-lock/linux_arm64-bd-819554d31797a974_1.txt

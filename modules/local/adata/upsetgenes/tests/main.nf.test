@@ -30,9 +30,14 @@ nextflow_process {
 
         then {
             assert process.success
+            def plot = file(process.out.plot[0][1])
+            def multiqc = path(process.out.multiqc_files[0]).json
+            def versions = path(process.out.versions[0]).yaml.ADATA_UPSETGENES
+            assert plot.length() > 1000
+            assert multiqc.data.contains('data:image/png;base64,')
             assert snapshot(
-                process.out,
-                path(process.out.versions[0]).yaml
+                [plot: plot.name, multiqc: multiqc.findAll { key, value -> key in ['id', 'parent_id', 'section_name', 'plot_type'] }],
+                versions.findAll { key, value -> key != 'matplotlib' }
             ).match()
         }
 

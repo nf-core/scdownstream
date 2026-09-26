@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 import os
+from importlib.metadata import version
 
 os.environ["TMPDIR"] = "."
 
 import anndata as ad
 import anndata2ri
 import pandas as pd
-import rpy2
 import rpy2.robjects as ro
 
 seurat = ro.packages.importr("Seurat")
@@ -59,7 +59,7 @@ versions = {
     "${task.process}": {
         "anndata": ad.__version__,
         "anndata2ri": anndata2ri.__version__,
-        "rpy2": rpy2.__version__,
+        "rpy2": version("rpy2"),
         "pandas": pd.__version__,
         "seurat": seurat.__version__,
     }

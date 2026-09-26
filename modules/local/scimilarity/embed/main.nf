@@ -5,8 +5,8 @@ process SCIMILARITY_EMBED {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0b/0b07b44946319f0a77889ca315e4a48bef70c67bae06ce2603039a4995c75f0a/data'
-        : 'community.wave.seqera.io/library/anndata_hnswlib_numcodecs_python_pruned:3f8ef15250e4fea7'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c9/c90e92bde5ea63596f8af5f32ca881d0dc1053bd7c8d1e484a70b1d3d6fef56d/data'
+        : 'community.wave.seqera.io/library/python_anndata_pyyaml_zarr_pruned:726de88bc84fbfa1'}"
 
     input:
     tuple val(meta), path(h5ad)

@@ -1,0 +1,79 @@
+name: "adata_subsetvar"
+description: Subset AnnData variables to rows where a boolean var column is true
+keywords:
+  - anndata
+  - subset
+  - single-cell
+tools:
+  - "anndata":
+      description: "Annotated data matrices in Python"
+      homepage: "https://anndata.readthedocs.io"
+      documentation: "https://anndata.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/anndata"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - column:
+      type: string
+      description: Boolean var column used to select features to retain
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData subset to selected variables
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/anndata_python_pyyaml:6059343947c64b2b
+      build_id: bd-6059343947c64b2b_1
+      scan_id: sc-6c978256fc1b9bc8_2
+    linux/amd64:
+      name: community.wave.seqera.io/library/anndata_python_pyyaml:5ac0fd4d280528a5
+      build_id: bd-5ac0fd4d280528a5_1
+      scan_id: sc-15371a7932310801_2
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:d4fa1bed84690377
+      build_id: bd-d4fa1bed84690377_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a0/a0d347e0d943cb8d0624a8c73247db0c8e96e7c130fe0fb3125aeb7d1b140e79/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:72ec1c0689f619a5
+      build_id: bd-72ec1c0689f619a5_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/56/56a42f6f5e1d7d9aec93ae546b21b3af0c424dfbda6385b018bab9c51ff95f0f/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/adata/subsetvar/.conda-lock/linux_amd64-bd-5ac0fd4d280528a5_1.txt
+    linux/arm64:
+      lock_file: modules/local/adata/subsetvar/.conda-lock/linux_arm64-bd-6059343947c64b2b_1.txt

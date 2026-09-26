@@ -3,9 +3,9 @@ process CELLTYPES_SINGLER {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1e/1e1ca6a1732f3fc19cdbcd1ec1872fabb868109dc29fc3e530c1be05d5bc0e5f/data':
-        'community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-celldex_bioconductor-hdf5array_bioconductor-rhdf5_pruned:74e0a8e51f7ab89c' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/db/db1479b8f2bde5ec989cb0f7f32f7ae405f16ea3970f4dae91f9ec49de09a7c5/data'
+        : 'community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-hdf5array_bioconductor-rhdf5_bioconductor-singlecellexperiment_pruned:1a6c1a42a636cbf5'}"
 
     input:
     tuple val(meta), path(h5ad), val(symbol_col), val(counts_layer)

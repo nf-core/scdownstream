@@ -4,8 +4,8 @@ process SCARCHES_EXPIMAP {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-            ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0b/0b05bb6176023b06058cc9bc6c99a63d72456b51b6f3eb86a720106aa77d022b/data'
-            : 'community.wave.seqera.io/library/anndata_lightning_numpy_pip_pruned:08aebf94dee8bc48'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/6d/6d0046dded57ef25b360156cb77e1ddd34b95fae8a56b3d56171f6c12c3489c1/data'
+        : 'community.wave.seqera.io/library/python_anndata_numpy_scipy_pruned:b66546c0fdf718b9'}"
 
     input:
     tuple val(meta), path(h5ad, arity: 1)

@@ -17,7 +17,7 @@ column = "${column}"
 assert column in adata.obs.columns, f"Column {column} not found in adata."
 
 for value in adata.obs[column].unique():
-    adata_subset = adata[adata.obs[column] == value]
+    adata_subset = adata[adata.obs[column] == value].copy()
     value = value.replace(" ", "_")
     adata_subset.write_h5ad(f"{value}.h5ad")
 

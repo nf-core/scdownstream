@@ -1,0 +1,99 @@
+name: "symphony_mapembedding"
+description: Map a query AnnData onto a Symphony reference embedding
+keywords:
+  - query-mapping
+  - integration
+  - symphony
+  - single-cell
+tools:
+  - "symphonypy":
+      description: "Python port of Symphony for reference building and query mapping"
+      homepage: "https://github.com/potulabe/symphonypy"
+      documentation: "https://github.com/potulabe/symphonypy"
+      tool_dev_url: "https://github.com/potulabe/symphonypy"
+      licence: ["GPL-3.0"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: Query AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing reference information
+          e.g. `[ id:'reference' ]`
+    - reference_h5ad:
+        type: file
+        description: Symphony reference AnnData produced by harmonyintegrate
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - batch_col:
+      type: string
+      description: Optional obs column containing query batch labels
+  - counts_layer:
+      type: string
+      description: AnnData layer containing counts for query mapping
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: Query AnnData with mapped Symphony embedding
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  obsm:
+    - "X_*.pkl":
+        type: file
+        description: Mapped embedding stored as a pickle
+        pattern: "X_*.pkl"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:edfcd7f9245f7d8f
+      build_id: bd-edfcd7f9245f7d8f_1
+      scan_id: sc-e8cb90a4a34fd533_2
+    linux/amd64:
+      name: community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:30c480bf2aefe534
+      build_id: bd-30c480bf2aefe534_1
+      scan_id: sc-beb0ec47a5017b93_2
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:60d39a50152de9da
+      build_id: bd-60d39a50152de9da_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/74/7494087445ee66b0aa35c45bf591f6d80b46d0009359cbc5e726773f39cde82f/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:83e49f490ae658ee
+      build_id: bd-83e49f490ae658ee_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f8/f801c41ede6dcf6eaadb994993323e9a775676245acadcf25970e963b2549f05/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/symphony/mapembedding/.conda-lock/linux_amd64-bd-30c480bf2aefe534_1.txt
+    linux/arm64:
+      lock_file: modules/local/symphony/mapembedding/.conda-lock/linux_arm64-bd-edfcd7f9245f7d8f_1.txt

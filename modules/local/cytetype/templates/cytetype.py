@@ -15,30 +15,6 @@ import scanpy as sc
 import yaml
 from cytetype import CyteType
 
-
-def _dataframe_without_nullable_strings(df: pd.DataFrame) -> pd.DataFrame:
-    """Cast pandas StringDtype columns and indexes to plain object strings."""
-    df = df.copy()
-    if isinstance(df.index.dtype, pd.StringDtype):
-        df.index = pd.Index(df.index.to_numpy(dtype=object), name=df.index.name)
-    for col in df.columns:
-        if isinstance(df[col].dtype, pd.StringDtype):
-            df[col] = df[col].astype(object)
-    return df
-
-
-def _prepare_adata_for_h5ad(adata_obj):
-    adata_obj.obs = _dataframe_without_nullable_strings(adata_obj.obs)
-    adata_obj.var = _dataframe_without_nullable_strings(adata_obj.var)
-    for uns_key, uns_value in list(adata_obj.uns.items()):
-        if isinstance(uns_value, pd.DataFrame):
-            adata_obj.uns[uns_key] = _dataframe_without_nullable_strings(uns_value)
-        elif isinstance(uns_value, dict):
-            for key, value in list(uns_value.items()):
-                if isinstance(value, pd.DataFrame):
-                    uns_value[key] = _dataframe_without_nullable_strings(value)
-
-
 adata = sc.read_h5ad("input.h5ad")
 prefix = "${prefix}"
 study_context = "${study_context}"
@@ -102,7 +78,6 @@ df_out = adata_work.obs[library_cols].rename(columns=dict(zip(library_cols, outp
 df_out.to_pickle(f"{prefix}.pkl")
 
 adata.obs = pd.concat([adata.obs, df_out], axis=1)
-_prepare_adata_for_h5ad(adata)
 adata.write_h5ad(f"{prefix}.h5ad")
 
 versions = {

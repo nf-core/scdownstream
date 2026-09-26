@@ -1,0 +1,96 @@
+name: "scibmetrics_benchmark"
+description: Compute scIB integration metrics for an AnnData embedding
+keywords:
+  - integration
+  - benchmarking
+  - metrics
+  - single-cell
+tools:
+  - "scib-metrics":
+      description: "Accelerated and Python-native implementation of scIB integration metrics"
+      homepage: "https://scib-metrics.readthedocs.io"
+      documentation: "https://scib-metrics.readthedocs.io"
+      tool_dev_url: "https://github.com/YosefLab/scib-metrics"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object with embeddings and metadata for benchmarking
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - max_cells:
+      type: integer
+      description: Maximum number of cells to keep after subsampling
+  - subsample_strategy:
+      type: string
+      description: Strategy used to subsample cells before metric calculation
+  - subsample_seed:
+      type: integer
+      description: Random seed for reproducible subsampling
+  - metric_profile:
+      type: string
+      description: Named profile selecting which scIB metrics to compute
+
+output:
+  metrics:
+    - "*_metrics.tsv":
+        type: file
+        description: Tab-separated table of computed integration metrics
+        pattern: "*_metrics.tsv"
+        ontologies:
+          - edam: "http://edamontology.org/format_3475"
+  benchmark_info:
+    - "*_benchmark_info.json":
+        type: file
+        description: JSON metadata describing the benchmark run
+        pattern: "*_benchmark_info.json"
+        ontologies:
+          - edam: "http://edamontology.org/format_3464"
+  multiqc_files:
+    - "*_mqc.json":
+        type: file
+        description: MultiQC-compatible JSON with benchmark results
+        pattern: "*_mqc.json"
+        ontologies:
+          - edam: "http://edamontology.org/format_3464"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/python_pyyaml_pip_scib-metrics:726e693dce154d5e
+      build_id: bd-726e693dce154d5e_1
+      scan_id: sc-9b33e17d4671b9e5_2
+    linux/amd64:
+      name: community.wave.seqera.io/library/python_pyyaml_pip_scib-metrics:9752793e315dcbf9
+      build_id: bd-9752793e315dcbf9_1
+      scan_id: sc-085696d72eecbf34_2
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python_pyyaml_pip_scib-metrics:2b4edaf51774369b
+      build_id: bd-2b4edaf51774369b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8b/8b13ed39eb063858c9b23aee83fa0fd7e27cbc0cb7820db0d94de42f6725f83a/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python_pyyaml_pip_scib-metrics:0ba3da6e3ab8bd67
+      build_id: bd-0ba3da6e3ab8bd67_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/25/259f7c888137ae8f271a81c834d08483626028c765ab652802894d4a918ffee2/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scibmetrics/benchmark/.conda-lock/linux_amd64-bd-9752793e315dcbf9_1.txt

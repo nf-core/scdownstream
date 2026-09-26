@@ -5,8 +5,8 @@ process CELLDEX_FETCHREFERENCE {
     conda "${moduleDir}/environment.yml"
 
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'oras://community.wave.seqera.io/library/bioconductor-celldex_bioconductor-hdf5array_bioconductor-singlecellexperiment_r-yaml:c4e76f99d7b45118'
-        : 'community.wave.seqera.io/library/bioconductor-celldex_bioconductor-hdf5array_bioconductor-singlecellexperiment_r-yaml:13bf33457e3e7490'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f7/f783d952dbf89b36cf16165b825608ee84b0a917cf5250e1515f9bba6d8b665c/data'
+        : 'community.wave.seqera.io/library/bioconductor-alabaster.base_bioconductor-alabaster.se_bioconductor-gypsum_bioconductor-hdf5array_pruned:99b54e4c9a06f2d6'}"
 
     input:
     tuple val(meta), val(ref), val(version)

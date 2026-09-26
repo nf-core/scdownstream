@@ -1,0 +1,78 @@
+name: "celldex_fetchreference"
+description: Download a celldex reference dataset and package it as a tar archive
+keywords:
+  - cell-type
+  - reference
+  - single-cell
+  - annotation
+tools:
+  - "celldex":
+      description: "Index of reference cell type datasets for cell type annotation"
+      homepage: "https://bioconductor.org/packages/celldex"
+      documentation: "https://bioconductor.org/packages/release/data/experiment/html/celldex.html"
+      tool_dev_url: "https://github.com/LTLA/celldex"
+      licence: ["GPL-3.0-or-later"]
+      identifier: biotools:celldex
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - ref:
+        type: string
+        description: Name of the celldex reference to download
+    - version:
+        type: string
+        description: Optional version of the reference dataset
+
+output:
+  tar:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.tar":
+          type: file
+          description: Tar archive containing the downloaded celldex reference
+          pattern: "*.tar"
+          ontologies:
+            - edam: "http://edamontology.org/format_2573"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/bioconductor-alabaster.base_bioconductor-alabaster.se_bioconductor-gypsum_bioconductor-hdf5array_pruned:99b54e4c9a06f2d6
+      build_id: bd-99b54e4c9a06f2d6_1
+      scan_id: sc-ba59bd6926247dee_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/bioconductor-alabaster.base_bioconductor-alabaster.se_bioconductor-gypsum_bioconductor-hdf5array_pruned:1726982b78ab95f0
+      build_id: bd-1726982b78ab95f0_1
+      scan_id: sc-a35d861ee84acd58_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/bioconductor-alabaster.base_bioconductor-alabaster.se_bioconductor-gypsum_bioconductor-hdf5array_pruned:59cb986cf5e01cca
+      build_id: bd-59cb986cf5e01cca_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f7/f783d952dbf89b36cf16165b825608ee84b0a917cf5250e1515f9bba6d8b665c/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/bioconductor-alabaster.base_bioconductor-alabaster.se_bioconductor-gypsum_bioconductor-hdf5array_pruned:9bc7ee73b9532451
+      build_id: bd-9bc7ee73b9532451_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/14/14f66e9ef876222abe106a74ec9aba29168bfff6037f6bb2480241f874b352aa/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/celldex/fetchreference/.conda-lock/linux_amd64-bd-99b54e4c9a06f2d6_1.txt
+    linux/arm64:
+      lock_file: modules/local/celldex/fetchreference/.conda-lock/linux_arm64-bd-1726982b78ab95f0_1.txt

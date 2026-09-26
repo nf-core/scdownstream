@@ -1,0 +1,110 @@
+name: "scvitools_scvi"
+description: Train an scVI model or map a query onto an scVI reference model and export the latent embedding
+keywords:
+  - integration
+  - batch-correction
+  - scvi
+  - single-cell
+tools:
+  - "scvi-tools":
+      description: "Deep probabilistic analysis of single-cell omics data"
+      homepage: "https://scvi-tools.org"
+      documentation: "https://docs.scvi-tools.org"
+      tool_dev_url: "https://github.com/scverse/scvi-tools"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing reference model information
+          e.g. `[ id:'reference' ]`
+    - reference_model:
+        type: file
+        description: Optional scVI reference model for query mapping
+        pattern: "*.pt"
+  - batch_col:
+      type: string
+      description: obs column containing the batch covariate
+  - categorical_covariates:
+      type: string
+      description: Comma-separated obs columns used as categorical covariates
+  - continuous_covariates:
+      type: string
+      description: Comma-separated obs columns used as continuous covariates
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData with scVI latent embedding
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  model:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_model/model.pt":
+          type: file
+          description: Trained scVI model
+          pattern: "*_model/model.pt"
+  obsm:
+    - "X_*.pkl":
+        type: file
+        description: Pickled scVI latent embedding matrix
+        pattern: "X_*.pkl"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/scvi-tools:1.4.3--fc95d2eb26ebf7cc
+      build_id: bd-fc95d2eb26ebf7cc_1
+      scan_id: sc-a5c97b99635848a1_2
+    linux/amd64:
+      name: community.wave.seqera.io/library/scvi-tools:1.4.3--05da7945b26925f8
+      build_id: bd-05da7945b26925f8_1
+      scan_id: sc-16d2655c56a3a5f1_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/scvi-tools:1.4.3--d13481fa82528f78
+      build_id: bd-d13481fa82528f78_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/9e/9ea53a1a670cb5d83abab8b885034e786fed9ff52cb683aa3f1cc9bd5aae2d93/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/scvi-tools:1.4.3--9f0c02ed8f8737fd
+      build_id: bd-9f0c02ed8f8737fd_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5f/5f0578f672f1d3cffaf0d7e069ee2bea0eda8653ce273af902190795ae10892e/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scvitools/scvi/.conda-lock/linux_amd64-bd-05da7945b26925f8_1.txt
+    linux/arm64:
+      lock_file: modules/local/scvitools/scvi/.conda-lock/linux_arm64-bd-fc95d2eb26ebf7cc_1.txt
