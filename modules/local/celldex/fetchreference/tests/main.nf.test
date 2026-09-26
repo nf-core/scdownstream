@@ -4,6 +4,9 @@ nextflow_process {
     script "modules/local/celldex/fetchreference/main.nf"
     process "CELLDEX_FETCHREFERENCE"
 
+    tag "modules"
+    tag "modules_local"
+
     test("Should run without failures") {
 
         when {

@@ -4,6 +4,9 @@ nextflow_process {
     script "modules/local/singler/main.nf"
     process "CELLTYPES_SINGLER"
 
+    tag "modules"
+    tag "modules_local"
+
     test("Should run after celldex reference is fetched") {
 
         setup {

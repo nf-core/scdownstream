@@ -4,6 +4,9 @@ nextflow_workflow {
     script "subworkflows/local/singler/main.nf"
     workflow "SINGLER"
 
+    tag "subworkflows"
+    tag "subworkflows_local"
+
     test("Should run without failures") {
 
         when {
