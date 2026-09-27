@@ -15,8 +15,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 1. Per-sample preprocessing
    1. Convert all RDS files to H5AD format
    2. Create filtered matrix (if not provided)
-      - [CellBender](https://cellbender.readthedocs.io/en/latest/)
-      - [EmptyDrops](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)
    3. Present QC for raw counts ([`MultiQC`](http://multiqc.info/))
    4. Remove ambient RNA
       - [DecontX](https://bioconductor.org/packages/release/bioc/html/decontX.html)
@@ -63,11 +61,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - `02_quality_control/`
   - `converted/`: legacy alias in docs; see `01_load_h5ad/` for format conversion outputs when intermediates are saved.
   - `unify/`: Gene symbol unification and metadata standardisation (also `unify/hugounifier/` when HUGO-unifier runs).
-  - `empty_droplet_removal/`: Results of empty droplet removal. Only if no `filtered` matrix is provided in the samplesheet and `--save_intermediates` is enabled.
-    - `${sample_id}_subset.h5ad`: The unfiltered matrix subset to the barcodes called as cells.
-    - `${sample_id}_cellbender*`: CellBender outputs, when `--empty_droplet_removal cellbender` is used.
-    - `${sample_id}_emptydrops_barcodes.csv`: Barcodes called as cells by EmptyDrops, when `--empty_droplet_removal emptydrops` is used.
-    - `${sample_id}_emptydrops_results.csv`: Full EmptyDrops results table with total counts, log-probabilities, p-values and FDR per barcode.
+  - `empty_droplet_removal/`: Results of empty droplet removal. Only if no `filtered` matrix is provided in the samplesheet.
   - `qc_raw/`: QC plots for the raw input data.
   - `ambient_rna_removal/`: Results of ambient RNA removal.
   - `custom_thresholds/`: Results of applying user-defined QC thresholds.

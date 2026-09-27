@@ -39,8 +39,6 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
 1. Per-sample preprocessing
    1. Convert all RDS files to H5AD format
    2. Create filtered matrix (if not provided)
-      - [CellBender](https://cellbender.readthedocs.io/en/latest/)
-      - [EmptyDrops](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)
    3. Present QC for raw counts ([`MultiQC`](http://multiqc.info/))
    4. Remove ambient RNA
       - [DecontX](https://bioconductor.org/packages/release/bioc/html/decontX.html)

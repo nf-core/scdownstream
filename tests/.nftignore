@@ -16,9 +16,6 @@ pipeline_info/*.{html,json,txt,yml}
 **/multiqc_sizes.txt
 **/sizes.tsv
 **/base_metadata.csv
-# Contain CellTypist/SingleR float scores that differ at ~1e-16 across BLAS kernels/thread counts
-**/*_qc_metadata.csv
-04_celltypes/celltypist/*.pkl
 06_per_group/**
 
 03_combine/integrate/scib_metrics/**
