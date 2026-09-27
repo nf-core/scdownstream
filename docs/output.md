@@ -66,7 +66,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
     - `${sample_id}_subset.h5ad`: The unfiltered matrix subset to the barcodes called as cells.
     - `${sample_id}_cellbender*`: CellBender outputs, when `--empty_droplet_removal cellbender` is used.
     - `${sample_id}_emptydrops_barcodes.csv`: Barcodes called as cells by EmptyDrops, when `--empty_droplet_removal emptydrops` is used.
-    - `${sample_id}_emptydrops_emptydrops.csv`: Full EmptyDrops results table with total counts, log-probabilities, p-values and FDR per barcode.
+    - `${sample_id}_emptydrops_results.csv`: Full EmptyDrops results table with total counts, log-probabilities, p-values and FDR per barcode.
   - `qc_raw/`: QC plots for the raw input data.
   - `ambient_rna_removal/`: Results of ambient RNA removal.
   - `custom_thresholds/`: Results of applying user-defined QC thresholds.
