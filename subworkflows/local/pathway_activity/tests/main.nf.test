@@ -1,0 +1,111 @@
+nextflow_workflow {
+
+    name "Test Workflow PATHWAY_ACTIVITY"
+    script "subworkflows/local/pathway_activity/main.nf"
+    workflow "PATHWAY_ACTIVITY"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test', integration: 'scvi' ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.of([
+                    [ id: 'test', integration: 'scvi', de_method: 'edgepython' ],
+                    [ file("${projectDir}/modules/local/decoupler/enrichment/tests/test_B_cell_Disease_results.parquet", checkIfExists: true) ]
+                ])
+                input[2] = 'progeny,collectri'
+                input[3] = file("${projectDir}/modules/local/decoupler/network/tests/network.tsv", checkIfExists: true)
+                input[4] = 'human'
+                input[5] = 'ulm'
+                input[6] = 5
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.networks.collect { meta, _tsv -> meta.id }.sort() == ['collectri', 'network', 'progeny']
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should score pseudobulk profiles and DE results with a custom network") {
+
+        setup {
+            run("DECOUPLER_PSEUDOBULK") {
+                script "modules/local/decoupler/pseudobulk/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [ id: 'test', integration: 'scvi' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = 'X'
+                    input[2] = 'sample'
+                    input[3] = 'leiden'
+                    input[4] = 'condition'
+                    input[5] = 10
+                    input[6] = 1000
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = DECOUPLER_PSEUDOBULK.out.h5ad
+                input[1] = channel.of([
+                    [ id: 'test', integration: 'scvi', de_method: 'edgepython' ],
+                    [
+                        file("${projectDir}/modules/local/decoupler/enrichment/tests/test_B_cell_Disease_results.parquet", checkIfExists: true),
+                        file("${projectDir}/modules/local/decoupler/enrichment/tests/test_Monocyte_Disease_results.parquet", checkIfExists: true),
+                    ]
+                ])
+                input[2] = ''
+                input[3] = file("${projectDir}/modules/local/decoupler/network/tests/network.tsv", checkIfExists: true)
+                input[4] = 'human'
+                input[5] = 'ulm'
+                input[6] = 5
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.networks.size() == 1
+            assert workflow.out.uns.collect { file(it).name }.sort() == [
+                'test_decoupler_activity.pkl',
+                'test_edgepython_decoupler_enrichment.pkl',
+            ]
+            assert workflow.out.multiqc_files.collect { file(it).name }.sort() == [
+                'test_edgepython_network_enrichment_mqc.json',
+                'test_network_activity_mqc.json',
+            ]
+            assert snapshot(
+                workflow.out.networks,
+                workflow.out.scores,
+                workflow.out.enrichment,
+                workflow.out.uns,
+            ).match()
+        }
+
+    }
+
+}
