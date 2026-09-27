@@ -1,0 +1,116 @@
+name: "azimuth"
+description: Annotate cell types in an AnnData object using the Pan-human Azimuth neural network
+keywords:
+  - cell-type
+  - annotation
+  - single-cell
+  - scrnaseq
+tools:
+  - "panhumanpy":
+      description: "Automated hierarchical cell type annotation of human scRNA-seq data with the Pan-human Azimuth neural network"
+      homepage: "https://github.com/satijalab/panhumanpy"
+      documentation: "https://github.com/satijalab/panhumanpy"
+      tool_dev_url: "https://github.com/satijalab/panhumanpy"
+      licence: ["MIT"]
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+    - symbol_col:
+        type: string
+        description: Feature metadata column containing gene symbols
+    - counts_layer:
+        type: string
+        description: AnnData layer containing raw counts (`X` or a layer name)
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${prefix}.h5ad":
+          type: file
+          description: AnnData object with Pan-human Azimuth annotations and embedding
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  obs:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${prefix}.pkl":
+          type: file
+          description: Pickled observation annotations from Pan-human Azimuth
+          pattern: "*.pkl"
+  obsm:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "X_azimuth.pkl":
+          type: file
+          description: Pickled Pan-human Azimuth embedding indexed by cell
+          pattern: "X_azimuth.pkl"
+  annotation_columns:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_annotation_columns.csv":
+          type: file
+          description: CSV listing annotation columns and whether they are aggregatable
+          pattern: "*_annotation_columns.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/anndata_numpy_pandas_python_pruned:fc9e8e46eaa1b590
+      build_id: bd-fc9e8e46eaa1b590_1
+      scan_id: sc-b6565e77110796e1_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/anndata_numpy_pandas_python_pruned:7e74e77ee7540c2e
+      build_id: bd-7e74e77ee7540c2e_1
+      scan_id: sc-1369a76613c11d4e_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_numpy_pandas_python_pruned:c1104196d69e6e13
+      build_id: bd-c1104196d69e6e13_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/32/3274eab1b78962b7144695e36e24a902dd1117d3f266a402ac3edbce4b51836d/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/anndata_numpy_pandas_python_pruned:462f713693ede4f8
+      build_id: bd-462f713693ede4f8_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/76/76bcedda3f469405ed4d516274daef789231b156007e0de7aa9218d23b3715ab/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/azimuth/.conda-lock/linux_amd64-bd-7e74e77ee7540c2e_1.txt
+    linux/arm64:
+      lock_file: modules/local/azimuth/.conda-lock/linux_arm64-bd-fc9e8e46eaa1b590_1.txt
