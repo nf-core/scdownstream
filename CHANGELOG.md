@@ -33,6 +33,8 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Added`
 
+- Add opt-in pathway and transcription factor activity analysis with decoupler (`--decoupler`), scoring pseudobulk profiles and pseudobulk DE contrasts with PROGENy, CollecTRI, MSigDB Hallmark or a custom network (`decoupler/network`, `decoupler/activity`, `decoupler/enrichment`, `pathway_activity` subworkflow), by @nictru and Cursor [[#XXX](https://github.com/nf-core/scdownstream/pull/XXX)].
+
 - Add opt-in `--tords` to convert the final AnnData object to RDS via `ADATA_TORDS` (off by default).
 - Add LIANA rank-aggregate dotplot, circle, and tileplot PNGs with MultiQC embedding.
 - Add opt-in Tensor-cell2cell analysis: by-sample LIANA (`liana/bysample`) followed by tensor factorisation and sender-receiver loadings-product heatmaps (`cell2cell/tensor`).

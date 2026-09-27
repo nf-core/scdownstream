@@ -63,6 +63,26 @@
 
   > Armingol E, Baghdassarian HM, Martino C, et al. Context-aware deconvolution of cell–cell communication with Tensor-cell2cell. Nat Commun. 2022;13:3665. doi:10.1038/s41467-022-31369-2
 
+- [decoupler](https://doi.org/10.1093/bioadv/vbac016)
+
+  > Badia-i-Mompel P, Vélez Santiago J, Braunger J, et al. decoupleR: ensemble of computational methods to infer biological activities from omics data. Bioinform Adv. 2022;2(1):vbac016. doi:10.1093/bioadv/vbac016
+
+- [PROGENy](https://doi.org/10.1038/s41467-017-02391-6)
+
+  > Schubert M, Klinger B, Klünemann M, et al. Perturbation-response genes reveal signaling footprints in cancer gene expression. Nat Commun. 2018;9:20. doi:10.1038/s41467-017-02391-6
+
+- [CollecTRI](https://doi.org/10.1093/nar/gkad841)
+
+  > Müller-Dott S, Tsirvouli E, Vazquez M, et al. Expanding the coverage of regulons from high-confidence prior knowledge for accurate estimation of transcription factor activities. Nucleic Acids Res. 2023;51(20):10934-10949. doi:10.1093/nar/gkad841
+
+- [MSigDB Hallmark](https://doi.org/10.1016/j.cels.2015.12.004)
+
+  > Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB) hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004
+
+- [OmniPath](https://doi.org/10.15252/msb.20209923)
+
+  > Türei D, Valdeolivas A, Gul L, et al. Integrated intra- and intercellular signaling knowledge for multicellular omics analysis. Mol Syst Biol. 2021;17(3):e9923. doi:10.15252/msb.20209923
+
 - [scarches](https://pypi.org/project/scArches/)
 
   > Lotfollahi, M., Naghipourfar, M., Luecken, M.D. et al. Mapping single-cell data to reference atlases by transfer learning. Nat Biotechnol 40, 121–130 (2022). https://doi.org/10.1038/s41587-021-01001-7

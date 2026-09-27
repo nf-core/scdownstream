@@ -239,7 +239,7 @@ nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results --cel
 #### Species
 
 Bundled gene lists are provided for human and mouse.
-`--species` also selects the MyGene.info taxonomy used when samples have `symbol_col: none` and gene identifiers are converted via MyGene.info, and the PROGENy organism for Tensor-cell2cell pathway enrichment.
+`--species` also selects the MyGene.info taxonomy used when samples have `symbol_col: none` and gene identifiers are converted via MyGene.info, the PROGENy organism for Tensor-cell2cell pathway enrichment, and the Omnipath organism for decoupler pathway activity.
 Select the appropriate species with `--species`:
 
 ```bash
@@ -322,8 +322,9 @@ For each Leiden clustering result the pipeline runs a configurable set of downst
 | **DE**                            | Cell-level and sample-level differential expression via `de_methods`                                       | omit `de` from the analysis plan and/or set [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) to an empty string                                                                                                                                                                                                                                                                                               |
 | **Aggregate per-cell annotation** | Majority vote of per-cell SingleR/CellTypist labels per cluster (columns derived from annotator manifests) | omit `aggregate_per_cell_annotation` from the analysis plan and/or do not run per-cell annotators                                                                                                                                                                                                                                                                                                                                |
 | **CyteType**                      | LLM-based cluster cell type annotation                                                                     | omit `cytetype` from the analysis plan and/or leave [`cytetype_study_context`](https://nf-co.re/scdownstream/parameters#cytetype_study_context) empty                                                                                                                                                                                                                                                                            |
+| **Pathway activity**              | decoupler pathway and transcription factor activity on pseudobulk profiles and pseudobulk DE results       | opt-in: set [`decoupler`](https://nf-co.re/scdownstream/parameters#decoupler) to `true`; analysis-plan token `decoupler`                                                                                                                                                                                                                                                                                                         |
 
-By default (no `--analysis_plan`), `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, and `cytetype` run for every clustering result, subject to `skip_liana`, `de_methods`, and `cytetype_study_context` above. Tensor-cell2cell is opt-in (`cell2cell` defaults to `false`). Sample-level pseudobulk DE runs automatically when `pydeseq2` or `edgepython` are included in the resolved `de_methods` for a clustering.
+By default (no `--analysis_plan`), `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, and `cytetype` run for every clustering result, subject to `skip_liana`, `de_methods`, and `cytetype_study_context` above. Tensor-cell2cell and pathway activity are opt-in (`cell2cell` and `decoupler` default to `false`). Sample-level pseudobulk DE runs automatically when `pydeseq2` or `edgepython` are included in the resolved `de_methods` for a clustering.
 
 For large objects, set [`liana_max_cells`](https://nf-co.re/scdownstream/parameters#liana_max_cells) to cap cells before LIANA. Global LIANA subsampling is stratified by the LIANA grouping column (`leiden` or `label`); use [`liana_subsample_strategy`](https://nf-co.re/scdownstream/parameters#liana_subsample_strategy) `stratified_obs_batch` to stratify additionally by `batch`. By-sample LIANA (Tensor-cell2cell) always stratifies by the context/donor column as well, and drops contexts that do not have at least two cell groups with at least five cells each (LIANA's default `min_cells`). Set [`liana_n_perms`](https://nf-co.re/scdownstream/parameters#liana_n_perms) to `0` to skip permutation testing and speed up runs (specificity ranks are then not permutation-based). The same LIANA inference settings are reused for the by-sample LIANA step that feeds Tensor-cell2cell. Rank-aggregate also writes a dotplot and tileplot of the top interactions and a circle plot of significant cell-group interactions, all included in MultiQC.
 
@@ -353,19 +354,42 @@ Use multiple comma-separated values to compare methods in one run, for example `
 
 **Volcano plots:** a shared plotting module reads the standardised DE parquet tables and writes volcano PNGs plus MultiQC image sections. MultiQC groups volcanoes under `{integration}: {method}` parents (for Scanpy, `{method}` includes the statistical test, e.g. `Scanpy wilcoxon`). Scanpy comparisons produce one multi-panel figure per comparison scope (`{groupby} vs rest`, optional `(within {filter}=...)`), with one subplot per group. When the grouping has exactly two categories, the plot collapses the mirrored one-vs-rest panels into a single `{A} vs {B}` volcano (using the alphabetically first group as the positive log-fold-change side). PyDESeq2, edgePython, and edgepython_sc keep one plot per contrast: `{treatment} vs {reference} (within celltype=...)`. Points with adjusted p-value `< 0.05` and `|log2FC| >= 1` are coloured as significant. Optionally pass [`interesting_genes`](https://nf-co.re/scdownstream/parameters#interesting_genes), a CSV whose first column lists gene symbols to mark with triangles instead of circles. An optional header of `gene`, `symbol`, or `names` is accepted; blank and `#` lines are ignored. Matching is case-insensitive. If required statistics are missing (for example some `logreg` outputs), the volcano is skipped with a warning and the process continues.
 
+### Pathway and transcription factor activity
+
+Set [`decoupler`](https://nf-co.re/scdownstream/parameters#decoupler) to `true` to score pathway and transcription factor activity with [decoupler](https://decoupler.readthedocs.io/).
+The analysis runs per clustering on the pseudobulk profiles (donor x cell type x condition), so it enables pseudobulking and requires `donor_col` in the samplesheet.
+When the resolved `de_methods` include `pydeseq2` or `edgepython`, decoupler also runs an enrichment analysis on each pseudobulk DE contrast.
+It uses the Wald statistic from PyDESeq2 and the signed `-log10` p-value from edgePython as gene-level statistics.
+
+[`decoupler_resources`](https://nf-co.re/scdownstream/parameters#decoupler_resources) selects the prior-knowledge networks from [Omnipath](https://omnipathdb.org/):
+
+- `progeny`: pathway footprints from PROGENy (top 500 targets per pathway).
+- `collectri`: transcription factor regulons from CollecTRI.
+- `hallmark`: MSigDB Hallmark gene sets.
+
+The default is `progeny,collectri`.
+Omnipath resources are downloaded at runtime for the organism given by [`species`](https://nf-co.re/scdownstream/parameters#species), so the tasks need internet access.
+On offline systems, set `--decoupler_resources ''` and provide a local network with [`decoupler_network`](https://nf-co.re/scdownstream/parameters#decoupler_network).
+The custom network is a TSV or CSV file with `source`, `target` and an optional `weight` column, or a GMT file of gene sets.
+Its file name without extension becomes the network name in the outputs, so it must not clash with a resource name.
+
+[`decoupler_method`](https://nf-co.re/scdownstream/parameters#decoupler_method) selects the scoring method (default `ulm`, the univariate linear model).
+Sources with fewer than [`decoupler_min_targets`](https://nf-co.re/scdownstream/parameters#decoupler_min_targets) targets in the data (default `5`) are not scored.
+Use the `decoupler` token in the [analysis plan](#analysis-plan) to restrict the analysis to selected clusterings.
+
 ### Analysis plan
 
 With many integration methods and resolutions the full downstream suite can generate a large number of tasks. The optional [`analysis_plan`](https://nf-co.re/scdownstream/parameters#analysis_plan) parameter accepts a CSV that controls exactly which Leiden resolutions are computed and which analyses run for each clustering result.
 
 Each row in the CSV selects a subset of clusterings. **All columns are optional** — an empty cell acts as a wildcard that matches everything:
 
-| Column        | Empty means                                                                                                               |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `integration` | match all integration methods                                                                                             |
-| `subset`      | match all subsets (`global` and per-label)                                                                                |
-| `resolution`  | match all resolutions (still bounded by `--clustering_resolutions`)                                                       |
-| `analyses`    | run `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, and `cytetype` (`cell2cell` is opt-in via `--cell2cell true`) |
-| `de_methods`  | use the global [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) default                                |
+| Column        | Empty means                                                                                                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `integration` | match all integration methods                                                                                                                                                  |
+| `subset`      | match all subsets (`global` and per-label)                                                                                                                                     |
+| `resolution`  | match all resolutions (still bounded by `--clustering_resolutions`)                                                                                                            |
+| `analyses`    | run `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, `cytetype`, and `decoupler` (`cell2cell` and `decoupler` are opt-in via `--cell2cell true` and `--decoupler true`) |
+| `de_methods`  | use the global [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) default                                                                                     |
 
 When multiple rows match a clustering result, their `analyses` lists are **combined** (duplicates removed). If any matching row leaves `analyses` empty, all analyses run for that clustering. Clusterings that match **no** row are excluded from Leiden and all downstream analyses — but their UMAP and neighbour graph are still computed.
 
