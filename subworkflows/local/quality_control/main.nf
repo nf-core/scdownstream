@@ -1,5 +1,5 @@
 include { SCANPY_CELLCYCLE                                                           } from '../../../modules/local/scanpy/cellcycle'
-include { H5AD_REMOVEBACKGROUND_BARCODES_CELLBENDER_ANNDATA as EMPTY_DROPLET_REMOVAL } from '../../nf-core/h5ad_removebackground_barcodes_cellbender_anndata'
+include { EMPTY_DROPLET_REMOVAL                                                      } from '../empty_droplet_removal'
 include { SCANPY_PLOTQC as QC_RAW                                                    } from '../../../modules/local/scanpy/plotqc'
 include { AMBIENT_CORRECTION                                                         } from '../ambient_correction'
 include { UNIFY                                                                      } from '../unify'
@@ -17,6 +17,7 @@ def countCells(h5ad) {
 workflow QUALITY_CONTROL {
     take:
     ch_h5ad                       // channel: [ meta, filtered, unfiltered ]
+    empty_droplet_method          //   value: string
     ambient_correction_method     //   value: string
     ambient_corrected_integration //   value: boolean
     unify_gene_symbols            //   value: boolean
@@ -64,7 +65,8 @@ workflow QUALITY_CONTROL {
         .map {
             meta, _filtered, unfiltered ->
             [meta, unfiltered]
-        }
+        },
+        empty_droplet_method
     )
 
     ch_complete = ch_complete.mix(
