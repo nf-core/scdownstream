@@ -2,11 +2,7 @@
 
 import base64
 import json
-import os
 import platform
-
-os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
-os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 
 import anndata as ad
 import decoupler as dc

@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
 
-import os
-
-os.environ["KMP_AFFINITY"] = "disabled"
-os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
-os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
-
 import importlib.metadata
 import platform
 

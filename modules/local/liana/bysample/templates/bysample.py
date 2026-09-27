@@ -1,17 +1,12 @@
 #!/usr/bin/env python3
 
-import os
 import platform
 import warnings
-
-import yaml
-
-os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
-os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 
 import liana as li
 import pandas as pd
 import scanpy as sc
+import yaml
 from threadpoolctl import threadpool_limits
 
 threadpool_limits(int("${task.cpus}"))

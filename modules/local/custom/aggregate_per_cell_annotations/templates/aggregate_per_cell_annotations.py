@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 
-import os
 import platform
-
-os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
-os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 
 import numpy as np
 import pandas as pd

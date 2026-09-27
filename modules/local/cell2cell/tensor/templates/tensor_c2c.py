@@ -8,8 +8,6 @@ import re
 
 import yaml
 
-os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
-os.environ["MPLCONFIGDIR"] = "./tmp/matplotlib"
 os.environ["OMP_NUM_THREADS"] = "${task.cpus}"
 
 import matplotlib
