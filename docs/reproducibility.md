@@ -94,6 +94,12 @@ The **Test strategy (this branch)** column describes what the tests on this bran
 | `custom/doubletremoval` | Merges doublet-caller predictions into `adata.obs` and optionally removes cells when a threshold is met (`removal=true`). | Fully deterministic | hash (removal path); structural assertions on annotate-only path                                                                                     |
 | `custom/volcanoplot`    | Draws volcano PNGs and MultiQC image sections from standardised DE parquet tables.                                        | Fully deterministic | stub + structural versions and MultiQC comparison metadata; covers missing statistics, sparse groups and colon-containing filenames; PNGs not hashed |
 
+### `dropletutils/`
+
+| Module                    | Description                                                                                                                                               | Reproducibility                                                                                                                              | Test strategy (this branch)                                                             |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `dropletutils/emptydrops` | Calls cell-containing droplets in an unfiltered matrix with emptyDrops (`set.seed(0)`) and writes the retained barcodes and the full result table as CSV. | Seeded / quasi-deterministic; Monte Carlo p-values are seeded, but barcodes close to the FDR threshold can change across R/package versions. | hash (no H5AD output); barcodes CSV hash, results CSV name and row count, versions YAML |
+
 ### `scdblfinder/`
 
 | Module        | Description                                                                                                                   | Reproducibility                                                                                                                | Test strategy (this branch) |
