@@ -8,7 +8,7 @@ process DECOUPLER_NETWORK {
         : 'community.wave.seqera.io/library/decoupler_network:f7895b41fb5156f8'}"
 
     input:
-    tuple val(meta), path(custom_network)
+    tuple val(meta), path(custom_network, stageAs: 'custom/*')
     val species
 
     output:
