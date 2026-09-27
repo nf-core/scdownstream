@@ -279,9 +279,10 @@ If no alternative exists, document the limitation in the comment block of `conf/
 
 ### Testing conventions
 
-CI runs two nf-test tiers:
+CI runs three nf-test categories, selected by tag:
 
-- `modules_local,subworkflows_local` for local module and subworkflow tests.
+- `modules_local` for local module tests.
+- `subworkflows_local` for local subworkflow tests.
 - `pipeline` for end-to-end tests in `tests/`.
 
 Tag new tests accordingly.

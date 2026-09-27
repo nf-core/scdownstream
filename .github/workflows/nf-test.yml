@@ -42,10 +42,8 @@ jobs:
       - runs-on=${{ github.run_id }}-nf-test-changes
       - runner=4cpu-linux-x64
     outputs:
-      shard: ${{ steps.set-shards.outputs.shard }}
-      total_shards: ${{ steps.set-shards.outputs.total_shards }}
-      pipeline_shard: ${{ steps.set-pipeline-shards.outputs.shard }}
-      pipeline_total_shards: ${{ steps.set-pipeline-shards.outputs.total_shards }}
+      targets: ${{ steps.set-targets.outputs.targets }}
+      total_targets: ${{ steps.set-targets.outputs.total_targets }}
     steps:
       - name: Clean Workspace # Purge the workspace in case it's running on a self-hosted runner
         run: |
@@ -57,14 +55,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: get number of shards for modules and subworkflows
-        id: set-shards
+      # The matrix is limited to 256 jobs. Main PRs run 6 jobs per shard, so the max_shards sum must stay <= 42.
+      - name: get number of shards for module tests
+        id: set-modules-shards
         uses: ./.github/actions/get-shards
         env:
           NFT_VER: ${{ env.NFT_VER }}
         with:
-          max_shards: 25
-          tags: modules_local,subworkflows_local
+          max_shards: 20
+          tags: modules_local
+
+      - name: get number of shards for subworkflow tests
+        id: set-subworkflows-shards
+        uses: ./.github/actions/get-shards
+        env:
+          NFT_VER: ${{ env.NFT_VER }}
+        with:
+          max_shards: 12
+          tags: subworkflows_local
 
       # max_shards exceeds the number of pipeline tests, so each test gets its own runner
       - name: get number of shards for pipeline tests
@@ -73,28 +81,41 @@ jobs:
         env:
           NFT_VER: ${{ env.NFT_VER }}
         with:
-          max_shards: 20
+          max_shards: 10
           tags: pipeline
 
-      - name: debug
+      - name: build test matrix
+        id: set-targets
+        env:
+          MODULES_SHARDS: ${{ steps.set-modules-shards.outputs.total_shards }}
+          SUBWORKFLOWS_SHARDS: ${{ steps.set-subworkflows-shards.outputs.total_shards }}
+          PIPELINE_SHARDS: ${{ steps.set-pipeline-shards.outputs.total_shards }}
         run: |
-          echo ${{ steps.set-shards.outputs.shard }}
-          echo ${{ steps.set-shards.outputs.total_shards }}
-          echo ${{ steps.set-pipeline-shards.outputs.shard }}
-          echo ${{ steps.set-pipeline-shards.outputs.total_shards }}
+          targets=$(jq -nc \
+            --argjson modules "$MODULES_SHARDS" \
+            --argjson subworkflows "$SUBWORKFLOWS_SHARDS" \
+            --argjson pipeline "$PIPELINE_SHARDS" '
+            def entries($category; $tags; $runner; $total):
+              [range(1; $total + 1) | {category: $category, tags: $tags, runner: $runner, shard: ., total_shards: $total}];
+            entries("modules"; "modules_local"; "4cpu-linux-x64"; $modules)
+            + entries("subworkflows"; "subworkflows_local"; "4cpu-linux-x64"; $subworkflows)
+            + entries("pipeline"; "pipeline"; "16cpu-linux-x64"; $pipeline)')
+          echo "targets=$targets" >> $GITHUB_OUTPUT
+          echo "total_targets=$(jq length <<< "$targets")" >> $GITHUB_OUTPUT
+          echo "$targets" | jq .
 
   nf-test:
-    name: "${{ matrix.profile }} | ${{ matrix.NXF_VER }} | ${{ matrix.shard }}/${{ needs.nf-test-changes.outputs.total_shards }}"
+    name: "${{ matrix.target.category }} | ${{ matrix.profile }} | ${{ matrix.NXF_VER }} | ${{ matrix.target.shard }}/${{ matrix.target.total_shards }}"
     needs: [nf-test-changes]
-    if: ${{ needs.nf-test-changes.outputs.total_shards != '0' }}
+    if: ${{ needs.nf-test-changes.outputs.total_targets != '0' }}
     runs-on: # use self-hosted runners
-      - runs-on=${{ github.run_id }}-nf-test
-      - runner=4cpu-linux-x64
+      - runs-on=${{ github.run_id }}-nf-test-${{ matrix.target.category }}
+      - runner=${{ matrix.target.runner }}
       - volume=100gb
     strategy:
       fail-fast: false
       matrix:
-        shard: ${{ fromJson(needs.nf-test-changes.outputs.shard) }}
+        target: ${{ fromJson(needs.nf-test-changes.outputs.targets) }}
         profile: [conda, docker, singularity]
         isMain:
           - ${{ github.base_ref == 'master' || github.base_ref == 'main' }}
@@ -109,7 +130,7 @@ jobs:
           - "latest-everything"
     env:
       NXF_ANSI_LOG: false
-      TOTAL_SHARDS: ${{ needs.nf-test-changes.outputs.total_shards }}
+      TEST_LABEL: "${{ matrix.target.category }} | ${{ matrix.profile }} | ${{ matrix.NXF_VER }} | Shard ${{ matrix.target.shard }}/${{ matrix.target.total_shards }}"
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -125,9 +146,9 @@ jobs:
           NXF_VERSION: ${{ matrix.NXF_VER }}
         with:
           profile: ${{ matrix.profile }}
-          shard: ${{ matrix.shard }}
-          total_shards: ${{ env.TOTAL_SHARDS }}
-          tags: modules_local,subworkflows_local
+          shard: ${{ matrix.target.shard }}
+          total_shards: ${{ matrix.target.total_shards }}
+          tags: ${{ matrix.target.tags }}
 
       - name: Report test status
         if: ${{ always() }}
@@ -135,7 +156,7 @@ jobs:
           if [[ "${{ steps.run_nf_test.outcome }}" == "failure" ]]; then
             echo "::error::Test with ${{ matrix.NXF_VER }} failed"
             # Add to workflow summary
-            echo "## ❌ Test failed: ${{ matrix.profile }} | ${{ matrix.NXF_VER }} | Shard ${{ matrix.shard }}/${{ env.TOTAL_SHARDS }}" >> $GITHUB_STEP_SUMMARY
+            echo "## ❌ Test failed: ${TEST_LABEL}" >> $GITHUB_STEP_SUMMARY
             if [[ "${{ matrix.NXF_VER }}" == "latest-everything" ]]; then
               echo "::warning::Test with latest-everything failed but will not cause workflow failure. Please check if the error is expected or if it needs fixing."
             fi
@@ -151,91 +172,17 @@ jobs:
         if: ${{ always() && steps.run_nf_test.outcome == 'failure' && matrix.NXF_VER == 'latest-everything' }}
         run: |
           mkdir -p pr-comment-fragment
-          echo "* ❌ modules | \`${{ matrix.profile }}\` | \`${{ matrix.NXF_VER }}\` | Shard ${{ matrix.shard }}/${{ env.TOTAL_SHARDS }}" > pr-comment-fragment/fragment-modules-${{ strategy.job-index }}.md
+          echo "* ❌ ${TEST_LABEL}" > pr-comment-fragment/fragment-${{ strategy.job-index }}.md
 
       - name: Upload PR comment fragment
         if: ${{ always() && steps.run_nf_test.outcome == 'failure' && matrix.NXF_VER == 'latest-everything' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: pr-comment-fragment-modules-${{ strategy.job-index }}
-          path: pr-comment-fragment/
-
-  nf-test-pipeline:
-    name: "pipeline | ${{ matrix.profile }} | ${{ matrix.NXF_VER }} | ${{ matrix.shard }}/${{ needs.nf-test-changes.outputs.pipeline_total_shards }}"
-    needs: [nf-test-changes]
-    if: ${{ needs.nf-test-changes.outputs.pipeline_total_shards != '0' }}
-    runs-on: # use self-hosted runners
-      - runs-on=${{ github.run_id }}-nf-test-pipeline
-      - runner=16cpu-linux-x64
-      - volume=100gb
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: ${{ fromJson(needs.nf-test-changes.outputs.pipeline_shard) }}
-        profile: [conda, docker, singularity]
-        isMain:
-          - ${{ github.base_ref == 'master' || github.base_ref == 'main' }}
-        # Exclude conda and singularity on dev
-        exclude:
-          - isMain: false
-            profile: "conda"
-          - isMain: false
-            profile: "singularity"
-        NXF_VER:
-          - "25.10.4"
-          - "latest-everything"
-    env:
-      NXF_ANSI_LOG: false
-      TOTAL_SHARDS: ${{ needs.nf-test-changes.outputs.pipeline_total_shards }}
-
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          fetch-depth: 0
-
-      - name: Run nf-test
-        id: run_nf_test
-        uses: ./.github/actions/nf-test
-        continue-on-error: ${{ matrix.NXF_VER == 'latest-everything' }}
-        env:
-          NFT_WORKDIR: ${{ env.NFT_WORKDIR }}
-          NXF_VERSION: ${{ matrix.NXF_VER }}
-        with:
-          profile: ${{ matrix.profile }}
-          shard: ${{ matrix.shard }}
-          total_shards: ${{ env.TOTAL_SHARDS }}
-          tags: pipeline
-
-      - name: Report test status
-        if: ${{ always() }}
-        run: |
-          if [[ "${{ steps.run_nf_test.outcome }}" == "failure" ]]; then
-            echo "::error::Test with ${{ matrix.NXF_VER }} failed"
-            # Add to workflow summary
-            echo "## ❌ Test failed: pipeline | ${{ matrix.profile }} | ${{ matrix.NXF_VER }} | Shard ${{ matrix.shard }}/${{ env.TOTAL_SHARDS }}" >> $GITHUB_STEP_SUMMARY
-            if [[ "${{ matrix.NXF_VER }}" == "latest-everything" ]]; then
-              echo "::warning::Test with latest-everything failed but will not cause workflow failure. Please check if the error is expected or if it needs fixing."
-            fi
-            if [[ "${{ matrix.NXF_VER }}" != "latest-everything" ]]; then
-              exit 1
-            fi
-          fi
-
-      - name: Prepare PR comment fragment
-        if: ${{ always() && steps.run_nf_test.outcome == 'failure' && matrix.NXF_VER == 'latest-everything' }}
-        run: |
-          mkdir -p pr-comment-fragment
-          echo "* ❌ pipeline | \`${{ matrix.profile }}\` | \`${{ matrix.NXF_VER }}\` | Shard ${{ matrix.shard }}/${{ env.TOTAL_SHARDS }}" > pr-comment-fragment/fragment-pipeline-${{ strategy.job-index }}.md
-
-      - name: Upload PR comment fragment
-        if: ${{ always() && steps.run_nf_test.outcome == 'failure' && matrix.NXF_VER == 'latest-everything' }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: pr-comment-fragment-pipeline-${{ strategy.job-index }}
+          name: pr-comment-fragment-${{ strategy.job-index }}
           path: pr-comment-fragment/
 
   confirm-pass:
-    needs: [nf-test, nf-test-pipeline]
+    needs: [nf-test]
     if: always()
     runs-on: # use self-hosted runners
       - runs-on=${{ github.run_id }}-confirm-pass
