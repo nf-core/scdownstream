@@ -1,0 +1,122 @@
+nextflow_process {
+
+    name "Test Process DECOUPLER_NETWORK"
+    script "modules/local/decoupler/network/main.nf"
+    process "DECOUPLER_NETWORK"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([ [ id: 'progeny' ], [] ])
+                input[1] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+    test("Should convert a custom TSV network") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'custom' ],
+                    file("${projectDir}/modules/local/decoupler/network/tests/network.tsv", checkIfExists: true)
+                ])
+                input[1] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def lines = path(process.out.network[0][1]).readLines()
+            assert lines[0] == "source\ttarget\tweight"
+            assert lines.size() == 41
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should convert a custom GMT network") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'custom_gmt' ],
+                    file("${projectDir}/modules/local/decoupler/network/tests/network.gmt", checkIfExists: true)
+                ])
+                input[1] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def lines = path(process.out.network[0][1]).readLines()
+            assert lines[0] == "source\ttarget\tweight"
+            assert lines.size() == 26
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should download PROGENy from Omnipath") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([ [ id: 'progeny' ], [] ])
+                input[1] = 'homo_sapiens'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def lines = path(process.out.network[0][1]).readLines()
+            assert lines[0] == "source\ttarget\tweight"
+            // Omnipath content can change over time, so only the structure is snapshotted
+            def sources = lines.drop(1).collect { it.split('\t')[0] }.unique().sort()
+            assert sources.size() == 14
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                sources
+            ).match()
+        }
+
+    }
+
+}
