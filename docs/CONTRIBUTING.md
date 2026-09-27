@@ -182,4 +182,110 @@ If you update images or graphics, follow the nf-core [style guidelines](https://
 
 ## Pipeline specific contribution guidelines
 
-<!-- TODO nf-core: Add any pipeline specific contribution guidelines here, such as coding styles, procedures, checklists etc. -->
+### Harshil alignment
+
+Use [Harshil alignment](https://nf-co.re/docs/developing/documentation/harshil-alignment) where applicable.
+Do not add more spaces than the widest element requires.
+
+### Linting and formatting
+
+Stage your changes and run [`prek`](https://github.com/j178/prek) before each commit.
+The hooks in `.pre-commit-config.yaml` run Prettier, `nextflow lint`, and `ruff` for Python code.
+The `ruff` rules are configured in `ruff.toml`.
+
+### Local modules
+
+Local modules follow the [nf-core module specifications](https://nf-co.re/docs/specifications/components/modules/general).
+
+### Meta map fields
+
+In addition to `id`, local modules and subworkflows use the following meta fields:
+
+| Field                             | Set by                                               | Meaning                                                                           |
+| --------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `batch_col`                       | Samplesheet                                          | `obs` column holding batch labels, used for batch-aware QC and feature selection. |
+| `symbol_col`                      | Samplesheet                                          | `var` column holding gene symbols.                                                |
+| `counts_layer`                    | Samplesheet                                          | Layer holding raw counts. Defaults to `X`.                                        |
+| `condition_col`, `donor_col`      | Samplesheet                                          | `obs` columns used for differential expression and pseudobulking.                 |
+| `integration`                     | Integration step                                     | Name of the integration method that produced the embedding.                       |
+| `subset`                          | `CLUSTER_TARGETS`, `SUB_INTEGRATE`                   | `global` for the full dataset, otherwise the name of the subset.                  |
+| `resolution`                      | Clustering step                                      | Leiden resolution of the clustering.                                              |
+| `obs_key`                         | `workflows/scdownstream.nf`                          | `obs` column that defines the groups for per-group analyses.                      |
+| `analyses`, `de_methods_resolved` | Analysis plan (`utils_nfcore_scdownstream_pipeline`) | Per-group analyses and DE methods to run. `null` means all.                       |
+
+Channel operations must preserve these fields.
+Add new fields to this table when you introduce them.
+
+### Process templates
+
+Many processes in this pipeline use templates containing Python or R scripts.
+Nextflow interprets strings prefixed with `$` as Nextflow variables - this is especially relevant for R scripts.
+The process fails if such a variable is not defined in the associated Nextflow process.
+To use a literal `$` character in a template, escape it with a backslash (`\$`).
+In R templates, this applies to every use of the `$` operator, for example `adata\$as_SingleCellExperiment()` or `rowData(sce)\$highly_deviant`.
+
+Environment variables that apply to all Python processes, such as `NUMBA_CACHE_DIR` and `MPLCONFIGDIR`, are set in the `env` scope of `nextflow.config`.
+Do not set them in individual templates.
+Pass `task.cpus` to the tool explicitly, for example with `threadpool_limits(int("${task.cpus}"))` in Python.
+Set a fixed random seed for stochastic methods, for example with `set.seed()` in R.
+
+Templates should follow this structure:
+
+1. Read inputs.
+2. Perform processing.
+3. Write outputs:
+   - Primary outputs, such as updated AnnData files.
+   - Fragments, such as added `obs` columns or layers, in relevant formats.
+   - MultiQC inputs.
+   - `versions.yml` containing the versions of the language and all relevant packages.
+
+### Fragments
+
+A fragment contains only the data that a module adds to an AnnData object.
+`workflows/scdownstream.nf` collects fragments on the `ch_obs`, `ch_var`, `ch_obsm`, `ch_obsp`, and `ch_uns` channels, and on their `_per_sample` counterparts (including `ch_layers_per_sample`) before combination.
+`ADATA_EXTEND` merges them into the H5AD files, once per sample after quality control (`FINALIZE_QC_ANNDATAS`) and once at the end of the pipeline (`FINALIZE`).
+Emit each fragment on a channel named after its AnnData slot and use a format that `modules/local/adata/extend` can read:
+
+| Slot     | Format                                               | Index                                 |
+| -------- | ---------------------------------------------------- | ------------------------------------- |
+| `obs`    | Pickled or CSV `pandas.DataFrame`                    | `obs_names`                           |
+| `var`    | Pickled or CSV `pandas.DataFrame`                    | `var_names`                           |
+| `obsm`   | Pickled `pandas.DataFrame`, file name `X_<name>.pkl` | `obs_names`                           |
+| `obsp`   | NumPy `.npy` file containing a sparse matrix         | None                                  |
+| `uns`    | Pickled Python object                                | None                                  |
+| `layers` | `.npz`, `.mtx`, or `.npy` matrix                     | Same cell and gene order as the input |
+
+The file stem becomes the key in `obsm`, `obsp`, `uns`, and `layers`.
+
+### MultiQC custom content
+
+Modules that produce plots for the MultiQC report write a `<prefix>_mqc.json` file with an embedded base64 PNG image.
+Set `parent_id`, `parent_name`, and `parent_description` from `meta.integration` so that MultiQC groups the section with the other results of the same integration.
+`modules/local/scanpy/leiden/templates/leiden.py` contains a reference implementation.
+Add new sections to `assets/multiqc_config.yml` in the order of the pipeline steps.
+
+### Output directories
+
+`conf/modules.config` publishes results into numbered top-level directories that follow the order of the pipeline steps, for example `02_quality_control` or `05_cluster_dimred`.
+Place outputs of new steps into the matching directory.
+Guard intermediate outputs with `enabled: params.save_intermediates`.
+Update `docs/output.md` with the new files.
+
+### Python-only profile
+
+The `python_only` profile in `conf/python_only.config` replaces R-based default tools with Python alternatives.
+If you add an R-based tool as a new default, add a Python alternative to this profile.
+If no alternative exists, document the limitation in the comment block of `conf/python_only.config`.
+
+### Testing conventions
+
+CI runs two nf-test tiers:
+
+- `modules_local,subworkflows_local` for local module and subworkflow tests.
+- `pipeline` for end-to-end tests in `tests/`.
+
+Tag new tests accordingly.
+
+[`docs/reproducibility.md`](reproducibility.md) classifies every local module and subworkflow by the reproducibility of its outputs and assigns a snapshot strategy to each.
+When you add a module or subworkflow, add a row to this file and write the test according to the assigned strategy.
+Snapshot files must never be edited by hand; regenerate them with `nf-test test --update-snapshot`.

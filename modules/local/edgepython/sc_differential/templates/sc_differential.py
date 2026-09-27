@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
 
-import os
 import platform
 import re
 from pathlib import Path
-
-os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
 import anndata as ad
 import edgepython as ep

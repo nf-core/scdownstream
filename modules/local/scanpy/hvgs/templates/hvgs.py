@@ -1,19 +1,10 @@
 #!/usr/bin/env python3
 
-# Disable OpenMP CPU topology detection for MacOS compatibility
-import os
-
-os.environ["KMP_AFFINITY"] = "disabled"
-
 import platform
-
-from threadpoolctl import threadpool_limits
-
-os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
-os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
 import scanpy as sc
 import yaml
+from threadpoolctl import threadpool_limits
 
 threadpool_limits(int("${task.cpus}"))
 sc.settings.n_jobs = int("${task.cpus}")

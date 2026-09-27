@@ -1,16 +1,8 @@
 #!/usr/bin/env python3
 
-# Disable OpenMP CPU topology detection for MacOS compatibility
-import os
-
-os.environ["KMP_AFFINITY"] = "disabled"
-
 import base64
 import json
 import platform
-
-os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
-os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
 import matplotlib.pyplot as plt
 import scanpy as sc

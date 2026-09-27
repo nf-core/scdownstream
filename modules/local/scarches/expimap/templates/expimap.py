@@ -1,15 +1,10 @@
 #!/usr/bin/env python3
 
 import argparse
-import os
 import shlex
 
-import yaml
-
-os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
-os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
-
 import anndata as ad
+import yaml
 
 # Monkey-patch anndata for scarches compatibility
 ad.read = ad.read_h5ad
