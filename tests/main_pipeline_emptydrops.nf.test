@@ -36,7 +36,13 @@ nextflow_pipeline {
                     // All files with stable contents
                     stable_path
                 ).match() },
-                { assert file("$outputDir/02_quality_control/empty_droplet_removal").list().any { it.endsWith('_emptydrops_barcodes.csv') } }
+                { assert file("$outputDir/02_quality_control/empty_droplet_removal").list().any { it.endsWith('_emptydrops_barcodes.csv') } },
+                // qc_metadata CSVs are hash-ignored (float noise); check the annotation columns are present instead
+                {
+                    def qc_metadata = file("$outputDir/02_quality_control/finalized").listFiles().findAll { it.name.endsWith('_qc_metadata.csv') }
+                    assert qc_metadata.size() == 2
+                    assert qc_metadata.every { it.withReader { r -> r.readLine() }.contains('annotation:celltypist:Adult_COVID19_PBMC:per_cell') }
+                }
             )
         }
     }

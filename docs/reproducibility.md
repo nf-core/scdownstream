@@ -39,6 +39,11 @@ The **Test strategy (this branch)** column describes what the tests on this bran
 
 **Passthrough outputs:** when workflow outputs still point at **unstaged** test-dataset paths, tests use `snapshot(workflow.out)` only and do **not** call `anndata(...).yaml` on those paths (see **Known nft-anndata limitation: passthrough h5ad files** in [`.cursor/rules/nf-test-assertions.mdc`](../.cursor/rules/nf-test-assertions.mdc)).
 
+### Pipeline tests
+
+Pipeline tests (`tests/*.nf.test`) snapshot all output file names plus MD5s of files not listed in [`tests/.nftignore`](../tests/.nftignore).
+Files whose content carries annotation scores (`*_qc_metadata.csv`, `04_celltypes/celltypist/*.pkl`) are hash-ignored because floats differ at ~1e-16 between BLAS kernels / thread counts (e.g. Docker on GitHub runners vs. local Apptainer); tests assert their presence and expected columns instead.
+
 ---
 
 ## Modules
@@ -82,9 +87,9 @@ The **Test strategy (this branch)** column describes what the tests on this bran
 
 ### `celltypist/`
 
-| Module       | Description                                                                                                                 | Reproducibility                                                                                        | Test strategy (this branch)                                                                        |
-| ------------ | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| `celltypist` | Annotates cell types using one or more CellTypist logistic regression models after normalising and log-transforming counts. | Fully deterministic — uses a fixed, pre-trained model with no stochastic inference at prediction time. | column names — `path(process.out.versions[0]).yaml` + `adata.obs.colnames` (no `process.out` MD5s) |
+| Module       | Description                                                                                                                 | Reproducibility                                                                                                                                                                                                 | Test strategy (this branch)                                                                        |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `celltypist` | Annotates cell types using one or more CellTypist logistic regression models after normalising and log-transforming counts. | Deterministic labels — fixed, pre-trained model with no stochastic inference; `conf_score` floats can differ at ~1e-16 across BLAS kernels / thread counts, so the `.pkl` hash is not stable across CI runners. | column names — `path(process.out.versions[0]).yaml` + `adata.obs.colnames` (no `process.out` MD5s) |
 
 ### `cytetype/`
 
