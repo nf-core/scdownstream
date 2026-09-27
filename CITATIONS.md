@@ -71,10 +71,6 @@
 
   > Germain P, Lun A, Garcia Meixide C, Macnair W, Robinson M. Doublet identification in single-cell sequencing data using scDblFinder. F1000Res. 2022;11:979. doi: 10.12688/f1000research.73600.2.
 
-- [DropletUtils](https://pubmed.ncbi.nlm.nih.gov/30902100/)
-
-  > Lun ATL, Riesenfeld S, Andrews T, Dao TP, Gomes T, participants in the 1st Human Cell Atlas Jamboree, Marioni JC. EmptyDrops: distinguishing cells from empty droplets in droplet-based single-cell RNA sequencing data. Genome Biol. 2019 Mar 22;20(1):63. doi: 10.1186/s13059-019-1662-y. PubMed PMID: 30902100; PubMed Central PMCID: PMC6431044.
-
 ## Software packaging/containerisation tools
 
 - [Anaconda](https://anaconda.com)
