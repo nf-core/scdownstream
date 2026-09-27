@@ -319,7 +319,7 @@ def referenceConditionRequired() {
     return analysisPlanToList().any { row ->
         def analyses = row.analyses
             ? row.analyses.split(',').collect { token -> token.trim() }
-            : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype']
+            : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype', 'decoupler']
         ('de' in analyses || !row.analyses) &&
             resolvedDeMethodsForPlanRow(row).intersect(referenceConditionDeMethods() as List)
     }
@@ -343,18 +343,38 @@ def pseudobulkDeMethodsRequested() {
     return analysisPlanToList().any { row ->
         def analyses = row.analyses
             ? row.analyses.split(',').collect { token -> token.trim() }
-            : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype']
+            : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype', 'decoupler']
         ('de' in analyses || !row.analyses) &&
             resolvedDeMethodsForPlanRow(row).intersect(pseudobulkDeMethods() as List)
     }
 }
 
-def pseudobulkingRequired() {
-    params.pseudobulk || pseudobulkDeMethodsRequested()
+def decouplerRequested() {
+    if (!params.decoupler) {
+        return false
+    }
+    if (!params.analysis_plan) {
+        return true
+    }
+    return analysisPlanToList().any { row ->
+        !row.analyses || 'decoupler' in row.analyses.split(',').collect { token -> token.trim() }
+    }
 }
 
-def pseudobulkingEnabled(meta, pseudobulk_flag = params.pseudobulk) {
-    if (pseudobulk_flag) {
+def pseudobulkingRequired() {
+    params.pseudobulk || pseudobulkDeMethodsRequested() || decouplerRequested()
+}
+
+def decouplerEnabled(meta, decoupler_flag) {
+    decoupler_flag && analysisEnabled(meta, 'decoupler')
+}
+
+def validDecouplerResources() {
+    ['progeny', 'collectri', 'hallmark'] as Set
+}
+
+def pseudobulkingEnabled(meta, pseudobulk_flag = params.pseudobulk, decoupler_flag = false) {
+    if (pseudobulk_flag || decouplerEnabled(meta, decoupler_flag)) {
         return true
     }
     if (meta.analyses && !('de' in meta.analyses)) {
@@ -427,6 +447,8 @@ def validateInputParameters() {
         )
     }
 
+    validateDecouplerParameters()
+
     if (pseudobulkingRequired() && params.base_adata) {
         def ad = anndata(file(params.base_adata, checkIfExists: true))
         def donor_col = params.input ? 'donor' : (params.base_donor_col ?: 'donor')
@@ -434,6 +456,26 @@ def validateInputParameters() {
             throw new Exception(
                 "Pseudobulking requires column '${donor_col}' in base_adata. Available obs columns: ${ad.obs.colnames.join(', ')}."
             )
+        }
+    }
+}
+
+def validateDecouplerParameters() {
+    if (!params.decoupler) {
+        return
+    }
+    def resources = (params.decoupler_resources ?: '').tokenize(',')*.trim().findAll { token -> token }
+    def invalid = resources.findAll { resource -> !(resource in validDecouplerResources()) }
+    if (invalid) {
+        throw new Exception("Invalid decoupler_resources: ${invalid.join(', ')}. Valid options: ${validDecouplerResources().join(', ')}")
+    }
+    if (!resources && !params.decoupler_network) {
+        throw new Exception("decoupler requires at least one entry in decoupler_resources or a custom decoupler_network")
+    }
+    if (params.decoupler_network) {
+        def network_name = file(params.decoupler_network).baseName
+        if (network_name in resources) {
+            throw new Exception("The decoupler_network file name '${network_name}' clashes with a decoupler_resources entry; rename the file")
         }
     }
 }

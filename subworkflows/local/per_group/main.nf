@@ -4,11 +4,13 @@ include { LIANA_BYSAMPLE                    } from '../../../modules/local/liana
 include { CELL2CELL_TENSOR                  } from '../../../modules/local/cell2cell/tensor'
 include { DIFFERENTIAL_EXPRESSION           } from '../differential_expression'
 include { CLUSTER_ANNOTATION                } from '../cluster_annotation'
+include { PATHWAY_ACTIVITY                  } from '../pathway_activity'
 include { resolveDeMethodsWithPrerequisites } from '../utils_nfcore_scdownstream_pipeline'
 include { cellLevelDeMethods                } from '../utils_nfcore_scdownstream_pipeline'
 include { pseudobulkingEnabled              } from '../utils_nfcore_scdownstream_pipeline'
 include { rankGenesGroupsAnalysisEnabled    } from '../utils_nfcore_scdownstream_pipeline'
 include { hasMultipleObsGroups              } from '../utils_nfcore_scdownstream_pipeline'
+include { decouplerEnabled                  } from '../utils_nfcore_scdownstream_pipeline'
 
 workflow PER_GROUP {
     take:
@@ -31,6 +33,11 @@ workflow PER_GROUP {
     reference_condition            //   value: string
     interesting_genes              //   value: string (path) or []
     species                        //   value: string
+    decoupler                      //   value: boolean
+    decoupler_resources            //   value: string
+    decoupler_network              //    path: file or []
+    decoupler_method               //   value: string
+    decoupler_min_targets          //   value: integer
 
     main:
     ch_uns           = channel.empty()
@@ -99,7 +106,7 @@ workflow PER_GROUP {
             def m = meta.de_methods_resolved
             m && (
                 (rankGenesGroupsAnalysisEnabled(meta) && m.intersect(cellLevelDeMethods())) ||
-                pseudobulkingEnabled(meta, pseudobulk) ||
+                pseudobulkingEnabled(meta, pseudobulk, decoupler) ||
                 ((meta.analyses == null || 'de' in meta.analyses) && 'edgepython_sc' in m)
             )
         }
@@ -107,6 +114,7 @@ workflow PER_GROUP {
     DIFFERENTIAL_EXPRESSION(
         ch_h5ad_de,
         pseudobulk,
+        decoupler,
         pseudobulk_min_num_cells,
         pseudobulk_min_total_counts,
         reference_condition,
@@ -115,6 +123,22 @@ workflow PER_GROUP {
     ch_uns           = ch_uns.mix(DIFFERENTIAL_EXPRESSION.out.uns)
     ch_multiqc_files = ch_multiqc_files.mix(DIFFERENTIAL_EXPRESSION.out.multiqc_files)
     ch_h5ad          = ch_h5ad.mix(DIFFERENTIAL_EXPRESSION.out.h5ad)
+
+    if (decoupler) {
+        PATHWAY_ACTIVITY(
+            DIFFERENTIAL_EXPRESSION.out.pseudobulk_h5ad
+                .filter { meta, _h5ad -> decouplerEnabled(meta, decoupler) },
+            DIFFERENTIAL_EXPRESSION.out.pseudobulk_de_results
+                .filter { meta, _results -> decouplerEnabled(meta, decoupler) },
+            decoupler_resources,
+            decoupler_network,
+            species,
+            decoupler_method,
+            decoupler_min_targets,
+        )
+        ch_uns           = ch_uns.mix(PATHWAY_ACTIVITY.out.uns)
+        ch_multiqc_files = ch_multiqc_files.mix(PATHWAY_ACTIVITY.out.multiqc_files)
+    }
 
     CLUSTER_ANNOTATION(
         ch_h5ad_no_neighbors,
