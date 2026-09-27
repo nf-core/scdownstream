@@ -70,6 +70,13 @@ columns = {
 }
 
 df_azimuth = cells_meta[list(columns)].rename(columns={src: dst for src, (dst, _) in columns.items()})
+
+# panhumanpy writes "False" for cells with an inconsistent label hierarchy, which would
+# otherwise be aggregated as a cell type
+for dst, aggregatable in columns.values():
+    if aggregatable == "true":
+        df_azimuth[dst] = df_azimuth[dst].astype(str).replace("False", "Unassigned")
+
 df_azimuth.to_pickle(f"{prefix}.pkl")
 
 pd.DataFrame([{"obs_column": dst, "aggregatable": aggregatable} for dst, aggregatable in columns.values()]).to_csv(
