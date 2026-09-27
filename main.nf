@@ -35,6 +35,7 @@ workflow NFCORE_SCDOWNSTREAM {
     ch_base                       // channel: [ val(meta), path(h5ad) ]
     is_extension                  //   value: boolean
     ch_input                      //    file: samplesheet.csv
+    empty_droplet_removal         //   value: string
     ambient_correction            //   value: string
     ambient_corrected_integration //   value: boolean
     doublet_detection             //   value: string
@@ -121,6 +122,7 @@ workflow NFCORE_SCDOWNSTREAM {
         ch_base,
         is_extension,
         ch_input,
+        empty_droplet_removal,
         ambient_correction,
         ambient_corrected_integration,
         doublet_detection,
@@ -258,6 +260,7 @@ workflow {
         ch_base_adata,
         params.base_adata != null,
         params.input,
+        params.empty_droplet_removal,
         params.ambient_correction,
         params.ambient_corrected_integration,
         params.doublet_detection,

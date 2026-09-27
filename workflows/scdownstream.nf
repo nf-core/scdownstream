@@ -33,6 +33,7 @@ workflow SCDOWNSTREAM {
     ch_base                       // channel: [ val(meta), path(h5ad) ]
     is_extension                  //   value: boolean
     ch_input                      //    file: samplesheet.csv
+    empty_droplet_removal         //   value: string
     ambient_correction            //   value: string
     ambient_corrected_integration //   value: boolean
     doublet_detection             //   value: string
@@ -140,6 +141,7 @@ workflow SCDOWNSTREAM {
         //
         QUALITY_CONTROL (
             ch_h5ad,
+            empty_droplet_removal,
             ambient_correction,
             ambient_corrected_integration,
             unify_gene_symbols,
