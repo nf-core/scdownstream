@@ -15,6 +15,8 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Fold the `main_pipeline_build` pipeline test into the `default` test: `-profile test` now also runs Seurat integration and uses the `Adult_COVID19_PBMC` CellTypist model to match the PBMC test data [[#317](https://github.com/nf-core/scdownstream/pull/317)].
 - Size CPU and memory per process for `-profile test` pipeline runs (`conf/test_resources.config`), based on measured peak usage, so that several tasks share a runner and the pipeline nf-tests run faster [[#317](https://github.com/nf-core/scdownstream/pull/317)].
 - Parallelise `computeSumFactors` in `SCRAN_NORMALIZATION` over `task.cpus` and use a smaller input for its module test [[#317](https://github.com/nf-core/scdownstream/pull/317)].
+- Set `KMP_AFFINITY`, `NUMBA_CACHE_DIR` and `MPLCONFIGDIR` pipeline-wide in the `env` scope of `nextflow.config` instead of in each local Python template by @nictru and Cursor [[#318](https://github.com/nf-core/scdownstream/pull/318)].
+- Move agent conventions from `AGENTS.md` to the pipeline-specific contribution guidelines in `docs/CONTRIBUTING.md` and document pipeline conventions there by @nictru and Cursor [[#318](https://github.com/nf-core/scdownstream/pull/318)].
 - Replace the deprecated `QUARTONOTEBOOK` module with `QUARTO_NOTEBOOK` for rendering the QC report.
 - Make final AnnData-to-RDS conversion (`ADATA_TORDS`) opt-in via `--tords` (previously always run).
 - Restructure `06_per_group` to a context-first hierarchy (`{integration}/{subset}/{leiden|label}/...`) and move former `07_pseudobulk_de` outputs under `06_per_group/.../differential_expression/`.
