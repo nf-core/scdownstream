@@ -17,6 +17,7 @@ nextflow_pipeline {
                 integrate_per_label          = true
                 integration_methods          = 'pca'
                 integration_n_features       = -1
+                normalization_method         = 'log1p'
                 cluster_global               = false
                 cluster_per_label            = false
                 skip_liana                   = true
@@ -60,6 +61,7 @@ nextflow_pipeline {
                 integrate_per_label_whitelist = 'SRR28679756'
                 integration_methods           = 'pca'
                 integration_n_features        = -1
+                normalization_method          = 'log1p'
                 cluster_global                = false
                 cluster_per_label             = false
                 skip_liana                    = true
