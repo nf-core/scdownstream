@@ -90,8 +90,12 @@ nextflow_process {
             assert file(process.out.scores[0][1]).name == 'test_custom_scores.parquet'
             assert file(process.out.uns[0]).name == 'test_decoupler_activity.pkl'
             assert file(process.out.multiqc_files[0]).name == 'test_custom_activity_mqc.json'
+            // Score tables differ in the last float digits across CPUs, so only their names are snapshotted
             assert snapshot(
-                process.out,
+                process.out.scores.collect { meta, parquet -> [meta, file(parquet).name] },
+                process.out.uns.collect { file(it).name },
+                process.out.plots,
+                process.out.multiqc_files,
                 path(process.out.versions[0]).yaml
             ).match()
         }

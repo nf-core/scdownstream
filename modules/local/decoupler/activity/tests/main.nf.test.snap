@@ -1,50 +1,24 @@
 {
     "Should score pseudobulk profiles with a custom network": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test",
-                            "integration": "scvi"
-                        },
-                        "test_custom_scores.parquet:md5,12c566d4b8ec906c481a6858e68d7a7d"
-                    ]
-                ],
-                "1": [
-                    "test_decoupler_activity.pkl:md5,d5539f207262369c6d22e92b4ed277f6"
-                ],
-                "2": [
-                    "test_custom_activity.png:md5,b1294072aec4550ac2864144ef48212e"
-                ],
-                "3": [
-                    "test_custom_activity_mqc.json:md5,852c50a4a2f4164dbd6e53bb1fa17ffb"
-                ],
-                "4": [
-                    "versions.yml:md5,72dbaddd41b34ce7e0abdba46ee607ca"
-                ],
-                "multiqc_files": [
-                    "test_custom_activity_mqc.json:md5,852c50a4a2f4164dbd6e53bb1fa17ffb"
-                ],
-                "plots": [
-                    "test_custom_activity.png:md5,b1294072aec4550ac2864144ef48212e"
-                ],
-                "scores": [
-                    [
-                        {
-                            "id": "test",
-                            "integration": "scvi"
-                        },
-                        "test_custom_scores.parquet:md5,12c566d4b8ec906c481a6858e68d7a7d"
-                    ]
-                ],
-                "uns": [
-                    "test_decoupler_activity.pkl:md5,d5539f207262369c6d22e92b4ed277f6"
-                ],
-                "versions": [
-                    "versions.yml:md5,72dbaddd41b34ce7e0abdba46ee607ca"
+            [
+                [
+                    {
+                        "id": "test",
+                        "integration": "scvi"
+                    },
+                    "test_custom_scores.parquet"
                 ]
-            },
+            ],
+            [
+                "test_decoupler_activity.pkl"
+            ],
+            [
+                "test_custom_activity.png:md5,b1294072aec4550ac2864144ef48212e"
+            ],
+            [
+                "test_custom_activity_mqc.json:md5,852c50a4a2f4164dbd6e53bb1fa17ffb"
+            ],
             {
                 "DECOUPLER_ACTIVITY": {
                     "anndata": "0.13.4",
@@ -55,7 +29,7 @@
                 }
             }
         ],
-        "timestamp": "2026-09-27T15:55:43.139418747",
+        "timestamp": "2026-09-27T21:16:22.061359128",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

@@ -62,8 +62,12 @@ nextflow_process {
             assert file(process.out.results[0][1]).name == 'test_edgepython_enrichment.parquet'
             assert file(process.out.uns[0]).name == 'test_edgepython_decoupler_enrichment.pkl'
             assert file(process.out.multiqc_files[0]).name == 'test_edgepython_network_enrichment_mqc.json'
+            // Enrichment tables differ in the last float digits across CPUs, so only their names are snapshotted
             assert snapshot(
-                process.out,
+                process.out.results.collect { meta, parquet -> [meta, file(parquet).name] },
+                process.out.uns.collect { file(it).name },
+                process.out.plots,
+                process.out.multiqc_files,
                 path(process.out.versions[0]).yaml
             ).match()
         }
