@@ -44,6 +44,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 3. Cell type annotation
    - [CellTypist](https://www.celltypist.org/)
    - [SingleR](https://www.bioconductor.org/packages/release/bioc/html/SingleR.html)
+   - [Pan-human Azimuth](https://github.com/satijalab/panhumanpy)
    - [CyteType](https://github.com/NygenAnalytics/cytetype)
 4. Clustering and dimensionality reduction
    1. [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html)
@@ -119,6 +120,10 @@ The integrated H5AD files are stored in subdirectories named after the integrati
   - `celltypist/`
     - `*.h5ad`: The H5AD file with cell type annotations.
     - `*.pkl`: The cell type annotations in a pickle file.
+  - `azimuth/`
+    - `*.h5ad`: The H5AD file with Pan-human Azimuth annotations in `obs` and the Azimuth embedding in `obsm['X_azimuth']`.
+    - `*.pkl`: The Pan-human Azimuth annotations in a pickle file.
+    - `*_annotation_columns.csv`: The added `obs` columns and whether they are used for per-cluster aggregation.
   - `singleR`
     - `*.h5ad`: The H5AD file with cell type annotations.
     - `*.csv`: The cell type annotations in a CSV file.
@@ -128,7 +133,7 @@ The integrated H5AD files are stored in subdirectories named after the integrati
 
 </details>
 
-The `04_celltypes` directory contains the results of the per-sample cell type annotation step. Annotations from `celltypist` and `singleR` are merged back into the final per-sample AnnData object via the `FINALIZE_QC_ANNDATAS` step.
+The `04_celltypes` directory contains the results of the per-sample cell type annotation step. Annotations from `celltypist`, `singleR` and `azimuth` are merged back into the final per-sample AnnData object via the `FINALIZE_QC_ANNDATAS` step.
 
 ### CyteType
 
