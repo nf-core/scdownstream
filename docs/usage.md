@@ -29,7 +29,9 @@ It has to be a comma-separated file with at least 2 columns, and a header row as
 
 ### Minimal samplesheet
 
-The samplesheet needs to contain at least two columns: `sample` and at least one out of `filtered` and `unfiltered`:
+The samplesheet needs to contain at least two columns: `sample` and at least one out of `filtered` and `unfiltered`.
+Each row describes one sample, and each value in the `sample` column must be unique.
+The pipeline fails samplesheet validation if a sample name occurs more than once.
 
 ```csv title="samplesheet.csv"
 sample,unfiltered
