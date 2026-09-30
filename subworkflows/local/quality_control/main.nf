@@ -97,7 +97,8 @@ workflow QUALITY_CONTROL {
     AMBIENT_CORRECTION (
         ch_complete,
         ambient_correction_method,
-        ambient_corrected_integration
+        ambient_corrected_integration,
+        scvi_max_epochs
     )
     ch_h5ad = AMBIENT_CORRECTION.out.h5ad
 
