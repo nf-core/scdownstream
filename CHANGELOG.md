@@ -51,9 +51,4 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Pass gene symbols into edgePython DE so volcano labels use gene names instead of row indices.
 - Deduplicate by-sample LIANA obs column selection so `context_key=condition` does not build a 2D frame and crash pandas.
 - Sort doublet prediction columns before writing to `obs` so nf-test snapshots are order-stable across parallel methods.
-
 - Make by-sample LIANA subsampling context/donor-aware and drop contexts with too few cells per group before calling LIANA.
-
-### `Dependencies`
-
-### `Deprecated`
