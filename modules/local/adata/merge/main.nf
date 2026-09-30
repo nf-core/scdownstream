@@ -21,7 +21,7 @@ process ADATA_MERGE {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    force_obs_cols = task.ext.force_obs_cols ?: params.force_obs_cols ?: ""
+    force_obs_cols = task.ext.force_obs_cols ?: ""
     template 'merge.py'
 
     stub:
