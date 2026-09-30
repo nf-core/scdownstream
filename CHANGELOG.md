@@ -30,6 +30,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Use contrast-first MultiQC volcano titles: Scanpy `{groupby}={group} vs rest` with optional within-filter, and PyDESeq2 / edgePython / edgepython_sc `{treatment} vs {reference} (within celltype=...)` [[#315](https://github.com/nf-core/scdownstream/pull/315)].
 - Collapse Scanpy `rank_genes_groups` volcanoes into one multi-panel figure per comparison scope instead of one PNG per group [[#315](https://github.com/nf-core/scdownstream/pull/315)].
 - For two-group Scanpy comparisons, show a single `{A} vs {B}` volcano instead of mirrored `{A} vs rest` and `{B} vs rest` panels [[#315](https://github.com/nf-core/scdownstream/pull/315)].
+- Remove duplicate and unused parameters (`use_gpu`), the duplicate `process_gpu` block in `conf/base.config` and non-ASCII characters in config comments by @nictru and Claude [[#XXX](https://github.com/nf-core/scdownstream/pull/XXX)].
 
 ### `Added`
 
