@@ -38,7 +38,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Add opt-in Tensor-cell2cell analysis: by-sample LIANA (`liana/bysample`) followed by tensor factorisation and sender-receiver loadings-product heatmaps (`cell2cell/tensor`).
 - Add volcano plots and optional `--interesting_genes` highlighting for Scanpy, PyDESeq2, edgePython, and edgepython_sc differential expression.
 - Add CyteType module for automated cell type annotation.
-- Add ribosomal/haemoglobin QC metrics [[#277]https://github.com/nf-core/scdownstream/pull/277]
+- Add ribosomal/haemoglobin QC metrics [[#277](https://github.com/nf-core/scdownstream/pull/277)]
 - Add reporting using Quarto [[#258](https://github.com/nf-core/scdownstream/pull/258)]
 - Convert to Nextflow strict mode [[#244](https://github.com/nf-core/scdownstream/pull/244)]
 - Add `singleR` module for automated cell type annotation [[#200](https://github.com/nf-core/scdownstream/pull/200)]
