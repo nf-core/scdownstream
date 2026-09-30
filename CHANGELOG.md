@@ -31,6 +31,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Collapse Scanpy `rank_genes_groups` volcanoes into one multi-panel figure per comparison scope instead of one PNG per group [[#315](https://github.com/nf-core/scdownstream/pull/315)].
 - For two-group Scanpy comparisons, show a single `{A} vs {B}` volcano instead of mirrored `{A} vs rest` and `{B} vs rest` panels [[#315](https://github.com/nf-core/scdownstream/pull/315)].
 - Read `force_obs_cols` in `ADATA_MERGE` from `ext.force_obs_cols` instead of `params` by @nictru and Claude [[#XXX](https://github.com/nf-core/scdownstream/pull/XXX)].
+- Pass `scvi_max_epochs` to `AMBIENT_CORRECTION` as a `take:` input instead of reading `params.scvi_max_epochs` by @nictru and Claude [[#XXX](https://github.com/nf-core/scdownstream/pull/XXX)].
 
 ### `Added`
 
