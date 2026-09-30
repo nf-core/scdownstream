@@ -469,11 +469,10 @@ def validateInputSamplesheet(input) {
 // Generate methods description for MultiQC
 //
 def toolCitationText() {
-    // TODO nf-core: Optionally add in-text citation tools to this list.
-    // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "Tool (Foo et al. 2023)" : "",
-    // Uncomment function in methodsDescriptionText to render in MultiQC report
     def citation_text = [
         "Tools used in the workflow included:",
+        "Scanpy (Wolf et al. 2018),",
+        "Leiden (Traag et al. 2019),",
         "MultiQC (Ewels et al. 2016)",
         ".",
     ].join(' ').trim()
@@ -482,11 +481,10 @@ def toolCitationText() {
 }
 
 def toolBibliographyText() {
-    // TODO nf-core: Optionally add bibliographic entries to this list.
-    // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "<li>Author (2023) Pub name, Journal, DOI</li>" : "",
-    // Uncomment function in methodsDescriptionText to render in MultiQC report
     def reference_text = [
-        "<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. doi: /10.1093/bioinformatics/btw354</li>"
+        "<li>Wolf, F. A., Angerer, P., & Theis, F. J. (2018). SCANPY: large-scale single-cell gene expression data analysis. Genome Biology, 19(1), 15. doi: <a href=\"https://doi.org/10.1186/s13059-017-1382-0\">10.1186/s13059-017-1382-0</a></li>",
+        "<li>Traag, V. A., Waltman, L., & van Eck, N. J. (2019). From Louvain to Leiden: guaranteeing well-connected communities. Scientific Reports, 9(1), 5233. doi: <a href=\"https://doi.org/10.1038/s41598-019-41695-z\">10.1038/s41598-019-41695-z</a></li>",
+        "<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics, 32(19), 3047-3048. doi: <a href=\"https://doi.org/10.1093/bioinformatics/btw354\">10.1093/bioinformatics/btw354</a></li>",
     ].join(' ').trim()
 
     return reference_text
@@ -516,13 +514,8 @@ def methodsDescriptionText(mqc_methods_yaml) {
     meta["nodoi_text"] = meta.manifest_map.doi ? "" : "<li>If available, make sure to update the text to include the Zenodo DOI of version of the pipeline used. </li>"
 
     // Tool references
-    meta["tool_citations"] = ""
-    meta["tool_bibliography"] = ""
-
-    // TODO nf-core: Only uncomment below if logic in toolCitationText/toolBibliographyText has been filled!
-    // meta["tool_citations"] = toolCitationText().replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
-    // meta["tool_bibliography"] = toolBibliographyText()
-
+    meta["tool_citations"] = toolCitationText().replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
+    meta["tool_bibliography"] = toolBibliographyText()
 
     def methods_text = mqc_methods_yaml.text
 
