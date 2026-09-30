@@ -226,7 +226,7 @@ If your CyteType deployment requires authentication, set the Nextflow secret `CY
 
 ### Cell cycle scoring
 
-Cell cycle scoring assigns each cell an S-phase score, G2M-phase score, and a predicted cell cycle phase (`S`, `G2M`, or `G1`) based on the expression of curated marker genes (Tirosh et al. 2015, same gene sets as Seurat).
+Cell cycle scoring assigns each cell an S-phase score, G2M-phase score, and a predicted cell cycle phase (`S`, `G2M`, or `G1`) based on the expression of curated marker genes (Tirosh et al. 2016, same gene sets as Seurat).
 The scores are stored in `adata.obs` as `S_score`, `G2M_score`, and `phase`, and are available as covariates in downstream integration steps.
 
 Cell cycle scoring is enabled by default.
