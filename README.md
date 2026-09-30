@@ -23,7 +23,8 @@
 
 **nf-core/scdownstream** is a bioinformatics pipeline that can be used to process already quantified single-cell RNA-seq data.
 It takes a samplesheet and H5AD-, SingleCellExperiment/Seurat- or CSV files as input and performs quality control, integration, dimensionality reduction and clustering.
-The pipeline produces an integrated H5AD and SingleCellExperiment file and an extensive QC report.
+The pipeline produces an integrated H5AD file and an extensive QC report.
+With `--tords`, it also converts the final H5AD file to a SingleCellExperiment RDS file.
 
 The pipeline is based on the learnings and implementations from the following pipelines (alphabetical):
 
@@ -34,7 +35,7 @@ The pipeline is based on the learnings and implementations from the following pi
 
 # ![nf-core/scdownstream](docs/images/metromap.png)
 
-Steps marked with the boat icon are not yet implemented. For the other steps, the pipeline uses the following tools:
+The pipeline uses the following tools:
 
 1. Per-sample preprocessing
    1. Convert all RDS files to H5AD format
@@ -66,6 +67,7 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
       - [PCA](https://scanpy.readthedocs.io/en/stable/generated/scanpy.pp.pca.html)
       - [scimilarity](https://github.com/Genentech/scimilarity)
       - [Expimap](https://docs.scarches.org/en/latest/api/models.html#scarches.models.EXPIMAP)
+   4. Integration benchmarking with [scib-metrics](https://scib-metrics.readthedocs.io/) (optional via `--scib`)
 3. Cell type annotation
    - [CellTypist](https://www.celltypist.org/)
    - [SingleR](https://www.bioconductor.org/packages/release/bioc/html/SingleR.html)
@@ -74,7 +76,20 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
    1. [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html)
    2. [UMAP](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.umap.html)
    3. [t-SNE](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.tsne.html) (optional via `--tsne`)
-5. Create [Quarto](https://quarto.org/) and ([`MultiQC`](http://multiqc.info/)) reports
+5. Per-group analyses
+   1. Cluster connectivity ([PAGA](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.paga.html))
+   2. Marker genes and differential expression
+      - [Scanpy `rank_genes_groups`](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.rank_genes_groups.html)
+      - Pseudobulk aggregation with [decoupler](https://decoupler.readthedocs.io/)
+      - [PyDESeq2](https://github.com/owkin/PyDESeq2)
+      - [edgePython](https://github.com/pachterlab/edgePython)
+   3. Cell-cell communication
+      - [LIANA+](https://liana-py.readthedocs.io/)
+      - [Tensor-cell2cell](https://github.com/earmingol/cell2cell) (optional via `--cell2cell`)
+6. Export the final H5AD file
+   - SingleCellExperiment RDS file (optional via `--tords`)
+   - [CELLxGENE](https://cellxgene.cziscience.com/)-compatible H5AD file (optional via `--prep_cellxgene`)
+7. Create [Quarto](https://quarto.org/) and ([`MultiQC`](http://multiqc.info/)) reports
 
 ## Usage
 
@@ -82,23 +97,21 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/get_started/environment_setup/overview) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/get_started/run-your-first-pipeline) with `-profile test` before running the workflow on actual data.
 
 > [!NOTE]
-> If you are confused by the terms `filtered` and `unfiltered`, please check out the respective [documentation](https://nf-co.re/scdownstream/dev/docs/usage/#filtered-and-unfiltered-matrices).
+> If you are confused by the terms `filtered` and `unfiltered`, please check out the respective [documentation](https://nf-co.re/scdownstream/docs/usage/#filtered-and-unfiltered-matrices).
 
 First, prepare a samplesheet with your input data that looks as follows:
 
 ```csv title="samplesheet.csv"
 sample,unfiltered
 sample1,/absolute/path/to/sample1.h5ad
-sample2,/absolute/path/to/sample3.h5
-sample3,relative/path/to/sample2.rds
-sample4,/absolute/path/to/sample3.csv
+sample2,/absolute/path/to/sample2.h5
+sample3,relative/path/to/sample3.rds
+sample4,/absolute/path/to/sample4.csv
 ```
 
 Each entry represents a H5AD, H5, RDS or CSV file.
 RDS files may contain any object that can be converted to a SingleCellExperiment using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function.
 CSV files should contain a matrix with genes as columns and cells as rows. The first column should contain cell names/barcodes.
-
--->
 
 Now, you can run the pipeline using:
 
@@ -149,8 +162,6 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
 <!-- If you use nf-core/scdownstream for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
-
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
