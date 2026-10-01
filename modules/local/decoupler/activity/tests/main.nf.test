@@ -1,0 +1,105 @@
+nextflow_process {
+
+    name "Test Process DECOUPLER_ACTIVITY"
+    script "modules/local/decoupler/activity/main.nf"
+    process "DECOUPLER_ACTIVITY"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = file("${projectDir}/modules/local/decoupler/network/tests/network.tsv", checkIfExists: true)
+                input[2] = 'ulm'
+                input[3] = 5
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+    test("Should score pseudobulk profiles with a custom network") {
+
+        setup {
+            run("DECOUPLER_PSEUDOBULK") {
+                script "modules/local/decoupler/pseudobulk/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                            [ id: 'test', integration: 'scvi' ],
+                            file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                        ]
+                    )
+                    input[1] = 'X'
+                    input[2] = 'sample'
+                    input[3] = 'leiden'
+                    input[4] = 'condition'
+                    input[5] = 10
+                    input[6] = 1000
+                    """
+                }
+            }
+            run("DECOUPLER_NETWORK") {
+                script "modules/local/decoupler/network/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [ id: 'custom' ],
+                        file("${projectDir}/modules/local/decoupler/network/tests/network.tsv", checkIfExists: true)
+                    ])
+                    input[1] = 'human'
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = DECOUPLER_PSEUDOBULK.out.h5ad
+                input[1] = DECOUPLER_NETWORK.out.network.map { _meta, tsv -> tsv }.collect()
+                input[2] = 'ulm'
+                input[3] = 5
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert file(process.out.scores[0][1]).name == 'test_custom_scores.parquet'
+            assert file(process.out.uns[0]).name == 'test_decoupler_activity.pkl'
+            assert file(process.out.multiqc_files[0]).name == 'test_custom_activity_mqc.json'
+            // Score tables differ in the last float digits across CPUs, so only their names are snapshotted
+            assert snapshot(
+                process.out.scores.collect { meta, parquet -> [meta, file(parquet).name] },
+                process.out.uns.collect { file(it).name },
+                process.out.plots,
+                process.out.multiqc_files,
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+}

@@ -1,0 +1,112 @@
+{
+    "Should enrich DE results without stat column": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "de_method": "edgepython",
+                        "integration": "scvi"
+                    },
+                    "test_edgepython_enrichment.parquet"
+                ]
+            ],
+            [
+                "test_edgepython_decoupler_enrichment.pkl"
+            ],
+            [
+                "test_edgepython_network_enrichment.png:md5,833519f84bcb60e9bb04da421cdbaae2"
+            ],
+            [
+                "test_edgepython_network_enrichment_mqc.json:md5,451cc767a6a11f14a3d77db5559e8e7e"
+            ],
+            {
+                "DECOUPLER_ENRICHMENT": {
+                    "decoupler": "2.1.6",
+                    "pandas": "3.0.6",
+                    "python": "3.12.14"
+                }
+            }
+        ],
+        "timestamp": "2026-09-27T21:17:36.384797912",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should enrich PyDESeq2 results": {
+        "content": [
+            [
+                "test_pydeseq2_enrichment.parquet"
+            ],
+            [
+                "test_pydeseq2_decoupler_enrichment.pkl"
+            ],
+            {
+                "DECOUPLER_ENRICHMENT": {
+                    "decoupler": "2.1.6",
+                    "pandas": "3.0.6",
+                    "python": "3.12.14"
+                }
+            }
+        ],
+        "timestamp": "2026-09-27T15:58:05.723352939",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "de_method": "edgepython"
+                        },
+                        "test_edgepython_enrichment.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "test_edgepython_decoupler_enrichment.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "test_edgepython_network_enrichment.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "test_edgepython_network_enrichment_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "multiqc_files": [
+                    "test_edgepython_network_enrichment_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "plots": [
+                    "test_edgepython_network_enrichment.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "results": [
+                    [
+                        {
+                            "id": "test",
+                            "de_method": "edgepython"
+                        },
+                        "test_edgepython_enrichment.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "uns": [
+                    "test_edgepython_decoupler_enrichment.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-27T15:54:04.769354668",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

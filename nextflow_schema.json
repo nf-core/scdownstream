@@ -569,6 +569,45 @@
                 }
             }
         },
+        "pathway_analysis_options": {
+            "title": "Pathway analysis options",
+            "type": "object",
+            "description": "Options for pathway and transcription factor activity analysis with decoupler",
+            "fa_icon": "fas fa-project-diagram",
+            "properties": {
+                "decoupler": {
+                    "type": "boolean",
+                    "description": "Score pathway and transcription factor activity on pseudobulk profiles and pseudobulk DE results with decoupler.",
+                    "help_text": "Enables pseudobulking for every grouping selected by the analysis plan. Enrichment of DE results additionally requires a pseudobulk DE method (pydeseq2 or edgepython) in de_methods. Omnipath resources are downloaded at runtime, so internet access is required unless only decoupler_network is used."
+                },
+                "decoupler_resources": {
+                    "type": "string",
+                    "default": "progeny,collectri",
+                    "pattern": "^((progeny|collectri|hallmark)(,(progeny|collectri|hallmark))*)?$",
+                    "description": "Comma-separated Omnipath resources to score: progeny, collectri and/or hallmark. Leave empty to use only decoupler_network."
+                },
+                "decoupler_network": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "pattern": "^\\S+\\.(tsv|txt|csv|gmt)$",
+                    "description": "Path to a custom prior-knowledge network, scored in addition to decoupler_resources.",
+                    "help_text": "TSV or CSV files need `source` and `target` columns and may contain a `weight` column. GMT files are read as unweighted gene sets. The file name without extension is used as the network name."
+                },
+                "decoupler_method": {
+                    "type": "string",
+                    "default": "ulm",
+                    "enum": ["ulm", "mlm", "waggr", "viper", "zscore", "aucell", "ora", "gsea"],
+                    "description": "decoupler method used to infer activities and enrichment scores."
+                },
+                "decoupler_min_targets": {
+                    "type": "integer",
+                    "default": 5,
+                    "minimum": 1,
+                    "description": "Minimum number of network targets shared with the data for a source to be scored."
+                }
+            }
+        },
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
@@ -756,6 +795,9 @@
         },
         {
             "$ref": "#/$defs/pseudobulking_options"
+        },
+        {
+            "$ref": "#/$defs/pathway_analysis_options"
         },
         {
             "$ref": "#/$defs/institutional_config_options"

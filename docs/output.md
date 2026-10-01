@@ -219,12 +219,23 @@ The results are stored in subdirectories named after the integration tool used.
       - `single_cell/edgepython/`
         - `*_results.parquet`: edgePython single-cell DE result tables per contrast.
         - `*_volcano.png`: Volcano plots for each edgepython_sc contrast.
+    - `pathway_activity/` (when `--decoupler true`)
+      - `pseudobulk/`
+        - `*_{network}_scores.parquet`: decoupler scores and adjusted p-values per pseudobulk sample and source, joined with the pseudobulk sample metadata.
+        - `*_{network}_activity.png`: Heatmap of mean scores per cell type and condition for the most variable sources.
+        - `*_decoupler_activity.pkl`: Scores keyed by network, merged into the final AnnData `uns` slot (when `--save_intermediates`).
+      - `enrichment/{pydeseq2|edgepython}/`
+        - `*_enrichment.parquet`: Long table of enrichment scores per network, source, cell type stratum and contrast.
+        - `*_{network}_enrichment.png`: Dot plot of the top enriched sources per stratum.
+        - `*_decoupler_enrichment.pkl`: Enrichment results keyed by network, merged into the final AnnData `uns` slot (when `--save_intermediates`).
+  - `pathway_activity/networks/` (when `--decoupler true` and `--save_intermediates`)
+    - `{network}.tsv`: Prior-knowledge networks with `source`, `target` and `weight` columns, as used for scoring.
 
 </details>
 
 Per-group analyses are organised by integration context first, then by analysis type. Resuming into an existing outdir may leave directories from the previous flat `{integration}-{subset}-{resolution}` layout; use a clean outdir for a tidy tree.
 
-LIANA rank-aggregate writes a dotplot and tileplot of top interactions by `magnitude_rank`, and a circle plot of interactions with `specificity_rank <= 0.05`. Tensor-cell2cell is opt-in (`--cell2cell true`) and consumes by-sample LIANA results. All differential expression is requested through the `de` analysis token and [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods). Pseudobulk aggregation runs automatically when `pydeseq2` or `edgepython` are selected, or when [`pseudobulk`](https://nf-co.re/scdownstream/parameters#pseudobulk) is enabled. Summary plots are also embedded in MultiQC under the corresponding integration section.
+LIANA rank-aggregate writes a dotplot and tileplot of top interactions by `magnitude_rank`, and a circle plot of interactions with `specificity_rank <= 0.05`. Tensor-cell2cell is opt-in (`--cell2cell true`) and consumes by-sample LIANA results. All differential expression is requested through the `de` analysis token and [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods). Pseudobulk aggregation runs automatically when `pydeseq2` or `edgepython` are selected, or when [`pseudobulk`](https://nf-co.re/scdownstream/parameters#pseudobulk) is enabled. Pathway and transcription factor activity with decoupler is opt-in (`--decoupler true`) and scores the pseudobulk profiles and the pseudobulk DE contrasts. Summary plots are also embedded in MultiQC under the corresponding integration section.
 
 ### Finalize
 
