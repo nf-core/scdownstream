@@ -44,7 +44,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Convert to Nextflow strict mode by @fasterius and @nictru [[#244](https://github.com/nf-core/scdownstream/pull/244)].
 - Add `singleR` module for automated cell type annotation by @addityea and @nictru [[#200](https://github.com/nf-core/scdownstream/pull/200)].
 - Use topics for software versioning by @fasterius [[#252](https://github.com/nf-core/scdownstream/pull/252)].
-- Add `scDblFinder` module for doublet detection, with an optional `doublet_rate` samplesheet column for the per-sample expected doublet rate; without it, `scDblFinder` estimates the rate internally, by @KurayiChawatama [[#261](https://github.com/nf-core/scdownstream/pull/261)].
+- Add `scDblFinder` module for doublet detection, which reads the per-sample expected doublet rate from the optional `doublet_rate` samplesheet column or otherwise estimates it internally, by @KurayiChawatama [[#261](https://github.com/nf-core/scdownstream/pull/261)].
 
 ### `Fixed`
 
