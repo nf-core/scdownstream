@@ -25,6 +25,13 @@ workflow INTEGRATE {
     scanvi_model                // path
     scvi_categorical_covariates // list of string
     scvi_continuous_covariates  // list of string
+    scvi_n_hidden               // integer
+    scvi_n_layers               // integer
+    scvi_n_latent               // integer
+    scvi_dispersion             // string
+    scvi_gene_likelihood        // string
+    scvi_max_epochs             // integer or null
+    scvi_use_observed_lib_size  // boolean
     scimilarity_model           // path
     symphony_reference          // path
     expimap_gmt                 // path
@@ -75,6 +82,13 @@ workflow INTEGRATE {
             "batch",
             scvi_categorical_covariates,
             scvi_continuous_covariates,
+            scvi_n_hidden,
+            scvi_n_layers,
+            scvi_n_latent,
+            scvi_dispersion,
+            scvi_gene_likelihood,
+            scvi_max_epochs ?: [],
+            scvi_use_observed_lib_size,
         )
         ch_integrations = ch_integrations.mix(SCVITOOLS_SCVI.out.h5ad)
         ch_obsm = ch_obsm.mix(SCVITOOLS_SCVI.out.obsm)
@@ -120,6 +134,13 @@ workflow INTEGRATE {
             "batch",
             scvi_categorical_covariates,
             scvi_continuous_covariates,
+            scvi_n_hidden,
+            scvi_n_layers,
+            scvi_n_latent,
+            scvi_dispersion,
+            scvi_gene_likelihood,
+            scvi_max_epochs ?: [],
+            scvi_use_observed_lib_size,
         )
         ch_integrations = ch_integrations.mix(SCVITOOLS_SCANVI.out.h5ad)
         ch_obs = ch_obs.mix(SCVITOOLS_SCANVI.out.obs)

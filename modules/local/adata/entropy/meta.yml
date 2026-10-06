@@ -30,6 +30,9 @@ input:
   - entropy_col:
       type: string
       description: obs column whose label distribution is used to compute entropy
+  - plot_basis:
+      type: string
+      description: obsm basis for the entropy scatter plot, for example `umap`. An empty string skips the plot.
 
 output:
   h5ad:
