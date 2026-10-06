@@ -30,6 +30,7 @@ workflow COMBINE {
     scib_subsample_strategy     //   value: string
     scib_subsample_seed         //   value: integer
     scib_metric_profile         //   value: string
+    force_obs_cols              //   value: string
 
     main:
 
@@ -44,6 +45,7 @@ workflow COMBINE {
             .groupTuple()
             .map { meta, h5ads -> [meta, h5ads.sort { a, b -> a.name <=> b.name }] },
         ch_base,
+        force_obs_cols,
     )
     ch_outer = ADATA_MERGE.out.outer
 
