@@ -27,7 +27,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
       - [Scrublet](https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html)
       - [DoubletDetection](https://doubletdetection.readthedocs.io/en/v2.5.2/doubletdetection.doubletdetection.html)
       - [scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html)
-   7. Cell cycle scoring ([Tirosh et al. 2015](https://doi.org/10.1038/nature14590))
+   7. Cell cycle scoring ([Tirosh et al. 2016](https://doi.org/10.1126/science.aad0501))
 2. Sample aggregation
    1. Merge into a single H5AD file
    2. Present QC for merged counts ([`MultiQC`](http://multiqc.info/))

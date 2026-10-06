@@ -38,7 +38,7 @@ If you are not used to this workflow with Git, see the [GitHub documentation](ht
 
 The nf-core stance on the use of AI and LLMs is that humans are still ultimately responsible for their submitted code, regardless of the tools they use.
 
-If you’re using AI tools, try to stick by these guidelines:
+If you're using AI tools, try to stick by these guidelines:
 
 - Keep PRs as small and focused as possible
 - Avoid any unnecessary changes, such as moving or refactoring code (unless that is the explicit intention of the PR)
@@ -107,7 +107,7 @@ These tests are run with the latest available version of Nextflow and the minimu
 > Only in the unlikely event of a release that contains a critical bug.
 
 - [ ] Create a new branch `patch` on your fork based on `upstream/main` or `upstream/master`.
-- [ ] Fix the bug and use nf-core/tools to bump the version to the next semantic version, for example, `1.2.3` → `1.2.4`.
+- [ ] Fix the bug and use nf-core/tools to bump the version to the next semantic version, for example, `1.2.3` to `1.2.4`.
 - [ ] Open a Pull Request from `patch` directly to `main`/`master` with the changes.
 
 ### Pipeline contribution conventions

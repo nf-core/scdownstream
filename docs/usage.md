@@ -76,7 +76,7 @@ H5AD files in the samplesheet may use either string encoding, including the `nul
 | `max_mito_percentage`              | Maximum percentage of mitochondrial reads for a cell to be considered. Defaults to `100` (no absolute cutoff; set e.g. `8` to match common sc-best-practices).                                                                                                                                                                                                                                                                                             |
 | `min_ribo_percentage`              | Minimum percentage of ribosomal reads for a cell to be considered. Defaults to `0`.                                                                                                                                                                                                                                                                                                                                                                        |
 | `max_hb_percentage`                | Maximum percentage of haemoglobin reads for a cell to be considered. Defaults to `100`.                                                                                                                                                                                                                                                                                                                                                                    |
-| `log1p_total_counts_nmads`         | MAD cutoff for `log1p_total_counts`. Cells outside `median ± n × MAD` are removed. Defaults to `5`. Set to `0` to disable.                                                                                                                                                                                                                                                                                                                                 |
+| `log1p_total_counts_nmads`         | MAD cutoff for `log1p_total_counts`. Cells outside `median +/- n * MAD` are removed. Defaults to `5`. Set to `0` to disable.                                                                                                                                                                                                                                                                                                                               |
 | `log1p_n_genes_by_counts_nmads`    | MAD cutoff for `log1p_n_genes_by_counts`. Defaults to `5`. Set to `0` to disable.                                                                                                                                                                                                                                                                                                                                                                          |
 | `pct_counts_in_top_20_genes_nmads` | MAD cutoff for `pct_counts_in_top_20_genes`. Defaults to `5`. Set to `0` to disable.                                                                                                                                                                                                                                                                                                                                                                       |
 | `pct_counts_mt_nmads`              | MAD cutoff for `pct_counts_mt`. Defaults to `3`. Set to `0` to disable.                                                                                                                                                                                                                                                                                                                                                                                    |
@@ -156,9 +156,10 @@ If you wish to repeatedly use the same parameters for multiple runs, rather than
 
 Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
 
-> [!WARNING]
-> Do not use `-c <file>` to specify parameters as this will result in errors.
-> Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/running/run-pipelines#configuring-pipelines), other infrastructural tweaks (such as output directories), or module arguments (args).
+:::warning
+Do not use `-c <file>` to specify parameters as this will result in errors.
+Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/running/run-pipelines#configuring-pipelines), other infrastructural tweaks (such as output directories), or module arguments (args).
+:::
 
 The above pipeline run specified with a params file in yaml format:
 
@@ -209,7 +210,7 @@ Example tar archives can be found [here](https://github.com/nf-core/test-dataset
 
 #### CyteType
 
-[CyteType](https://github.com/NygenAnalytics/cytetype) is a multi-agent LLM-driven annotator that takes per-cluster marker genes and a free-text study description and returns predicted cell type labels. The pipeline runs CyteType on merged data after integration, clustering, and global differential expression — once per grouping (each Leiden resolution and label column). Cluster labels and marker genes are taken automatically from each grouping's obs column and `uns['rank_genes_groups']`.
+[CyteType](https://github.com/NygenAnalytics/cytetype) is a multi-agent LLM-driven annotator that takes per-cluster marker genes and a free-text study description and returns predicted cell type labels. The pipeline runs CyteType on merged data after integration, clustering, and global differential expression, once per grouping (each Leiden resolution and label column). Cluster labels and marker genes are taken automatically from each grouping's obs column and `uns['rank_genes_groups']`.
 
 To enable CyteType, set [`cytetype_study_context`](https://nf-co.re/scdownstream/dev/parameters/#cytetype_study_context) to a short free-text description of your study (the more specific, the better). When this parameter is empty (the default), CyteType is skipped. In the analysis plan, CyteType is controlled by the `cytetype` token. CyteType always reads Wilcoxon `rank_genes_groups` results; when `cytetype` is active, `wilcoxon` is added to the resolved `de_methods` for each eligible clustering if not already present.
 
@@ -220,14 +221,15 @@ nextflow run nf-core/scdownstream \
     --cytetype_study_context "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq"
 ```
 
-> [!IMPORTANT]
-> CyteType calls the remote `https://cytetype.nygen.io` API and therefore **requires internet access** from the compute node running the `CYTETYPE` task.
+:::info
+CyteType calls the remote `https://cytetype.nygen.io` API and therefore **requires internet access** from the compute node running the `CYTETYPE` task.
+:::
 
 If your CyteType deployment requires authentication, set the Nextflow secret `CYTETYPE_API_KEY` before the run (for example `nextflow secrets set CYTETYPE_API_KEY '<token>'`).
 
 ### Cell cycle scoring
 
-Cell cycle scoring assigns each cell an S-phase score, G2M-phase score, and a predicted cell cycle phase (`S`, `G2M`, or `G1`) based on the expression of curated marker genes (Tirosh et al. 2015, same gene sets as Seurat).
+Cell cycle scoring assigns each cell an S-phase score, G2M-phase score, and a predicted cell cycle phase (`S`, `G2M`, or `G1`) based on the expression of curated marker genes (Tirosh et al. 2016, same gene sets as Seurat).
 The scores are stored in `adata.obs` as `S_score`, `G2M_score`, and `phase`, and are available as covariates in downstream integration steps.
 
 Cell cycle scoring is enabled by default.
@@ -250,7 +252,7 @@ nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results --spe
 
 #### Custom gene lists
 
-For other organisms (e.g. rat, zebrafish), you can provide your own gene lists — one gene symbol per line — via `--s_genes` and `--g2m_genes`:
+For other organisms (e.g. rat, zebrafish), you can provide your own gene lists, with one gene symbol per line, via `--s_genes` and `--g2m_genes`:
 
 ```bash
 nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
@@ -309,7 +311,7 @@ For each integration method, the pipeline:
 
 Steps 1 and 2 always run for every integration and every subset (global and per-label). Step 3 is controlled by the analysis plan (see below).
 
-**Per-label sub-clustering** — when [`cluster_per_label`](https://nf-co.re/scdownstream/parameters#cluster_per_label) is `true`, the pipeline splits the integrated object by the label column and builds a separate neighbour graph, UMAP, and Leiden clustering for each label value, in addition to the global clustering.
+**Per-label sub-clustering**: when [`cluster_per_label`](https://nf-co.re/scdownstream/parameters#cluster_per_label) is `true`, the pipeline splits the integrated object by the label column and builds a separate neighbour graph, UMAP, and Leiden clustering for each label value, in addition to the global clustering.
 
 ### Downstream analyses
 
@@ -317,8 +319,8 @@ For each Leiden clustering result the pipeline runs a configurable set of downst
 
 | Analysis                          | What it does                                                                                               | Skip parameter                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | --------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **PAGA**                          | Trajectory / connectivity graph between clusters                                                           | —                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **LIANA**                         | Ligand–receptor interaction analysis                                                                       | [`skip_liana`](https://nf-co.re/scdownstream/parameters#skip_liana); optional [`liana_max_cells`](https://nf-co.re/scdownstream/parameters#liana_max_cells), [`liana_subsample_strategy`](https://nf-co.re/scdownstream/parameters#liana_subsample_strategy), [`liana_subsample_seed`](https://nf-co.re/scdownstream/parameters#liana_subsample_seed), [`liana_n_perms`](https://nf-co.re/scdownstream/parameters#liana_n_perms) |
+| **PAGA**                          | Trajectory / connectivity graph between clusters                                                           | None                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| **LIANA**                         | Ligand-receptor interaction analysis                                                                       | [`skip_liana`](https://nf-co.re/scdownstream/parameters#skip_liana); optional [`liana_max_cells`](https://nf-co.re/scdownstream/parameters#liana_max_cells), [`liana_subsample_strategy`](https://nf-co.re/scdownstream/parameters#liana_subsample_strategy), [`liana_subsample_seed`](https://nf-co.re/scdownstream/parameters#liana_subsample_seed), [`liana_n_perms`](https://nf-co.re/scdownstream/parameters#liana_n_perms) |
 | **Tensor-cell2cell**              | By-sample LIANA followed by tensor factorisation and sender-receiver loadings-product heatmaps             | opt-in: set [`cell2cell`](https://nf-co.re/scdownstream/parameters#cell2cell) to `true`; optional [`cell2cell_rank`](https://nf-co.re/scdownstream/parameters#cell2cell_rank), [`cell2cell_seed`](https://nf-co.re/scdownstream/parameters#cell2cell_seed); analysis-plan token `cell2cell`                                                                                                                                      |
 | **DE**                            | Cell-level and sample-level differential expression via `de_methods`                                       | omit `de` from the analysis plan and/or set [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) to an empty string                                                                                                                                                                                                                                                                                               |
 | **Aggregate per-cell annotation** | Majority vote of per-cell SingleR/CellTypist labels per cluster (columns derived from annotator manifests) | omit `aggregate_per_cell_annotation` from the analysis plan and/or do not run per-cell annotators                                                                                                                                                                                                                                                                                                                                |
@@ -358,7 +360,7 @@ Use multiple comma-separated values to compare methods in one run, for example `
 
 With many integration methods and resolutions the full downstream suite can generate a large number of tasks. The optional [`analysis_plan`](https://nf-co.re/scdownstream/parameters#analysis_plan) parameter accepts a CSV that controls exactly which Leiden resolutions are computed and which analyses run for each clustering result.
 
-Each row in the CSV selects a subset of clusterings. **All columns are optional** — an empty cell acts as a wildcard that matches everything:
+Each row in the CSV selects a subset of clusterings. **All columns are optional**. An empty cell acts as a wildcard that matches everything:
 
 | Column        | Empty means                                                                                                               |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------- |
@@ -368,7 +370,7 @@ Each row in the CSV selects a subset of clusterings. **All columns are optional*
 | `analyses`    | run `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, and `cytetype` (`cell2cell` is opt-in via `--cell2cell true`) |
 | `de_methods`  | use the global [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) default                                |
 
-When multiple rows match a clustering result, their `analyses` lists are **combined** (duplicates removed). If any matching row leaves `analyses` empty, all analyses run for that clustering. Clusterings that match **no** row are excluded from Leiden and all downstream analyses — but their UMAP and neighbour graph are still computed.
+When multiple rows match a clustering result, their `analyses` lists are **combined** (duplicates removed). If any matching row leaves `analyses` empty, all analyses run for that clustering. Clusterings that match **no** row are excluded from Leiden and all downstream analyses, but their UMAP and neighbour graph are still computed.
 
 Example plan: full analysis on Symphony at resolution 0.5, DE-only at resolution 1.0 for every integration, and DE-only for scVI at any resolution:
 
@@ -467,8 +469,8 @@ Depending on your cluster configuration, you might need to adjust the `clusterOp
 If your jobs get assigned to the correct nodes, but the GPU is not utilized, you might need to add the following configuration:
 `singularity.runOptions = '--no-mount tmp --writable-tmpfs --nv --env CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES --env ROCR_VISIBLE_DEVICES=$ROCR_VISIBLE_DEVICES --env ZE_AFFINITY_MASK=$ZE_AFFINITY_MASK --env NVIDIA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES`
 
-The first part (`--no-mount tmp --writable-tmpfs --nv`) is set by default in the `gpu` profile.
-The rest of this configuration is needed in some cases to make the GPU visible to the container.
+The `gpu` profile sets only `--nv` for Singularity and Apptainer.
+Some systems need the other options to make the GPU visible to the container.
 :::
 
 For different executors, the configuration might look different.
@@ -483,8 +485,9 @@ The pipeline allows you to select an ambient RNA correction method globally usin
 Available methods include `soupx` (default), `decontx`, `cellbender`, `scar`, or `none` to skip correction entirely.
 SoupX requires an unfiltered matrix for each sample where ambient correction is enabled. For filtered-only samples, disable correction in the samplesheet or use `--ambient_correction decontx`.
 
-> [!WARNING]
-> If nf-core/scrnaseq already ran CellBender and you also enable downstream ambient correction on the same count matrix, you may apply two correction steps. Inspect the upstream outputs and disable one stage when appropriate.
+:::warning
+If nf-core/scrnaseq already ran CellBender and you also enable downstream ambient correction on the same count matrix, you may apply two correction steps. Inspect the upstream outputs and disable one stage when appropriate.
+:::
 
 ```bash
 nextflow run nf-core/scdownstream --ambient_correction decontx --input samplesheet.csv --outdir results
@@ -542,13 +545,15 @@ For example, at the bottom of the MultiQC reports.
 
 To further assist in reproducibility, you can use share and reuse [parameter files](#running-the-pipeline) to repeat pipeline runs with the same settings without having to write out a command with every single parameter.
 
-> [!TIP]
-> If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.
+:::tip
+If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.
+:::
 
 ## Core Nextflow arguments
 
-> [!NOTE]
-> These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen)
+:::note
+These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen)
+:::
 
 ### `-profile`
 
@@ -557,8 +562,9 @@ Profiles can give configuration presets for different compute environments.
 
 Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Apptainer, Conda) - see below.
 
-> [!IMPORTANT]
-> We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
+:::info
+We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
+:::
 
 The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time.
 For more information and to check if your system is supported, please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
