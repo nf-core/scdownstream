@@ -34,7 +34,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Pass `scvi_max_epochs` to `AMBIENT_CORRECTION` as a `take:` input instead of reading `params.scvi_max_epochs` by @nictru and Claude [[#324](https://github.com/nf-core/scdownstream/pull/324)].
 - Replace custom `ext` fields in local modules with process inputs or fixed values, and delete `ext` settings that no module reads, following the [nf-core ext key rules](https://nf-co.re/docs/developing/components/ext-args), by @nictru and Claude [[#329](https://github.com/nf-core/scdownstream/pull/329)].
 - Train scVI and scANVI in pipeline tests for `params.scvi_max_epochs` epochs (2 in `-profile test`) instead of 5 by @nictru and Claude [[#329](https://github.com/nf-core/scdownstream/pull/329)].
-- Remove duplicate and unused parameters (`use_gpu`), the duplicate `process_gpu` block in `conf/base.config` and non-ASCII characters in config comments by @nictru and Claude [[#XXX](https://github.com/nf-core/scdownstream/pull/XXX)].
+- Remove duplicate and unused parameters (`use_gpu`), the duplicate `process_gpu` block in `conf/base.config` and non-ASCII characters in config comments by @nictru and Claude [[#330](https://github.com/nf-core/scdownstream/pull/330)].
 
 ### `Added`
 
