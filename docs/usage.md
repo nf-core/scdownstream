@@ -29,7 +29,8 @@ It has to be a comma-separated file with at least 2 columns, and a header row as
 
 ### Minimal samplesheet
 
-The samplesheet needs to contain at least two columns: `sample` and at least one out of `filtered` and `unfiltered`:
+The samplesheet needs to contain at least two columns: `sample` and at least one out of `filtered` and `unfiltered`.
+Each value in the `sample` column must be unique; samplesheet validation fails on duplicate sample names.
 
 ```csv title="samplesheet.csv"
 sample,unfiltered
