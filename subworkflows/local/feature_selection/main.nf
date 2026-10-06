@@ -21,6 +21,7 @@ workflow FEATURE_SELECTION {
             excluded_genes,
             normalization_method,
             false,
+            ch_h5ad.map { meta, _h5ad -> meta.batch_col ?: '' },
         )
         ch_h5ad = SCANPY_HVGS.out.h5ad
         ch_var = ch_var.mix(SCANPY_HVGS.out.var)

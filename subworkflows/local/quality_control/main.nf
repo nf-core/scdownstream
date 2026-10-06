@@ -90,7 +90,8 @@ workflow QUALITY_CONTROL {
     QC_RAW (
         ch_qc_plot.h5ad,
         ch_qc_plot.symbol_col,
-        mito_genes ?: []
+        mito_genes ?: [],
+        'Unfiltered QC plots'
     )
     ch_multiqc_files = ch_multiqc_files.mix(QC_RAW.out.multiqc_files)
 
@@ -211,7 +212,8 @@ workflow QUALITY_CONTROL {
     QC_FILTERED (
         ch_qc_filtered_plot.h5ad,
         ch_qc_filtered_plot.symbol_col,
-        mito_genes ?: []
+        mito_genes ?: [],
+        'Filtered QC plots'
     )
     ch_multiqc_files = ch_multiqc_files.mix(QC_FILTERED.out.multiqc_files)
 

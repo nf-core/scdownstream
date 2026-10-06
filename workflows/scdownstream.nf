@@ -62,6 +62,12 @@ workflow SCDOWNSTREAM {
     scanvi_model                  //   value: string
     scvi_categorical_covariates   //   value: string
     scvi_continuous_covariates    //   value: string
+    scvi_n_hidden                 //   value: integer
+    scvi_n_layers                 //   value: integer
+    scvi_n_latent                 //   value: integer
+    scvi_dispersion               //   value: string
+    scvi_gene_likelihood          //   value: string
+    scvi_use_observed_lib_size    //   value: boolean
     scimilarity_model             //   value: string
     symphony_reference             //   value: string
     expimap_gmt                   //   value: string
@@ -213,6 +219,13 @@ workflow SCDOWNSTREAM {
                 scanvi_model,
                 scvi_categorical_covariates,
                 scvi_continuous_covariates,
+                scvi_n_hidden,
+                scvi_n_layers,
+                scvi_n_latent,
+                scvi_dispersion,
+                scvi_gene_likelihood,
+                scvi_max_epochs,
+                scvi_use_observed_lib_size,
                 scimilarity_model,
                 symphony_reference,
                 expimap_gmt,
@@ -277,6 +290,13 @@ workflow SCDOWNSTREAM {
                 scanvi_model,
                 scvi_categorical_covariates,
                 scvi_continuous_covariates,
+                scvi_n_hidden,
+                scvi_n_layers,
+                scvi_n_latent,
+                scvi_dispersion,
+                scvi_gene_likelihood,
+                scvi_max_epochs,
+                scvi_use_observed_lib_size,
                 scimilarity_model,
                 symphony_reference,
                 expimap_gmt,

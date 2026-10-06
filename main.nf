@@ -64,6 +64,12 @@ workflow NFCORE_SCDOWNSTREAM {
     scanvi_model                  //   value: string
     scvi_categorical_covariates   //   value: string
     scvi_continuous_covariates    //   value: string
+    scvi_n_hidden                 //   value: integer
+    scvi_n_layers                 //   value: integer
+    scvi_n_latent                 //   value: integer
+    scvi_dispersion               //   value: string
+    scvi_gene_likelihood          //   value: string
+    scvi_use_observed_lib_size    //   value: boolean
     scimilarity_model             //   value: string
     symphony_reference            //   value: string
     expimap_gmt                   //   value: string
@@ -146,6 +152,12 @@ workflow NFCORE_SCDOWNSTREAM {
         scanvi_model,
         scvi_categorical_covariates,
         scvi_continuous_covariates,
+        scvi_n_hidden,
+        scvi_n_layers,
+        scvi_n_latent,
+        scvi_dispersion,
+        scvi_gene_likelihood,
+        scvi_use_observed_lib_size,
         scimilarity_model,
         symphony_reference,
         expimap_gmt,
@@ -275,6 +287,12 @@ workflow {
         params.scanvi_model,
         params.scvi_categorical_covariates,
         params.scvi_continuous_covariates,
+        params.scvi_n_hidden,
+        params.scvi_n_layers,
+        params.scvi_n_latent,
+        params.scvi_dispersion,
+        params.scvi_gene_likelihood,
+        params.scvi_use_observed_lib_size,
         params.scimilarity_model,
         symphony_reference,
         params.expimap_gmt,
