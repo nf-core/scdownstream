@@ -32,8 +32,8 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - For two-group Scanpy comparisons, show a single `{A} vs {B}` volcano instead of mirrored `{A} vs rest` and `{B} vs rest` panels [[#315](https://github.com/nf-core/scdownstream/pull/315)].
 - Pass `force_obs_cols` to `ADATA_MERGE` as a process input instead of reading it from `params` by @nictru and Claude [[#324](https://github.com/nf-core/scdownstream/pull/324)].
 - Pass `scvi_max_epochs` to `AMBIENT_CORRECTION` as a `take:` input instead of reading `params.scvi_max_epochs` by @nictru and Claude [[#324](https://github.com/nf-core/scdownstream/pull/324)].
-- Replace custom `ext` fields in local modules with process inputs or fixed values, and delete `ext` settings that no module reads, following the [nf-core ext key rules](https://nf-co.re/docs/developing/components/ext-args), by @nictru and Claude [[#PR_NUMBER](https://github.com/nf-core/scdownstream/pull/PR_NUMBER)].
-- Train scVI and scANVI in pipeline tests for `params.scvi_max_epochs` epochs (2 in `-profile test`) instead of 5 by @nictru and Claude [[#PR_NUMBER](https://github.com/nf-core/scdownstream/pull/PR_NUMBER)].
+- Replace custom `ext` fields in local modules with process inputs or fixed values, and delete `ext` settings that no module reads, following the [nf-core ext key rules](https://nf-co.re/docs/developing/components/ext-args), by @nictru and Claude [[#329](https://github.com/nf-core/scdownstream/pull/329)].
+- Train scVI and scANVI in pipeline tests for `params.scvi_max_epochs` epochs (2 in `-profile test`) instead of 5 by @nictru and Claude [[#329](https://github.com/nf-core/scdownstream/pull/329)].
 
 ### `Added`
 
@@ -58,7 +58,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Deduplicate by-sample LIANA obs column selection so `context_key=condition` does not build a 2D frame and crash pandas.
 - Sort doublet prediction columns before writing to `obs` so nf-test snapshots are order-stable across parallel methods.
 - Reject samplesheets with duplicate `sample` names during input validation by @nictru and Claude [[#325](https://github.com/nf-core/scdownstream/pull/325)].
-- Use `batch_col` as `batch_key` in `SCANPY_HVGS`, which previously read an unset `ext.batch_key` and ignored batches, by @nictru and Claude [[#PR_NUMBER](https://github.com/nf-core/scdownstream/pull/PR_NUMBER)].
+- Use `batch_col` as `batch_key` in `SCANPY_HVGS`, which previously read an unset `ext.batch_key` and ignored batches, by @nictru and Claude [[#329](https://github.com/nf-core/scdownstream/pull/329)].
 
 - Make by-sample LIANA subsampling context/donor-aware and drop contexts with too few cells per group before calling LIANA.
 - Updated `scDblFinder` to use internal `dbr` estimation when `doublet_rate` is not provided, and to use provided `doublet_rate` when available.
