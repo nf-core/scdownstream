@@ -79,6 +79,7 @@ workflow SCDOWNSTREAM {
     scib_subsample_strategy       //   value: string
     scib_subsample_seed           //   value: integer
     scib_metric_profile           //   value: string
+    force_obs_cols                //   value: string
     base_embeddings               //   value: string
     base_label_col                //   value: string
     base_condition_col            //   value: string
@@ -221,6 +222,7 @@ workflow SCDOWNSTREAM {
                 scib_subsample_strategy,
                 scib_subsample_seed,
                 scib_metric_profile,
+                force_obs_cols,
             )
             ch_obs = ch_obs.mix(COMBINE.out.obs)
             ch_obsm = ch_obsm.mix(COMBINE.out.obsm)
