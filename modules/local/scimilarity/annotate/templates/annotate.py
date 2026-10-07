@@ -10,7 +10,7 @@ from scimilarity import CellAnnotation
 adata = sc.read_h5ad("${h5ad}")
 adata_raw = adata.copy()
 
-use_gpu = "${task.ext.use_gpu}" == "true"
+use_gpu = "${task.accelerator ? 'true' : 'false'}" == "true"
 ca = CellAnnotation("${model}", use_gpu=use_gpu)
 
 predictions, nn_idxs, nn_dists, nn_stats = ca.get_predictions_knn(adata.obsm["X_emb"])
