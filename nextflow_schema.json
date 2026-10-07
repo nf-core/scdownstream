@@ -328,7 +328,7 @@
                 "analysis_plan": {
                     "type": "string",
                     "description": "Path to a CSV file controlling which integration × resolution combinations feed into downstream analyses (PAGA, LIANA, DE, cluster-level annotation).",
-                    "help_text": "All columns are optional — empty values act as wildcards. When provided, rows are matched against each clustering result; analyses from all matching rows are combined. When --analysis_plan is not set, all combinations run paga, liana, de, aggregate_per_cell_annotation, and cytetype (subject to skip_liana, --de_methods, and cytetype_study_context). Add the cell2cell token and set --cell2cell true to run by-sample LIANA plus Tensor-cell2cell. Cluster-level annotation tokens: aggregate_per_cell_annotation (majority vote of per-cell SingleR/CellTypist labels) and cytetype (CyteType LLM). See the usage docs for the full schema.",
+                    "help_text": "All columns are optional — empty values act as wildcards. When provided, rows are matched against each clustering result; analyses from all matching rows are combined. When --analysis_plan is not set, all combinations run paga, liana, de, aggregate_per_cell_annotation, and cytetype (subject to skip_liana, --de_methods, and cytetype_study_context). Add the cell2cell token and set --cell2cell true to run by-sample LIANA plus Tensor-cell2cell. Cluster-level annotation tokens: aggregate_per_cell_annotation (majority vote of per-cell SingleR/CellTypist/Azimuth labels) and cytetype (CyteType LLM). See the usage docs for the full schema.",
                     "mimetype": "text/csv",
                     "schema": "assets/schema_analysis_plan.json",
                     "pattern": "^\\S+\\.csv$"
@@ -346,6 +346,12 @@
                     "description": "Specify the models to use for the celltypist cell type annotation",
                     "help_text": "If you want to use multiple models, separate them with a comma. Available models can be found [here](https://www.celltypist.org/models).",
                     "pattern": "^([a-zA-Z0-9_]*(,[a-zA-Z0-9_]*)*)?$"
+                },
+                "azimuth": {
+                    "type": "boolean",
+                    "description": "Annotate cell types per cell with Pan-human Azimuth.",
+                    "help_text": "Runs [panhumanpy](https://github.com/satijalab/panhumanpy) with model `v1` on the raw counts of each sample after quality control. Adds broad, medium and fine cell type labels to `obs` and the Azimuth embedding to `obsm['X_azimuth']`. The model weights are downloaded from Zenodo at runtime, so internet access is required.",
+                    "fa_icon": "fas fa-tags"
                 },
                 "celldex_reference": {
                     "type": "string",

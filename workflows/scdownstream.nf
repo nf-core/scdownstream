@@ -50,6 +50,7 @@ workflow SCDOWNSTREAM {
     qc_only                       //   value: boolean
     celldex_reference              //   value: string
     celltypist_model               //   value: string
+    azimuth                        //   value: boolean
     cytetype_study_context         //   value: string
     unify_gene_symbols            //   value: boolean
     duplicate_var_resolution      //   value: string
@@ -170,14 +171,16 @@ workflow SCDOWNSTREAM {
         ch_obs_per_sample = ch_obs_per_sample.mix(QUALITY_CONTROL.out.obs)
 
         //
-        // Perform per-cell annotation with SingleR and CellTypist
+        // Perform per-cell annotation with SingleR, CellTypist and Pan-human Azimuth
         //
         PER_CELL_ANNOTATION (
             ch_h5ad.map { meta, h5ad -> [meta, h5ad, meta.symbol_col, meta.counts_layer ?: "X"] },
             celldex_reference,
-            celltypist_model
+            celltypist_model,
+            azimuth
         )
         ch_obs_per_sample = ch_obs_per_sample.mix(PER_CELL_ANNOTATION.out.obs)
+        ch_obsm_per_sample = ch_obsm_per_sample.mix(PER_CELL_ANNOTATION.out.obsm)
 
         ch_per_cell_annotation_columns = PER_CELL_ANNOTATION.out.annotation_column_rows
             .filter { row -> row.aggregatable == 'true' }

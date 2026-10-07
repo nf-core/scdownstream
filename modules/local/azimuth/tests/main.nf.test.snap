@@ -1,0 +1,135 @@
+{
+    "Should run with a symbol column other than index": {
+        "content": [
+            {
+                "CELLTYPES_AZIMUTH": {
+                    "anndata": "0.12.10",
+                    "pandas": "2.3.3",
+                    "panhumanpy": "1.0.0",
+                    "python": "3.12.14",
+                    "tensorflow": "2.17.0"
+                }
+            },
+            [
+                "sample",
+                "annotation:azimuth:broad:per_cell",
+                "annotation:azimuth:medium:per_cell",
+                "annotation:azimuth:fine:per_cell",
+                "annotation:azimuth:fine:per_cell:confidence",
+                "annotation:azimuth:full_hierarchy:per_cell"
+            ]
+        ],
+        "timestamp": "2026-10-07T12:03:44.981966453",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_azimuth.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_azimuth.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "X_azimuth.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_azimuth_annotation_columns.csv:md5,844397d2b335534df33b2700210dd8d3"
+                    ]
+                ],
+                "4": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "annotation_columns": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_azimuth_annotation_columns.csv:md5,844397d2b335534df33b2700210dd8d3"
+                    ]
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_azimuth.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_azimuth.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obsm": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "X_azimuth.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-27T16:30:50.416852037",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures": {
+        "content": [
+            {
+                "CELLTYPES_AZIMUTH": {
+                    "anndata": "0.12.10",
+                    "pandas": "2.3.3",
+                    "panhumanpy": "1.0.0",
+                    "python": "3.12.14",
+                    "tensorflow": "2.17.0"
+                }
+            },
+            [
+                "sample",
+                "annotation:azimuth:broad:per_cell",
+                "annotation:azimuth:medium:per_cell",
+                "annotation:azimuth:fine:per_cell",
+                "annotation:azimuth:fine:per_cell:confidence",
+                "annotation:azimuth:full_hierarchy:per_cell"
+            ]
+        ],
+        "timestamp": "2026-10-07T12:01:28.988484189",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

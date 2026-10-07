@@ -71,6 +71,7 @@ Steps marked with the boat icon are not yet implemented. For the other steps, th
 3. Cell type annotation
    - [CellTypist](https://www.celltypist.org/)
    - [SingleR](https://www.bioconductor.org/packages/release/bioc/html/SingleR.html)
+   - [Pan-human Azimuth](https://github.com/satijalab/panhumanpy)
    - [CyteType](https://github.com/NygenAnalytics/cytetype)
 4. Clustering and dimensionality reduction
    1. [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html)
