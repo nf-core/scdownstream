@@ -92,25 +92,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/anndata_numpy_pandas_python_pruned:fc9e8e46eaa1b590
-      build_id: bd-fc9e8e46eaa1b590_1
-      scan_id: sc-b6565e77110796e1_1
     linux/amd64:
-      name: community.wave.seqera.io/library/anndata_numpy_pandas_python_pruned:7e74e77ee7540c2e
-      build_id: bd-7e74e77ee7540c2e_1
-      scan_id: sc-1369a76613c11d4e_1
+      name: community.wave.seqera.io/library/anndata_numpy_pandas_python_pruned:82d6d447e5f8fd2b
+      build_id: bd-82d6d447e5f8fd2b_1
+      scan_id: sc-c46f23d25514c68a_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/anndata_numpy_pandas_python_pruned:f4c9464591fca27a
+      build_id: bd-f4c9464591fca27a_1
+      scan_id: sc-11b6008c7e9cef62_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/anndata_numpy_pandas_python_pruned:c1104196d69e6e13
-      build_id: bd-c1104196d69e6e13_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/32/3274eab1b78962b7144695e36e24a902dd1117d3f266a402ac3edbce4b51836d/data
+      name: oras://community.wave.seqera.io/library/anndata_numpy_pandas_python_pruned:f248b3f5963b0a63
+      build_id: bd-f248b3f5963b0a63_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1d/1dfc349185b35fbb30c64f1a8dfebd4773e4bbc54f01be2d3006172bab3cd70f/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/anndata_numpy_pandas_python_pruned:462f713693ede4f8
-      build_id: bd-462f713693ede4f8_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/76/76bcedda3f469405ed4d516274daef789231b156007e0de7aa9218d23b3715ab/data
+      name: oras://community.wave.seqera.io/library/anndata_numpy_pandas_python_pruned:b306a98725ddf0e1
+      build_id: bd-b306a98725ddf0e1_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/af/aff8425dbfd2269ea84b4bcb47a2f5d7186bba8fd964725cccd4496dd0b30e38/data
   conda:
     linux/amd64:
-      lock_file: modules/local/azimuth/.conda-lock/linux_amd64-bd-7e74e77ee7540c2e_1.txt
+      lock_file: modules/local/azimuth/.conda-lock/linux_amd64-bd-82d6d447e5f8fd2b_1.txt
     linux/arm64:
-      lock_file: modules/local/azimuth/.conda-lock/linux_arm64-bd-fc9e8e46eaa1b590_1.txt
+      lock_file: modules/local/azimuth/.conda-lock/linux_arm64-bd-f4c9464591fca27a_1.txt

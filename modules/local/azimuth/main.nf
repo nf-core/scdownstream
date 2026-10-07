@@ -4,8 +4,8 @@ process CELLTYPES_AZIMUTH {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/32/3274eab1b78962b7144695e36e24a902dd1117d3f266a402ac3edbce4b51836d/data'
-:         'community.wave.seqera.io/library/anndata_numpy_pandas_python_pruned:7e74e77ee7540c2e' }"
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1d/1dfc349185b35fbb30c64f1a8dfebd4773e4bbc54f01be2d3006172bab3cd70f/data'
+:         'community.wave.seqera.io/library/anndata_numpy_pandas_python_pruned:82d6d447e5f8fd2b' }"
 
     input:
     tuple val(meta), path(h5ad), val(symbol_col), val(counts_layer)
