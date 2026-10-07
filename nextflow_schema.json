@@ -140,6 +140,26 @@
                     "default": false,
                     "description": "Whether to remove cells flagged as doublets. When false (default), doublet scores are stored in `adata.obs` for inspection, following sc-best-practices guidance to review doublets before filtering."
                 },
+                "empty_droplet_removal": {
+                    "type": "string",
+                    "default": "cellbender",
+                    "enum": ["cellbender", "emptydrops"],
+                    "description": "Tool used to remove empty droplets from samples that only provide an unfiltered matrix.",
+                    "help_text": "CellBender trains a model per sample and uses the `expected_cells` samplesheet column. EmptyDrops from DropletUtils tests each barcode against the ambient profile and is controlled by `emptydrops_lower` and `emptydrops_fdr`."
+                },
+                "emptydrops_lower": {
+                    "type": "integer",
+                    "default": 100,
+                    "minimum": 0,
+                    "description": "Total UMI count at or below which EmptyDrops treats barcodes as empty droplets for the ambient profile."
+                },
+                "emptydrops_fdr": {
+                    "type": "number",
+                    "default": 0.01,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "FDR threshold at or below which EmptyDrops keeps a barcode as a cell."
+                },
                 "cellbender_epochs": {
                     "type": "integer",
                     "default": 150,
@@ -363,11 +383,6 @@
                     "minimum": 1,
                     "description": "Scale the memory requirements for each process by this factor. Should be increased if you have a large number of cells.",
                     "fa_icon": "fas fa-memory"
-                },
-                "use_gpu": {
-                    "type": "boolean",
-                    "description": "Use GPU acceleration for tasks that support it",
-                    "hidden": true
                 }
             }
         },

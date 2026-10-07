@@ -23,6 +23,7 @@ workflow AMBIENT_CORRECTION {
     ch_pairing                    // channel: [ meta, h5ad, h5ad ]
     method                        // value: string
     ambient_corrected_integration // value: boolean
+    scvi_max_epochs               // value: integer
 
     main:
 
@@ -98,7 +99,7 @@ workflow AMBIENT_CORRECTION {
             ch_multi.input,
             ch_multi.input_layer,
             ch_multi.output_layer,
-            params.scvi_max_epochs ?: [],
+            scvi_max_epochs ?: [],
             []
         )
         ch_h5ad = ch_h5ad.mix(SCVITOOLS_SCAR.out.h5ad)

@@ -1,5 +1,5 @@
 include { SCANPY_CELLCYCLE                                                           } from '../../../modules/local/scanpy/cellcycle'
-include { H5AD_REMOVEBACKGROUND_BARCODES_CELLBENDER_ANNDATA as EMPTY_DROPLET_REMOVAL } from '../../nf-core/h5ad_removebackground_barcodes_cellbender_anndata'
+include { EMPTY_DROPLET_REMOVAL                                                      } from '../empty_droplet_removal'
 include { SCANPY_PLOTQC as QC_RAW                                                    } from '../../../modules/local/scanpy/plotqc'
 include { AMBIENT_CORRECTION                                                         } from '../ambient_correction'
 include { UNIFY                                                                      } from '../unify'
@@ -17,6 +17,7 @@ def countCells(h5ad) {
 workflow QUALITY_CONTROL {
     take:
     ch_h5ad                       // channel: [ meta, filtered, unfiltered ]
+    empty_droplet_method          //   value: string
     ambient_correction_method     //   value: string
     ambient_corrected_integration //   value: boolean
     unify_gene_symbols            //   value: boolean
@@ -64,7 +65,8 @@ workflow QUALITY_CONTROL {
         .map {
             meta, _filtered, unfiltered ->
             [meta, unfiltered]
-        }
+        },
+        empty_droplet_method
     )
 
     ch_complete = ch_complete.mix(
@@ -90,14 +92,16 @@ workflow QUALITY_CONTROL {
     QC_RAW (
         ch_qc_plot.h5ad,
         ch_qc_plot.symbol_col,
-        mito_genes ?: []
+        mito_genes ?: [],
+        'Unfiltered QC plots'
     )
     ch_multiqc_files = ch_multiqc_files.mix(QC_RAW.out.multiqc_files)
 
     AMBIENT_CORRECTION (
         ch_complete,
         ambient_correction_method,
-        ambient_corrected_integration
+        ambient_corrected_integration,
+        scvi_max_epochs
     )
     ch_h5ad = AMBIENT_CORRECTION.out.h5ad
 
@@ -210,7 +214,8 @@ workflow QUALITY_CONTROL {
     QC_FILTERED (
         ch_qc_filtered_plot.h5ad,
         ch_qc_filtered_plot.symbol_col,
-        mito_genes ?: []
+        mito_genes ?: [],
+        'Filtered QC plots'
     )
     ch_multiqc_files = ch_multiqc_files.mix(QC_FILTERED.out.multiqc_files)
 

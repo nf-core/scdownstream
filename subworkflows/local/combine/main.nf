@@ -21,6 +21,13 @@ workflow COMBINE {
     scanvi_model                //   value: string
     scvi_categorical_covariates //   value: string
     scvi_continuous_covariates  //   value: string
+    scvi_n_hidden               //   value: integer
+    scvi_n_layers               //   value: integer
+    scvi_n_latent               //   value: integer
+    scvi_dispersion             //   value: string
+    scvi_gene_likelihood        //   value: string
+    scvi_max_epochs             //   value: integer or null
+    scvi_use_observed_lib_size  //   value: boolean
     scimilarity_model           //   value: string
     symphony_reference          //   value: string
     expimap_gmt                 //   value: string
@@ -30,6 +37,7 @@ workflow COMBINE {
     scib_subsample_strategy     //   value: string
     scib_subsample_seed         //   value: integer
     scib_metric_profile         //   value: string
+    force_obs_cols              //   value: string
 
     main:
 
@@ -44,6 +52,7 @@ workflow COMBINE {
             .groupTuple()
             .map { meta, h5ads -> [meta, h5ads.sort { a, b -> a.name <=> b.name }] },
         ch_base,
+        force_obs_cols,
     )
     ch_outer = ADATA_MERGE.out.outer
 
@@ -89,6 +98,13 @@ workflow COMBINE {
         scanvi_model,
         scvi_categorical_covariates,
         scvi_continuous_covariates,
+        scvi_n_hidden,
+        scvi_n_layers,
+        scvi_n_latent,
+        scvi_dispersion,
+        scvi_gene_likelihood,
+        scvi_max_epochs,
+        scvi_use_observed_lib_size,
         scimilarity_model,
         symphony_reference,
         expimap_gmt,

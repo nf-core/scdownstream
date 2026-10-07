@@ -28,6 +28,9 @@ input:
       type: file
       description: Optional list of mitochondrial gene symbols
       pattern: "*.{txt,tsv,csv}"
+  - section_name:
+      type: string
+      description: Name of the MultiQC section that groups the plots
 
 output:
   plots:

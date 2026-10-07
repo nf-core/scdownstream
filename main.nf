@@ -35,6 +35,7 @@ workflow NFCORE_SCDOWNSTREAM {
     ch_base                       // channel: [ val(meta), path(h5ad) ]
     is_extension                  //   value: boolean
     ch_input                      //    file: samplesheet.csv
+    empty_droplet_removal         //   value: string
     ambient_correction            //   value: string
     ambient_corrected_integration //   value: boolean
     doublet_detection             //   value: string
@@ -65,6 +66,12 @@ workflow NFCORE_SCDOWNSTREAM {
     scanvi_model                  //   value: string
     scvi_categorical_covariates   //   value: string
     scvi_continuous_covariates    //   value: string
+    scvi_n_hidden                 //   value: integer
+    scvi_n_layers                 //   value: integer
+    scvi_n_latent                 //   value: integer
+    scvi_dispersion               //   value: string
+    scvi_gene_likelihood          //   value: string
+    scvi_use_observed_lib_size    //   value: boolean
     scimilarity_model             //   value: string
     symphony_reference            //   value: string
     expimap_gmt                   //   value: string
@@ -82,6 +89,7 @@ workflow NFCORE_SCDOWNSTREAM {
     scib_subsample_strategy       //   value: string
     scib_subsample_seed           //   value: integer
     scib_metric_profile           //   value: string
+    force_obs_cols                //   value: string
     base_embeddings               //   value: string
     base_label_col                //   value: string
     base_condition_col            //   value: string
@@ -117,6 +125,7 @@ workflow NFCORE_SCDOWNSTREAM {
         ch_base,
         is_extension,
         ch_input,
+        empty_droplet_removal,
         ambient_correction,
         ambient_corrected_integration,
         doublet_detection,
@@ -147,6 +156,12 @@ workflow NFCORE_SCDOWNSTREAM {
         scanvi_model,
         scvi_categorical_covariates,
         scvi_continuous_covariates,
+        scvi_n_hidden,
+        scvi_n_layers,
+        scvi_n_latent,
+        scvi_dispersion,
+        scvi_gene_likelihood,
+        scvi_use_observed_lib_size,
         scimilarity_model,
         symphony_reference,
         expimap_gmt,
@@ -164,6 +179,7 @@ workflow NFCORE_SCDOWNSTREAM {
         scib_subsample_strategy,
         scib_subsample_seed,
         scib_metric_profile,
+        force_obs_cols,
         base_embeddings,
         base_label_col,
         base_condition_col,
@@ -246,6 +262,7 @@ workflow {
         ch_base_adata,
         params.base_adata != null,
         params.input,
+        params.empty_droplet_removal,
         params.ambient_correction,
         params.ambient_corrected_integration,
         params.doublet_detection,
@@ -276,6 +293,12 @@ workflow {
         params.scanvi_model,
         params.scvi_categorical_covariates,
         params.scvi_continuous_covariates,
+        params.scvi_n_hidden,
+        params.scvi_n_layers,
+        params.scvi_n_latent,
+        params.scvi_dispersion,
+        params.scvi_gene_likelihood,
+        params.scvi_use_observed_lib_size,
         params.scimilarity_model,
         symphony_reference,
         params.expimap_gmt,
@@ -293,6 +316,7 @@ workflow {
         params.scib_subsample_strategy,
         params.scib_subsample_seed,
         params.scib_metric_profile,
+        params.force_obs_cols,
         params.base_embeddings,
         params.base_label_col,
         params.base_condition_col,

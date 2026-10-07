@@ -175,7 +175,7 @@
                 "type": "integer",
                 "minimum": 1,
                 "default": 0,
-                "errorMessage": "Number of cells expected from the experimental design, used as input to cellbender.",
+                "errorMessage": "Number of cells expected from the experimental design, used as input to CellBender. Only applies when `empty_droplet_removal` is `cellbender`.",
                 "meta": ["expected_cells"]
             },
             "doublet_rate": {
@@ -206,5 +206,6 @@
             }
         ],
         "required": ["sample"]
-    }
+    },
+    "uniqueEntries": ["sample"]
 }
