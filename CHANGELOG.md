@@ -36,6 +36,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Train scVI and scANVI in pipeline tests for `params.scvi_max_epochs` epochs (2 in `-profile test`) instead of 5 by @nictru and Claude [[#329](https://github.com/nf-core/scdownstream/pull/329)].
 - Remove duplicate and unused parameters (`use_gpu`), the duplicate `process_gpu` block in `conf/base.config` and non-ASCII characters in config comments by @nictru and Claude [[#330](https://github.com/nf-core/scdownstream/pull/330)].
 - Update the nf-core modules `cellbender/removebackground`, `scanpy/scrublet`, `scvitools/scar` and `scvitools/solo` and the nf-core subworkflows `utils_nextflow_pipeline`, `utils_nfcore_pipeline` and `h5ad_removebackground_barcodes_cellbender_anndata`, drop the obsolete `scanpy/scrublet` and `cellbender/removebackground` patches, and select GPU containers and devices in local modules from `task.accelerator` instead of `task.ext.use_gpu` by @nictru and Claude [[#327](https://github.com/nf-core/scdownstream/pull/327)].
+- Write `versions.yml` with pyyaml instead of a custom serializer in `ADATA_READRDS` and `CELLTYPES_CELLTYPIST` by @nictru and Claude [[#PR_NUMBER](https://github.com/nf-core/scdownstream/pull/PR_NUMBER)].
 
 ### `Added`
 
