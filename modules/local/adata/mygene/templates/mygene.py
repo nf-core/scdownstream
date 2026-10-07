@@ -9,7 +9,6 @@ import yaml
 adata = ad.read_h5ad("$h5ad")
 
 input_col = "${input_col}"
-output_col = "${output_col}"
 
 inputs = adata.var.index.to_list() if input_col == "index" else adata.var[input_col].to_list()
 
@@ -27,10 +26,7 @@ for i in range(0, len(inputs), 500):
 
 outputs = [mapping.get(i, i) for i in inputs]
 
-if output_col == "index":
-    adata.var.index = outputs
-else:
-    adata.var[output_col] = outputs
+adata.var["symbols"] = outputs
 
 adata.write_h5ad("${prefix}.h5ad")
 

@@ -373,7 +373,7 @@ def validDecouplerResources() {
     ['progeny', 'collectri', 'hallmark'] as Set
 }
 
-def pseudobulkingEnabled(meta, pseudobulk_flag = params.pseudobulk, decoupler_flag = false) {
+def pseudobulkingEnabled(meta, pseudobulk_flag, decoupler_flag) {
     if (pseudobulk_flag || decouplerEnabled(meta, decoupler_flag)) {
         return true
     }

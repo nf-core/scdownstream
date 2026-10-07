@@ -30,16 +30,24 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Use contrast-first MultiQC volcano titles: Scanpy `{groupby}={group} vs rest` with optional within-filter, and PyDESeq2 / edgePython / edgepython_sc `{treatment} vs {reference} (within celltype=...)` [[#315](https://github.com/nf-core/scdownstream/pull/315)].
 - Collapse Scanpy `rank_genes_groups` volcanoes into one multi-panel figure per comparison scope instead of one PNG per group [[#315](https://github.com/nf-core/scdownstream/pull/315)].
 - For two-group Scanpy comparisons, show a single `{A} vs {B}` volcano instead of mirrored `{A} vs rest` and `{B} vs rest` panels [[#315](https://github.com/nf-core/scdownstream/pull/315)].
+- Pass `force_obs_cols` to `ADATA_MERGE` as a process input instead of reading it from `params` by @nictru and Claude [[#324](https://github.com/nf-core/scdownstream/pull/324)].
+- Pass `scvi_max_epochs` to `AMBIENT_CORRECTION` as a `take:` input instead of reading `params.scvi_max_epochs` by @nictru and Claude [[#324](https://github.com/nf-core/scdownstream/pull/324)].
+- Replace custom `ext` fields in local modules with process inputs or fixed values, and delete `ext` settings that no module reads, following the [nf-core ext key rules](https://nf-co.re/docs/developing/components/ext-args), by @nictru and Claude [[#329](https://github.com/nf-core/scdownstream/pull/329)].
+- Train scVI and scANVI in pipeline tests for `params.scvi_max_epochs` epochs (2 in `-profile test`) instead of 5 by @nictru and Claude [[#329](https://github.com/nf-core/scdownstream/pull/329)].
+- Remove duplicate and unused parameters (`use_gpu`), the duplicate `process_gpu` block in `conf/base.config` and non-ASCII characters in config comments by @nictru and Claude [[#330](https://github.com/nf-core/scdownstream/pull/330)].
+- Update the nf-core modules `cellbender/removebackground`, `scanpy/scrublet`, `scvitools/scar` and `scvitools/solo` and the nf-core subworkflows `utils_nextflow_pipeline`, `utils_nfcore_pipeline` and `h5ad_removebackground_barcodes_cellbender_anndata`, drop the obsolete `scanpy/scrublet` and `cellbender/removebackground` patches, and select GPU containers and devices in local modules from `task.accelerator` instead of `task.ext.use_gpu` by @nictru and Claude [[#327](https://github.com/nf-core/scdownstream/pull/327)].
+- Write `versions.yml` with pyyaml instead of a custom serializer in `ADATA_READRDS` and `CELLTYPES_CELLTYPIST` by @nictru and Claude [[#332](https://github.com/nf-core/scdownstream/pull/332)].
 
 ### `Added`
 
 - Add opt-in pathway and transcription factor activity analysis with decoupler (`--decoupler`), scoring pseudobulk profiles and pseudobulk DE contrasts with PROGENy, CollecTRI, MSigDB Hallmark or a custom network (`decoupler/network`, `decoupler/activity`, `decoupler/enrichment`, `pathway_activity` subworkflow), by @nictru and Cursor [[#321](https://github.com/nf-core/scdownstream/pull/321)].
-
+- Add EmptyDrops from DropletUtils as an alternative empty droplet removal method, selectable with `--empty_droplet_removal emptydrops` and tuned via `--emptydrops_lower` and `--emptydrops_fdr` ([#169](https://github.com/nf-core/scdownstream/issues/169)) by @nictru and Cursor [[#322](https://github.com/nf-core/scdownstream/pull/322)].
 - Add opt-in `--tords` to convert the final AnnData object to RDS via `ADATA_TORDS` (off by default).
 - Add LIANA rank-aggregate dotplot, circle, and tileplot PNGs with MultiQC embedding.
 - Add opt-in Tensor-cell2cell analysis: by-sample LIANA (`liana/bysample`) followed by tensor factorisation and sender-receiver loadings-product heatmaps (`cell2cell/tensor`).
 - Add volcano plots and optional `--interesting_genes` highlighting for Scanpy, PyDESeq2, edgePython, and edgepython_sc differential expression.
 - Add CyteType module for automated cell type annotation.
+- Add Pan-human Azimuth per-cell annotation via panhumanpy (`--azimuth`) by @nictru and Claude [[#320](https://github.com/nf-core/scdownstream/pull/320)].
 - Add ribosomal/haemoglobin QC metrics [[#277]https://github.com/nf-core/scdownstream/pull/277]
 - Add reporting using Quarto [[#258](https://github.com/nf-core/scdownstream/pull/258)]
 - Convert to Nextflow strict mode [[#244](https://github.com/nf-core/scdownstream/pull/244)]
@@ -55,6 +63,8 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Pass gene symbols into edgePython DE so volcano labels use gene names instead of row indices.
 - Deduplicate by-sample LIANA obs column selection so `context_key=condition` does not build a 2D frame and crash pandas.
 - Sort doublet prediction columns before writing to `obs` so nf-test snapshots are order-stable across parallel methods.
+- Reject samplesheets with duplicate `sample` names during input validation by @nictru and Claude [[#325](https://github.com/nf-core/scdownstream/pull/325)].
+- Use `batch_col` as `batch_key` in `SCANPY_HVGS`, which previously read an unset `ext.batch_key` and ignored batches, by @nictru and Claude [[#329](https://github.com/nf-core/scdownstream/pull/329)].
 
 - Make by-sample LIANA subsampling context/donor-aware and drop contexts with too few cells per group before calling LIANA.
 - Updated `scDblFinder` to use internal `dbr` estimation when `doublet_rate` is not provided, and to use provided `doublet_rate` when available.

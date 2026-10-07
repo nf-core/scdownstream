@@ -33,6 +33,7 @@ workflow SCDOWNSTREAM {
     ch_base                       // channel: [ val(meta), path(h5ad) ]
     is_extension                  //   value: boolean
     ch_input                      //    file: samplesheet.csv
+    empty_droplet_removal         //   value: string
     ambient_correction            //   value: string
     ambient_corrected_integration //   value: boolean
     doublet_detection             //   value: string
@@ -49,6 +50,7 @@ workflow SCDOWNSTREAM {
     qc_only                       //   value: boolean
     celldex_reference              //   value: string
     celltypist_model               //   value: string
+    azimuth                        //   value: boolean
     cytetype_study_context         //   value: string
     unify_gene_symbols            //   value: boolean
     duplicate_var_resolution      //   value: string
@@ -62,6 +64,12 @@ workflow SCDOWNSTREAM {
     scanvi_model                  //   value: string
     scvi_categorical_covariates   //   value: string
     scvi_continuous_covariates    //   value: string
+    scvi_n_hidden                 //   value: integer
+    scvi_n_layers                 //   value: integer
+    scvi_n_latent                 //   value: integer
+    scvi_dispersion               //   value: string
+    scvi_gene_likelihood          //   value: string
+    scvi_use_observed_lib_size    //   value: boolean
     scimilarity_model             //   value: string
     symphony_reference             //   value: string
     expimap_gmt                   //   value: string
@@ -79,6 +87,7 @@ workflow SCDOWNSTREAM {
     scib_subsample_strategy       //   value: string
     scib_subsample_seed           //   value: integer
     scib_metric_profile           //   value: string
+    force_obs_cols                //   value: string
     base_embeddings               //   value: string
     base_label_col                //   value: string
     base_condition_col            //   value: string
@@ -140,6 +149,7 @@ workflow SCDOWNSTREAM {
         //
         QUALITY_CONTROL (
             ch_h5ad,
+            empty_droplet_removal,
             ambient_correction,
             ambient_corrected_integration,
             unify_gene_symbols,
@@ -166,14 +176,16 @@ workflow SCDOWNSTREAM {
         ch_obs_per_sample = ch_obs_per_sample.mix(QUALITY_CONTROL.out.obs)
 
         //
-        // Perform per-cell annotation with SingleR and CellTypist
+        // Perform per-cell annotation with SingleR, CellTypist and Pan-human Azimuth
         //
         PER_CELL_ANNOTATION (
             ch_h5ad.map { meta, h5ad -> [meta, h5ad, meta.symbol_col, meta.counts_layer ?: "X"] },
             celldex_reference,
-            celltypist_model
+            celltypist_model,
+            azimuth
         )
         ch_obs_per_sample = ch_obs_per_sample.mix(PER_CELL_ANNOTATION.out.obs)
+        ch_obsm_per_sample = ch_obsm_per_sample.mix(PER_CELL_ANNOTATION.out.obsm)
 
         ch_per_cell_annotation_columns = PER_CELL_ANNOTATION.out.annotation_column_rows
             .filter { row -> row.aggregatable == 'true' }
@@ -217,6 +229,13 @@ workflow SCDOWNSTREAM {
                 scanvi_model,
                 scvi_categorical_covariates,
                 scvi_continuous_covariates,
+                scvi_n_hidden,
+                scvi_n_layers,
+                scvi_n_latent,
+                scvi_dispersion,
+                scvi_gene_likelihood,
+                scvi_max_epochs,
+                scvi_use_observed_lib_size,
                 scimilarity_model,
                 symphony_reference,
                 expimap_gmt,
@@ -226,6 +245,7 @@ workflow SCDOWNSTREAM {
                 scib_subsample_strategy,
                 scib_subsample_seed,
                 scib_metric_profile,
+                force_obs_cols,
             )
             ch_obs = ch_obs.mix(COMBINE.out.obs)
             ch_obsm = ch_obsm.mix(COMBINE.out.obsm)
@@ -280,6 +300,13 @@ workflow SCDOWNSTREAM {
                 scanvi_model,
                 scvi_categorical_covariates,
                 scvi_continuous_covariates,
+                scvi_n_hidden,
+                scvi_n_layers,
+                scvi_n_latent,
+                scvi_dispersion,
+                scvi_gene_likelihood,
+                scvi_max_epochs,
+                scvi_use_observed_lib_size,
                 scimilarity_model,
                 symphony_reference,
                 expimap_gmt,

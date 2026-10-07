@@ -13,6 +13,7 @@ process SCANPY_HVGS {
     path excluded_genes
     val input_layer
     val log_normalize
+    val batch_key
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
@@ -24,7 +25,6 @@ process SCANPY_HVGS {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    batch_key = task.ext.batch_key ?: ""
     template('hvgs.py')
 
     stub:

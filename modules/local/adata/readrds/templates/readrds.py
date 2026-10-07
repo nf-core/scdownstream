@@ -9,31 +9,11 @@ import anndata as ad
 import anndata2ri
 import pandas as pd
 import rpy2.robjects as ro
+import yaml
 
 seurat = ro.packages.importr("Seurat")
 # Import SingleCellExperiment to check for class
 sce_pkg = ro.packages.importr("SingleCellExperiment")
-
-
-def format_yaml_like(data: dict, indent: int = 0) -> str:
-    """Formats a dictionary to a YAML-like string.
-
-    Args:
-        data (dict): The dictionary to format.
-        indent (int): The current indentation level.
-
-    Returns:
-        str: A string formatted as YAML.
-    """
-    yaml_str = ""
-    for key, value in data.items():
-        spaces = "  " * indent
-        if isinstance(value, dict):
-            yaml_str += f"{spaces}{key}:\\n{format_yaml_like(value, indent + 1)}"
-        else:
-            yaml_str += f"{spaces}{key}: {value}\\n"
-    return yaml_str
-
 
 # Read the RDS file first
 rds_obj = ro.r('readRDS("${rds}")')
@@ -66,4 +46,4 @@ versions = {
 }
 
 with open("versions.yml", "w") as f:
-    f.write(format_yaml_like(versions))
+    yaml.dump(versions, f)

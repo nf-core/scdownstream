@@ -39,6 +39,10 @@
 
   > Ahuja G et al. CyteType: multi-agent LLM-driven cell type annotation for single-cell RNA-seq. bioRxiv 2025. doi:10.1101/2025.11.06.686964.
 
+- [Pan-human Azimuth](https://github.com/satijalab/panhumanpy)
+
+  > Sarkar S, Li Z, Molla G, Shenoy A, Zhang B, Collins D, Vasilevsky N, Gaut JP, Puig-Barbe A, Bueckle A, Osumi-Sutherland D, Börner K, Jain S, Satija R. Organism-scale annotation with Pan-human Azimuth. bioRxiv 2026. doi: 10.64898/2026.07.16.738997.
+
 - [Seurat](https://pubmed.ncbi.nlm.nih.gov/29608179/)
 
   > Butler A, Hoffman P, Smibert P, Papalexi E, Satija R. Integrating single-cell transcriptomic data across different conditions, technologies, and species. Nat Biotechnol. 2018 Apr;36(5):411-420. doi: 10.1038/nbt.4096. Epub 2018 Mar 12. PubMed PMID: 29608179; PubMed Central PMCID: PMC5965097.
@@ -90,6 +94,10 @@
 - [scDblFinder](https://pubmed.ncbi.nlm.nih.gov/35118618/)
 
   > Germain P, Lun A, Garcia Meixide C, Macnair W, Robinson M. Doublet identification in single-cell sequencing data using scDblFinder. F1000Res. 2022;11:979. doi: 10.12688/f1000research.73600.2.
+
+- [DropletUtils](https://pubmed.ncbi.nlm.nih.gov/30902100/)
+
+  > Lun ATL, Riesenfeld S, Andrews T, Dao TP, Gomes T, participants in the 1st Human Cell Atlas Jamboree, Marioni JC. EmptyDrops: distinguishing cells from empty droplets in droplet-based single-cell RNA sequencing data. Genome Biol. 2019 Mar 22;20(1):63. doi: 10.1186/s13059-019-1662-y. PubMed PMID: 30902100; PubMed Central PMCID: PMC6431044.
 
 ## Software packaging/containerisation tools
 
