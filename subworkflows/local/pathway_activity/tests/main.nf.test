@@ -11,22 +11,45 @@ nextflow_workflow {
 
         options '-stub'
 
+        setup {
+            run("DECOUPLER_PSEUDOBULK") {
+                script "modules/local/decoupler/pseudobulk/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [ id: 'test', integration: 'scvi' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = 'X'
+                    input[2] = 'leiden'
+                    input[3] = 'label'
+                    input[4] = 'condition'
+                    input[5] = 10
+                    input[6] = 1000
+                    """
+                }
+            }
+            run("EDGEPYTHON_DIFFERENTIAL") {
+                script "modules/local/edgepython/differential/main.nf"
+                process {
+                    """
+                    input[0] = DECOUPLER_PSEUDOBULK.out.h5ad.map { meta, h5ad -> [meta + [de_method: 'edgepython'], h5ad] }
+                    input[1] = 'Healthy'
+                    """
+                }
+            }
+        }
+
         when {
             params {
                 outdir = "$outputDir"
             }
             workflow {
                 """
-                input[0] = channel.of([
-                    [ id: 'test', integration: 'scvi' ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
-                ])
-                input[1] = channel.of([
-                    [ id: 'test', integration: 'scvi', de_method: 'edgepython' ],
-                    [ file("${projectDir}/modules/local/decoupler/enrichment/tests/test_B_cell_Disease_results.parquet", checkIfExists: true) ]
-                ])
+                input[0] = DECOUPLER_PSEUDOBULK.out.h5ad
+                input[1] = EDGEPYTHON_DIFFERENTIAL.out.results
                 input[2] = 'progeny,collectri'
-                input[3] = file("${projectDir}/modules/local/decoupler/network/tests/network.tsv", checkIfExists: true)
+                input[3] = file(params.pipelines_testdata_base_path + 'decoupler/network.tsv', checkIfExists: true)
                 input[4] = 'human'
                 input[5] = 'ulm'
                 input[6] = 5
@@ -54,11 +77,20 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                     ])
                     input[1] = 'X'
-                    input[2] = 'sample'
-                    input[3] = 'leiden'
+                    input[2] = 'leiden'
+                    input[3] = 'label'
                     input[4] = 'condition'
                     input[5] = 10
                     input[6] = 1000
+                    """
+                }
+            }
+            run("EDGEPYTHON_DIFFERENTIAL") {
+                script "modules/local/edgepython/differential/main.nf"
+                process {
+                    """
+                    input[0] = DECOUPLER_PSEUDOBULK.out.h5ad.map { meta, h5ad -> [meta + [de_method: 'edgepython'], h5ad] }
+                    input[1] = 'Healthy'
                     """
                 }
             }
@@ -71,15 +103,9 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = DECOUPLER_PSEUDOBULK.out.h5ad
-                input[1] = channel.of([
-                    [ id: 'test', integration: 'scvi', de_method: 'edgepython' ],
-                    [
-                        file("${projectDir}/modules/local/decoupler/enrichment/tests/test_B_cell_Disease_results.parquet", checkIfExists: true),
-                        file("${projectDir}/modules/local/decoupler/enrichment/tests/test_Monocyte_Disease_results.parquet", checkIfExists: true),
-                    ]
-                ])
+                input[1] = EDGEPYTHON_DIFFERENTIAL.out.results
                 input[2] = ''
-                input[3] = file("${projectDir}/modules/local/decoupler/network/tests/network.tsv", checkIfExists: true)
+                input[3] = file(params.pipelines_testdata_base_path + 'decoupler/network.tsv', checkIfExists: true)
                 input[4] = 'human'
                 input[5] = 'ulm'
                 input[6] = 5

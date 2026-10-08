@@ -22,7 +22,7 @@ nextflow_process {
                         file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
                     ]
                 )
-                input[1] = file("${projectDir}/modules/local/decoupler/network/tests/network.tsv", checkIfExists: true)
+                input[1] = file(params.pipelines_testdata_base_path + 'decoupler/network.tsv', checkIfExists: true)
                 input[2] = 'ulm'
                 input[3] = 5
                 """
@@ -63,7 +63,7 @@ nextflow_process {
                     """
                     input[0] = channel.of([
                         [ id: 'custom' ],
-                        file("${projectDir}/modules/local/decoupler/network/tests/network.tsv", checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + 'decoupler/network.tsv', checkIfExists: true)
                     ])
                     input[1] = 'human'
                     """

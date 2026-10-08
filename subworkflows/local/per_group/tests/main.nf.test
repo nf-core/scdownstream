@@ -960,7 +960,7 @@ nextflow_workflow {
                 input[18] = 'human'
                 input[19] = true
                 input[20] = ''
-                input[21] = file("${projectDir}/modules/local/decoupler/network/tests/network.tsv", checkIfExists: true)
+                input[21] = file(params.pipelines_testdata_base_path + 'decoupler/network.tsv', checkIfExists: true)
                 input[22] = 'ulm'
                 input[23] = 5
                 """
@@ -1024,7 +1024,7 @@ nextflow_workflow {
                 input[18] = 'human'
                 input[19] = true
                 input[20] = ''
-                input[21] = file("${projectDir}/modules/local/decoupler/network/tests/network.tsv", checkIfExists: true)
+                input[21] = file(params.pipelines_testdata_base_path + 'decoupler/network.tsv', checkIfExists: true)
                 input[22] = 'ulm'
                 input[23] = 5
                 """

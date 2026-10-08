@@ -18,6 +18,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Size CPU and memory per process for `-profile test` pipeline runs (`conf/test_resources.config`), based on measured peak usage, so that several tasks share a runner and the pipeline nf-tests run faster [[#317](https://github.com/nf-core/scdownstream/pull/317)].
 - Parallelise `computeSumFactors` in `SCRAN_NORMALIZATION` over `task.cpus` and use a smaller input for its module test [[#317](https://github.com/nf-core/scdownstream/pull/317)].
 - Set `KMP_AFFINITY`, `NUMBA_CACHE_DIR` and `MPLCONFIGDIR` pipeline-wide in the `env` scope of `nextflow.config` instead of in each local Python template by @nictru and Cursor [[#318](https://github.com/nf-core/scdownstream/pull/318)].
+- Generate the DE inputs of the decoupler enrichment and `pathway_activity` tests with `DECOUPLER_PSEUDOBULK` and `EDGEPYTHON_DIFFERENTIAL` setup blocks, load the custom network test files from test-datasets, and document that test data must not be committed to this repository, by @nictru and Cursor [[#321](https://github.com/nf-core/scdownstream/pull/321)].
 - Move agent conventions from `AGENTS.md` to the pipeline-specific contribution guidelines in `docs/CONTRIBUTING.md` and document pipeline conventions there by @nictru and Cursor [[#318](https://github.com/nf-core/scdownstream/pull/318)].
 - Replace the deprecated `QUARTONOTEBOOK` module with `QUARTO_NOTEBOOK` for rendering the QC report.
 - Make final AnnData-to-RDS conversion (`ADATA_TORDS`) opt-in via `--tords` (previously always run).

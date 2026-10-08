@@ -290,3 +290,8 @@ Tag new tests accordingly.
 [`docs/reproducibility.md`](reproducibility.md) classifies every local module and subworkflow by the reproducibility of its outputs and assigns a snapshot strategy to each.
 When you add a module or subworkflow, add a row to this file and write the test according to the assigned strategy.
 Snapshot files must never be edited by hand; regenerate them with `nf-test test --update-snapshot`.
+
+Test data must not be committed to this repository.
+Where possible, generate test inputs in the nf-test `setup` block by running the upstream modules on data that already exists in test-datasets (for example `DECOUPLER_PSEUDOBULK` followed by `EDGEPYTHON_DIFFERENTIAL` to obtain DE tables).
+Only add a fixture if no module can produce it, or if the setup modules would make the test too slow.
+Store such fixtures, and the scripts that generate them, in the `scdownstream` branch of [nf-core/test-datasets](https://github.com/nf-core/test-datasets/tree/scdownstream) and reference them through `params.pipelines_testdata_base_path`.
