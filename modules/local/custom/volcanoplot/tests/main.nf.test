@@ -21,7 +21,7 @@ nextflow_process {
                 ]).map { name ->
                     [
                         [id: name, integration: 'scvi', de_method: 'wilcoxon'],
-                        file("${projectDir}/modules/local/custom/volcanoplot/tests/\${name}_results.parquet", checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + "volcanoplot/\${name}_results.parquet", checkIfExists: true)
                     ]
                 }
                 input[1] = []
@@ -57,17 +57,34 @@ nextflow_process {
 
     test("Should run without failures") {
 
+        setup {
+            run("SCANPY_RANKGENESGROUPS") {
+                script "modules/local/scanpy/rankgenesgroups/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                            [ id: 'test' ],
+                            file(params.pipelines_testdata_base_path + 'pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                        ]
+                    )
+                    input[1] = "label"
+                    input[2] = [[], []]
+                    input[3] = "wilcoxon"
+                    input[4] = "rank_genes_groups"
+                    """
+                }
+            }
+        }
+
         when {
             params {
                 outdir = "$outputDir"
             }
             process {
                 """
-                input[0] = channel.of([
-                        [ id: 'test', integration: 'scvi', de_method: 'pydeseq2' ],
-                        file("${projectDir}/modules/local/custom/volcanoplot/tests/test_results.parquet", checkIfExists: true)
-                    ]
-                )
+                input[0] = SCANPY_RANKGENESGROUPS.out.results.map { meta, parquet ->
+                    [meta + [integration: 'scvi', de_method: 'wilcoxon'], parquet]
+                }
                 input[1] = []
                 """
             }
@@ -77,8 +94,8 @@ nextflow_process {
             assert process.success
             assert process.out.plots
             assert process.out.multiqc_files
-            assert process.out.plots.flatten().any { file(it).name == "test_volcano.png" }
-            assert process.out.multiqc_files.flatten().any { file(it).name == "test_volcano_mqc.json" }
+            assert process.out.plots.flatten().any { file(it).name == "test_characteristic_genes_volcano.png" }
+            assert process.out.multiqc_files.flatten().any { file(it).name == "test_characteristic_genes_volcano_mqc.json" }
             assert snapshot(
                 path(process.out.versions[0]).yaml
             ).match()
@@ -88,18 +105,35 @@ nextflow_process {
 
     test("Should run with interesting genes") {
 
+        setup {
+            run("SCANPY_RANKGENESGROUPS") {
+                script "modules/local/scanpy/rankgenesgroups/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                            [ id: 'test' ],
+                            file(params.pipelines_testdata_base_path + 'pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                        ]
+                    )
+                    input[1] = "label"
+                    input[2] = [[], []]
+                    input[3] = "wilcoxon"
+                    input[4] = "rank_genes_groups"
+                    """
+                }
+            }
+        }
+
         when {
             params {
                 outdir = "$outputDir"
             }
             process {
                 """
-                input[0] = channel.of([
-                        [ id: 'test', integration: 'scvi', de_method: 'pydeseq2' ],
-                        file("${projectDir}/modules/local/custom/volcanoplot/tests/test_results.parquet", checkIfExists: true)
-                    ]
-                )
-                input[1] = file("${projectDir}/modules/local/custom/volcanoplot/tests/interesting_genes.csv", checkIfExists: true)
+                input[0] = SCANPY_RANKGENESGROUPS.out.results.map { meta, parquet ->
+                    [meta + [integration: 'scvi', de_method: 'wilcoxon'], parquet]
+                }
+                input[1] = file(params.pipelines_testdata_base_path + 'volcanoplot/interesting_genes.csv', checkIfExists: true)
                 """
             }
         }
@@ -108,8 +142,8 @@ nextflow_process {
             assert process.success
             assert process.out.plots
             assert process.out.multiqc_files
-            assert process.out.plots.flatten().any { file(it).name == "test_volcano.png" }
-            assert process.out.multiqc_files.flatten().any { file(it).name == "test_volcano_mqc.json" }
+            assert process.out.plots.flatten().any { file(it).name == "test_characteristic_genes_volcano.png" }
+            assert process.out.multiqc_files.flatten().any { file(it).name == "test_characteristic_genes_volcano_mqc.json" }
             assert snapshot(
                 path(process.out.versions[0]).yaml
             ).match()
@@ -121,17 +155,34 @@ nextflow_process {
 
         options '-stub'
 
+        setup {
+            run("SCANPY_RANKGENESGROUPS") {
+                script "modules/local/scanpy/rankgenesgroups/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                            [ id: 'test' ],
+                            file(params.pipelines_testdata_base_path + 'pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                        ]
+                    )
+                    input[1] = "label"
+                    input[2] = [[], []]
+                    input[3] = "wilcoxon"
+                    input[4] = "rank_genes_groups"
+                    """
+                }
+            }
+        }
+
         when {
             params {
                 outdir = "$outputDir"
             }
             process {
                 """
-                input[0] = channel.of([
-                        [ id: 'test', integration: 'scvi', de_method: 'pydeseq2' ],
-                        file("${projectDir}/modules/local/custom/volcanoplot/tests/test_results.parquet", checkIfExists: true)
-                    ]
-                )
+                input[0] = SCANPY_RANKGENESGROUPS.out.results.map { meta, parquet ->
+                    [meta + [integration: 'scvi', de_method: 'wilcoxon'], parquet]
+                }
                 input[1] = []
                 """
             }
