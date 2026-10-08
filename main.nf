@@ -108,6 +108,11 @@ workflow NFCORE_SCDOWNSTREAM {
     pseudobulk_min_num_cells      //   value: integer
     pseudobulk_min_total_counts   //   value: integer
     reference_condition           //   value: string
+    decoupler                     //   value: boolean
+    decoupler_resources           //   value: string
+    decoupler_network             //    path: file or []
+    decoupler_method              //   value: string
+    decoupler_min_targets         //   value: integer
     prep_cellxgene                //   value: boolean
     tords                         //   value: boolean
     outdir                        //   value: string
@@ -198,6 +203,11 @@ workflow NFCORE_SCDOWNSTREAM {
         pseudobulk_min_num_cells,
         pseudobulk_min_total_counts,
         reference_condition,
+        decoupler,
+        decoupler_resources,
+        decoupler_network,
+        decoupler_method,
+        decoupler_min_targets,
         prep_cellxgene,
         tords,
         outdir,
@@ -255,6 +265,10 @@ workflow {
 
     def interesting_genes_file = params.interesting_genes
         ? file(params.interesting_genes, checkIfExists: true)
+        : []
+
+    def decoupler_network_file = params.decoupler_network
+        ? file(params.decoupler_network, checkIfExists: true)
         : []
 
     NFCORE_SCDOWNSTREAM (
@@ -335,6 +349,11 @@ workflow {
         params.pseudobulk_min_num_cells,
         params.pseudobulk_min_total_counts,
         params.reference_condition,
+        params.decoupler,
+        params.decoupler_resources ?: '',
+        decoupler_network_file,
+        params.decoupler_method,
+        params.decoupler_min_targets,
         params.prep_cellxgene,
         params.tords,
         params.outdir,

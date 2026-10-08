@@ -1,0 +1,143 @@
+{
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "collectri"
+                        },
+                        "collectri.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "network"
+                        },
+                        "network.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "progeny"
+                        },
+                        "progeny.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "scvi"
+                        },
+                        "test_network_scores.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "scvi",
+                            "de_method": "edgepython"
+                        },
+                        "test_edgepython_enrichment.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    "test_decoupler_activity.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "test_edgepython_decoupler_enrichment.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    "test_edgepython_network_enrichment_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "test_network_activity_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "enrichment": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "scvi",
+                            "de_method": "edgepython"
+                        },
+                        "test_edgepython_enrichment.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "test_edgepython_network_enrichment_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "test_network_activity_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "networks": [
+                    [
+                        {
+                            "id": "collectri"
+                        },
+                        "collectri.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "network"
+                        },
+                        "network.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "progeny"
+                        },
+                        "progeny.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "scores": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "scvi"
+                        },
+                        "test_network_scores.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "uns": [
+                    "test_decoupler_activity.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "test_edgepython_decoupler_enrichment.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-27T17:01:09.835930864",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should score pseudobulk profiles and DE results with a custom network": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "network"
+                    },
+                    "network.tsv:md5,96353151985ea8bec3c5d32073ae9de5"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "integration": "scvi"
+                    },
+                    "test_network_scores.parquet"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "integration": "scvi",
+                        "de_method": "edgepython"
+                    },
+                    "test_edgepython_enrichment.parquet"
+                ]
+            ]
+        ],
+        "timestamp": "2026-09-27T21:22:50.625865162",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

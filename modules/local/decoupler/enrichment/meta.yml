@@ -1,0 +1,98 @@
+name: "decoupler_enrichment"
+description: Run decoupler enrichment on pseudobulk differential expression statistics
+keywords:
+  - pathway
+  - transcription-factor
+  - enrichment
+  - differential-expression
+tools:
+  - "decoupler":
+      description: "Python package to perform enrichment and pseudobulk analysis from omics data"
+      homepage: "https://decoupler.readthedocs.io/"
+      documentation: "https://decoupler.readthedocs.io/"
+      tool_dev_url: "https://github.com/saezlab/decoupler-py"
+      licence: ["GPL-3.0"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information. `de_method` is appended to the default prefix.
+    - de_results:
+        type: file
+        description: |
+          Standardised DE parquet files with `gene`, `log2fc`, `pvalue`, `padj`, `group`, `contrast`
+          and `stratum` columns. The `stat` column is used when present, otherwise the signed
+          -log10 p-value.
+        pattern: "*.parquet"
+  - networks:
+      type: file
+      description: Networks from DECOUPLER_NETWORK; the file stem names the resource
+      pattern: "*.tsv"
+  - method:
+      type: string
+      description: decoupler method name, for example `ulm`, `mlm`, `viper` or `aucell`
+  - tmin:
+      type: integer
+      description: Minimum number of targets per source after intersection with the data
+
+output:
+  results:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "${prefix}_enrichment.parquet":
+          type: file
+          description: |
+            Long table with `resource`, `source`, `score`, `padj`, `stratum`, `contrast`, `group`
+            and `de_method` columns
+          pattern: "*_enrichment.parquet"
+  uns:
+    - "${prefix}_decoupler_enrichment.pkl":
+        type: file
+        description: Pickled dict of enrichment tables keyed by network, stored in `uns`
+        pattern: "*_decoupler_enrichment.pkl"
+  plots:
+    - "*_enrichment.png":
+        type: file
+        description: Dot plot of the top sources per stratum and contrast
+        pattern: "*_enrichment.png"
+  multiqc_files:
+    - "*_mqc.json":
+        type: file
+        description: MultiQC custom content with the embedded dot plot
+        pattern: "*_mqc.json"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/decoupler_enrichment:70807a23d330e649
+      build_id: bd-70807a23d330e649_1
+      scan_id: sc-fe1c5a8101d26c52_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/decoupler_enrichment:5f69c22b99518995
+      build_id: bd-5f69c22b99518995_1
+      scan_id: sc-3191c8ff053c40a9_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/decoupler_enrichment:1e4355b8be279938
+      build_id: bd-1e4355b8be279938_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/40/40d03d4429593bd575a368528ac0b89bd7c09f481fd8dc174be33bbc16b811aa/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/decoupler_enrichment:957885fd72ec883d
+      build_id: bd-957885fd72ec883d_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/bf/bf16fb011f0dc4161a231eb90922f6fc850c70ab7679ccd01abb45357e4d29ff/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/decoupler/enrichment/.conda-lock/linux_amd64-bd-5f69c22b99518995_1.txt
+    linux/arm64:
+      lock_file: modules/local/decoupler/enrichment/.conda-lock/linux_arm64-bd-70807a23d330e649_1.txt
