@@ -42,7 +42,7 @@ workflow NFCORE_SCDOWNSTREAM {
     doublet_detection_threshold   //   value: integer
     doublet_removal               //   value: boolean
     scvi_max_epochs               //   value: integer
-    mito_genes                    //   value: string
+    mito_genes                    //    path: file or null
     sample_n                      //   value: string
     sample_fraction               //   value: string
     cell_cycle_scoring            //   value: boolean
@@ -62,8 +62,8 @@ workflow NFCORE_SCDOWNSTREAM {
     integration_methods           //   value: string
     integration_excluded_genes    //   value: string
     normalization_method          //   value: string
-    scvi_model                    //   value: string
-    scanvi_model                  //   value: string
+    scvi_model                    //    path: file or null
+    scanvi_model                  //    path: file or null
     scvi_categorical_covariates   //   value: string
     scvi_continuous_covariates    //   value: string
     scvi_n_hidden                 //   value: integer
@@ -253,6 +253,18 @@ workflow {
         ? file(params.symphony_reference, checkIfExists: true)
         : null
 
+    def mito_genes_file = params.mito_genes
+        ? file(params.mito_genes, checkIfExists: true)
+        : null
+
+    def scvi_model = params.scvi_model
+        ? file(params.scvi_model, checkIfExists: true)
+        : null
+
+    def scanvi_model = params.scanvi_model
+        ? file(params.scanvi_model, checkIfExists: true)
+        : null
+
     def interesting_genes_file = params.interesting_genes
         ? file(params.interesting_genes, checkIfExists: true)
         : []
@@ -269,7 +281,7 @@ workflow {
         params.doublet_detection_threshold,
         params.doublet_removal,
         params.scvi_max_epochs,
-        params.mito_genes,
+        mito_genes_file,
         params.sample_n,
         params.sample_fraction,
         params.cell_cycle_scoring,
@@ -289,8 +301,8 @@ workflow {
         params.integration_methods,
         params.integration_excluded_genes,
         params.normalization_method,
-        params.scvi_model,
-        params.scanvi_model,
+        scvi_model,
+        scanvi_model,
         params.scvi_categorical_covariates,
         params.scvi_continuous_covariates,
         params.scvi_n_hidden,

@@ -12,8 +12,8 @@ workflow SUB_INTEGRATE {
     excluded_genes              //    path: file or []
     normalization_method        //   value: string
     methods                     //   value: list of string
-    scvi_model                  //   value: string
-    scanvi_model                //   value: string
+    scvi_model                  //    path: file or null
+    scanvi_model                //    path: file or null
     scvi_categorical_covariates //   value: string
     scvi_continuous_covariates  //   value: string
     scvi_n_hidden               //   value: integer

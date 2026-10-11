@@ -64,6 +64,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Sort doublet prediction columns before writing to `obs` so nf-test snapshots are order-stable across parallel methods.
 - Reject samplesheets with duplicate `sample` names during input validation by @nictru and Claude [[#325](https://github.com/nf-core/scdownstream/pull/325)].
 - Use `batch_col` as `batch_key` in `SCANPY_HVGS`, which previously read an unset `ext.batch_key` and ignored batches, by @nictru and Claude [[#329](https://github.com/nf-core/scdownstream/pull/329)].
+- Wrap `--scvi_model`, `--scanvi_model` and `--mito_genes` in `file(..., checkIfExists: true)` before passing them to `path` inputs, so that relative local paths no longer abort the run with `Not a valid path value`.
 
 - Make by-sample LIANA subsampling context/donor-aware and drop contexts with too few cells per group before calling LIANA.
 - Updated `scDblFinder` to use internal `dbr` estimation when `doublet_rate` is not provided, and to use provided `doublet_rate` when available.
