@@ -27,7 +27,7 @@ workflow QUALITY_CONTROL {
     doublet_detection_threshold   //   value: integer
     doublet_removal               //   value: boolean
     scvi_max_epochs               //   value: integer
-    mito_genes                    //   value: string (path) or null
+    mito_genes                    //    path: file or null
     sample_n                      //   value: string (integer > 1 or null)
     sample_fraction               //   value: string (float between 0-1 or null)
     cell_cycle_scoring            //   value: boolean

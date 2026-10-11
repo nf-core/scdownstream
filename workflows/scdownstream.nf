@@ -40,7 +40,7 @@ workflow SCDOWNSTREAM {
     doublet_detection_threshold   //   value: integer
     doublet_removal               //   value: boolean
     scvi_max_epochs               //   value: integer
-    mito_genes                    //   value: string
+    mito_genes                    //    path: file or null
     sample_n                      //   value: string
     sample_fraction               //   value: string
     cell_cycle_scoring            //   value: boolean
@@ -60,8 +60,8 @@ workflow SCDOWNSTREAM {
     integration_methods           //   value: string
     integration_excluded_genes    //   value: string
     normalization_method          //   value: string
-    scvi_model                    //   value: string
-    scanvi_model                  //   value: string
+    scvi_model                    //    path: file or null
+    scanvi_model                  //    path: file or null
     scvi_categorical_covariates   //   value: string
     scvi_continuous_covariates    //   value: string
     scvi_n_hidden                 //   value: integer
