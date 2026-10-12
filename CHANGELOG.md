@@ -40,6 +40,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Update the nf-core modules `cellbender/removebackground`, `scanpy/scrublet`, `scvitools/scar` and `scvitools/solo` and the nf-core subworkflows `utils_nextflow_pipeline`, `utils_nfcore_pipeline` and `h5ad_removebackground_barcodes_cellbender_anndata`, drop the obsolete `scanpy/scrublet` and `cellbender/removebackground` patches, and select GPU containers and devices in local modules from `task.accelerator` instead of `task.ext.use_gpu` by @nictru and Claude [[#327](https://github.com/nf-core/scdownstream/pull/327)].
 - Write `versions.yml` with pyyaml instead of a custom serializer in `ADATA_READRDS` and `CELLTYPES_CELLTYPIST` by @nictru and Claude [[#332](https://github.com/nf-core/scdownstream/pull/332)].
 - Tidy up the CHANGELOG: fix a broken link, merge duplicate entries, drop empty sections and add PR links and authors by @nictru and Claude [[#328](https://github.com/nf-core/scdownstream/pull/328)].
+- Complete tool citations in `CITATIONS.md`, the README and the MultiQC methods description, fix incorrect references, and switch `docs/usage.md` to website admonitions by @nictru and Claude [[#326](https://github.com/nf-core/scdownstream/pull/326)].
 
 ### `Added`
 
