@@ -32,13 +32,15 @@ run_method = getattr(dc.mt, method)
 
 sc.pp.normalize_total(adata, target_sum=1e6)
 sc.pp.log1p(adata)
-matrix = adata.X.toarray() if hasattr(adata.X, "toarray") else np.asarray(adata.X)
-data = pd.DataFrame(matrix, index=adata.obs_names, columns=adata.var_names)
 obs = adata.obs[[col for col in OBS_COLS if col in adata.obs.columns]].copy()
 
 
 def run_network(net: pd.DataFrame) -> pd.DataFrame:
-    scores, pvalues = run_method(data, net, tmin=tmin)
+    result = run_method(adata, net, tmin=tmin)
+    # decoupler returns a copy instead of None when it drops empty observations
+    source = result if result is not None else adata
+    scores = source.obsm[f"score_{method}"]
+    pvalues = source.obsm.get(f"padj_{method}")
     if pvalues is None:
         pvalues = pd.DataFrame(np.nan, index=scores.index, columns=scores.columns)
     elif method == "mlm":
