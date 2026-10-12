@@ -12,7 +12,7 @@ from scimilarity.utils import align_dataset, lognorm_counts
 adata = sc.read_h5ad("${h5ad}")
 adata_raw = adata.copy()
 
-use_gpu = "${task.ext.use_gpu}" == "true"
+use_gpu = "${task.accelerator ? 'true' : 'false'}" == "true"
 cq = CellQuery("${model}", use_gpu=use_gpu)
 
 adata.layers["counts"] = adata.X

@@ -15,6 +15,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 1. Per-sample preprocessing
    1. Convert all RDS files to H5AD format
    2. Create filtered matrix (if not provided)
+      - [CellBender](https://cellbender.readthedocs.io/en/latest/)
+      - [EmptyDrops](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)
    3. Present QC for raw counts ([`MultiQC`](http://multiqc.info/))
    4. Remove ambient RNA
       - [DecontX](https://bioconductor.org/packages/release/bioc/html/decontX.html)
@@ -44,6 +46,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 3. Cell type annotation
    - [CellTypist](https://www.celltypist.org/)
    - [SingleR](https://www.bioconductor.org/packages/release/bioc/html/SingleR.html)
+   - [Pan-human Azimuth](https://github.com/satijalab/panhumanpy)
    - [CyteType](https://github.com/NygenAnalytics/cytetype)
 4. Clustering and dimensionality reduction
    1. [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html)
@@ -60,7 +63,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - `02_quality_control/`
   - `converted/`: legacy alias in docs; see `01_load_h5ad/` for format conversion outputs when intermediates are saved.
   - `unify/`: Gene symbol unification and metadata standardisation (also `unify/hugounifier/` when HUGO-unifier runs).
-  - `empty_droplet_removal/`: Results of empty droplet removal. Only if no `filtered` matrix is provided in the samplesheet.
+  - `empty_droplet_removal/`: Results of empty droplet removal. Only if no `filtered` matrix is provided in the samplesheet and `--save_intermediates` is enabled.
+    - `${sample_id}_subset.h5ad`: The unfiltered matrix subset to the barcodes called as cells.
+    - `${sample_id}_cellbender*`: CellBender outputs, when `--empty_droplet_removal cellbender` is used.
+    - `${sample_id}_emptydrops_barcodes.csv`: Barcodes called as cells by EmptyDrops, when `--empty_droplet_removal emptydrops` is used.
+    - `${sample_id}_emptydrops_results.csv`: Full EmptyDrops results table with total counts, log-probabilities, p-values and FDR per barcode.
   - `qc_raw/`: QC plots for the raw input data.
   - `ambient_rna_removal/`: Results of ambient RNA removal.
   - `custom_thresholds/`: Results of applying user-defined QC thresholds.
@@ -119,6 +126,10 @@ The integrated H5AD files are stored in subdirectories named after the integrati
   - `celltypist/`
     - `*.h5ad`: The H5AD file with cell type annotations.
     - `*.pkl`: The cell type annotations in a pickle file.
+  - `azimuth/`
+    - `*.h5ad`: The H5AD file with Pan-human Azimuth annotations in `obs` and the Azimuth embedding in `obsm['X_azimuth']`.
+    - `*.pkl`: The Pan-human Azimuth annotations in a pickle file.
+    - `*_annotation_columns.csv`: The added `obs` columns and whether they are used for per-cluster aggregation.
   - `singleR`
     - `*.h5ad`: The H5AD file with cell type annotations.
     - `*.csv`: The cell type annotations in a CSV file.
@@ -128,7 +139,7 @@ The integrated H5AD files are stored in subdirectories named after the integrati
 
 </details>
 
-The `04_celltypes` directory contains the results of the per-sample cell type annotation step. Annotations from `celltypist` and `singleR` are merged back into the final per-sample AnnData object via the `FINALIZE_QC_ANNDATAS` step.
+The `04_celltypes` directory contains the results of the per-sample cell type annotation step. Annotations from `celltypist`, `singleR` and `azimuth` are merged back into the final per-sample AnnData object via the `FINALIZE_QC_ANNDATAS` step.
 
 ### CyteType
 
@@ -219,12 +230,23 @@ The results are stored in subdirectories named after the integration tool used.
       - `single_cell/edgepython/`
         - `*_results.parquet`: edgePython single-cell DE result tables per contrast.
         - `*_volcano.png`: Volcano plots for each edgepython_sc contrast.
+    - `decoupler/` (when `--decoupler true`)
+      - `pseudobulk/`
+        - `*_{network}_scores.parquet`: decoupler scores and adjusted p-values per pseudobulk sample and source, joined with the pseudobulk sample metadata.
+        - `*_{network}_activity.png`: Heatmap of mean scores per cell type and condition for the most variable sources.
+        - `*_decoupler_activity.pkl`: Scores keyed by network, merged into the final AnnData `uns` slot (when `--save_intermediates`).
+      - `enrichment/{pydeseq2|edgepython}/`
+        - `*_enrichment.parquet`: Long table of enrichment scores per network, source, cell type stratum and contrast.
+        - `*_{network}_enrichment.png`: Dot plot of the top enriched sources per stratum.
+        - `*_decoupler_enrichment.pkl`: Enrichment results keyed by network, merged into the final AnnData `uns` slot (when `--save_intermediates`).
+  - `decoupler/networks/` (when `--decoupler true` and `--save_intermediates`)
+    - `{network}.tsv`: Prior-knowledge networks with `source`, `target` and `weight` columns, as used for scoring.
 
 </details>
 
 Per-group analyses are organised by integration context first, then by analysis type. Resuming into an existing outdir may leave directories from the previous flat `{integration}-{subset}-{resolution}` layout; use a clean outdir for a tidy tree.
 
-LIANA rank-aggregate writes a dotplot and tileplot of top interactions by `magnitude_rank`, and a circle plot of interactions with `specificity_rank <= 0.05`. Tensor-cell2cell is opt-in (`--cell2cell true`) and consumes by-sample LIANA results. All differential expression is requested through the `de` analysis token and [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods). Pseudobulk aggregation runs automatically when `pydeseq2` or `edgepython` are selected, or when [`pseudobulk`](https://nf-co.re/scdownstream/parameters#pseudobulk) is enabled. Summary plots are also embedded in MultiQC under the corresponding integration section.
+LIANA rank-aggregate writes a dotplot and tileplot of top interactions by `magnitude_rank`, and a circle plot of interactions with `specificity_rank <= 0.05`. Tensor-cell2cell is opt-in (`--cell2cell true`) and consumes by-sample LIANA results. All differential expression is requested through the `de` analysis token and [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods). Pseudobulk aggregation runs automatically when `pydeseq2` or `edgepython` are selected, or when [`pseudobulk`](https://nf-co.re/scdownstream/parameters#pseudobulk) is enabled. Pathway and transcription factor activity with decoupler is opt-in (`--decoupler true`) and scores the pseudobulk profiles and the pseudobulk DE contrasts. Summary plots are also embedded in MultiQC under the corresponding integration section.
 
 ### Finalize
 

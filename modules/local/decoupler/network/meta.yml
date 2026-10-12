@@ -1,0 +1,74 @@
+name: "decoupler_network"
+description: Prepare a prior-knowledge network for decoupler from Omnipath resources or a custom file
+keywords:
+  - pathway
+  - transcription-factor
+  - prior-knowledge
+  - omnipath
+tools:
+  - "decoupler":
+      description: "Python package to perform enrichment and pseudobulk analysis from omics data"
+      homepage: "https://decoupler.readthedocs.io/"
+      documentation: "https://decoupler.readthedocs.io/"
+      tool_dev_url: "https://github.com/saezlab/decoupler-py"
+      licence: ["GPL-3.0"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map with the network name in `id`. Without a custom file, `id` selects the
+          Omnipath resource (`progeny`, `collectri` or `hallmark`).
+    - custom_network:
+        type: file
+        description: |
+          Optional custom network. TSV or CSV files need `source` and `target` columns and may
+          contain a `weight` column. GMT files are read as unweighted gene sets.
+        pattern: "*.{tsv,txt,csv,gmt}"
+  - species:
+      type: string
+      description: Organism used for Omnipath resources, for example `human` or `mouse`
+
+output:
+  network:
+    - - meta:
+          type: map
+          description: Groovy Map with the network name in `id`
+      - "${prefix}.tsv":
+          type: file
+          description: Network in long format with `source`, `target` and `weight` columns
+          pattern: "*.tsv"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/decoupler_network:f7895b41fb5156f8
+      build_id: bd-f7895b41fb5156f8_1
+      scan_id: sc-ea145e10f4f68fa3_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/decoupler_network:66c27a5ed6559830
+      build_id: bd-66c27a5ed6559830_1
+      scan_id: sc-3a28b3be37bf33a0_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/decoupler_network:32b62808497141a8
+      build_id: bd-32b62808497141a8_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1f/1f600306cb960886d6afe6b911dc74cf521e0521d0cfc16f8a1d4f35711ee2c3/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/decoupler_network:4b9f9f2da5cf24b4
+      build_id: bd-4b9f9f2da5cf24b4_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b6/b612124f1796b59d1ce08a03901db154777a47bcce0dc0f582a177f4dfc1cd21/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/decoupler/network/.conda-lock/linux_amd64-bd-f7895b41fb5156f8_1.txt
+    linux/arm64:
+      lock_file: modules/local/decoupler/network/.conda-lock/linux_arm64-bd-66c27a5ed6559830_1.txt

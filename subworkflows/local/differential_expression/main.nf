@@ -13,6 +13,7 @@ workflow DIFFERENTIAL_EXPRESSION {
     take:
     ch_h5ad                     // channel: [ meta, h5ad ] with de_methods_resolved, obs_key, condition_col, analyses
     pseudobulk                  //   value: boolean
+    decoupler                   //   value: boolean
     pseudobulk_min_num_cells    //   value: integer
     pseudobulk_min_total_counts //   value: integer
     reference_condition         //   value: string
@@ -24,7 +25,7 @@ workflow DIFFERENTIAL_EXPRESSION {
     ch_h5ad_out      = channel.empty()
 
     ch_h5ad_pseudobulk = ch_h5ad
-        .filter { meta, _h5ad -> pseudobulkingEnabled(meta, pseudobulk) }
+        .filter { meta, _h5ad -> pseudobulkingEnabled(meta, pseudobulk, decoupler) }
 
     PSEUDOBULKING(
         ch_h5ad_pseudobulk,
@@ -71,7 +72,9 @@ workflow DIFFERENTIAL_EXPRESSION {
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_VOLCANOPLOT.out.multiqc_files)
 
     emit:
-    uns           = ch_uns
-    multiqc_files = ch_multiqc_files
-    h5ad          = ch_h5ad_out
+    uns                   = ch_uns
+    multiqc_files         = ch_multiqc_files
+    h5ad                  = ch_h5ad_out
+    pseudobulk_h5ad       = PSEUDOBULKING.out.h5ad
+    pseudobulk_de_results = PSEUDOBULK_DE.out.results
 }

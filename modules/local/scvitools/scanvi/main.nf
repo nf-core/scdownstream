@@ -4,7 +4,7 @@ process SCVITOOLS_SCANVI {
     label 'process_gpu'
 
     conda "${moduleDir}/environment.yml"
-    container "${task.ext.use_gpu
+    container "${task.accelerator
         ? 'ghcr.io/scverse/scvi-tools:py3.13-cu12-1.4.3-'
         : workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
             ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/9e/9ea53a1a670cb5d83abab8b885034e786fed9ff52cb683aa3f1cc9bd5aae2d93/data'
@@ -18,6 +18,13 @@ process SCVITOOLS_SCANVI {
     val batch_col
     val categorical_covariates
     val continuous_covariates
+    val n_hidden
+    val n_layers
+    val n_latent
+    val dispersion
+    val gene_likelihood
+    val max_epochs
+    val use_observed_lib_size
 
     output:
     tuple val(meta), path("${prefix}.h5ad")          , emit: h5ad
@@ -31,13 +38,6 @@ process SCVITOOLS_SCANVI {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    n_hidden = task.ext.n_hidden ?: 128
-    n_layers = task.ext.n_layers ?: 2
-    n_latent = task.ext.n_latent ?: 30
-    dispersion = task.ext.dispersion ?: 'gene'
-    gene_likelihood = task.ext.gene_likelihood ?: 'zinb'
-    max_epochs = task.ext.max_epochs ?: null
-    use_observed_lib_size = task.ext.use_observed_lib_size != null ? task.ext.use_observed_lib_size : true
 
     if ("${h5ad}" == "${prefix}.h5ad") {
         error("Input and output names are the same, set prefix in module configuration to disambiguate!")

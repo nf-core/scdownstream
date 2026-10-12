@@ -43,6 +43,29 @@ input:
   - continuous_covariates:
       type: string
       description: Comma-separated obs columns used as continuous covariates
+  - n_hidden:
+      type: integer
+      description: Number of nodes per hidden layer
+  - n_layers:
+      type: integer
+      description: Number of hidden layers used for encoder and decoder neural networks
+  - n_latent:
+      type: integer
+      description: Dimensionality of the latent space
+  - dispersion:
+      type: string
+      description: Dispersion parameter mode of the model
+      enum: ["gene", "gene-batch", "gene-label", "gene-cell"]
+  - gene_likelihood:
+      type: string
+      description: Distribution used to model gene expression
+      enum: ["zinb", "nb", "poisson", "normal"]
+  - max_epochs:
+      type: integer
+      description: Maximum number of training epochs. Pass `[]` to use the scvi-tools default
+  - use_observed_lib_size:
+      type: boolean
+      description: Whether to use the observed library size instead of learning it
 
 output:
   h5ad:

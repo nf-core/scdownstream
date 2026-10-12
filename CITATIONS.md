@@ -39,6 +39,10 @@
 
   > Ahuja G et al. CyteType: multi-agent LLM-driven cell type annotation for single-cell RNA-seq. bioRxiv 2025. doi:10.1101/2025.11.06.686964.
 
+- [Pan-human Azimuth](https://github.com/satijalab/panhumanpy)
+
+  > Sarkar S, Li Z, Molla G, Shenoy A, Zhang B, Collins D, Vasilevsky N, Gaut JP, Puig-Barbe A, Bueckle A, Osumi-Sutherland D, Börner K, Jain S, Satija R. Organism-scale annotation with Pan-human Azimuth. bioRxiv 2026. doi: 10.64898/2026.07.16.738997.
+
 - [Seurat](https://pubmed.ncbi.nlm.nih.gov/29608179/)
 
   > Butler A, Hoffman P, Smibert P, Papalexi E, Satija R. Integrating single-cell transcriptomic data across different conditions, technologies, and species. Nat Biotechnol. 2018 Apr;36(5):411-420. doi: 10.1038/nbt.4096. Epub 2018 Mar 12. PubMed PMID: 29608179; PubMed Central PMCID: PMC5965097.
@@ -63,6 +67,26 @@
 
   > Armingol E, Baghdassarian HM, Martino C, et al. Context-aware deconvolution of cell–cell communication with Tensor-cell2cell. Nat Commun. 2022;13:3665. doi:10.1038/s41467-022-31369-2
 
+- [decoupler](https://doi.org/10.1093/bioadv/vbac016)
+
+  > Badia-i-Mompel P, Vélez Santiago J, Braunger J, et al. decoupleR: ensemble of computational methods to infer biological activities from omics data. Bioinform Adv. 2022;2(1):vbac016. doi:10.1093/bioadv/vbac016
+
+- [PROGENy](https://doi.org/10.1038/s41467-017-02391-6)
+
+  > Schubert M, Klinger B, Klünemann M, et al. Perturbation-response genes reveal signaling footprints in cancer gene expression. Nat Commun. 2018;9:20. doi:10.1038/s41467-017-02391-6
+
+- [CollecTRI](https://doi.org/10.1093/nar/gkad841)
+
+  > Müller-Dott S, Tsirvouli E, Vazquez M, et al. Expanding the coverage of regulons from high-confidence prior knowledge for accurate estimation of transcription factor activities. Nucleic Acids Res. 2023;51(20):10934-10949. doi:10.1093/nar/gkad841
+
+- [MSigDB Hallmark](https://doi.org/10.1016/j.cels.2015.12.004)
+
+  > Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB) hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004
+
+- [OmniPath](https://doi.org/10.15252/msb.20209923)
+
+  > Türei D, Valdeolivas A, Gul L, et al. Integrated intra- and intercellular signaling knowledge for multicellular omics analysis. Mol Syst Biol. 2021;17(3):e9923. doi:10.15252/msb.20209923
+
 - [scarches](https://pypi.org/project/scArches/)
 
   > Lotfollahi, M., Naghipourfar, M., Luecken, M.D. et al. Mapping single-cell data to reference atlases by transfer learning. Nat Biotechnol 40, 121–130 (2022). https://doi.org/10.1038/s41587-021-01001-7
@@ -70,6 +94,10 @@
 - [scDblFinder](https://pubmed.ncbi.nlm.nih.gov/35118618/)
 
   > Germain P, Lun A, Garcia Meixide C, Macnair W, Robinson M. Doublet identification in single-cell sequencing data using scDblFinder. F1000Res. 2022;11:979. doi: 10.12688/f1000research.73600.2.
+
+- [DropletUtils](https://pubmed.ncbi.nlm.nih.gov/30902100/)
+
+  > Lun ATL, Riesenfeld S, Andrews T, Dao TP, Gomes T, participants in the 1st Human Cell Atlas Jamboree, Marioni JC. EmptyDrops: distinguishing cells from empty droplets in droplet-based single-cell RNA sequencing data. Genome Biol. 2019 Mar 22;20(1):63. doi: 10.1186/s13059-019-1662-y. PubMed PMID: 30902100; PubMed Central PMCID: PMC6431044.
 
 ## Software packaging/containerisation tools
 
