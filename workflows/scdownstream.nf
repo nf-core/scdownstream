@@ -106,6 +106,11 @@ workflow SCDOWNSTREAM {
     pseudobulk_min_num_cells      //   value: integer
     pseudobulk_min_total_counts   //   value: integer
     reference_condition           //   value: string
+    decoupler                     //   value: boolean
+    decoupler_resources           //   value: string
+    decoupler_network             //    path: file or []
+    decoupler_method              //   value: string
+    decoupler_min_targets         //   value: integer
     prep_cellxgene                //   value: boolean
     tords                         //   value: boolean
     outdir                        //   value: string
@@ -381,6 +386,11 @@ workflow SCDOWNSTREAM {
             reference_condition ?: '',
             interesting_genes ?: [],
             species,
+            decoupler,
+            decoupler_resources,
+            decoupler_network,
+            decoupler_method,
+            decoupler_min_targets,
         )
 
         ch_uns = ch_uns.mix(PER_GROUP.out.uns)

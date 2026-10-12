@@ -1,0 +1,89 @@
+{
+    "Should score pseudobulk profiles with a custom network": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "integration": "scvi"
+                    },
+                    "test_custom_scores.parquet"
+                ]
+            ],
+            [
+                "test_decoupler_activity.pkl"
+            ],
+            [
+                "test_custom_activity.png:md5,b1294072aec4550ac2864144ef48212e"
+            ],
+            [
+                "test_custom_activity_mqc.json:md5,852c50a4a2f4164dbd6e53bb1fa17ffb"
+            ],
+            {
+                "DECOUPLER_ACTIVITY": {
+                    "anndata": "0.13.4",
+                    "decoupler": "2.1.6",
+                    "pandas": "3.0.6",
+                    "python": "3.12.14",
+                    "scanpy": "1.12.2"
+                }
+            }
+        ],
+        "timestamp": "2026-09-27T21:16:22.061359128",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_network_scores.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "test_decoupler_activity.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "test_network_activity.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "test_network_activity_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "multiqc_files": [
+                    "test_network_activity_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "plots": [
+                    "test_network_activity.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "scores": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_network_scores.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "uns": [
+                    "test_decoupler_activity.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-27T15:54:00.221006822",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}
