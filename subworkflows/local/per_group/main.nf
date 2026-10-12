@@ -4,7 +4,7 @@ include { LIANA_BYSAMPLE                    } from '../../../modules/local/liana
 include { CELL2CELL_TENSOR                  } from '../../../modules/local/cell2cell/tensor'
 include { DIFFERENTIAL_EXPRESSION           } from '../differential_expression'
 include { CLUSTER_ANNOTATION                } from '../cluster_annotation'
-include { PATHWAY_ACTIVITY                  } from '../pathway_activity'
+include { DECOUPLER                         } from '../decoupler'
 include { resolveDeMethodsWithPrerequisites } from '../utils_nfcore_scdownstream_pipeline'
 include { cellLevelDeMethods                } from '../utils_nfcore_scdownstream_pipeline'
 include { pseudobulkingEnabled              } from '../utils_nfcore_scdownstream_pipeline'
@@ -125,7 +125,7 @@ workflow PER_GROUP {
     ch_h5ad          = ch_h5ad.mix(DIFFERENTIAL_EXPRESSION.out.h5ad)
 
     if (decoupler) {
-        PATHWAY_ACTIVITY(
+        DECOUPLER(
             DIFFERENTIAL_EXPRESSION.out.pseudobulk_h5ad
                 .filter { meta, _h5ad -> decouplerEnabled(meta, decoupler) },
             DIFFERENTIAL_EXPRESSION.out.pseudobulk_de_results
@@ -136,8 +136,8 @@ workflow PER_GROUP {
             decoupler_method,
             decoupler_min_targets,
         )
-        ch_uns           = ch_uns.mix(PATHWAY_ACTIVITY.out.uns)
-        ch_multiqc_files = ch_multiqc_files.mix(PATHWAY_ACTIVITY.out.multiqc_files)
+        ch_uns           = ch_uns.mix(DECOUPLER.out.uns)
+        ch_multiqc_files = ch_multiqc_files.mix(DECOUPLER.out.multiqc_files)
     }
 
     CLUSTER_ANNOTATION(

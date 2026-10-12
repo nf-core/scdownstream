@@ -1034,7 +1034,7 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert !workflow.out.uns.any { file(it).name.contains('decoupler') }
-            assert !workflow.trace.tasks().any { task -> task.name.contains('DECOUPLER_NETWORK') || task.name.contains('DECOUPLER_ACTIVITY') }
+            assert !workflow.trace.tasks().any { task -> task.name.contains(':DECOUPLER:') }
         }
 
     }

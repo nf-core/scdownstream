@@ -230,7 +230,7 @@ The results are stored in subdirectories named after the integration tool used.
       - `single_cell/edgepython/`
         - `*_results.parquet`: edgePython single-cell DE result tables per contrast.
         - `*_volcano.png`: Volcano plots for each edgepython_sc contrast.
-    - `pathway_activity/` (when `--decoupler true`)
+    - `decoupler/` (when `--decoupler true`)
       - `pseudobulk/`
         - `*_{network}_scores.parquet`: decoupler scores and adjusted p-values per pseudobulk sample and source, joined with the pseudobulk sample metadata.
         - `*_{network}_activity.png`: Heatmap of mean scores per cell type and condition for the most variable sources.
@@ -239,7 +239,7 @@ The results are stored in subdirectories named after the integration tool used.
         - `*_enrichment.parquet`: Long table of enrichment scores per network, source, cell type stratum and contrast.
         - `*_{network}_enrichment.png`: Dot plot of the top enriched sources per stratum.
         - `*_decoupler_enrichment.pkl`: Enrichment results keyed by network, merged into the final AnnData `uns` slot (when `--save_intermediates`).
-  - `pathway_activity/networks/` (when `--decoupler true` and `--save_intermediates`)
+  - `decoupler/networks/` (when `--decoupler true` and `--save_intermediates`)
     - `{network}.tsv`: Prior-knowledge networks with `source`, `target` and `weight` columns, as used for scoring.
 
 </details>
