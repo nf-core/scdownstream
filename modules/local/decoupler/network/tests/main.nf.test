@@ -99,7 +99,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([ [ id: 'progeny' ], [] ])
-                input[1] = 'homo_sapiens'
+                input[1] = 'human'
                 """
             }
         }

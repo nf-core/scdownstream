@@ -17,15 +17,6 @@ OMNIPATH_RESOURCES = ("progeny", "collectri", "hallmark")
 PROGENY_TOP = 500
 
 
-def normalise_species(value: str) -> str:
-    key = value.strip().lower()
-    if key in ("homo_sapiens", "hsapiens", "hs", "human", ""):
-        return "human"
-    if key in ("mus_musculus", "mmusculus", "mm", "mouse"):
-        return "mouse"
-    return key
-
-
 def read_gmt(path: Path) -> pd.DataFrame:
     rows = []
     with open(path) as handle:
@@ -60,7 +51,7 @@ if custom_network:
     path = Path(custom_network)
     net = read_gmt(path) if path.suffix.lower() == ".gmt" else read_table(path)
 else:
-    net = load_omnipath(resource, normalise_species(species))
+    net = load_omnipath(resource, species)
 
 if "weight" not in net.columns:
     net["weight"] = 1.0
