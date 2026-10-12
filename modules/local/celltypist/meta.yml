@@ -82,25 +82,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/celltypist:d95dd53106a463cc
-      build_id: bd-d95dd53106a463cc_1
-      scan_id: sc-58feaa77fee0f2f8_2
     linux/amd64:
-      name: community.wave.seqera.io/library/celltypist:5c8a1d7b51207f8e
-      build_id: bd-5c8a1d7b51207f8e_1
-      scan_id: sc-0d97a53e3efda237_2
+      name: community.wave.seqera.io/library/celltypist:a91a353b6f0c32c6
+      build_id: bd-a91a353b6f0c32c6_1
+      scan_id: sc-0bc7967c9ba8d32e_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/celltypist:3f2ac9607f392f6e
+      build_id: bd-3f2ac9607f392f6e_1
+      scan_id: sc-78ade35aec1aa8bb_1
   singularity:
-    linux/arm64:
-      name: oras://community.wave.seqera.io/library/celltypist:049f700f187a0acb
-      build_id: bd-049f700f187a0acb_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d6/d68de3aa1f537c180318fa82a54ce0a68192e1ffef647cd0762f817b289b0538/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/celltypist:f54d15faff6d295c
-      build_id: bd-f54d15faff6d295c_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cb/cb0b40342ced5d0b963803016966c024757ffa84bb3514f20347bbc1de113c97/data
+      name: oras://community.wave.seqera.io/library/celltypist:482c2a0eb42ce83d
+      build_id: bd-482c2a0eb42ce83d_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/37/374282d1a3622b00af7c63491aba54a7c0a51fba3421efa9b8281734ba67cbd8/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/celltypist:f0478f32f45706d4
+      build_id: bd-f0478f32f45706d4_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/35/35aef2c124c783c7bea6fc36c59f7c5ab1c6e6b70a63f6cc683c534225339690/data
   conda:
     linux/amd64:
-      lock_file: modules/local/celltypist/.conda-lock/linux_amd64-bd-5c8a1d7b51207f8e_1.txt
+      lock_file: modules/local/celltypist/.conda-lock/linux_amd64-bd-a91a353b6f0c32c6_1.txt
     linux/arm64:
-      lock_file: modules/local/celltypist/.conda-lock/linux_arm64-bd-d95dd53106a463cc_1.txt
+      lock_file: modules/local/celltypist/.conda-lock/linux_arm64-bd-3f2ac9607f392f6e_1.txt

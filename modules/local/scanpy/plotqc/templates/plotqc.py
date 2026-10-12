@@ -48,7 +48,7 @@ with open(path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
         "id": "${prefix}",
         "parent_id": "${section_name}".replace(" ", "_"),
         "parent_name": "${section_name}",
-        "parent_description": "${description}",
+        "parent_description": "Quality control plots",
         "section_name": "${meta.id}",
         "plot_type": "image",
         "data": image_html,

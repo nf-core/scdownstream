@@ -246,8 +246,8 @@ prefix = "${prefix}"
 symbol_col = "${symbol_col}"
 mito_genes = "${mito_genes}"
 plot = "${plot}" == "true"
-section_name = "${section_name}"
-description = "${description}"
+section_name = "Filter threshold histograms"
+description = "QC metric histograms with applied filter thresholds"
 
 min_genes = parse_optional_int("${min_genes}")
 min_cells = parse_optional_int("${min_cells}")

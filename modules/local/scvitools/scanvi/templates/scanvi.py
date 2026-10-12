@@ -93,7 +93,7 @@ else:
             use_observed_lib_size="${use_observed_lib_size}" == "true",
         )
 
-if "${task.ext.use_gpu}" == "true":
+if "${task.accelerator ? 'true' : 'false'}" == "true":
     model.to_device(0)
 
 model.train(

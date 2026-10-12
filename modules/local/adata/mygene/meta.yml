@@ -34,6 +34,9 @@ input:
   - species:
       type: string
       description: Species name or taxonomy identifier passed to mygene
+  - input_col:
+      type: string
+      description: var column holding the gene IDs to query. `index` uses the var index.
 
 output:
   h5ad:
