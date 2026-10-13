@@ -10,6 +10,23 @@ import yaml
 from scipy.sparse import csr_matrix
 
 
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+def write_anndata(adata, stem, fmt):
+    if fmt == "h5ad":
+        adata.write_h5ad(f"{stem}.h5ad")
+    elif fmt == "zarr":
+        if adata.isbacked:
+            adata = adata.to_memory()
+        # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
+        ad.settings.zarr_write_format = 3
+        adata.write_zarr(f"{stem}.zarr")
+
+
 # Function borrowed from https://github.com/icbi-lab/luca/blob/5ffb0a4671e9c288b10e73de18d447ee176bef1d/lib/scanpy_helper_submodule/scanpy_helpers/util.py#L122C1-L135C21
 def aggregate_duplicate_var(adata, aggr_fun=np.mean):
     retain_var = ~adata.var_names.duplicated(keep="first")
@@ -90,7 +107,7 @@ def unify_obs_column(
     adata.obs[target_name] = adata.obs[target_name].astype("category")
 
 
-adata = ad.read_h5ad("$h5ad")
+adata = read_anndata("${anndata}")
 
 counts_layer = "${counts_layer}"
 if counts_layer != "X":
@@ -195,7 +212,7 @@ if adata.var.index.name is not None:
 if adata.obs.index.name is not None:
     adata.obs.index.name = None
 
-adata.write_h5ad("${prefix}.h5ad")
+write_anndata(adata, "${prefix}", "${anndata_format}")
 
 # Versions
 

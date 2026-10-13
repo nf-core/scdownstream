@@ -18,29 +18,29 @@ input:
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1' ]`
-    - h5ad:
+    - anndata:
         type: file
-        description: AnnData object in h5ad format
-        pattern: "*.{h5ad}"
-        ontologies:
-          - edam: "http://edamontology.org/format_3590"
+        description: AnnData object as an h5ad file or a zarr directory
+        pattern: "*.{h5ad,zarr}"
   - column:
       type: string
       description: Boolean var column used to select features to retain
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object. An empty string is an error because the object is the only output.
+      enum: ["h5ad", "zarr", ""]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
           description: AnnData subset to selected variables
-          pattern: "*.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590"
+          pattern: "*.{h5ad,zarr}"
   versions:
     - versions.yml:
         type: file
