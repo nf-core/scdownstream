@@ -11,7 +11,14 @@ import yaml
 from pydeseq2.dds import DeseqDataSet
 from pydeseq2.ds import DeseqStats
 
-adata = ad.read_h5ad("${h5ad}")
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+adata = read_anndata("${anndata}")
 prefix = "${prefix}"
 reference_condition = "${reference_condition}"
 if not reference_condition:

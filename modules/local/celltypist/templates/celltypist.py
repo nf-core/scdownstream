@@ -5,13 +5,32 @@ import platform
 
 os.environ["CELLTYPIST_FOLDER"] = "./tmp/celltypist"
 
+import anndata as ad
 import celltypist
 import pandas as pd
 import scanpy as sc
 import yaml
 from celltypist import models as ct_models
 
-adata = sc.read_h5ad("${h5ad}")
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+def write_anndata(adata, stem, fmt):
+    if fmt == "h5ad":
+        adata.write_h5ad(f"{stem}.h5ad")
+    elif fmt == "zarr":
+        if adata.isbacked:
+            adata = adata.to_memory()
+        # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
+        ad.settings.zarr_write_format = 3
+        adata.write_zarr(f"{stem}.zarr")
+
+
+adata = read_anndata("${anndata}")
 prefix = "${prefix}"
 
 models = "${models.join(' ')}".split()
@@ -60,7 +79,7 @@ df_celltypist.to_pickle("${prefix}.pkl")
 pd.DataFrame(manifest_rows).to_csv(f"{prefix}_annotation_columns.csv", index=False)
 
 adata.obs = pd.concat([adata.obs, df_celltypist], axis=1)
-adata.write_h5ad(f"{prefix}.h5ad")
+write_anndata(adata, prefix, "${anndata_format}")
 
 # Versions
 

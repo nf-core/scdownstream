@@ -20,32 +20,32 @@ input:
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1' ]`
-    - h5ad:
+    - anndata:
         type: file
-        description: AnnData object in h5ad format
-        pattern: "*.{h5ad}"
-        ontologies:
-          - edam: "http://edamontology.org/format_3590"
+        description: AnnData object (h5ad file or zarr directory)
+        pattern: "*.{h5ad,zarr}"
     - symbol_col:
         type: string
         description: Feature metadata column containing gene symbols
     - counts_layer:
         type: string
         description: AnnData layer containing raw counts (`X` or a layer name)
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object; an empty string skips writing it
+      enum: ["h5ad", "zarr", ""]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "${prefix}.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
-          description: AnnData object with Pan-human Azimuth annotations and embedding
-          pattern: "*.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590"
+          description: AnnData object with Pan-human Azimuth annotations and embedding as an h5ad file or a zarr directory
+          pattern: "*.{h5ad,zarr}"
   obs:
     - - meta:
           type: map

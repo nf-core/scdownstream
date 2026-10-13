@@ -7,6 +7,54 @@ nextflow_process {
     tag "modules"
     tag "modules_local"
 
+    test("Should read a pseudobulk zarr") {
+
+        setup {
+            run("DECOUPLER_PSEUDOBULK") {
+                script "modules/local/decoupler/pseudobulk/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                            [ id: 'test', integration: 'scvi' ],
+                            file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                        ]
+                    )
+                    input[1] = 'X'
+                    input[2] = 'leiden'
+                    input[3] = 'label'
+                    input[4] = 'condition'
+                    input[5] = 10
+                    input[6] = 1000
+                    input[7] = 'zarr'
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = DECOUPLER_PSEUDOBULK.out.anndata.map { meta, zarr -> [ meta + [de_method: 'pydeseq2'], zarr ] }
+                input[1] = ''
+                input[2] = 'Healthy'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.results
+            assert snapshot(
+                process.out.results.collect { _meta, parquet -> file(parquet).name },
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
     test("Should run without failures - stub") {
 
         options '-stub'

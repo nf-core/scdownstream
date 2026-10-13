@@ -19,12 +19,10 @@ input:
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1' ]`
-    - h5ad:
+    - anndata:
         type: file
-        description: AnnData object in h5ad format with cluster labels and marker ranks
-        pattern: "*.{h5ad}"
-        ontologies:
-          - edam: "http://edamontology.org/format_3590"
+        description: AnnData object with cluster labels and marker ranks (h5ad file or zarr directory)
+        pattern: "*.{h5ad,zarr}"
   - symbol_col:
       type: string
       description: Feature metadata column containing gene symbols
@@ -43,20 +41,22 @@ input:
   - resolution:
       type: string
       description: Clustering resolution or related CyteType parameter
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object; an empty string skips writing it
+      enum: ["h5ad", "zarr", ""]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
-          description: AnnData object with CyteType annotations
-          pattern: "*.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590"
+          description: AnnData object with CyteType annotations as an h5ad file or a zarr directory
+          pattern: "*.{h5ad,zarr}"
   obs:
     - "*.pkl":
         type: file

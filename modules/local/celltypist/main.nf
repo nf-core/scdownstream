@@ -8,11 +8,12 @@ process CELLTYPES_CELLTYPIST {
         : 'community.wave.seqera.io/library/celltypist:a91a353b6f0c32c6'}"
 
     input:
-    tuple val(meta), path(h5ad), val(symbol_col)
+    tuple val(meta), path(anndata), val(symbol_col)
     val models
+    val anndata_format
 
     output:
-    tuple val(meta), path("*.h5ad"), emit: h5ad
+    tuple val(meta), path("${prefix}.{h5ad,zarr}"), emit: anndata, optional: true
     tuple val(meta), path("*.pkl"), emit: obs
     tuple val(meta), path("*_annotation_columns.csv"), emit: annotation_columns
     path "versions.yml", emit: versions, topic: versions
@@ -22,12 +23,21 @@ process CELLTYPES_CELLTYPIST {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
+    if (!(anndata_format in ['h5ad', 'zarr', ''])) {
+        error("anndata_format must be 'h5ad', 'zarr' or '', got '${anndata_format}'")
+    }
+    if (anndata_format && "${prefix}.${anndata_format}" == "${anndata}") {
+        error("Input and output names are the same, use \"task.ext.prefix\" to disambiguate!")
+    }
     template('celltypist.py')
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
+    def anndata_stub = anndata_format == 'zarr'
+        ? "mkdir ${prefix}.zarr && touch ${prefix}.zarr/zarr.json"
+        : anndata_format == 'h5ad' ? "touch ${prefix}.h5ad" : ''
     """
-    touch ${prefix}.h5ad
+    ${anndata_stub}
     touch ${prefix}.pkl
     echo "obs_column,aggregatable" > ${prefix}_annotation_columns.csv
     touch versions.yml

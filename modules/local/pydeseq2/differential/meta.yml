@@ -16,10 +16,10 @@ input:
   - - meta:
         type: map
         description: Groovy Map containing sample information
-    - h5ad:
+    - anndata:
         type: file
-        description: Pseudobulk AnnData object in h5ad format
-        pattern: "*.{h5ad}"
+        description: Pseudobulk AnnData object (h5ad file or zarr directory)
+        pattern: "*.{h5ad,zarr}"
   - design_formula:
       type: string
       description: Unused; design uses condition only, or donor and condition when donors span conditions

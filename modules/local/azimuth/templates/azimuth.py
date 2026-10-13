@@ -13,10 +13,28 @@ import panhumanpy as ph
 import tensorflow as tf
 import yaml
 
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+def write_anndata(adata, stem, fmt):
+    if fmt == "h5ad":
+        adata.write_h5ad(f"{stem}.h5ad")
+    elif fmt == "zarr":
+        if adata.isbacked:
+            adata = adata.to_memory()
+        # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
+        ad.settings.zarr_write_format = 3
+        adata.write_zarr(f"{stem}.zarr")
+
+
 tf.config.threading.set_intra_op_parallelism_threads(int("${task.cpus}"))
 tf.config.threading.set_inter_op_parallelism_threads(int("${task.cpus}"))
 
-adata = ad.read_h5ad("${h5ad}")
+adata = read_anndata("${anndata}")
 prefix = "${prefix}"
 symbol_col = "${symbol_col}"
 counts_layer = "${counts_layer}"
@@ -68,7 +86,7 @@ df_embedding.to_pickle("X_azimuth.pkl")
 
 adata.obs = pd.concat([adata.obs, df_azimuth], axis=1)
 adata.obsm["X_azimuth"] = embedding
-adata.write_h5ad(f"{prefix}.h5ad")
+write_anndata(adata, prefix, "${anndata_format}")
 
 # Versions
 

@@ -27,16 +27,17 @@ nextflow_process {
                 )
                 input[1] = 2
                 input[2] = true
+                input[3] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             def versions = path(process.out.versions[0]).yaml.CUSTOM_DOUBLETREMOVAL
             assert snapshot(
-                process.out.h5ad,
+                process.out.anndata,
                 versions.findAll { key, value -> key != 'matplotlib' },
                 adata.yaml
             ).match()
@@ -64,17 +65,50 @@ nextflow_process {
                 )
                 input[1] = 2
                 input[2] = false
+                input[3] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             assert adata.n_obs == 7373
             assert "test_scrublet" in adata.obs.colnames
             assert "test_solo" in adata.obs.colnames
             assert "test_doubletdetection" in adata.obs.colnames
+        }
+
+    }
+
+    test("Should fail without an output format") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        [
+                            file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_doubletdetection.pkl', checkIfExists: true),
+                            file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_scrublet.pkl', checkIfExists: true),
+                            file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_solo.pkl', checkIfExists: true)
+                        ]
+                    ]
+                )
+                input[1] = 2
+                input[2] = true
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains('CUSTOM_DOUBLETREMOVAL only outputs the AnnData object')
         }
 
     }
@@ -101,6 +135,7 @@ nextflow_process {
                 )
                 input[1] = 2
                 input[2] = true
+                input[3] = 'h5ad'
                 """
             }
         }

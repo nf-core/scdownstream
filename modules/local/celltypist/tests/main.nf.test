@@ -22,12 +22,13 @@ nextflow_process {
                     ]
                 )
                 input[1] = ["Adult_COVID19_PBMC"]
+                input[2] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             with(adata) {
                 assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell" in obs.colnames
@@ -56,12 +57,13 @@ nextflow_process {
                     ]
                 )
                 input[1] = ["Adult_COVID19_PBMC"]
+                input[2] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             with(adata) {
                 assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell" in obs.colnames
@@ -90,6 +92,7 @@ nextflow_process {
                     ]
                 )
                 input[1] = ["Adult_COVID19_PBMC"]
+                input[2] = 'h5ad'
                 """
             }
         }
@@ -117,6 +120,7 @@ nextflow_process {
                     ]
                 )
                 input[1] = ["Adult_COVID19_PBMC"]
+                input[2] = 'h5ad'
                 """
             }
         }
@@ -124,6 +128,36 @@ nextflow_process {
         then {
             assert process.success
 
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+    test("Should not write the object - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index"
+                    ]
+                )
+                input[1] = ["Adult_COVID19_PBMC"]
+                input[2] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.anndata.size() == 0
             assert snapshot(process.out).match()
         }
 

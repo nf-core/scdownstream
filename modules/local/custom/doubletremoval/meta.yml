@@ -23,10 +23,10 @@ input:
   - - meta:
         type: map
         description: Groovy Map containing sample information
-    - h5ad:
+    - anndata:
         type: file
-        description: AnnData object in h5ad format
-        pattern: "*.{h5ad}"
+        description: AnnData object (h5ad file or zarr directory)
+        pattern: "*.{h5ad,zarr}"
     - predictions:
         type: file
         description: Doublet prediction tables in CSV or pickle format
@@ -37,16 +37,20 @@ input:
   - removal:
       type: string
       description: Whether to remove flagged doublets (true) or only annotate them (false)
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object; must not be empty
+      enum: ["h5ad", "zarr"]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: Groovy Map containing sample information
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
-          description: AnnData with doublet annotations and optional filtering applied
-          pattern: "*.h5ad"
+          description: AnnData with doublet annotations and optional filtering applied as an h5ad file or a zarr directory
+          pattern: "*.{h5ad,zarr}"
   multiqc_files:
     - "*_mqc.json":
         type: file
