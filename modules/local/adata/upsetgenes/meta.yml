@@ -28,12 +28,10 @@ input:
     - names:
         type: string
         description: Display names corresponding to each AnnData input
-    - h5ads:
+    - anndata:
         type: file
         description: AnnData objects whose gene sets are compared
-        pattern: "*.{h5ad}"
-        ontologies:
-          - edam: "http://edamontology.org/format_3590"
+        pattern: "*.{h5ad,zarr}"
 
 output:
   plot:

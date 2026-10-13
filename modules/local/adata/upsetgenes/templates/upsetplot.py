@@ -10,6 +10,13 @@ import matplotlib.pyplot as plt
 import upsetplot
 import yaml
 
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
 # Versions
 
 versions = {
@@ -28,14 +35,15 @@ prefix = "${prefix}"
 
 
 def load_gene_names(path: str) -> list[str]:
-    adata = ad.read_h5ad(path, backed="r")
+    adata = read_anndata(path, backed="r")
     try:
         return adata.var_names.unique().tolist()
     finally:
-        adata.file.close()
+        if adata.isbacked:
+            adata.file.close()
 
 
-adata_genes = dict(zip("${names.join(' ')}".split(), [load_gene_names(path) for path in "${h5ads}".split()]))
+adata_genes = dict(zip("${names.join(' ')}".split(), [load_gene_names(path) for path in "${anndata}".split()]))
 
 if len(adata_genes) < 2:
     exit(0)

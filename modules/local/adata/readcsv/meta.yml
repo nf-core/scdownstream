@@ -24,20 +24,22 @@ input:
         pattern: "*.{csv,tsv,txt}"
         ontologies:
           - edam: "http://edamontology.org/format_3752"
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object. An empty string is an error because the object is the only output.
+      enum: ["h5ad", "zarr", ""]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
           description: AnnData object created from the CSV matrix
-          pattern: "*.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590"
+          pattern: "*.{h5ad,zarr}"
   versions:
     - versions.yml:
         type: file
