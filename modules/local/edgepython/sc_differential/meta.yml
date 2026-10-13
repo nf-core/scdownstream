@@ -16,10 +16,10 @@ input:
   - - meta:
         type: map
         description: Groovy Map containing sample information
-    - h5ad:
+    - anndata:
         type: file
-        description: Single-cell AnnData object in h5ad format
-        pattern: "*.{h5ad}"
+        description: Single-cell AnnData object (h5ad file or zarr directory)
+        pattern: "*.{h5ad,zarr}"
   - donor_col:
       type: string
       description: obs column with biological replicate identifiers

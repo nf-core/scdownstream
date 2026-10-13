@@ -8,7 +8,7 @@ process DECOUPLER_ACTIVITY {
         : 'community.wave.seqera.io/library/decoupler_activity:8d8ed42929b0d74b'}"
 
     input:
-    tuple val(meta), path(h5ad)
+    tuple val(meta), path(anndata)
     path networks, stageAs: 'networks/*'
     val method
     val tmin

@@ -6,14 +6,22 @@ import platform
 import warnings
 from dataclasses import replace
 
+import anndata as ad
 import numpy as np
 import scanpy as sc
 import scib_metrics
 import yaml
 from scib_metrics.benchmark import BatchCorrection, Benchmarker, BioConservation
 
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
 prefix = "${prefix}"
-h5ad_path = "${h5ad}"
+anndata_path = "${anndata}"
 max_cells_raw = "${max_cells}"
 subsample_strategy = "${subsample_strategy}"
 subsample_seed = int("${subsample_seed}")
@@ -107,7 +115,7 @@ def _benchmarker_kwargs(profile):
 
 
 max_cells = _optional_int(max_cells_raw)
-adata = sc.read_h5ad(h5ad_path)
+adata = read_anndata(anndata_path)
 
 missing = [c for c in ("batch", "label") if c not in adata.obs]
 if missing:

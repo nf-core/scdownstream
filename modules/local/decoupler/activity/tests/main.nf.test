@@ -54,6 +54,7 @@ nextflow_process {
                     input[4] = 'condition'
                     input[5] = 10
                     input[6] = 1000
+                    input[7] = 'h5ad'
                     """
                 }
             }
@@ -77,7 +78,7 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = DECOUPLER_PSEUDOBULK.out.h5ad
+                input[0] = DECOUPLER_PSEUDOBULK.out.anndata
                 input[1] = DECOUPLER_NETWORK.out.network.map { _meta, tsv -> tsv }.collect()
                 input[2] = 'ulm'
                 input[3] = 5

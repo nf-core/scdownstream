@@ -17,10 +17,10 @@ input:
   - - meta:
         type: map
         description: Groovy Map containing sample information
-    - h5ad:
+    - anndata:
         type: file
         description: Pseudobulk AnnData with raw counts in X, as written by DECOUPLER_PSEUDOBULK
-        pattern: "*.{h5ad}"
+        pattern: "*.{h5ad,zarr}"
   - networks:
       type: file
       description: Networks from DECOUPLER_NETWORK; the file stem names the resource

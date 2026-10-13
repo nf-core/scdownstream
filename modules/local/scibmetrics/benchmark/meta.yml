@@ -19,12 +19,10 @@ input:
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1' ]`
-    - h5ad:
+    - anndata:
         type: file
         description: AnnData object with embeddings and metadata for benchmarking
-        pattern: "*.{h5ad}"
-        ontologies:
-          - edam: "http://edamontology.org/format_3590"
+        pattern: "*.{h5ad,zarr}"
   - max_cells:
       type: integer
       description: Maximum number of cells to keep after subsampling

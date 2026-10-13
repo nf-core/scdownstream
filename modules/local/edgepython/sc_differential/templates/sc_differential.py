@@ -11,7 +11,14 @@ import pandas as pd
 import scipy.sparse as sp
 import yaml
 
-adata = ad.read_h5ad("${h5ad}")
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+adata = read_anndata("${anndata}")
 prefix = "${prefix}"
 donor_col = "${donor_col}"
 condition_col = "${condition_col}"

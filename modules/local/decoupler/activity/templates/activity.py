@@ -16,9 +16,16 @@ import yaml
 from scipy.stats import false_discovery_control
 from threadpoolctl import threadpool_limits
 
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
 threadpool_limits(int("${task.cpus}"))
 
-adata = ad.read_h5ad("${h5ad}")
+adata = read_anndata("${anndata}")
 method = "${method}"
 tmin = int("${tmin}")
 prefix = "${prefix}"

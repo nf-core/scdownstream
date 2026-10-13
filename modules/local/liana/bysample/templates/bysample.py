@@ -3,11 +3,19 @@
 import platform
 import warnings
 
+import anndata as ad
 import liana as li
 import pandas as pd
 import scanpy as sc
 import yaml
 from threadpoolctl import threadpool_limits
+
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
 
 threadpool_limits(int("${task.cpus}"))
 
@@ -17,7 +25,7 @@ subsample_strategy = "${subsample_strategy}"
 subsample_seed = int("${subsample_seed}")
 context_key = "${context_key}"
 
-adata = sc.read_h5ad("${h5ad}")
+adata = read_anndata("${anndata}")
 prefix = "${prefix}"
 obs_key = "${obs_key}"
 
