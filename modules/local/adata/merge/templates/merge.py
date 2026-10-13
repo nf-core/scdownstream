@@ -11,11 +11,30 @@ import scipy
 import yaml
 from scipy.sparse import csr_matrix
 
-adatas = [sc.read_h5ad(f) for f in sorted("${h5ads}".split())]
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+def write_anndata(adata, stem, fmt):
+    if fmt == "h5ad":
+        adata.write_h5ad(f"{stem}.h5ad")
+    elif fmt == "zarr":
+        if adata.isbacked:
+            adata = adata.to_memory()
+        # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
+        ad.settings.zarr_write_format = 3
+        adata.write_zarr(f"{stem}.zarr")
+
+
+anndata_format = "${anndata_format}"
+adatas = [read_anndata(f) for f in sorted("${anndata}".split())]
 
 base_path = "${base}"
 if base_path:
-    adata_base = sc.read_h5ad(base_path)
+    adata_base = read_anndata(base_path)
     adatas = [adata_base] + adatas
 
 genes = [adata.var_names for adata in adatas]
@@ -69,16 +88,16 @@ adata_outer.X = csr_matrix(adata_outer.X)
 # Sort obs columns alphabetically to make reproducible
 adata_outer.obs = adata_outer.obs.reindex(sorted(adata_outer.obs.columns), axis=1)
 
-adata_outer.write("${prefix}_outer.h5ad")
+write_anndata(adata_outer, "${prefix}_outer", anndata_format)
 
 if base_path:
     adata_integrate = adata_outer[~adata_outer.obs.index.isin(adata_base.obs.index)].copy()
 
     known_labels = adata_base.obs["label"].unique()
     adata_integrate.obs["label"] = adata_integrate.obs["label"].map(lambda x: x if x in known_labels else "Unknown")
-    adata_integrate.write("${prefix}_integrate.h5ad")
+    write_anndata(adata_integrate, "${prefix}_integrate", anndata_format)
 else:
-    os.symlink("${prefix}_outer.h5ad", "${prefix}_integrate.h5ad")
+    os.symlink("${prefix}_outer." + anndata_format, "${prefix}_integrate." + anndata_format)
 
 # Versions
 

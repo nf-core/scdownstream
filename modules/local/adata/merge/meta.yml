@@ -18,12 +18,10 @@ input:
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1' ]`
-    - h5ads:
+    - anndata:
         type: file
         description: Sample AnnData objects to concatenate
-        pattern: "*.{h5ad}"
-        ontologies:
-          - edam: "http://edamontology.org/format_3590"
+        pattern: "*.{h5ad,zarr}"
   - - meta2:
         type: map
         description: |
@@ -32,14 +30,16 @@ input:
     - base:
         type: file
         description: Optional base AnnData used when merging onto an existing object
-        pattern: "*.{h5ad}"
-        ontologies:
-          - edam: "http://edamontology.org/format_3590"
+        pattern: "*.{h5ad,zarr}"
   - force_obs_cols:
       type: string
       description: |
         Comma-separated list of obs columns to keep even when not every sample has them.
         An empty string keeps only the columns shared by all samples.
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object. An empty string is an error because the object is the only output.
+      enum: ["h5ad", "zarr", ""]
 
 output:
   outer:
@@ -48,24 +48,20 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*_outer.h5ad":
+      - "*_outer.{h5ad,zarr}":
           type: file
           description: Outer-join concatenated AnnData object
-          pattern: "*_outer.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590"
+          pattern: "*_outer.{h5ad,zarr}"
   integrate:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*_integrate.h5ad":
+      - "*_integrate.{h5ad,zarr}":
           type: file
           description: AnnData prepared for downstream integration
-          pattern: "*_integrate.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590"
+          pattern: "*_integrate.{h5ad,zarr}"
   versions:
     - versions.yml:
         type: file
