@@ -8,13 +8,14 @@ process SCARCHES_EXPIMAP {
         : 'community.wave.seqera.io/library/python_anndata_numpy_scipy_pruned:b66546c0fdf718b9'}"
 
     input:
-    tuple val(meta), path(h5ad, arity: 1)
+    tuple val(meta), path(anndata, arity: 1)
     tuple val(meta2), path(reference_model)
-    val(condition_col)
-    val(counts_layer)
+    val condition_col
+    val counts_layer
+    val anndata_format
 
     output:
-    tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
+    tuple val(meta), path("${prefix}.{h5ad,zarr}"), emit: anndata, optional: true
     path "X_${prefix}.pkl", emit: obsm
     path "versions.yml", emit: versions, topic: versions
 
@@ -23,16 +24,22 @@ process SCARCHES_EXPIMAP {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    args   = task.ext.args ?: ''
-    if ("${prefix}.h5ad" == "${h5ad}") {
-        error "Input and output names are the same, use \"task.ext.prefix\" to disambiguate!"
+    args = task.ext.args ?: ''
+    if (!(anndata_format in ['h5ad', 'zarr', ''])) {
+        error("anndata_format must be 'h5ad', 'zarr' or '', got '${anndata_format}'")
+    }
+    if (anndata_format && "${prefix}.${anndata_format}" == "${anndata}") {
+        error("Input and output names are the same, use \"task.ext.prefix\" to disambiguate!")
     }
     template('expimap.py')
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
+    def anndata_stub = anndata_format == 'zarr'
+        ? "mkdir ${prefix}.zarr && touch ${prefix}.zarr/zarr.json"
+        : anndata_format == 'h5ad' ? "touch ${prefix}.h5ad" : ''
     """
-    touch ${prefix}.h5ad
+    ${anndata_stub}
     touch X_${prefix}.pkl
     touch versions.yml
     """

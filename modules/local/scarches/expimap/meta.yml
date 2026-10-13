@@ -20,12 +20,10 @@ input:
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1' ]`
-    - h5ad:
+    - anndata:
         type: file
-        description: Query AnnData object in h5ad format
-        pattern: "*.{h5ad}"
-        ontologies:
-          - edam: "http://edamontology.org/format_3590"
+        description: Query AnnData object as an h5ad file or a zarr directory
+        pattern: "*.{h5ad,zarr}"
   - - meta2:
         type: map
         description: |
@@ -40,20 +38,22 @@ input:
   - counts_layer:
       type: string
       description: AnnData layer containing counts for model training or projection
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object; an empty string skips writing it
+      enum: ["h5ad", "zarr", ""]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
-          description: Query AnnData with expiMap latent embedding
-          pattern: "*.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590"
+          description: Query AnnData with expiMap latent embedding as an h5ad file or a zarr directory
+          pattern: "*.{h5ad,zarr}"
   obsm:
     - "X_*.pkl":
         type: file

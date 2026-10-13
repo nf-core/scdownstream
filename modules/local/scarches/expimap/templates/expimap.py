@@ -10,15 +10,32 @@ import yaml
 ad.read = ad.read_h5ad
 
 import pandas as pd
-import scanpy as sc
 import scarches as sca
 import torch
 from threadpoolctl import threadpool_limits
 
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+def write_anndata(adata, stem, fmt):
+    if fmt == "h5ad":
+        adata.write_h5ad(f"{stem}.h5ad")
+    elif fmt == "zarr":
+        if adata.isbacked:
+            adata = adata.to_memory()
+        # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
+        ad.settings.zarr_write_format = 3
+        adata.write_zarr(f"{stem}.zarr")
+
+
 threadpool_limits(int("${task.cpus}"))
 torch.set_num_threads(int("${task.cpus}"))
 
-adata = sc.read_h5ad("${h5ad}")
+adata = read_anndata("${anndata}")
 prefix = "${prefix}"
 args_str = "${args}"
 
@@ -101,7 +118,7 @@ intr_cvae.train(**train_kw)
 emb = intr_cvae.get_latent(only_active=True)
 adata.obsm["X_emb"] = emb
 
-adata.write_h5ad(f"{prefix}.h5ad")
+write_anndata(adata, prefix, "${anndata_format}")
 df = pd.DataFrame(emb, index=adata.obs_names)
 df.to_pickle(f"X_{prefix}.pkl")
 
