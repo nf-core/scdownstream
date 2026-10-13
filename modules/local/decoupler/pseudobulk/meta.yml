@@ -16,10 +16,10 @@ input:
   - - meta:
         type: map
         description: Groovy Map containing sample information
-    - h5ad:
+    - anndata:
         type: file
-        description: AnnData object in h5ad format
-        pattern: "*.{h5ad}"
+        description: AnnData object (h5ad file or zarr directory)
+        pattern: "*.{h5ad,zarr}"
     - counts_layer:
         type: string
         description: Layer containing raw counts, or X
@@ -38,16 +38,20 @@ input:
     - min_total_counts:
         type: integer
         description: Minimum total counts per pseudobulk sample
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object; an empty string skips writing it
+      enum: ["h5ad", "zarr", ""]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: Groovy Map containing sample information
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
-          description: Pseudobulk AnnData with counts in X
-          pattern: "*.h5ad"
+          description: Pseudobulk AnnData with counts in X as an h5ad file or a zarr directory
+          pattern: "*.{h5ad,zarr}"
   samples:
     - "*_samples.tsv":
         type: file

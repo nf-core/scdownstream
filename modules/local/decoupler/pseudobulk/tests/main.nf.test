@@ -32,12 +32,110 @@ nextflow_process {
                 input[4] = 'condition'
                 input[5] = 10
                 input[6] = 1000
+                input[7] = 'h5ad'
                 """
             }
         }
 
         then {
             assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+    test("Should read and write zarr") {
+
+        setup {
+            run("SCANPY_PCA") {
+                script "modules/local/scanpy/pca/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                            [ id: 'test' ],
+                            file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                        ]
+                    )
+                    input[1] = 'X_pca_zarr'
+                    input[2] = 'X'
+                    input[3] = false
+                    input[4] = 'zarr'
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_PCA.out.anndata.map { _meta, zarr -> [ [ id: 'test' ], zarr ] }
+                input[1] = 'X'
+                input[2] = 'sample'
+                input[3] = 'leiden'
+                input[4] = 'condition'
+                input[5] = 10
+                input[6] = 1000
+                input[7] = 'zarr'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def zarr_path = process.out.anndata[0][1]
+            assert zarr_path.endsWith('test.zarr')
+            assert new File(zarr_path, 'zarr.json').isFile()
+            def adata = anndata(zarr_path)
+            with(adata) {
+                assert n_obs > 0
+                assert "donor" in obs.colnames
+                assert "celltype" in obs.colnames
+                assert "condition" in obs.colnames
+            }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should not write the object - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [
+                            id: 'test',
+                            obs_key: 'leiden',
+                            condition_col: 'condition',
+                        ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'X'
+                input[2] = 'batch'
+                input[3] = 'leiden'
+                input[4] = 'condition'
+                input[5] = 10
+                input[6] = 1000
+                input[7] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.anndata.size() == 0
             assert snapshot(process.out).match()
         }
 
@@ -62,12 +160,13 @@ nextflow_process {
                 input[4] = 'condition'
                 input[5] = 10
                 input[6] = 1000
+                input[7] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             with(adata) {
                 assert n_obs > 0

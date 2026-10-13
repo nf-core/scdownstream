@@ -19,7 +19,7 @@
                 "3": [
                     "versions.yml:md5,c038d52da375dc87900a713a0379fe41"
                 ],
-                "h5ad": [
+                "anndata": [
                     [
                         {
                             "id": "test"
@@ -92,7 +92,105 @@
                 ]
             }
         ],
-        "timestamp": "2026-08-10T10:25:01.551460407",
+        "timestamp": "2026-10-13T15:21:32.450124334",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should read and write zarr": {
+        "content": [
+            {
+                "DECOUPLER_PSEUDOBULK": {
+                    "anndata": "0.12.19",
+                    "decoupler": "2.1.6",
+                    "pandas": "2.3.3",
+                    "python": "3.12.13"
+                }
+            },
+            {
+                "n_obs": 36,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "leiden_condition",
+                        "condition",
+                        "batch",
+                        "sample_original",
+                        "leiden",
+                        "psbulk_cells",
+                        "psbulk_counts",
+                        "donor",
+                        "celltype",
+                        "n_cells",
+                        "total_counts",
+                        "sample_id"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-13T15:19:55.617561476",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should not write the object - stub": {
+        "content": [
+            {
+                "0": [
+                    
+                ],
+                "1": [
+                    "test_samples.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "test_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "anndata": [
+                    
+                ],
+                "multiqc_files": [
+                    "test_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "samples": [
+                    "test_samples.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-13T15:36:22.147118709",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -120,7 +218,7 @@
                 "3": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "h5ad": [
+                "anndata": [
                     [
                         {
                             "id": "test",
@@ -141,10 +239,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-11T10:50:07.72506882",
+        "timestamp": "2026-10-13T15:18:20.508374597",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     }
 }
