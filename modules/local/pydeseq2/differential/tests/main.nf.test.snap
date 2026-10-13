@@ -31,5 +31,34 @@
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
+    },
+    "Should read a pseudobulk zarr": {
+        "content": [
+            [
+                "test_pydeseq2_B_cell_Disease_results.parquet",
+                "test_pydeseq2_B_cell_Treated_results.parquet",
+                "test_pydeseq2_Cd4_t_Disease_results.parquet",
+                "test_pydeseq2_Cd4_t_Treated_results.parquet",
+                "test_pydeseq2_Cd8_t_Disease_results.parquet",
+                "test_pydeseq2_Cd8_t_Treated_results.parquet",
+                "test_pydeseq2_Monocyte_Disease_results.parquet",
+                "test_pydeseq2_Monocyte_Treated_results.parquet",
+                "test_pydeseq2_Nk_cell_Disease_results.parquet",
+                "test_pydeseq2_Nk_cell_Treated_results.parquet",
+                "test_pydeseq2_T_cell_Disease_results.parquet",
+                "test_pydeseq2_T_cell_Treated_results.parquet"
+            ],
+            {
+                "PYDESEQ2_DIFFERENTIAL": {
+                    "anndata": "0.12.10",
+                    "python": "3.12.14"
+                }
+            }
+        ],
+        "timestamp": "2026-10-13T18:55:54.353323042",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
     }
 }
