@@ -4,6 +4,7 @@ import base64
 import json
 import platform
 
+import anndata as ad
 import matplotlib.pyplot as plt
 import numpy as np
 import scanpy as sc
@@ -11,10 +12,28 @@ import scipy
 import yaml
 from scipy.stats import entropy
 
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+def write_anndata(adata, stem, fmt):
+    if fmt == "h5ad":
+        adata.write_h5ad(f"{stem}.h5ad")
+    elif fmt == "zarr":
+        if adata.isbacked:
+            adata = adata.to_memory()
+        # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
+        ad.settings.zarr_write_format = 3
+        adata.write_zarr(f"{stem}.zarr")
+
+
 group_col = "${group_col}"
 entropy_col = "${entropy_col}"
 prefix = "${prefix}"
-adata = sc.read_h5ad("${h5ad}", backed="r")
+adata = read_anndata("${anndata}", backed="r")
 
 
 def entropy_of_group(group):
@@ -29,7 +48,7 @@ colname = "${meta.id}:entropy"
 adata.obs[colname] = adata.obs[group_col].map(entropies).astype(float) / np.log2(n_unique)
 
 adata.obs[[colname]].to_pickle(f"{prefix}.pkl")
-adata.write_h5ad(f"{prefix}.h5ad")
+write_anndata(adata, prefix, "${anndata_format}")
 
 if "${plot_basis ? 'true' : 'false'}" == "true":
     sc.pl.scatter(adata, title="${meta.id} Entropy", color=colname, show=False, basis="${plot_basis}")

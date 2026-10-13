@@ -26,12 +26,13 @@ nextflow_process {
                         []
                     ]
                 )
+                input[1] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             with(adata) {
                 assert "scvi-global-1.0_leiden" in obs.colnames
@@ -64,12 +65,13 @@ nextflow_process {
                         []
                     ]
                 )
+                input[1] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             with(adata) {
                 assert "X_scvi" in obsm
@@ -108,12 +110,13 @@ nextflow_process {
                         []
                     ]
                 )
+                input[1] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             with(adata) {
                 assert "scvi-global-1.0_leiden" in obs.colnames
@@ -149,12 +152,13 @@ nextflow_process {
                         []
                     ]
                 )
+                input[1] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             with(adata) {
                 assert "scvi-global-1.0_paga" in uns
@@ -187,12 +191,13 @@ nextflow_process {
                         []
                     ]
                 )
+                input[1] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             assert snapshot(
                 process.out,
@@ -224,6 +229,7 @@ nextflow_process {
                         []
                     ]
                 )
+                input[1] = 'h5ad'
                 """
             }
         }
@@ -231,6 +237,105 @@ nextflow_process {
         then {
             assert process.success
             assert snapshot(process.out).match()
+        }
+
+    }
+
+    test("Should not write the object - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [id: 'test'],
+                        file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        []
+                    ]
+                )
+                input[1] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.anndata.size() == 0
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+    test("Should read and write zarr") {
+
+        setup {
+            run("ADATA_EXTEND", alias: "EXTEND_TO_ZARR") {
+                script "modules/local/adata/extend/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                            [id: 'input'],
+                            file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                            [],
+                            [],
+                            [],
+                            [],
+                            [],
+                            []
+                        ]
+                    )
+                    input[1] = 'zarr'
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = EXTEND_TO_ZARR.out.anndata.map{ _meta, zarr ->
+                    [
+                        [id: 'test'],
+                        zarr,
+                        [file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_leiden.pkl', checkIfExists: true)],
+                        [],
+                        [file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi.pkl', checkIfExists: true)],
+                        [],
+                        [],
+                        []
+                    ]
+                }
+                input[1] = 'zarr'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def zarr_path = process.out.anndata[0][1]
+            assert zarr_path.endsWith('test.zarr')
+            assert new File(zarr_path, 'zarr.json').isFile()
+            def adata = anndata(zarr_path)
+            with(adata) {
+                assert "scvi-global-1.0_leiden" in obs.colnames
+                assert "X_scvi" in obsm
+            }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
         }
 
     }

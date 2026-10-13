@@ -12,7 +12,25 @@ import yaml
 from scipy.io import mmread
 from scipy.sparse import issparse, load_npz
 
-adata = ad.read_h5ad("${base}")
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+def write_anndata(adata, stem, fmt):
+    if fmt == "h5ad":
+        adata.write_h5ad(f"{stem}.h5ad")
+    elif fmt == "zarr":
+        if adata.isbacked:
+            adata = adata.to_memory()
+        # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
+        ad.settings.zarr_write_format = 3
+        adata.write_zarr(f"{stem}.zarr")
+
+
+adata = read_anndata("${base}")
 prefix = "${prefix}"
 obs_paths = sorted(Path("obs/").glob("*"))
 var_paths = sorted(Path("var/").glob("*"))
@@ -65,7 +83,7 @@ for path in layers_paths:
         layer = np.asarray(layer, dtype=np.float32)
     adata.layers[path.stem] = layer
 
-adata.write_h5ad(f"{prefix}.h5ad")
+write_anndata(adata, prefix, "${anndata_format}")
 adata.obs.to_csv(f"{prefix}_metadata.csv")
 
 # Versions

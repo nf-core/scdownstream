@@ -25,35 +25,31 @@ input:
     - integrated:
         type: file
         description: Integrated AnnData containing the embedding to transfer
-        pattern: "*.{h5ad}"
-        ontologies:
-          - edam: "http://edamontology.org/format_3590"
+        pattern: "*.{h5ad,zarr}"
     - base:
         type: file
         description: Base AnnData used as a reference for cell alignment
-        pattern: "*.{h5ad}"
-        ontologies:
-          - edam: "http://edamontology.org/format_3590"
+        pattern: "*.{h5ad,zarr}"
     - combined:
         type: file
         description: Combined AnnData that receives the merged embedding
-        pattern: "*.{h5ad}"
-        ontologies:
-          - edam: "http://edamontology.org/format_3590"
+        pattern: "*.{h5ad,zarr}"
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object; an empty string skips writing it
+      enum: ["h5ad", "zarr", ""]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
           description: AnnData with the merged integration embedding
-          pattern: "*.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590"
+          pattern: "*.{h5ad,zarr}"
   obs:
     - "*.pkl":
         type: file

@@ -290,7 +290,7 @@ Do not set `ANNDATA_ZARR_WRITE_FORMAT` in the `env` scope of `nextflow.config`, 
 
 A fragment contains only the data that a module adds to an AnnData object.
 `workflows/scdownstream.nf` collects fragments on the `ch_obs`, `ch_var`, `ch_obsm`, `ch_obsp`, and `ch_uns` channels, and on their `_per_sample` counterparts (including `ch_layers_per_sample`) before combination.
-`ADATA_EXTEND` merges them into the H5AD files, once per sample after quality control (`FINALIZE_QC_ANNDATAS`) and once at the end of the pipeline (`FINALIZE`).
+`ADATA_EXTEND` merges them into the base AnnData object and writes h5ad or zarr depending on `anndata_format`, once per sample after quality control (`FINALIZE_QC_ANNDATAS`) and once at the end of the pipeline (`FINALIZE`).
 Emit each fragment on a channel named after its AnnData slot and use a format that `modules/local/adata/extend` can read:
 
 | Slot     | Format                                               | Index                                 |

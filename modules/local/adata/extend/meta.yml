@@ -20,10 +20,8 @@ input:
           e.g. `[ id:'sample1' ]`
     - base:
         type: file
-        description: Base AnnData object in h5ad format
-        pattern: "*.{h5ad}"
-        ontologies:
-          - edam: "http://edamontology.org/format_3590"
+        description: Base AnnData object as an h5ad file or a zarr directory
+        pattern: "*.{h5ad,zarr}"
     - obs:
         type: file
         description: Optional obs tables as pickle or CSV files
@@ -48,20 +46,22 @@ input:
         type: file
         description: Optional layer matrices as numpy, Matrix Market or sparse files
         pattern: "*.{npy,npz,mtx}"
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object; an empty string skips writing it
+      enum: ["h5ad", "zarr", ""]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
           description: Extended AnnData object with merged annotations and layers
-          pattern: "*.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590"
+          pattern: "*.{h5ad,zarr}"
   metadata:
     - - meta:
           type: map
