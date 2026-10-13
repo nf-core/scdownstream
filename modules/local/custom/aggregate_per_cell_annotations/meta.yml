@@ -17,10 +17,10 @@ input:
   - - meta:
         type: map
         description: Groovy Map containing sample information
-    - h5ad:
+    - anndata:
         type: file
-        description: AnnData object in h5ad format with per-cell annotations
-        pattern: "*.{h5ad}"
+        description: AnnData object with per-cell annotations (h5ad file or zarr directory)
+        pattern: "*.{h5ad,zarr}"
   - cluster_col:
       type: string
       description: obs column with cluster labels used for aggregation
@@ -33,16 +33,20 @@ input:
   - resolution:
       type: string
       description: Clustering resolution used in the output column label
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object; an empty string skips writing it
+      enum: ["h5ad", "zarr", ""]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: Groovy Map containing sample information
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
-          description: AnnData with aggregated annotation column added to obs
-          pattern: "*.h5ad"
+          description: AnnData with aggregated annotation column added to obs as an h5ad file or a zarr directory
+          pattern: "*.{h5ad,zarr}"
   obs:
     - - meta:
           type: map

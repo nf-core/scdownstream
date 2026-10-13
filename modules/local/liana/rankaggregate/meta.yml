@@ -19,10 +19,10 @@ input:
   - - meta:
         type: map
         description: Groovy Map containing sample information
-    - h5ad:
+    - anndata:
         type: file
-        description: AnnData object in h5ad format
-        pattern: "*.{h5ad}"
+        description: AnnData object (h5ad file or zarr directory)
+        pattern: "*.{h5ad,zarr}"
   - n_perms:
       type: integer
       description: Number of permutations for specificity testing; 0 disables permutations
@@ -35,16 +35,20 @@ input:
   - subsample_seed:
       type: integer
       description: Random seed for subsampling and LIANA
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object; an empty string skips writing it
+      enum: ["h5ad", "zarr", ""]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: Groovy Map containing sample information
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
-          description: Optional AnnData with LIANA results stored in uns
-          pattern: "*.h5ad"
+          description: Optional AnnData with LIANA results stored in uns as an h5ad file or a zarr directory
+          pattern: "*.{h5ad,zarr}"
   uns:
     - "*.pkl":
         type: file
