@@ -239,6 +239,53 @@ Templates should follow this structure:
    - MultiQC inputs.
    - `versions.yml` containing the versions of the language and all relevant packages.
 
+### AnnData formats
+
+Local Python modules read AnnData objects from `.h5ad` files or `.zarr` directories.
+Modules that write an object take a `val anndata_format` input with the value `'h5ad'`, `'zarr'` or `''`.
+An empty string skips writing the object, which saves time and disk space when only fragments are consumed.
+`modules/local/scanpy/pca` contains the reference implementation.
+
+Each writer module follows this interface:
+
+- The object input is `tuple val(meta), path(anndata)`.
+- `val anndata_format` is the last input.
+- The object output is `tuple val(meta), path("${prefix}.{h5ad,zarr}"), emit: anndata, optional: true`.
+- The script block raises an error for any other `anndata_format` value, and when the output name equals the input name.
+- Modules whose only output is the object also raise an error when `anndata_format` is empty.
+- The stub creates `${prefix}.h5ad`, a `${prefix}.zarr` directory containing `zarr.json`, or no object.
+
+Subworkflows pass the format as a literal at each call site.
+Use `'zarr'` by default and `'h5ad'` when the object feeds an R module, an nf-core module or another h5ad-only consumer.
+Use `save_intermediates ? 'zarr' : ''` when no downstream step consumes the object.
+
+Python templates inline these helpers so that each module stays self-contained:
+
+```python
+import anndata as ad
+
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+def write_anndata(adata, stem, fmt):
+    if fmt == "h5ad":
+        adata.write_h5ad(f"{stem}.h5ad")
+    elif fmt == "zarr":
+        if adata.isbacked:
+            adata = adata.to_memory()
+        # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
+        ad.settings.zarr_write_format = 3
+        adata.write_zarr(f"{stem}.zarr")
+```
+
+Backed mode applies to h5ad inputs only; zarr inputs are read into memory.
+Zarr output always uses format version 3, which requires `zarr` 3 in the module environment.
+Do not set `ANNDATA_ZARR_WRITE_FORMAT` in the `env` scope of `nextflow.config`, because anndata 0.13 rejects the string value and fails on import.
+
 ### Fragments
 
 A fragment contains only the data that a module adds to an AnnData object.

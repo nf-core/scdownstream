@@ -1,4 +1,87 @@
 {
+    "Should read and write zarr": {
+        "content": [
+            {
+                "SCANPY_PCA": {
+                    "pandas": "3.0.5",
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_pca",
+                    "X_pca_input"
+                ],
+                "varm": [
+                    "X_pca",
+                    "X_pca_input"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_pca",
+                    "X_pca_input",
+                    "log1p"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-13T10:22:01.50574362",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should not write the object - stub": {
+        "content": [
+            {
+                "0": [
+                    
+                ],
+                "1": [
+                    "X_test_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "anndata": [
+                    
+                ],
+                "obsm": [
+                    "X_test_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-13T10:22:27.156352969",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
     "Should run without failures - stub": {
         "content": [
             {
@@ -16,7 +99,7 @@
                 "2": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "h5ad": [
+                "anndata": [
                     [
                         {
                             "id": "test"
@@ -32,10 +115,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-04-01T15:10:58.212224761",
+        "timestamp": "2026-10-13T10:22:14.214866998",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures": {
