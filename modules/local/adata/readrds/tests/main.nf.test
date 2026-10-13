@@ -20,12 +20,13 @@ nextflow_process {
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679758_filtered_matrix.seurat.rds', checkIfExists: true)
                     ]
                 )
+                input[1] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             assert snapshot(
                 process.out,
@@ -51,6 +52,7 @@ nextflow_process {
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679758_filtered_matrix.seurat.rds', checkIfExists: true)
                     ]
                 )
+                input[1] = 'h5ad'
                 """
             }
         }
@@ -76,12 +78,13 @@ nextflow_process {
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679757_filtered_matrix.sce.rds', checkIfExists: true)
                     ]
                 )
+                input[1] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             assert snapshot(
                 process.out,
@@ -107,6 +110,7 @@ nextflow_process {
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679757_filtered_matrix.sce.rds', checkIfExists: true)
                     ]
                 )
+                input[1] = 'h5ad'
                 """
             }
         }
@@ -115,6 +119,63 @@ nextflow_process {
             assert process.success
 
             assert snapshot(process.out).match()
+        }
+
+    }
+
+    test("Should read seurat file and write zarr") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [id: 'test'],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679758_filtered_matrix.seurat.rds', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'zarr'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def zarr_path = process.out.anndata[0][1]
+            assert zarr_path.endsWith('test.zarr')
+            assert new File(zarr_path, 'zarr.json').isFile()
+            def adata = anndata(zarr_path)
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should fail without an output format") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [id: 'test'],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679758_filtered_matrix.seurat.rds', checkIfExists: true)
+                    ]
+                )
+                input[1] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("anndata_format must be 'h5ad' or 'zarr'")
         }
 
     }

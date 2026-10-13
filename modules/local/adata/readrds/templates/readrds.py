@@ -11,6 +11,18 @@ import pandas as pd
 import rpy2.robjects as ro
 import yaml
 
+
+def write_anndata(adata, stem, fmt):
+    if fmt == "h5ad":
+        adata.write_h5ad(f"{stem}.h5ad")
+    elif fmt == "zarr":
+        if adata.isbacked:
+            adata = adata.to_memory()
+        # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
+        ad.settings.zarr_write_format = 3
+        adata.write_zarr(f"{stem}.zarr")
+
+
 seurat = ro.packages.importr("Seurat")
 # Import SingleCellExperiment to check for class
 sce_pkg = ro.packages.importr("SingleCellExperiment")
@@ -33,7 +45,7 @@ adata = anndata2ri.rpy2py(sce)
 adata.obs.index = adata.obs.index.astype(str)
 adata.var.index = adata.var.index.astype(str)
 
-adata.write_h5ad("${prefix}.h5ad")
+write_anndata(adata, "${prefix}", "${anndata_format}")
 
 versions = {
     "${task.process}": {

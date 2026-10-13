@@ -31,20 +31,22 @@ input:
         pattern: "*.{rds,RDS}"
         ontologies:
           - edam: "http://edamontology.org/format_8910"
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object
+      enum: ["h5ad", "zarr"]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
-          description: AnnData object converted from the RDS input
-          pattern: "*.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590"
+          description: AnnData object converted from the RDS input as an h5ad file or a zarr directory
+          pattern: "*.{h5ad,zarr}"
   versions:
     - versions.yml:
         type: file
@@ -59,25 +61,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/adata_readrds:037fe0db7bb7ea31
-      build_id: bd-037fe0db7bb7ea31_6
-      scan_id: sc-8e0779f01a90da69_1
     linux/amd64:
-      name: community.wave.seqera.io/library/adata_readrds:a4ce240ec6f50fd9
-      build_id: bd-a4ce240ec6f50fd9_6
-      scan_id: sc-c05d0bb4435c39f2_1
+      name: community.wave.seqera.io/library/adata_readrds:13e30e5d7d25206e
+      build_id: bd-13e30e5d7d25206e_1
+      scan_id: sc-35b1038d585f6af7_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/adata_readrds:52800c36bef59ac8
+      build_id: bd-52800c36bef59ac8_1
+      scan_id: sc-f7cbf8ecd2cd896f_1
   singularity:
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/adata_readrds:de87cc463369476a
-      build_id: bd-de87cc463369476a_6
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ba/ba2bae970fffbe5a2e36774899aca2fb4858f05f88f7b75dc40a1d43e7bff511/data
+      name: oras://community.wave.seqera.io/library/adata_readrds:6a9ee3eb654bb68b
+      build_id: bd-6a9ee3eb654bb68b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/e3/e3bfd1c147df7eb07cdc33169d224d964cfd994be8890c135ba13b0209c9e3a4/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/adata_readrds:772534f5abb8f8f1
-      build_id: bd-772534f5abb8f8f1_6
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/96/96bb395431d12e1db60ae56a0788543a29343cea42657c79d548d015ab69e960/data
+      name: oras://community.wave.seqera.io/library/adata_readrds:8897bbaaf95404f5
+      build_id: bd-8897bbaaf95404f5_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/90/90f55177e533b8e70e61453553c784658ce4a092d6837d18f3aa5ab329ef2e51/data
   conda:
     linux/amd64:
-      lock_file: modules/local/adata/readrds/.conda-lock/linux_amd64-bd-a4ce240ec6f50fd9_6.txt
+      lock_file: modules/local/adata/readrds/.conda-lock/linux_amd64-bd-13e30e5d7d25206e_1.txt
     linux/arm64:
-      lock_file: modules/local/adata/readrds/.conda-lock/linux_arm64-bd-037fe0db7bb7ea31_6.txt
+      lock_file: modules/local/adata/readrds/.conda-lock/linux_arm64-bd-52800c36bef59ac8_1.txt
