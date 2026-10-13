@@ -4,12 +4,20 @@ import base64
 import json
 import platform
 
+import anndata as ad
 import matplotlib
 import matplotlib.pyplot as plt
 import scanpy as sc
 import yaml
 
-adata = sc.read_h5ad("${h5ad}")
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+adata = read_anndata("${anndata}")
 symbol_col = "${symbol_col}"
 mito_genes = "${mito_genes}"
 

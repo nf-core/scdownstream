@@ -4,12 +4,31 @@ import base64
 import json
 import platform
 
+import anndata as ad
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import scanpy as sc
 import yaml
 from scipy.stats import median_abs_deviation
+
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+def write_anndata(adata, stem, fmt):
+    if fmt == "h5ad":
+        adata.write_h5ad(f"{stem}.h5ad")
+    elif fmt == "zarr":
+        if adata.isbacked:
+            adata = adata.to_memory()
+        # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
+        ad.settings.zarr_write_format = 3
+        adata.write_zarr(f"{stem}.zarr")
+
 
 PLOT_METRICS = [
     "log1p_total_counts",
@@ -241,7 +260,7 @@ def plot_qc_histogram_panel(prefix, section_name, description, adata, thresholds
         json.dump(custom_json, f_json)
 
 
-adata = sc.read_h5ad("${h5ad}")
+adata = read_anndata("${anndata}")
 prefix = "${prefix}"
 symbol_col = "${symbol_col}"
 mito_genes = "${mito_genes}"
@@ -340,7 +359,7 @@ if min_genes is not None:
 if min_cells is not None:
     sc.pp.filter_genes(adata, min_cells=min_cells)
 
-adata.write_h5ad(f"{prefix}.h5ad")
+write_anndata(adata, prefix, "${anndata_format}")
 
 # Versions
 

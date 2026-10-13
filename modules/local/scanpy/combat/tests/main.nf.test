@@ -17,6 +17,7 @@ nextflow_process {
                         file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
                     ]
                 )
+                input[1] = 'h5ad'
                 """
             }
         }
@@ -30,16 +31,17 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = SCANPY_LOG1PNORM.out.h5ad
+                input[0] = SCANPY_LOG1PNORM.out.anndata
                 input[1] = "batch"
                 input[2] = "log1p"
                 input[3] = false
+                input[4] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             with(adata) {
                 assert "X_emb" in obsm
@@ -63,10 +65,11 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = SCANPY_LOG1PNORM.out.h5ad
+                input[0] = SCANPY_LOG1PNORM.out.anndata
                 input[1] = "batch"
                 input[2] = "log1p"
                 input[3] = false
+                input[4] = 'h5ad'
                 """
             }
         }
@@ -74,6 +77,33 @@ nextflow_process {
         then {
             assert process.success
 
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+    test("Should not write the object - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_LOG1PNORM.out.anndata
+                input[1] = "batch"
+                input[2] = "log1p"
+                input[3] = false
+                input[4] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.anndata.size() == 0
             assert snapshot(process.out).match()
         }
 

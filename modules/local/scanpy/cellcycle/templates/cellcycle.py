@@ -4,10 +4,29 @@ import base64
 import json
 import platform
 
+import anndata as ad
 import matplotlib.pyplot as plt
 import scanpy as sc
 import yaml
 from threadpoolctl import threadpool_limits
+
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+def write_anndata(adata, stem, fmt):
+    if fmt == "h5ad":
+        adata.write_h5ad(f"{stem}.h5ad")
+    elif fmt == "zarr":
+        if adata.isbacked:
+            adata = adata.to_memory()
+        # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
+        ad.settings.zarr_write_format = 3
+        adata.write_zarr(f"{stem}.zarr")
+
 
 threadpool_limits(int("${task.cpus}"))
 sc.settings.n_jobs = int("${task.cpus}")
@@ -24,7 +43,7 @@ def read_gene_list(path):
 s_genes = read_gene_list("${s_genes}")
 g2m_genes = read_gene_list("${g2m_genes}")
 
-adata = sc.read_h5ad("${h5ad}")
+adata = read_anndata("${anndata}")
 
 # If gene symbols are in a column rather than the index, temporarily set the
 # index so that sc.tl.score_genes_cell_cycle can find them, then restore.
@@ -44,7 +63,7 @@ if original_index is not None:
     adata.var_names = original_index
 
 adata.obs[["S_score", "G2M_score", "phase"]].to_pickle(f"{prefix}.pkl")
-adata.write_h5ad(f"{prefix}.h5ad")
+write_anndata(adata, prefix, "${anndata_format}")
 
 if adata.obs["phase"].nunique() > 1:
     phase_counts = adata.obs["phase"].value_counts()

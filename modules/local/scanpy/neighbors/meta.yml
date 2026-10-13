@@ -16,26 +16,30 @@ input:
   - - meta:
         type: map
         description: Groovy Map containing sample information
-    - h5ad:
+    - anndata:
         type: file
-        description: AnnData object in h5ad format
-        pattern: "*.{h5ad}"
+        description: AnnData object as an h5ad file or a zarr directory
+        pattern: "*.{h5ad,zarr}"
   - rep:
       type: string
       description: obsm key used as the neighbour graph representation
   - n_pcs:
       type: integer
       description: Number of principal components to use when applicable
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object; an empty string skips writing it
+      enum: ["h5ad", "zarr", ""]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: Groovy Map containing sample information
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
-          description: AnnData with neighbour graph
-          pattern: "*.h5ad"
+          description: AnnData with neighbour graph as an h5ad file or a zarr directory
+          pattern: "*.{h5ad,zarr}"
   versions:
     - versions.yml:
         type: file

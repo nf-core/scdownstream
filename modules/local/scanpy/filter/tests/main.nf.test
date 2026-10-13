@@ -34,12 +34,13 @@ nextflow_process {
                 input[12] = 0
                 input[13] = []
                 input[14] = false
+                input[15] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             assert adata.n_obs > 0
             with(adata) {
@@ -87,12 +88,13 @@ nextflow_process {
                 input[12] = 0
                 input[13] = []
                 input[14] = false
+                input[15] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             assert adata.n_obs > 0
             with(adata) {
@@ -139,6 +141,7 @@ nextflow_process {
                 input[12] = 0
                 input[13] = []
                 input[14] = false
+                input[15] = 'h5ad'
                 """
             }
         }
@@ -179,12 +182,13 @@ nextflow_process {
                 input[13] = channel.of('POMP', 'DLG2')
                     .collectFile(name: 'mito_genes.txt')
                 input[14] = false
+                input[15] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             assert adata.n_obs > 0
             with(adata) {
@@ -231,12 +235,13 @@ nextflow_process {
                 input[12] = 3
                 input[13] = []
                 input[14] = false
+                input[15] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             assert adata.n_obs > 0
             with(adata) {
@@ -278,12 +283,13 @@ nextflow_process {
                 input[12] = 3
                 input[13] = []
                 input[14] = false
+                input[15] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             assert adata.n_obs > 0
             with(adata) {
@@ -330,12 +336,13 @@ nextflow_process {
                 input[12] = 3
                 input[13] = []
                 input[14] = true
+                input[15] = 'h5ad'
                 """
             }
         }
 
         then {
-            def adata = anndata(process.out.h5ad[0][1])
+            def adata = anndata(process.out.anndata[0][1])
             assert process.success
             assert adata.n_obs > 0
             assert process.out.plots.size() == 1
@@ -378,6 +385,7 @@ nextflow_process {
                 input[12] = 0
                 input[13] = []
                 input[14] = true
+                input[15] = 'h5ad'
                 """
             }
         }
@@ -388,6 +396,45 @@ nextflow_process {
             assert process.out.multiqc_files.size() == 1
 
             assert snapshot(process.out).match()
+        }
+
+    }
+
+    test("Should fail without an output format") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'index'
+                input[2] = 20
+                input[3] = 20
+                input[4] = 50
+                input[5] = 50
+                input[6] = 50
+                input[7] = 0
+                input[8] = 100
+                input[9] = 0
+                input[10] = 0
+                input[11] = 0
+                input[12] = 0
+                input[13] = []
+                input[14] = true
+                input[15] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("SCANPY_FILTER only outputs the AnnData object; anndata_format must not be empty")
         }
 
     }

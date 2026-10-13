@@ -6,16 +6,35 @@ import pickle
 import platform
 from pathlib import Path
 
+import anndata as ad
 import matplotlib.pyplot as plt
 import pandas as pd
 import scanpy as sc
 import yaml
 from threadpoolctl import threadpool_limits
 
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+def write_anndata(adata, stem, fmt):
+    if fmt == "h5ad":
+        adata.write_h5ad(f"{stem}.h5ad")
+    elif fmt == "zarr":
+        if adata.isbacked:
+            adata = adata.to_memory()
+        # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
+        ad.settings.zarr_write_format = 3
+        adata.write_zarr(f"{stem}.zarr")
+
+
 threadpool_limits(int("${task.cpus}"))
 sc.settings.n_jobs = int("${task.cpus}")
 
-adata = sc.read_h5ad("${h5ad}")
+adata = read_anndata("${anndata}")
 prefix = "${prefix}"
 method = "${method}"
 rank_key = "${rank_key}"
@@ -139,7 +158,7 @@ if len(valid_groups) >= 2:
     marker_df = marker_df[marker_df["names"].notna()].copy()
 
     if marker_df.empty:
-        print(f"Warning: no genes passed filter for {obs_key}; skipping plots and H5AD output.")
+        print(f"Warning: no genes passed filter for {obs_key}; skipping plots and AnnData output.")
         adata.uns.pop(filtered_rank_key, None)
         adata.uns.pop(rank_key, None)
     else:
@@ -149,17 +168,17 @@ if len(valid_groups) >= 2:
         rgg_dict = dict(adata.uns.pop(filtered_rank_key))
         plot_rgg_dict = dict(rgg_dict)
         adata.uns.pop(rank_key, None)
-        # Scanpy marks filtered-out genes as missing names; replace them so H5AD serialisation works.
+        # Scanpy marks filtered-out genes as missing names; replace them so AnnData serialisation works.
         names_df = pd.DataFrame(rgg_dict["names"]).fillna("").astype(str)
         rgg_dict["names"] = names_df.to_records(index=False)
         adata.uns[rank_key] = rgg_dict
 
         pickle.dump(rgg_dict, open(f"{prefix}.pkl", "wb"))
-        adata.write_h5ad(f"{prefix}.h5ad")
+        write_anndata(adata, prefix, "${anndata_format}")
 
         # Plot
         # Plotting handles the original missing names, whereas empty strings
-        # used for H5AD serialisation are interpreted as invalid genes.
+        # used for AnnData serialisation are interpreted as invalid genes.
         adata.uns[rank_key] = plot_rgg_dict
         sc.pl.rank_genes_groups(adata, key=rank_key, show=False)
         path = f"{prefix}.png"

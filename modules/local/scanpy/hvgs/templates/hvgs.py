@@ -2,14 +2,33 @@
 
 import platform
 
+import anndata as ad
 import scanpy as sc
 import yaml
 from threadpoolctl import threadpool_limits
 
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+def write_anndata(adata, stem, fmt):
+    if fmt == "h5ad":
+        adata.write_h5ad(f"{stem}.h5ad")
+    elif fmt == "zarr":
+        if adata.isbacked:
+            adata = adata.to_memory()
+        # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
+        ad.settings.zarr_write_format = 3
+        adata.write_zarr(f"{stem}.zarr")
+
+
 threadpool_limits(int("${task.cpus}"))
 sc.settings.n_jobs = int("${task.cpus}")
 
-adata = sc.read_h5ad("${h5ad}")
+adata = read_anndata("${anndata}")
 prefix = "${prefix}"
 n_hvgs = int("${n_hvgs}")
 batch_key = "${batch_key}"
@@ -55,7 +74,7 @@ if adata.n_vars > n_hvgs:
     adata.X = raw_counts
     adata = adata[:, adata.var["highly_variable"]]
 
-adata.write_h5ad(f"{prefix}.h5ad")
+write_anndata(adata, prefix, "${anndata_format}")
 
 # Versions
 

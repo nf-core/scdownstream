@@ -17,10 +17,10 @@ input:
   - - meta:
         type: map
         description: Groovy Map containing sample information
-    - h5ad:
+    - anndata:
         type: file
-        description: AnnData object in h5ad format
-        pattern: "*.{h5ad}"
+        description: AnnData object as an h5ad file or a zarr directory
+        pattern: "*.{h5ad,zarr}"
   - symbol_col:
       type: string
       description: var column containing gene symbols

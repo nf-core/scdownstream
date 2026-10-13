@@ -20,12 +20,10 @@ input:
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1' ]`
-    - h5ad:
+    - anndata:
         type: file
-        description: AnnData object in h5ad format with raw counts in `X` or a `counts` layer
-        pattern: "*.{h5ad}"
-        ontologies:
-          - edam: "http://edamontology.org/format_3590"
+        description: AnnData object as an h5ad file or a zarr directory with raw counts in `X` or a `counts` layer
+        pattern: "*.{h5ad,zarr}"
     - n_genes:
         type: integer
         description: |
@@ -42,20 +40,22 @@ input:
         type: string
         description: |
           Layer containing raw counts, or `X` to use the main matrix.
+    - anndata_format:
+        type: string
+        description: Format of the output AnnData object; an empty string skips writing it
+        enum: ["h5ad", "zarr", ""]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
-          description: AnnData object subset to highly variable genes with raw counts in `X`
-          pattern: "*.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590"
+          description: AnnData object subset to highly variable genes with raw counts in `X` as an h5ad file or a zarr directory
+          pattern: "*.{h5ad,zarr}"
   var:
     - "*.pkl":
         type: file

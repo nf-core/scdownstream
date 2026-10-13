@@ -16,10 +16,10 @@ input:
   - - meta:
         type: map
         description: Groovy Map containing sample information
-    - h5ad:
+    - anndata:
         type: file
-        description: AnnData object in h5ad format
-        pattern: "*.{h5ad}"
+        description: AnnData object as an h5ad file or a zarr directory
+        pattern: "*.{h5ad,zarr}"
   - s_genes:
       type: file
       description: Text file listing S-phase marker genes
@@ -31,6 +31,10 @@ input:
   - symbol_col:
       type: string
       description: var column containing gene symbols
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object; an empty string skips writing it
+      enum: ["h5ad", "zarr", ""]
 
 output:
   obs:
@@ -41,14 +45,14 @@ output:
           type: file
           description: Pickled obs with cell cycle scores
           pattern: "*.pkl"
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: Groovy Map containing sample information
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
-          description: AnnData with cell cycle annotations
-          pattern: "*.h5ad"
+          description: AnnData with cell cycle annotations as an h5ad file or a zarr directory
+          pattern: "*.{h5ad,zarr}"
   multiqc_files:
     - "*_mqc.json":
         type: file

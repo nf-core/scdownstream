@@ -17,20 +17,24 @@ input:
   - - meta:
         type: map
         description: Groovy Map containing sample information including optional obs_key
-    - h5ad:
+    - anndata:
         type: file
-        description: AnnData object in h5ad format with clusters and neighbours
-        pattern: "*.{h5ad}"
+        description: AnnData object as an h5ad file or a zarr directory with clusters and neighbours
+        pattern: "*.{h5ad,zarr}"
+    - anndata_format:
+        type: string
+        description: Format of the output AnnData object; an empty string skips writing it
+        enum: ["h5ad", "zarr", ""]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: Groovy Map containing sample information
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
-          description: Optional AnnData with PAGA results
-          pattern: "*.h5ad"
+          description: Optional AnnData with PAGA results as an h5ad file or a zarr directory
+          pattern: "*.{h5ad,zarr}"
   uns:
     - "*.pkl":
         type: file

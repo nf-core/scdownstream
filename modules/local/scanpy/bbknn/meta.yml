@@ -23,10 +23,10 @@ input:
   - - meta:
         type: map
         description: Groovy Map containing sample information
-    - h5ad:
+    - anndata:
         type: file
-        description: AnnData object in h5ad format
-        pattern: "*.{h5ad}"
+        description: AnnData object as an h5ad file or a zarr directory
+        pattern: "*.{h5ad,zarr}"
   - batch_col:
       type: string
       description: obs column identifying batches
@@ -36,16 +36,20 @@ input:
   - log_normalize:
       type: boolean
       description: Whether to log-normalise the input layer before BBKNN
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object; an empty string skips writing it
+      enum: ["h5ad", "zarr", ""]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: Groovy Map containing sample information
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
-          description: AnnData with BBKNN neighbour graph
-          pattern: "*.h5ad"
+          description: AnnData with BBKNN neighbour graph as an h5ad file or a zarr directory
+          pattern: "*.{h5ad,zarr}"
   versions:
     - versions.yml:
         type: file
