@@ -19,32 +19,32 @@ input:
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1' ]`
-    - h5ad:
+    - anndata:
         type: file
-        description: AnnData object in h5ad format
-        pattern: "*.{h5ad}"
-        ontologies:
-          - edam: "http://edamontology.org/format_3590"
+        description: AnnData object as an h5ad file or a zarr directory
+        pattern: "*.{h5ad,zarr}"
   - batch_col:
       type: string
       description: obs column containing batch labels for Harmony
   - counts_layer:
       type: string
       description: AnnData layer containing counts for reference building
+  - anndata_format:
+      type: string
+      description: Format of the output AnnData object; an empty string skips writing it
+      enum: ["h5ad", "zarr", ""]
 
 output:
-  h5ad:
+  anndata:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.h5ad":
+      - "*.{h5ad,zarr}":
           type: file
-          description: Integrated AnnData with Harmony embedding
-          pattern: "*.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590"
+          description: Integrated AnnData with Harmony embedding as an h5ad file or a zarr directory
+          pattern: "*.{h5ad,zarr}"
   reference:
     - - meta:
           type: map
@@ -53,7 +53,7 @@ output:
             e.g. `[ id:'sample1' ]`
       - "*_reference.h5ad":
           type: file
-          description: Symphony reference AnnData for downstream query mapping
+          description: Symphony reference AnnData for downstream query mapping, always written as h5ad
           pattern: "*_reference.h5ad"
           ontologies:
             - edam: "http://edamontology.org/format_3590"

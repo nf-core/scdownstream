@@ -3,15 +3,34 @@
 import importlib.metadata
 import platform
 
+import anndata as ad
 import pandas as pd
 import scanpy as sc
 import symphonypy as sp
 import yaml
 from threadpoolctl import threadpool_limits
 
+
+def read_anndata(path, backed=None):
+    if path.rstrip("/").endswith(".zarr"):
+        return ad.read_zarr(path)
+    return ad.read_h5ad(path, backed=backed)
+
+
+def write_anndata(adata, stem, fmt):
+    if fmt == "h5ad":
+        adata.write_h5ad(f"{stem}.h5ad")
+    elif fmt == "zarr":
+        if adata.isbacked:
+            adata = adata.to_memory()
+        # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
+        ad.settings.zarr_write_format = 3
+        adata.write_zarr(f"{stem}.zarr")
+
+
 threadpool_limits(int("${task.cpus}"))
 
-adata = sc.read_h5ad("${h5ad}")
+adata = read_anndata("${anndata}")
 adata_proc = adata.copy()
 adata_ref = sc.read_h5ad("reference/reference.h5ad")
 prefix = "${prefix}"
@@ -36,7 +55,7 @@ sp.tl.map_embedding(
 adata.obsm["X_symphony"] = adata_proc.obsm["X_symphony"]
 adata.obsm["X_emb"] = adata_proc.obsm["X_symphony"]
 
-adata.write_h5ad(f"{prefix}.h5ad")
+write_anndata(adata, prefix, "${anndata_format}")
 pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names).to_pickle(f"X_{prefix}.pkl")
 
 versions = {
