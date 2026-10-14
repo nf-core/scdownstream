@@ -38,7 +38,7 @@
                 "3": [
                     
                 ],
-                "h5ad": [
+                "anndata": [
                     
                 ],
                 "multiqc_files": [
@@ -52,10 +52,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-11T12:20:52.581541238",
+        "timestamp": "2026-10-14T07:13:27.587400617",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures - full run": {
@@ -162,13 +162,15 @@
                                 "wilcoxon"
                             ]
                         },
-                        "leiden:wilcoxon_characteristic_genes.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ]
                 ],
                 "3": [
                     
                 ],
-                "h5ad": [
+                "anndata": [
                     [
                         {
                             "id": "leiden:wilcoxon",
@@ -183,7 +185,9 @@
                                 "wilcoxon"
                             ]
                         },
-                        "leiden:wilcoxon_characteristic_genes.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ]
                 ],
                 "multiqc_files": [
@@ -265,7 +269,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-11T20:35:46.29572497",
+        "timestamp": "2026-10-14T07:14:55.984067304",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -290,7 +294,7 @@
                 "3": [
                     
                 ],
-                "h5ad": [
+                "anndata": [
                     
                 ],
                 "multiqc_files": [
@@ -308,7 +312,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-11T20:36:15.679859203",
+        "timestamp": "2026-10-14T07:15:24.714415387",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
