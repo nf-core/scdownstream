@@ -28,6 +28,7 @@ nextflow_workflow {
                 input[5] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_paga.pkl', checkIfExists: true))
                 input[6] = false
                 input[7] = false
+                input[8] = false
                 """
             }
         }
@@ -58,12 +59,13 @@ nextflow_workflow {
                 input[5] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_paga.pkl', checkIfExists: true))
                 input[6] = false
                 input[7] = false
+                input[8] = false
                 """
             }
         }
 
         then {
-            def adata = anndata(workflow.out.h5ad[0][1])
+            def adata = anndata(workflow.out.anndata[0][1])
             assert workflow.success
             with(adata) {
                 assert "scvi-global-1.0_leiden" in obs.colnames
@@ -71,7 +73,7 @@ nextflow_workflow {
                 assert "scvi-global-1.0_paga" in uns
             }
             assert snapshot(
-                workflow.out.h5ad,
+                workflow.out.anndata,
                 workflow.out.versions.collect { path(it).yaml },
                 adata.yaml
             ).match()
@@ -100,6 +102,7 @@ nextflow_workflow {
                 input[5] = channel.empty()
                 input[6] = false
                 input[7] = false
+                input[8] = false
                 """
             }
         }
@@ -130,15 +133,16 @@ nextflow_workflow {
                 input[5] = channel.empty()
                 input[6] = false
                 input[7] = false
+                input[8] = false
                 """
             }
         }
 
         then {
-            def adata = anndata(workflow.out.h5ad[0][1])
+            def adata = anndata(workflow.out.anndata[0][1])
             assert workflow.success
             assert snapshot(
-                workflow.out.h5ad,
+                workflow.out.anndata,
                 workflow.out.versions.collect { path(it).yaml },
                 adata.yaml
             ).match()
@@ -169,6 +173,7 @@ nextflow_workflow {
                 input[5] = channel.empty()
                 input[6] = true
                 input[7] = false
+                input[8] = false
                 """
             }
         }
@@ -203,15 +208,16 @@ nextflow_workflow {
                 input[5] = channel.empty()
                 input[6] = true
                 input[7] = false
+                input[8] = false
                 """
             }
         }
 
         then {
-            def adata = anndata(workflow.out.h5ad[0][1])
+            def adata = anndata(workflow.out.anndata[0][1])
             assert workflow.success
             assert snapshot(
-                workflow.out.h5ad,
+                workflow.out.anndata,
                 workflow.out.versions.collect { path(it).yaml },
                 adata.yaml
             ).match()
@@ -240,6 +246,7 @@ nextflow_workflow {
                 input[5] = channel.empty()
                 input[6] = false
                 input[7] = true
+                input[8] = false
                 """
             }
         }
@@ -269,18 +276,130 @@ nextflow_workflow {
                 input[5] = channel.empty()
                 input[6] = false
                 input[7] = true
+                input[8] = false
                 """
             }
         }
 
         then {
-            def adata = anndata(workflow.out.h5ad[0][1])
+            def adata = anndata(workflow.out.anndata[0][1])
             assert workflow.success
             assert snapshot(
-                workflow.out.h5ad,
+                workflow.out.anndata,
                 workflow.out.versions.collect { path(it).yaml },
                 adata.yaml
             ).match()
+        }
+
+    }
+
+    test("Should write the final object as zarr when QC report and tords are off - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.empty()
+                input[2] = channel.empty()
+                input[3] = channel.empty()
+                input[4] = channel.empty()
+                input[5] = channel.empty()
+                input[6] = false
+                input[7] = false
+                input[8] = true
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.anndata.size() == 1
+            assert workflow.out.anndata.every { _meta, anndata -> file(anndata).name.endsWith('.zarr') }
+        }
+
+    }
+
+    test("Should write the final object as zarr when QC report and tords are off") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_leiden.pkl', checkIfExists: true))
+                input[2] = channel.empty()
+                input[3] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi.pkl', checkIfExists: true))
+                input[4] = channel.empty()
+                input[5] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_paga.pkl', checkIfExists: true))
+                input[6] = false
+                input[7] = false
+                input[8] = true
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.anndata.every { _meta, anndata -> file(anndata).name.endsWith('.zarr') }
+            def adata = anndata(workflow.out.anndata[0][1])
+            with(adata) {
+                assert "scvi-global-1.0_leiden" in obs.colnames
+                assert "X_scvi" in obsm
+                assert "scvi-global-1.0_paga" in uns
+            }
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml },
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should write the cellxgene object as h5ad from a zarr final object") {
+
+        config './nextflow.config'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                prep_cellxgene = true
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.empty()
+                input[2] = channel.empty()
+                input[3] = channel.empty()
+                input[4] = channel.empty()
+                input[5] = channel.empty()
+                input[6] = true
+                input[7] = false
+                input[8] = true
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.anndata.every { _meta, anndata -> file(anndata).name.endsWith('.zarr') }
+            assert workflow.out.anndata_cellxgene.size() == 1
+            assert workflow.out.anndata_cellxgene.every { _meta, anndata -> file(anndata).name.endsWith('.h5ad') }
         }
 
     }

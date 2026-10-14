@@ -1,9 +1,9 @@
-include { PYDESEQ2_DIFFERENTIAL   } from '../../../modules/local/pydeseq2/differential'
+include { PYDESEQ2_DIFFERENTIAL } from '../../../modules/local/pydeseq2/differential'
 include { EDGEPYTHON_DIFFERENTIAL } from '../../../modules/local/edgepython/differential'
 
 workflow PSEUDOBULK_DE {
     take:
-    ch_h5ad_pseudobulk  // channel: [ meta, h5ad ] with meta.de_methods_resolved
+    ch_h5ad_pseudobulk // channel: [ meta, anndata ] with meta.de_methods_resolved
     reference_condition //   value: string
 
     main:

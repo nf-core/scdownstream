@@ -23,7 +23,9 @@
                             "integration": "pca",
                             "subset": "A"
                         },
-                        "pca-A_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -31,7 +33,9 @@
                             "integration": "pca",
                             "subset": "B"
                         },
-                        "pca-B_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ]
                 ],
                 "3": [
@@ -42,7 +46,9 @@
                             "subset": "A",
                             "resolution": "0.5"
                         },
-                        "pca-A-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -51,7 +57,9 @@
                             "subset": "A",
                             "resolution": "1"
                         },
-                        "pca-A-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -60,7 +68,9 @@
                             "subset": "B",
                             "resolution": "0.5"
                         },
-                        "pca-B-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -69,7 +79,9 @@
                             "subset": "B",
                             "resolution": "1"
                         },
-                        "pca-B-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ]
                 ],
                 "4": [
@@ -82,7 +94,7 @@
                     "pca-B-1_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "pca-B-1_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "h5ad_clustering": [
+                "anndata_clustering": [
                     [
                         {
                             "id": "pca-A-0.5",
@@ -90,7 +102,9 @@
                             "subset": "A",
                             "resolution": "0.5"
                         },
-                        "pca-A-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -99,7 +113,9 @@
                             "subset": "A",
                             "resolution": "1"
                         },
-                        "pca-A-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -108,7 +124,9 @@
                             "subset": "B",
                             "resolution": "0.5"
                         },
-                        "pca-B-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -117,17 +135,21 @@
                             "subset": "B",
                             "resolution": "1"
                         },
-                        "pca-B-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ]
                 ],
-                "h5ad_neighbors": [
+                "anndata_neighbors": [
                     [
                         {
                             "id": "pca-A",
                             "integration": "pca",
                             "subset": "A"
                         },
-                        "pca-A_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -135,7 +157,9 @@
                             "integration": "pca",
                             "subset": "B"
                         },
-                        "pca-B_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ]
                 ],
                 "multiqc_files": [
@@ -164,10 +188,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T16:34:02.880204",
+        "timestamp": "2026-10-14T07:27:06.88408137",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures - global - stub": {
@@ -189,7 +213,9 @@
                             "integration": "pca",
                             "subset": "global"
                         },
-                        "pca-global_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ]
                 ],
                 "3": [
@@ -200,7 +226,9 @@
                             "subset": "global",
                             "resolution": "0.5"
                         },
-                        "pca-global-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -209,7 +237,9 @@
                             "subset": "global",
                             "resolution": "1"
                         },
-                        "pca-global-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ]
                 ],
                 "4": [
@@ -218,7 +248,7 @@
                     "pca-global-1_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "pca-global-1_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "h5ad_clustering": [
+                "anndata_clustering": [
                     [
                         {
                             "id": "pca-global-0.5",
@@ -226,7 +256,9 @@
                             "subset": "global",
                             "resolution": "0.5"
                         },
-                        "pca-global-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -235,17 +267,21 @@
                             "subset": "global",
                             "resolution": "1"
                         },
-                        "pca-global-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ]
                 ],
-                "h5ad_neighbors": [
+                "anndata_neighbors": [
                     [
                         {
                             "id": "pca-global",
                             "integration": "pca",
                             "subset": "global"
                         },
-                        "pca-global_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ]
                 ],
                 "multiqc_files": [
@@ -265,10 +301,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T16:32:48.789312",
+        "timestamp": "2026-10-14T07:22:21.214841696",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures - both - stub": {
@@ -300,7 +336,9 @@
                             "integration": "pca",
                             "subset": "A"
                         },
-                        "pca-A_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -308,7 +346,9 @@
                             "integration": "pca",
                             "subset": "B"
                         },
-                        "pca-B_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -316,7 +356,9 @@
                             "integration": "pca",
                             "subset": "global"
                         },
-                        "pca-global_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ]
                 ],
                 "3": [
@@ -327,7 +369,9 @@
                             "subset": "A",
                             "resolution": "0.5"
                         },
-                        "pca-A-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -336,7 +380,9 @@
                             "subset": "A",
                             "resolution": "1"
                         },
-                        "pca-A-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -345,7 +391,9 @@
                             "subset": "B",
                             "resolution": "0.5"
                         },
-                        "pca-B-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -354,7 +402,9 @@
                             "subset": "B",
                             "resolution": "1"
                         },
-                        "pca-B-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -363,7 +413,9 @@
                             "subset": "global",
                             "resolution": "0.5"
                         },
-                        "pca-global-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -372,7 +424,9 @@
                             "subset": "global",
                             "resolution": "1"
                         },
-                        "pca-global-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ]
                 ],
                 "4": [
@@ -389,7 +443,7 @@
                     "pca-global-1_entropy_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                     "pca-global-1_leiden_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "h5ad_clustering": [
+                "anndata_clustering": [
                     [
                         {
                             "id": "pca-A-0.5",
@@ -397,7 +451,9 @@
                             "subset": "A",
                             "resolution": "0.5"
                         },
-                        "pca-A-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -406,7 +462,9 @@
                             "subset": "A",
                             "resolution": "1"
                         },
-                        "pca-A-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -415,7 +473,9 @@
                             "subset": "B",
                             "resolution": "0.5"
                         },
-                        "pca-B-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -424,7 +484,9 @@
                             "subset": "B",
                             "resolution": "1"
                         },
-                        "pca-B-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -433,7 +495,9 @@
                             "subset": "global",
                             "resolution": "0.5"
                         },
-                        "pca-global-0.5_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -442,17 +506,21 @@
                             "subset": "global",
                             "resolution": "1"
                         },
-                        "pca-global-1_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ]
                 ],
-                "h5ad_neighbors": [
+                "anndata_neighbors": [
                     [
                         {
                             "id": "pca-A",
                             "integration": "pca",
                             "subset": "A"
                         },
-                        "pca-A_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -460,7 +528,9 @@
                             "integration": "pca",
                             "subset": "B"
                         },
-                        "pca-B_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ],
                     [
                         {
@@ -468,7 +538,9 @@
                             "integration": "pca",
                             "subset": "global"
                         },
-                        "pca-global_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
                     ]
                 ],
                 "multiqc_files": [
@@ -506,10 +578,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T16:35:40.516635",
+        "timestamp": "2026-10-14T07:27:29.588456703",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     }
 }

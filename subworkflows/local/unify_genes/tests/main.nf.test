@@ -49,7 +49,7 @@ nextflow_workflow {
         }
 
         then {
-            def adata = anndata(workflow.out.h5ad[0][1])
+            def adata = anndata(workflow.out.anndata[0][1])
             assert workflow.success
             with(adata) {
                 assert "symbols" in var.colnames
@@ -106,8 +106,8 @@ nextflow_workflow {
         }
 
         then {
-            def adata1 = anndata(workflow.out.h5ad[0][1])
-            def adata2 = anndata(workflow.out.h5ad[1][1])
+            def adata1 = anndata(workflow.out.anndata[0][1])
+            def adata2 = anndata(workflow.out.anndata[1][1])
             assert workflow.success
             with(adata1) {
                 assert "symbols" in var.colnames

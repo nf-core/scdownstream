@@ -209,7 +209,7 @@
                 "1": [
                     
                 ],
-                "h5ad": [
+                "anndata": [
                     [
                         {
                             "id": "test"
@@ -217,15 +217,15 @@
                         "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "h5ad_cellxgene": [
+                "anndata_cellxgene": [
                     
                 ]
             }
         ],
-        "timestamp": "2026-05-20T20:47:17.048324045",
+        "timestamp": "2026-10-14T07:13:08.421643853",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures - no fragments - stub": {
@@ -242,7 +242,7 @@
                 "1": [
                     
                 ],
-                "h5ad": [
+                "anndata": [
                     [
                         {
                             "id": "test"
@@ -250,15 +250,15 @@
                         "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "h5ad_cellxgene": [
+                "anndata_cellxgene": [
                     
                 ]
             }
         ],
-        "timestamp": "2026-05-20T20:48:30.72911333",
+        "timestamp": "2026-10-14T07:13:50.485658409",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures - no fragments": {
@@ -321,6 +321,64 @@
             }
         ],
         "timestamp": "2026-09-26T11:45:43.459387841",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should write the final object as zarr when QC report and tords are off": {
+        "content": [
+            [
+                
+            ],
+            {
+                "n_obs": 23373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "celltypist:Adult_Human_Skin",
+                        "celltypist:Adult_Human_Skin:conf",
+                        "label",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "sample_original",
+                        "total_counts",
+                        "total_counts_mt",
+                        "scvi-global-1.0_leiden"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_scvi"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "scvi-global-1.0_paga"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-14T07:10:29.252559373",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
