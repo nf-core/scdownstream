@@ -81,4 +81,40 @@ nextflow_pipeline {
             assert umapKeys[0] == 'X_pca-SRR28679756_umap'
         }
     }
+
+    test("Should write a Zarr final object without the QC report") {
+
+        when {
+            params {
+                pipelines_testdata_base_path  = 'https://raw.githubusercontent.com/nictru/test-datasets/e3a7f43eb802a090affac918026d2ba5dce8fcd5/'
+                outdir                        = "$outputDir"
+                input                         = null
+                base_adata                    = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                base_embeddings               = null
+                base_label_col                = 'sample'
+                integrate_per_label           = true
+                integrate_per_label_whitelist = 'SRR28679756'
+                integration_methods           = 'pca'
+                integration_n_features        = -1
+                normalization_method          = 'log1p'
+                cluster_global                = false
+                cluster_per_label             = false
+                skip_liana                    = true
+                skip_qc_report                = true
+                de_methods                    = ''
+                analysis_plan                 = "${projectDir}/tests/analysis_plan_sub.csv"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert file("$outputDir/09_finalized/base.zarr/zarr.json").exists()
+            assert !file("$outputDir/09_finalized/base.h5ad").exists()
+            def adata = anndata("$outputDir/09_finalized/base.zarr")
+            def pcaKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_pca") }
+            def umapKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_umap") }
+            assert pcaKeys == ['X_pca-SRR28679756_pca']
+            assert umapKeys == ['X_pca-SRR28679756_umap']
+        }
+    }
 }
