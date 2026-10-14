@@ -94,6 +94,41 @@ nextflow_process {
 
     }
 
+    test("Should write zarr with colons in the prefix") {
+
+        config './nextflow.config'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "X_pca"
+                input[2] = 'X'
+                input[3] = true
+                input[4] = 'zarr'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def zarr_path = process.out.anndata[0][1]
+            assert zarr_path.endsWith('a:b:c.zarr')
+            assert new File(zarr_path, 'zarr.json').isFile()
+            def adata = anndata(zarr_path)
+            assert "X_pca" in adata.obsm
+            assert "X_pca" in adata.uns
+        }
+
+    }
+
     test("Should run without failures - stub") {
 
         options '-stub'
