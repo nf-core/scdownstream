@@ -22,7 +22,7 @@ nextflow_pipeline {
                 ignore: [
                     'pipeline_info/*.{html,json,txt}',
                     '06_per_group/**',
-                    '11_multiqc/**'
+                    '11_multiqc/**', '**/*.zarr/**'
                 ]
             )
             // stable_content: All files in ${params.outdir}/ with stable content
