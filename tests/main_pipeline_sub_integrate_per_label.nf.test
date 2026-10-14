@@ -113,8 +113,10 @@ nextflow_pipeline {
             def adata = anndata("$outputDir/09_finalized/base.zarr")
             def pcaKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_pca") }
             def umapKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_umap") }
-            assert pcaKeys == ['X_pca-SRR28679756_pca']
-            assert umapKeys == ['X_pca-SRR28679756_umap']
+            assert pcaKeys.size() == 1
+            assert pcaKeys[0] == 'X_pca-SRR28679756_pca'
+            assert umapKeys.size() == 1
+            assert umapKeys[0] == 'X_pca-SRR28679756_umap'
         }
     }
 }
