@@ -9,7 +9,7 @@ def anndataFormat(meta, h5ad_required) {
 workflow LOAD_H5AD {
     take:
     ch_samples // channel: [ meta, {h5ad/rds}, {h5ad/rds} ]
-    h5ad_required //   value: boolean, true if an h5ad-only consumer processes the filtered objects
+    h5ad_required //   value: boolean, true if an h5ad-only consumer (ambient correction, hugo-unifier) reads the filtered objects
 
     main:
     ch_files = channel.empty()

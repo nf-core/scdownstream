@@ -107,6 +107,36 @@ nextflow_workflow {
 
     }
 
+    test("Should run without failures - symbol_col none, unify_gene_symbols true - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                unify_gene_symbols = true
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'none', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/minimal_structure.h5ad', checkIfExists: true)
+                ])
+                input[1] = true
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
     test("Should run without failures - symbol_col none, unify_gene_symbols false") {
 
         when {

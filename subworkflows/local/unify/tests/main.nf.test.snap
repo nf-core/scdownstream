@@ -1,4 +1,57 @@
 {
+    "Should run without failures - symbol_col none, unify_gene_symbols true - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X"
+                        },
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "1": [
+                    "raw_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "unified_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "anndata": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X"
+                        },
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "multiqc_files": [
+                    "raw_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "unified_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-14T07:32:24.53940083",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
     "Should run without failures - symbol_col none, unify_gene_symbols false - stub": {
         "content": [
             {

@@ -29,7 +29,7 @@ workflow UNIFY {
         ch_mygene.h5ad,
         species,
         ch_mygene.input_col,
-        'zarr',
+        unify_gene_symbols ? 'h5ad' : 'zarr',
     )
     ch_h5ad = ch_h5ad.has_symbol_col.mix(
         MYGENE.out.anndata.map { meta, h5ad -> [meta + [symbol_col: 'symbols'], h5ad] }
