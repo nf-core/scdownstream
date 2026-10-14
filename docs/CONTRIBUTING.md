@@ -262,12 +262,15 @@ Use `save_intermediates ? 'zarr' : ''` when no downstream step consumes the obje
 Python templates inline these helpers so that each module stays self-contained:
 
 ```python
+from pathlib import Path
+
 import anndata as ad
 
 
 def read_anndata(path, backed=None):
     if path.rstrip("/").endswith(".zarr"):
-        return ad.read_zarr(path)
+        # An absolute path keeps zarr from parsing colons in Nextflow prefixes as URL schemes
+        return ad.read_zarr(Path(path).absolute())
     return ad.read_h5ad(path, backed=backed)
 
 
@@ -279,10 +282,11 @@ def write_anndata(adata, stem, fmt):
             adata = adata.to_memory()
         # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
         ad.settings.zarr_write_format = 3
-        adata.write_zarr(f"{stem}.zarr")
+        adata.write_zarr(Path(f"{stem}.zarr").absolute())
 ```
 
 Backed mode applies to h5ad inputs only; zarr inputs are read into memory.
+Pass zarr stores as absolute `Path` objects, because anndata treats a string containing a colon (such as the Nextflow prefix `a:b:c`) as a URL scheme and fails on the missing `fsspec`.
 Zarr output always uses format version 3, which requires `zarr` 3 in the module environment.
 Do not set `ANNDATA_ZARR_WRITE_FORMAT` in the `env` scope of `nextflow.config`, because anndata 0.13 rejects the string value and fails on import.
 
