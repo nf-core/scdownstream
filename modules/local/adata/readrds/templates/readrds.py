@@ -2,6 +2,7 @@
 
 import os
 from importlib.metadata import version
+from pathlib import Path
 
 os.environ["TMPDIR"] = "."
 
@@ -20,7 +21,7 @@ def write_anndata(adata, stem, fmt):
             adata = adata.to_memory()
         # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
         ad.settings.zarr_write_format = 3
-        adata.write_zarr(f"{stem}.zarr")
+        adata.write_zarr(Path(f"{stem}.zarr").absolute())
 
 
 seurat = ro.packages.importr("Seurat")
