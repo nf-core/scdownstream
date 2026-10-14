@@ -2,6 +2,7 @@
 
 import importlib.metadata
 import platform
+from pathlib import Path
 
 import anndata as ad
 import numpy as np
@@ -12,7 +13,8 @@ from scipy.sparse import csr_matrix
 
 def read_anndata(path, backed=None):
     if path.rstrip("/").endswith(".zarr"):
-        return ad.read_zarr(path)
+        # An absolute path keeps zarr from parsing colons in Nextflow prefixes as URL schemes
+        return ad.read_zarr(Path(path).absolute())
     return ad.read_h5ad(path, backed=backed)
 
 
@@ -24,7 +26,7 @@ def write_anndata(adata, stem, fmt):
             adata = adata.to_memory()
         # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
         ad.settings.zarr_write_format = 3
-        adata.write_zarr(f"{stem}.zarr")
+        adata.write_zarr(Path(f"{stem}.zarr").absolute())
 
 
 # Function borrowed from https://github.com/icbi-lab/luca/blob/5ffb0a4671e9c288b10e73de18d447ee176bef1d/lib/scanpy_helper_submodule/scanpy_helpers/util.py#L122C1-L135C21

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+from pathlib import Path
 
 os.environ.setdefault("TORCHINDUCTOR_CACHE_DIR", os.path.join(os.getcwd(), "torch_cache"))
 
@@ -17,7 +18,8 @@ from threadpoolctl import threadpool_limits
 
 def read_anndata(path, backed=None):
     if path.rstrip("/").endswith(".zarr"):
-        return ad.read_zarr(path)
+        # An absolute path keeps zarr from parsing colons in Nextflow prefixes as URL schemes
+        return ad.read_zarr(Path(path).absolute())
     return ad.read_h5ad(path, backed=backed)
 
 
@@ -29,7 +31,7 @@ def write_anndata(adata, stem, fmt):
             adata = adata.to_memory()
         # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
         ad.settings.zarr_write_format = 3
-        adata.write_zarr(f"{stem}.zarr")
+        adata.write_zarr(Path(f"{stem}.zarr").absolute())
 
 
 torch.use_deterministic_algorithms(True)

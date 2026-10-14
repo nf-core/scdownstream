@@ -14,7 +14,8 @@ import yaml
 
 def read_anndata(path, backed=None):
     if path.rstrip("/").endswith(".zarr"):
-        return ad.read_zarr(path)
+        # An absolute path keeps zarr from parsing colons in Nextflow prefixes as URL schemes
+        return ad.read_zarr(Path(path).absolute())
     return ad.read_h5ad(path, backed=backed)
 
 

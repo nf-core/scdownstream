@@ -2,6 +2,7 @@
 
 import importlib.metadata
 import platform
+from pathlib import Path
 
 import anndata as ad
 import pandas as pd
@@ -16,7 +17,7 @@ def write_anndata(adata, stem, fmt):
             adata = adata.to_memory()
         # anndata 0.12 defaults to Zarr v2 and anndata 0.13 fails to import with ANNDATA_ZARR_WRITE_FORMAT set
         ad.settings.zarr_write_format = 3
-        adata.write_zarr(f"{stem}.zarr")
+        adata.write_zarr(Path(f"{stem}.zarr").absolute())
 
 
 df = pd.read_csv("${csv}", index_col=0)
