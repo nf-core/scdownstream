@@ -22,6 +22,7 @@ nextflow_workflow {
                     [[id: 'h5'], file(params.pipelines_testdata_base_path + '/misc/filtered_feature_bc_matrix.h5', checkIfExists: true), []],
                     [[id: 'csv'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/csv/SRR28679756_filtered_matrix.csv', checkIfExists: true), []],
                 ])
+                input[1] = true
                 """
             }
         }
@@ -51,6 +52,7 @@ nextflow_workflow {
                     [[id: 'h5'], file(params.pipelines_testdata_base_path + '/misc/filtered_feature_bc_matrix.h5', checkIfExists: true), []],
                     [[id: 'csv'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/csv/SRR28679756_filtered_matrix.csv', checkIfExists: true), []],
                 ])
+                input[1] = true
                 """
             }
         }
@@ -58,6 +60,69 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should write zarr for filtered objects when no h5ad is required") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.fromList([
+                    [[id: 'SRR28679756'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true), file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)],
+                    [[id: 'h5'], file(params.pipelines_testdata_base_path + '/misc/filtered_feature_bc_matrix.h5', checkIfExists: true), []],
+                    [[id: 'csv'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/csv/SRR28679756_filtered_matrix.csv', checkIfExists: true), []],
+                ])
+                input[1] = false
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def formats = workflow.out.anndata.collectEntries { meta, filtered, unfiltered ->
+                [meta.id, [filtered.toString().tokenize('.').last(), unfiltered ? unfiltered.toString().tokenize('.').last() : null]]
+            }
+            assert formats == [SRR28679756: ['h5ad', 'h5ad'], h5: ['zarr', null], csv: ['zarr', null]]
+            def adata = anndata(workflow.out.anndata.find { it[0].id == 'h5' }[1])
+            assert adata.n_obs > 0
+            assert snapshot(adata.yaml).match()
+        }
+
+    }
+
+    test("Should select the format per object type - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.fromList([
+                    [[id: 'SRR28679756'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true), file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)],
+                    [[id: 'SRR28679757'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679757_filtered_matrix.sce.rds', checkIfExists: true), file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679757_raw_matrix.sce.rds', checkIfExists: true)],
+                    [[id: 'SRR28679758'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679758_filtered_matrix.seurat.rds', checkIfExists: true), file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679758_raw_matrix.seurat.rds', checkIfExists: true)],
+                    [[id: 'h5'], file(params.pipelines_testdata_base_path + '/misc/filtered_feature_bc_matrix.h5', checkIfExists: true), []],
+                    [[id: 'csv'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/csv/SRR28679756_filtered_matrix.csv', checkIfExists: true), []],
+                ])
+                input[1] = false
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def formats = workflow.out.anndata.collectEntries { meta, filtered, unfiltered ->
+                [meta.id, [filtered.toString().tokenize('.').last(), unfiltered ? unfiltered.toString().tokenize('.').last() : null]]
+            }
+            assert snapshot(formats).match()
         }
 
     }

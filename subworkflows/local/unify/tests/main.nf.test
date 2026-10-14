@@ -60,7 +60,7 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            def adata = anndata(workflow.out.h5ad[0][1])
+            def adata = anndata(workflow.out.anndata[0][1])
             with(adata) {
                 assert "batch" in obs.colnames
                 assert "label" in obs.colnames
@@ -133,7 +133,7 @@ nextflow_workflow {
                 assert workflow.errorReport.contains('502 Bad Gateway')
             } else {
                 assert workflow.success
-                def adata = anndata(workflow.out.h5ad[0][1])
+                def adata = anndata(workflow.out.anndata[0][1])
                 with(adata) {
                     assert "batch" in obs.colnames
                     assert "label" in obs.colnames
@@ -204,7 +204,7 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            def adata = anndata(workflow.out.h5ad[0][1])
+            def adata = anndata(workflow.out.anndata[0][1])
             with(adata) {
                 assert "batch" in obs.colnames
                 assert "label" in obs.colnames

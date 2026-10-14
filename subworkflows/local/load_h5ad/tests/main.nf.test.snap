@@ -1,4 +1,35 @@
 {
+    "Should select the format per object type - stub": {
+        "content": [
+            {
+                "SRR28679756": [
+                    "h5ad",
+                    "h5ad"
+                ],
+                "SRR28679757": [
+                    "zarr",
+                    "h5ad"
+                ],
+                "SRR28679758": [
+                    "zarr",
+                    "h5ad"
+                ],
+                "csv": [
+                    "zarr",
+                    null
+                ],
+                "h5": [
+                    "zarr",
+                    null
+                ]
+            }
+        ],
+        "timestamp": "2026-10-14T06:57:04.625835157",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
     "Should run without failures - stub": {
         "content": [
             {
@@ -43,7 +74,7 @@
                         ]
                     ]
                 ],
-                "h5ad": [
+                "anndata": [
                     [
                         {
                             "id": "SRR28679756"
@@ -86,10 +117,55 @@
                 ]
             }
         ],
-        "timestamp": "2026-05-20T22:06:42.775000281",
+        "timestamp": "2026-10-14T06:56:06.070679432",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should write zarr for filtered objects when no h5ad is required": {
+        "content": [
+            {
+                "n_obs": 1107,
+                "n_vars": 507,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "gene_ids",
+                        "feature_types",
+                        "genome"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-14T06:58:37.443974001",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures": {
@@ -107,15 +183,15 @@
                         {
                             "id": "SRR28679757"
                         },
-                        "SRR28679757.h5ad:md5,e74b26e72ce47aeb35be0b2e03124bdf",
-                        "SRR28679757.h5ad:md5,6a43913880e011e04485cbceb02cd2f1"
+                        "SRR28679757.h5ad:md5,f796760d4ece4abd3cdb1abddbebcf36",
+                        "SRR28679757.h5ad:md5,a94fac9de0b4705f12346ff0220f8190"
                     ],
                     [
                         {
                             "id": "SRR28679758"
                         },
-                        "SRR28679758.h5ad:md5,13ea94bfc83afdd3a33035a441ad999b",
-                        "SRR28679758.h5ad:md5,f229efbaca1bc2920bca6f2015ac8ede"
+                        "SRR28679758.h5ad:md5,f7a08cd7c13539e706199e53025bc052",
+                        "SRR28679758.h5ad:md5,52665252996402a3532f9e4969b79d09"
                     ],
                     [
                         {
@@ -136,7 +212,7 @@
                         ]
                     ]
                 ],
-                "h5ad": [
+                "anndata": [
                     [
                         {
                             "id": "SRR28679756"
@@ -148,15 +224,15 @@
                         {
                             "id": "SRR28679757"
                         },
-                        "SRR28679757.h5ad:md5,e74b26e72ce47aeb35be0b2e03124bdf",
-                        "SRR28679757.h5ad:md5,6a43913880e011e04485cbceb02cd2f1"
+                        "SRR28679757.h5ad:md5,f796760d4ece4abd3cdb1abddbebcf36",
+                        "SRR28679757.h5ad:md5,a94fac9de0b4705f12346ff0220f8190"
                     ],
                     [
                         {
                             "id": "SRR28679758"
                         },
-                        "SRR28679758.h5ad:md5,13ea94bfc83afdd3a33035a441ad999b",
-                        "SRR28679758.h5ad:md5,f229efbaca1bc2920bca6f2015ac8ede"
+                        "SRR28679758.h5ad:md5,f7a08cd7c13539e706199e53025bc052",
+                        "SRR28679758.h5ad:md5,52665252996402a3532f9e4969b79d09"
                     ],
                     [
                         {
@@ -179,7 +255,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-25T19:28:44.881306802",
+        "timestamp": "2026-10-14T06:55:44.878420972",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
