@@ -1,11 +1,12 @@
-include { UNTAR                } from '../../../modules/nf-core/untar'
-include { SCIMILARITY_EMBED    } from '../../../modules/local/scimilarity/embed'
+include { UNTAR } from '../../../modules/nf-core/untar'
+include { SCIMILARITY_EMBED } from '../../../modules/local/scimilarity/embed'
 include { SCIMILARITY_ANNOTATE } from '../../../modules/local/scimilarity/annotate'
 
 workflow SCIMILARITY {
     take:
-    ch_h5ad           // channel: [ merged, h5ad ]
+    ch_h5ad // channel: [ merged, h5ad ]
     scimilarity_model // channel: [ model ]
+    _save_intermediates //   value: boolean
 
     main:
     ch_integrations = channel.empty()
@@ -24,20 +25,20 @@ workflow SCIMILARITY {
     }
 
     if (scimilarity_model.endsWith('.tar.gz')) {
-        UNTAR (
+        UNTAR(
             ch_scimilarity_model
         )
         ch_scimilarity_model = UNTAR.out.untar
     }
 
-    SCIMILARITY_EMBED (
+    SCIMILARITY_EMBED(
         ch_h5ad,
         ch_scimilarity_model,
     )
     ch_integrations = ch_integrations.mix(SCIMILARITY_EMBED.out.h5ad)
     ch_obsm = ch_obsm.mix(SCIMILARITY_EMBED.out.obsm)
 
-    SCIMILARITY_ANNOTATE (
+    SCIMILARITY_ANNOTATE(
         SCIMILARITY_EMBED.out.h5ad,
         ch_scimilarity_model,
     )
@@ -45,6 +46,6 @@ workflow SCIMILARITY {
 
     emit:
     integrations = ch_integrations // channel: [ integration, h5ad ]
-    obs          = ch_obs          // channel: [ pkl ]
-    obsm         = ch_obsm         // channel: [ pkl ]
+    obs = ch_obs // channel: [ pkl ]
+    obsm = ch_obsm // channel: [ pkl ]
 }

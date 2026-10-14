@@ -26,7 +26,7 @@ nextflow_workflow {
         }
 
         then {
-            def adata = anndata(workflow.out.h5ad[0][1])
+            def adata = anndata(workflow.out.anndata[0][1])
             assert workflow.success
             assert "log1p" in adata.layers
             assert snapshot(

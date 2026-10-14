@@ -2,10 +2,10 @@ include { ADATA_SPLITCOL as SPLITCOL } from '../../../modules/local/adata/splitc
 
 workflow CLUSTER_TARGETS {
     take:
-    ch_input    // channel: [ meta, h5ad ]
-    per_label   //   value: boolean
-    global      //   value: boolean
-    split_col   //   value: string
+    ch_input // channel: [ meta, h5ad|zarr ]
+    per_label //   value: boolean
+    global //   value: boolean
+    split_col //   value: string
 
     main:
     ch_targets = channel.empty()
@@ -19,21 +19,19 @@ workflow CLUSTER_TARGETS {
 
     if (global) {
         ch_targets = ch_targets.mix(
-            ch_input_by_subset.needs_split
-                .map { meta, h5ad -> [meta + [subset: 'global'], h5ad] }
+            ch_input_by_subset.needs_split.map { meta, h5ad -> [meta + [subset: 'global'], h5ad] }
         )
     }
 
     if (per_label) {
-        SPLITCOL (
+        SPLITCOL(
             ch_input_by_subset.needs_split,
-            split_col
+            split_col,
+            'zarr',
         )
 
         ch_targets = ch_targets.mix(
-            SPLITCOL.out.h5ad
-                .transpose()
-                .map { meta, h5ad -> [meta + [subset: h5ad.simpleName], h5ad] }
+            SPLITCOL.out.anndata.transpose().map { meta, h5ad -> [meta + [subset: h5ad.simpleName], h5ad] }
         )
     }
 
@@ -45,5 +43,5 @@ workflow CLUSTER_TARGETS {
     }
 
     emit:
-    targets = ch_targets // channel: [ meta, h5ad ]
+    targets = ch_targets // channel: [ meta, h5ad|zarr ]
 }

@@ -17,6 +17,7 @@ nextflow_workflow {
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
+                input[1] = 'zarr'
                 """
             }
         }
@@ -30,20 +31,25 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = SCANPY_LOG1PNORM.out.h5ad
+                input[0] = SCANPY_LOG1PNORM.out.anndata
                 input[1] = 'hvgs'
                 input[2] = 2000
                 input[3] = []
                 input[4] = 'log1p'
+                input[5] = false
                 """
             }
         }
 
         then {
-            def adata = anndata(workflow.out.h5ad[0][1])
+            def adata = anndata(workflow.out.anndata[0][1])
             assert workflow.success
+            assert workflow.out.anndata[0][1].toString().endsWith('.zarr')
             assert "highly_variable" in adata.var.colnames
-            assert snapshot(workflow.out).match()
+            assert snapshot(
+                workflow.out.var,
+                adata.yaml
+            ).match()
         }
 
     }
@@ -67,6 +73,7 @@ nextflow_workflow {
                 input[2] = 500
                 input[3] = []
                 input[4] = 'log1p'
+                input[5] = false
                 """
             }
         }

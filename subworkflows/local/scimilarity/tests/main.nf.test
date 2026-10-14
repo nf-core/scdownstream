@@ -29,6 +29,7 @@ nextflow_workflow {
                 // NOTE: This is a workaround to avoid the test failing because the model file is too large
                 // But for stub tests, any file can be used
                 input[1] = params.modules_testdata_base_path + 'generic/tar/hello.tar.gz'
+                input[2] = false
                 """
             }
         }
@@ -58,6 +59,7 @@ nextflow_workflow {
                 // NOTE: This is a workaround to avoid the test failing because the model file is too large
                 // But for stub tests, any file can be used
                 input[1] = params.modules_testdata_base_path + 'generic/txt/hello.txt'
+                input[2] = false
                 """
             }
         }
