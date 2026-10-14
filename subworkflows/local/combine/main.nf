@@ -1,58 +1,64 @@
-include { INTEGRATE                              } from '../integrate'
-include { NORMALIZATION                          } from '../normalization'
-include { ADATA_MERGEEMBEDDINGS                  } from '../../../modules/local/adata/mergeembeddings'
-include { ADATA_MERGE                            } from '../../../modules/local/adata/merge'
-include { ADATA_SUBSETVAR as SUBSETVAR_INNER     } from '../../../modules/local/adata/subsetvar'
+include { INTEGRATE } from '../integrate'
+include { NORMALIZATION } from '../normalization'
+include { ADATA_MERGEEMBEDDINGS } from '../../../modules/local/adata/mergeembeddings'
+include { ADATA_MERGE } from '../../../modules/local/adata/merge'
+include { ADATA_SUBSETVAR as SUBSETVAR_INNER } from '../../../modules/local/adata/subsetvar'
 include { ADATA_SUBSETVAR as SUBSETVAR_INTEGRATE } from '../../../modules/local/adata/subsetvar'
-include { SCIBMETRICS_BENCHMARK                  } from '../../../modules/local/scibmetrics/benchmark'
+include { SCIBMETRICS_BENCHMARK } from '../../../modules/local/scibmetrics/benchmark'
 
 workflow COMBINE {
-
     take:
-    ch_h5ad                     // channel: [ val(meta), path(h5ad) ]
-    ch_base                     // channel: [ val(meta), path(h5ad) ]
-    is_extension                //   value: boolean
-    feature_selection           //   value: string
-    integration_n_features      //   value: integer
-    integration_methods         //   value: string
-    integration_excluded_genes  //   value: string
-    normalization_method        //   value: string
-    scvi_model                  //    path: file or null
-    scanvi_model                //    path: file or null
+    ch_h5ad // channel: [ val(meta), path(h5ad|zarr) ]
+    ch_base // channel: [ val(meta), path(h5ad) ]
+    is_extension //   value: boolean
+    feature_selection //   value: string
+    integration_n_features //   value: integer
+    integration_methods //   value: string
+    integration_excluded_genes //   value: string
+    normalization_method //   value: string
+    scvi_model //    path: file or null
+    scanvi_model //    path: file or null
     scvi_categorical_covariates //   value: string
-    scvi_continuous_covariates  //   value: string
-    scvi_n_hidden               //   value: integer
-    scvi_n_layers               //   value: integer
-    scvi_n_latent               //   value: integer
-    scvi_dispersion             //   value: string
-    scvi_gene_likelihood        //   value: string
-    scvi_max_epochs             //   value: integer or null
-    scvi_use_observed_lib_size  //   value: boolean
-    scimilarity_model           //   value: string
-    symphony_reference          //   value: string
-    expimap_gmt                 //   value: string
-    condition_col               //   value: string
-    scib                        //   value: boolean
-    scib_max_cells              //   value: integer or null
-    scib_subsample_strategy     //   value: string
-    scib_subsample_seed         //   value: integer
-    scib_metric_profile         //   value: string
-    force_obs_cols              //   value: string
+    scvi_continuous_covariates //   value: string
+    scvi_n_hidden //   value: integer
+    scvi_n_layers //   value: integer
+    scvi_n_latent //   value: integer
+    scvi_dispersion //   value: string
+    scvi_gene_likelihood //   value: string
+    scvi_max_epochs //   value: integer or null
+    scvi_use_observed_lib_size //   value: boolean
+    scimilarity_model //   value: string
+    symphony_reference //   value: string
+    expimap_gmt //   value: string
+    condition_col //   value: string
+    scib //   value: boolean
+    scib_max_cells //   value: integer or null
+    scib_subsample_strategy //   value: string
+    scib_subsample_seed //   value: integer
+    scib_metric_profile //   value: string
+    force_obs_cols //   value: string
+    save_intermediates //   value: boolean
 
     main:
+    def methods = integration_methods
+        .split(',')
+        .collect { it -> it.trim().toLowerCase() }
+
+    // SCRY_DEVIANCE, SEURAT_INTEGRATION and SCIMILARITY only read h5ad; in an extension,
+    // feature selection is skipped, so seurat reads the integrate object directly
+    def inner_format = !is_extension && (feature_selection == 'deviance' || methods.contains('scimilarity')) ? 'h5ad' : 'zarr'
+    def integrate_format = methods.intersect(['seurat', 'scimilarity']) ? 'h5ad' : 'zarr'
 
     ch_multiqc_files = channel.empty()
-    ch_obs           = channel.empty()
-    ch_var           = channel.empty()
-    ch_obsm          = channel.empty()
+    ch_obs = channel.empty()
+    ch_var = channel.empty()
+    ch_obsm = channel.empty()
 
     ADATA_MERGE(
-        ch_h5ad
-            .map { _meta, h5ad -> [[id: "merged"], h5ad] }
-            .groupTuple()
-            .map { meta, h5ads -> [meta, h5ads.sort { a, b -> a.name <=> b.name }] },
+        ch_h5ad.map { _meta, h5ad -> [[id: "merged"], h5ad] }.groupTuple().map { meta, h5ads -> [meta, h5ads.sort { a, b -> a.name <=> b.name }] },
         ch_base,
         force_obs_cols,
+        !is_extension && normalization_method == 'scran' ? 'h5ad' : 'zarr',
     )
     ch_outer = ADATA_MERGE.out.outer
 
@@ -61,27 +67,30 @@ workflow COMBINE {
             ch_outer,
             normalization_method,
         )
-        ch_outer = NORMALIZATION.out.h5ad
+        ch_outer = NORMALIZATION.out.anndata
 
         SUBSETVAR_INNER(
             ch_outer,
             'intersection',
+            inner_format,
         )
-        ch_inner = SUBSETVAR_INNER.out.h5ad
+        ch_inner = SUBSETVAR_INNER.out.anndata
         ch_integrate_input = ch_inner
     }
     else {
         SUBSETVAR_INNER(
             ch_outer,
             'intersection',
+            inner_format,
         )
-        ch_inner = SUBSETVAR_INNER.out.h5ad
+        ch_inner = SUBSETVAR_INNER.out.anndata
 
         SUBSETVAR_INTEGRATE(
             ADATA_MERGE.out.integrate,
             'intersection',
+            integrate_format,
         )
-        ch_integrate_input = SUBSETVAR_INTEGRATE.out.h5ad
+        ch_integrate_input = SUBSETVAR_INTEGRATE.out.anndata
     }
 
     INTEGRATE(
@@ -91,9 +100,7 @@ workflow COMBINE {
         integration_n_features,
         integration_excluded_genes ? file(integration_excluded_genes) : [],
         normalization_method,
-        integration_methods
-            .split(',')
-            .collect { it -> it.trim().toLowerCase() },
+        methods,
         scvi_model,
         scanvi_model,
         scvi_categorical_covariates,
@@ -108,38 +115,35 @@ workflow COMBINE {
         scimilarity_model,
         symphony_reference,
         expimap_gmt,
-        condition_col
+        condition_col,
+        save_intermediates,
     )
     ch_var = INTEGRATE.out.var
 
     if (is_extension) {
         ADATA_MERGEEMBEDDINGS(
-            INTEGRATE.out.integrations
-                .map { meta, integrated -> [meta, meta.integration ?: meta.id, integrated] }
-                .combine(
-                    ch_base.map { _meta, base -> base }
-                ).combine(
-                    ch_inner.map { _meta, inner -> inner }
-                )
+            INTEGRATE.out.integrations.map { meta, integrated -> [meta, meta.integration ?: meta.id, integrated] }.combine(
+                ch_base.map { _meta, base -> base }
+            ).combine(
+                ch_inner.map { _meta, inner -> inner }
+            ),
+            'zarr',
         )
-        ch_integrations  = ADATA_MERGEEMBEDDINGS.out.h5ad
-        ch_obs           = ch_obs.mix(ADATA_MERGEEMBEDDINGS.out.obs)
-        ch_obsm          = ch_obsm.mix(ADATA_MERGEEMBEDDINGS.out.obsm)
-    } else {
-        ch_integrations  = INTEGRATE.out.integrations
-        ch_obs           = ch_obs.mix(INTEGRATE.out.obs)
-        ch_obsm          = ch_obsm.mix(INTEGRATE.out.obsm)
+        ch_integrations = ADATA_MERGEEMBEDDINGS.out.anndata
+        ch_obs = ch_obs.mix(ADATA_MERGEEMBEDDINGS.out.obs)
+        ch_obsm = ch_obsm.mix(ADATA_MERGEEMBEDDINGS.out.obsm)
+    }
+    else {
+        ch_integrations = INTEGRATE.out.integrations
+        ch_obs = ch_obs.mix(INTEGRATE.out.obs)
+        ch_obsm = ch_obsm.mix(INTEGRATE.out.obsm)
     }
 
-    ch_integrations = ch_integrations
-        .map { meta, file -> [meta + [id: meta.integration], file] }
+    ch_integrations = ch_integrations.map { meta, file -> [meta + [id: meta.integration], file] }
 
     if (scib) {
-        SCIBMETRICS_BENCHMARK (
-            ch_integrations
-                // BBKNN corrects the neighborhood graph and does not produce a dense embedding
-                // Thus, it is not compatible with scib-metrics
-                .filter { meta, _h5ad -> meta.integration != 'bbknn' },
+        SCIBMETRICS_BENCHMARK(
+            ch_integrations.filter { meta, _h5ad -> meta.integration != 'bbknn' },
             scib_max_cells ?: 0,
             scib_subsample_strategy,
             scib_subsample_seed,
@@ -149,11 +153,11 @@ workflow COMBINE {
     }
 
     emit:
-    h5ad             = ch_outer         // channel: [ merged, h5ad ]
-    h5ad_inner       = ch_inner         // channel: [ merged, h5ad ]
-    integrations     = ch_integrations  // channel: [ integration, h5ad ]
-    var              = ch_var           // channel: [ pkl ]
-    obs              = ch_obs           // channel: [ pkl ]
-    obsm             = ch_obsm          // channel: [ pkl ]
-    multiqc_files    = ch_multiqc_files // channel: [ *_mqc.json ]
+    anndata = ch_outer // channel: [ merged, h5ad|zarr ]
+    anndata_inner = ch_inner // channel: [ merged, h5ad|zarr ]
+    integrations = ch_integrations // channel: [ integration, h5ad|zarr ]
+    var = ch_var // channel: [ pkl ]
+    obs = ch_obs // channel: [ pkl ]
+    obsm = ch_obsm // channel: [ pkl ]
+    multiqc_files = ch_multiqc_files // channel: [ *_mqc.json ]
 }

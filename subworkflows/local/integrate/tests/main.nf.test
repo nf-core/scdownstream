@@ -16,6 +16,19 @@ nextflow_workflow {
                     [id: 'test'],
                     file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
                 ])
+                input[1] = 'zarr'
+                """
+            }
+        }
+        run("SCANPY_LOG1PNORM", alias: "PREP_NORMALIZED_H5AD") {
+            script "modules/local/scanpy/log1pnorm/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'h5ad'
                 """
             }
         }
@@ -31,7 +44,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = PREP_NORMALIZED.out.h5ad
+                input[0] = PREP_NORMALIZED.out.anndata
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -53,6 +66,7 @@ nextflow_workflow {
                 input[19] = null
                 input[20] = null
                 input[21] = 'condition'
+                input[22] = false
                 """
             }
         }
@@ -72,7 +86,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = PREP_NORMALIZED.out.h5ad
+                input[0] = PREP_NORMALIZED.out.anndata
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -94,6 +108,7 @@ nextflow_workflow {
                 input[19] = null
                 input[20] = null
                 input[21] = 'condition'
+                input[22] = false
                 """
             }
         }
@@ -120,7 +135,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = PREP_NORMALIZED.out.h5ad
+                input[0] = PREP_NORMALIZED.out.anndata
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -142,6 +157,7 @@ nextflow_workflow {
                 input[19] = null
                 input[20] = null
                 input[21] = 'condition'
+                input[22] = false
                 """
             }
         }
@@ -161,7 +177,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = PREP_NORMALIZED.out.h5ad
+                input[0] = PREP_NORMALIZED.out.anndata
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -183,6 +199,7 @@ nextflow_workflow {
                 input[19] = null
                 input[20] = null
                 input[21] = 'condition'
+                input[22] = false
                 """
             }
         }
@@ -212,7 +229,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = PREP_NORMALIZED.out.h5ad
+                input[0] = PREP_NORMALIZED.out.anndata
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -234,6 +251,7 @@ nextflow_workflow {
                 input[19] = null
                 input[20] = null
                 input[21] = 'condition'
+                input[22] = false
                 """
             }
         }
@@ -253,7 +271,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = PREP_NORMALIZED.out.h5ad
+                input[0] = PREP_NORMALIZED.out.anndata
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -275,6 +293,7 @@ nextflow_workflow {
                 input[19] = null
                 input[20] = null
                 input[21] = 'condition'
+                input[22] = false
                 """
             }
         }
@@ -325,6 +344,7 @@ nextflow_workflow {
                 input[19] = null
                 input[20] = null
                 input[21] = 'condition'
+                input[22] = false
                 """
             }
         }
@@ -346,7 +366,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = PREP_NORMALIZED.out.h5ad
+                input[0] = PREP_NORMALIZED.out.anndata
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -368,6 +388,7 @@ nextflow_workflow {
                 input[19] = null
                 input[20] = null
                 input[21] = 'condition'
+                input[22] = false
                 """
             }
         }
@@ -387,7 +408,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = PREP_NORMALIZED.out.h5ad
+                input[0] = PREP_NORMALIZED.out.anndata
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -409,6 +430,7 @@ nextflow_workflow {
                 input[19] = null
                 input[20] = null
                 input[21] = 'condition'
+                input[22] = false
                 """
             }
         }
@@ -459,6 +481,7 @@ nextflow_workflow {
                 input[19] = null
                 input[20] = null
                 input[21] = 'batch'
+                input[22] = false
                 """
             }
         }
@@ -503,6 +526,7 @@ nextflow_workflow {
                 input[19] = null
                 input[20] = null
                 input[21] = 'batch'
+                input[22] = false
                 """
             }
         }
@@ -528,7 +552,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = PREP_NORMALIZED.out.h5ad
+                input[0] = PREP_NORMALIZED_H5AD.out.anndata
                 input[1] = false
                 input[2] = 'deviance'
                 input[3] = 500
@@ -550,6 +574,7 @@ nextflow_workflow {
                 input[19] = null
                 input[20] = null
                 input[21] = 'condition'
+                input[22] = false
                 """
             }
         }
@@ -571,7 +596,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = PREP_NORMALIZED.out.h5ad
+                input[0] = PREP_NORMALIZED.out.anndata
                 input[1] = false
                 input[2] = 'pearson_residuals_hvgs'
                 input[3] = 500
@@ -593,6 +618,7 @@ nextflow_workflow {
                 input[19] = null
                 input[20] = null
                 input[21] = 'condition'
+                input[22] = false
                 """
             }
         }
@@ -612,7 +638,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = PREP_NORMALIZED.out.h5ad
+                input[0] = PREP_NORMALIZED_H5AD.out.anndata
                 input[1] = false
                 input[2] = 'deviance'
                 input[3] = 500
@@ -634,6 +660,7 @@ nextflow_workflow {
                 input[19] = null
                 input[20] = null
                 input[21] = 'condition'
+                input[22] = false
                 """
             }
         }
@@ -662,7 +689,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = PREP_NORMALIZED.out.h5ad
+                input[0] = PREP_NORMALIZED.out.anndata
                 input[1] = false
                 input[2] = 'hvgs'
                 input[3] = 2000
@@ -684,6 +711,7 @@ nextflow_workflow {
                 input[19] = null
                 input[20] = null
                 input[21] = 'condition'
+                input[22] = false
                 """
             }
         }

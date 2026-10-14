@@ -1,33 +1,34 @@
 include { ADATA_SPLITCOL as SPLITCOL } from '../../../modules/local/adata/splitcol'
-include { INTEGRATE                  } from '../integrate'
-include { NORMALIZATION              } from '../normalization'
-include { anndata                      } from 'plugin/nf-anndata'
+include { INTEGRATE } from '../integrate'
+include { NORMALIZATION } from '../normalization'
+include { anndata } from 'plugin/nf-anndata'
 
 workflow SUB_INTEGRATE {
     take:
-    ch_h5ad                     // channel: [ val(meta), path(h5ad) ]
-    split_col                   //   value: string
-    feature_selection           //   value: string
-    n_features                  //   value: integer
-    excluded_genes              //    path: file or []
-    normalization_method        //   value: string
-    methods                     //   value: list of string
-    scvi_model                  //    path: file or null
-    scanvi_model                //    path: file or null
+    ch_h5ad // channel: [ val(meta), path(h5ad|zarr) ]
+    split_col //   value: string
+    feature_selection //   value: string
+    n_features //   value: integer
+    excluded_genes //    path: file or []
+    normalization_method //   value: string
+    methods //   value: list of string
+    scvi_model //    path: file or null
+    scanvi_model //    path: file or null
     scvi_categorical_covariates //   value: string
-    scvi_continuous_covariates  //   value: string
-    scvi_n_hidden               //   value: integer
-    scvi_n_layers               //   value: integer
-    scvi_n_latent               //   value: integer
-    scvi_dispersion             //   value: string
-    scvi_gene_likelihood        //   value: string
-    scvi_max_epochs             //   value: integer or null
-    scvi_use_observed_lib_size  //   value: boolean
-    scimilarity_model           //   value: string
-    symphony_reference          //    path: file or null
-    expimap_gmt                 //   value: string
-    condition_col               //   value: string
-    label_whitelist             //   value: string or null
+    scvi_continuous_covariates //   value: string
+    scvi_n_hidden //   value: integer
+    scvi_n_layers //   value: integer
+    scvi_n_latent //   value: integer
+    scvi_dispersion //   value: string
+    scvi_gene_likelihood //   value: string
+    scvi_max_epochs //   value: integer or null
+    scvi_use_observed_lib_size //   value: boolean
+    scimilarity_model //   value: string
+    symphony_reference //    path: file or null
+    expimap_gmt //   value: string
+    condition_col //   value: string
+    label_whitelist //   value: string or null
+    save_intermediates //   value: boolean
 
     main:
     def normalized_methods = methods*.trim()*.toLowerCase()
@@ -47,11 +48,13 @@ workflow SUB_INTEGRATE {
     }
 
     if (provided_reference_models) {
-        log.warn """\
+        log.warn(
+            """\
             Per-label integration (integrate_per_label) was enabled, but reference model parameter(s) [${provided_reference_models.join(', ')}] were also provided.
             Query cells will be mapped into the pre-trained reference latent space instead of training a separate integration model per label group.
             The resulting embeddings may therefore be identical across label groups. \
             """.stripIndent()
+        )
     }
 
     def normalized_whitelist = label_whitelist
@@ -76,14 +79,16 @@ workflow SUB_INTEGRATE {
         ch_h5ad,
         normalization_method,
     )
-    ch_h5ad_normalized = NORMALIZATION.out.h5ad
+    ch_h5ad_normalized = NORMALIZATION.out.anndata
 
-    SPLITCOL (
+    // SCRY_DEVIANCE (via FEATURE_SELECTION) and SCIMILARITY only read h5ad
+    SPLITCOL(
         ch_h5ad_normalized,
-        split_col
+        split_col,
+        feature_selection == 'deviance' || normalized_methods.contains('scimilarity') ? 'h5ad' : 'zarr',
     )
 
-    ch_h5ad_split = SPLITCOL.out.h5ad
+    ch_h5ad_split = SPLITCOL.out.anndata
         .transpose()
         .map { meta, h5ad ->
             def subset = h5ad.simpleName
@@ -97,11 +102,10 @@ workflow SUB_INTEGRATE {
         }
 
     if (normalized_whitelist) {
-        ch_h5ad_split = ch_h5ad_split
-            .filter { meta, _h5ad -> meta.subset in normalized_whitelist }
+        ch_h5ad_split = ch_h5ad_split.filter { meta, _h5ad -> meta.subset in normalized_whitelist }
     }
 
-    INTEGRATE (
+    INTEGRATE(
         ch_h5ad_split,
         false,
         feature_selection,
@@ -123,18 +127,18 @@ workflow SUB_INTEGRATE {
         scimilarity_model,
         symphony_reference,
         expimap_gmt,
-        condition_col
+        condition_col,
+        save_intermediates,
     )
 
-    ch_integrations = INTEGRATE.out.integrations
-        .map { meta, h5ad ->
-            [meta + [id: "${meta.integration}-${meta.subset}"], h5ad]
-        }
+    ch_integrations = INTEGRATE.out.integrations.map { meta, h5ad ->
+        [meta + [id: "${meta.integration}-${meta.subset}"], h5ad]
+    }
 
     emit:
-    h5ad         = ch_h5ad_normalized            // channel: [ meta, h5ad ]
-    integrations = ch_integrations            // channel: [ meta, h5ad ]
-    obs          = INTEGRATE.out.obs          // channel: [ pkl ]
-    var          = INTEGRATE.out.var          // channel: [ pkl ]
-    obsm         = INTEGRATE.out.obsm         // channel: [ pkl ]
+    anndata = ch_h5ad_normalized // channel: [ meta, h5ad|zarr ]
+    integrations = ch_integrations // channel: [ meta, h5ad|zarr ]
+    obs = INTEGRATE.out.obs // channel: [ pkl ]
+    var = INTEGRATE.out.var // channel: [ pkl ]
+    obsm = INTEGRATE.out.obsm // channel: [ pkl ]
 }

@@ -41,13 +41,14 @@ nextflow_workflow {
                 input[20] = null
                 input[21] = 'condition'
                 input[22] = null
+                input[23] = false
                 """
             }
         }
 
         then {
             assert workflow.success
-            def adata_parent = anndata(workflow.out.h5ad[0][1])
+            def adata_parent = anndata(workflow.out.anndata[0][1])
             assert "log1p" in adata_parent.layers
             assert workflow.out.integrations.size() > 1
             workflow.out.integrations.each { meta, h5ad ->
@@ -100,6 +101,7 @@ nextflow_workflow {
                 input[20] = null
                 input[21] = 'condition'
                 input[22] = null
+                input[23] = false
                 """
             }
         }
@@ -153,6 +155,7 @@ nextflow_workflow {
                 input[20] = null
                 input[21] = 'condition'
                 input[22] = null
+                input[23] = false
                 """
             }
         }
@@ -203,6 +206,7 @@ nextflow_workflow {
                 input[20] = null
                 input[21] = 'condition'
                 input[22] = 'SRR28679756'
+                input[23] = false
                 """
             }
         }
@@ -257,6 +261,7 @@ nextflow_workflow {
                 input[20] = null
                 input[21] = 'condition'
                 input[22] = null
+                input[23] = false
                 """
             }
         }
