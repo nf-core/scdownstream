@@ -8,6 +8,18 @@ Most of the plots are taken from the MultiQC report, which summarises results at
 The directories listed below will be created in the results directory after the pipeline has finished.
 All paths are relative to the top-level results directory.
 
+### AnnData file formats
+
+The pipeline stores AnnData objects as `.h5ad` files or as `.zarr` directories (Zarr v3).
+Intermediate objects are `.zarr` directories and are only published with `--save_intermediates`.
+Where the listings below name an intermediate `*.h5ad` file, the file is a `.zarr` directory unless a downstream tool requires H5AD.
+Tools that require H5AD are the R-based tools (such as ambient RNA removal, doublet detection, SingleR, scran normalisation, deviance feature selection and Seurat integration), SCimilarity, the HUGO gene symbol unifier, the QC report and cellxgene preparation.
+
+The final object in `09_finalized/` is an `.h5ad` file when the QC report is rendered or `--tords` is set.
+Otherwise it is a `.zarr` directory.
+The cellxgene object is always an `.h5ad` file.
+Pipeline inputs (samplesheet files, `--base_adata` and `--symphony_reference`) must be `.h5ad` files.
+
 ## Pipeline overview
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
@@ -254,15 +266,16 @@ LIANA rank-aggregate writes a dotplot and tileplot of top interactions by `magni
 <summary>Output files</summary>
 
 - `09_finalized/`
-  - `merged.h5ad`: The final H5AD file with all results.
+  - `merged.h5ad` or `merged.zarr`: The final AnnData object with all results. The object is an H5AD file when the QC report is rendered or `--tords` is enabled, and a Zarr directory otherwise.
   - `merged.rds`: RDS version of the final H5AD file (only when `--tords` is enabled).
-  - `merged_metadata.csv`: Metadata of the final H5AD file.
+  - `merged_cellxgene.h5ad`: H5AD file prepared for cellxgene (only when `--prep_cellxgene` is enabled).
+  - `merged_metadata.csv`: Metadata of the final AnnData object.
 
 </details>
 
 The `09_finalized` directory contains the final results of the pipeline.
-The final H5AD file contains all results from the pipeline and is stored in the `merged.h5ad` file.
-The metadata of the final H5AD file is stored in the `merged_metadata.csv` file.
+The final AnnData object contains all results from the pipeline and is stored in the `merged.h5ad` file or the `merged.zarr` directory.
+The metadata of the final AnnData object is stored in the `merged_metadata.csv` file.
 
 ### MultiQC
 
