@@ -47,13 +47,14 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
                 """
             }
         }
 
         then {
             assert workflow.success
-            assert workflow.out.h5ad.size() == 0
+            assert workflow.out.anndata.size() == 0
             assert workflow.out.obs.size() == 0
             assert snapshot(workflow.out).match()
         }
@@ -96,6 +97,7 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
                 """
             }
         }
@@ -106,7 +108,7 @@ nextflow_workflow {
             assert workflow.out.uns.size() == 1
             assert workflow.out.uns.any { file(it).name == "test_paga.pkl" }
             assert workflow.out.multiqc_files.size() == 1
-            assert workflow.out.h5ad.size() == 0
+            assert workflow.out.anndata.size() == 0
             assert workflow.out.obs.size() == 0
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml }
@@ -160,6 +162,7 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
                 """
             }
         }
@@ -222,13 +225,14 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = true
                 """
             }
         }
 
         then {
             assert workflow.success
-            assert workflow.out.h5ad.size() >= 1
+            assert workflow.out.anndata.size() >= 1
             assert workflow.out.obs.size() == 0
             assert snapshot(workflow.out).match()
         }
@@ -283,6 +287,7 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
                 """
             }
         }
@@ -340,6 +345,7 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = true
                 """
             }
         }
@@ -351,7 +357,7 @@ nextflow_workflow {
             assert workflow.out.uns.any { file(it).name == "test_paga.pkl" }
             assert workflow.out.uns.any { file(it).name == "test_liana.pkl" }
             assert workflow.out.multiqc_files.size() >= 1
-            assert workflow.out.h5ad.size() >= 1
+            assert workflow.out.anndata.size() >= 1
             assert workflow.out.obs.size() == 0
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml }
@@ -410,13 +416,14 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
                 """
             }
         }
 
         then {
             assert workflow.success
-            assert workflow.out.h5ad.size() >= 1
+            assert workflow.out.anndata.size() >= 1
             assert workflow.out.obs.size() >= 1
             assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
             assert snapshot(
@@ -473,6 +480,7 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
                 """
             }
         }
@@ -537,6 +545,7 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
                 """
             }
         }
@@ -546,7 +555,7 @@ nextflow_workflow {
             assert workflow.out.uns.any { file(it).name == 'test_paga.pkl' }
             assert workflow.out.uns.any { file(it).name == 'test_liana.pkl' }
             assert !workflow.out.uns.any { file(it).name.endsWith('_characteristic_genes.pkl') }
-            assert workflow.out.h5ad.size() == 0
+            assert workflow.out.anndata.size() == 0
             assert workflow.out.obs.size() == 0
         }
 
@@ -598,6 +607,7 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
                 """
             }
         }
@@ -658,6 +668,7 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
                 """
             }
         }
@@ -721,6 +732,7 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
                 """
             }
         }
@@ -784,14 +796,15 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
                 """
             }
         }
 
         then {
             assert workflow.success
-            assert workflow.out.h5ad.any { meta, _h5ad -> meta.de_method == 'wilcoxon' }
-            assert workflow.out.h5ad.any { meta, _h5ad -> meta.de_method == 'logreg' }
+            assert workflow.out.anndata.any { meta, _h5ad -> meta.de_method == 'wilcoxon' }
+            assert workflow.out.anndata.any { meta, _h5ad -> meta.de_method == 'logreg' }
             assert workflow.out.obs.any { pkl -> file(pkl).name.endsWith('_cytetype.pkl') }
         }
 
@@ -845,6 +858,7 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
                 """
             }
         }
@@ -903,6 +917,7 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
                 """
             }
         }
@@ -963,6 +978,7 @@ nextflow_workflow {
                 input[21] = file(params.pipelines_testdata_base_path + 'decoupler/network.tsv', checkIfExists: true)
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
                 """
             }
         }
@@ -1027,6 +1043,7 @@ nextflow_workflow {
                 input[21] = file(params.pipelines_testdata_base_path + 'decoupler/network.tsv', checkIfExists: true)
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
                 """
             }
         }

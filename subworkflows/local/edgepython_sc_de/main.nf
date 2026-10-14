@@ -1,27 +1,26 @@
 include { EDGEPYTHON_SCDIFFERENTIAL } from '../../../modules/local/edgepython/sc_differential'
-include { anndata                  } from 'plugin/nf-anndata'
+include { anndata } from 'plugin/nf-anndata'
 
 workflow EDGEPYTHON_SC_DE {
     take:
-    ch_h5ad             // channel: [ meta, h5ad ] with meta.condition_col, meta.donor_col, and meta.obs_key
+    ch_h5ad // channel: [ meta, anndata ] with meta.condition_col, meta.donor_col, and meta.obs_key
     reference_condition //   value: string
 
     main:
-    ch_strata = ch_h5ad
-        .flatMap { meta, h5ad ->
-            def ad = anndata(h5ad)
-            def celltype_col = meta.obs_key
-            def condition_col = meta.condition_col
-            def celltypes = ad.obs[celltype_col].unique().toList()
-            celltypes.collect { celltype ->
-                [
-                    meta + [celltype: celltype, condition_col: condition_col, de_method: 'edgepython_sc'],
-                    h5ad,
-                    celltype_col,
-                    celltype as String,
-                ]
-            }
+    ch_strata = ch_h5ad.flatMap { meta, h5ad ->
+        def ad = anndata(h5ad)
+        def celltype_col = meta.obs_key
+        def condition_col = meta.condition_col
+        def celltypes = ad.obs[celltype_col].unique().toList()
+        celltypes.collect { celltype ->
+            [
+                meta + [celltype: celltype, condition_col: condition_col, de_method: 'edgepython_sc'],
+                h5ad,
+                celltype_col,
+                celltype as String,
+            ]
         }
+    }
 
     ch_edgepython = ch_strata.multiMap { meta, h5ad, celltype_col, celltype ->
         h5ad: [meta, h5ad]

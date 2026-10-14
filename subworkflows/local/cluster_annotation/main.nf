@@ -1,13 +1,14 @@
 include { CUSTOM_AGGREGATE_PER_CELL_ANNOTATIONS } from '../../../modules/local/custom/aggregate_per_cell_annotations'
-include { CYTETYPE                          } from '../../../modules/local/cytetype'
-include { analysisEnabled                   } from '../utils_nfcore_scdownstream_pipeline'
+include { CYTETYPE } from '../../../modules/local/cytetype'
+include { analysisEnabled } from '../utils_nfcore_scdownstream_pipeline'
 
 workflow CLUSTER_ANNOTATION {
     take:
-    ch_h5ad                        // channel: [ meta, h5ad ]
-    ch_h5ad_de                     // channel: [ meta, h5ad ] — global DE results for CyteType
+    ch_h5ad // channel: [ meta, anndata ]
+    ch_h5ad_de // channel: [ meta, anndata ], global DE results for CyteType
     ch_per_cell_annotation_columns // channel: string
-    cytetype_study_context         //   value: string
+    cytetype_study_context //   value: string
+    save_intermediates //   value: boolean
 
     main:
     ch_obs = channel.empty()
@@ -32,6 +33,7 @@ workflow CLUSTER_ANNOTATION {
         ch_aggregate_per_cell_annotations.annotation_col,
         ch_aggregate_per_cell_annotations.integration,
         ch_aggregate_per_cell_annotations.resolution,
+        save_intermediates ? 'zarr' : '',
     )
     ch_obs = ch_obs.mix(CUSTOM_AGGREGATE_PER_CELL_ANNOTATIONS.out.obs.map { _meta, pkl -> pkl })
 
@@ -57,6 +59,7 @@ workflow CLUSTER_ANNOTATION {
             ch_cytetype.rank_key,
             ch_cytetype.integration,
             ch_cytetype.resolution,
+            save_intermediates ? 'zarr' : '',
         )
         ch_obs = ch_obs.mix(CYTETYPE.out.obs)
     }

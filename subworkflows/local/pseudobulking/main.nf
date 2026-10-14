@@ -2,9 +2,9 @@ include { DECOUPLER_PSEUDOBULK as PSEUDOBULK } from '../../../modules/local/deco
 
 workflow PSEUDOBULKING {
     take:
-    ch_h5ad            // channel: [ meta, h5ad ] with meta.donor_col, meta.obs_key, meta.condition_col
-    min_num_cells      //   value: integer
-    min_total_counts   //   value: integer
+    ch_h5ad // channel: [ meta, anndata ] with meta.donor_col, meta.obs_key, meta.condition_col
+    min_num_cells //   value: integer
+    min_total_counts //   value: integer
 
     main:
     ch_pseudobulk = ch_h5ad.multiMap { meta, h5ad ->
@@ -25,10 +25,11 @@ workflow PSEUDOBULKING {
         ch_pseudobulk.condition_col,
         ch_pseudobulk.min_num_cells,
         ch_pseudobulk.min_total_counts,
+        'zarr',
     )
 
     emit:
-    h5ad    = PSEUDOBULK.out.h5ad
+    anndata = PSEUDOBULK.out.anndata
     samples = PSEUDOBULK.out.samples
     multiqc_files = PSEUDOBULK.out.multiqc_files
 }
