@@ -32,6 +32,14 @@ nextflow_process {
                 """
             }
         }
+        run("SCANPY_LOG1PNORM") {
+            script "modules/local/scanpy/log1pnorm/main.nf"
+            process {
+                """
+                input[0] = ADATA_UNIFY.out.h5ad.filter { meta, _h5ad -> meta.id == 'SRR28679759' }
+                """
+            }
+        }
     }
 
     test("Should run without base") {
@@ -133,6 +141,45 @@ nextflow_process {
             ).match()
         }
 
+    }
+
+    test("Should preserve counts when merging a layered reference and a layerless query") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = ADATA_UNIFY.out.h5ad.filter { meta, _h5ad -> meta.id == 'SRR28679756' }
+                input[1] = SCANPY_LOG1PNORM.out.h5ad
+                input[2] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def outer = anndata(process.out.outer[0][1])
+            def query = anndata(process.out.integrate[0][1])
+            assert query.n_obs > 0
+            assert query.n_obs < outer.n_obs
+            assert query.obs.get('sample').unique() == ['SRR28679756'].toSet()
+            for (output in [process.out.outer[0][1], process.out.integrate[0][1]]) {
+                assert 'counts' in anndata(output).layers
+                nictru.nf.anndata.store.AnnDataStore.open(java.nio.file.Path.of(output.toString())).withCloseable { store ->
+                    def x = store.getGroup('X')
+                    def counts = store.getGroup('layers').getChild('counts').asGroup()
+                    assert x.getChild('data').asArray().readData().length > 0
+                    for (field in ['data', 'indices', 'indptr']) {
+                        assert java.util.Arrays.equals(
+                            x.getChild(field).asArray().readData(),
+                            counts.getChild(field).asArray().readData(),
+                        )
+                    }
+                }
+            }
+        }
     }
 
     test("Should run with base - stub") {

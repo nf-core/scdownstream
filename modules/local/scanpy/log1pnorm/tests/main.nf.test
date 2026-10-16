@@ -27,7 +27,18 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
+            assert "counts" in adata.layers
             assert "log1p" in adata.layers
+            nictru.nf.anndata.store.AnnDataStore.open(java.nio.file.Path.of(process.out.h5ad[0][1].toString())).withCloseable { store ->
+                def x = store.getGroup('X')
+                def counts = store.getGroup('layers').getChild('counts').asGroup()
+                for (field in ['data', 'indices', 'indptr']) {
+                    assert java.util.Arrays.equals(
+                        x.getChild(field).asArray().readData(),
+                        counts.getChild(field).asArray().readData(),
+                    )
+                }
+            }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml
