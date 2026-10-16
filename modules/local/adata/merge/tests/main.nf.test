@@ -32,6 +32,14 @@ nextflow_process {
                 """
             }
         }
+        run("SCANPY_LOG1PNORM") {
+            script "modules/local/scanpy/log1pnorm/main.nf"
+            process {
+                """
+                input[0] = ADATA_UNIFY.out.h5ad.filter { meta, _h5ad -> meta.id == 'SRR28679759' }
+                """
+            }
+        }
     }
 
     test("Should run without base") {
@@ -133,6 +141,33 @@ nextflow_process {
             ).match()
         }
 
+    }
+
+    test("Should merge a layered reference with a layerless query") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = ADATA_UNIFY.out.h5ad.filter { meta, _h5ad -> meta.id == 'SRR28679756' }
+                input[1] = SCANPY_LOG1PNORM.out.h5ad
+                input[2] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def outer = anndata(process.out.outer[0][1])
+            def query = anndata(process.out.integrate[0][1])
+            assert query.n_obs > 0
+            assert query.n_obs < outer.n_obs
+            assert query.obs.get('sample').unique() == ['SRR28679756'].toSet()
+            assert 'counts' in outer.layers
+            assert 'counts' in query.layers
+        }
     }
 
     test("Should run with base - stub") {
