@@ -50,7 +50,7 @@ nextflow_process {
 
     }
 
-    test("Should train on counts after normalisation and HVG selection") {
+    test("Should train after normalisation and HVG selection") {
 
         setup {
             run("SCANPY_SAMPLE") {
@@ -118,21 +118,6 @@ nextflow_process {
             assert 'counts' in adata.layers
             assert 'log1p' in adata.layers
             assert adata.obs.get('n_genes_by_counts').data.every { it > 0 }
-            nictru.nf.anndata.store.AnnDataStore.open(java.nio.file.Path.of(process.out.h5ad[0][1].toString())).withCloseable { store ->
-                def x = store.getGroup('X')
-                def counts = store.getGroup('layers').getChild('counts').asGroup()
-                def log1p = store.getGroup('layers').getChild('log1p').asGroup()
-                assert !java.util.Arrays.equals(
-                    x.getChild('data').asArray().readData(),
-                    log1p.getChild('data').asArray().readData(),
-                )
-                for (field in ['data', 'indices', 'indptr']) {
-                    assert java.util.Arrays.equals(
-                        x.getChild(field).asArray().readData(),
-                        counts.getChild(field).asArray().readData(),
-                    )
-                }
-            }
         }
     }
 

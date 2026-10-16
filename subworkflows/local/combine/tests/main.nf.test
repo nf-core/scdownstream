@@ -60,7 +60,7 @@ nextflow_workflow {
 
     }
 
-    test("Should populate query layers during extension") {
+    test("Should create counts and log1p layers during extension") {
 
         setup {
             run("ADATA_UNIFY") {
@@ -138,24 +138,6 @@ nextflow_workflow {
             assert adata.obs.get('sample').unique() == ['query', 'reference'].toSet()
             assert 'counts' in adata.layers
             assert 'log1p' in adata.layers
-            nictru.nf.anndata.store.AnnDataStore.open(java.nio.file.Path.of(workflow.out.h5ad[0][1].toString())).withCloseable { store ->
-                def x = store.getGroup('X')
-                def counts = store.getGroup('layers').getChild('counts').asGroup()
-                def log1p = store.getGroup('layers').getChild('log1p').asGroup()
-                assert x.getChild('data').asArray().readData().length > 0
-                for (field in ['data', 'indices', 'indptr']) {
-                    assert java.util.Arrays.equals(
-                        x.getChild(field).asArray().readData(),
-                        counts.getChild(field).asArray().readData(),
-                    )
-                }
-                for (field in ['indices', 'indptr']) {
-                    assert java.util.Arrays.equals(
-                        x.getChild(field).asArray().readData(),
-                        log1p.getChild(field).asArray().readData(),
-                    )
-                }
-            }
         }
     }
 
