@@ -26,43 +26,90 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-11T10:37:08.646377",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.4"
-        }
+        },
+        "timestamp": "2026-07-11T10:37:08.646377"
     },
     "Should run hvgs feature selection": {
         "content": [
             {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_filtered.h5ad:md5,2d89ff3783c3f2f31977f8082fd58cb9"
+                "id": "test"
+            },
+            [
+                "test_hvg.pkl:md5,0bc138a2afaed0e4e153bd251a9be8da"
+            ],
+            {
+                "n_obs": 38234,
+                "n_vars": 2000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "n_genes_by_counts",
+                        "log1p_n_genes_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "pct_counts_in_top_20_genes",
+                        "total_counts_mt",
+                        "log1p_total_counts_mt",
+                        "pct_counts_mt",
+                        "total_counts_ribo",
+                        "log1p_total_counts_ribo",
+                        "pct_counts_ribo",
+                        "total_counts_hb",
+                        "log1p_total_counts_hb",
+                        "pct_counts_hb",
+                        "n_counts",
+                        "n_genes"
                     ]
-                ],
-                "1": [
-                    "test_hvg.pkl:md5,0bc138a2afaed0e4e153bd251a9be8da"
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_filtered.h5ad:md5,2d89ff3783c3f2f31977f8082fd58cb9"
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "highly_variable",
+                        "means",
+                        "dispersions",
+                        "dispersions_norm",
+                        "mt",
+                        "ribo",
+                        "hb",
+                        "n_cells_by_counts",
+                        "mean_counts",
+                        "log1p_mean_counts",
+                        "pct_dropout_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "n_counts",
+                        "n_cells"
                     ]
+                },
+                "layers": [
+                    "counts",
+                    "log1p"
                 ],
-                "var": [
-                    "test_hvg.pkl:md5,0bc138a2afaed0e4e153bd251a9be8da"
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg"
                 ]
             }
         ],
-        "timestamp": "2026-09-25T19:27:15.097617451",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        }
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.4"
+        },
+        "timestamp": "2026-10-18T19:20:36.960918312"
     }
 }
