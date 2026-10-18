@@ -46,8 +46,8 @@ nextflow_process {
                 assert !("counts" in layers)
                 assert "raw_counts" in layers
                 assert layers.size() == 1
-                assert obs.get("ambient_correction_method").unique() == ["none"]
-                assert obs.get("analysis_counts_source").unique() == ["raw_counts"]
+                assert obs.get("ambient_correction_method").unique() == ["none"].toSet()
+                assert obs.get("analysis_counts_source").unique() == ["raw_counts"].toSet()
             }
             assert snapshot(
                 process.out,
@@ -128,8 +128,8 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert "raw_counts" in adata.layers
             assert adata.layers.size() == 1
-            assert adata.obs.get("ambient_correction_method").unique() == ["none"]
-            assert adata.obs.get("analysis_counts_source").unique() == ["raw_counts"]
+            assert adata.obs.get("ambient_correction_method").unique() == ["none"].toSet()
+            assert adata.obs.get("analysis_counts_source").unique() == ["raw_counts"].toSet()
             assert snapshot(process.out, adata.yaml).match()
         }
     }
@@ -164,8 +164,8 @@ nextflow_process {
             assert "raw_counts" in adata.layers
             assert "ambient_corrected_soupx" in adata.layers
             assert adata.layers.size() == 2
-            assert adata.obs.get("ambient_correction_method").unique() == ["soupx"]
-            assert adata.obs.get("analysis_counts_source").unique() == ["raw_counts"]
+            assert adata.obs.get("ambient_correction_method").unique() == ["soupx"].toSet()
+            assert adata.obs.get("analysis_counts_source").unique() == ["raw_counts"].toSet()
             assert adata.n_obs == adata.obs.rownames.size()
             assert adata.n_vars == adata.var.rownames.size()
             assert snapshot(process.out, adata.yaml).match()
@@ -202,8 +202,8 @@ nextflow_process {
             assert "raw_counts" in adata.layers
             assert "ambient_corrected_decontx" in adata.layers
             assert adata.layers.size() == 2
-            assert adata.obs.get("ambient_correction_method").unique() == ["decontx"]
-            assert adata.obs.get("analysis_counts_source").unique() == ["ambient_corrected_decontx"]
+            assert adata.obs.get("ambient_correction_method").unique() == ["decontx"].toSet()
+            assert adata.obs.get("analysis_counts_source").unique() == ["ambient_corrected_decontx"].toSet()
             assert snapshot(process.out, adata.yaml).match()
         }
     }
@@ -260,8 +260,8 @@ nextflow_process {
             assert "raw_counts" in adata.layers
             assert "ambient_corrected_scar" in adata.layers
             assert adata.layers.size() == 2
-            assert adata.obs.get("ambient_correction_method").unique() == ["scar"]
-            assert adata.obs.get("analysis_counts_source").unique() == ["ambient_corrected_scar"]
+            assert adata.obs.get("ambient_correction_method").unique() == ["scar"].toSet()
+            assert adata.obs.get("analysis_counts_source").unique() == ["ambient_corrected_scar"].toSet()
             assert adata.var.rownames.toUnique().size() == adata.var.rownames.size()
             assert snapshot(process.out, adata.yaml).match()
         }

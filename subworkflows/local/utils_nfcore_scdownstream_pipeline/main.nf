@@ -220,9 +220,7 @@ def analysesFromPlanRows(rows) {
     if (!rows || rows.any { row -> !row.analyses }) {
         return [:]
     }
-    [
-        analyses: rows.collectMany { row -> row.analyses.split(',').collect { token -> token.trim() } }.toSet()
-    ]
+    [analyses: rows.collectMany { row -> row.analyses.split(',').collect { token -> token.trim() } }.toSet()]
 }
 
 def deMethodsFromPlanRows(rows) {
@@ -442,7 +440,7 @@ def validateInputParameters() {
     if (params.base_adata && !workflow.stubRun) {
         def ad = anndata(file(params.base_adata, checkIfExists: true))
         def layers = ad.layers.toList()
-        def obs_columns = ad.obs.colnames.toList()
+        def obs_columns = pseudobulkingRequired() ? ad.obs.colnames.toList() : []
         ad.close()
         if (!('raw_counts' in layers)) {
             throw new Exception("base_adata must contain a raw_counts layer with genuine pre-correction counts. " + "Regenerate this base with the current pipeline or supply the original counts. " + "Do not copy X or counts unless their uncorrected provenance is known. " + "Available layers: ${layers.join(', ')}.")

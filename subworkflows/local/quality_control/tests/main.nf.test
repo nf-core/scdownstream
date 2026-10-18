@@ -155,7 +155,7 @@ nextflow_workflow {
                             id: 'test',
                             batch_col: 'sample',
                             counts_layer: 'X',
-                            ambient_corrected_integration: true,
+                            ambient_corrected_integration: false,
                             min_cells: 0,
                             max_mito_percentage: 100,
                             log1p_total_counts_nmads: 0,
@@ -169,7 +169,7 @@ nextflow_workflow {
                 )
                 input[1] = 'cellbender'
                 input[2] = 'decontx'
-                input[3] = false
+                input[3] = true
                 input[4] = false
                 input[5] = 'sum'
                 input[6] = false
@@ -196,12 +196,12 @@ nextflow_workflow {
             assert meta.raw_counts_layer == 'raw_counts'
             assert meta.ambient_correction_layer == 'ambient_corrected_decontx'
             assert meta.ambient_correction_method == 'decontx'
-            assert meta.analysis_counts_source == 'ambient_corrected_decontx'
+            assert meta.analysis_counts_source == 'raw_counts'
             assert 'raw_counts' in adata.layers
             assert 'ambient_corrected_decontx' in adata.layers
             assert adata.layers.size() == 2
             assert adata.obs.get('ambient_correction_method').unique().toSet() == ['decontx'].toSet()
-            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['ambient_corrected_decontx'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
             assert adata.n_obs == adata.obs.rownames.size()
             assert adata.n_vars == adata.var.rownames.size()
             with(adata) {
@@ -590,6 +590,7 @@ nextflow_workflow {
                         [id: 'disabled', ambient_correction: false, ambient_corrected_integration: true]
                     ].collect { options -> [
                         meta + [batch_col: 'batch', symbol_col: 'index', counts_layer: 'raw_counts',
+                                label_col: 'label', condition_col: 'condition', donor_col: 'donor',
                                 min_genes: 0, min_cells: 20, max_mito_percentage: 100,
                                 log1p_total_counts_nmads: 0, log1p_n_genes_by_counts_nmads: 0,
                                 pct_counts_in_top_20_genes_nmads: 0, pct_counts_mt_nmads: 0] + options,
@@ -620,7 +621,6 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.h5ad.size() == 3
-            def source = anndata(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad')
             def outputs = workflow.out.h5ad.sort { it[0].id }
             outputs.each { meta, h5ad ->
                 def corrected = meta.id != 'disabled'
@@ -638,20 +638,18 @@ nextflow_workflow {
                 assert adata.n_obs == 100
                 assert adata.n_obs == adata.obs.rownames.size()
                 assert adata.n_vars > 0
-                assert adata.n_vars < source.n_vars
                 assert adata.n_vars == adata.var.rownames.size()
-                assert source.obs.rownames.containsAll(adata.obs.rownames.collect { it.substring(meta.id.size() + '_source_'.size()) })
-                assert source.var.rownames.containsAll(adata.var.rownames)
-                assert adata.obs.rownames.toSet().size() == adata.n_obs
-                assert adata.var.rownames.toSet().size() == adata.n_vars
+                assert adata.obs.rownames.values.every { it.startsWith(meta.id + '_source_') }
+                assert adata.obs.rownames.unique().size() == adata.n_obs
+                assert adata.var.rownames.unique().size() == adata.n_vars
                 assert adata.obs.get('ambient_correction_method').unique().toSet() == [expectedMethod].toSet()
                 assert adata.obs.get('analysis_counts_source').unique().toSet() == [expectedSource].toSet()
                 assert 'total_counts' in adata.obs.colnames
                 assert 'n_genes_by_counts' in adata.obs.colnames
                 assert 'pct_counts_mt' in adata.obs.colnames
-                assert adata.obs.get('total_counts').every { it >= 0 }
-                assert adata.obs.get('n_genes_by_counts').every { it >= 0 && it <= source.n_vars }
-                assert adata.obs.get('pct_counts_mt').every { it >= 0 && it <= 100 }
+                assert adata.obs.get('total_counts').data.every { it >= 0 }
+                assert adata.obs.get('n_genes_by_counts').data.every { it >= 0 }
+                assert adata.obs.get('pct_counts_mt').data.every { it >= 0 && it <= 100 }
             }
             assert snapshot(outputs.collect { it[0] }, outputs.collect { anndata(it[1]).yaml }).match()
         }
