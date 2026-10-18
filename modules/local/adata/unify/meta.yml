@@ -18,6 +18,11 @@ input:
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1' ]`
+          Optional raw_counts_layer identifies the pre-correction source and defaults
+          to the positional counts_layer. Optional ambient_correction_layer identifies
+          the physical generated correction source. ambient_correction_method defaults
+          to none and analysis_counts_source defaults to raw_counts. The latter is
+          raw_counts or ambient_corrected_<method>, independently of physical selectors.
     - h5ad:
         type: file
         description: AnnData object in h5ad format
@@ -41,7 +46,7 @@ input:
       description: var column containing gene symbols, or `index`
   - counts_layer:
       type: string
-      description: Layer or `X` containing raw counts
+      description: Layer or `X` containing selected analysis counts
   - duplicate_var_resolution:
       type: string
       description: Strategy for resolving duplicated variable names
@@ -61,7 +66,11 @@ output:
             e.g. `[ id:'sample1' ]`
       - "*.h5ad":
           type: file
-          description: Unified AnnData with standardised metadata and counts
+          description: |
+            Unified AnnData with selected analysis counts in float32 CSR X, independent
+            raw_counts and optional ambient_corrected_<method> layers. All retained
+            matrices share gene aggregation and axes. Other input layers are discarded.
+            Categorical obs columns record ambient_correction_method and analysis_counts_source.
           pattern: "*.h5ad"
           ontologies:
             - edam: "http://edamontology.org/format_3590"
