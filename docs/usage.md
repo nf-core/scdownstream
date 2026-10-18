@@ -34,6 +34,9 @@ It has to be a comma-separated file with at least 2 columns, and a header row as
 
 The samplesheet needs to contain at least two columns: `sample` and at least one out of `filtered` and `unfiltered`.
 Each value in the `sample` column must be unique; samplesheet validation fails on duplicate sample names.
+Sample identifiers must start with an ASCII letter or digit and contain only ASCII letters, digits, dots, underscores and hyphens, for example `patient-01`, `123_sample` or `sample.v2`.
+Identifiers are case-sensitive. Quotes, whitespace, path separators, shell metacharacters and Unicode characters are not supported. Validation rejects unsupported identifiers before processing starts; the pipeline does not add automatic identifier sanitisation or renaming.
+The existing CSV reader trims surrounding whitespace and infers value types before validation. Numeric-only identifiers and Boolean/null-like tokens can therefore fail the string-type check even when their characters match this pattern. Use an identifier such as `sample_0` or `sample_true` instead.
 
 ```csv title="samplesheet.csv"
 sample,unfiltered
@@ -41,6 +44,15 @@ sample1,/absolute/path/to/sample1.h5ad
 sample2,relative/path/to/sample2.rds
 sample3,/absolute/path/to/sample3.csv
 ```
+
+A filtered-only samplesheet also needs just two columns:
+
+```csv title="samplesheet.csv"
+sample,filtered
+sample1,/absolute/path/to/sample1_filtered.h5ad
+```
+
+SoupX requires an `unfiltered` matrix for each sample with ambient correction enabled. For filtered-only input, use `--ambient_correction decontx` or disable ambient correction with `--ambient_correction none` or sample-level `ambient_correction=false`. Both input columns may be provided; additional columns are optional.
 
 ### Full samplesheet
 
@@ -450,7 +462,7 @@ Set [`base_donor_col`](https://nf-co.re/scdownstream/parameters#base_donor_col) 
 Every `base_adata` must contain an explicit `layers['raw_counts']`, including reference extension, base-only re-integration, and embedding reuse. The pipeline does not guess raw counts from `X` or `counts`. For a legacy base without this layer, regenerate the base from known input counts or supply genuine pre-correction values aligned to its cells and genes. Do not blindly copy potentially corrected `X` or `counts`. The presence of `raw_counts` satisfies the input contract but does not prove its biological history. Existing layers and known provenance survive base-only reuse without a new correction result.
 
 The pipeline will then re-execute the tasks after the integration step without performing integration again.
-Most interestingly, the pipeline will generate cell type specific UMAPs, clusterings, and PAGA graphs, if [`clustering_per_label`](https://nf-co.re/scdownstream/parameters#clustering_per_label) is set to `true`.
+Set [`cluster_per_label`](https://nf-co.re/scdownstream/parameters#cluster_per_label) to `true` to generate cell type-specific UMAPs, clusterings and PAGA graphs.
 
 If [`integrate_per_label`](https://nf-co.re/scdownstream/parameters#integrate_per_label) is enabled, [`base_label_col`](https://nf-co.re/scdownstream/parameters#base_label_col) is the split/grouping column, not necessarily the supervised cell-type label used by integration methods.
 Use [`integrate_per_label_whitelist`](https://nf-co.re/scdownstream/parameters#integrate_per_label_whitelist) to restrict per-label integration to a subset of groups (comma-separated values from `base_label_col`). When omitted, integration runs for every group. Whitelist values must use the same filesystem-safe subset names as in `analysis_plan` (spaces replaced with underscores).

@@ -9,8 +9,8 @@
         "properties": {
             "sample": {
                 "type": "string",
-                "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+                "errorMessage": "Sample identifier must start with an ASCII letter or digit and contain only ASCII letters, digits, dots, underscores and hyphens.",
                 "meta": ["id"]
             },
             "filtered": {

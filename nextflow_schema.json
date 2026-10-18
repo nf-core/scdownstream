@@ -20,7 +20,7 @@
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/scdownstream/usage#samplesheet-input).",
+                    "help_text": "Provide a CSV samplesheet with a header row and the sample column plus filtered or unfiltered. See the [samplesheet requirements](https://nf-co.re/scdownstream/usage#samplesheet-input) for optional columns and method-specific requirements.",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "outdir": {
