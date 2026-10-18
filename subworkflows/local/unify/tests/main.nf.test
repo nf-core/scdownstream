@@ -284,7 +284,7 @@ nextflow_workflow {
             assert adata.n_vars > 0
             assert adata.n_obs == adata.obs.rownames.size()
             assert adata.n_vars == adata.var.rownames.size()
-            assert adata.obs.rownames.values.every { it.startsWith('named_') }
+            assert adata.obs.rownames.every { it.startsWith('named_') }
             assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
             assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
             assert snapshot(meta, adata.yaml).match()
@@ -343,14 +343,14 @@ nextflow_workflow {
                 assert adata.layers.size() == 2
                 assert adata.n_obs == adata.obs.rownames.size()
                 assert adata.n_vars == adata.var.rownames.size()
-                assert adata.obs.rownames.unique().size() == adata.n_obs
-                assert adata.var.rownames.unique().size() == adata.n_vars
+                assert adata.obs.rownames.toList().toSet().size() == adata.n_obs
+                assert adata.var.rownames.toList().toSet().size() == adata.n_vars
                 assert adata.obs.get('ambient_correction_method').unique().toSet() == ['decontx'].toSet()
                 assert adata.obs.get('analysis_counts_source').unique().toSet() == [expectedSource].toSet()
             }
             assert anndata(outputs[0][1]).obs.rownames.collect { it.substring(outputs[0][0].id.size() + 1) } ==
                 anndata(outputs[1][1]).obs.rownames.collect { it.substring(outputs[1][0].id.size() + 1) }
-            assert anndata(outputs[0][1]).var.rownames.values.toList() == anndata(outputs[1][1]).var.rownames.values.toList()
+            assert anndata(outputs[0][1]).var.rownames.toList() == anndata(outputs[1][1]).var.rownames.toList()
             assert snapshot(outputs.collect { it[0] }, outputs.collect { anndata(it[1]).yaml }).match()
         }
     }

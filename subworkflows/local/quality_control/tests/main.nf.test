@@ -639,9 +639,9 @@ nextflow_workflow {
                 assert adata.n_obs == adata.obs.rownames.size()
                 assert adata.n_vars > 0
                 assert adata.n_vars == adata.var.rownames.size()
-                assert adata.obs.rownames.values.every { it.startsWith(meta.id + '_source_') }
-                assert adata.obs.rownames.unique().size() == adata.n_obs
-                assert adata.var.rownames.unique().size() == adata.n_vars
+                assert adata.obs.rownames.every { it.startsWith(meta.id + '_source_') }
+                assert adata.obs.rownames.toList().toSet().size() == adata.n_obs
+                assert adata.var.rownames.toList().toSet().size() == adata.n_vars
                 assert adata.obs.get('ambient_correction_method').unique().toSet() == [expectedMethod].toSet()
                 assert adata.obs.get('analysis_counts_source').unique().toSet() == [expectedSource].toSet()
                 assert 'total_counts' in adata.obs.colnames
