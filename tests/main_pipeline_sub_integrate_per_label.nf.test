@@ -8,10 +8,10 @@ nextflow_pipeline {
 
         when {
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/e3a7f43eb802a090affac918026d2ba5dce8fcd5/'
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/9899c2480745ef58ad234c502a622e1a424f8a6c/'
                 outdir                       = "$outputDir"
                 input                        = null
-                base_adata                   = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                base_adata                   = pipelines_testdata_base_path + 'ambient_reference/merged.h5ad'
                 base_embeddings              = null
                 base_label_col               = 'sample'
                 integrate_per_label          = true
@@ -29,6 +29,13 @@ nextflow_pipeline {
         then {
             assert workflow.success
             def adata = anndata("$outputDir/09_finalized/base.h5ad")
+            assert adata.n_obs > 0
+            assert adata.n_vars > 0
+            assert adata.layers.containsAll(['raw_counts', 'counts', 'log1p'])
+            assert !adata.layers.any { it.startsWith('ambient_corrected_') }
+            assert adata.obs.get('sample').unique().toSet() == ['SRR28679756', 'SRR28679757', 'SRR28679758'].toSet()
+            assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
             def pcaKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_pca") }
             def umapKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_umap") }
             assert "sample" in adata.obs.colnames
@@ -51,10 +58,10 @@ nextflow_pipeline {
 
         when {
             params {
-                pipelines_testdata_base_path  = 'https://raw.githubusercontent.com/nictru/test-datasets/e3a7f43eb802a090affac918026d2ba5dce8fcd5/'
+                pipelines_testdata_base_path  = 'https://raw.githubusercontent.com/nictru/test-datasets/9899c2480745ef58ad234c502a622e1a424f8a6c/'
                 outdir                        = "$outputDir"
                 input                         = null
-                base_adata                    = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                base_adata                    = pipelines_testdata_base_path + 'ambient_reference/merged.h5ad'
                 base_embeddings               = null
                 base_label_col                = 'sample'
                 integrate_per_label           = true
@@ -73,6 +80,13 @@ nextflow_pipeline {
         then {
             assert workflow.success
             def adata = anndata("$outputDir/09_finalized/base.h5ad")
+            assert adata.n_obs > 0
+            assert adata.n_vars > 0
+            assert adata.layers.containsAll(['raw_counts', 'counts', 'log1p'])
+            assert !adata.layers.any { it.startsWith('ambient_corrected_') }
+            assert adata.obs.get('sample').unique().toSet() == ['SRR28679756', 'SRR28679757', 'SRR28679758'].toSet()
+            assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
             def pcaKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_pca") }
             def umapKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_umap") }
             assert pcaKeys.size() == 1
