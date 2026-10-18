@@ -7,6 +7,54 @@ nextflow_process {
     tag "modules"
     tag "modules_local"
 
+    test("Should export layered input with selected counts in X") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'layered'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'X'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert path(process.out.rds[0][1]).exists()
+            assert snapshot(path(process.out.versions[0]).yaml).match()
+        }
+    }
+
+    test("Should reject a missing counts source") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'missing'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'missing_counts'
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Requested counts source 'missing_counts' is missing")
+            assert process.errorReport.contains("Select X or an available layer")
+        }
+    }
+
     test("Should run without failures") {
 
         when {
