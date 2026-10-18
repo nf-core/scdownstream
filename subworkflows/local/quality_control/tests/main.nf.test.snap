@@ -11,11 +11,11 @@
                 
             ]
         ],
+        "timestamp": "2026-09-25T19:08:33.932270207",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-09-25T19:08:33.932270207"
+        }
     },
     "Should run without ambient RNA removal and doublet detection, but with custom mito genes": {
         "content": [
@@ -29,11 +29,11 @@
                 
             ]
         ],
+        "timestamp": "2026-09-25T19:09:48.151416385",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-09-25T19:09:48.151416385"
+        }
     },
     "Should run with ambient RNA removal and doublet detection - stub": {
         "content": [
@@ -116,11 +116,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-18T17:33:48.872660736",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:33:48.872660736"
+        }
     },
     "Should run without ambient RNA removal and doublet detection - with MAD filtering": {
         "content": [
@@ -200,11 +200,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-18T17:35:13.423844173",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:35:13.423844173"
+        }
     },
     "Should run without ambient RNA removal and doublet detection - with partial MAD filtering": {
         "content": [
@@ -285,11 +285,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-18T17:37:36.393936433",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:37:36.393936433"
+        }
     },
     "Should retain named counts and correction through filtering and sampling with sample overrides": {
         "content": [
@@ -310,7 +310,7 @@
                     "pct_counts_in_top_20_genes_nmads": 0,
                     "pct_counts_mt_nmads": 0,
                     "ambient_correction": false,
-                    "ambient_corrected_integration": true,
+                    "use_ambient_corrected_counts": true,
                     "raw_counts_layer": "raw_counts",
                     "ambient_correction_layer": null,
                     "ambient_correction_method": "none",
@@ -353,7 +353,7 @@
                     "log1p_n_genes_by_counts_nmads": 0,
                     "pct_counts_in_top_20_genes_nmads": 0,
                     "pct_counts_mt_nmads": 0,
-                    "ambient_corrected_integration": false,
+                    "use_ambient_corrected_counts": false,
                     "raw_counts_layer": "raw_counts",
                     "ambient_correction_layer": "ambient_corrected_decontx",
                     "ambient_correction_method": "decontx",
@@ -561,11 +561,11 @@
                 }
             ]
         ],
+        "timestamp": "2026-10-18T21:46:58.931396784",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-10-18T18:25:26.266726693"
+        }
     },
     "Should run with ambient RNA removal and doublet detection": {
         "content": [
@@ -648,11 +648,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-18T18:06:53.740784205",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T18:06:53.740784205"
+        }
     },
     "Should apply sc-best-practices QC filtering when samplesheet defaults are present in meta": {
         "content": [
@@ -744,11 +744,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-18T17:36:22.066445132",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:36:22.066445132"
+        }
     },
     "Should run with cell cycle scoring": {
         "content": [
@@ -763,10 +763,10 @@
                 
             ]
         ],
+        "timestamp": "2026-09-25T19:19:01.669281408",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-09-25T19:19:01.669281408"
+        }
     }
 }

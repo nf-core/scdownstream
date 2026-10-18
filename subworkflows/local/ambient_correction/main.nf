@@ -12,9 +12,9 @@ def resolve_ambient_expression(meta, method, global_flag) {
     if (correction_layer == raw_layer) {
         correction_layer = canonical_layer + '_internal'
     }
-    def select_corrected = meta.ambient_corrected_integration == null
+    def select_corrected = meta.use_ambient_corrected_counts == null
         ? global_flag == true
-        : meta.ambient_corrected_integration == true
+        : meta.use_ambient_corrected_counts == true
     select_corrected = select_corrected && applied_method != 'none'
 
     return meta + [
@@ -30,7 +30,7 @@ workflow AMBIENT_CORRECTION {
     take:
     ch_pairing                    // channel: [ meta, h5ad, h5ad ]
     method                        // value: string
-    ambient_corrected_integration // value: boolean
+    use_ambient_corrected_counts  // value: boolean
     scvi_max_epochs               // value: integer
 
     main:
@@ -48,7 +48,7 @@ workflow AMBIENT_CORRECTION {
             input: [meta, filtered, unfiltered]
             batch_col: meta.batch_col ?: []
             input_layer: meta.counts_layer ?: "X"
-            output_layer: resolve_ambient_expression(meta, method, ambient_corrected_integration).ambient_correction_layer
+            output_layer: resolve_ambient_expression(meta, method, use_ambient_corrected_counts).ambient_correction_layer
         }
 
     ch_h5ad = ch_do_ambient_correction.no
@@ -114,7 +114,7 @@ workflow AMBIENT_CORRECTION {
     }
 
     ch_h5ad = ch_h5ad.map { meta, h5ad ->
-        [resolve_ambient_expression(meta, method, ambient_corrected_integration), h5ad]
+        [resolve_ambient_expression(meta, method, use_ambient_corrected_counts), h5ad]
     }
 
     emit:

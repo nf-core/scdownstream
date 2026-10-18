@@ -103,7 +103,7 @@
             {
                 "id": "override",
                 "batch_col": "sample",
-                "ambient_corrected_integration": true,
+                "use_ambient_corrected_counts": true,
                 "donor_col": "donor",
                 "raw_counts_layer": "X",
                 "counts_layer": "ambient_corrected_decontx",
@@ -146,10 +146,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T17:27:32.306736103",
+        "timestamp": "2026-10-18T21:45:58.885782812",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run with 'decontx' ambient correction": {
@@ -468,7 +468,7 @@
                 {
                     "id": "collision_false",
                     "counts_layer": "ambient_corrected_decontx",
-                    "ambient_corrected_integration": false,
+                    "use_ambient_corrected_counts": false,
                     "raw_counts_layer": "ambient_corrected_decontx",
                     "ambient_correction_layer": "ambient_corrected_decontx_internal",
                     "ambient_correction_method": "decontx",
@@ -477,7 +477,7 @@
                 {
                     "id": "collision_true",
                     "counts_layer": "ambient_corrected_decontx_internal",
-                    "ambient_corrected_integration": true,
+                    "use_ambient_corrected_counts": true,
                     "raw_counts_layer": "ambient_corrected_decontx",
                     "ambient_correction_layer": "ambient_corrected_decontx_internal",
                     "ambient_correction_method": "decontx",
@@ -557,10 +557,10 @@
                 }
             ]
         ],
-        "timestamp": "2026-10-18T17:32:16.101130254",
+        "timestamp": "2026-10-18T21:49:35.620913189",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should not do anything if ambient correction is disabled in meta": {
@@ -758,7 +758,7 @@
         "content": [
             {
                 "id": "override",
-                "ambient_corrected_integration": false,
+                "use_ambient_corrected_counts": false,
                 "raw_counts_layer": "X",
                 "counts_layer": "X",
                 "ambient_correction_layer": "ambient_corrected_decontx",
@@ -800,10 +800,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T17:28:54.011879849",
+        "timestamp": "2026-10-18T21:47:04.837984419",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }

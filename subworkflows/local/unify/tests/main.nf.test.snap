@@ -48,11 +48,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-18T17:41:56.54115543",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:41:56.54115543"
+        }
     },
     "Should run without failures - symbol_col index, unify_gene_symbols false": {
         "content": [
@@ -144,11 +144,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-18T17:41:24.029184356",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:41:24.029184356"
+        }
     },
     "Should canonicalise a named input counts layer": {
         "content": [
@@ -208,11 +208,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-18T18:08:13.266945446",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T18:08:13.266945446"
+        }
     },
     "Should run without failures - symbol_col index, unify_gene_symbols true": {
         "content": [
@@ -261,11 +261,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-18T17:48:21.434000034",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:48:21.434000034"
+        }
     },
     "Should run without failures - symbol_col index, unify_gene_symbols false - stub": {
         "content": [
@@ -316,11 +316,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-18T17:40:59.900725776",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:40:59.900725776"
+        }
     },
     "Should run without failures - symbol_col index, unify_gene_symbols true - stub": {
         "content": [
@@ -373,11 +373,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-18T17:46:15.404998586",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:46:15.404998586"
+        }
     },
     "Should retain correction through symbol unification with either analysis selection": {
         "content": [
@@ -386,7 +386,7 @@
                     "id": "selected_false",
                     "symbol_col": "index",
                     "counts_layer": "X",
-                    "ambient_corrected_integration": false,
+                    "use_ambient_corrected_counts": false,
                     "raw_counts_layer": "raw_counts",
                     "ambient_correction_layer": "ambient_corrected_decontx",
                     "ambient_correction_method": "decontx",
@@ -401,7 +401,7 @@
                     "id": "selected_true",
                     "symbol_col": "index",
                     "counts_layer": "X",
-                    "ambient_corrected_integration": true,
+                    "use_ambient_corrected_counts": true,
                     "raw_counts_layer": "raw_counts",
                     "ambient_correction_layer": "ambient_corrected_decontx",
                     "ambient_correction_method": "decontx",
@@ -500,11 +500,11 @@
                 }
             ]
         ],
+        "timestamp": "2026-10-18T21:49:31.655632598",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-10-18T18:28:41.125398693"
+        }
     },
     "Should run without failures - symbol_col none, unify_gene_symbols false": {
         "content": [
@@ -553,10 +553,10 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-18T17:44:01.075640202",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:44:01.075640202"
+        }
     }
 }

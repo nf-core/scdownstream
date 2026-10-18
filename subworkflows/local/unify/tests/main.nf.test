@@ -299,7 +299,7 @@ nextflow_workflow {
                 workflow {
                     """
                     input[0] = channel.of(true, false).map { selected -> [
-                        [id: "selected_\${selected}", symbol_col: 'index', counts_layer: 'X', ambient_corrected_integration: selected],
+                        [id: "selected_\${selected}", symbol_col: 'index', counts_layer: 'X', use_ambient_corrected_counts: selected],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
                     ] }
@@ -331,7 +331,7 @@ nextflow_workflow {
             assert workflow.out.h5ad.size() == 2
             def outputs = workflow.out.h5ad.sort { it[0].id }
             outputs.each { meta, h5ad ->
-                def expectedSource = meta.ambient_corrected_integration ? 'ambient_corrected_decontx' : 'raw_counts'
+                def expectedSource = meta.use_ambient_corrected_counts ? 'ambient_corrected_decontx' : 'raw_counts'
                 def adata = anndata(h5ad)
                 assert meta.counts_layer == 'X'
                 assert meta.raw_counts_layer == 'raw_counts'

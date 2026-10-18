@@ -9,6 +9,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
+- Name the analysis-count selection flag and samplesheet column `use_ambient_corrected_counts`, without a legacy alias, by @nictru and GPT-6.1 Sol [[#345](https://github.com/nf-core/scdownstream/pull/345)].
 - Generate the `CUSTOM_VOLCANOPLOT` nf-test input with a `SCANPY_RANKGENESGROUPS` setup block and move the edge-case fixtures and gene list to test-datasets by @nictru and Cursor [[#333](https://github.com/nf-core/scdownstream/pull/333)].
 - Migrate local modules to nf-core container metadata, Wave images and Conda lock files by @nictru and Codex [[#311](https://github.com/nf-core/scdownstream/pull/311)].
 - Write H5AD strings in the legacy encoding pipeline-wide via `ANNDATA_ALLOW_WRITE_NULLABLE_STRINGS=0`, replacing per-module workarounds, and move `ADATA_MYGENE`, `ADATA_SETINDEX`, `ADATA_UNIFY`, `ADATA_EXTEND` and `ADATA_SPLITCOL` to anndata 0.13 by @nictru [[#311](https://github.com/nf-core/scdownstream/pull/311)].

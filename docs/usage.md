@@ -47,7 +47,7 @@ sample3,/absolute/path/to/sample3.csv
 There are a couple of optional columns that can be used for more advanced features:
 
 ```csv title="samplesheet.csv"
-sample,filtered,unfiltered,batch_col,label_col,condition_col,unknown_label,min_genes,min_cells,min_counts_cell,min_counts_gene,expected_cells,doublet_rate,ambient_correction,ambient_corrected_integration
+sample,filtered,unfiltered,batch_col,label_col,condition_col,unknown_label,min_genes,min_cells,min_counts_cell,min_counts_gene,expected_cells,doublet_rate,ambient_correction,use_ambient_corrected_counts
 sample1,/absolute/path/to/sample1_filtered.h5ad,/absolute/path/to/sample1.h5ad,batch,cell_type,condition,unknown,1,2,3,4,5000,0.08,true,false
 sample2,relative/path/to/sample2_filtered.rds,relative/path/to/sample2.rds,batch_id,annotation,condition,unannotated,5,6,7,8,3000,,false,
 sample3,/absolute/path/to/sample3_filtered.csv,/absolute/path/to/sample3.csv,,,,,9,10,11,12,,,true,true
@@ -84,7 +84,7 @@ H5AD files in the samplesheet may use either string encoding, including the `nul
 | `pct_counts_in_top_20_genes_nmads` | MAD cutoff for `pct_counts_in_top_20_genes`. Defaults to `5`. Set to `0` to disable.                                                                                                                                                                                                                                                                                                                                                                       |
 | `pct_counts_mt_nmads`              | MAD cutoff for `pct_counts_mt`. Defaults to `3`. Set to `0` to disable.                                                                                                                                                                                                                                                                                                                                                                                    |
 | `ambient_correction`               | Whether to perform ambient RNA correction for this sample. Set to `true` to use the globally configured method, `false` to skip ambient correction for this sample. Defaults to `true`.                                                                                                                                                                                                                                                                    |
-| `ambient_corrected_integration`    | Select corrected counts for all subsequent QC, doublet handling, annotation, integration, and downstream analyses. An explicit value overrides the global flag. Disabled correction always selects raw counts. Both raw and generated corrected layers remain available.                                                                                                                                                                                   |
+| `use_ambient_corrected_counts`     | Select corrected counts for all subsequent QC, doublet handling, annotation, integration, and downstream analyses. An explicit value overrides the global flag. Disabled correction always selects raw counts. Both raw and generated corrected layers remain available.                                                                                                                                                                                   |
 
 MAD-based filtering follows the [sc-best-practices recipe](https://www.sc-best-practices.org/preprocessing_visualization/quality_control.html#filtering-low-quality-cells). QC thresholds are defined in the [input schema](../assets/schema_input.json) and applied per sample when the samplesheet is read; omitted columns receive those schema defaults. Each MAD column is independent; set a value to `0` to disable that metric for a sample.
 
@@ -549,21 +549,21 @@ sample2,/path/to/sample2_filtered.h5ad,/path/to/sample2.h5ad,false
 
 The pipeline always retains the selected input counts before this correction stage in `layers['raw_counts']` after unification. This does not recover counts before upstream correction, such as CellBender in nf-core/scrnaseq. When correction runs, the result is also retained as `layers['ambient_corrected_<method>']`, whether or not selected for analysis.
 
-By default, `X` holds the raw counts. Enable `--ambient_corrected_integration` to select corrected counts instead. Despite its name, this flag selects the counts for all subsequent QC, doublet handling, annotation, integration, and downstream analyses. Normalisation creates `layers['counts']` from the selected `X`, so `counts` does not necessarily mean uncorrected counts.
+By default, `X` holds the raw counts. Enable `--use_ambient_corrected_counts` to select corrected counts for all subsequent QC, doublet handling, annotation, integration, and downstream analyses. Normalisation creates `layers['counts']` from the selected `X`, so `counts` does not necessarily mean uncorrected counts.
 
 Configure the selection globally or per sample:
 
 ```bash
-nextflow run nf-core/scdownstream --ambient_corrected_integration true --input samplesheet.csv --outdir results
+nextflow run nf-core/scdownstream --use_ambient_corrected_counts true --input samplesheet.csv --outdir results
 ```
 
 ```csv title="samplesheet.csv"
-sample,filtered,unfiltered,ambient_corrected_integration
+sample,filtered,unfiltered,use_ambient_corrected_counts
 sample1,/path/to/sample1_filtered.h5ad,/path/to/sample1.h5ad,true
 sample2,/path/to/sample2_filtered.h5ad,/path/to/sample2.h5ad,false
 ```
 
-An explicit samplesheet `ambient_corrected_integration` value overrides the global flag. A sample with `ambient_correction=false`, or any sample with the global method `none`, uses raw counts even when corrected selection is requested. Correction bypass does not create a correction result.
+An explicit samplesheet `use_ambient_corrected_counts` value overrides the global flag. A sample with `ambient_correction=false`, or any sample with the global method `none`, uses raw counts even when corrected selection is requested. Correction bypass does not create a correction result.
 
 Unification applies the same gene renaming, isoform policy, duplicate-gene aggregation, and output gene order to `X` and every retained layer. Cell and gene filtering keeps these matrices aligned. On fresh sample inputs, the current run's `counts_layer` selection is authoritative. Unification may replace reserved `raw_counts`, `counts`, and correction-layer names after preserving the required source matrices. Unrelated input layers are not retained.
 

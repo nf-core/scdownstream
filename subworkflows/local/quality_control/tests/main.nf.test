@@ -155,7 +155,7 @@ nextflow_workflow {
                             id: 'test',
                             batch_col: 'sample',
                             counts_layer: 'X',
-                            ambient_corrected_integration: false,
+                            use_ambient_corrected_counts: false,
                             min_cells: 0,
                             max_mito_percentage: 100,
                             log1p_total_counts_nmads: 0,
@@ -586,8 +586,8 @@ nextflow_workflow {
                 input[0] = ADATA_UNIFY.out.h5ad.flatMap { meta, h5ad ->
                     [
                         [id: 'global_corrected'],
-                        [id: 'sample_raw', ambient_corrected_integration: false],
-                        [id: 'disabled', ambient_correction: false, ambient_corrected_integration: true]
+                        [id: 'sample_raw', use_ambient_corrected_counts: false],
+                        [id: 'disabled', ambient_correction: false, use_ambient_corrected_counts: true]
                     ].collect { options -> [
                         meta + [batch_col: 'batch', symbol_col: 'index', counts_layer: 'raw_counts',
                                 label_col: 'label', condition_col: 'condition', donor_col: 'donor',

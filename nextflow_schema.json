@@ -118,11 +118,11 @@
                     "description": "Specify the tool to use for ambient RNA correction. SoupX is the default and requires an unfiltered matrix for each corrected sample. The samplesheet `ambient_correction=false` or global method `none` bypasses correction and selects raw counts.",
                     "help_text": "Unification retains the selected input before this correction stage as `raw_counts`. Correction results remain in `ambient_corrected_<method>` in both raw and corrected analysis modes. Upstream correction is not reversed."
                 },
-                "ambient_corrected_integration": {
+                "use_ambient_corrected_counts": {
                     "type": "boolean",
                     "default": false,
                     "description": "Select ambient-corrected counts for all subsequent QC, doublet handling, annotation, integration, and downstream analyses.",
-                    "help_text": "Must be a boolean. An explicit samplesheet `ambient_corrected_integration` value overrides this flag. Disabled correction or method `none` always selects raw counts. Both `raw_counts` and generated `ambient_corrected_<method>` layers are retained. `X` and the normalisation-created `counts` layer hold the selected analysis counts."
+                    "help_text": "Must be a boolean. An explicit samplesheet `use_ambient_corrected_counts` value overrides this flag. Disabled correction or method `none` always selects raw counts. Both `raw_counts` and generated `ambient_corrected_<method>` layers are retained. `X` and the normalisation-created `counts` layer hold the selected analysis counts."
                 },
                 "doublet_detection": {
                     "type": "string",

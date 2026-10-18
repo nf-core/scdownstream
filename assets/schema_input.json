@@ -188,16 +188,16 @@
             },
             "ambient_correction": {
                 "type": "boolean",
-                "description": "Apply the globally selected correction method to this sample. False bypasses correction and selects raw counts regardless of ambient_corrected_integration. Global method none also bypasses correction.",
+                "description": "Apply the globally selected correction method to this sample. False bypasses correction and selects raw counts regardless of use_ambient_corrected_counts. Global method none also bypasses correction.",
                 "default": true,
                 "errorMessage": "'ambient_correction' must be a boolean.",
                 "meta": ["ambient_correction"]
             },
-            "ambient_corrected_integration": {
+            "use_ambient_corrected_counts": {
                 "type": "boolean",
                 "description": "Override the global count-selection flag for all subsequent QC, doublet handling, annotation, integration, and downstream analyses. True selects corrected counts when correction runs. Both raw_counts and generated correction layers remain available.",
-                "errorMessage": "'ambient_corrected_integration' must be a boolean.",
-                "meta": ["ambient_corrected_integration"]
+                "errorMessage": "'use_ambient_corrected_counts' must be a boolean.",
+                "meta": ["use_ambient_corrected_counts"]
             }
         },
         "anyOf": [

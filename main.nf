@@ -37,7 +37,7 @@ workflow NFCORE_SCDOWNSTREAM {
     ch_input                      //    file: samplesheet.csv
     empty_droplet_removal         //   value: string
     ambient_correction            //   value: string
-    ambient_corrected_integration //   value: boolean
+    use_ambient_corrected_counts  //   value: boolean
     doublet_detection             //   value: string
     doublet_detection_threshold   //   value: integer
     doublet_removal               //   value: boolean
@@ -132,7 +132,7 @@ workflow NFCORE_SCDOWNSTREAM {
         ch_input,
         empty_droplet_removal,
         ambient_correction,
-        ambient_corrected_integration,
+        use_ambient_corrected_counts,
         doublet_detection,
         doublet_detection_threshold,
         doublet_removal,
@@ -290,7 +290,7 @@ workflow {
         params.input,
         params.empty_droplet_removal,
         params.ambient_correction,
-        params.ambient_corrected_integration,
+        params.use_ambient_corrected_counts,
         params.doublet_detection,
         params.doublet_detection_threshold,
         params.doublet_removal,
