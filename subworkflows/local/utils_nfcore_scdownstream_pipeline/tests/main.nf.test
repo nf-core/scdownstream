@@ -1,0 +1,152 @@
+nextflow_workflow {
+
+    name "Test Workflow PIPELINE_INITIALISATION - sample identifiers"
+    script "subworkflows/local/utils_nfcore_scdownstream_pipeline/main.nf"
+    workflow "PIPELINE_INITIALISATION"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should preserve supported sample identifiers and case-sensitive uniqueness") {
+        when {
+            params {
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/36d250d1a13387d882a6cbec75da6e1a3d65c5fd/'
+                input = pipelines_testdata_base_path + 'sample_identifiers/valid.csv'
+                outdir = "$outputDir"
+                ambient_correction = 'none'
+            }
+            workflow {
+                """
+                input[0] = false
+                input[1] = true
+                input[2] = true
+                input[3] = []
+                input[4] = params.outdir
+                input[5] = false
+                input[6] = false
+                input[7] = false
+                """
+            }
+        }
+        then {
+            assert workflow.success
+            assert workflow.trace.tasks().isEmpty()
+            def identifiers = workflow.out.samplesheet.collect { it[0].id }
+            assert identifiers.size() == 7
+            assert identifiers.toSet() == ['patient-01', '123_sample', 'sample.v2', 'A', 'a', '7a', 'sample_1-2.3'].toSet()
+        }
+    }
+
+    test("Should reject every unsupported sample identifier before processing") {
+        when {
+            params {
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/36d250d1a13387d882a6cbec75da6e1a3d65c5fd/'
+                input = pipelines_testdata_base_path + 'sample_identifiers/unsafe.csv'
+                outdir = "$outputDir"
+                ambient_correction = 'none'
+            }
+            workflow {
+                """
+                input[0] = false
+                input[1] = true
+                input[2] = true
+                input[3] = []
+                input[4] = params.outdir
+                input[5] = false
+                input[6] = false
+                input[7] = false
+                """
+            }
+        }
+        then {
+            assert workflow.failed
+            assert workflow.trace.tasks().isEmpty()
+            def messages = workflow.stdout.toString() + workflow.stderr.toString()
+            assert messages.count('Sample identifier must start with an ASCII letter or digit') == 14
+        }
+    }
+
+    test("Should reject an empty sample identifier before processing") {
+        when {
+            params {
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/36d250d1a13387d882a6cbec75da6e1a3d65c5fd/'
+                input = pipelines_testdata_base_path + 'sample_identifiers/empty.csv'
+                outdir = "$outputDir"
+                ambient_correction = 'none'
+            }
+            workflow {
+                """
+                input[0] = false
+                input[1] = true
+                input[2] = true
+                input[3] = []
+                input[4] = params.outdir
+                input[5] = false
+                input[6] = false
+                input[7] = false
+                """
+            }
+        }
+        then {
+            assert workflow.failed
+            assert workflow.trace.tasks().isEmpty()
+            assert workflow.stderr.toString().contains('Missing required field(s): sample')
+        }
+    }
+
+    test("Should reject duplicate supported sample identifiers before processing") {
+        when {
+            params {
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/36d250d1a13387d882a6cbec75da6e1a3d65c5fd/'
+                input = pipelines_testdata_base_path + 'sample_identifiers/duplicate.csv'
+                outdir = "$outputDir"
+                ambient_correction = 'none'
+            }
+            workflow {
+                """
+                input[0] = false
+                input[1] = true
+                input[2] = true
+                input[3] = []
+                input[4] = params.outdir
+                input[5] = false
+                input[6] = false
+                input[7] = false
+                """
+            }
+        }
+        then {
+            assert workflow.failed
+            assert workflow.trace.tasks().isEmpty()
+            assert workflow.stderr.toString().contains('Detected duplicate entries: [sample:patient-01]')
+        }
+    }
+
+    test("Should reject CSV-escaped double quotes before processing") {
+        when {
+            params {
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/36d250d1a13387d882a6cbec75da6e1a3d65c5fd/'
+                input = pipelines_testdata_base_path + 'sample_identifiers/quote.csv'
+                outdir = "$outputDir"
+                ambient_correction = 'none'
+            }
+            workflow {
+                """
+                input[0] = false
+                input[1] = true
+                input[2] = true
+                input[3] = []
+                input[4] = params.outdir
+                input[5] = false
+                input[6] = false
+                input[7] = false
+                """
+            }
+        }
+        then {
+            assert workflow.failed
+            assert workflow.trace.tasks().isEmpty()
+            assert workflow.stdout.toString().contains('Invalid CSV value')
+        }
+    }
+}

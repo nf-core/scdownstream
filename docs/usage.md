@@ -34,6 +34,9 @@ It has to be a comma-separated file with at least 2 columns, and a header row as
 
 The samplesheet needs to contain at least two columns: `sample` and at least one out of `filtered` and `unfiltered`.
 Each value in the `sample` column must be unique; samplesheet validation fails on duplicate sample names.
+Sample identifiers must start with an ASCII letter or digit and contain only ASCII letters, digits, dots, underscores and hyphens, for example `patient-01`, `123_sample` or `sample.v2`.
+Identifiers are case-sensitive. Quotes, whitespace, path separators, shell metacharacters and Unicode characters are not supported. Validation rejects unsupported identifiers before processing starts; the pipeline does not add automatic identifier sanitisation or renaming.
+The existing CSV reader trims surrounding whitespace and infers value types before validation. Numeric-only identifiers and Boolean/null-like tokens can therefore fail the string-type check even when their characters match this pattern. Use an identifier such as `sample_0` or `sample_true` instead.
 
 ```csv title="samplesheet.csv"
 sample,unfiltered
