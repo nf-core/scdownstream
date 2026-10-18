@@ -103,6 +103,7 @@ The pipeline uses the following tools:
 > If you are confused by the terms `filtered` and `unfiltered`, please check out the respective [documentation](https://nf-co.re/scdownstream/docs/usage/#filtered-and-unfiltered-matrices).
 
 First, prepare a samplesheet with your input data that looks as follows:
+The CSV requires a header row, a unique `sample` identifier and at least one of `filtered` or `unfiltered` for each sample. Two columns are sufficient; additional columns are optional.
 
 ```csv title="samplesheet.csv"
 sample,unfiltered
@@ -113,6 +114,7 @@ sample4,/absolute/path/to/sample4.csv
 ```
 
 Each entry represents a H5AD, H5, RDS or CSV file.
+SoupX requires an `unfiltered` matrix for samples with ambient correction enabled. For filtered-only input, use `--ambient_correction decontx` or disable ambient correction with `--ambient_correction none`.
 RDS files may contain any object that can be converted to a SingleCellExperiment using the [Seurat `as.SingleCellExperiment`](https://satijalab.org/seurat/reference/as.singlecellexperiment) function.
 CSV files should contain a matrix with genes as columns and cells as rows. The first column should contain cell names/barcodes.
 

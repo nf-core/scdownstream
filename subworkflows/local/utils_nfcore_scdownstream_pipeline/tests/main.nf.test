@@ -1,6 +1,6 @@
 nextflow_workflow {
 
-    name "Test Workflow PIPELINE_INITIALISATION - sample identifiers"
+    name "Test Workflow PIPELINE_INITIALISATION - samplesheet validation"
     script "subworkflows/local/utils_nfcore_scdownstream_pipeline/main.nf"
     workflow "PIPELINE_INITIALISATION"
 
@@ -147,6 +147,97 @@ nextflow_workflow {
             assert workflow.failed
             assert workflow.trace.tasks().isEmpty()
             assert workflow.stdout.toString().contains('Invalid CSV value')
+        }
+    }
+
+    test("Should accept a two-column filtered-only samplesheet with DecontX") {
+        when {
+            params {
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/36d250d1a13387d882a6cbec75da6e1a3d65c5fd/'
+                input = pipelines_testdata_base_path + 'sample_identifiers/valid.csv'
+                outdir = "$outputDir"
+                ambient_correction = 'decontx'
+            }
+            workflow {
+                """
+                input[0] = false
+                input[1] = true
+                input[2] = true
+                input[3] = []
+                input[4] = params.outdir
+                input[5] = false
+                input[6] = false
+                input[7] = false
+                """
+            }
+        }
+        then {
+            assert workflow.success
+            assert workflow.trace.tasks().isEmpty()
+            assert workflow.out.samplesheet.size() == 7
+            assert workflow.out.samplesheet.every { meta, filtered, unfiltered -> filtered && !unfiltered }
+        }
+    }
+
+    test("Should accept a two-column unfiltered-only samplesheet with SoupX") {
+        when {
+            params {
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/d0c9d4a9f84c6374cdafc76ec47acac8df7b5e76/'
+                input = pipelines_testdata_base_path + 'sample_identifiers/unfiltered.csv'
+                outdir = "$outputDir"
+                ambient_correction = 'soupx'
+            }
+            workflow {
+                """
+                input[0] = false
+                input[1] = true
+                input[2] = true
+                input[3] = []
+                input[4] = params.outdir
+                input[5] = false
+                input[6] = false
+                input[7] = false
+                """
+            }
+        }
+        then {
+            assert workflow.success
+            assert workflow.trace.tasks().isEmpty()
+            assert workflow.out.samplesheet.size() == 1
+            def (meta, filtered, unfiltered) = workflow.out.samplesheet[0]
+            assert meta.id == 'sample1'
+            assert !filtered
+            assert unfiltered
+        }
+    }
+
+    test("Should explain why SoupX rejects filtered-only input before processing") {
+        when {
+            params {
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/36d250d1a13387d882a6cbec75da6e1a3d65c5fd/'
+                input = pipelines_testdata_base_path + 'sample_identifiers/valid.csv'
+                outdir = "$outputDir"
+                ambient_correction = 'soupx'
+            }
+            workflow {
+                """
+                input[0] = false
+                input[1] = true
+                input[2] = true
+                input[3] = []
+                input[4] = params.outdir
+                input[5] = false
+                input[6] = false
+                input[7] = false
+                """
+            }
+        }
+        then {
+            assert workflow.failed
+            assert workflow.trace.tasks().isEmpty()
+            def messages = workflow.stdout.toString() + workflow.stderr.toString()
+            assert messages.contains('configured for SoupX ambient correction but no unfiltered matrix was provided')
+            assert messages.contains('--ambient_correction decontx for filtered-only input')
         }
     }
 }

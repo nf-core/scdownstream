@@ -45,6 +45,15 @@ sample2,relative/path/to/sample2.rds
 sample3,/absolute/path/to/sample3.csv
 ```
 
+A filtered-only samplesheet also needs just two columns:
+
+```csv title="samplesheet.csv"
+sample,filtered
+sample1,/absolute/path/to/sample1_filtered.h5ad
+```
+
+SoupX requires an `unfiltered` matrix for each sample with ambient correction enabled. For filtered-only input, use `--ambient_correction decontx` or disable ambient correction with `--ambient_correction none` or sample-level `ambient_correction=false`. Both input columns may be provided; additional columns are optional.
+
 ### Full samplesheet
 
 There are a couple of optional columns that can be used for more advanced features:
@@ -451,7 +460,7 @@ Set [`base_condition_col`](https://nf-co.re/scdownstream/parameters#base_conditi
 Set [`base_donor_col`](https://nf-co.re/scdownstream/parameters#base_donor_col) if your donor / biological-replicate column is not named `donor` (for example `patient_id`).
 
 The pipeline will then re-execute the tasks after the integration step without performing integration again.
-Most interestingly, the pipeline will generate cell type specific UMAPs, clusterings, and PAGA graphs, if [`clustering_per_label`](https://nf-co.re/scdownstream/parameters#clustering_per_label) is set to `true`.
+Set [`cluster_per_label`](https://nf-co.re/scdownstream/parameters#cluster_per_label) to `true` to generate cell type-specific UMAPs, clusterings and PAGA graphs.
 
 If [`integrate_per_label`](https://nf-co.re/scdownstream/parameters#integrate_per_label) is enabled, [`base_label_col`](https://nf-co.re/scdownstream/parameters#base_label_col) is the split/grouping column, not necessarily the supervised cell-type label used by integration methods.
 Use [`integrate_per_label_whitelist`](https://nf-co.re/scdownstream/parameters#integrate_per_label_whitelist) to restrict per-label integration to a subset of groups (comma-separated values from `base_label_col`). When omitted, integration runs for every group. Whitelist values must use the same filesystem-safe subset names as in `analysis_plan` (spaces replaced with underscores).

@@ -20,7 +20,7 @@
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/scdownstream/usage#samplesheet-input).",
+                    "help_text": "Provide a CSV samplesheet with a header row, a unique sample identifier in the sample column, and at least one of filtered or unfiltered for each sample. A two-column samplesheet is sufficient; both input columns and additional optional columns are supported. SoupX requires an unfiltered matrix for each sample with ambient correction enabled. For filtered-only input, use --ambient_correction decontx or disable ambient correction. See [usage docs](https://nf-co.re/scdownstream/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "outdir": {
