@@ -55,6 +55,17 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.h5ad.size() == 1
+            def meta = workflow.out.h5ad[0][0]
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert meta.counts_layer == 'X'
+            assert meta.raw_counts_layer == 'raw_counts'
+            assert meta.ambient_correction_layer == null
+            assert meta.ambient_correction_method == 'none'
+            assert meta.analysis_counts_source == 'raw_counts'
+            assert 'raw_counts' in adata.layers
+            assert adata.layers.size() == 1
+            assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
             assert snapshot(
                 workflow.out.multiqc_files,
                 workflow.out.versions.collect { path(it).yaml }
@@ -112,6 +123,17 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.h5ad.size() == 1
+            def meta = workflow.out.h5ad[0][0]
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert meta.counts_layer == 'X'
+            assert meta.raw_counts_layer == 'raw_counts'
+            assert meta.ambient_correction_layer == null
+            assert meta.ambient_correction_method == 'none'
+            assert meta.analysis_counts_source == 'raw_counts'
+            assert 'raw_counts' in adata.layers
+            assert adata.layers.size() == 1
+            assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
             assert snapshot(
                 workflow.out.multiqc_files,
                 workflow.out.versions.collect { path(it).yaml }
@@ -133,6 +155,7 @@ nextflow_workflow {
                             id: 'test',
                             batch_col: 'sample',
                             counts_layer: 'X',
+                            ambient_corrected_integration: true,
                             min_cells: 0,
                             max_mito_percentage: 100,
                             log1p_total_counts_nmads: 0,
@@ -166,9 +189,21 @@ nextflow_workflow {
         }
 
         then {
-            def adata = anndata(workflow.out.h5ad[0][1])
-
             assert workflow.success
+            def adata = anndata(workflow.out.h5ad[0][1])
+            def meta = workflow.out.h5ad[0][0]
+            assert meta.counts_layer == 'X'
+            assert meta.raw_counts_layer == 'raw_counts'
+            assert meta.ambient_correction_layer == 'ambient_corrected_decontx'
+            assert meta.ambient_correction_method == 'decontx'
+            assert meta.analysis_counts_source == 'ambient_corrected_decontx'
+            assert 'raw_counts' in adata.layers
+            assert 'ambient_corrected_decontx' in adata.layers
+            assert adata.layers.size() == 2
+            assert adata.obs.get('ambient_correction_method').unique().toSet() == ['decontx'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['ambient_corrected_decontx'].toSet()
+            assert adata.n_obs == adata.obs.rownames.size()
+            assert adata.n_vars == adata.var.rownames.size()
             with(adata) {
                 assert "pct_counts_mt" in obs.colnames
                 assert "batch" in obs.colnames
@@ -276,10 +311,18 @@ nextflow_workflow {
         }
 
         then {
-            def adata = anndata(workflow.out.h5ad[0][1])
-
             assert workflow.success
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.out.h5ad.size() == 1
+            assert workflow.out.h5ad[0][0].counts_layer == 'X'
+            assert workflow.out.h5ad[0][0].raw_counts_layer == 'raw_counts'
+            assert workflow.out.h5ad[0][0].ambient_correction_layer == null
+            assert workflow.out.h5ad[0][0].ambient_correction_method == 'none'
+            assert workflow.out.h5ad[0][0].analysis_counts_source == 'raw_counts'
+            assert 'raw_counts' in adata.layers
+            assert adata.layers.size() == 1
+            assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
             with(adata) {
                 assert "log1p_total_counts" in obs.colnames
                 assert "log1p_n_genes_by_counts" in obs.colnames
@@ -344,10 +387,19 @@ nextflow_workflow {
         }
 
         then {
-            def adata = anndata(workflow.out.h5ad[0][1])
-
             assert workflow.success
+            def adata = anndata(workflow.out.h5ad[0][1])
+            def meta = workflow.out.h5ad[0][0]
             assert workflow.out.h5ad.size() == 1
+            assert meta.counts_layer == 'X'
+            assert meta.raw_counts_layer == 'raw_counts'
+            assert meta.ambient_correction_layer == null
+            assert meta.ambient_correction_method == 'none'
+            assert meta.analysis_counts_source == 'raw_counts'
+            assert 'raw_counts' in adata.layers
+            assert adata.layers.size() == 1
+            assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
             // Samplesheet MAD defaults remove low-quality cells from the 12940-cell filtered input.
             assert adata.n_obs < 12940
             assert adata.n_obs > 10000
@@ -355,6 +407,7 @@ nextflow_workflow {
                 assert "log1p_total_counts" in obs.colnames
                 assert "pct_counts_mt" in obs.colnames
             }
+            assert snapshot(meta, adata.yaml).match()
         }
 
     }
@@ -405,10 +458,19 @@ nextflow_workflow {
         }
 
         then {
-            def adata = anndata(workflow.out.h5ad[0][1])
-
             assert workflow.success
+            def adata = anndata(workflow.out.h5ad[0][1])
+            def meta = workflow.out.h5ad[0][0]
             assert workflow.out.h5ad.size() == 1
+            assert meta.counts_layer == 'X'
+            assert meta.raw_counts_layer == 'raw_counts'
+            assert meta.ambient_correction_layer == null
+            assert meta.ambient_correction_method == 'none'
+            assert meta.analysis_counts_source == 'raw_counts'
+            assert 'raw_counts' in adata.layers
+            assert adata.layers.size() == 1
+            assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
             with(adata) {
                 assert "pct_counts_mt" in obs.colnames
             }
@@ -471,12 +533,128 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.h5ad.size() == 1
+            def meta = workflow.out.h5ad[0][0]
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert meta.counts_layer == 'X'
+            assert meta.raw_counts_layer == 'raw_counts'
+            assert meta.ambient_correction_layer == null
+            assert meta.ambient_correction_method == 'none'
+            assert meta.analysis_counts_source == 'raw_counts'
+            assert 'raw_counts' in adata.layers
+            assert adata.layers.size() == 1
+            assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
             assert snapshot(
                 workflow.out.multiqc_files,
                 workflow.out.versions.collect { path(it).yaml }
             ).match()
         }
 
+    }
+
+    test("Should retain named counts and correction through filtering and sampling with sample overrides") {
+
+        setup {
+            run("ADATA_UNIFY") {
+                script "modules/local/adata/unify/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'source'],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = 'sample'
+                    input[2] = ''
+                    input[3] = ''
+                    input[4] = 'unknown'
+                    input[5] = 'index'
+                    input[6] = 'X'
+                    input[7] = 'sum'
+                    input[8] = false
+                    input[9] = ''
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = ADATA_UNIFY.out.h5ad.flatMap { meta, h5ad ->
+                    [
+                        [id: 'global_corrected'],
+                        [id: 'sample_raw', ambient_corrected_integration: false],
+                        [id: 'disabled', ambient_correction: false, ambient_corrected_integration: true]
+                    ].collect { options -> [
+                        meta + [batch_col: 'batch', symbol_col: 'index', counts_layer: 'raw_counts',
+                                min_genes: 0, min_cells: 20, max_mito_percentage: 100,
+                                log1p_total_counts_nmads: 0, log1p_n_genes_by_counts_nmads: 0,
+                                pct_counts_in_top_20_genes_nmads: 0, pct_counts_mt_nmads: 0] + options,
+                        h5ad, []
+                    ] }
+                }
+                input[1] = 'cellbender'
+                input[2] = 'decontx'
+                input[3] = true
+                input[4] = false
+                input[5] = 'sum'
+                input[6] = false
+                input[7] = []
+                input[8] = 1
+                input[9] = false
+                input[10] = null
+                input[11] = null
+                input[12] = 100
+                input[13] = null
+                input[14] = false
+                input[15] = []
+                input[16] = []
+                input[17] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad.size() == 3
+            def source = anndata(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad')
+            def outputs = workflow.out.h5ad.sort { it[0].id }
+            outputs.each { meta, h5ad ->
+                def corrected = meta.id != 'disabled'
+                def expectedMethod = corrected ? 'decontx' : 'none'
+                def expectedSource = meta.id == 'global_corrected' ? 'ambient_corrected_decontx' : 'raw_counts'
+                def adata = anndata(h5ad)
+                assert meta.counts_layer == 'X'
+                assert meta.raw_counts_layer == 'raw_counts'
+                assert meta.ambient_correction_layer == (corrected ? 'ambient_corrected_decontx' : null)
+                assert meta.ambient_correction_method == expectedMethod
+                assert meta.analysis_counts_source == expectedSource
+                assert 'raw_counts' in adata.layers
+                assert ('ambient_corrected_decontx' in adata.layers) == corrected
+                assert adata.layers.size() == (corrected ? 2 : 1)
+                assert adata.n_obs == 100
+                assert adata.n_obs == adata.obs.rownames.size()
+                assert adata.n_vars > 0
+                assert adata.n_vars < source.n_vars
+                assert adata.n_vars == adata.var.rownames.size()
+                assert source.obs.rownames.containsAll(adata.obs.rownames.collect { it.substring(meta.id.size() + '_source_'.size()) })
+                assert source.var.rownames.containsAll(adata.var.rownames)
+                assert adata.obs.rownames.toSet().size() == adata.n_obs
+                assert adata.var.rownames.toSet().size() == adata.n_vars
+                assert adata.obs.get('ambient_correction_method').unique().toSet() == [expectedMethod].toSet()
+                assert adata.obs.get('analysis_counts_source').unique().toSet() == [expectedSource].toSet()
+                assert 'total_counts' in adata.obs.colnames
+                assert 'n_genes_by_counts' in adata.obs.colnames
+                assert 'pct_counts_mt' in adata.obs.colnames
+                assert adata.obs.get('total_counts').every { it >= 0 }
+                assert adata.obs.get('n_genes_by_counts').every { it >= 0 && it <= source.n_vars }
+                assert adata.obs.get('pct_counts_mt').every { it >= 0 && it <= 100 }
+            }
+            assert snapshot(outputs.collect { it[0] }, outputs.collect { anndata(it[1]).yaml }).match()
+        }
     }
 
 }
