@@ -52,9 +52,15 @@ nextflow_process {
                 assert "pct_counts_hb" in obs.colnames
             }
             assert snapshot(
-                process.out,
                 path(process.out.versions[0]).yaml,
-                adata.yaml
+                adata.yaml,
+                [
+                    cells: adata.obs_names.join('\n').md5(),
+                    genes: adata.var_names.join('\n').md5(),
+                    genes_per_cell: adata.obs.get('n_genes_by_counts').data.join('\n').md5(),
+                    cells_per_gene: adata.var.get('n_cells_by_counts').data.join('\n').md5(),
+                    counts_per_cell: adata.obs.get('total_counts').data.join('\n').md5(),
+                ]
             ).match()
         }
 
@@ -106,9 +112,15 @@ nextflow_process {
                 assert "pct_counts_hb" in obs.colnames
             }
             assert snapshot(
-                process.out,
                 path(process.out.versions[0]).yaml,
-                adata.yaml
+                adata.yaml,
+                [
+                    cells: adata.obs_names.join('\n').md5(),
+                    genes: adata.var_names.join('\n').md5(),
+                    genes_per_cell: adata.obs.get('n_genes_by_counts').data.join('\n').md5(),
+                    cells_per_gene: adata.var.get('n_cells_by_counts').data.join('\n').md5(),
+                    counts_per_cell: adata.obs.get('total_counts').data.join('\n').md5(),
+                ]
             ).match()
         }
 
@@ -200,9 +212,15 @@ nextflow_process {
                 assert "pct_counts_hb" in obs.colnames
             }
             assert snapshot(
-                process.out,
                 path(process.out.versions[0]).yaml,
-                adata.yaml
+                adata.yaml,
+                [
+                    cells: adata.obs_names.join('\n').md5(),
+                    genes: adata.var_names.join('\n').md5(),
+                    genes_per_cell: adata.obs.get('n_genes_by_counts').data.join('\n').md5(),
+                    cells_per_gene: adata.var.get('n_cells_by_counts').data.join('\n').md5(),
+                    counts_per_cell: adata.obs.get('total_counts').data.join('\n').md5(),
+                ]
             ).match()
         }
 
@@ -248,9 +266,15 @@ nextflow_process {
                 assert "pct_counts_mt" in obs.colnames
             }
             assert snapshot(
-                process.out,
                 path(process.out.versions[0]).yaml,
-                adata.yaml
+                adata.yaml,
+                [
+                    cells: adata.obs_names.join('\n').md5(),
+                    genes: adata.var_names.join('\n').md5(),
+                    genes_per_cell: adata.obs.get('n_genes_by_counts').data.join('\n').md5(),
+                    cells_per_gene: adata.var.get('n_cells_by_counts').data.join('\n').md5(),
+                    counts_per_cell: adata.obs.get('total_counts').data.join('\n').md5(),
+                ]
             ).match()
         }
 
@@ -301,9 +325,15 @@ nextflow_process {
                 assert "pct_counts_hb" in obs.colnames
             }
             assert snapshot(
-                process.out,
                 path(process.out.versions[0]).yaml,
-                adata.yaml
+                adata.yaml,
+                [
+                    cells: adata.obs_names.join('\n').md5(),
+                    genes: adata.var_names.join('\n').md5(),
+                    genes_per_cell: adata.obs.get('n_genes_by_counts').data.join('\n').md5(),
+                    cells_per_gene: adata.var.get('n_cells_by_counts').data.join('\n').md5(),
+                    counts_per_cell: adata.obs.get('total_counts').data.join('\n').md5(),
+                ]
             ).match()
         }
 
@@ -348,9 +378,17 @@ nextflow_process {
             assert process.out.plots.size() == 1
             assert process.out.multiqc_files.size() == 1
             assert snapshot(
-                process.out,
                 path(process.out.versions[0]).yaml,
-                adata.yaml
+                adata.yaml,
+                [
+                    cells: adata.obs_names.join('\n').md5(),
+                    genes: adata.var_names.join('\n').md5(),
+                    genes_per_cell: adata.obs.get('n_genes_by_counts').data.join('\n').md5(),
+                    cells_per_gene: adata.var.get('n_cells_by_counts').data.join('\n').md5(),
+                    counts_per_cell: adata.obs.get('total_counts').data.join('\n').md5(),
+                ],
+                process.out.plots,
+                process.out.multiqc_files
             ).match()
         }
 

@@ -37,42 +37,6 @@
     "Should run without failures - with MAD filtering": {
         "content": [
             {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_filtered.h5ad:md5,53deb66d41fb102aec33f8a56b96d816"
-                    ]
-                ],
-                "1": [
-                    
-                ],
-                "2": [
-                    
-                ],
-                "3": [
-                    "versions.yml:md5,ffaefeb5689e6fe8559fd806602f2d05"
-                ],
-                "anndata": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_filtered.h5ad:md5,53deb66d41fb102aec33f8a56b96d816"
-                    ]
-                ],
-                "multiqc_files": [
-                    
-                ],
-                "plots": [
-                    
-                ],
-                "versions": [
-                    "versions.yml:md5,ffaefeb5689e6fe8559fd806602f2d05"
-                ]
-            },
-            {
                 "SCANPY_FILTER": {
                     "python": "3.13.12",
                     "scanpy": "1.12.3"
@@ -138,9 +102,16 @@
                 "uns": [
                     
                 ]
+            },
+            {
+                "cells": "059544f7f7b9795496305a4b82b9f56d",
+                "genes": "b65c89a6ac0dd47a8a87b7a2c26ee82d",
+                "genes_per_cell": "ee01e8bfd6166d3353c3450dd39ecaba",
+                "cells_per_gene": "6825a3da6380d7b1a573e8caf1520e3c",
+                "counts_per_cell": "7b7e64818d6462d3e62cfa6c5fe74603"
             }
         ],
-        "timestamp": "2026-10-13T15:15:45.109164059",
+        "timestamp": "2026-10-18T15:25:35.398728898",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -148,42 +119,6 @@
     },
     "Should run without failures - with partial MAD filtering": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_filtered.h5ad:md5,799a05030e9500fb5ccfa1da178bb15b"
-                    ]
-                ],
-                "1": [
-                    
-                ],
-                "2": [
-                    
-                ],
-                "3": [
-                    "versions.yml:md5,ffaefeb5689e6fe8559fd806602f2d05"
-                ],
-                "anndata": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_filtered.h5ad:md5,799a05030e9500fb5ccfa1da178bb15b"
-                    ]
-                ],
-                "multiqc_files": [
-                    
-                ],
-                "plots": [
-                    
-                ],
-                "versions": [
-                    "versions.yml:md5,ffaefeb5689e6fe8559fd806602f2d05"
-                ]
-            },
             {
                 "SCANPY_FILTER": {
                     "python": "3.13.12",
@@ -250,9 +185,16 @@
                 "uns": [
                     
                 ]
+            },
+            {
+                "cells": "d3afb323644858ca4f6d8bb45f0529b2",
+                "genes": "b65c89a6ac0dd47a8a87b7a2c26ee82d",
+                "genes_per_cell": "d2a35fec6c96201e988915a09224c710",
+                "cells_per_gene": "6825a3da6380d7b1a573e8caf1520e3c",
+                "counts_per_cell": "e83a3321545553b97fb1ed609f8ad14a"
             }
         ],
-        "timestamp": "2026-10-13T15:14:39.141222651",
+        "timestamp": "2026-10-18T15:24:56.415239186",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -260,42 +202,6 @@
     },
     "Should run without failures - with QC histogram plots": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_filtered.h5ad:md5,50df459bfa07e55e003aea1a7ab419a3"
-                    ]
-                ],
-                "1": [
-                    "test_filtered_qc_histograms.png:md5,9db249da5cc88e721f13aef845011321"
-                ],
-                "2": [
-                    "test_filtered_qc_histograms_mqc.json:md5,f87d4a70b2a11e45c4c511a5e090804d"
-                ],
-                "3": [
-                    "versions.yml:md5,31655f67da41f4d216472f6339da0e6f"
-                ],
-                "anndata": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_filtered.h5ad:md5,50df459bfa07e55e003aea1a7ab419a3"
-                    ]
-                ],
-                "multiqc_files": [
-                    "test_filtered_qc_histograms_mqc.json:md5,f87d4a70b2a11e45c4c511a5e090804d"
-                ],
-                "plots": [
-                    "test_filtered_qc_histograms.png:md5,9db249da5cc88e721f13aef845011321"
-                ],
-                "versions": [
-                    "versions.yml:md5,31655f67da41f4d216472f6339da0e6f"
-                ]
-            },
             {
                 "SCANPY_FILTER": {
                     "matplotlib": "3.11.1",
@@ -363,9 +269,22 @@
                 "uns": [
                     
                 ]
-            }
+            },
+            {
+                "cells": "58712fcdd23c60141f693ee86203aaa9",
+                "genes": "266cbf3c0d955e0079c68304ccd6f77a",
+                "genes_per_cell": "0c7e0fdec0d76c27ec34c0a91657fb14",
+                "cells_per_gene": "ed6f9d3d5b7f604ed636db04bc52e91b",
+                "counts_per_cell": "687aeae0a4128b78bc0d9bd355890295"
+            },
+            [
+                "test_filtered_qc_histograms.png:md5,9db249da5cc88e721f13aef845011321"
+            ],
+            [
+                "test_filtered_qc_histograms_mqc.json:md5,f87d4a70b2a11e45c4c511a5e090804d"
+            ]
         ],
-        "timestamp": "2026-10-13T15:16:42.061415751",
+        "timestamp": "2026-10-18T15:26:15.630717923",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -373,42 +292,6 @@
     },
     "Should run without failures - with custom symbol column": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_filtered.h5ad:md5,5bf9e7a3fe619a45ce3f1cb83c706de9"
-                    ]
-                ],
-                "1": [
-                    
-                ],
-                "2": [
-                    
-                ],
-                "3": [
-                    "versions.yml:md5,ffaefeb5689e6fe8559fd806602f2d05"
-                ],
-                "anndata": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_filtered.h5ad:md5,5bf9e7a3fe619a45ce3f1cb83c706de9"
-                    ]
-                ],
-                "multiqc_files": [
-                    
-                ],
-                "plots": [
-                    
-                ],
-                "versions": [
-                    "versions.yml:md5,ffaefeb5689e6fe8559fd806602f2d05"
-                ]
-            },
             {
                 "SCANPY_FILTER": {
                     "python": "3.13.12",
@@ -475,9 +358,16 @@
                 "uns": [
                     
                 ]
+            },
+            {
+                "cells": "ece83ed5050ff077dc1d6433c2dc6a69",
+                "genes": "cb2bef66e39a75669a5d2decc2d3e859",
+                "genes_per_cell": "3598642093e3b52f5e539b82fea90870",
+                "cells_per_gene": "160b9914e17ea6eb5ffd672afb7cd954",
+                "counts_per_cell": "137fac358967e0bd2ffb0f78a1ded115"
             }
         ],
-        "timestamp": "2026-10-13T15:11:58.417393123",
+        "timestamp": "2026-10-18T15:23:18.570537628",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -531,42 +421,6 @@
     "Should run without failures": {
         "content": [
             {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_filtered.h5ad:md5,5bf9e7a3fe619a45ce3f1cb83c706de9"
-                    ]
-                ],
-                "1": [
-                    
-                ],
-                "2": [
-                    
-                ],
-                "3": [
-                    "versions.yml:md5,ffaefeb5689e6fe8559fd806602f2d05"
-                ],
-                "anndata": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_filtered.h5ad:md5,5bf9e7a3fe619a45ce3f1cb83c706de9"
-                    ]
-                ],
-                "multiqc_files": [
-                    
-                ],
-                "plots": [
-                    
-                ],
-                "versions": [
-                    "versions.yml:md5,ffaefeb5689e6fe8559fd806602f2d05"
-                ]
-            },
-            {
                 "SCANPY_FILTER": {
                     "python": "3.13.12",
                     "scanpy": "1.12.3"
@@ -632,9 +486,16 @@
                 "uns": [
                     
                 ]
+            },
+            {
+                "cells": "ece83ed5050ff077dc1d6433c2dc6a69",
+                "genes": "cb2bef66e39a75669a5d2decc2d3e859",
+                "genes_per_cell": "3598642093e3b52f5e539b82fea90870",
+                "cells_per_gene": "160b9914e17ea6eb5ffd672afb7cd954",
+                "counts_per_cell": "137fac358967e0bd2ffb0f78a1ded115"
             }
         ],
-        "timestamp": "2026-10-13T15:10:44.949311282",
+        "timestamp": "2026-10-18T15:22:39.626817175",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -643,42 +504,6 @@
     "Should run without failures - with custom mito genes": {
         "content": [
             {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_filtered.h5ad:md5,5bf9e7a3fe619a45ce3f1cb83c706de9"
-                    ]
-                ],
-                "1": [
-                    
-                ],
-                "2": [
-                    
-                ],
-                "3": [
-                    "versions.yml:md5,ffaefeb5689e6fe8559fd806602f2d05"
-                ],
-                "anndata": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_filtered.h5ad:md5,5bf9e7a3fe619a45ce3f1cb83c706de9"
-                    ]
-                ],
-                "multiqc_files": [
-                    
-                ],
-                "plots": [
-                    
-                ],
-                "versions": [
-                    "versions.yml:md5,ffaefeb5689e6fe8559fd806602f2d05"
-                ]
-            },
-            {
                 "SCANPY_FILTER": {
                     "python": "3.13.12",
                     "scanpy": "1.12.3"
@@ -744,9 +569,16 @@
                 "uns": [
                     
                 ]
+            },
+            {
+                "cells": "ece83ed5050ff077dc1d6433c2dc6a69",
+                "genes": "cb2bef66e39a75669a5d2decc2d3e859",
+                "genes_per_cell": "3598642093e3b52f5e539b82fea90870",
+                "cells_per_gene": "160b9914e17ea6eb5ffd672afb7cd954",
+                "counts_per_cell": "137fac358967e0bd2ffb0f78a1ded115"
             }
         ],
-        "timestamp": "2026-10-13T15:13:31.737666584",
+        "timestamp": "2026-10-18T15:24:18.129293629",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
