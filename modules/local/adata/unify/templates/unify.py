@@ -137,6 +137,11 @@ if analysis_source != "raw_counts" and not (correction_layer and analysis_source
     raise ValueError(
         f"Sample {sample_id}: analysis counts source '{analysis_source}' has no generated correction layer"
     )
+expected_source = raw_counts_layer if analysis_source == "raw_counts" else correction_layer
+if counts_layer != expected_source:
+    raise ValueError(
+        f"Sample {sample_id}: selected counts layer '{counts_layer}' does not match analysis source '{expected_source}'"
+    )
 
 # Reserved destinations can alias any input source.
 selected = copy_source(adata, counts_layer, "selected analysis")

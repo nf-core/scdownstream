@@ -8,15 +8,15 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { UTILS_NFSCHEMA_PLUGIN     } from '../../nf-core/utils_nfschema_plugin'
-include { paramsSummaryMap          } from 'plugin/nf-schema'
-include { samplesheetToList         } from 'plugin/nf-schema'
-include { paramsHelp                } from 'plugin/nf-schema'
-include { anndata                   } from 'plugin/nf-anndata'
-include { completionEmail           } from '../../nf-core/utils_nfcore_pipeline'
-include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
-include { UTILS_NFCORE_PIPELINE     } from '../../nf-core/utils_nfcore_pipeline'
-include { UTILS_NEXTFLOW_PIPELINE   } from '../../nf-core/utils_nextflow_pipeline'
+include { UTILS_NFSCHEMA_PLUGIN } from '../../nf-core/utils_nfschema_plugin'
+include { paramsSummaryMap } from 'plugin/nf-schema'
+include { samplesheetToList } from 'plugin/nf-schema'
+include { paramsHelp } from 'plugin/nf-schema'
+include { anndata } from 'plugin/nf-anndata'
+include { completionEmail } from '../../nf-core/utils_nfcore_pipeline'
+include { completionSummary } from '../../nf-core/utils_nfcore_pipeline'
+include { UTILS_NFCORE_PIPELINE } from '../../nf-core/utils_nfcore_pipeline'
+include { UTILS_NEXTFLOW_PIPELINE } from '../../nf-core/utils_nextflow_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,14 +26,14 @@ include { UTILS_NEXTFLOW_PIPELINE   } from '../../nf-core/utils_nextflow_pipelin
 
 workflow PIPELINE_INITIALISATION {
     take:
-    version           // boolean: Display version and exit
-    validate_params   // boolean: Boolean whether to validate parameters against the schema at runtime
-    monochrome_logs   // boolean: Do not use coloured log outputs
+    version // boolean: Display version and exit
+    validate_params // boolean: Boolean whether to validate parameters against the schema at runtime
+    monochrome_logs // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
-    outdir            //  string: The output directory where the results will be saved
-    help              // boolean: Display help message and exit
-    help_full         // boolean: Show the full help message
-    show_hidden       // boolean: Show hidden parameters in the help message
+    outdir //  string: The output directory where the results will be saved
+    help // boolean: Display help message and exit
+    help_full // boolean: Show the full help message
+    show_hidden // boolean: Show hidden parameters in the help message
 
     main:
 
@@ -65,7 +65,7 @@ workflow PIPELINE_INITIALISATION {
 \033[0;35m  nf-core/scdownstream ${workflow.manifest.version}\033[0m
 -\033[2m----------------------------------------------------\033[0m-
 """
-    after_text = """${workflow.manifest.doi ? "\n* The pipeline\n" : ""}${workflow.manifest.doi.tokenize(",").collect { doi -> "    https://doi.org/${doi.trim().replace('https://doi.org/','')}"}.join("\n")}${workflow.manifest.doi ? "\n" : ""}
+    after_text = """${workflow.manifest.doi ? "\n* The pipeline\n" : ""}${workflow.manifest.doi.tokenize(",").collect { doi -> "    https://doi.org/${doi.trim().replace('https://doi.org/', '')}" }.join("\n")}${workflow.manifest.doi ? "\n" : ""}
 * The nf-core framework
     https://doi.org/10.1038/s41587-020-0439-x
 
@@ -78,7 +78,7 @@ workflow PIPELINE_INITIALISATION {
 
     command = "nextflow run ${workflow.manifest.name} -profile <docker/singularity/.../institute> --input samplesheet.csv --outdir <OUTDIR>"
 
-    UTILS_NFSCHEMA_PLUGIN (
+    UTILS_NFSCHEMA_PLUGIN(
         workflow,
         validate_params,
         null,
@@ -88,7 +88,7 @@ workflow PIPELINE_INITIALISATION {
         before_text,
         after_text,
         command,
-        false
+        false,
     )
 
     //
@@ -107,14 +107,14 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from input file provided through params.input
     //
     ch_samplesheet = params.input
-        ? channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json")).map {
-            sample -> validateInputSamplesheet(sample)
+        ? channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json")).map { sample ->
+            validateInputSamplesheet(sample)
         }
         : channel.empty()
 
     emit:
-    samplesheet        = ch_samplesheet
-    versions           = ch_versions
+    samplesheet = ch_samplesheet
+    versions = ch_versions
 }
 
 /*
@@ -125,12 +125,12 @@ workflow PIPELINE_INITIALISATION {
 
 workflow PIPELINE_COMPLETION {
     take:
-    email           //  string: email address
-    email_on_fail   //  string: email address sent on pipeline failure
+    email //  string: email address
+    email_on_fail //  string: email address sent on pipeline failure
     plaintext_email // boolean: Send plain-text email instead of HTML
-    outdir          //    path: Path to output directory where results will be published
+    outdir //    path: Path to output directory where results will be published
     monochrome_logs // boolean: Disable ANSI colour codes in log output
-    multiqc_report  //  string: Path to MultiQC report
+    multiqc_report //  string: Path to MultiQC report
 
     main:
     summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
@@ -153,11 +153,10 @@ workflow PIPELINE_COMPLETION {
         }
 
         completionSummary(monochrome_logs)
-
     }
 
     workflow.onError {
-        log.error "Pipeline failed. Please refer to troubleshooting docs for common issues: https://nf-co.re/docs/running/troubleshooting"
+        log.error("Pipeline failed. Please refer to troubleshooting docs for common issues: https://nf-co.re/docs/running/troubleshooting")
     }
 }
 
@@ -194,7 +193,7 @@ def hasMultipleObsGroups(meta, h5ad, processName, obsKey = null, filterCol = '',
     if (nValidGroups < 2) {
         def filterDescription = filterCol && filterVal ? " after filtering ${filterCol}=${filterVal}" : ''
         def observationWord = minGroupSize == 1 ? 'observation' : 'observations'
-        log.warn "Skipping ${processName} for '${meta.id}'${filterDescription}: observation column '${obsKey}' has ${nValidGroups} group(s) with at least ${minGroupSize} ${observationWord}; at least 2 groups are required."
+        log.warn("Skipping ${processName} for '${meta.id}'${filterDescription}: observation column '${obsKey}' has ${nValidGroups} group(s) with at least ${minGroupSize} ${observationWord}; at least 2 groups are required.")
         return false
     }
     true
@@ -205,15 +204,12 @@ def hasMultipleObsGroups(meta, h5ad, processName, obsKey = null, filterCol = '',
 //
 def analysisPlanToList() {
     params.analysis_plan
-        ? samplesheetToList(params.analysis_plan, "${projectDir}/assets/schema_analysis_plan.json")
-            .collect { row -> row[0] }
+        ? samplesheetToList(params.analysis_plan, "${projectDir}/assets/schema_analysis_plan.json").collect { row -> row[0] }
         : [[integration: null, subset: null, resolution: null, analyses: null, de_methods: null]]
 }
 
 def matchesAnalysisPlanRow(row, meta, resolution = null) {
-    (!row.integration || row.integration == meta.integration) &&
-    (!row.subset || row.subset == meta.subset) &&
-    (resolution == null || !row.resolution || (row.resolution as String) == (resolution as String))
+    (!row.integration || row.integration == meta.integration) && (!row.subset || row.subset == meta.subset) && (resolution == null || !row.resolution || (row.resolution as String) == (resolution as String))
 }
 
 def matchingAnalysisPlanRows(rows, meta, resolution = null) {
@@ -225,9 +221,7 @@ def analysesFromPlanRows(rows) {
         return [:]
     }
     [
-        analyses: rows
-            .collectMany { row -> row.analyses.split(',').collect { token -> token.trim() } }
-            .toSet(),
+        analyses: rows.collectMany { row -> row.analyses.split(',').collect { token -> token.trim() } }.toSet()
     ]
 }
 
@@ -320,8 +314,7 @@ def referenceConditionRequired() {
         def analyses = row.analyses
             ? row.analyses.split(',').collect { token -> token.trim() }
             : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype', 'decoupler']
-        ('de' in analyses || !row.analyses) &&
-            resolvedDeMethodsForPlanRow(row).intersect(referenceConditionDeMethods() as List)
+        ('de' in analyses || !row.analyses) && resolvedDeMethodsForPlanRow(row).intersect(referenceConditionDeMethods() as List)
     }
 }
 
@@ -344,8 +337,7 @@ def pseudobulkDeMethodsRequested() {
         def analyses = row.analyses
             ? row.analyses.split(',').collect { token -> token.trim() }
             : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype', 'decoupler']
-        ('de' in analyses || !row.analyses) &&
-            resolvedDeMethodsForPlanRow(row).intersect(pseudobulkDeMethods() as List)
+        ('de' in analyses || !row.analyses) && resolvedDeMethodsForPlanRow(row).intersect(pseudobulkDeMethods() as List)
     }
 }
 
@@ -442,27 +434,31 @@ def validateInputParameters() {
     }
 
     if (referenceConditionRequired() && !params.reference_condition?.trim()) {
-        throw new Exception(
-            "reference_condition must be set when using pydeseq2, edgepython, or edgepython_sc differential expression methods"
-        )
+        throw new Exception("reference_condition must be set when using pydeseq2, edgepython, or edgepython_sc differential expression methods")
     }
 
     validateDecouplerParameters()
 
-    if (pseudobulkingRequired() && params.base_adata) {
+    if (params.base_adata && !workflow.stubRun) {
         def ad = anndata(file(params.base_adata, checkIfExists: true))
-        def donor_col = params.input ? 'donor' : (params.base_donor_col ?: 'donor')
-        if (!(donor_col in ad.obs.colnames)) {
-            throw new Exception(
-                "Pseudobulking requires column '${donor_col}' in base_adata. Available obs columns: ${ad.obs.colnames.join(', ')}."
-            )
+        def layers = ad.layers.toList()
+        def obs_columns = ad.obs.colnames.toList()
+        ad.close()
+        if (!('raw_counts' in layers)) {
+            throw new Exception("base_adata must contain a raw_counts layer with genuine pre-correction counts. " + "Regenerate this base with the current pipeline or supply the original counts. " + "Do not copy X or counts unless their uncorrected provenance is known. " + "Available layers: ${layers.join(', ')}.")
+        }
+        if (pseudobulkingRequired()) {
+            def donor_col = params.input ? 'donor' : (params.base_donor_col ?: 'donor')
+            if (!(donor_col in obs_columns)) {
+                throw new Exception("Pseudobulking requires column '${donor_col}' in base_adata. Available obs columns: ${obs_columns.join(', ')}.")
+            }
         }
     }
 }
 
 def validateDecouplerParameters() {
     if (!params.decoupler) {
-        return
+        return null
     }
     def resources = (params.decoupler_resources ?: '').tokenize(',')*.trim().findAll { token -> token }
     def invalid = resources.findAll { resource -> !(resource in validDecouplerResources()) }
@@ -490,18 +486,11 @@ def validateInputSamplesheet(input) {
     }
 
     if (params.ambient_correction == 'soupx' && meta.ambient_correction != false && !unfiltered) {
-        throw new Exception(
-            "Sample '${meta.id}' is configured for SoupX ambient correction but no unfiltered matrix was provided. " +
-            "Provide an unfiltered matrix, set sample-level ambient_correction to false to disable ambient correction for this sample, " +
-            "or use --ambient_correction decontx for filtered-only input."
-        )
+        throw new Exception("Sample '${meta.id}' is configured for SoupX ambient correction but no unfiltered matrix was provided. " + "Provide an unfiltered matrix, set sample-level ambient_correction to false to disable ambient correction for this sample, " + "or use --ambient_correction decontx for filtered-only input.")
     }
 
     if (pseudobulkingRequired() && !meta.donor_col) {
-        throw new Exception(
-            "Sample '${meta.id}' requires a donor_col in the samplesheet for pseudobulking. " +
-            "Set donor_col to the obs column containing biological replicate identifiers."
-        )
+        throw new Exception("Sample '${meta.id}' requires a donor_col in the samplesheet for pseudobulking. " + "Set donor_col to the obs column containing biological replicate identifiers.")
     }
 
     return input

@@ -20,7 +20,7 @@ input:
           e.g. `[ id:'sample1' ]`
     - h5ads:
         type: file
-        description: Sample AnnData objects to concatenate
+        description: Sample AnnData objects containing canonical raw_counts layers and count-source provenance
         pattern: "*.{h5ad}"
         ontologies:
           - edam: "http://edamontology.org/format_3590"
@@ -31,7 +31,7 @@ input:
           e.g. `[ id:'base' ]`
     - base:
         type: file
-        description: Optional base AnnData used when merging onto an existing object
+        description: Optional base AnnData containing genuine pre-correction counts in raw_counts
         pattern: "*.{h5ad}"
         ontologies:
           - edam: "http://edamontology.org/format_3590"
@@ -39,7 +39,7 @@ input:
       type: string
       description: |
         Comma-separated list of obs columns to keep even when not every sample has them.
-        An empty string keeps only the columns shared by all samples.
+        An empty string keeps shared columns and the ambient-correction provenance columns.
 
 output:
   outer:
@@ -50,7 +50,7 @@ output:
             e.g. `[ id:'sample1' ]`
       - "*_outer.h5ad":
           type: file
-          description: Outer-join concatenated AnnData object
+          description: Outer-join AnnData with raw-count fallback for unavailable correction layers
           pattern: "*_outer.h5ad"
           ontologies:
             - edam: "http://edamontology.org/format_3590"
