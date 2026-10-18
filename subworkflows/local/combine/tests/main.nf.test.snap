@@ -95,7 +95,13 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "batch"
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "condition",
+                        "donor",
+                        "label",
+                        "sample"
                     ]
                 },
                 "var": {
@@ -106,7 +112,8 @@
                 },
                 "layers": [
                     "counts",
-                    "log1p"
+                    "log1p",
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -125,10 +132,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-13T13:13:12.654417921",
+        "timestamp": "2026-10-18T18:07:31.240403833",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     }
 }

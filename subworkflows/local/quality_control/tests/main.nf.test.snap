@@ -311,6 +311,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -350,7 +352,8 @@
                     ]
                 },
                 "layers": [
-                    
+                    "ambient_corrected_decontx",
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -369,7 +372,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-25T19:13:37.056665668",
+        "timestamp": "2026-10-18T18:06:53.740784205",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

@@ -210,7 +210,7 @@ nextflow_process {
 
     test("Should replace reserved layers after copying aliased sources") {
         setup {
-            run("ADATA_UNIFY") {
+            run("ADATA_UNIFY", alias: "PREPARE_COUNTS") {
                 script "modules/local/adata/unify/main.nf"
                 process {
                     """
@@ -238,7 +238,7 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = ADATA_UNIFY.out.h5ad.map { meta, h5ad -> [
+                input[0] = PREPARE_COUNTS.out.h5ad.map { meta, h5ad -> [
                     meta + [id: 'test', raw_counts_layer: 'ambient_corrected_scar',
                             ambient_correction_layer: 'raw_counts', analysis_counts_source: 'ambient_corrected_scar'], h5ad
                 ] }

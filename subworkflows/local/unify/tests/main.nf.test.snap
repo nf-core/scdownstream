@@ -150,6 +150,70 @@
             "nextflow": "26.04.6"
         }
     },
+    "Should canonicalise a named input counts layer": {
+        "content": [
+            {
+                "id": "named",
+                "symbol_col": "index",
+                "counts_layer": "X",
+                "batch_col": "batch",
+                "label_col": "label",
+                "condition_col": "condition",
+                "donor_col": "donor",
+                "unknown_label": "unknown",
+                "raw_counts_layer": "raw_counts",
+                "ambient_correction_layer": null,
+                "ambient_correction_method": "none",
+                "analysis_counts_source": "raw_counts"
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-18T18:08:13.266945446",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
     "Should run without failures - symbol_col index, unify_gene_symbols true": {
         "content": [
             [
