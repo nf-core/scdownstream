@@ -43,6 +43,12 @@ The **Test strategy (this branch)** column describes what the tests on this bran
 
 ## Modules
 
+### Ambient count-retention coverage
+
+Retention regressions use existing nf-test suites and the `nft-anndata` metadata interface. Assertions cover layer names, dimensions, cell/gene indices, categorical provenance, resolved source metadata, and existing scalar QC fields. Correction routing covers raw/corrected selection, explicit sample overrides, disabled correction, and method `none`. Merge and extension checks cover raw fallback and unknown historical provenance. RDS coverage uses a production H5AD-to-RDS-to-H5AD round trip to inspect layer mapping and axes.
+
+Tests do not read, decode, compare, sum, or slice expression arrays. No matrix-reading helper, backend reader, or extra production diagnostic pass supports these assertions. Metadata checks do not prove numerical equality of retained matrices, exact fallback values, or every aggregation result. Source-copy independence, reserved-name aliasing, common gene aggregation, and implicit sparse zeros require focused code review. Keep this numerical-coverage limit explicit when reporting validation.
+
 ### `adata/`
 
 | Module                  | Description                                                                                                                | Reproducibility                                                                                | Test strategy (this branch)                                                                                                                          |

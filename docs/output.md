@@ -264,6 +264,26 @@ The `09_finalized` directory contains the final results of the pipeline.
 The final H5AD file contains all results from the pipeline and is stored in the `merged.h5ad` file.
 The metadata of the final H5AD file is stored in the `merged_metadata.csv` file.
 
+#### Expression matrices and provenance
+
+The standard final H5AD retains the following matrices even with `--save_intermediates false`:
+
+| Slot                                   | Meaning                                                                                                                                                          |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `X`                                    | Selected analysis counts, raw by default or corrected when `ambient_corrected_integration` resolves to `true`.                                                   |
+| `layers['raw_counts']`                 | Selected input before this pipeline's ambient correction, on the current cell and gene axes. Upstream correction is not reversed.                                |
+| `layers['ambient_corrected_<method>']` | Method-specific correction result, retained in both selection modes. For samples without that result in a merged cohort, values fall back to their `raw_counts`. |
+| `layers['counts']`                     | Selected analysis counts retained by normalisation, not necessarily uncorrected counts.                                                                          |
+| `layers['log1p']` or `layers['scran']` | Normalised expression derived from the selected analysis counts.                                                                                                 |
+
+Gene renaming, duplicate/isoform handling, and cell/gene filtering apply consistently to the retained matrices. Unification replaces reserved output names from fresh inputs using this run's selected source and does not preserve unrelated input layers.
+
+The categorical `obs['ambient_correction_method']` records the applied method, `none` for new uncorrected samples, or `unknown` for unavailable historical provenance. `obs['analysis_counts_source']` records `raw_counts`, a selected method-specific correction layer, or `unknown`. Both columns survive cohort and extension merges independently of ordinary observation-column selection. A correction-layer name does not prove that every cell was corrected because unavailable results use raw fallback.
+
+Optional RDS export retains raw, correction, and normalisation layers as uniquely named SingleCellExperiment assays. The requested analysis counts occupy the first assay, `counts`. The redundant H5AD `counts` alias does not create a duplicate assay name.
+
+Per-sample finalised H5AD files remain conditional on `--save_intermediates`. The optional CELLxGENE derivative still removes layers and is not a layered archival output. Use the standard H5AD or RDS to retain raw and corrected matrices.
+
 ### MultiQC
 
 <details markdown="1">

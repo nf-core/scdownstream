@@ -80,6 +80,7 @@
             },
             "counts_layer": {
                 "type": "string",
+                "description": "Input counts source before this pipeline's ambient correction. Defaults to X and is retained as raw_counts after unification. This does not recover values before upstream correction.",
                 "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
                 "default": "X",
                 "errorMessage": "Counts layer needs to start with a letter and can contain letters, numbers, underlines and dashes.",
@@ -187,12 +188,14 @@
             },
             "ambient_correction": {
                 "type": "boolean",
+                "description": "Apply the globally selected correction method to this sample. False bypasses correction and selects raw counts regardless of ambient_corrected_integration. Global method none also bypasses correction.",
                 "default": true,
                 "errorMessage": "'ambient_correction' must be a boolean.",
                 "meta": ["ambient_correction"]
             },
             "ambient_corrected_integration": {
                 "type": "boolean",
+                "description": "Override the global count-selection flag for all subsequent QC, doublet handling, annotation, integration, and downstream analyses. True selects corrected counts when correction runs. Both raw_counts and generated correction layers remain available.",
                 "errorMessage": "'ambient_corrected_integration' must be a boolean.",
                 "meta": ["ambient_corrected_integration"]
             }

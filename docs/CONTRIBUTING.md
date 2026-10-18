@@ -201,20 +201,34 @@ Local modules follow the [nf-core module specifications](https://nf-co.re/docs/s
 
 In addition to `id`, local modules and subworkflows use the following meta fields:
 
-| Field                             | Set by                                               | Meaning                                                                           |
-| --------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `batch_col`                       | Samplesheet                                          | `obs` column holding batch labels, used for batch-aware QC and feature selection. |
-| `symbol_col`                      | Samplesheet                                          | `var` column holding gene symbols.                                                |
-| `counts_layer`                    | Samplesheet                                          | Layer holding raw counts. Defaults to `X`.                                        |
-| `condition_col`, `donor_col`      | Samplesheet                                          | `obs` columns used for differential expression and pseudobulking.                 |
-| `integration`                     | Integration step                                     | Name of the integration method that produced the embedding.                       |
-| `subset`                          | `CLUSTER_TARGETS`, `SUB_INTEGRATE`                   | `global` for the full dataset, otherwise the name of the subset.                  |
-| `resolution`                      | Clustering step                                      | Leiden resolution of the clustering.                                              |
-| `obs_key`                         | `workflows/scdownstream.nf`                          | `obs` column that defines the groups for per-group analyses.                      |
-| `analyses`, `de_methods_resolved` | Analysis plan (`utils_nfcore_scdownstream_pipeline`) | Per-group analyses and DE methods to run. `null` means all.                       |
+| Field                             | Set by                                               | Meaning                                                                                                    |
+| --------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `batch_col`                       | Samplesheet                                          | `obs` column holding batch labels, used for batch-aware QC and feature selection.                          |
+| `symbol_col`                      | Samplesheet                                          | `var` column holding gene symbols.                                                                         |
+| `counts_layer`                    | Samplesheet, ambient correction, unification         | Input counts source initially (`X` by default), then selected analysis source, then `X` after unification. |
+| `condition_col`, `donor_col`      | Samplesheet                                          | `obs` columns used for differential expression and pseudobulking.                                          |
+| `integration`                     | Integration step                                     | Name of the integration method that produced the embedding.                                                |
+| `subset`                          | `CLUSTER_TARGETS`, `SUB_INTEGRATE`                   | `global` for the full dataset, otherwise the name of the subset.                                           |
+| `resolution`                      | Clustering step                                      | Leiden resolution of the clustering.                                                                       |
+| `obs_key`                         | `workflows/scdownstream.nf`                          | `obs` column that defines the groups for per-group analyses.                                               |
+| `analyses`, `de_methods_resolved` | Analysis plan (`utils_nfcore_scdownstream_pipeline`) | Per-group analyses and DE methods to run. `null` means all.                                                |
 
 Channel operations must preserve these fields.
 Add new fields to this table when you introduce them.
+
+Ambient correction resolves the expression-source fields before unification:
+
+| Field                       | Before unification                                           | After unification                        |
+| --------------------------- | ------------------------------------------------------------ | ---------------------------------------- |
+| `counts_layer`              | Physical source of selected analysis counts.                 | `X`.                                     |
+| `raw_counts_layer`          | Selected original input source before this correction stage. | `raw_counts`.                            |
+| `ambient_correction_layer`  | Generated correction source, or `null` when bypassed.        | `ambient_corrected_<method>`, or `null`. |
+| `ambient_correction_method` | Applied method, or `none`.                                   | Unchanged.                               |
+| `analysis_counts_source`    | `raw_counts` or canonical `ambient_corrected_<method>`.      | Unchanged.                               |
+
+An explicit sample selection flag overrides the global flag. Disabled correction and method `none` select raw counts. Unification preserves required sources before replacing reserved names, then applies a common gene grouping and order to `X` and every retained layer. Normalisation creates `counts` from selected `X`. Count-model and differential expression consumers must not silently switch to `raw_counts`.
+
+The two provenance fields also become categorical `obs` columns. Merging fills unavailable method layers from each sample's `raw_counts` and retains provenance independently of the ordinary observation-column intersection. Historical bases require explicit `raw_counts`. Missing historical provenance remains `unknown`, without inference from layer names.
 
 ### Process templates
 
@@ -281,6 +295,10 @@ If no alternative exists, document the limitation in the comment block of `conf/
 
 Write pipeline tests in nf-test and extend the existing module or subworkflow `.nf.test` suites where applicable.
 Do not add standalone Python tests or test-only processes for assertions.
+
+Ambient count-retention tests use the existing `nft-anndata` metadata interface: layer keys, dimensions, cell/gene indices, categorical provenance, and existing scalar QC fields. Assertions must not read, decode, compare, sum, or slice `X` or layer arrays. Do not add matrix-reading helpers, backend readers, or production diagnostic passes solely for tests. Use sequential assertions and place the snapshot assertion last.
+
+These metadata checks do not prove equality of retained matrix values or exact raw-fallback values. Review source copying, alias handling, sparse-zero aggregation, and common axes directly. RDS round trips use the production conversion modules and inspect resulting AnnData metadata, not expression arrays.
 
 CI runs three nf-test categories, selected by tag:
 
