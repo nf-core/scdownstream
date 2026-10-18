@@ -201,17 +201,17 @@ Local modules follow the [nf-core module specifications](https://nf-co.re/docs/s
 
 In addition to `id`, local modules and subworkflows use the following meta fields:
 
-| Field                             | Set by                                               | Meaning                                                                                                    |
-| --------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `batch_col`                       | Samplesheet                                          | `obs` column holding batch labels, used for batch-aware QC and feature selection.                          |
-| `symbol_col`                      | Samplesheet                                          | `var` column holding gene symbols.                                                                         |
-| `counts_layer`                    | Samplesheet, ambient correction, unification         | Input counts source initially (`X` by default), then selected analysis source, then `X` after unification. |
-| `condition_col`, `donor_col`      | Samplesheet                                          | `obs` columns used for differential expression and pseudobulking.                                          |
-| `integration`                     | Integration step                                     | Name of the integration method that produced the embedding.                                                |
-| `subset`                          | `CLUSTER_TARGETS`, `SUB_INTEGRATE`                   | `global` for the full dataset, otherwise the name of the subset.                                           |
-| `resolution`                      | Clustering step                                      | Leiden resolution of the clustering.                                                                       |
-| `obs_key`                         | `workflows/scdownstream.nf`                          | `obs` column that defines the groups for per-group analyses.                                               |
-| `analyses`, `de_methods_resolved` | Analysis plan (`utils_nfcore_scdownstream_pipeline`) | Per-group analyses and DE methods to run. `null` means all.                                                |
+| Field                             | Set by                                               | Meaning                                                                           |
+| --------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `batch_col`                       | Samplesheet                                          | `obs` column holding batch labels, used for batch-aware QC and feature selection. |
+| `symbol_col`                      | Samplesheet                                          | `var` column holding gene symbols.                                                |
+| `counts_layer`                    | Samplesheet, ambient correction, unification         | Selected counts source; defaults to `X` and becomes `X` after unification.        |
+| `condition_col`, `donor_col`      | Samplesheet                                          | `obs` columns used for differential expression and pseudobulking.                 |
+| `integration`                     | Integration step                                     | Name of the integration method that produced the embedding.                       |
+| `subset`                          | `CLUSTER_TARGETS`, `SUB_INTEGRATE`                   | `global` for the full dataset, otherwise the name of the subset.                  |
+| `resolution`                      | Clustering step                                      | Leiden resolution of the clustering.                                              |
+| `obs_key`                         | `workflows/scdownstream.nf`                          | `obs` column that defines the groups for per-group analyses.                      |
+| `analyses`, `de_methods_resolved` | Analysis plan (`utils_nfcore_scdownstream_pipeline`) | Per-group analyses and DE methods to run. `null` means all.                       |
 
 Channel operations must preserve these fields.
 Add new fields to this table when you introduce them.
