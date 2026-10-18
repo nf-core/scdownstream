@@ -250,7 +250,7 @@ nextflow_workflow {
                     """
                 }
             }
-            run("SCANPY_LOG1PNORM") {
+            run("SCANPY_LOG1PNORM", alias: "NORMALIZE_REFERENCE") {
                 script "modules/local/scanpy/log1pnorm/main.nf"
                 process {
                     """
@@ -268,7 +268,7 @@ nextflow_workflow {
             workflow {
                 """
                 input[0]  = ADATA_UNIFY.out.anndata.filter { meta, _anndata -> meta.id == 'query' }
-                input[1]  = SCANPY_LOG1PNORM.out.anndata
+                input[1]  = NORMALIZE_REFERENCE.out.anndata
                 input[2]  = true
                 input[3]  = 'none'
                 input[4]  = 0
