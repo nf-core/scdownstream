@@ -9,6 +9,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
+- Correct the `cluster_per_label` documentation and describe the two-column samplesheet minimum, optional fields and SoupX input requirement in README, usage and parameter help, by @nictru and GPT-6.1 Sol [[#347](https://github.com/nf-core/scdownstream/pull/347)].
 - Reject unsafe sample identifiers during samplesheet validation, preserve supported identifiers exactly and retain the uniqueness constraint, by @nictru and GPT-6.1 Sol ([#339](https://github.com/nf-core/scdownstream/issues/339)).
 - Generate the `CUSTOM_VOLCANOPLOT` nf-test input with a `SCANPY_RANKGENESGROUPS` setup block and move the edge-case fixtures and gene list to test-datasets by @nictru and Cursor [[#333](https://github.com/nf-core/scdownstream/pull/333)].
 - Migrate local modules to nf-core container metadata, Wave images and Conda lock files by @nictru and Codex [[#311](https://github.com/nf-core/scdownstream/pull/311)].
