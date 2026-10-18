@@ -201,7 +201,7 @@ workflow SCDOWNSTREAM {
             ch_h5ad.join(ch_obs_per_sample.groupTuple(), remainder: true).join(ch_var_per_sample.groupTuple(), remainder: true).join(ch_obsm_per_sample.groupTuple(), remainder: true).join(ch_obsp_per_sample.groupTuple(), remainder: true).join(ch_uns_per_sample.groupTuple(), remainder: true).join(ch_layers_per_sample.groupTuple(), remainder: true).map { meta, h5ad, obs, var, obsm, obsp, uns, layers ->
                 [meta, h5ad, obs ?: [], var ?: [], obsm ?: [], obsp ?: [], uns ?: [], layers ?: []]
             },
-            (qc_only && !skip_qc_report) ? 'h5ad' : 'zarr',
+            ((qc_only && !skip_qc_report) || (is_extension && normalization_method == 'scran')) ? 'h5ad' : 'zarr',
         )
         ch_h5ad = FINALIZE_QC_ANNDATAS.out.anndata
 

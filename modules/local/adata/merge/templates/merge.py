@@ -82,6 +82,11 @@ for adata in adatas:
 
 gene_intersection = set(genes[0]).intersection(*genes[1:])
 
+if any("counts" in adata.layers for adata in adatas):
+    for adata in adatas:
+        if "counts" not in adata.layers:
+            adata.layers["counts"] = adata.X.copy()
+
 adata_outer = ad.concat(adatas, join="outer")
 adata_outer.var["intersection"] = adata_outer.var_names.isin(gene_intersection).astype(bool)
 adata_outer.obs_names_make_unique()

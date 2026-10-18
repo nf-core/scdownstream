@@ -226,6 +226,91 @@ nextflow_workflow {
 
     }
 
+    test("Should create counts and log1p layers during extension") {
+
+        setup {
+            run("ADATA_UNIFY") {
+                script "modules/local/adata/unify/main.nf"
+                process {
+                    """
+                    input[0] = channel.of(
+                        [[id: 'query'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)],
+                        [[id: 'reference'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)]
+                    )
+                    input[1] = 'sample'
+                    input[2] = ''
+                    input[3] = ''
+                    input[4] = 'unknown'
+                    input[5] = 'index'
+                    input[6] = 'X'
+                    input[7] = 'make_unique'
+                    input[8] = false
+                    input[9] = ''
+                    input[10] = 'zarr'
+                    """
+                }
+            }
+            run("SCANPY_LOG1PNORM") {
+                script "modules/local/scanpy/log1pnorm/main.nf"
+                process {
+                    """
+                    input[0] = ADATA_UNIFY.out.anndata.filter { meta, _anndata -> meta.id == 'reference' }
+                    input[1] = 'zarr'
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0]  = ADATA_UNIFY.out.anndata.filter { meta, _anndata -> meta.id == 'query' }
+                input[1]  = SCANPY_LOG1PNORM.out.anndata
+                input[2]  = true
+                input[3]  = 'none'
+                input[4]  = 0
+                input[5]  = ''
+                input[6]  = null
+                input[7]  = 'log1p'
+                input[8]  = null
+                input[9]  = null
+                input[10] = ''
+                input[11] = ''
+                input[12] = 16
+                input[13] = 1
+                input[14] = 5
+                input[15] = 'gene'
+                input[16] = 'nb'
+                input[17] = 1
+                input[18] = true
+                input[19] = null
+                input[20] = null
+                input[21] = null
+                input[22] = ''
+                input[23] = false
+                input[24] = 0
+                input[25] = 'stratified_label_batch'
+                input[26] = 42
+                input[27] = 'fast'
+                input[28] = ''
+                input[29] = false
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.anndata[0][1].toString().endsWith('.zarr')
+            def adata = anndata(workflow.out.anndata[0][1])
+            assert adata.obs.get('sample').unique() == ['query', 'reference'].toSet()
+            assert 'counts' in adata.layers
+            assert 'log1p' in adata.layers
+        }
+    }
+
     test("Should run without failures - without base") {
 
         when {

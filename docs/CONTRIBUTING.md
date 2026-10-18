@@ -330,6 +330,9 @@ If no alternative exists, document the limitation in the comment block of `conf/
 
 ### Testing conventions
 
+Write pipeline tests in nf-test and extend the existing module or subworkflow `.nf.test` suites where applicable.
+Do not add standalone Python tests or test-only processes for assertions.
+
 CI runs three nf-test categories, selected by tag:
 
 - `modules_local` for local module tests.
@@ -343,6 +346,9 @@ When you add a module or subworkflow, add a row to this file and write the test 
 Snapshot files must never be edited by hand; regenerate them with `nf-test test --update-snapshot`.
 
 Test data must not be committed to this repository.
-Where possible, generate test inputs in the nf-test `setup` block by running the upstream modules on data that already exists in test-datasets (for example `DECOUPLER_PSEUDOBULK` followed by `EDGEPYTHON_DIFFERENTIAL` to obtain DE tables).
+Generate test inputs in nf-test `setup` blocks with existing production modules or subworkflows on data from test-datasets (for example `DECOUPLER_PSEUDOBULK` followed by `EDGEPYTHON_DIFFERENTIAL` to obtain DE tables).
+Do not create modules or processes solely to generate fixtures.
 Only add a fixture if no module can produce it, or if the setup modules would make the test too slow.
 Store such fixtures, and the scripts that generate them, in the `scdownstream` branch of [nf-core/test-datasets](https://github.com/nf-core/test-datasets/tree/scdownstream) and reference them through `params.pipelines_testdata_base_path`.
+
+For AnnData API usage, consult the [nf-anndata README](https://github.com/nictru/nf-anndata/blob/main/README.md) and [nft-anndata README](https://github.com/nictru/nft-anndata/blob/main/README.md).

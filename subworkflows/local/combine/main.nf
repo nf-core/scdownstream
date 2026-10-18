@@ -1,5 +1,6 @@
 include { INTEGRATE } from '../integrate'
 include { NORMALIZATION } from '../normalization'
+include { NORMALIZATION as NORMALIZATION_QUERY } from '../normalization'
 include { ADATA_MERGEEMBEDDINGS } from '../../../modules/local/adata/mergeembeddings'
 include { ADATA_MERGE } from '../../../modules/local/adata/merge'
 include { ADATA_SUBSETVAR as SUBSETVAR_INNER } from '../../../modules/local/adata/subsetvar'
@@ -53,6 +54,14 @@ workflow COMBINE {
     ch_obs = channel.empty()
     ch_var = channel.empty()
     ch_obsm = channel.empty()
+
+    if (is_extension) {
+        NORMALIZATION_QUERY(
+            ch_h5ad,
+            normalization_method,
+        )
+        ch_h5ad = NORMALIZATION_QUERY.out.anndata
+    }
 
     ADATA_MERGE(
         ch_h5ad.map { _meta, h5ad -> [[id: "merged"], h5ad] }.groupTuple().map { meta, h5ads -> [meta, h5ads.sort { a, b -> a.name <=> b.name }] },

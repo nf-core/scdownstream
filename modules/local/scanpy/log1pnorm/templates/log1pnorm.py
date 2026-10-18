@@ -33,7 +33,7 @@ if "counts" not in adata.layers:
     adata.layers["counts"] = adata.X.copy()
 
 adata_norm = adata.copy()
-adata_norm.X = adata.layers["counts"]
+adata_norm.X = adata.layers["counts"].copy()
 sc.pp.normalize_total(adata_norm, target_sum=None)
 sc.pp.log1p(adata_norm)
 
