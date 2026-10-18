@@ -14,6 +14,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "condition",
                         "donor",
@@ -30,7 +32,8 @@
                 },
                 "layers": [
                     "counts",
-                    "log1p"
+                    "log1p",
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -49,10 +52,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-17T22:10:47.851043611",
+        "timestamp": "2026-10-18T17:48:56.470392197",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - stub": {

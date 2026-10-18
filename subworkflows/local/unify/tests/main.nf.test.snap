@@ -48,11 +48,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T17:41:56.54115543",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:41:56.54115543"
     },
     "Should run without failures - symbol_col index, unify_gene_symbols false": {
         "content": [
@@ -144,11 +144,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T17:41:24.029184356",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:41:24.029184356"
     },
     "Should canonicalise a named input counts layer": {
         "content": [
@@ -208,11 +208,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T18:08:13.266945446",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T18:08:13.266945446"
     },
     "Should run without failures - symbol_col index, unify_gene_symbols true": {
         "content": [
@@ -261,11 +261,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T17:48:21.434000034",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:48:21.434000034"
     },
     "Should run without failures - symbol_col index, unify_gene_symbols false - stub": {
         "content": [
@@ -316,11 +316,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T17:40:59.900725776",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:40:59.900725776"
     },
     "Should run without failures - symbol_col index, unify_gene_symbols true - stub": {
         "content": [
@@ -373,11 +373,138 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T17:46:15.404998586",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:46:15.404998586"
+    },
+    "Should retain correction through symbol unification with either analysis selection": {
+        "content": [
+            [
+                {
+                    "id": "selected_false",
+                    "symbol_col": "index",
+                    "counts_layer": "X",
+                    "ambient_corrected_integration": false,
+                    "raw_counts_layer": "raw_counts",
+                    "ambient_correction_layer": "ambient_corrected_decontx",
+                    "ambient_correction_method": "decontx",
+                    "analysis_counts_source": "raw_counts",
+                    "batch_col": "batch",
+                    "label_col": "label",
+                    "condition_col": "condition",
+                    "donor_col": "donor",
+                    "unknown_label": "unknown"
+                },
+                {
+                    "id": "selected_true",
+                    "symbol_col": "index",
+                    "counts_layer": "X",
+                    "ambient_corrected_integration": true,
+                    "raw_counts_layer": "raw_counts",
+                    "ambient_correction_layer": "ambient_corrected_decontx",
+                    "ambient_correction_method": "decontx",
+                    "analysis_counts_source": "ambient_corrected_decontx",
+                    "batch_col": "batch",
+                    "label_col": "label",
+                    "condition_col": "condition",
+                    "donor_col": "donor",
+                    "unknown_label": "unknown"
+                }
+            ],
+            [
+                {
+                    "n_obs": 7373,
+                    "n_vars": 9887,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample",
+                            "ambient_correction_method",
+                            "analysis_counts_source",
+                            "batch",
+                            "label",
+                            "condition",
+                            "donor",
+                            "sample_original"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            
+                        ]
+                    },
+                    "layers": [
+                        "ambient_corrected_decontx",
+                        "raw_counts"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                },
+                {
+                    "n_obs": 7373,
+                    "n_vars": 9887,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample",
+                            "ambient_correction_method",
+                            "analysis_counts_source",
+                            "batch",
+                            "label",
+                            "condition",
+                            "donor",
+                            "sample_original"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            
+                        ]
+                    },
+                    "layers": [
+                        "ambient_corrected_decontx",
+                        "raw_counts"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.4"
+        },
+        "timestamp": "2026-10-18T18:28:41.125398693"
     },
     "Should run without failures - symbol_col none, unify_gene_symbols false": {
         "content": [
@@ -426,10 +553,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T17:44:01.075640202",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:44:01.075640202"
     }
 }
