@@ -16,13 +16,13 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = channel.of([
-                        [ id: 'test' ],
+                        [ id: 'test', use_ambient_corrected_counts: true ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = 'none'
-                input[2] = false
+                input[2] = true
                 input[3] = null
                 """
             }
@@ -31,10 +31,152 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.h5ad.size() == 1
+            assert workflow.out.h5ad[0][0] == [
+                id: 'test', use_ambient_corrected_counts: true, raw_counts_layer: 'X', counts_layer: 'X',
+                ambient_correction_layer: null, ambient_correction_method: 'none',
+                analysis_counts_source: 'raw_counts'
+            ]
             assert snapshot(
                 workflow.out.versions,
                 workflow.out.h5ad.size()
             ).match()
+        }
+
+    }
+
+    test("Should honour a sample selecting correction over the global raw setting") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'override', batch_col: 'sample', use_ambient_corrected_counts: true, donor_col: 'donor'],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'decontx'
+                input[2] = false
+                input[3] = null
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def meta = workflow.out.h5ad[0][0]
+            assert meta.id == 'override'
+            assert meta.batch_col == 'sample'
+            assert meta.donor_col == 'donor'
+            assert meta.use_ambient_corrected_counts == true
+            assert meta.raw_counts_layer == 'X'
+            assert meta.counts_layer == 'ambient_corrected_decontx'
+            assert meta.ambient_correction_layer == 'ambient_corrected_decontx'
+            assert meta.ambient_correction_method == 'decontx'
+            assert meta.analysis_counts_source == 'ambient_corrected_decontx'
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert 'ambient_corrected_decontx' in adata.layers
+            assert snapshot(meta, adata.yaml).match()
+        }
+
+    }
+
+    test("Should honour a sample selecting raw over the global correction setting") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'override', use_ambient_corrected_counts: false],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'decontx'
+                input[2] = true
+                input[3] = null
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def meta = workflow.out.h5ad[0][0]
+            assert meta.id == 'override'
+            assert meta.use_ambient_corrected_counts == false
+            assert meta.raw_counts_layer == 'X'
+            assert meta.counts_layer == 'X'
+            assert meta.ambient_correction_layer == 'ambient_corrected_decontx'
+            assert meta.ambient_correction_method == 'decontx'
+            assert meta.analysis_counts_source == 'raw_counts'
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert 'ambient_corrected_decontx' in adata.layers
+            assert snapshot(meta, adata.yaml).match()
+        }
+
+    }
+
+    test("Should preserve a raw selector that collides with the canonical correction destination") {
+
+        setup {
+            run("CELDA_DECONTX") {
+                script "modules/local/celda/decontx/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'source'],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = []
+                    input[2] = 'X'
+                    input[3] = 'ambient_corrected_decontx'
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = CELDA_DECONTX.out.h5ad.flatMap { meta, h5ad ->
+                    [true, false].collect { selected ->
+                        [meta + [id: "collision_\${selected}", counts_layer: 'ambient_corrected_decontx', use_ambient_corrected_counts: selected],
+                         h5ad,
+                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)]
+                    }
+                }
+                input[1] = 'decontx'
+                input[2] = true
+                input[3] = null
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad.size() == 2
+            def outputs = workflow.out.h5ad.sort { it[0].id }
+            outputs.each { meta, h5ad ->
+                assert meta.id == "collision_${meta.use_ambient_corrected_counts}"
+                assert meta.raw_counts_layer == 'ambient_corrected_decontx'
+                assert meta.ambient_correction_method == 'decontx'
+                assert meta.ambient_correction_layer != 'X'
+                assert meta.ambient_correction_layer != meta.raw_counts_layer
+                assert meta.counts_layer == (meta.use_ambient_corrected_counts ? meta.ambient_correction_layer : meta.raw_counts_layer)
+                assert meta.analysis_counts_source == (meta.use_ambient_corrected_counts ? 'ambient_corrected_decontx' : 'raw_counts')
+                def adata = anndata(h5ad)
+                assert meta.raw_counts_layer in adata.layers
+                assert meta.ambient_correction_layer in adata.layers
+            }
+            assert snapshot(outputs.collect { it[0] }, outputs.collect { anndata(it[1]).yaml }).match()
         }
 
     }
@@ -75,13 +217,13 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = channel.of([
-                        [ id: 'test', batch_col: 'sample', counts_layer: 'X', ambient_correction: false ],
+                        [ id: 'test', batch_col: 'sample', counts_layer: 'X', ambient_correction: false, use_ambient_corrected_counts: true ],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = 'decontx'
-                input[2] = false
+                input[2] = true
                 input[3] = null
                 """
             }
@@ -90,6 +232,16 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.h5ad.size() == 1
+            def meta = workflow.out.h5ad[0][0]
+            assert meta.id == 'test'
+            assert meta.batch_col == 'sample'
+            assert meta.ambient_correction == false
+            assert meta.use_ambient_corrected_counts == true
+            assert meta.raw_counts_layer == 'X'
+            assert meta.counts_layer == 'X'
+            assert meta.ambient_correction_layer == null
+            assert meta.ambient_correction_method == 'none'
+            assert meta.analysis_counts_source == 'raw_counts'
             assert snapshot(
                 workflow.out.versions,
                 workflow.out.h5ad.size()
@@ -124,6 +276,11 @@ nextflow_workflow {
             assert workflow.success
 
             assert "ambient_corrected_decontx" in adata.layers
+            assert workflow.out.h5ad[0][0].raw_counts_layer == 'X'
+            assert workflow.out.h5ad[0][0].counts_layer == 'X'
+            assert workflow.out.h5ad[0][0].ambient_correction_layer == 'ambient_corrected_decontx'
+            assert workflow.out.h5ad[0][0].ambient_correction_method == 'decontx'
+            assert workflow.out.h5ad[0][0].analysis_counts_source == 'raw_counts'
 
             assert snapshot(
                 workflow.out.versions,
@@ -194,6 +351,9 @@ nextflow_workflow {
             assert workflow.success
 
             assert "ambient_corrected_soupx" in adata.layers
+            assert workflow.out.h5ad[0][0].counts_layer == 'X'
+            assert workflow.out.h5ad[0][0].ambient_correction_method == 'soupx'
+            assert workflow.out.h5ad[0][0].analysis_counts_source == 'raw_counts'
 
             assert snapshot(
                 workflow.out.versions,
@@ -229,6 +389,9 @@ nextflow_workflow {
             assert workflow.success
 
             assert "ambient_corrected_scar" in adata.layers
+            assert workflow.out.h5ad[0][0].counts_layer == 'X'
+            assert workflow.out.h5ad[0][0].ambient_correction_method == 'scar'
+            assert workflow.out.h5ad[0][0].analysis_counts_source == 'raw_counts'
 
             assert snapshot(
                 workflow.out.versions,
@@ -264,6 +427,9 @@ nextflow_workflow {
             assert workflow.success
 
             assert "ambient_corrected_cellbender" in adata.layers
+            assert workflow.out.h5ad[0][0].counts_layer == 'X'
+            assert workflow.out.h5ad[0][0].ambient_correction_method == 'cellbender'
+            assert workflow.out.h5ad[0][0].analysis_counts_source == 'raw_counts'
 
             assert snapshot(
                 workflow.out.versions,
@@ -273,7 +439,7 @@ nextflow_workflow {
 
     }
 
-    test("Should run with 'decontx' ambient correction to 'X'") {
+    test("Should select named 'decontx' correction for analysis") {
 
         when {
             params {
@@ -297,8 +463,12 @@ nextflow_workflow {
         then {
             def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
-            // output written to X, so no named decontx layer
-            assert !("ambient_corrected_decontx" in adata.layers)
+            assert "ambient_corrected_decontx" in adata.layers
+            assert workflow.out.h5ad[0][0].raw_counts_layer == 'X'
+            assert workflow.out.h5ad[0][0].counts_layer == 'ambient_corrected_decontx'
+            assert workflow.out.h5ad[0][0].ambient_correction_layer == 'ambient_corrected_decontx'
+            assert workflow.out.h5ad[0][0].ambient_correction_method == 'decontx'
+            assert workflow.out.h5ad[0][0].analysis_counts_source == 'ambient_corrected_decontx'
             assert snapshot(
                 workflow.out.versions,
                 adata.yaml
@@ -307,7 +477,7 @@ nextflow_workflow {
 
     }
 
-    test("Should run with 'soupx' ambient correction to 'X'") {
+    test("Should select named 'soupx' correction for analysis") {
 
         when {
             params {
@@ -331,8 +501,12 @@ nextflow_workflow {
         then {
             def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
-            // output written to X, so no named soupx layer
-            assert !("ambient_corrected_soupx" in adata.layers)
+            assert "ambient_corrected_soupx" in adata.layers
+            assert workflow.out.h5ad[0][0].raw_counts_layer == 'X'
+            assert workflow.out.h5ad[0][0].counts_layer == 'ambient_corrected_soupx'
+            assert workflow.out.h5ad[0][0].ambient_correction_layer == 'ambient_corrected_soupx'
+            assert workflow.out.h5ad[0][0].ambient_correction_method == 'soupx'
+            assert workflow.out.h5ad[0][0].analysis_counts_source == 'ambient_corrected_soupx'
             assert snapshot(
                 workflow.out.versions,
                 adata.yaml
@@ -341,7 +515,7 @@ nextflow_workflow {
 
     }
 
-    test("Should run with 'scar' ambient correction to 'X'") {
+    test("Should select named 'scar' correction for analysis") {
 
         when {
             params {
@@ -365,8 +539,12 @@ nextflow_workflow {
         then {
             def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
-            // output written to X, so no named scar layer
-            assert !("ambient_corrected_scar" in adata.layers)
+            assert "ambient_corrected_scar" in adata.layers
+            assert workflow.out.h5ad[0][0].raw_counts_layer == 'X'
+            assert workflow.out.h5ad[0][0].counts_layer == 'ambient_corrected_scar'
+            assert workflow.out.h5ad[0][0].ambient_correction_layer == 'ambient_corrected_scar'
+            assert workflow.out.h5ad[0][0].ambient_correction_method == 'scar'
+            assert workflow.out.h5ad[0][0].analysis_counts_source == 'ambient_corrected_scar'
             assert snapshot(
                 workflow.out.versions,
                 adata.yaml
@@ -375,7 +553,7 @@ nextflow_workflow {
 
     }
 
-    test("Should run with 'cellbender' ambient correction to 'X'") {
+    test("Should select named 'cellbender' correction for analysis") {
 
         when {
             params {
@@ -399,8 +577,12 @@ nextflow_workflow {
         then {
             def adata = anndata(workflow.out.h5ad[0][1])
             assert workflow.success
-            // output written to X, so no named cellbender layer
-            assert !("ambient_corrected_cellbender" in adata.layers)
+            assert "ambient_corrected_cellbender" in adata.layers
+            assert workflow.out.h5ad[0][0].raw_counts_layer == 'X'
+            assert workflow.out.h5ad[0][0].counts_layer == 'ambient_corrected_cellbender'
+            assert workflow.out.h5ad[0][0].ambient_correction_layer == 'ambient_corrected_cellbender'
+            assert workflow.out.h5ad[0][0].ambient_correction_method == 'cellbender'
+            assert workflow.out.h5ad[0][0].analysis_counts_source == 'ambient_corrected_cellbender'
             assert snapshot(
                 workflow.out.versions,
                 adata.yaml

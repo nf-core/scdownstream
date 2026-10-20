@@ -7,7 +7,7 @@
                         {
                             "id": "combined"
                         },
-                        "combined_outer.h5ad:md5,849c15e5e12e24b16e580e3ca1b49b37"
+                        "combined_outer.h5ad:md5,26dfbf2576c9a324d195509b4d668acd"
                     ]
                 ],
                 "1": [
@@ -15,7 +15,7 @@
                         {
                             "id": "combined"
                         },
-                        "combined_integrate.h5ad:md5,849c15e5e12e24b16e580e3ca1b49b37"
+                        "combined_integrate.h5ad:md5,26dfbf2576c9a324d195509b4d668acd"
                     ]
                 ],
                 "2": [
@@ -26,7 +26,7 @@
                         {
                             "id": "combined"
                         },
-                        "combined_integrate.h5ad:md5,849c15e5e12e24b16e580e3ca1b49b37"
+                        "combined_integrate.h5ad:md5,26dfbf2576c9a324d195509b4d668acd"
                     ]
                 ],
                 "outer": [
@@ -34,7 +34,7 @@
                         {
                             "id": "combined"
                         },
-                        "combined_outer.h5ad:md5,849c15e5e12e24b16e580e3ca1b49b37"
+                        "combined_outer.h5ad:md5,26dfbf2576c9a324d195509b4d668acd"
                     ]
                 ],
                 "versions": [
@@ -55,6 +55,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "condition",
                         "donor",
@@ -70,7 +72,8 @@
                     ]
                 },
                 "layers": [
-                    
+                    "ambient_corrected_decontx",
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -94,6 +97,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "condition",
                         "donor",
@@ -109,7 +114,8 @@
                     ]
                 },
                 "layers": [
-                    
+                    "ambient_corrected_decontx",
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -128,7 +134,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-25T10:51:31.946143266",
+        "timestamp": "2026-10-18T17:27:50.055026043",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -140,17 +146,27 @@
                 "0": [
                     [
                         {
-                            "id": "SRR28679756"
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
                         },
-                        "SRR28679756_outer.h5ad:md5,7f5a4d326cfc751ec5a3e91ecd2e676a"
+                        "SRR28679756_outer.h5ad:md5,5226780d19d2ca9ec3757abbe6c99570"
                     ]
                 ],
                 "1": [
                     [
                         {
-                            "id": "SRR28679756"
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
                         },
-                        "SRR28679756_integrate.h5ad:md5,5898404cb7753bb19d92808a1e820d8f"
+                        "SRR28679756_integrate.h5ad:md5,be62f5fefaf26fcbe94f01c033d19a4d"
                     ]
                 ],
                 "2": [
@@ -159,17 +175,27 @@
                 "integrate": [
                     [
                         {
-                            "id": "SRR28679756"
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
                         },
-                        "SRR28679756_integrate.h5ad:md5,5898404cb7753bb19d92808a1e820d8f"
+                        "SRR28679756_integrate.h5ad:md5,be62f5fefaf26fcbe94f01c033d19a4d"
                     ]
                 ],
                 "outer": [
                     [
                         {
-                            "id": "SRR28679756"
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
                         },
-                        "SRR28679756_outer.h5ad:md5,7f5a4d326cfc751ec5a3e91ecd2e676a"
+                        "SRR28679756_outer.h5ad:md5,5226780d19d2ca9ec3757abbe6c99570"
                     ]
                 ],
                 "versions": [
@@ -190,6 +216,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "condition",
                         "donor",
@@ -205,7 +233,8 @@
                     ]
                 },
                 "layers": [
-                    
+                    "ambient_corrected_decontx",
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -229,6 +258,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "condition",
                         "donor",
@@ -244,7 +275,8 @@
                     ]
                 },
                 "layers": [
-                    
+                    "ambient_corrected_decontx",
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -263,7 +295,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-25T10:52:22.385781395",
+        "timestamp": "2026-10-18T17:30:44.835784218",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -324,7 +356,12 @@
                 "0": [
                     [
                         {
-                            "id": "SRR28679756"
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
                         },
                         "SRR28679756_outer.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
@@ -332,7 +369,12 @@
                 "1": [
                     [
                         {
-                            "id": "SRR28679756"
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
                         },
                         "SRR28679756_integrate.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
@@ -343,7 +385,12 @@
                 "integrate": [
                     [
                         {
-                            "id": "SRR28679756"
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
                         },
                         "SRR28679756_integrate.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
@@ -351,7 +398,12 @@
                 "outer": [
                     [
                         {
-                            "id": "SRR28679756"
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
                         },
                         "SRR28679756_outer.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
@@ -361,10 +413,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-13T12:52:12.225373589",
+        "timestamp": "2026-10-18T17:33:13.356336464",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     }
 }

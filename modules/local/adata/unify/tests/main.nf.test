@@ -44,7 +44,10 @@ nextflow_process {
                 assert "label" in obs.colnames
                 assert "sample" in obs.colnames
                 assert !("counts" in layers)
-                assert layers.size() == 0
+                assert "raw_counts" in layers
+                assert layers.size() == 1
+                assert obs.get("ambient_correction_method").unique() == ["none"].toSet()
+                assert obs.get("analysis_counts_source").unique() == ["raw_counts"].toSet()
             }
             assert snapshot(
                 process.out,
@@ -86,13 +89,240 @@ nextflow_process {
                 assert "batch" in obs.colnames
                 assert "label" in obs.colnames
                 assert "sample" in obs.colnames
-                assert layers.size() == 0
+                assert "raw_counts" in layers
+                assert layers.size() == 1
             }
             assert snapshot(
                 process.out,
                 path(process.out.versions[0]).yaml,
                 adata.yaml
             ).match()
+        }
+    }
+
+    test("Should discard unrelated layers") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true)
+                ])
+                input[1] = "sample"
+                input[2] = ""
+                input[3] = ""
+                input[4] = "unknown"
+                input[5] = "index"
+                input[6] = "X"
+                input[7] = "sum"
+                input[8] = false
+                input[9] = ""
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert "raw_counts" in adata.layers
+            assert adata.layers.size() == 1
+            assert adata.obs.get("ambient_correction_method").unique() == ["none"].toSet()
+            assert adata.obs.get("analysis_counts_source").unique() == ["raw_counts"].toSet()
+            assert snapshot(process.out, adata.yaml).match()
+        }
+    }
+
+    test("Should retain named correction independently of raw analysis selection") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test', raw_counts_layer: 'counts', ambient_correction_layer: 'X',
+                     ambient_correction_method: 'soupx', analysis_counts_source: 'raw_counts'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/counts_in_layer.h5ad', checkIfExists: true)
+                ])
+                input[1] = "sample"
+                input[2] = ""
+                input[3] = ""
+                input[4] = "unknown"
+                input[5] = "index"
+                input[6] = "counts"
+                input[7] = "sum"
+                input[8] = false
+                input[9] = ""
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert "raw_counts" in adata.layers
+            assert "ambient_corrected_soupx" in adata.layers
+            assert adata.layers.size() == 2
+            assert adata.obs.get("ambient_correction_method").unique() == ["soupx"].toSet()
+            assert adata.obs.get("analysis_counts_source").unique() == ["raw_counts"].toSet()
+            assert adata.n_obs == adata.obs.rownames.size()
+            assert adata.n_vars == adata.var.rownames.size()
+            assert snapshot(process.out, adata.yaml).match()
+        }
+    }
+
+    test("Should select a named correction while retaining raw X") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test', raw_counts_layer: 'X', ambient_correction_layer: 'counts',
+                     ambient_correction_method: 'decontx', analysis_counts_source: 'ambient_corrected_decontx'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/counts_in_layer.h5ad', checkIfExists: true)
+                ])
+                input[1] = "sample"
+                input[2] = ""
+                input[3] = ""
+                input[4] = "unknown"
+                input[5] = "index"
+                input[6] = "counts"
+                input[7] = "mean"
+                input[8] = false
+                input[9] = ""
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert "raw_counts" in adata.layers
+            assert "ambient_corrected_decontx" in adata.layers
+            assert adata.layers.size() == 2
+            assert adata.obs.get("ambient_correction_method").unique() == ["decontx"].toSet()
+            assert adata.obs.get("analysis_counts_source").unique() == ["ambient_corrected_decontx"].toSet()
+            assert snapshot(process.out, adata.yaml).match()
+        }
+    }
+
+    test("Should replace reserved layers after copying aliased sources") {
+        setup {
+            run("ADATA_UNIFY", alias: "PREPARE_COUNTS") {
+                script "modules/local/adata/unify/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'source', raw_counts_layer: 'X', ambient_correction_layer: 'counts',
+                         ambient_correction_method: 'scar', analysis_counts_source: 'raw_counts'],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/counts_in_layer.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = "sample"
+                    input[2] = ""
+                    input[3] = ""
+                    input[4] = "unknown"
+                    input[5] = "index"
+                    input[6] = "X"
+                    input[7] = "make_unique"
+                    input[8] = false
+                    input[9] = ""
+                    """
+                }
+            }
+        }
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = PREPARE_COUNTS.out.h5ad.map { meta, h5ad -> [
+                    meta + [id: 'test', raw_counts_layer: 'ambient_corrected_scar',
+                            ambient_correction_layer: 'raw_counts', analysis_counts_source: 'ambient_corrected_scar'], h5ad
+                ] }
+                input[1] = "batch"
+                input[2] = "label"
+                input[3] = "condition"
+                input[4] = "unknown"
+                input[5] = "index"
+                input[6] = "raw_counts"
+                input[7] = "max"
+                input[8] = true
+                input[9] = "donor"
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert "raw_counts" in adata.layers
+            assert "ambient_corrected_scar" in adata.layers
+            assert adata.layers.size() == 2
+            assert adata.obs.get("ambient_correction_method").unique() == ["scar"].toSet()
+            assert adata.obs.get("analysis_counts_source").unique() == ["ambient_corrected_scar"].toSet()
+            assert adata.var.rownames.toUnique().size() == adata.var.rownames.size()
+            assert snapshot(process.out, adata.yaml).match()
+        }
+    }
+
+    test("Should report sample and missing raw layer") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'missing_raw', raw_counts_layer: 'absent_raw'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/counts_in_X.h5ad', checkIfExists: true)
+                ])
+                input[1] = "sample"
+                input[2] = ""
+                input[3] = ""
+                input[4] = "unknown"
+                input[5] = "index"
+                input[6] = "X"
+                input[7] = "sum"
+                input[8] = false
+                input[9] = ""
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Sample missing_raw: missing raw counts source 'absent_raw'")
+        }
+    }
+
+    test("Should report sample and missing generated correction") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'missing_correction', raw_counts_layer: 'X', ambient_correction_layer: 'absent_correction',
+                     ambient_correction_method: 'cellbender', analysis_counts_source: 'raw_counts'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/counts_in_X.h5ad', checkIfExists: true)
+                ])
+                input[1] = "sample"
+                input[2] = ""
+                input[3] = ""
+                input[4] = "unknown"
+                input[5] = "index"
+                input[6] = "X"
+                input[7] = "sum"
+                input[8] = false
+                input[9] = ""
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Sample missing_correction: missing ambient correction counts source 'absent_correction'")
         }
     }
 
@@ -187,7 +417,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                        [id: 'test'],
+                        [id: 'test', raw_counts_layer: 'X', ambient_correction_layer: 'X', ambient_correction_method: 'soupx'],
                         file(params.pipelines_testdata_base_path + '/anndata-variations/with_duplicates.h5ad', checkIfExists: true)
                     ]
                 )
@@ -224,7 +454,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                        [id: 'test'],
+                        [id: 'test', raw_counts_layer: 'X', ambient_correction_layer: 'X', ambient_correction_method: 'soupx'],
                         file(params.pipelines_testdata_base_path + '/anndata-variations/with_duplicates.h5ad', checkIfExists: true)
                     ]
                 )
@@ -261,7 +491,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                        [id: 'test'],
+                        [id: 'test', raw_counts_layer: 'X', ambient_correction_layer: 'X', ambient_correction_method: 'soupx'],
                         file(params.pipelines_testdata_base_path + '/anndata-variations/with_duplicates.h5ad', checkIfExists: true)
                     ]
                 )
@@ -298,7 +528,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                        [id: 'test'],
+                        [id: 'test', raw_counts_layer: 'X', ambient_correction_layer: 'X', ambient_correction_method: 'soupx'],
                         file(params.pipelines_testdata_base_path + '/anndata-variations/with_duplicates.h5ad', checkIfExists: true)
                     ]
                 )
@@ -318,7 +548,6 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
-            // make_unique adds numeric suffixes — var names are unique but not aggregated
             assert adata.var.rownames.toUnique().size() == adata.var.rownames.size()
             assert snapshot(
                 process.out,
@@ -340,7 +569,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                        [id: 'test'],
+                        [id: 'test', raw_counts_layer: 'X', ambient_correction_layer: 'X', ambient_correction_method: 'soupx'],
                         file(params.pipelines_testdata_base_path + '/anndata-variations/with_isoforms.h5ad', checkIfExists: true)
                     ]
                 )
@@ -1237,7 +1466,7 @@ nextflow_process {
     // 9. AnnData STRUCTURE VARIATIONS
     // ============================================================================
 
-    test("Should remove obsm, varm, uns, and layers") {
+    test("Should remove obsm, varm, uns, and unrelated layers") {
         when {
             params {
                 outdir = "$outputDir"
@@ -1269,7 +1498,8 @@ nextflow_process {
                 assert obsm.size() == 0
                 assert varm.size() == 0
                 assert uns.size() == 0
-                assert layers.size() == 0
+                assert "raw_counts" in layers
+                assert layers.size() == 1
             }
             assert snapshot(
                 process.out,
@@ -1318,7 +1548,8 @@ nextflow_process {
                 assert obsm.size() == 0
                 assert varm.size() == 0
                 assert uns.size() == 0
-                assert layers.size() == 0
+                assert "raw_counts" in layers
+                assert layers.size() == 1
             }
             assert snapshot(
                 process.out,
@@ -1363,7 +1594,8 @@ nextflow_process {
                 assert obsm.size() == 0
                 assert varm.size() == 0
                 assert uns.size() == 0
-                assert layers.size() == 0
+                assert "raw_counts" in layers
+                assert layers.size() == 1
             }
             assert snapshot(
                 process.out,

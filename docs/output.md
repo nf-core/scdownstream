@@ -264,6 +264,22 @@ The `09_finalized` directory contains the final results of the pipeline.
 The final H5AD file contains all results from the pipeline and is stored in the `merged.h5ad` file.
 The metadata of the final H5AD file is stored in the `merged_metadata.csv` file.
 
+#### Expression matrices and provenance
+
+The standard final H5AD retains the following matrices even with `--save_intermediates false`:
+
+| Slot                                   | Meaning                                                                                                                                                          |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `X`                                    | Selected analysis counts, raw by default or corrected when `use_ambient_corrected_counts` resolves to `true`.                                                    |
+| `layers['raw_counts']`                 | Selected input before this pipeline's ambient correction, on the current cell and gene axes. Upstream correction is not reversed.                                |
+| `layers['ambient_corrected_<method>']` | Method-specific correction result, retained in both selection modes. For samples without that result in a merged cohort, values fall back to their `raw_counts`. |
+| `layers['counts']`                     | Same values as `X`, written by the normalisation step.                                                                                                           |
+| `layers['log1p']` or `layers['scran']` | Normalised expression derived from the selected analysis counts.                                                                                                 |
+
+The categorical `obs['ambient_correction_method']` records the applied method, or `none` for new uncorrected samples. `obs['analysis_counts_source']` records `raw_counts` or a selected method-specific correction layer.
+
+Optional RDS export retains raw, correction, and normalisation layers as uniquely named SingleCellExperiment assays. The requested analysis counts occupy the first assay, `counts`.
+
 ### MultiQC
 
 <details markdown="1">

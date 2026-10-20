@@ -44,6 +44,10 @@
                             "id": "test",
                             "batch_col": "batch",
                             "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts",
                             "label_col": "label",
                             "condition_col": "condition",
                             "donor_col": "donor",
@@ -78,6 +82,10 @@
                             "id": "test",
                             "batch_col": "batch",
                             "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts",
                             "label_col": "label",
                             "condition_col": "condition",
                             "donor_col": "donor",
@@ -108,7 +116,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-23T16:09:44.516288198",
+        "timestamp": "2026-10-18T17:33:48.872660736",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -134,6 +142,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -171,7 +181,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -190,7 +200,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-25T19:15:20.16910593",
+        "timestamp": "2026-10-18T17:35:13.423844173",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -216,6 +226,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -254,7 +266,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -273,10 +285,286 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-25T19:17:45.147820558",
+        "timestamp": "2026-10-18T17:37:36.393936433",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
+        }
+    },
+    "Should retain named counts and correction through filtering and sampling with sample overrides": {
+        "content": [
+            [
+                {
+                    "id": "disabled",
+                    "batch_col": "batch",
+                    "symbol_col": "index",
+                    "counts_layer": "X",
+                    "label_col": "label",
+                    "condition_col": "condition",
+                    "donor_col": "donor",
+                    "min_genes": 0,
+                    "min_cells": 20,
+                    "max_mito_percentage": 100,
+                    "log1p_total_counts_nmads": 0,
+                    "log1p_n_genes_by_counts_nmads": 0,
+                    "pct_counts_in_top_20_genes_nmads": 0,
+                    "pct_counts_mt_nmads": 0,
+                    "ambient_correction": false,
+                    "use_ambient_corrected_counts": true,
+                    "raw_counts_layer": "raw_counts",
+                    "ambient_correction_layer": null,
+                    "ambient_correction_method": "none",
+                    "analysis_counts_source": "raw_counts",
+                    "unknown_label": "unknown"
+                },
+                {
+                    "id": "global_corrected",
+                    "batch_col": "batch",
+                    "symbol_col": "index",
+                    "counts_layer": "X",
+                    "label_col": "label",
+                    "condition_col": "condition",
+                    "donor_col": "donor",
+                    "min_genes": 0,
+                    "min_cells": 20,
+                    "max_mito_percentage": 100,
+                    "log1p_total_counts_nmads": 0,
+                    "log1p_n_genes_by_counts_nmads": 0,
+                    "pct_counts_in_top_20_genes_nmads": 0,
+                    "pct_counts_mt_nmads": 0,
+                    "raw_counts_layer": "raw_counts",
+                    "ambient_correction_layer": "ambient_corrected_decontx",
+                    "ambient_correction_method": "decontx",
+                    "analysis_counts_source": "ambient_corrected_decontx",
+                    "unknown_label": "unknown"
+                },
+                {
+                    "id": "sample_raw",
+                    "batch_col": "batch",
+                    "symbol_col": "index",
+                    "counts_layer": "X",
+                    "label_col": "label",
+                    "condition_col": "condition",
+                    "donor_col": "donor",
+                    "min_genes": 0,
+                    "min_cells": 20,
+                    "max_mito_percentage": 100,
+                    "log1p_total_counts_nmads": 0,
+                    "log1p_n_genes_by_counts_nmads": 0,
+                    "pct_counts_in_top_20_genes_nmads": 0,
+                    "pct_counts_mt_nmads": 0,
+                    "use_ambient_corrected_counts": false,
+                    "raw_counts_layer": "raw_counts",
+                    "ambient_correction_layer": "ambient_corrected_decontx",
+                    "ambient_correction_method": "decontx",
+                    "analysis_counts_source": "raw_counts",
+                    "unknown_label": "unknown"
+                }
+            ],
+            [
+                {
+                    "n_obs": 100,
+                    "n_vars": 1438,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample",
+                            "ambient_correction_method",
+                            "analysis_counts_source",
+                            "batch",
+                            "label",
+                            "condition",
+                            "donor",
+                            "sample_original",
+                            "n_genes_by_counts",
+                            "log1p_n_genes_by_counts",
+                            "total_counts",
+                            "log1p_total_counts",
+                            "pct_counts_in_top_20_genes",
+                            "total_counts_mt",
+                            "log1p_total_counts_mt",
+                            "pct_counts_mt",
+                            "total_counts_ribo",
+                            "log1p_total_counts_ribo",
+                            "pct_counts_ribo",
+                            "total_counts_hb",
+                            "log1p_total_counts_hb",
+                            "pct_counts_hb",
+                            "n_genes"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "mt",
+                            "ribo",
+                            "hb",
+                            "n_cells_by_counts",
+                            "mean_counts",
+                            "log1p_mean_counts",
+                            "pct_dropout_by_counts",
+                            "total_counts",
+                            "log1p_total_counts",
+                            "n_cells"
+                        ]
+                    },
+                    "layers": [
+                        "raw_counts"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                },
+                {
+                    "n_obs": 100,
+                    "n_vars": 1438,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample",
+                            "ambient_correction_method",
+                            "analysis_counts_source",
+                            "batch",
+                            "label",
+                            "condition",
+                            "donor",
+                            "sample_original",
+                            "n_genes_by_counts",
+                            "log1p_n_genes_by_counts",
+                            "total_counts",
+                            "log1p_total_counts",
+                            "pct_counts_in_top_20_genes",
+                            "total_counts_mt",
+                            "log1p_total_counts_mt",
+                            "pct_counts_mt",
+                            "total_counts_ribo",
+                            "log1p_total_counts_ribo",
+                            "pct_counts_ribo",
+                            "total_counts_hb",
+                            "log1p_total_counts_hb",
+                            "pct_counts_hb",
+                            "n_genes"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "mt",
+                            "ribo",
+                            "hb",
+                            "n_cells_by_counts",
+                            "mean_counts",
+                            "log1p_mean_counts",
+                            "pct_dropout_by_counts",
+                            "total_counts",
+                            "log1p_total_counts",
+                            "n_cells"
+                        ]
+                    },
+                    "layers": [
+                        "ambient_corrected_decontx",
+                        "raw_counts"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                },
+                {
+                    "n_obs": 100,
+                    "n_vars": 1438,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample",
+                            "ambient_correction_method",
+                            "analysis_counts_source",
+                            "batch",
+                            "label",
+                            "condition",
+                            "donor",
+                            "sample_original",
+                            "n_genes_by_counts",
+                            "log1p_n_genes_by_counts",
+                            "total_counts",
+                            "log1p_total_counts",
+                            "pct_counts_in_top_20_genes",
+                            "total_counts_mt",
+                            "log1p_total_counts_mt",
+                            "pct_counts_mt",
+                            "total_counts_ribo",
+                            "log1p_total_counts_ribo",
+                            "pct_counts_ribo",
+                            "total_counts_hb",
+                            "log1p_total_counts_hb",
+                            "pct_counts_hb",
+                            "n_genes"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "mt",
+                            "ribo",
+                            "hb",
+                            "n_cells_by_counts",
+                            "mean_counts",
+                            "log1p_mean_counts",
+                            "pct_dropout_by_counts",
+                            "total_counts",
+                            "log1p_total_counts",
+                            "n_cells"
+                        ]
+                    },
+                    "layers": [
+                        "ambient_corrected_decontx",
+                        "raw_counts"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                }
+            ]
+        ],
+        "timestamp": "2026-10-18T21:46:58.931396784",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "Should run with ambient RNA removal and doublet detection": {
@@ -299,6 +587,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -338,7 +628,8 @@
                     ]
                 },
                 "layers": [
-                    
+                    "ambient_corrected_decontx",
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -357,7 +648,103 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-25T19:13:37.056665668",
+        "timestamp": "2026-10-18T18:06:53.740784205",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should apply sc-best-practices QC filtering when samplesheet defaults are present in meta": {
+        "content": [
+            {
+                "id": "test",
+                "batch_col": "batch",
+                "counts_layer": "X",
+                "min_genes": 0,
+                "min_cells": 20,
+                "max_mito_percentage": 8,
+                "log1p_total_counts_nmads": 5,
+                "log1p_n_genes_by_counts_nmads": 5,
+                "pct_counts_in_top_20_genes_nmads": 5,
+                "pct_counts_mt_nmads": 3,
+                "raw_counts_layer": "raw_counts",
+                "ambient_correction_layer": null,
+                "ambient_correction_method": "none",
+                "analysis_counts_source": "raw_counts",
+                "label_col": "label",
+                "condition_col": "condition",
+                "donor_col": "donor",
+                "unknown_label": "unknown",
+                "symbol_col": "index"
+            },
+            {
+                "n_obs": 12663,
+                "n_vars": 1627,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original",
+                        "n_genes_by_counts",
+                        "log1p_n_genes_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "pct_counts_in_top_20_genes",
+                        "total_counts_mt",
+                        "log1p_total_counts_mt",
+                        "pct_counts_mt",
+                        "total_counts_ribo",
+                        "log1p_total_counts_ribo",
+                        "pct_counts_ribo",
+                        "total_counts_hb",
+                        "log1p_total_counts_hb",
+                        "pct_counts_hb",
+                        "n_genes"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "mt",
+                        "ribo",
+                        "hb",
+                        "n_cells_by_counts",
+                        "mean_counts",
+                        "log1p_mean_counts",
+                        "pct_dropout_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "n_cells"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-18T17:36:22.066445132",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

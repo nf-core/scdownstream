@@ -7,6 +7,147 @@ nextflow_process {
     tag "modules"
     tag "modules_local"
 
+    test("Should round trip layered export with counts from X") {
+
+        setup {
+            run("ADATA_TORDS") {
+                script "modules/local/adata/tords/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'layered'],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = 'X'
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = ADATA_TORDS.out.rds
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def restored = anndata(process.out.h5ad[0][1])
+            assert restored.layers.sort() == ['spliced', 'unspliced']
+            assert restored.n_obs == 12940
+            assert restored.n_vars == 9887
+            assert restored.obs.rownames.size() == restored.n_obs
+            assert restored.var.rownames.size() == restored.n_vars
+            assert restored.obs.rownames.toUnique().size() == restored.n_obs
+            assert restored.var.rownames.toUnique().size() == restored.n_vars
+            assert snapshot(
+                restored.yaml,
+                restored.obs.rownames.take(3),
+                restored.var.rownames.take(3),
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+    }
+
+    test("Should round trip layered export with a named counts source") {
+
+        setup {
+            run("ADATA_TORDS") {
+                script "modules/local/adata/tords/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'layered'],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = 'spliced'
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = ADATA_TORDS.out.rds
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def restored = anndata(process.out.h5ad[0][1])
+            assert restored.layers.sort() == ['X', 'spliced', 'unspliced']
+            assert restored.n_obs == 12940
+            assert restored.n_vars == 9887
+            assert restored.obs.rownames.size() == restored.n_obs
+            assert restored.var.rownames.size() == restored.n_vars
+            assert restored.obs.rownames.toUnique().size() == restored.n_obs
+            assert restored.var.rownames.toUnique().size() == restored.n_vars
+            assert snapshot(
+                restored.yaml,
+                restored.obs.rownames.take(3),
+                restored.var.rownames.take(3),
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+    }
+
+    test("Should round trip layered export with the counts alias selected") {
+
+        setup {
+            run("ADATA_TORDS") {
+                script "modules/local/adata/tords/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'layered'],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = 'counts'
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = ADATA_TORDS.out.rds
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def restored = anndata(process.out.h5ad[0][1])
+            assert restored.layers.sort() == ['X', 'spliced', 'unspliced']
+            assert restored.n_obs == 12940
+            assert restored.n_vars == 9887
+            assert restored.obs.rownames.size() == restored.n_obs
+            assert restored.var.rownames.size() == restored.n_vars
+            assert restored.obs.rownames.toUnique().size() == restored.n_obs
+            assert restored.var.rownames.toUnique().size() == restored.n_vars
+            assert snapshot(
+                restored.yaml,
+                restored.obs.rownames.take(3),
+                restored.var.rownames.take(3),
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+    }
+
     test("Should read seurat file") {
 
         when {

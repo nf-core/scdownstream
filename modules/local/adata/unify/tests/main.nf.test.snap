@@ -7,28 +7,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,dafef99c3ae6bb081fc8da0f50513cfb"
+                        "test_unified.h5ad:md5,d31f093815d4a1692719ac6473165260"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,dafef99c3ae6bb081fc8da0f50513cfb"
+                        "test_unified.h5ad:md5,d31f093815d4a1692719ac6473165260"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -41,6 +42,8 @@
                     "columns": [
                         "sample",
                         "label",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "condition",
                         "donor",
@@ -54,7 +57,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -73,11 +76,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:25:17.681866358",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:43:50.947921506"
     },
     "Should handle sample column with different value": {
         "content": [
@@ -87,28 +90,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,d9722c1ba56aa30554500104bc8b624f"
+                        "test_unified.h5ad:md5,3a4519c5bd7c690a26450a9d146718e6"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,d9722c1ba56aa30554500104bc8b624f"
+                        "test_unified.h5ad:md5,3a4519c5bd7c690a26450a9d146718e6"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -120,6 +124,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -134,7 +140,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -153,11 +159,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:30:23.899769449",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:55:01.368368608"
     },
     "Should handle symbols in column": {
         "content": [
@@ -167,28 +173,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,8153e77eb8bffff125da9ec1bb34663b"
+                        "test_unified.h5ad:md5,859425f2ea4ee8627305328a84f6ad4d"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,8153e77eb8bffff125da9ec1bb34663b"
+                        "test_unified.h5ad:md5,859425f2ea4ee8627305328a84f6ad4d"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -200,6 +207,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -215,7 +224,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -234,11 +243,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:21:01.827292086",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:38:30.124855223"
     },
     "Should handle label column with different name": {
         "content": [
@@ -248,28 +257,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,c11f1e3ba24f5990b03942bc4cddd0c4"
+                        "test_unified.h5ad:md5,a600bc43968a839b1d312420b2b8d649"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,c11f1e3ba24f5990b03942bc4cddd0c4"
+                        "test_unified.h5ad:md5,a600bc43968a839b1d312420b2b8d649"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -281,6 +291,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -295,7 +307,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -314,11 +326,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:24:57.208999559",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:42:42.777937664"
     },
     "Should create condition column when missing": {
         "content": [
@@ -328,28 +340,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,0aa71b88ee89ff827071e318785f3b1f"
+                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,0aa71b88ee89ff827071e318785f3b1f"
+                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -361,6 +374,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -375,7 +390,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -394,11 +409,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:28:00.938122011",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:50:21.147783963"
     },
     "Should handle label column with unknown values": {
         "content": [
@@ -408,28 +423,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,de2f60f85566eb9dd1d8fd6899d77c31"
+                        "test_unified.h5ad:md5,8e501e2b334e61fdc82d7c3bc1d761dc"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,de2f60f85566eb9dd1d8fd6899d77c31"
+                        "test_unified.h5ad:md5,8e501e2b334e61fdc82d7c3bc1d761dc"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -441,6 +457,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -455,7 +473,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -474,11 +492,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:25:58.156476874",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:45:38.70408715"
     },
     "Should handle duplicates with sum aggregation": {
         "content": [
@@ -486,30 +504,37 @@
                 "0": [
                     [
                         {
-                            "id": "test"
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,a8d7c66ec06141866c7ad8d31ecb68f4"
+                        "test_unified.h5ad:md5,13fb17c9351e5e889f1a789493fd5513"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
-                            "id": "test"
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,a8d7c66ec06141866c7ad8d31ecb68f4"
+                        "test_unified.h5ad:md5,13fb17c9351e5e889f1a789493fd5513"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -521,6 +546,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -536,7 +563,8 @@
                     ]
                 },
                 "layers": [
-                    
+                    "ambient_corrected_soupx",
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -555,11 +583,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:21:34.502284701",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:38:53.353627699"
     },
     "Should create batch column when missing": {
         "content": [
@@ -569,28 +597,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,64769aa232d2b15123edf5312e8fcc09"
+                        "test_unified.h5ad:md5,16b5b5344bcd68bc82fb33b3b6d909a6"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,64769aa232d2b15123edf5312e8fcc09"
+                        "test_unified.h5ad:md5,16b5b5344bcd68bc82fb33b3b6d909a6"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -601,6 +630,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -615,7 +646,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -634,11 +665,94 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:24:18.693318089",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:41:44.303099148"
+    },
+    "Should retain named correction independently of raw analysis selection": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "counts",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,e7b26f55cae7c79df07e114c01ccd9ec"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "counts",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,e7b26f55cae7c79df07e114c01ccd9ec"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ]
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_soupx",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.4"
+        },
+        "timestamp": "2026-10-18T18:14:08.11602426"
     },
     "Should run without failures - stub": {
         "content": [
@@ -667,11 +781,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-01-11T21:38:13.01844773",
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
-        }
+        },
+        "timestamp": "2026-01-11T21:38:13.01844773"
     },
     "Should handle duplicates with make_unique": {
         "content": [
@@ -679,30 +793,37 @@
                 "0": [
                     [
                         {
-                            "id": "test"
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,d3db23774cd1a19260d62174870c824a"
+                        "test_unified.h5ad:md5,caaa7445c1160ebbe66f5808be4dddb8"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
-                            "id": "test"
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,d3db23774cd1a19260d62174870c824a"
+                        "test_unified.h5ad:md5,caaa7445c1160ebbe66f5808be4dddb8"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -714,6 +835,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -729,7 +852,8 @@
                     ]
                 },
                 "layers": [
-                    
+                    "ambient_corrected_soupx",
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -748,11 +872,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:22:58.301718788",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:40:27.494197951"
     },
     "Should handle condition column with different name": {
         "content": [
@@ -762,28 +886,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,4b4e456890d897e826c9a26bc5868d87"
+                        "test_unified.h5ad:md5,c4cf958fd067ad04ec3c2de9ace0ba18"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,4b4e456890d897e826c9a26bc5868d87"
+                        "test_unified.h5ad:md5,c4cf958fd067ad04ec3c2de9ace0ba18"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -795,6 +920,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -809,7 +936,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -828,11 +955,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:27:19.258657828",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:48:58.788843177"
     },
     "Should handle duplicates with mean aggregation": {
         "content": [
@@ -840,30 +967,37 @@
                 "0": [
                     [
                         {
-                            "id": "test"
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,9a13c26ab762fb33155ff3030f01a7ea"
+                        "test_unified.h5ad:md5,274230db64433cfff1d07800027b87b3"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
-                            "id": "test"
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,9a13c26ab762fb33155ff3030f01a7ea"
+                        "test_unified.h5ad:md5,274230db64433cfff1d07800027b87b3"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -875,6 +1009,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -890,7 +1026,8 @@
                     ]
                 },
                 "layers": [
-                    
+                    "ambient_corrected_soupx",
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -909,11 +1046,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:22:06.237745089",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:39:12.913878669"
     },
     "Should aggregate isoforms": {
         "content": [
@@ -921,30 +1058,37 @@
                 "0": [
                     [
                         {
-                            "id": "test"
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,f459cdf394e9bfdb6152e98e6ce755be"
+                        "test_unified.h5ad:md5,e7b26f55cae7c79df07e114c01ccd9ec"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
-                            "id": "test"
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,f459cdf394e9bfdb6152e98e6ce755be"
+                        "test_unified.h5ad:md5,e7b26f55cae7c79df07e114c01ccd9ec"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -956,6 +1100,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -970,7 +1116,8 @@
                     ]
                 },
                 "layers": [
-                    
+                    "ambient_corrected_soupx",
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -989,11 +1136,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:23:18.939356151",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:40:47.10420762"
     },
     "Should handle condition column already named condition": {
         "content": [
@@ -1003,28 +1150,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,4cbc4be6b2569e8b0d320fd5aa322e66"
+                        "test_unified.h5ad:md5,bcdf33dd5249407c936ddf1230990b9d"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,4cbc4be6b2569e8b0d320fd5aa322e66"
+                        "test_unified.h5ad:md5,bcdf33dd5249407c936ddf1230990b9d"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -1037,6 +1185,8 @@
                     "columns": [
                         "sample",
                         "condition",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "donor",
@@ -1050,7 +1200,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -1069,11 +1219,94 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:27:40.527898774",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:49:33.838134305"
+    },
+    "Should remove obsm, varm, uns, and unrelated layers": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.2",
+                    "numpy": "2.5.3",
+                    "pandas": "3.0.6",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        },
+        "timestamp": "2026-10-18T17:56:27.639337476"
     },
     "Should normalize label column with special characters": {
         "content": [
@@ -1083,28 +1316,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,fa770d9a4626cc74c55f8c76263f4ab7"
+                        "test_unified.h5ad:md5,efd5513f042274f216a588116046d683"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,fa770d9a4626cc74c55f8c76263f4ab7"
+                        "test_unified.h5ad:md5,efd5513f042274f216a588116046d683"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -1116,6 +1350,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -1130,7 +1366,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -1149,11 +1385,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:26:39.720445411",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:47:05.237759481"
     },
     "Should create label column when missing": {
         "content": [
@@ -1163,28 +1399,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,0aa71b88ee89ff827071e318785f3b1f"
+                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,0aa71b88ee89ff827071e318785f3b1f"
+                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -1196,6 +1433,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -1210,7 +1449,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -1229,11 +1468,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:25:38.190223261",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:44:46.228693302"
     },
     "Should handle CSR sparse matrix": {
         "content": [
@@ -1243,28 +1482,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,0aa71b88ee89ff827071e318785f3b1f"
+                        "test_unified.h5ad:md5,3b9da069090358f721ba96d975653909"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,0aa71b88ee89ff827071e318785f3b1f"
+                        "test_unified.h5ad:md5,3b9da069090358f721ba96d975653909"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -1276,6 +1516,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -1290,7 +1532,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -1309,11 +1551,94 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:29:20.197293134",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:53:05.028978145"
+    },
+    "Should replace reserved layers after copying aliased sources": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "ambient_corrected_scar",
+                            "ambient_correction_layer": "raw_counts",
+                            "ambient_correction_method": "scar",
+                            "analysis_counts_source": "ambient_corrected_scar"
+                        },
+                        "test_unified.h5ad:md5,7b8b3943cbfc55fa16d2cf49c4eeb429"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "ambient_corrected_scar",
+                            "ambient_correction_layer": "raw_counts",
+                            "ambient_correction_method": "scar",
+                            "analysis_counts_source": "ambient_corrected_scar"
+                        },
+                        "test_unified.h5ad:md5,7b8b3943cbfc55fa16d2cf49c4eeb429"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ]
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_scar",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.4"
+        },
+        "timestamp": "2026-10-18T18:15:38.632264827"
     },
     "Should handle CSC sparse matrix": {
         "content": [
@@ -1323,28 +1648,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,0aa71b88ee89ff827071e318785f3b1f"
+                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,0aa71b88ee89ff827071e318785f3b1f"
+                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -1356,6 +1682,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -1370,7 +1698,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -1389,11 +1717,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:29:41.61500287",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:53:44.816834045"
     },
     "Should handle batch column with different name": {
         "content": [
@@ -1403,28 +1731,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,b2d5e2fa543af235feb18ab9d0d68098"
+                        "test_unified.h5ad:md5,0bc00164e4df7110107926b0b553fe70"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,b2d5e2fa543af235feb18ab9d0d68098"
+                        "test_unified.h5ad:md5,0bc00164e4df7110107926b0b553fe70"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -1435,6 +1764,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -1449,7 +1780,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -1468,11 +1799,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:23:38.796025594",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:41:05.922035741"
     },
     "Should handle label column with NaN values": {
         "content": [
@@ -1482,28 +1813,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,7729efadd0a2c85202df7a2030ed21ce"
+                        "test_unified.h5ad:md5,de8db633d93a8aab161d3af8f62d21bd"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,7729efadd0a2c85202df7a2030ed21ce"
+                        "test_unified.h5ad:md5,de8db633d93a8aab161d3af8f62d21bd"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -1515,6 +1847,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -1529,7 +1863,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -1548,11 +1882,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:26:18.998443963",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:46:26.216976383"
     },
     "Should remove obsm, varm, uns, and layers": {
         "content": [
@@ -1628,11 +1962,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:31:06.094654236",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-09-26T10:31:06.094654236"
     },
     "Should handle duplicates with max aggregation": {
         "content": [
@@ -1640,30 +1974,37 @@
                 "0": [
                     [
                         {
-                            "id": "test"
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,9a13c26ab762fb33155ff3030f01a7ea"
+                        "test_unified.h5ad:md5,0fe264b2595d1f32a99529b9dbbfa747"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
-                            "id": "test"
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,9a13c26ab762fb33155ff3030f01a7ea"
+                        "test_unified.h5ad:md5,0fe264b2595d1f32a99529b9dbbfa747"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -1675,6 +2016,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -1690,7 +2033,8 @@
                     ]
                 },
                 "layers": [
-                    
+                    "ambient_corrected_soupx",
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -1709,11 +2053,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:22:38.873887439",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:39:47.00513438"
     },
     "Should create donor column when missing": {
         "content": [
@@ -1723,28 +2067,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,64769aa232d2b15123edf5312e8fcc09"
+                        "test_unified.h5ad:md5,16b5b5344bcd68bc82fb33b3b6d909a6"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,64769aa232d2b15123edf5312e8fcc09"
+                        "test_unified.h5ad:md5,16b5b5344bcd68bc82fb33b3b6d909a6"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -1755,6 +2100,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -1769,7 +2116,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -1788,11 +2135,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:28:40.0008196",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:51:49.409641118"
     },
     "Should create sample column when missing": {
         "content": [
@@ -1802,28 +2149,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,48022bf4497f175716df12f33b48e79c"
+                        "test_unified.h5ad:md5,5fb0c606171c0462c550922539d4822c"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,48022bf4497f175716df12f33b48e79c"
+                        "test_unified.h5ad:md5,5fb0c606171c0462c550922539d4822c"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -1834,6 +2182,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "sample",
                         "batch",
                         "label",
@@ -1849,7 +2199,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -1868,11 +2218,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:30:45.208290813",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:55:41.971854682"
     },
     "Should handle batch column already named batch": {
         "content": [
@@ -1882,28 +2232,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,b2d5e2fa543af235feb18ab9d0d68098"
+                        "test_unified.h5ad:md5,34ac46211f258aa0ae6c207a68fe3de5"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,b2d5e2fa543af235feb18ab9d0d68098"
+                        "test_unified.h5ad:md5,34ac46211f258aa0ae6c207a68fe3de5"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -1915,6 +2266,8 @@
                     "index": "_index",
                     "columns": [
                         "batch",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "label",
                         "condition",
                         "donor",
@@ -1928,7 +2281,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -1947,11 +2300,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:23:58.369470973",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:41:24.04610259"
     },
     "Should handle complex structure": {
         "content": [
@@ -1961,28 +2314,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,64f80c207cd0bee8204aac1a8b8a4cbb"
+                        "test_unified.h5ad:md5,a6a9458c802d0507b902d7cadbb1587c"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,64f80c207cd0bee8204aac1a8b8a4cbb"
+                        "test_unified.h5ad:md5,a6a9458c802d0507b902d7cadbb1587c"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -1994,6 +2348,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -2010,7 +2366,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -2029,11 +2385,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:31:48.726306006",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:57:42.114628535"
     },
     "Should handle counts in layer": {
         "content": [
@@ -2043,28 +2399,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,f459cdf394e9bfdb6152e98e6ce755be"
+                        "test_unified.h5ad:md5,216141885300a1d1102febe285c4adfa"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,f459cdf394e9bfdb6152e98e6ce755be"
+                        "test_unified.h5ad:md5,216141885300a1d1102febe285c4adfa"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -2076,6 +2433,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -2090,7 +2449,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -2109,11 +2468,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:20:23.325068063",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:35:36.14760817"
     },
     "Should handle counts in X matrix": {
         "content": [
@@ -2123,28 +2482,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,f459cdf394e9bfdb6152e98e6ce755be"
+                        "test_unified.h5ad:md5,216141885300a1d1102febe285c4adfa"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,f459cdf394e9bfdb6152e98e6ce755be"
+                        "test_unified.h5ad:md5,216141885300a1d1102febe285c4adfa"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -2156,6 +2516,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -2170,7 +2532,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -2189,11 +2551,11 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:20:03.949684427",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        }
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.4"
+        },
+        "timestamp": "2026-10-18T18:09:11.868512153"
     },
     "Should handle symbols as index": {
         "content": [
@@ -2203,28 +2565,29 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,cf0728a5bb15d9af4c3d549abf04d184"
+                        "test_unified.h5ad:md5,32923d23d65c13c8b566141be09d05b4"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,cf0728a5bb15d9af4c3d549abf04d184"
+                        "test_unified.h5ad:md5,32923d23d65c13c8b566141be09d05b4"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
             },
             {
                 "ADATA_UNIFY": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.3",
+                    "pandas": "3.0.6",
                     "python": "3.13.12",
                     "scipy": "1.18.1"
                 }
@@ -2236,6 +2599,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -2250,7 +2615,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -2269,124 +2634,45 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:20:42.678590894",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:38:05.736719847"
     },
-    "Should handle minimal structure": {
+    "Should select a named correction while retaining raw X": {
         "content": [
             {
                 "0": [
                     [
                         {
-                            "id": "test"
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "counts",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "ambient_corrected_decontx"
                         },
-                        "test_unified.h5ad:md5,64769aa232d2b15123edf5312e8fcc09"
+                        "test_unified.h5ad:md5,a93d593714a712e5fe052944fdc9e88d"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ],
                 "h5ad": [
                     [
                         {
-                            "id": "test"
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "counts",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "ambient_corrected_decontx"
                         },
-                        "test_unified.h5ad:md5,64769aa232d2b15123edf5312e8fcc09"
+                        "test_unified.h5ad:md5,a93d593714a712e5fe052944fdc9e88d"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
                 ]
-            },
-            {
-                "ADATA_UNIFY": {
-                    "anndata": "0.13.2",
-                    "numpy": "2.5.3",
-                    "python": "3.13.12",
-                    "scipy": "1.18.1"
-                }
-            },
-            {
-                "n_obs": 12940,
-                "n_vars": 9887,
-                "obs": {
-                    "index": "_index",
-                    "columns": [
-                        "batch",
-                        "label",
-                        "condition",
-                        "donor",
-                        "sample"
-                    ]
-                },
-                "var": {
-                    "index": "_index",
-                    "columns": [
-                        "symbols"
-                    ]
-                },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
-            }
-        ],
-        "timestamp": "2026-09-26T10:31:27.533977822",
-        "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        }
-    },
-    "Should handle duplicate cell names": {
-        "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_unified.h5ad:md5,538c027d12ebafd8a4298358f6d9e7e2"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_unified.h5ad:md5,538c027d12ebafd8a4298358f6d9e7e2"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
-                ]
-            },
-            {
-                "ADATA_UNIFY": {
-                    "anndata": "0.13.2",
-                    "numpy": "2.5.3",
-                    "python": "3.13.12",
-                    "scipy": "1.18.1"
-                }
             },
             {
                 "n_obs": 12940,
@@ -2395,6 +2681,8 @@
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
@@ -2409,7 +2697,8 @@
                     ]
                 },
                 "layers": [
-                    
+                    "ambient_corrected_decontx",
+                    "raw_counts"
                 ],
                 "obsm": [
                     
@@ -2428,10 +2717,249 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:30:02.359270353",
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.4"
+        },
+        "timestamp": "2026-10-18T18:14:48.432951964"
+    },
+    "Should handle minimal structure": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,16b5b5344bcd68bc82fb33b3b6d909a6"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,16b5b5344bcd68bc82fb33b3b6d909a6"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.2",
+                    "numpy": "2.5.3",
+                    "pandas": "3.0.6",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        }
+        },
+        "timestamp": "2026-10-18T17:57:01.976753321"
+    },
+    "Should discard unrelated layers": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ]
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.4"
+        },
+        "timestamp": "2026-10-18T18:13:19.32585388"
+    },
+    "Should handle duplicate cell names": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,8edcf8166ffd079491c99a0ad52f5b1d"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,8edcf8166ffd079491c99a0ad52f5b1d"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.2",
+                    "numpy": "2.5.3",
+                    "pandas": "3.0.6",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        },
+        "timestamp": "2026-10-18T17:54:25.059675558"
     }
 }

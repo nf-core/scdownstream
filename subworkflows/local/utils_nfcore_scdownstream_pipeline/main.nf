@@ -449,13 +449,24 @@ def validateInputParameters() {
 
     validateDecouplerParameters()
 
-    if (pseudobulkingRequired() && params.base_adata) {
+    if (params.base_adata && !workflow.stubRun) {
         def ad = anndata(file(params.base_adata, checkIfExists: true))
-        def donor_col = params.input ? 'donor' : (params.base_donor_col ?: 'donor')
-        if (!(donor_col in ad.obs.colnames)) {
+        def layers = ad.layers.toList()
+        def obs_columns = pseudobulkingRequired() ? ad.obs.colnames.toList() : []
+        ad.close()
+        if (!('raw_counts' in layers)) {
             throw new Exception(
-                "Pseudobulking requires column '${donor_col}' in base_adata. Available obs columns: ${ad.obs.colnames.join(', ')}."
+                "base_adata must contain a raw_counts layer with genuine pre-correction counts. " +
+                "Available layers: ${layers.join(', ')}."
             )
+        }
+        if (pseudobulkingRequired()) {
+            def donor_col = params.input ? 'donor' : (params.base_donor_col ?: 'donor')
+            if (!(donor_col in obs_columns)) {
+                throw new Exception(
+                    "Pseudobulking requires column '${donor_col}' in base_adata. Available obs columns: ${obs_columns.join(', ')}."
+                )
+            }
         }
     }
 }

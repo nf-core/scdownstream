@@ -9,6 +9,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
+- Name the analysis-count selection flag and samplesheet column `use_ambient_corrected_counts`, without a legacy alias, by @nictru and GPT-6.1 Sol [[#345](https://github.com/nf-core/scdownstream/pull/345)].
 - Correct the `cluster_per_label` documentation and describe the two-column samplesheet minimum, optional fields and SoupX input requirement in README, usage and parameter help, by @nictru and GPT-6.1 Sol [[#347](https://github.com/nf-core/scdownstream/pull/347)].
 - Reject unsafe sample identifiers during samplesheet validation, preserve supported identifiers exactly and retain the uniqueness constraint, by @nictru and GPT-6.1 Sol ([#339](https://github.com/nf-core/scdownstream/issues/339)).
 - Generate the `CUSTOM_VOLCANOPLOT` nf-test input with a `SCANPY_RANKGENESGROUPS` setup block and move the edge-case fixtures and gene list to test-datasets by @nictru and Cursor [[#333](https://github.com/nf-core/scdownstream/pull/333)].
@@ -63,6 +64,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Preserve `raw_counts` and named ambient-corrected layers in both analysis modes, respect sample overrides throughout downstream analysis, retain provenance with raw fallback in mixed cohorts, require explicit raw counts in bases, and preserve uniquely named RDS assays, by @nictru and GPT-6.1 Sol [[#345](https://github.com/nf-core/scdownstream/pull/345)].
 - Preserve counts during log1p normalisation and populate query expression layers before extension merges, with nf-test coverage for expression layers and scVI training, by @nictru and GPT-6.1 Sol [[#337](https://github.com/nf-core/scdownstream/pull/337)].
 - Pin `pandas` and `anndata` in `SCANPY_RANKGENESGROUPS`, `CYTETYPE`, and `ADATA_EXTEND` to avoid nullable-string H5AD writes; remove `allow_write_nullable_strings` opt-ins and cast remaining `StringDtype` columns to plain `object` at write boundaries by @nictru [[#310](https://github.com/nf-core/scdownstream/pull/310)].
 - Pass gene symbols into edgePython DE so volcano labels use gene names instead of row indices by @nictru.

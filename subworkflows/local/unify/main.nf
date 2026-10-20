@@ -100,7 +100,11 @@ workflow UNIFY {
             donor_col: 'donor',
             unknown_label: 'unknown',
             symbol_col: 'index',
-            counts_layer: 'X'
+            counts_layer: 'X',
+            raw_counts_layer: 'raw_counts',
+            ambient_correction_layer: meta.ambient_correction_layer ? "ambient_corrected_${meta.ambient_correction_method}" : null,
+            ambient_correction_method: meta.ambient_correction_method ?: 'none',
+            analysis_counts_source: meta.analysis_counts_source ?: 'raw_counts'
         ],
         h5ad]
     }

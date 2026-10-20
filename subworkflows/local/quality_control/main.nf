@@ -19,7 +19,7 @@ workflow QUALITY_CONTROL {
     ch_h5ad                       // channel: [ meta, filtered, unfiltered ]
     empty_droplet_method          //   value: string
     ambient_correction_method     //   value: string
-    ambient_corrected_integration //   value: boolean
+    use_ambient_corrected_counts  //   value: boolean
     unify_gene_symbols            //   value: boolean
     duplicate_var_resolution      //   value: string
     aggregate_isoforms            //   value: boolean
@@ -100,7 +100,7 @@ workflow QUALITY_CONTROL {
     AMBIENT_CORRECTION (
         ch_complete,
         ambient_correction_method,
-        ambient_corrected_integration,
+        use_ambient_corrected_counts,
         scvi_max_epochs
     )
     ch_h5ad = AMBIENT_CORRECTION.out.h5ad

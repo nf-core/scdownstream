@@ -115,13 +115,14 @@
                     "type": "string",
                     "default": "soupx",
                     "enum": ["none", "decontx", "cellbender", "soupx", "scar"],
-                    "description": "Specify the tool to use for ambient RNA correction. SoupX is the default and requires an unfiltered matrix for each corrected sample. If 'none' is selected, no ambient RNA correction will be performed. Per-sample overrides are available via the samplesheet `ambient_correction` column."
+                    "description": "Specify the tool to use for ambient RNA correction. SoupX is the default and requires an unfiltered matrix for each corrected sample. The samplesheet `ambient_correction=false` or global method `none` bypasses correction and selects raw counts.",
+                    "help_text": "Unification retains the selected input before this correction stage as `raw_counts`. Correction results remain in `ambient_corrected_<method>` in both raw and corrected analysis modes. Upstream correction is not reversed."
                 },
-                "ambient_corrected_integration": {
+                "use_ambient_corrected_counts": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Whether to use the ambient-corrected counts for integration. Can be overridden by the `ambient_corrected_integration` in the sample sheet.",
-                    "help_text": "ambient_corrected_integration must be a boolean."
+                    "description": "Select ambient-corrected counts for all subsequent QC, doublet handling, annotation, integration, and downstream analyses.",
+                    "help_text": "Must be a boolean. An explicit samplesheet `use_ambient_corrected_counts` value overrides this flag. Disabled correction or method `none` always selects raw counts. Both `raw_counts` and generated `ambient_corrected_<method>` layers are retained. `X` and the normalisation-created `counts` layer hold the selected analysis counts."
                 },
                 "doublet_detection": {
                     "type": "string",
@@ -203,7 +204,7 @@
                     "type": "string",
                     "default": "scran",
                     "description": "Normalisation method to compute before feature selection and integration.",
-                    "help_text": "Supported methods: `log1p` (shifted-log layer `log1p`) and `scran` (scran-normalised layer `scran`). Raw counts remain in `X`. Layer-aware integrations (PCA, BBKNN, Combat, Scanorama, scanpy HVGs) read the matching layer. Count-model integrations and differential expression always use raw counts. Default: `scran`. The `python_only` profile overrides this to `log1p`.",
+                    "help_text": "Supported methods: `log1p` (shifted-log layer `log1p`) and `scran` (scran-normalised layer `scran`). Selected analysis counts remain in `X` and are retained in `counts`. Pre-correction input remains in `raw_counts`. Layer-aware integrations (PCA, BBKNN, Combat, Scanorama, scanpy HVGs) read the matching normalised layer. Count-model integrations and differential expression follow the selected analysis counts, not an automatic raw-count override. Default: `scran`. The `python_only` profile overrides this to `log1p`.",
                     "pattern": "^(log1p|scran)$"
                 },
                 "symphony_reference": {

@@ -1,98 +1,54 @@
 {
+    "Should select named 'soupx' correction for analysis": {
+        "content": [
+            null,
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_soupx"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-18T17:50:28.114987249",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
     "Should run with 'none' ambient correction": {
         "content": [
             null,
             1
         ],
         "timestamp": "2026-05-20T20:46:53.765259237",
-        "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
-        }
-    },
-    "Should run with 'decontx' ambient correction to 'X'": {
-        "content": [
-            null,
-            {
-                "n_obs": 7373,
-                "n_vars": 9887,
-                "obs": {
-                    "index": "_index",
-                    "columns": [
-                        "sample"
-                    ]
-                },
-                "var": {
-                    "index": "_index",
-                    "columns": [
-                        
-                    ]
-                },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
-            }
-        ],
-        "timestamp": "2026-05-20T20:55:43.571326544",
-        "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
-        }
-    },
-    "Should run with 'decontx' ambient correction and no batch column": {
-        "content": [
-            null,
-            {
-                "n_obs": 7373,
-                "n_vars": 9887,
-                "obs": {
-                    "index": "_index",
-                    "columns": [
-                        "sample"
-                    ]
-                },
-                "var": {
-                    "index": "_index",
-                    "columns": [
-                        
-                    ]
-                },
-                "layers": [
-                    "ambient_corrected_decontx"
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
-            }
-        ],
-        "timestamp": "2026-05-20T20:50:39.637634853",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.0"
@@ -140,6 +96,60 @@
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.0"
+        }
+    },
+    "Should honour a sample selecting correction over the global raw setting": {
+        "content": [
+            {
+                "id": "override",
+                "batch_col": "sample",
+                "use_ambient_corrected_counts": true,
+                "donor_col": "donor",
+                "raw_counts_layer": "X",
+                "counts_layer": "ambient_corrected_decontx",
+                "ambient_correction_layer": "ambient_corrected_decontx",
+                "ambient_correction_method": "decontx",
+                "analysis_counts_source": "ambient_corrected_decontx"
+            },
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_decontx"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-18T21:45:58.885782812",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "Should run with 'decontx' ambient correction": {
@@ -230,6 +240,329 @@
             "nextflow": "26.04.0"
         }
     },
+    "Should select named 'decontx' correction for analysis": {
+        "content": [
+            null,
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_decontx"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-18T17:46:12.519557984",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should select named 'cellbender' correction for analysis": {
+        "content": [
+            null,
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_cellbender"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-18T18:02:14.625493542",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run with 'scar' ambient correction to 'X'": {
+        "content": [
+            null,
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "_scvi_batch",
+                        "_scvi_labels"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    "ambient_profile"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-08-10T10:44:43.26733802",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run with 'decontx' ambient correction to 'X'": {
+        "content": [
+            null,
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-05-20T20:55:43.571326544",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
+        }
+    },
+    "Should run with 'decontx' ambient correction and no batch column": {
+        "content": [
+            null,
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_decontx"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-05-20T20:50:39.637634853",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
+        }
+    },
+    "Should preserve a raw selector that collides with the canonical correction destination": {
+        "content": [
+            [
+                {
+                    "id": "collision_false",
+                    "counts_layer": "ambient_corrected_decontx",
+                    "use_ambient_corrected_counts": false,
+                    "raw_counts_layer": "ambient_corrected_decontx",
+                    "ambient_correction_layer": "ambient_corrected_decontx_internal",
+                    "ambient_correction_method": "decontx",
+                    "analysis_counts_source": "raw_counts"
+                },
+                {
+                    "id": "collision_true",
+                    "counts_layer": "ambient_corrected_decontx_internal",
+                    "use_ambient_corrected_counts": true,
+                    "raw_counts_layer": "ambient_corrected_decontx",
+                    "ambient_correction_layer": "ambient_corrected_decontx_internal",
+                    "ambient_correction_method": "decontx",
+                    "analysis_counts_source": "ambient_corrected_decontx"
+                }
+            ],
+            [
+                {
+                    "n_obs": 7373,
+                    "n_vars": 9887,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            
+                        ]
+                    },
+                    "layers": [
+                        "ambient_corrected_decontx",
+                        "ambient_corrected_decontx_internal"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                },
+                {
+                    "n_obs": 7373,
+                    "n_vars": 9887,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            
+                        ]
+                    },
+                    "layers": [
+                        "ambient_corrected_decontx",
+                        "ambient_corrected_decontx_internal"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                }
+            ]
+        ],
+        "timestamp": "2026-10-18T21:49:35.620913189",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
     "Should not do anything if ambient correction is disabled in meta": {
         "content": [
             null,
@@ -282,6 +615,52 @@
             }
         ],
         "timestamp": "2026-08-10T10:35:23.352492221",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should select named 'scar' correction for analysis": {
+        "content": [
+            null,
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "_scvi_batch",
+                        "_scvi_labels"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_scar"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    "ambient_profile"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-18T17:58:13.326855455",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -375,18 +754,24 @@
             "nextflow": "26.04.0"
         }
     },
-    "Should run with 'scar' ambient correction to 'X'": {
+    "Should honour a sample selecting raw over the global correction setting": {
         "content": [
-            null,
+            {
+                "id": "override",
+                "use_ambient_corrected_counts": false,
+                "raw_counts_layer": "X",
+                "counts_layer": "X",
+                "ambient_correction_layer": "ambient_corrected_decontx",
+                "ambient_correction_method": "decontx",
+                "analysis_counts_source": "raw_counts"
+            },
             {
                 "n_obs": 7373,
                 "n_vars": 9887,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample",
-                        "_scvi_batch",
-                        "_scvi_labels"
+                        "sample"
                     ]
                 },
                 "var": {
@@ -396,13 +781,13 @@
                     ]
                 },
                 "layers": [
-                    
+                    "ambient_corrected_decontx"
                 ],
                 "obsm": [
                     
                 ],
                 "varm": [
-                    "ambient_profile"
+                    
                 ],
                 "obsp": [
                     
@@ -415,10 +800,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-08-10T10:44:43.26733802",
+        "timestamp": "2026-10-18T21:47:04.837984419",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }

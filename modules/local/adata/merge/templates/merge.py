@@ -11,18 +11,40 @@ import scipy
 import yaml
 from scipy.sparse import csr_matrix
 
-adatas = [sc.read_h5ad(f) for f in sorted("${h5ads}".split())]
+input_paths = sorted("${h5ads}".split())
+adatas = [sc.read_h5ad(f) for f in input_paths]
 
 base_path = "${base}"
 if base_path:
     adata_base = sc.read_h5ad(base_path)
     adatas = [adata_base] + adatas
+    input_paths = [base_path] + input_paths
+
+provenance_columns = ["ambient_correction_method", "analysis_counts_source"]
+correction_layers = {
+    layer
+    for adata in adatas
+    for layer in adata.layers
+    if isinstance(layer, str) and layer.startswith("ambient_corrected_")
+}
+
+for source, adata in zip(input_paths, adatas, strict=True):
+    if "raw_counts" not in adata.layers:
+        raise ValueError(f"AnnData '{source}' has no raw_counts layer.")
+    adata.layers["raw_counts"] = csr_matrix(adata.layers["raw_counts"])
+    for layer in sorted(correction_layers):
+        if layer not in adata.layers:
+            adata.layers[layer] = adata.layers["raw_counts"].copy()
+        else:
+            adata.layers[layer] = csr_matrix(adata.layers[layer])
+    for column in provenance_columns:
+        if column not in adata.obs:
+            adata.obs[column] = "unknown"
 
 genes = [adata.var_names for adata in adatas]
 obs_col_intersection = set(adatas[0].obs.columns).intersection(*[adata.obs.columns for adata in adatas[1:]])
 force_obs_cols = "${force_obs_cols}"
-obs_col_intersection = list(obs_col_intersection.union(force_obs_cols.split(",") if force_obs_cols else []))
-sorted(obs_col_intersection)
+obs_col_intersection = sorted(obs_col_intersection.union(force_obs_cols.split(",") if force_obs_cols else []))
 
 
 def get_columns(adata):

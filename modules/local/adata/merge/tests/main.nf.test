@@ -8,18 +8,29 @@ nextflow_process {
     tag "modules_local"
 
     setup {
+        run("AMBIENT_CORRECTION") {
+            script "subworkflows/local/ambient_correction/main.nf"
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'SRR28679756'],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                    []
+                ])
+                input[1] = 'decontx'
+                input[2] = false
+                input[3] = null
+                """
+            }
+        }
         run("ADATA_UNIFY") {
             script "modules/local/adata/unify/main.nf"
             process {
                 """
-                input[0] = channel.of([
-                        [id: 'SRR28679756'],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
-                    ], [
+                input[0] = AMBIENT_CORRECTION.out.h5ad.mix(channel.of([
                         [id: 'SRR28679759'],
                         file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
-                    ]
-                )
+                    ]))
                 input[1] = 'sample'
                 input[2] = ''
                 input[3] = ''
@@ -67,6 +78,13 @@ nextflow_process {
             }
             assert adata_integrate.n_obs == adata_outer.n_obs
             assert adata_integrate.n_vars == adata_outer.n_vars
+            assert 'raw_counts' in adata_outer.layers
+            assert 'ambient_corrected_decontx' in adata_outer.layers
+            assert adata_outer.obs.get('ambient_correction_method').unique() == ['decontx', 'none'].toSet()
+            assert adata_outer.obs.get('analysis_counts_source').unique() == ['raw_counts'].toSet()
+            def samples = adata_outer.obs.get('sample').data
+            def methods = adata_outer.obs.get('ambient_correction_method').data
+            assert (0..<adata_outer.n_obs).every { i -> methods[i] == (samples[i] == 'SRR28679756' ? 'decontx' : 'none') }
             assert snapshot(
                 process.out,
                 path(process.out.versions[0]).yaml,
@@ -167,6 +185,11 @@ nextflow_process {
             assert query.obs.get('sample').unique() == ['SRR28679756'].toSet()
             assert 'counts' in outer.layers
             assert 'counts' in query.layers
+            assert 'raw_counts' in outer.layers
+            assert 'raw_counts' in query.layers
+            assert 'ambient_corrected_decontx' in outer.layers
+            assert 'ambient_corrected_decontx' in query.layers
+            assert query.obs.get('ambient_correction_method').unique() == ['decontx'].toSet()
         }
     }
 
@@ -196,5 +219,27 @@ nextflow_process {
             assert snapshot(process.out).match()
         }
 
+    }
+
+    test("Should reject an input without raw count provenance") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'legacy'],
+                    [file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)]
+                ])
+                input[1] = [[], []]
+                input[2] = ''
+                """
+            }
+        }
+        then {
+            assert !process.success
+            assert process.trace.failed().size() == 1
+        }
     }
 }

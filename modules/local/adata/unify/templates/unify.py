@@ -5,26 +5,53 @@ import platform
 
 import anndata as ad
 import numpy as np
+import pandas as pd
 import scipy
 import yaml
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_matrix, hstack, issparse
 
 
-# Function borrowed from https://github.com/icbi-lab/luca/blob/5ffb0a4671e9c288b10e73de18d447ee176bef1d/lib/scanpy_helper_submodule/scanpy_helpers/util.py#L122C1-L135C21
-def aggregate_duplicate_var(adata, aggr_fun=np.mean):
-    retain_var = ~adata.var_names.duplicated(keep="first")
-    duplicated_var = adata.var_names[adata.var_names.duplicated()].unique()
-    if len(duplicated_var):
-        for var in duplicated_var:
-            mask = adata.var_names == var
-            x_slice = adata.X[:, mask].toarray()
-            var_aggr = aggr_fun(x_slice, axis=1)[:, np.newaxis]
-            adata.X[:, mask] = np.repeat(var_aggr, np.sum(mask), axis=1)
-
-        adata_dedup = adata[:, retain_var].copy()
-        return adata_dedup
-    else:
+def aggregate_duplicate_var(adata, method):
+    groups, names = pd.factorize(adata.var_names, sort=False)
+    if len(names) == adata.n_vars:
         return adata
+
+    sizes = np.bincount(groups)
+    columns = np.split(np.argsort(groups, kind="stable"), np.cumsum(sizes)[:-1])
+
+    def aggregate(matrix):
+        if not issparse(matrix):
+            return np.column_stack([getattr(np, method)(matrix[:, indices], axis=1) for indices in columns])
+
+        if method == "max":
+            matrix = matrix.tocsc()
+            return hstack([matrix[:, indices].max(axis=1) for indices in columns], format="csr")
+
+        matrix = csr_matrix(matrix)
+        if method == "sum" and matrix.dtype.kind in "biu":
+            matrix = matrix.astype(np.uint64 if matrix.dtype.kind == "u" else np.int64, copy=False)
+        weights = np.ones(adata.n_vars, dtype=matrix.dtype)
+        if method == "mean":
+            # The divisor includes implicit sparse zeros.
+            dtype = np.float64 if matrix.dtype.kind in "biu" else matrix.dtype
+            weights = weights.astype(dtype) / sizes[groups].astype(dtype)
+        grouping = csr_matrix((weights, (np.arange(adata.n_vars), groups)), shape=(adata.n_vars, len(names)))
+        return matrix @ grouping
+
+    matrices = {key: aggregate(adata.layers[key]) for key in adata.layers if key is not None}
+    selected = aggregate(adata.X)
+    adata = adata[:, ~adata.var_names.duplicated(keep="first")].copy()
+    adata.X = csr_matrix(selected, dtype=np.float32)
+    for key, matrix in matrices.items():
+        adata.layers[key] = matrix
+    return adata
+
+
+def copy_source(adata, source, role):
+    matrix = adata.X if source == "X" else adata.layers.get(source)
+    if matrix is None:
+        raise ValueError(f"Sample {sample_id}: missing {role} counts source '{source}'")
+    return matrix.copy()
 
 
 def to_florent_case(s: str):
@@ -91,19 +118,39 @@ def unify_obs_column(
 
 
 adata = ad.read_h5ad("$h5ad")
+sample_id = "${meta.id}"
 
 counts_layer = "${counts_layer}"
-if counts_layer != "X":
-    adata.X = adata.layers[counts_layer]
+raw_counts_layer = "${meta.raw_counts_layer ?: counts_layer}"
+correction_layer = "${meta.ambient_correction_layer ?: ''}"
+correction_method = "${meta.ambient_correction_method ?: 'none'}"
+analysis_source = "${meta.analysis_counts_source ?: 'raw_counts'}"
+canonical_correction = f"ambient_corrected_{correction_method}"
 
-# Remove all obsm, varm, uns and layers
+if correction_method not in {"none", "unknown", "soupx", "decontx", "cellbender", "scar"}:
+    raise ValueError(f"Sample {sample_id}: invalid ambient correction method '{correction_method}'")
+if bool(correction_layer) != (correction_method not in {"none", "unknown"}):
+    raise ValueError(
+        f"Sample {sample_id}: correction layer '{correction_layer}' is inconsistent with method '{correction_method}'"
+    )
+if analysis_source != "raw_counts" and not (correction_layer and analysis_source == canonical_correction):
+    raise ValueError(
+        f"Sample {sample_id}: analysis counts source '{analysis_source}' has no generated correction layer"
+    )
+# Reserved destinations can alias any input source.
+selected = copy_source(adata, counts_layer, "selected analysis")
+retained = {"raw_counts": copy_source(adata, raw_counts_layer, "raw")}
+if correction_layer:
+    retained[canonical_correction] = copy_source(adata, correction_layer, "ambient correction")
+
 adata.obsm = {}
 adata.varm = {}
 adata.uns = {}
-adata.layers = {}
+adata.layers = retained
 
-# Convert to float32 CSR matrix
-adata.X = csr_matrix(adata.X.astype(np.float32))
+adata.X = csr_matrix(selected, dtype=np.float32)
+adata.obs["ambient_correction_method"] = pd.Categorical([correction_method] * adata.n_obs)
+adata.obs["analysis_counts_source"] = pd.Categorical([analysis_source] * adata.n_obs)
 
 # Unify gene symbols
 symbol_col = "${symbol_col}"
@@ -125,7 +172,7 @@ adata.var.index = adata.var.index.astype(str)
 # Deal with duplicate genes
 method = "${duplicate_var_resolution}"
 if method in ["mean", "sum", "max"]:
-    adata = aggregate_duplicate_var(adata, aggr_fun=getattr(np, method))
+    adata = aggregate_duplicate_var(adata, method)
 elif method == "make_unique":
     adata.var_names_make_unique()
 else:
@@ -205,6 +252,7 @@ versions = {
         "anndata": importlib.metadata.version("anndata"),
         "scipy": scipy.__version__,
         "numpy": np.__version__,
+        "pandas": pd.__version__,
     }
 }
 

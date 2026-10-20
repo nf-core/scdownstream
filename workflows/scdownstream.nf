@@ -35,7 +35,7 @@ workflow SCDOWNSTREAM {
     ch_input                      //    file: samplesheet.csv
     empty_droplet_removal         //   value: string
     ambient_correction            //   value: string
-    ambient_corrected_integration //   value: boolean
+    use_ambient_corrected_counts  //   value: boolean
     doublet_detection             //   value: string
     doublet_detection_threshold   //   value: integer
     doublet_removal               //   value: boolean
@@ -151,7 +151,7 @@ workflow SCDOWNSTREAM {
             ch_h5ad,
             empty_droplet_removal,
             ambient_correction,
-            ambient_corrected_integration,
+            use_ambient_corrected_counts,
             unify_gene_symbols,
             duplicate_var_resolution,
             aggregate_isoforms,

@@ -18,24 +18,17 @@ nextflow_pipeline {
         }
 
         then {
+            assert workflow.success
+            assert file("$outputDir/10_reports/qc-report.html").text.contains("Thus, only the QC-related plots above are shown")
             // stable_name: All files + folders in ${params.outdir}/ with a stable name
             def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', '06_per_group/**', '11_multiqc/**'])
             // stable_path: All files in ${params.outdir}/ with stable content
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
-            assertAll(
-                { assert workflow.success},
-                { assert snapshot(
-                    // Number of successful tasks
-                    // workflow.trace.succeeded().size(), disabled, because tool versions may differ and affect exact task counts
-                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
-                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_scdownstream_software_mqc_versions.yml"),
-                    // All stable path name, with a relative path
-                    stable_name,
-                    // All files with stable contents
-                    stable_path
-                ).match() },
-                { assert file("$outputDir/10_reports/qc-report.html").text.contains("Thus, only the QC-related plots above are shown") }
-            )
+            assert snapshot(
+                removeNextflowVersion("$outputDir/pipeline_info/nf_core_scdownstream_software_mqc_versions.yml"),
+                stable_name,
+                stable_path
+            ).match()
         }
     }
 }

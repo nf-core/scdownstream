@@ -59,7 +59,7 @@ SoupX requires an `unfiltered` matrix for each sample with ambient correction en
 There are a couple of optional columns that can be used for more advanced features:
 
 ```csv title="samplesheet.csv"
-sample,filtered,unfiltered,batch_col,label_col,condition_col,unknown_label,min_genes,min_cells,min_counts_cell,min_counts_gene,expected_cells,doublet_rate,ambient_correction,ambient_corrected_integration
+sample,filtered,unfiltered,batch_col,label_col,condition_col,unknown_label,min_genes,min_cells,min_counts_cell,min_counts_gene,expected_cells,doublet_rate,ambient_correction,use_ambient_corrected_counts
 sample1,/absolute/path/to/sample1_filtered.h5ad,/absolute/path/to/sample1.h5ad,batch,cell_type,condition,unknown,1,2,3,4,5000,0.08,true,false
 sample2,relative/path/to/sample2_filtered.rds,relative/path/to/sample2.rds,batch_id,annotation,condition,unannotated,5,6,7,8,3000,,false,
 sample3,/absolute/path/to/sample3_filtered.csv,/absolute/path/to/sample3.csv,,,,,9,10,11,12,,,true,true
@@ -81,7 +81,7 @@ H5AD files in the samplesheet may use either string encoding, including the `nul
 | `condition_col`                    | Column in the input file containing condition information (e.g. disease state, treatment). If the column does not exist in the input object, the pipeline will create a new column and put `unknown` in it. If the `condition_col` is something else than `condition`, it will be renamed to `condition` during pipeline execution.                                                                                                                        |
 | `donor_col`                        | Column in the input file containing biological replicate / donor identifiers (e.g. patient, mouse). Required in the samplesheet when pseudobulking is enabled. If the column is something else than `donor`, it will be renamed to `donor` during unification.                                                                                                                                                                                             |
 | `unknown_label`                    | Value in the `label_col` column that should be considered as unknown. Defaults to `unknown`. If the `unknown_label` is something else than `unknown`, it will be renamed to `unknown` during pipeline execution. If trying to perform integration with scANVI, more than one unique label other than `unknown` must exist in the input data.                                                                                                               |
-| `counts_layer`                     | Layer in the input file containing the raw counts matrix. Defaults to `X`.                                                                                                                                                                                                                                                                                                                                                                                 |
+| `counts_layer`                     | Input counts source before this pipeline's ambient correction. Defaults to `X`. Retained as `raw_counts` after unification.                                                                                                                                                                                                                                                                                                                                |
 | `min_genes`                        | Minimum number of genes required for a cell to be considered. Defaults to `0`.                                                                                                                                                                                                                                                                                                                                                                             |
 | `min_cells`                        | Minimum number of cells required for a gene to be considered. Defaults to `20`.                                                                                                                                                                                                                                                                                                                                                                            |
 | `min_counts_cell`                  | Minimum number of counts required for a cell to be considered. Defaults to `1`.                                                                                                                                                                                                                                                                                                                                                                            |
@@ -96,7 +96,7 @@ H5AD files in the samplesheet may use either string encoding, including the `nul
 | `pct_counts_in_top_20_genes_nmads` | MAD cutoff for `pct_counts_in_top_20_genes`. Defaults to `5`. Set to `0` to disable.                                                                                                                                                                                                                                                                                                                                                                       |
 | `pct_counts_mt_nmads`              | MAD cutoff for `pct_counts_mt`. Defaults to `3`. Set to `0` to disable.                                                                                                                                                                                                                                                                                                                                                                                    |
 | `ambient_correction`               | Whether to perform ambient RNA correction for this sample. Set to `true` to use the globally configured method, `false` to skip ambient correction for this sample. Defaults to `true`.                                                                                                                                                                                                                                                                    |
-| `ambient_corrected_integration`    | Whether to use ambient-corrected counts for integration for this sample. Set to `true` to use corrected counts in downstream integration, `false` to store them only as additional layers. Can override the global `--ambient_corrected_integration` parameter. Defaults to global setting.                                                                                                                                                                |
+| `use_ambient_corrected_counts`     | Select corrected counts for all subsequent QC, doublet handling, annotation, integration, and downstream analyses. If provided, this value overrides the pipeline parameter with the same name. Defaults to `false`.                                                                                                                                                                                                                                       |
 
 MAD-based filtering follows the [sc-best-practices recipe](https://www.sc-best-practices.org/preprocessing_visualization/quality_control.html#filtering-low-quality-cells). QC thresholds are defined in the [input schema](../assets/schema_input.json) and applied per sample when the samplesheet is read; omitted columns receive those schema defaults. Each MAD column is independent; set a value to `0` to disable that metric for a sample.
 
@@ -119,9 +119,9 @@ With no QC columns, each sample receives:
 
 Doublet handling also follows the book: `--doublet_detection` defaults to `scdblfinder`, and `--doublet_removal` defaults to `false`, so doublet scores are written to `adata.obs` without removing cells until you opt in. Ambient RNA correction defaults to SoupX and requires an unfiltered matrix for each corrected sample.
 
-Before integration, merged raw counts are subset to informative genes. By default, [`feature_selection`](https://nf-co.re/scdownstream/parameters#feature_selection) is `deviance` (binomial deviance via scry, ~4,000 genes when [`integration_n_features`](https://nf-co.re/scdownstream/parameters#integration_n_features) is `0`). Use `--feature_selection hvgs` for scanpy highly variable genes, `--feature_selection pearson_residuals_hvgs` for Pearson-residual HVG selection on raw counts, or `--feature_selection none` to skip gene filtering. The `python_only` profile sets `feature_selection` to `hvgs` automatically.
+Before integration, merged counts are subset to informative genes. By default, [`feature_selection`](https://nf-co.re/scdownstream/parameters#feature_selection) is `deviance` (binomial deviance via scry, ~4,000 genes when [`integration_n_features`](https://nf-co.re/scdownstream/parameters#integration_n_features) is `0`). Use `--feature_selection hvgs` for scanpy highly variable genes, `--feature_selection pearson_residuals_hvgs` for Pearson-residual HVG selection on the counts, or `--feature_selection none` to skip gene filtering. The `python_only` profile sets `feature_selection` to `hvgs` automatically.
 
-Before integration, the merged outer union of genes is normalised once via [`normalization_method`](https://nf-co.re/scdownstream/parameters#normalization_method) (`log1p` or `scran`). Raw counts remain in `X`; normalised expression is stored in a matching AnnData layer (`log1p` or `scran`) inside the parent H5AD. Integration then uses the gene intersection recorded in `var["intersection"]`, applied after normalisation through a dedicated subsetting step. The finalised merged object keeps the full outer gene axis with embedded normalisation layers. In base-only per-label mode (`integrate_per_label`), the complete base is normalised once before splitting by label. Reference extension runs do not fit a new cohort normalisation on the query data. Layer-aware integrations read the embedded normalisation layer directly. The `python_only` profile overrides the default `scran` with `log1p`, avoiding the R-based scran dependency.
+Before integration, the merged outer union of genes is normalised once via [`normalization_method`](https://nf-co.re/scdownstream/parameters#normalization_method) (`log1p` or `scran`). Selected analysis counts (raw or ambient corrected) remain in `X` and `counts`, while pre-correction input remains in `raw_counts`. Normalised expression is stored in a matching AnnData layer (`log1p` or `scran`) inside the parent H5AD. Integration then uses the gene intersection recorded in `var["intersection"]`, applied after normalisation through a dedicated subsetting step. The finalised merged object keeps the full outer gene axis with embedded normalisation layers. In base-only per-label mode (`integrate_per_label`), the complete base is normalised once before splitting by label. Reference extension runs do not fit a new cohort normalisation on the query data. Layer-aware integrations read the embedded normalisation layer directly. The `python_only` profile overrides the default `scran` with `log1p`, avoiding the R-based scran dependency.
 
 | Integration method              | Uses `normalization_method` layer       |
 | ------------------------------- | --------------------------------------- |
@@ -130,13 +130,13 @@ Before integration, the merged outer union of genes is normalised once via [`nor
 | `scanorama`                     | Yes                                     |
 | `bbknn`                         | Yes                                     |
 | `combat`                        | Yes                                     |
-| `scvi`, `scanvi`                | No (raw counts)                         |
+| `scvi`, `scanvi`                | No (selected analysis counts)           |
 | `seurat`                        | No (counts via SCTransform)             |
-| `expimap`                       | No (raw counts)                         |
+| `expimap`                       | No (selected analysis counts)           |
 | `scimilarity`                   | No (internal log-normalisation)         |
 | `symphony` (reference mapping)  | No (reference normalisation target)     |
 
-Count-model integrations (`scvi`, `scanvi`) and all differential expression engines continue to use raw counts.
+Count-model integrations (`scvi`, `scanvi`) and differential expression use the selected analysis counts or their method-specific normalisation.
 
 To disable individual filters for a sample, set the corresponding samplesheet column to `0` (for MAD metrics or `min_cells`) or a permissive value (e.g. `max_mito_percentage=100` for no absolute mitochondrial cutoff):
 
@@ -227,7 +227,7 @@ Example tar archives can be found [here](https://github.com/nf-core/test-dataset
 
 [Pan-human Azimuth](https://github.com/satijalab/panhumanpy) annotates cells with a neural network trained on a large collection of human tissues.
 Set [`azimuth`](https://nf-co.re/scdownstream/dev/parameters/#azimuth) to `true` to enable it; it is disabled by default.
-The pipeline runs `panhumanpy` with model `v1` on the raw counts of each sample after quality control and uses the gene symbols from the `symbol_col` samplesheet column.
+The pipeline runs `panhumanpy` with model `v1` on the selected analysis counts of each sample after quality control and uses the gene symbols from the `symbol_col` samplesheet column.
 It adds the following columns to `obs`:
 
 - `annotation:azimuth:broad:per_cell`
@@ -458,6 +458,7 @@ You do not need to provide a samplesheet via the [`input`](https://nf-co.re/scdo
 You also need either [`base_embeddings`](https://nf-co.re/scdownstream/parameters#base_embeddings) to reuse existing embeddings, or [`integrate_per_label`](https://nf-co.re/scdownstream/parameters#integrate_per_label) to compute new integrations independently for each group in [`base_label_col`](https://nf-co.re/scdownstream/parameters#base_label_col).
 Set [`base_condition_col`](https://nf-co.re/scdownstream/parameters#base_condition_col) if your condition column is not named `condition`.
 Set [`base_donor_col`](https://nf-co.re/scdownstream/parameters#base_donor_col) if your donor / biological-replicate column is not named `donor` (for example `patient_id`).
+Every `base_adata` must contain `layers['raw_counts']`.
 
 The pipeline will then re-execute the tasks after the integration step without performing integration again.
 Set [`cluster_per_label`](https://nf-co.re/scdownstream/parameters#cluster_per_label) to `true` to generate cell type-specific UMAPs, clusterings and PAGA graphs.
@@ -557,24 +558,28 @@ sample1,/path/to/sample1_filtered.h5ad,/path/to/sample1.h5ad,true
 sample2,/path/to/sample2_filtered.h5ad,/path/to/sample2.h5ad,false
 ```
 
-By default, the pipeline stores ambient-corrected counts as additional layers in the AnnData object (e.g., `ambient_corrected_soupx`) while keeping the original raw counts in the `X` layer.
-This means all downstream analysis including integration uses the raw counts, with corrected counts available for optional inspection.
+The following handling is applied to the counts layers:
 
-If you want to use the ambient-corrected counts for integration instead, you can enable this behavior globally or per sample:
+1. The pipeline expects raw counts in `X` (or an alternative layer if provided via `counts_layer` in the samplesheet)
+2. The input raw counts are backed up to `layers['raw_counts']`
+3. Ambient RNA corrected counts are stored as `layers['ambient_corrected_<method>']`
+4. By default, `X` will remain the raw counts for further analyses. However, if `use_ambient_corrected_counts` is set to true, then `X` will contain the ambient corrected counts that the specified method produced.
+
+If you want to use the ambient-corrected counts for downstream analyses instead, you can enable this behaviour globally or per sample:
 
 ```bash
-nextflow run nf-core/scdownstream --ambient_corrected_integration true --input samplesheet.csv --outdir results
+nextflow run nf-core/scdownstream --use_ambient_corrected_counts true --input samplesheet.csv --outdir results
 ```
 
 ```csv title="samplesheet.csv"
-sample,filtered,unfiltered,ambient_corrected_integration
+sample,filtered,unfiltered,use_ambient_corrected_counts
 sample1,/path/to/sample1_filtered.h5ad,/path/to/sample1.h5ad,true
 sample2,/path/to/sample2_filtered.h5ad,/path/to/sample2.h5ad,false
 ```
 
-:::warning
-When `ambient_corrected_integration` is enabled, the corrected counts replace the raw counts in the `X` layer, and the original raw counts are no longer available.
-:::
+The samplesheet value overrides the global parameter. Samples without ambient correction always use the raw counts.
+
+The pipeline records the applied method in `obs['ambient_correction_method']` and the source of `X` in `obs['analysis_counts_source']`. When samples are merged, samples without a given correction layer contribute their raw counts to that layer. The final H5AD and RDS files retain all of these layers, see the [output documentation](output.md#expression-matrices-and-provenance).
 
 ### Updating the pipeline
 
