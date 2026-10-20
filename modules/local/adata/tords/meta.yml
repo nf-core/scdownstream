@@ -1,5 +1,5 @@
 name: "adata_tords"
-description: Convert AnnData to SingleCellExperiment RDS with unique assays and retained raw, corrected and normalised layers
+description: Convert an AnnData h5ad object to a SingleCellExperiment RDS file
 keywords:
   - anndata
   - singlecellexperiment
@@ -27,12 +27,7 @@ input:
           - edam: "http://edamontology.org/format_3590"
   - counts_layer:
       type: string
-      description: |
-        Layer or `X` mapped to the first `counts` assay. The source must exist.
-        Other layers retain their names, including `raw_counts`, correction and
-        normalisation layers. The input `counts` alias is omitted. A named source
-        also retains its original layer name unless it is `counts`; `X` remains
-        available under a unique assay name.
+      description: Layer or `X` used as the counts assay in the RDS object
 
 output:
   rds:
