@@ -276,7 +276,7 @@ The standard final H5AD retains the following matrices even with `--save_interme
 | `layers['counts']`                     | Same values as `X`, written by the normalisation step.                                                                                                           |
 | `layers['log1p']` or `layers['scran']` | Normalised expression derived from the selected analysis counts.                                                                                                 |
 
-The categorical `obs['ambient_correction_method']` records the applied method, or `none` for new uncorrected samples. `obs['analysis_counts_source']` records `raw_counts` or a selected method-specific correction layer. Both columns survive cohort and extension merges independently of ordinary observation-column selection. A correction-layer name does not prove that every cell was corrected because unavailable results use raw fallback.
+The categorical `obs['ambient_correction_method']` records the applied method, or `none` for new uncorrected samples. `obs['analysis_counts_source']` records `raw_counts` or a selected method-specific correction layer.
 
 Optional RDS export retains raw, correction, and normalisation layers as uniquely named SingleCellExperiment assays. The requested analysis counts occupy the first assay, `counts`.
 
