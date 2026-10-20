@@ -30,10 +30,7 @@ correction_layers = {
 
 for source, adata in zip(input_paths, adatas, strict=True):
     if "raw_counts" not in adata.layers:
-        raise ValueError(
-            f"AnnData '{source}' has no raw_counts layer. Regenerate it with the current pipeline or provide genuine "
-            "pre-correction counts; X and counts may already contain corrected values."
-        )
+        raise ValueError(f"AnnData '{source}' has no raw_counts layer.")
     adata.layers["raw_counts"] = csr_matrix(adata.layers["raw_counts"])
     for layer in sorted(correction_layers):
         if layer not in adata.layers:
