@@ -457,8 +457,6 @@ def validateInputParameters() {
         if (!('raw_counts' in layers)) {
             throw new Exception(
                 "base_adata must contain a raw_counts layer with genuine pre-correction counts. " +
-                "Regenerate this base with the current pipeline or supply the original counts. " +
-                "Do not copy X or counts unless their uncorrected provenance is known. " +
                 "Available layers: ${layers.join(', ')}."
             )
         }
