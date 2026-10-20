@@ -96,7 +96,7 @@ H5AD files in the samplesheet may use either string encoding, including the `nul
 | `pct_counts_in_top_20_genes_nmads` | MAD cutoff for `pct_counts_in_top_20_genes`. Defaults to `5`. Set to `0` to disable.                                                                                                                                                                                                                                                                                                                                                                       |
 | `pct_counts_mt_nmads`              | MAD cutoff for `pct_counts_mt`. Defaults to `3`. Set to `0` to disable.                                                                                                                                                                                                                                                                                                                                                                                    |
 | `ambient_correction`               | Whether to perform ambient RNA correction for this sample. Set to `true` to use the globally configured method, `false` to skip ambient correction for this sample. Defaults to `true`.                                                                                                                                                                                                                                                                    |
-| `use_ambient_corrected_counts`     | Select corrected counts for all subsequent QC, doublet handling, annotation, integration, and downstream analyses. An explicit value overrides the global flag. Disabled correction always selects raw counts. Both raw and generated corrected layers remain available.                                                                                                                                                                                   |
+| `use_ambient_corrected_counts`     | Select corrected counts for all subsequent QC, doublet handling, annotation, integration, and downstream analyses. If provided, this value overrides the pipeline parameter with the same name. Defaults to `false`.                                                                                                                                                                                                                                       |
 
 MAD-based filtering follows the [sc-best-practices recipe](https://www.sc-best-practices.org/preprocessing_visualization/quality_control.html#filtering-low-quality-cells). QC thresholds are defined in the [input schema](../assets/schema_input.json) and applied per sample when the samplesheet is read; omitted columns receive those schema defaults. Each MAD column is independent; set a value to `0` to disable that metric for a sample.
 
@@ -119,9 +119,9 @@ With no QC columns, each sample receives:
 
 Doublet handling also follows the book: `--doublet_detection` defaults to `scdblfinder`, and `--doublet_removal` defaults to `false`, so doublet scores are written to `adata.obs` without removing cells until you opt in. Ambient RNA correction defaults to SoupX and requires an unfiltered matrix for each corrected sample.
 
-Before integration, merged selected analysis counts are subset to informative genes. By default, [`feature_selection`](https://nf-co.re/scdownstream/parameters#feature_selection) is `deviance` (binomial deviance via scry, ~4,000 genes when [`integration_n_features`](https://nf-co.re/scdownstream/parameters#integration_n_features) is `0`). Use `--feature_selection hvgs` for scanpy highly variable genes, `--feature_selection pearson_residuals_hvgs` for Pearson-residual HVG selection on selected counts, or `--feature_selection none` to skip gene filtering. The `python_only` profile sets `feature_selection` to `hvgs` automatically.
+Before integration, merged counts are subset to informative genes. By default, [`feature_selection`](https://nf-co.re/scdownstream/parameters#feature_selection) is `deviance` (binomial deviance via scry, ~4,000 genes when [`integration_n_features`](https://nf-co.re/scdownstream/parameters#integration_n_features) is `0`). Use `--feature_selection hvgs` for scanpy highly variable genes, `--feature_selection pearson_residuals_hvgs` for Pearson-residual HVG selection on the counts, or `--feature_selection none` to skip gene filtering. The `python_only` profile sets `feature_selection` to `hvgs` automatically.
 
-Before integration, the merged outer union of genes is normalised once via [`normalization_method`](https://nf-co.re/scdownstream/parameters#normalization_method) (`log1p` or `scran`). Selected analysis counts remain in `X` and `counts`, while pre-correction input remains in `raw_counts`. Normalised expression is stored in a matching AnnData layer (`log1p` or `scran`) inside the parent H5AD. Integration then uses the gene intersection recorded in `var["intersection"]`, applied after normalisation through a dedicated subsetting step. The finalised merged object keeps the full outer gene axis with embedded normalisation layers. In base-only per-label mode (`integrate_per_label`), the complete base is normalised once before splitting by label. Reference extension runs do not fit a new cohort normalisation on the query data. Layer-aware integrations read the embedded normalisation layer directly. The `python_only` profile overrides the default `scran` with `log1p`, avoiding the R-based scran dependency.
+Before integration, the merged outer union of genes is normalised once via [`normalization_method`](https://nf-co.re/scdownstream/parameters#normalization_method) (`log1p` or `scran`). Selected analysis counts (raw or ambient corrected) remain in `X` and `counts`, while pre-correction input remains in `raw_counts`. Normalised expression is stored in a matching AnnData layer (`log1p` or `scran`) inside the parent H5AD. Integration then uses the gene intersection recorded in `var["intersection"]`, applied after normalisation through a dedicated subsetting step. The finalised merged object keeps the full outer gene axis with embedded normalisation layers. In base-only per-label mode (`integrate_per_label`), the complete base is normalised once before splitting by label. Reference extension runs do not fit a new cohort normalisation on the query data. Layer-aware integrations read the embedded normalisation layer directly. The `python_only` profile overrides the default `scran` with `log1p`, avoiding the R-based scran dependency.
 
 | Integration method              | Uses `normalization_method` layer       |
 | ------------------------------- | --------------------------------------- |
@@ -136,7 +136,7 @@ Before integration, the merged outer union of genes is normalised once via [`nor
 | `scimilarity`                   | No (internal log-normalisation)         |
 | `symphony` (reference mapping)  | No (reference normalisation target)     |
 
-Count-model integrations (`scvi`, `scanvi`) and differential expression use the selected analysis counts or their method-specific normalisation. They do not automatically switch back to `raw_counts` when ambient-corrected counts are selected.
+Count-model integrations (`scvi`, `scanvi`) and differential expression use the selected analysis counts or their method-specific normalisation.
 
 To disable individual filters for a sample, set the corresponding samplesheet column to `0` (for MAD metrics or `min_cells`) or a permissive value (e.g. `max_mito_percentage=100` for no absolute mitochondrial cutoff):
 
@@ -458,8 +458,7 @@ You do not need to provide a samplesheet via the [`input`](https://nf-co.re/scdo
 You also need either [`base_embeddings`](https://nf-co.re/scdownstream/parameters#base_embeddings) to reuse existing embeddings, or [`integrate_per_label`](https://nf-co.re/scdownstream/parameters#integrate_per_label) to compute new integrations independently for each group in [`base_label_col`](https://nf-co.re/scdownstream/parameters#base_label_col).
 Set [`base_condition_col`](https://nf-co.re/scdownstream/parameters#base_condition_col) if your condition column is not named `condition`.
 Set [`base_donor_col`](https://nf-co.re/scdownstream/parameters#base_donor_col) if your donor / biological-replicate column is not named `donor` (for example `patient_id`).
-
-Every `base_adata` must contain an explicit `layers['raw_counts']`, including reference extension, base-only re-integration, and embedding reuse. The pipeline does not guess raw counts from `X` or `counts`. For a legacy base without this layer, regenerate the base from known input counts or supply genuine pre-correction values aligned to its cells and genes. Do not blindly copy potentially corrected `X` or `counts`. The presence of `raw_counts` satisfies the input contract but does not prove its biological history. Existing layers and known provenance survive base-only reuse without a new correction result.
+Every `base_adata` must contain `layers['raw_counts']`.
 
 The pipeline will then re-execute the tasks after the integration step without performing integration again.
 Set [`cluster_per_label`](https://nf-co.re/scdownstream/parameters#cluster_per_label) to `true` to generate cell type-specific UMAPs, clusterings and PAGA graphs.
@@ -559,11 +558,14 @@ sample1,/path/to/sample1_filtered.h5ad,/path/to/sample1.h5ad,true
 sample2,/path/to/sample2_filtered.h5ad,/path/to/sample2.h5ad,false
 ```
 
-The pipeline always retains the selected input counts before this correction stage in `layers['raw_counts']` after unification. This does not recover counts before upstream correction, such as CellBender in nf-core/scrnaseq. When correction runs, the result is also retained as `layers['ambient_corrected_<method>']`, whether or not selected for analysis.
+The following handling is applied to the counts layers:
 
-By default, `X` holds the raw counts. Enable `--use_ambient_corrected_counts` to select corrected counts for all subsequent QC, doublet handling, annotation, integration, and downstream analyses. Normalisation creates `layers['counts']` from the selected `X`, so `counts` does not necessarily mean uncorrected counts.
+1. The pipeline expects raw counts in `X` (or an alternative layer if provided via `counts_layer` in the samplesheet)
+2. The input raw counts are backed up to `layers['raw_counts']`
+3. Ambient RNA corrected counts are stored as `layers['ambient_corrected_<method>']`
+4. By default, `X` will remain the raw counts for further analyses. However, if `use_ambient_corrected_counts` is set to true, then `X` will contain the ambient corrected counts that the specified method produced.
 
-Configure the selection globally or per sample:
+If you want to use the ambient-corrected counts for downstream analyses instead, you can enable this behaviour globally or per sample:
 
 ```bash
 nextflow run nf-core/scdownstream --use_ambient_corrected_counts true --input samplesheet.csv --outdir results
@@ -575,18 +577,9 @@ sample1,/path/to/sample1_filtered.h5ad,/path/to/sample1.h5ad,true
 sample2,/path/to/sample2_filtered.h5ad,/path/to/sample2.h5ad,false
 ```
 
-An explicit samplesheet `use_ambient_corrected_counts` value overrides the global flag. A sample with `ambient_correction=false`, or any sample with the global method `none`, uses raw counts even when corrected selection is requested. Correction bypass does not create a correction result.
+The samplesheet value overrides the global parameter. Samples without ambient correction always use the raw counts.
 
-Unification applies the same gene renaming, isoform policy, duplicate-gene aggregation, and output gene order to `X` and every retained layer. Cell and gene filtering keeps these matrices aligned. On fresh sample inputs, the current run's `counts_layer` selection is authoritative. Unification may replace reserved `raw_counts`, `counts`, and correction-layer names after preserving the required source matrices. Unrelated input layers are not retained.
-
-The pipeline records actual processing in categorical `obs` columns:
-
-- `ambient_correction_method`: the applied method (`soupx`, `decontx`, `cellbender`, or `scar`), `none` for new uncorrected samples, or `unknown` for unavailable historical provenance.
-- `analysis_counts_source`: `raw_counts`, the selected `ambient_corrected_<method>` layer, or `unknown` for unavailable historical provenance.
-
-When merging samples or extending a reference, each correction layer spans all cells. Samples without that method's result contribute their `raw_counts` to that layer. This raw fallback is not evidence that correction ran. Known provenance is preserved, and absent historical provenance remains `unknown`. Layer names alone do not establish a correction history.
-
-Standard final H5AD and supported RDS outputs retain raw and corrected layers. Per-sample H5AD publication still requires `--save_intermediates`. The optional CELLxGENE derivative remains lean and removes layers. See the [output contract](output.md#expression-matrices-and-provenance).
+The pipeline records the applied method in `obs['ambient_correction_method']` and the source of `X` in `obs['analysis_counts_source']`. When samples are merged, samples without a given correction layer contribute their raw counts to that layer. The final H5AD and RDS files retain all of these layers, see the [output documentation](output.md#expression-matrices-and-provenance).
 
 ### Updating the pipeline
 
