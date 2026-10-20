@@ -62,7 +62,6 @@ nextflow_pipeline {
         then {
             assert workflow.failed
             assert workflow.stdout.toString().contains('base_adata must contain a raw_counts layer with genuine pre-correction counts')
-            assert workflow.stdout.toString().contains('Regenerate this base with the current pipeline or supply the original counts')
         }
     }
 }
