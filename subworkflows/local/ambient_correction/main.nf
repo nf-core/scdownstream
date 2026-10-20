@@ -6,7 +6,7 @@ include { SCVITOOLS_SCAR              } from '../../../modules/nf-core/scvitools
 
 def resolve_ambient_expression(meta, method, global_flag) {
     def raw_layer = meta.counts_layer ?: 'X'
-    def applied_method = meta.ambient_correction == false || method == 'none' ? 'none' : method
+    def applied_method = meta.ambient_correction == false ? 'none' : method
     def canonical_layer = 'ambient_corrected_' + applied_method
     def correction_layer = applied_method == 'none' ? null : canonical_layer
     if (correction_layer == raw_layer) {
