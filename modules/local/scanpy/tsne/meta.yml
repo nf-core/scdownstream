@@ -21,6 +21,9 @@ input:
         type: file
         description: AnnData object in h5ad format with a suitable representation
         pattern: "*.{h5ad}"
+  - - representation:
+        type: string
+        description: Key in obsm to use as the input representation for t-SNE (e.g., X_pca, X_scvi)
 
 output:
   h5ad:

@@ -12,8 +12,15 @@ sc.settings.n_jobs = int("${task.cpus}")
 
 adata = sc.read_h5ad("${h5ad}", backed="r")
 prefix = "${prefix}"
+representation = "${representation}"
 
-sc.tl.tsne(adata, random_state=0)
+if not representation:
+    raise ValueError("representation parameter is required but was not provided")
+
+if representation not in adata.obsm:
+    raise ValueError(f"Representation '{representation}' not found in adata.obsm. Available: {list(adata.obsm.keys())}")
+
+sc.tl.tsne(adata, use_rep=representation, random_state=0)
 
 adata.write_h5ad(f"{prefix}.h5ad")
 df = pd.DataFrame(adata.obsm["X_tsne"], index=adata.obs_names)

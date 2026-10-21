@@ -7,6 +7,56 @@ nextflow_workflow {
     tag "subworkflows"
     tag "subworkflows_local"
 
+    test("Should use PCA for BBKNN t-SNE when the ordinary embedding is absent") {
+
+        setup {
+            run("SCANPY_BBKNN") {
+                script "../../../../modules/local/scanpy/bbknn/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'bbknn', integration: 'bbknn'],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = 'sample'
+                    input[2] = 'X'
+                    input[3] = true
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = SCANPY_BBKNN.out.h5ad
+                input[1] = false
+                input[2] = true
+                input[3] = ''
+                input[4] = [[integration: null, subset: null, resolution: null, analyses: null]]
+                input[5] = []
+                input[6] = 'sample'
+                input[7] = 'X_missing'
+                input[8] = []
+                input[9] = true
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.obsm.any { path(it).fileName.toString().endsWith('_tsne.pkl') }
+            def graph = anndata(workflow.out.h5ad_neighbors[0][1])
+            assert 'X_pca' in graph.obsm
+            assert !('X_missing' in graph.obsm)
+            assert snapshot(workflow.out.obsm.collect { path(it).fileName.toString() }.sort()).match()
+        }
+
+    }
+
     test("Should run without failures - global - stub") {
 
         options '-stub'
