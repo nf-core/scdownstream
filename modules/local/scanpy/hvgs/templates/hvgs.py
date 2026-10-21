@@ -24,9 +24,12 @@ if "${excluded_genes}":
     adata = adata[:, mask].copy()
 
 if n_hvgs > 0 and adata.n_vars <= n_hvgs:
-    # When available genes <= positive requested limit, select all genes
     adata.var["highly_variable"] = True
-    adata.var[["highly_variable"]].to_pickle(f"{prefix}.pkl")
+    fragment = adata.var[["highly_variable"]].copy()
+    subset = "${meta.subset}".strip()
+    if subset and subset != "global" and subset != "null":
+        fragment.columns = [f"{col}:subset:{subset}" for col in fragment.columns]
+    fragment.to_pickle(f"{prefix}.pkl")
 elif adata.n_vars > n_hvgs:
     kwargs = {}
 
@@ -56,7 +59,11 @@ elif adata.n_vars > n_hvgs:
 
     sc.pp.highly_variable_genes(adata, layer=analysis_layer, **kwargs)
 
-    adata.var[["highly_variable"]].to_pickle(f"{prefix}.pkl")
+    fragment = adata.var[["highly_variable"]].copy()
+    subset = "${meta.subset}".strip()
+    if subset and subset != "global" and subset != "null":
+        fragment.columns = [f"{col}:subset:{subset}" for col in fragment.columns]
+    fragment.to_pickle(f"{prefix}.pkl")
 
     adata = adata[:, adata.var["highly_variable"]]
 

@@ -58,6 +58,12 @@ features_df <- data.frame(
     highly_deviant = highly_deviant,
     row.names = rownames(sce)
 )
+
+subset <- trimws("${meta.subset}")
+if (nzchar(subset) && subset != "global" && subset != "null") {
+    colnames(features_df) <- paste0(colnames(features_df), ":subset:", subset)
+}
+
 write.csv(features_df, "${prefix}_features.csv")
 
 top_idx <- ord[seq_len(n_keep)]

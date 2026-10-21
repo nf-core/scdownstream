@@ -146,4 +146,115 @@ nextflow_process {
 
     }
 
+    test("Should namespace fragment columns for named subset") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', subset: 'CD4_T' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "highly_deviant" in var.colnames
+                assert "binomial_deviance" in var.colnames
+                assert n_vars == 100
+            }
+            def var_fragment = path(process.out.var[0]).csv
+            def cols = var_fragment.columns.keySet()
+            assert cols.contains('binomial_deviance:subset:CD4_T')
+            assert cols.contains('highly_deviant:subset:CD4_T')
+            assert !cols.any { it == 'binomial_deviance' || it == 'highly_deviant' }
+        }
+
+    }
+
+    test("Should not namespace fragment columns for global subset") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', subset: 'global' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "highly_deviant" in var.colnames
+                assert "binomial_deviance" in var.colnames
+                assert n_vars == 100
+            }
+            def var_fragment = path(process.out.var[0]).csv
+            def cols = var_fragment.columns.keySet()
+            assert cols.contains('binomial_deviance')
+            assert cols.contains('highly_deviant')
+            assert !cols.any { it.contains(':subset:') }
+        }
+
+    }
+
+    test("Should not namespace fragment columns for missing subset") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "highly_deviant" in var.colnames
+                assert "binomial_deviance" in var.colnames
+                assert n_vars == 100
+            }
+            def var_fragment = path(process.out.var[0]).csv
+            def cols = var_fragment.columns.keySet()
+            assert cols.contains('binomial_deviance')
+            assert cols.contains('highly_deviant')
+            assert !cols.any { it.contains(':subset:') }
+        }
+
+    }
+
 }

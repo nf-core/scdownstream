@@ -71,4 +71,112 @@ nextflow_process {
 
     }
 
+    test("Should namespace fragment columns for named subset") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', subset: 'B_cells' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = ''
+                input[4] = 'X'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.n_vars == 100
+            assert "highly_variable" in adata.var.colnames
+            // Check pickle fragment column names - verify namespacing
+            def pkl_check = ["bash", "-c",
+                "python3 -c 'import pandas as pd, pickle; " +
+                "df = pickle.load(open(\"${process.out.var[0]}\", \"rb\")); " +
+                "print(\",\".join(df.columns.tolist()))'"].execute().text.trim()
+            assert pkl_check == 'highly_variable:subset:B_cells', "Expected namespaced column, got: ${pkl_check}"
+        }
+
+    }
+
+    test("Should not namespace fragment columns for global subset") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', subset: 'global' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = ''
+                input[4] = 'X'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.n_vars == 100
+            assert "highly_variable" in adata.var.colnames
+            // Check pickle fragment column names - verify NO namespacing for global
+            def pkl_check = ["bash", "-c",
+                "python3 -c 'import pandas as pd, pickle; " +
+                "df = pickle.load(open(\"${process.out.var[0]}\", \"rb\")); " +
+                "print(\",\".join(df.columns.tolist()))'"].execute().text.trim()
+            assert pkl_check == 'highly_variable', "Expected non-namespaced column for global, got: ${pkl_check}"
+        }
+
+    }
+
+    test("Should not namespace fragment columns for missing subset") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = ''
+                input[4] = 'X'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.n_vars == 100
+            assert "highly_variable" in adata.var.colnames
+            // Check pickle fragment column names - verify NO namespacing for missing subset
+            def pkl_check = ["bash", "-c",
+                "python3 -c 'import pandas as pd, pickle; " +
+                "df = pickle.load(open(\"${process.out.var[0]}\", \"rb\")); " +
+                "print(\",\".join(df.columns.tolist()))'"].execute().text.trim()
+            assert pkl_check == 'highly_variable', "Expected non-namespaced column for missing subset, got: ${pkl_check}"
+        }
+
+    }
+
 }
