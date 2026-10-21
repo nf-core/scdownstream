@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import csv
 import importlib.metadata
 import pickle
 import platform
@@ -26,6 +27,10 @@ def load_pickle_or_csv(path):
     if path.suffix == ".pkl":
         return pd.read_pickle(path)
     elif path.suffix == ".csv":
+        with path.open(newline="") as handle:
+            columns = next(csv.reader(handle))[1:]
+        if len(columns) != len(set(columns)):
+            raise ValueError(f"Fragment '{path.name}' contains duplicate column names")
         return pd.read_csv(path, index_col=0)
     else:
         raise ValueError(f"Unsupported file extension: {path}")
@@ -41,13 +46,66 @@ def load_layer(path):
     raise ValueError(f"Unsupported layer file extension: {path}")
 
 
-for path in obs_paths:
-    df = load_pickle_or_csv(path).reindex(adata.obs_names)
-    adata.obs = pd.concat([adata.obs, df], axis=1)
+def merge_dataframe(base, paths):
+    """Apply indexed updates while checking agreement between fragment sources."""
+    updates = {}
+    sources = {}
+    categorical_dtypes = {}
+    for path in paths:
+        fragment = load_pickle_or_csv(path)
+        if not fragment.index.is_unique:
+            raise ValueError(f"Fragment '{path.name}' contains duplicate indices")
+        if not fragment.columns.is_unique:
+            raise ValueError(f"Fragment '{path.name}' contains duplicate column names")
+        for column in fragment.columns:
+            incoming = fragment[column].reindex(base.index)
+            if column not in updates:
+                updates[column] = pd.Series(np.nan, index=base.index, dtype=object)
+                sources[column] = pd.Series(index=base.index, dtype=object)
+                categorical_dtypes[column] = []
+                if column in base and isinstance(base[column].dtype, pd.CategoricalDtype):
+                    categorical_dtypes[column].append(base[column].dtype)
+            if isinstance(incoming.dtype, pd.CategoricalDtype):
+                categorical_dtypes[column].append(incoming.dtype)
+            present = incoming.notna()
+            overlap = present & updates[column].notna()
+            conflicts = ~updates[column].loc[overlap].eq(incoming.loc[overlap].astype(object))
+            if conflicts.any():
+                previous = sorted(sources[column].loc[conflicts[conflicts].index].unique())
+                raise ValueError(
+                    f"Conflicting non-null values in column {column!r} between fragments {previous} and {path.name!r}"
+                )
+            updates[column].loc[present] = incoming.loc[present].astype(object)
+            sources[column].loc[present] = path.name
 
-for path in var_paths:
-    df = load_pickle_or_csv(path).reindex(adata.var_names)
-    adata.var = pd.concat([adata.var, df], axis=1)
+    result = base.copy()
+    for column, incoming in updates.items():
+        values = (
+            base[column].astype(object).copy() if column in base else pd.Series(np.nan, index=base.index, dtype=object)
+        )
+        present = incoming.notna()
+        values.loc[present] = incoming.loc[present]
+        values = values.where(values.notna(), np.nan)
+        dtypes = categorical_dtypes[column]
+        if dtypes:
+            categories = dtypes[0].categories.copy()
+            for dtype in dtypes[1:]:
+                categories = categories.union(dtype.categories, sort=False)
+            categories = categories.union(pd.Index(values.dropna().unique().tolist()), sort=False)
+            result[column] = pd.Categorical(values, categories=categories, ordered=dtypes[0].ordered)
+        else:
+            values = values.infer_objects(copy=False)
+            # AnnData cannot serialise object arrays containing booleans and missing values.
+            if values.dtype == object and all(isinstance(value, (bool, np.bool_)) for value in values.dropna()):
+                values = pd.Series(
+                    pd.Categorical(values, categories=pd.Index([False, True], dtype=bool)), index=base.index
+                )
+            result[column] = values
+    return result
+
+
+adata.obs = merge_dataframe(adata.obs, obs_paths)
+adata.var = merge_dataframe(adata.var, var_paths)
 
 for path in obsm_paths:
     df = pd.read_pickle(path).reindex(adata.obs_names)

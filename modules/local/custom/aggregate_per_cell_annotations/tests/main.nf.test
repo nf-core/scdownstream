@@ -7,7 +7,60 @@ nextflow_process {
     tag "modules"
     tag "modules_local"
 
-    test("Should run without failures") {
+    test("Should distinguish named subsets and preserve global annotation names") {
+
+        setup {
+            run("ADATA_EXTEND") {
+                script "../../../adata/extend/main.nf"
+                process {
+                    """
+                    input[0] = channel.of('cell,annotation:test:per_cell\\nSRR28679756_AAACCTGAGAGCTGGT,T_cell\\nSRR28679756_AAACCTGAGATGCCTT,T_cell\\n')
+                        .collectFile(name: 'annotations.csv')
+                        .map { obs -> [
+                            [id: 'annotations'],
+                            file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                            [obs], [], [], [], [], []
+                        ] }
+                    """
+                }
+            }
+        }
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = ADATA_EXTEND.out.h5ad.flatMap { meta, h5ad -> [
+                    [[id: 'global', subset: 'global'], h5ad],
+                    [[id: 'named', subset: 'T_cells'], h5ad],
+                    [[id: 'unsplit'], h5ad]
+                ] }
+                input[1] = 'annotation:test:per_cell'
+                input[2] = 'annotation:test:per_cell'
+                input[3] = 'scvi'
+                input[4] = '0.5'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.obs.size() == 3
+            def names = [:]
+            process.out.aggregate_per_cell_annotations.each { summary ->
+                def file = path(summary)
+                def context = file.fileName.toString().split('_aggregate')[0]
+                names[context] = file.text.readLines().drop(1).collect { it.split(',')[2] }.toSet().toList().sort()
+            }
+            assert names.global == ['annotation:test:aggregated:scvi:0.5']
+            assert names.unsplit == names.global
+            assert names.named == ['annotation:test:aggregated:scvi:0.5:subset:T_cells']
+            assert snapshot(names).match()
+        }
+
+    }
+
+    test("Should reject annotation columns without a per-cell suffix") {
 
         when {
             params {
@@ -30,6 +83,7 @@ nextflow_process {
 
         then {
             assert process.failed
+            assert process.errorReport.contains("ValueError: Unexpected per-cell annotation column: 'sample'")
         }
 
     }

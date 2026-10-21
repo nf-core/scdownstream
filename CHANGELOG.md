@@ -70,6 +70,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Preserve counts during log1p normalisation and populate query expression layers before extension merges, with nf-test coverage for expression layers and scVI training, by @nictru and GPT-6.1 Sol [[#337](https://github.com/nf-core/scdownstream/pull/337)].
 - Pin `pandas` and `anndata` in `SCANPY_RANKGENESGROUPS`, `CYTETYPE`, and `ADATA_EXTEND` to avoid nullable-string H5AD writes; remove `allow_write_nullable_strings` opt-ins and cast remaining `StringDtype` columns to plain `object` at write boundaries by @nictru [[#310](https://github.com/nf-core/scdownstream/pull/310)].
 - Pass gene symbols into edgePython DE so volcano labels use gene names instead of row indices by @nictru.
+- Merge compatible annotation fragments by index, reject conflicting fragment values and distinguish subset-specific aggregated annotations, by @nictru, Claude Sonnet 4.5 and GPT-6.1 Sol.
 - Deduplicate by-sample LIANA obs column selection so `context_key=condition` does not build a 2D frame and crash pandas by @nictru [[#310](https://github.com/nf-core/scdownstream/pull/310)].
 - Sort doublet prediction columns before writing to `obs` so nf-test snapshots are order-stable across parallel methods by @nictru [[#310](https://github.com/nf-core/scdownstream/pull/310)].
 - Make by-sample LIANA subsampling context/donor-aware and drop contexts with too few cells per group before calling LIANA by @nictru.

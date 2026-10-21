@@ -1,4 +1,24 @@
 {
+    "Should distinguish named subsets and preserve global annotation names": {
+        "content": [
+            {
+                "global": [
+                    "annotation:test:aggregated:scvi:0.5"
+                ],
+                "named": [
+                    "annotation:test:aggregated:scvi:0.5:subset:T_cells"
+                ],
+                "unsplit": [
+                    "annotation:test:aggregated:scvi:0.5"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-21T15:24:17.870509136",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
     "Should run without failures - stub": {
         "content": [
             {
