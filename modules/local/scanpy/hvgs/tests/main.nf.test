@@ -110,6 +110,128 @@ nextflow_process {
 
     }
 
+    test("Should run when n_hvgs equals n_vars") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                def h5ad_file = file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        h5ad_file
+                    ]
+                )
+                input[1] = 9887
+                input[2] = []
+                input[3] = 'X'
+                input[4] = true
+                input[5] = ''
+                """
+            }
+        }
+
+        then {
+            def output_adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert "highly_variable" in output_adata.var.colnames
+            assert output_adata.n_vars == 9887
+            assert output_adata.var.highly_variable.unique() == ['TRUE'].toSet()
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                output_adata.n_vars,
+                output_adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run when n_hvgs exceeds n_vars") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                def h5ad_file = file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        h5ad_file
+                    ]
+                )
+                input[1] = 10000
+                input[2] = []
+                input[3] = 'X'
+                input[4] = true
+                input[5] = ''
+                """
+            }
+        }
+
+        then {
+            def output_adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert "highly_variable" in output_adata.var.colnames
+            assert output_adata.n_vars == 9887
+            assert output_adata.var.highly_variable.unique() == ['TRUE'].toSet()
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                output_adata.n_vars,
+                output_adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run when n_hvgs exceeds n_vars after exclusions") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                def h5ad_file = file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        h5ad_file
+                    ]
+                )
+                input[1] = 10000
+                input[2] = channel.of('ANXA1\\nJCHAIN\\nGPNMB\\nHSPA12B\\nVCAN')
+                    .collectFile(name: 'excluded_genes.txt')
+                input[3] = 'X'
+                input[4] = true
+                input[5] = ''
+                """
+            }
+        }
+
+        then {
+            def output_adata = anndata(process.out.h5ad[0][1])
+            def excluded = ['ANXA1', 'JCHAIN', 'GPNMB', 'HSPA12B', 'VCAN']
+            def excluded_absent = excluded.every { !(it in output_adata.var.rownames) }
+
+            assert process.success
+            assert "highly_variable" in output_adata.var.colnames
+            assert output_adata.n_vars == 9882
+            assert excluded_absent
+            assert output_adata.var.highly_variable.unique() == ['TRUE'].toSet()
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                output_adata.n_vars,
+                output_adata.yaml
+            ).match()
+        }
+
+    }
+
     test("Should run without failures - stub") {
 
         options '-stub'

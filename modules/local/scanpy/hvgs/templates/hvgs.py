@@ -23,7 +23,11 @@ if "${excluded_genes}":
     mask = ~adata.var_names.isin(excluded_genes)
     adata = adata[:, mask].copy()
 
-if adata.n_vars > n_hvgs:
+if n_hvgs > 0 and adata.n_vars <= n_hvgs:
+    # When available genes <= positive requested limit, select all genes
+    adata.var["highly_variable"] = True
+    adata.var[["highly_variable"]].to_pickle(f"{prefix}.pkl")
+elif adata.n_vars > n_hvgs:
     kwargs = {}
 
     if batch_key:
