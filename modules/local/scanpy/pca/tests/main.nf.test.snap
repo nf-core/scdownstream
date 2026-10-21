@@ -78,12 +78,63 @@
                     
                 ],
                 "uns": [
-                    "X_pca",
-                    "log1p"
+                    "X_pca"
                 ]
             }
         ],
-        "timestamp": "2026-08-10T17:45:14.994573047",
+        "timestamp": "2026-10-21T14:37:56.425360039",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should preserve input layers": {
+        "content": [
+            {
+                "SCANPY_PCA": {
+                    "pandas": "3.0.5",
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts",
+                    "spliced",
+                    "unspliced"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "X_pca"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-21T14:40:12.803152183",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

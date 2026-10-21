@@ -33,6 +33,50 @@ nextflow_process {
             assert process.success
             assert "X_pca" in adata.obsm
             assert "X_pca" in adata.uns
+            assert "X_pca" in adata.varm
+
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should preserve input layers") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "X_pca"
+                input[2] = "counts"
+                input[3] = true
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+
+            assert process.success
+            assert "X_pca" in adata.obsm
+            assert "X_pca" in adata.uns
+            assert "X_pca" in adata.varm
+
+            with(adata) {
+                assert "counts" in layers
+                assert "spliced" in layers
+                assert "unspliced" in layers
+                assert layers.size() == 3
+            }
 
             assert snapshot(
                 path(process.out.versions[0]).yaml,
