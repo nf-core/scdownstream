@@ -7,11 +7,16 @@ nextflow_workflow {
     tag "subworkflows"
     tag "subworkflows_local"
 
+    def filteredMatrix = 'https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad'
+    def validIds = ['patient-01', '123_sample', 'sample.v2', 'A', 'a', '7a', 'sample_1-2.3']
+
     test("Should preserve supported sample identifiers and case-sensitive uniqueness") {
         when {
+            def samplesheet = new File("$launchDir/samplesheet.csv")
+            samplesheet.text = 'sample,filtered\n' + validIds
+                .collect { id -> "${id},${filteredMatrix}\n" }.join()
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/36d250d1a13387d882a6cbec75da6e1a3d65c5fd/'
-                input = pipelines_testdata_base_path + 'sample_identifiers/valid.csv'
+                input = samplesheet.toString()
                 outdir = "$outputDir"
                 ambient_correction = 'none'
             }
@@ -39,9 +44,14 @@ nextflow_workflow {
 
     test("Should reject every unsupported sample identifier before processing") {
         when {
+            def samplesheet = new File("$launchDir/samplesheet.csv")
+            samplesheet.text = 'sample,filtered\n' + [
+                "patient'01", 'patient/01', 'patient\\01', 'patient 01', 'patient\t01',
+                'patient;01', 'patient$01', 'patient`01', 'patient,01', 'pati\u00ebnt01',
+                '.patient01', '-patient01', '_patient01', '..',
+            ].collect { id -> "\"${id}\",${filteredMatrix}\n" }.join()
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/36d250d1a13387d882a6cbec75da6e1a3d65c5fd/'
-                input = pipelines_testdata_base_path + 'sample_identifiers/unsafe.csv'
+                input = samplesheet.toString()
                 outdir = "$outputDir"
                 ambient_correction = 'none'
             }
@@ -68,9 +78,10 @@ nextflow_workflow {
 
     test("Should reject an empty sample identifier before processing") {
         when {
+            def samplesheet = new File("$launchDir/samplesheet.csv")
+            samplesheet.text = "sample,filtered\n,${filteredMatrix}\n"
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/36d250d1a13387d882a6cbec75da6e1a3d65c5fd/'
-                input = pipelines_testdata_base_path + 'sample_identifiers/empty.csv'
+                input = samplesheet.toString()
                 outdir = "$outputDir"
                 ambient_correction = 'none'
             }
@@ -96,9 +107,10 @@ nextflow_workflow {
 
     test("Should reject duplicate supported sample identifiers before processing") {
         when {
+            def samplesheet = new File("$launchDir/samplesheet.csv")
+            samplesheet.text = "sample,filtered\npatient-01,${filteredMatrix}\npatient-01,${filteredMatrix}\n"
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/36d250d1a13387d882a6cbec75da6e1a3d65c5fd/'
-                input = pipelines_testdata_base_path + 'sample_identifiers/duplicate.csv'
+                input = samplesheet.toString()
                 outdir = "$outputDir"
                 ambient_correction = 'none'
             }
@@ -124,9 +136,10 @@ nextflow_workflow {
 
     test("Should reject CSV-escaped double quotes before processing") {
         when {
+            def samplesheet = new File("$launchDir/samplesheet.csv")
+            samplesheet.text = "sample,filtered\n\"patient\"\"01\",${filteredMatrix}\n"
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/36d250d1a13387d882a6cbec75da6e1a3d65c5fd/'
-                input = pipelines_testdata_base_path + 'sample_identifiers/quote.csv'
+                input = samplesheet.toString()
                 outdir = "$outputDir"
                 ambient_correction = 'none'
             }
@@ -152,9 +165,11 @@ nextflow_workflow {
 
     test("Should accept a two-column filtered-only samplesheet with DecontX") {
         when {
+            def samplesheet = new File("$launchDir/samplesheet.csv")
+            samplesheet.text = 'sample,filtered\n' + validIds
+                .collect { id -> "${id},${filteredMatrix}\n" }.join()
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/36d250d1a13387d882a6cbec75da6e1a3d65c5fd/'
-                input = pipelines_testdata_base_path + 'sample_identifiers/valid.csv'
+                input = samplesheet.toString()
                 outdir = "$outputDir"
                 ambient_correction = 'decontx'
             }
@@ -181,9 +196,11 @@ nextflow_workflow {
 
     test("Should accept a two-column unfiltered-only samplesheet with SoupX") {
         when {
+            def samplesheet = new File("$launchDir/samplesheet.csv")
+            def unfiltered = filteredMatrix.replace('_filtered_matrix', '_raw_matrix')
+            samplesheet.text = "sample,unfiltered\nsample1,${unfiltered}\n"
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/d0c9d4a9f84c6374cdafc76ec47acac8df7b5e76/'
-                input = pipelines_testdata_base_path + 'sample_identifiers/unfiltered.csv'
+                input = samplesheet.toString()
                 outdir = "$outputDir"
                 ambient_correction = 'soupx'
             }
@@ -213,9 +230,11 @@ nextflow_workflow {
 
     test("Should explain why SoupX rejects filtered-only input before processing") {
         when {
+            def samplesheet = new File("$launchDir/samplesheet.csv")
+            samplesheet.text = 'sample,filtered\n' + validIds
+                .collect { id -> "${id},${filteredMatrix}\n" }.join()
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/36d250d1a13387d882a6cbec75da6e1a3d65c5fd/'
-                input = pipelines_testdata_base_path + 'sample_identifiers/valid.csv'
+                input = samplesheet.toString()
                 outdir = "$outputDir"
                 ambient_correction = 'soupx'
             }

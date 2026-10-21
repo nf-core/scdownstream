@@ -133,7 +133,8 @@ nextflow_process {
                 input[0] = SCANPY_RANKGENESGROUPS.out.results.map { meta, parquet ->
                     [meta + [integration: 'scvi', de_method: 'wilcoxon'], parquet]
                 }
-                input[1] = file(params.pipelines_testdata_base_path + 'volcanoplot/interesting_genes.csv', checkIfExists: true)
+                input[1] = channel.of('gene\\nCD3D\\nMS4A1\\nGAPDH\\n')
+                    .collectFile(name: 'interesting_genes.csv')
                 """
             }
         }

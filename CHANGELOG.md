@@ -9,6 +9,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
+- Generate small decoupler networks, sample identifier validation sheets and interesting-gene lists inline in nf-test, by @nictru and GPT-6.1 Sol [[#348](https://github.com/nf-core/scdownstream/pull/348)].
 - Name the analysis-count selection flag and samplesheet column `use_ambient_corrected_counts`, without a legacy alias, by @nictru and GPT-6.1 Sol [[#345](https://github.com/nf-core/scdownstream/pull/345)].
 - Correct the `cluster_per_label` documentation and describe the two-column samplesheet minimum, optional fields and SoupX input requirement in README, usage and parameter help, by @nictru and GPT-6.1 Sol [[#347](https://github.com/nf-core/scdownstream/pull/347)].
 - Reject unsafe sample identifiers during samplesheet validation, preserve supported identifiers exactly and retain the uniqueness constraint, by @nictru and GPT-6.1 Sol ([#339](https://github.com/nf-core/scdownstream/issues/339)).
