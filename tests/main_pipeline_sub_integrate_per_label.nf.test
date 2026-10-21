@@ -45,7 +45,7 @@ nextflow_pipeline {
             assert subsetVarCols.size() > 0
             def subsets = ['SRR28679756', 'SRR28679757', 'SRR28679758']
             subsets.each { subset ->
-                assert "highly_variable:subset:${subset}" in subsetVarCols
+                assert "highly_variable:subset:${subset}".toString() in subsetVarCols
             }
             assert file("$outputDir/10_reports/qc-report.html").text.contains("Each integration method run by the pipeline")
             // stable_name: All files + folders in ${params.outdir}/ with a stable name
