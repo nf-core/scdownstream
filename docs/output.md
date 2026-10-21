@@ -179,6 +179,8 @@ CyteType runs after integration, clustering, and global differential expression.
 The `05_cluster_dimred` directory contains the results of the clustering and dimensionality reduction step.
 The results are stored in subdirectories named after the integration tool used.
 
+Batch entropy measures label diversity within each cluster and is normalised by the maximum entropy for the observed batch labels. A dataset with one observed batch has entropy `0.0`. Missing batch columns or batch columns with no observed labels cause an error.
+
 ### Per-group analyses
 
 <details markdown="1">

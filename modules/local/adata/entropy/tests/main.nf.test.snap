@@ -1,4 +1,114 @@
 {
+    "Should compute finite entropy in [0,1] for multi-label case": {
+        "content": [
+            {
+                "ADATA_ENTROPY": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3",
+                    "scipy": "1.18.0"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "leiden",
+                        "test:entropy"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "leiden",
+                    "neighbors",
+                    "pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-21T14:28:19.961711456",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should compute exactly 0.0 entropy for single observed label": {
+        "content": [
+            {
+                "ADATA_ENTROPY": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3",
+                    "scipy": "1.18.0"
+                }
+            },
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "leiden",
+                        "single:entropy"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "X_pca"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_pca",
+                    "leiden",
+                    "neighbors"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-21T14:28:42.468377334",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
     "Should run without failures - stub": {
         "content": [
             {
@@ -48,61 +158,6 @@
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.04.3"
-        }
-    },
-    "Should run without failures": {
-        "content": [
-            {
-                "ADATA_ENTROPY": {
-                    "python": "3.13.12",
-                    "scanpy": "1.12.3",
-                    "scipy": "1.18.0"
-                }
-            },
-            {
-                "n_obs": 38234,
-                "n_vars": 9887,
-                "obs": {
-                    "index": "_index",
-                    "columns": [
-                        "sample",
-                        "leiden",
-                        "test:entropy"
-                    ]
-                },
-                "var": {
-                    "index": "_index",
-                    "columns": [
-                        
-                    ]
-                },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    "X_pca"
-                ],
-                "varm": [
-                    "PCs"
-                ],
-                "obsp": [
-                    "connectivities",
-                    "distances"
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    "leiden",
-                    "neighbors",
-                    "pca"
-                ]
-            }
-        ],
-        "timestamp": "2026-08-10T17:29:39.2048249",
-        "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
         }
     }
 }

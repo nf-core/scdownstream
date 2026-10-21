@@ -16,17 +16,29 @@ entropy_col = "${entropy_col}"
 prefix = "${prefix}"
 adata = sc.read_h5ad("${h5ad}", backed="r")
 
+if group_col not in adata.obs.columns:
+    raise ValueError(f"Grouping column '{group_col}' not found in adata.obs")
+if entropy_col not in adata.obs.columns:
+    raise ValueError(f"Entropy column '{entropy_col}' not found in adata.obs")
+
+n_observed_labels = adata.obs[entropy_col].nunique(dropna=True)
+
+if n_observed_labels == 0:
+    raise ValueError(f"No observed non-missing labels in entropy column '{entropy_col}'")
+
 
 def entropy_of_group(group):
     counts = group.value_counts(normalize=True)
     return entropy(counts, base=2)
 
 
-entropies = adata.obs.groupby(group_col)[entropy_col].apply(entropy_of_group)
-
-n_unique = adata.obs[entropy_col].nunique()
 colname = "${meta.id}:entropy"
-adata.obs[colname] = adata.obs[group_col].map(entropies).astype(float) / np.log2(n_unique)
+
+if n_observed_labels == 1:
+    adata.obs[colname] = 0.0
+else:
+    entropies = adata.obs.groupby(group_col)[entropy_col].apply(entropy_of_group)
+    adata.obs[colname] = adata.obs[group_col].map(entropies).astype(float) / np.log2(n_observed_labels)
 
 adata.obs[[colname]].to_pickle(f"{prefix}.pkl")
 adata.write_h5ad(f"{prefix}.h5ad")

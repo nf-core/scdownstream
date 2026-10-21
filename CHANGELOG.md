@@ -73,6 +73,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Pass gene symbols into edgePython DE so volcano labels use gene names instead of row indices by @nictru.
 - Merge compatible annotation fragments by index, reject conflicting fragment values and distinguish subset-specific aggregated annotations, by @nictru, Claude Sonnet 4.5 and GPT-6.1 Sol.
 - Deduplicate by-sample LIANA obs column selection so `context_key=condition` does not build a 2D frame and crash pandas by @nictru [[#310](https://github.com/nf-core/scdownstream/pull/310)].
+- Return finite zero entropy for single-batch datasets and reject missing or unobserved batch metadata, by @nictru, Claude Sonnet 4.5 and GPT-6.1 Sol.
 - Sort doublet prediction columns before writing to `obs` so nf-test snapshots are order-stable across parallel methods by @nictru [[#310](https://github.com/nf-core/scdownstream/pull/310)].
 - Make by-sample LIANA subsampling context/donor-aware and drop contexts with too few cells per group before calling LIANA by @nictru.
 - Reject samplesheets with duplicate `sample` names during input validation by @nictru and Claude [[#325](https://github.com/nf-core/scdownstream/pull/325)].
