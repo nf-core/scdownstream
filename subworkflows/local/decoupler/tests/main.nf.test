@@ -7,6 +7,16 @@ nextflow_workflow {
     tag "subworkflows"
     tag "subworkflows_local"
 
+    def networkTsv = [
+        'source\ttarget\tweight',
+        'AP1\tCD69\t1\nAP1\tFOS\t1\nAP1\tJUNB\t1\nAP1\tHSPA8\t1\nAP1\tPDCD4\t-1\nAP1\tCDKN1B\t-1',
+        'BCELL\tCD22\t1\nBCELL\tCD79A\t1\nBCELL\tCR2\t1\nBCELL\tFCER2\t1\nBCELL\tFCRL1\t1\nBCELL\tFCRL3\t1\nBCELL\tIGHM\t1\nBCELL\tTNFRSF13C\t1',
+        'IFN\tDDX60\t1\nIFN\tIFNGR2\t1\nIFN\tSP100\t1\nIFN\tSP140\t1\nIFN\tSTAT1\t1\nIFN\tZC3HAV1\t1',
+        'MHC\tB2M\t1\nMHC\tCD74\t1\nMHC\tHLA-A\t1\nMHC\tHLA-B\t1\nMHC\tHLA-C\t1\nMHC\tHLA-DPA1\t1\nMHC\tHLA-DPB1\t1\nMHC\tHLA-DRA\t1\nMHC\tHLA-DRB1\t1\nMHC\tHLA-E\t1',
+        'RIBO\tRPL11\t1\nRIBO\tRPL4\t1\nRIBO\tRPL8\t1\nRIBO\tRPS15\t1\nRIBO\tRPS23\t1\nRIBO\tRPS24\t1\nRIBO\tRPSA\t1',
+        'SMALL\tCD44\t1\nSMALL\tVIM\t1\nSMALL\tNOTAGENE\t1',
+    ].join('\n') + '\n'
+
     test("Should run without failures - stub") {
 
         options '-stub'
@@ -46,10 +56,12 @@ nextflow_workflow {
             }
             workflow {
                 """
+                def network = file('network.tsv')
+                network.text = '''${networkTsv}'''
                 input[0] = DECOUPLER_PSEUDOBULK.out.h5ad
                 input[1] = EDGEPYTHON_DIFFERENTIAL.out.results
                 input[2] = 'progeny,collectri'
-                input[3] = file(params.pipelines_testdata_base_path + 'decoupler/network.tsv', checkIfExists: true)
+                input[3] = network
                 input[4] = 'human'
                 input[5] = 'ulm'
                 input[6] = 5
@@ -102,10 +114,12 @@ nextflow_workflow {
             }
             workflow {
                 """
+                def network = file('network.tsv')
+                network.text = '''${networkTsv}'''
                 input[0] = DECOUPLER_PSEUDOBULK.out.h5ad
                 input[1] = EDGEPYTHON_DIFFERENTIAL.out.results
                 input[2] = ''
-                input[3] = file(params.pipelines_testdata_base_path + 'decoupler/network.tsv', checkIfExists: true)
+                input[3] = network
                 input[4] = 'human'
                 input[5] = 'ulm'
                 input[6] = 5
