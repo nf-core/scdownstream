@@ -271,10 +271,6 @@ Emit each fragment on a channel named after its AnnData slot and use a format th
 
 The file stem becomes the key in `obsm`, `obsp`, `uns`, and `layers`.
 
-For `obs` and `var`, fragments update matching indices without changing the base order. Non-null fragment values replace base values; null entries leave existing values intact. Separate fragments may provide identical or complementary values in the same column. Conflicting non-null values raise an error identifying the column and fragment files. Fragment indices and column names must be unique.
-
-Aggregated annotation columns for named subsets append `:subset:<subset>` to distinguish independent results. Global annotation column names remain unchanged.
-
 ### MultiQC custom content
 
 Modules that produce plots for the MultiQC report write a `<prefix>_mqc.json` file with an embedded base64 PNG image.
