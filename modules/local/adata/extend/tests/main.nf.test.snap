@@ -104,6 +104,72 @@
             "nextflow": "26.04.6"
         }
     },
+    "Should merge compatible obs and var updates without losing base rows": {
+        "content": [
+            {
+                "ADATA_EXTEND": {
+                    "anndata": "0.13.2",
+                    "numpy": "2.5.3",
+                    "pandas": "3.0.5",
+                    "python": "3.13.12"
+                }
+            },
+            {
+                "n_obs": 23373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "celltypist:Adult_Human_Skin",
+                        "celltypist:Adult_Human_Skin:conf",
+                        "label",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_mt",
+                        "sample",
+                        "sample_original",
+                        "total_counts",
+                        "total_counts_mt",
+                        "score",
+                        "flag",
+                        "version.1"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "selected",
+                        "score"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-21T15:20:59.621676754",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
     "Should extend with obsm data": {
         "content": [
             {

@@ -14,11 +14,14 @@ cluster_col = "${cluster_col}"
 annotation_col = "${annotation_col}"
 integration = "${integration}"
 resolution = "${resolution}"
+subset = "${meta.subset ?: ''}"
 
 if ":per_cell" not in annotation_col:
     raise ValueError(f"Unexpected per-cell annotation column: {annotation_col!r}")
 
 output_col = annotation_col.replace(":per_cell", f":aggregated:{integration}:{resolution}")
+if subset and subset != "global":
+    output_col += f":subset:{subset}"
 
 if annotation_col not in adata.obs.columns:
     raise ValueError(f"Annotation column {annotation_col!r} not found in adata.obs")

@@ -7,6 +7,155 @@ nextflow_process {
     tag "modules"
     tag "modules_local"
 
+    test("Should merge compatible obs and var updates without losing base rows") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                obs_a = channel.of('cell,label,n_counts,score,flag,version.1\\nSRR28679756_AAACCTGAGAGCTGGT,T_cell,100,1.0,True,first\\nSRR28679756_AAACCTGAGATGCCTT,,,2.0,,\\nnot_a_cell,ignored,999,9,True,ignored\\n')
+                    .collectFile(name: 'a_obs.csv')
+                obs_b = channel.of('cell,label,n_counts,score,flag,version.1\\nSRR28679756_AAACCTGAGAGCTGGT,T_cell,100.0,1,True,first\\nSRR28679756_AAACCTGAGATGCCTT,B_cell,,2,False,second\\n')
+                    .collectFile(name: 'b_obs.csv')
+                var_a = channel.of('gene,selected,score\\nA1BG,True,1.0\\n')
+                    .collectFile(name: 'a_var.csv')
+                var_b = channel.of('gene,selected,score\\nA1BG,True,1\\nA2M,False,2.5\\n')
+                    .collectFile(name: 'b_var.csv')
+                input[0] = obs_a.combine(obs_b).combine(var_a).combine(var_b)
+                    .map { a, b, c, d -> [
+                        [id: 'compatible'],
+                        file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                        [a, b], [c, d], [], [], [], []
+                    ] }
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.n_obs == 23373
+            assert adata.n_vars == 9887
+            assert adata.obs.colnames.toList().unique().size() == adata.obs.colnames.size()
+            assert adata.var.colnames.toList().unique().size() == adata.var.colnames.size()
+            assert adata.obs.index.values.take(3) == ['SRR28679756_AAACCTGAGAGCTGGT', 'SRR28679756_AAACCTGAGATGCCTT', 'SRR28679756_AAACCTGAGCTGTTCA']
+            assert adata.var.index.values.take(3) == ['A1BG', 'A2M', 'A2ML1']
+            assert adata.obs.get('label').data.take(3) == ['T_cell', 'B_cell', 'Unknown']
+            assert adata.obs.get('n_counts').data.take(3) == [100.0, 43.0, 36.0]
+            assert adata.obs.get('score').data.take(2) == [1.0, 2.0]
+            assert adata.obs.get('flag').data.take(2).collect { it.toString().toLowerCase() } == ['true', 'false']
+            assert adata.obs.get('version.1').data.take(2) == ['first', 'second']
+            assert adata.var.get('selected').data.take(2).collect { it.toString().toLowerCase() } == ['true', 'false']
+            assert adata.var.get('score').data.take(2) == [1.0, 2.5]
+            assert adata.obs.get('score').data[0] instanceof Number
+            assert adata.var.get('score').data[0] instanceof Number
+            assert snapshot(path(process.out.versions[0]).yaml, adata.yaml).match()
+        }
+
+    }
+
+    test("Should reject conflicting obs fragments and identify both sources") {
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                a = channel.of('cell,label\\nSRR28679756_AAACCTGAGAGCTGGT,T_cell\\n').collectFile(name: 'a_conflict.csv')
+                b = channel.of('cell,label\\nSRR28679756_AAACCTGAGAGCTGGT,B_cell\\n').collectFile(name: 'b_conflict.csv')
+                input[0] = a.combine(b).map { first, second -> [
+                    [id: 'conflict'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                    [first, second], [], [], [], [], []
+                ] }
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("ValueError: Conflicting non-null values in column 'label'")
+            assert process.errorReport.contains('a_conflict.csv')
+            assert process.errorReport.contains('b_conflict.csv')
+        }
+
+    }
+
+    test("Should reject conflicting var fragments") {
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                a = channel.of('gene,score\\nA1BG,1\\n').collectFile(name: 'a_score.csv')
+                b = channel.of('gene,score\\nA1BG,2\\n').collectFile(name: 'b_score.csv')
+                input[0] = a.combine(b).map { first, second -> [
+                    [id: 'conflict'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                    [], [first, second], [], [], [], []
+                ] }
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("ValueError: Conflicting non-null values in column 'score'")
+            assert process.errorReport.contains('a_score.csv')
+            assert process.errorReport.contains('b_score.csv')
+        }
+
+    }
+
+    test("Should reject duplicate fragment indices") {
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = channel.of('cell,label\\nSRR28679756_AAACCTGAGAGCTGGT,T_cell\\nSRR28679756_AAACCTGAGAGCTGGT,T_cell\\n')
+                    .collectFile(name: 'duplicate_index.csv')
+                    .map { obs -> [
+                        [id: 'duplicate'],
+                        file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                        [obs], [], [], [], [], []
+                    ] }
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("ValueError: Fragment 'duplicate_index.csv' contains duplicate indices")
+        }
+
+    }
+
+    test("Should reject duplicate CSV headers before pandas renames them") {
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = channel.of('cell,label,label\\nSRR28679756_AAACCTGAGAGCTGGT,T_cell,B_cell\\n')
+                    .collectFile(name: 'duplicate_columns.csv')
+                    .map { obs -> [
+                        [id: 'duplicate'],
+                        file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                        [obs], [], [], [], [], []
+                    ] }
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("ValueError: Fragment 'duplicate_columns.csv' contains duplicate column names")
+        }
+
+    }
+
     test("Should extend with obs data") {
 
         when {
