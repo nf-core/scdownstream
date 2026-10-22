@@ -8,10 +8,7 @@ import yaml
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 
-if "counts" not in adata.layers:
-    adata.layers["counts"] = adata.X.copy()
-
-adata.layers["log1p"] = adata.layers["counts"].copy()
+adata.layers["log1p"] = adata.X.copy()
 sc.pp.normalize_total(adata, layer="log1p", target_sum=None)
 sc.pp.log1p(adata, layer="log1p")
 

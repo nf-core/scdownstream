@@ -273,12 +273,11 @@ The standard final H5AD retains the following matrices even with `--save_interme
 | `X`                                    | Selected analysis counts, raw by default or corrected when `use_ambient_corrected_counts` resolves to `true`.                                                    |
 | `layers['raw_counts']`                 | Selected input before this pipeline's ambient correction, on the current cell and gene axes. Upstream correction is not reversed.                                |
 | `layers['ambient_corrected_<method>']` | Method-specific correction result, retained in both selection modes. For samples without that result in a merged cohort, values fall back to their `raw_counts`. |
-| `layers['counts']`                     | Same values as `X`, written by the normalisation step.                                                                                                           |
 | `layers['log1p']` or `layers['scran']` | Normalised expression derived from the selected analysis counts.                                                                                                 |
 
 The categorical `obs['ambient_correction_method']` records the applied method, or `none` for new uncorrected samples. `obs['analysis_counts_source']` records `raw_counts` or a selected method-specific correction layer.
 
-PCA and BBKNN read the requested analysis layer directly without copying the AnnData object or replacing `X`. When log-normalisation is requested within either module, the transformed matrix is stored in `pca_log1p` or `bbknn_log1p`, respectively. An existing layer with that output name causes an error rather than being overwritten. The standalone log-normalisation step writes `log1p` from `counts`. Each step normalises a copy of only the selected expression matrix and log-transforms the output layer in place.
+PCA, BBKNN and HVG selection read the requested analysis layer directly without replacing `X`. When log-normalisation is requested within these modules, the transformed matrix is stored in `pca_log1p`, `bbknn_log1p` or `hvgs_log1p`, respectively. An existing layer with that output name causes an error rather than being overwritten. The standalone log-normalisation step writes `log1p` from `X`; scran writes `scran` from `X`. Each Scanpy step copies only the selected expression matrix into its output layer, then normalises and log-transforms that layer in place. The pipeline does not create a generic `counts` layer.
 
 Optional RDS export retains raw, correction, and normalisation layers as uniquely named SingleCellExperiment assays. The requested analysis counts occupy the first assay, `counts`.
 

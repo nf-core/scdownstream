@@ -63,10 +63,6 @@ write.csv(features_df, "${prefix}_features.csv")
 top_idx <- ord[seq_len(n_keep)]
 
 adata_out <- read_h5ad("${h5ad}")
-if (!("counts" %in% names(adata_out\$layers))) {
-    adata_out\$layers[["counts"]] <- adata_out\$X
-}
-
 var_idx <- match(rownames(sce), adata_out\$var_names)
 if (any(is.na(var_idx))) {
     missing <- rownames(sce)[is.na(var_idx)]

@@ -119,7 +119,7 @@ nextflow_process {
         then {
             assert process.success
             def adata = anndata(process.out.h5ad[0][1])
-            assert adata.layers.toSet() == ['counts', 'log1p'].toSet()
+            assert adata.layers.toSet() == ['log1p'].toSet()
             assert 'X_custom' in adata.obsm
             assert 'X_custom' in adata.varm
             assert 'X_custom' in adata.uns

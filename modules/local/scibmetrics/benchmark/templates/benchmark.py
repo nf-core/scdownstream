@@ -6,6 +6,7 @@ import platform
 import warnings
 from dataclasses import replace
 
+import anndata as ad
 import numpy as np
 import scanpy as sc
 import scib_metrics
@@ -132,13 +133,16 @@ labels = adata.obs["label"].astype(str)
 if (labels == "Unknown").all():
     warnings.warn("All cells have label 'Unknown'; bio-conservation metrics are not meaningful.")
 
-ad_bm = adata.copy()
+# Benchmarker requires expression in X; isolate that representation from the pipeline object.
+ad_bm = ad.AnnData(
+    X=adata.X.copy(),
+    obs=adata.obs.copy(),
+    var=adata.var[["highly_variable"]].copy(),
+    obsm={"X_emb": adata.obsm["X_emb"]},
+)
 bm_kw = {"n_jobs": n_jobs, **_benchmarker_kwargs(metric_profile)}
 
 if metric_profile == "full":
-    if "counts" not in ad_bm.layers:
-        ad_bm.layers["counts"] = ad_bm.X.copy()
-    ad_bm.X = ad_bm.layers["counts"].copy()
     sc.pp.normalize_total(ad_bm, target_sum=1e4)
     sc.pp.log1p(ad_bm)
 

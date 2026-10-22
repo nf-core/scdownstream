@@ -25,7 +25,7 @@ nextflow_pipeline {
             def adata = anndata("$outputDir/09_finalized/base.h5ad")
             assert adata.n_obs > 0
             assert adata.n_vars > 0
-            assert adata.layers.containsAll(['raw_counts', 'counts', 'log1p'])
+            assert adata.layers.containsAll(['raw_counts', 'log1p'])
             assert !adata.layers.any { it.startsWith('ambient_corrected_') }
             assert adata.obs.get('sample').unique().toSet() == ['SRR28679756', 'SRR28679757', 'SRR28679758'].toSet()
             assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()

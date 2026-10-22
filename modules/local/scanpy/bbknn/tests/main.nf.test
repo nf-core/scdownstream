@@ -78,7 +78,8 @@ nextflow_process {
         then {
             assert process.success
             def after = anndata(process.out.h5ad[0][1])
-            assert after.layers.containsAll(['counts', 'log1p'])
+            assert 'log1p' in after.layers
+            assert !('counts' in after.layers)
             assert !('bbknn_log1p' in after.layers)
             assert after.obs.get('sample').n_unique() > 1
             assert after.obsp.containsAll(['connectivities', 'distances'])

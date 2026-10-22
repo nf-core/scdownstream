@@ -34,25 +34,26 @@ if adata.n_vars > n_hvgs:
     if n_hvgs > 0:
         kwargs["n_top_genes"] = n_hvgs
 
-    raw_counts = adata.layers["counts"].copy() if "counts" in adata.layers else adata.X.copy()
-
     if input_layer != "X" and input_layer not in adata.layers:
         raise ValueError(
             f"input_layer {input_layer!r} is not present in adata.layers (available: {list(adata.layers.keys())})"
         )
 
-    if input_layer != "X":
-        adata.X = adata.layers[input_layer]
-
+    analysis_layer = None if input_layer == "X" else input_layer
     if log_normalize:
-        sc.pp.normalize_total(adata, target_sum=None)
-        sc.pp.log1p(adata)
+        output_layer = "hvgs_log1p"
+        if output_layer in adata.layers:
+            raise ValueError(f"Normalisation output layer {output_layer!r} already exists")
+        source = adata.X if analysis_layer is None else adata.layers[analysis_layer]
+        adata.layers[output_layer] = source.copy()
+        sc.pp.normalize_total(adata, layer=output_layer, target_sum=None)
+        sc.pp.log1p(adata, layer=output_layer)
+        analysis_layer = output_layer
 
-    sc.pp.highly_variable_genes(adata, **kwargs)
+    sc.pp.highly_variable_genes(adata, layer=analysis_layer, **kwargs)
 
     adata.var[["highly_variable"]].to_pickle(f"{prefix}.pkl")
 
-    adata.X = raw_counts
     adata = adata[:, adata.var["highly_variable"]]
 
 adata.write_h5ad(f"{prefix}.h5ad")
