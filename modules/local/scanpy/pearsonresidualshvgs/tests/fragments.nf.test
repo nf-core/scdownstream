@@ -1,0 +1,74 @@
+nextflow_process {
+
+    name "Test Pearson HVG fragments through ADATA_EXTEND"
+    script "modules/local/adata/extend/main.nf"
+    process "ADATA_EXTEND"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should retain fragment columns for named, global and missing subsets") {
+
+        setup {
+            run("SCANPY_SAMPLE") {
+                script "modules/local/scanpy/sample/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'fixture'],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = 128
+                    input[2] = []
+                    """
+                }
+            }
+            run("SCANPY_PEARSONRESIDUALS_HVGS") {
+                script "modules/local/scanpy/pearsonresidualshvgs/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_SAMPLE.out.h5ad.flatMap { meta, h5ad -> [
+                        [[id: 'named', subset: 'B_cells'], h5ad],
+                        [[id: 'global', subset: 'global'], h5ad],
+                        [[id: 'missing'], h5ad]
+                    ] }
+                    input[1] = 100
+                    input[2] = []
+                    input[3] = ''
+                    input[4] = 'X'
+                    """
+                }
+            }
+        }
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = SCANPY_PEARSONRESIDUALS_HVGS.out.h5ad
+                    .map { meta, h5ad -> [h5ad.baseName, meta, h5ad] }
+                    .join(SCANPY_PEARSONRESIDUALS_HVGS.out.var.map { fragment -> [fragment.baseName, fragment] })
+                    .combine(SCANPY_SAMPLE.out.h5ad.map { meta, h5ad -> h5ad })
+                    .map { id, meta, selected, fragment, base -> [meta, base, [], [fragment], [], [], [], []] }
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.h5ad.collect { it[0].id }.toSet() == ['named', 'global', 'missing'].toSet()
+            process.out.h5ad.each { meta, h5ad ->
+                def adata = anndata(h5ad)
+                def expected = meta.id == 'named' ? ['highly_variable:subset:B_cells'] : ['highly_variable']
+                assert adata.n_obs == 128
+                assert adata.n_vars > 100
+                assert adata.var.colnames.findAll { it == 'highly_variable' || it.startsWith('highly_variable:') }.toSet() == expected.toSet()
+                expected.each { column ->
+                    assert adata.var.get(column).data.count { it.toString().toLowerCase() == 'true' } == 100
+                }
+            }
+        }
+
+    }
+
+}
