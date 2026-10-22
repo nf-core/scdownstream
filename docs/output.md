@@ -277,8 +277,6 @@ The standard final H5AD retains the following matrices even with `--save_interme
 
 The categorical `obs['ambient_correction_method']` records the applied method, or `none` for new uncorrected samples. `obs['analysis_counts_source']` records `raw_counts` or a selected method-specific correction layer.
 
-PCA, BBKNN and HVG selection read the requested analysis layer directly without replacing `X`. When log-normalisation is requested within these modules, the transformed matrix is stored in `pca_log1p`, `bbknn_log1p` or `hvgs_log1p`, respectively. An existing layer with that output name causes an error rather than being overwritten. The standalone log-normalisation step writes `log1p` from `X`; scran writes `scran` from `X`. Each Scanpy step copies only the selected expression matrix into its output layer, then normalises and log-transforms that layer in place. The pipeline does not create a generic `counts` layer.
-
 Optional RDS export retains raw, correction, and normalisation layers as uniquely named SingleCellExperiment assays. The requested analysis counts occupy the first assay, `counts`.
 
 ### MultiQC
