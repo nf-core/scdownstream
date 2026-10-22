@@ -60,7 +60,7 @@ nextflow_workflow {
 
     }
 
-    test("Should create counts and log1p layers during extension") {
+    test("Should retain analysis counts in X and create log1p during extension") {
 
         setup {
             run("ADATA_UNIFY") {
@@ -136,7 +136,7 @@ nextflow_workflow {
             assert workflow.success
             def adata = anndata(workflow.out.h5ad[0][1])
             assert adata.obs.get('sample').unique() == ['query', 'reference'].toSet()
-            assert 'counts' in adata.layers
+            assert !('counts' in adata.layers)
             assert 'log1p' in adata.layers
             assert 'raw_counts' in adata.layers
             assert adata.obs.get('ambient_correction_method').unique() == ['none'].toSet()

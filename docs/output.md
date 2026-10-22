@@ -273,7 +273,6 @@ The standard final H5AD retains the following matrices even with `--save_interme
 | `X`                                    | Selected analysis counts, raw by default or corrected when `use_ambient_corrected_counts` resolves to `true`.                                                    |
 | `layers['raw_counts']`                 | Selected input before this pipeline's ambient correction, on the current cell and gene axes. Upstream correction is not reversed.                                |
 | `layers['ambient_corrected_<method>']` | Method-specific correction result, retained in both selection modes. For samples without that result in a merged cohort, values fall back to their `raw_counts`. |
-| `layers['counts']`                     | Same values as `X`, written by the normalisation step.                                                                                                           |
 | `layers['log1p']` or `layers['scran']` | Normalised expression derived from the selected analysis counts.                                                                                                 |
 
 The categorical `obs['ambient_correction_method']` records the applied method, or `none` for new uncorrected samples. `obs['analysis_counts_source']` records `raw_counts` or a selected method-specific correction layer.

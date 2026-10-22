@@ -226,7 +226,7 @@ Ambient correction resolves the expression-source fields before unification:
 | `ambient_correction_method` | Applied method, or `none`.                                   | Unchanged.                               |
 | `analysis_counts_source`    | `raw_counts` or canonical `ambient_corrected_<method>`.      | Unchanged.                               |
 
-An explicit sample selection flag overrides the global flag. Disabled correction and method `none` select raw counts. Unification preserves required sources before replacing reserved names, then applies a common gene grouping and order to `X` and every retained layer. Normalisation creates `counts` from selected `X`. Count-model and differential expression consumers must not silently switch to `raw_counts`.
+An explicit sample selection flag overrides the global flag. Disabled correction and method `none` select raw counts. Unification preserves required sources before replacing reserved names, then applies a common gene grouping and order to `X` and every retained layer. `X` holds the selected analysis counts; `raw_counts` retains the original raw counts, and `ambient_corrected_<method>` retains corrected counts. Normalisation writes derived layers such as `log1p` and `scran` without replacing `X`.
 
 The two provenance fields also become categorical `obs` columns. Merging fills unavailable method layers from each sample's `raw_counts` and retains provenance independently of the ordinary observation-column intersection. Historical bases require explicit `raw_counts`. Missing historical provenance remains `unknown`, without inference from layer names.
 

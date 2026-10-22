@@ -27,7 +27,7 @@ nextflow_pipeline {
             def adata = anndata("$outputDir/09_finalized/merged.h5ad")
             assert adata.n_obs > 0
             assert adata.n_vars > 0
-            assert adata.layers.containsAll(['raw_counts', 'ambient_corrected_decontx', 'counts', 'log1p'])
+            assert adata.layers.containsAll(['raw_counts', 'ambient_corrected_decontx', 'log1p'])
             assert adata.obs.get('sample').unique().toSet() == ['SRR28679756', 'SRR28679757', 'SRR28679758', 'SRR28679759'].toSet()
             def samples = adata.obs.get('sample').data.toList()
             def methods = adata.obs.get('ambient_correction_method').data.toList()

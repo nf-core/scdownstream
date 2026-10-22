@@ -9,10 +9,6 @@ library(BiocParallel)
 
 adata <- read_h5ad("${h5ad}")
 
-if (!("counts" %in% names(adata\$layers))) {
-    adata\$layers[["counts"]] <- adata\$X
-}
-
 sce <- adata\$as_SingleCellExperiment(x_mapping = "counts", assays_mapping = FALSE)
 
 lib_sizes <- librarySizeFactors(sce)
@@ -39,10 +35,6 @@ sce <- logNormCounts(sce)
 
 logcounts <- t(assay(sce, "logcounts"))
 adata_out <- read_h5ad("${h5ad}")
-
-if (!("counts" %in% names(adata_out\$layers))) {
-    adata_out\$layers[["counts"]] <- adata_out\$X
-}
 
 if (!all(keep_cells)) {
     adata_out <- adata_out[keep_cells, ]

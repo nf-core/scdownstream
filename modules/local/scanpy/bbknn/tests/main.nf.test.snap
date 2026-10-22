@@ -1,4 +1,58 @@
 {
+    "Should retain normalisation layers when integrating log1p expression": {
+        "content": [
+            {
+                "SCANPY_BBKNN": {
+                    "bbknn": "1.6.0",
+                    "pandas": "3.0.5",
+                    "python": "3.12.12",
+                    "scanpy": "1.11.5"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "log1p"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "log1p",
+                    "neighbors",
+                    "pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-22T16:15:05.465424023",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
     "Should run without failures - stub": {
         "content": [
             {
@@ -58,7 +112,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "bbknn_log1p"
                 ],
                 "obsm": [
                     "X_pca"
@@ -80,7 +134,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-08-10T21:09:14.799205104",
+        "timestamp": "2026-10-22T15:15:52.496004201",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

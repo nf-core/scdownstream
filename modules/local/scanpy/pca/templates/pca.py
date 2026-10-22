@@ -21,15 +21,20 @@ if input_layer != "X" and input_layer not in adata.layers:
         f"input_layer {input_layer!r} is not present in adata.layers (available: {list(adata.layers.keys())})"
     )
 
-if input_layer != "X":
-    adata.X = adata.layers[input_layer]
-
+analysis_layer = None if input_layer == "X" else input_layer
 if log_normalize:
-    sc.pp.normalize_total(adata)
-    sc.pp.log1p(adata)
+    output_layer = "pca_log1p"
+    if output_layer in adata.layers:
+        raise ValueError(f"Normalisation output layer {output_layer!r} already exists")
+    source = adata.X if analysis_layer is None else adata.layers[analysis_layer]
+    adata.layers[output_layer] = source.copy()
+    sc.pp.normalize_total(adata, layer=output_layer)
+    sc.pp.log1p(adata, layer=output_layer)
+    analysis_layer = output_layer
 
 sc.pp.pca(
     adata,
+    layer=analysis_layer,
     random_state=0,
     key_added=key_added,
 )

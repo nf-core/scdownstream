@@ -183,8 +183,8 @@ nextflow_process {
             assert query.n_obs > 0
             assert query.n_obs < outer.n_obs
             assert query.obs.get('sample').unique() == ['SRR28679756'].toSet()
-            assert 'counts' in outer.layers
-            assert 'counts' in query.layers
+            assert !('counts' in outer.layers)
+            assert !('counts' in query.layers)
             assert 'raw_counts' in outer.layers
             assert 'raw_counts' in query.layers
             assert 'ambient_corrected_decontx' in outer.layers

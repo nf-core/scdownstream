@@ -71,7 +71,7 @@ nextflow_process {
             assert process.success
             assert adata_out.n_vars > 0
             assert "intersection" in adata_out.var.colnames
-            assert "counts" in adata_out.layers
+            assert !("counts" in adata_out.layers)
             assert "log1p" in adata_out.layers
             assert snapshot(
                 path(process.out.versions[0]).yaml,

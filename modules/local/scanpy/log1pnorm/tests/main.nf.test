@@ -27,12 +27,35 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
-            assert "counts" in adata.layers
+            assert !("counts" in adata.layers)
             assert "log1p" in adata.layers
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml
             ).match()
+        }
+
+    }
+
+    test("Should retain arbitrary input expression layers") {
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'layered'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.layers.toSet() == ['counts', 'spliced', 'unspliced', 'log1p'].toSet()
+            assert snapshot(path(process.out.versions[0]).yaml, adata.yaml).match()
         }
 
     }

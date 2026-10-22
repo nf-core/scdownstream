@@ -48,7 +48,8 @@ nextflow_workflow {
             assert "highly_variable" in adata.var.colnames
             assert adata.n_vars == 2000
             assert adata.var.get('highly_variable').data.every { it.toString().equalsIgnoreCase('true') }
-            assert adata.layers.containsAll(['counts', 'log1p'])
+            assert 'log1p' in adata.layers
+            assert !('counts' in adata.layers)
             assert adata.obs.rownames.toList().toSet().size() == adata.n_obs
             assert adata.var.rownames.toList().toSet().size() == adata.n_vars
             assert snapshot(workflow.out.h5ad[0][0], workflow.out.var, adata.yaml).match()

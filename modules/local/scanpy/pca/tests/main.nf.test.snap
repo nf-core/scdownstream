@@ -1,4 +1,55 @@
 {
+    "Should use an existing log1p layer without creating another expression matrix": {
+        "content": [
+            {
+                "SCANPY_PCA": {
+                    "pandas": "3.0.5",
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "log1p"
+                ],
+                "obsm": [
+                    "X_custom"
+                ],
+                "varm": [
+                    "X_custom"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_custom",
+                    "log1p"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-22T16:21:32.584655717",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
     "Should run without failures - stub": {
         "content": [
             {
@@ -63,7 +114,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "pca_log1p"
                 ],
                 "obsm": [
                     "X_pca"
@@ -83,7 +134,61 @@
                 ]
             }
         ],
-        "timestamp": "2026-08-10T17:45:14.994573047",
+        "timestamp": "2026-10-22T15:19:20.815580176",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should preserve input layers": {
+        "content": [
+            {
+                "SCANPY_PCA": {
+                    "pandas": "3.0.5",
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts",
+                    "pca_log1p",
+                    "spliced",
+                    "unspliced"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "X_pca"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_pca",
+                    "log1p"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-22T15:19:55.168169449",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

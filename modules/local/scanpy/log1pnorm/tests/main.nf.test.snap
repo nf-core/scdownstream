@@ -56,7 +56,6 @@
                     ]
                 },
                 "layers": [
-                    "counts",
                     "log1p"
                 ],
                 "obsm": [
@@ -72,11 +71,63 @@
                     
                 ],
                 "uns": [
-                    
+                    "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-08-10T17:43:47.818067211",
+        "timestamp": "2026-10-22T16:18:12.13193714",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should retain arbitrary input expression layers": {
+        "content": [
+            {
+                "SCANPY_LOG1PNORM": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts",
+                    "log1p",
+                    "spliced",
+                    "unspliced"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "log1p"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-22T16:52:26.709837897",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

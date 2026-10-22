@@ -19,7 +19,8 @@ nextflow_pipeline {
             def adata_merged = anndata("$outputDir/09_finalized/merged.h5ad")
             assert adata_merged.n_vars > 0
             assert adata_merged.n_obs > 0
-            assert adata_merged.layers.containsAll(['raw_counts', 'ambient_corrected_decontx', 'counts'])
+            assert adata_merged.layers.containsAll(['raw_counts', 'ambient_corrected_decontx'])
+            assert !('counts' in adata_merged.layers)
             assert "scran" in adata_merged.layers || "log1p" in adata_merged.layers
             assert adata_merged.obs.get('ambient_correction_method').unique().toSet() == ['decontx'].toSet()
             assert adata_merged.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()

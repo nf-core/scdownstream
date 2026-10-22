@@ -18,8 +18,8 @@ if (counts_layer == "X" && is.null(adata\$X)) {
     stop(sprintf("Requested counts source 'X' is missing from '%s'. Select an available counts layer.", h5ad))
 }
 
-retained_layers <- setdiff(layer_names, "counts")
-assays_mapping <- setNames(retained_layers, retained_layers)
+assay_names <- make.unique(c("counts", layer_names))[-1]
+assays_mapping <- setNames(layer_names, assay_names)
 if (counts_layer == "X") {
     x_mapping <- "counts"
 } else {

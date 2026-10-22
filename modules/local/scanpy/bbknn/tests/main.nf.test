@@ -32,13 +32,59 @@ nextflow_process {
             assert process.success
             with(adata) {
                 assert "X_pca" in obsm
+                assert "PCs" in varm
                 assert "connectivities" in obsp
                 assert "distances" in obsp
+                assert "bbknn_log1p" in layers
             }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml
             ).match()
+        }
+
+    }
+
+    test("Should retain normalisation layers when integrating log1p expression") {
+
+        setup {
+            run("SCANPY_LOG1PNORM") {
+                script "../../log1pnorm/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'layered'],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ])
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_LOG1PNORM.out.h5ad
+                input[1] = 'sample'
+                input[2] = 'log1p'
+                input[3] = false
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def after = anndata(process.out.h5ad[0][1])
+            assert 'log1p' in after.layers
+            assert !('counts' in after.layers)
+            assert !('bbknn_log1p' in after.layers)
+            assert after.obs.get('sample').n_unique() > 1
+            assert after.obsp.containsAll(['connectivities', 'distances'])
+            assert 'PCs' in after.varm
+            assert snapshot(path(process.out.versions[0]).yaml, after.yaml).match()
         }
 
     }

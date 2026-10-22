@@ -115,7 +115,7 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert adata.n_obs == 128
             assert 'X_emb' in adata.obsm
-            assert 'counts' in adata.layers
+            assert !('counts' in adata.layers)
             assert 'log1p' in adata.layers
             assert adata.obs.get('n_genes_by_counts').data.every { it > 0 }
         }
