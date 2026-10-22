@@ -46,61 +46,53 @@ def load_layer(path):
     raise ValueError(f"Unsupported layer file extension: {path}")
 
 
+def restore_dtype(values, dtypes):
+    categoricals = [dtype for dtype in dtypes if isinstance(dtype, pd.CategoricalDtype)]
+    if categoricals:
+        categories = categoricals[0].categories
+        for dtype in categoricals[1:]:
+            categories = categories.union(dtype.categories, sort=False)
+        categories = categories.union(pd.Index(values.dropna().unique().tolist()), sort=False)
+        return pd.Categorical(values, categories=categories, ordered=categoricals[0].ordered)
+
+    values = values.infer_objects(copy=False)
+    # AnnData cannot serialise object arrays containing booleans and missing values.
+    if values.dtype == object and all(isinstance(value, (bool, np.bool_)) for value in values.dropna()):
+        return pd.Categorical(values, categories=pd.Index([False, True], dtype=bool))
+    return values
+
+
 def merge_dataframe(base, paths):
     """Apply indexed updates while checking agreement between fragment sources."""
-    updates = {}
-    sources = {}
-    categorical_dtypes = {}
+    fragments = []
     for path in paths:
         fragment = load_pickle_or_csv(path)
         if not fragment.index.is_unique:
             raise ValueError(f"Fragment '{path.name}' contains duplicate indices")
         if not fragment.columns.is_unique:
             raise ValueError(f"Fragment '{path.name}' contains duplicate column names")
-        for column in fragment.columns:
-            incoming = fragment[column].reindex(base.index)
-            if column not in updates:
-                updates[column] = pd.Series(np.nan, index=base.index, dtype=object)
-                sources[column] = pd.Series(index=base.index, dtype=object)
-                categorical_dtypes[column] = []
-                if column in base and isinstance(base[column].dtype, pd.CategoricalDtype):
-                    categorical_dtypes[column].append(base[column].dtype)
-            if isinstance(incoming.dtype, pd.CategoricalDtype):
-                categorical_dtypes[column].append(incoming.dtype)
-            present = incoming.notna()
-            overlap = present & updates[column].notna()
-            conflicts = ~updates[column].loc[overlap].eq(incoming.loc[overlap].astype(object))
-            if conflicts.any():
-                previous = sorted(sources[column].loc[conflicts[conflicts].index].unique())
-                raise ValueError(
-                    f"Conflicting non-null values in column {column!r} between fragments {previous} and {path.name!r}"
-                )
-            updates[column].loc[present] = incoming.loc[present].astype(object)
-            sources[column].loc[present] = path.name
+        fragments.append((path, fragment.loc[fragment.index.isin(base.index)]))
 
     result = base.copy()
-    for column, incoming in updates.items():
+    columns = dict.fromkeys(column for _, fragment in fragments for column in fragment.columns)
+    for column in columns:
+        parts = {path.name: fragment[column] for path, fragment in fragments if column in fragment}
+        incoming = pd.concat({name: values.dropna().astype(object) for name, values in parts.items()})
+        grouped = incoming.groupby(level=1, sort=False, observed=True)
+        conflicts = grouped.nunique().gt(1)
+        if conflicts.any():
+            rows = incoming.index.get_level_values(1).isin(conflicts.index[conflicts])
+            sources = sorted(incoming.index.get_level_values(0)[rows].unique())
+            raise ValueError(f"Conflicting non-null values in column {column!r} between fragments {sources}")
+
         values = (
             base[column].astype(object).copy() if column in base else pd.Series(np.nan, index=base.index, dtype=object)
         )
-        present = incoming.notna()
-        values.loc[present] = incoming.loc[present]
+        updates = grouped.first()
+        values.loc[updates.index] = updates
         values = values.where(values.notna(), np.nan)
-        dtypes = categorical_dtypes[column]
-        if dtypes:
-            categories = dtypes[0].categories.copy()
-            for dtype in dtypes[1:]:
-                categories = categories.union(dtype.categories, sort=False)
-            categories = categories.union(pd.Index(values.dropna().unique().tolist()), sort=False)
-            result[column] = pd.Categorical(values, categories=categories, ordered=dtypes[0].ordered)
-        else:
-            values = values.infer_objects(copy=False)
-            # AnnData cannot serialise object arrays containing booleans and missing values.
-            if values.dtype == object and all(isinstance(value, (bool, np.bool_)) for value in values.dropna()):
-                values = pd.Series(
-                    pd.Categorical(values, categories=pd.Index([False, True], dtype=bool)), index=base.index
-                )
-            result[column] = values
+        dtypes = ([base[column].dtype] if column in base else []) + [part.dtype for part in parts.values()]
+        result[column] = restore_dtype(values, dtypes)
     return result
 
 
