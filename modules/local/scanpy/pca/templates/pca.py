@@ -26,7 +26,9 @@ if log_normalize:
     output_layer = "pca_log1p"
     if output_layer in adata.layers:
         raise ValueError(f"Normalisation output layer {output_layer!r} already exists")
-    adata.layers[output_layer] = sc.pp.normalize_total(adata, layer=analysis_layer, inplace=False)["X"]
+    source = adata.X if analysis_layer is None else adata.layers[analysis_layer]
+    adata.layers[output_layer] = source.copy()
+    sc.pp.normalize_total(adata, layer=output_layer)
     sc.pp.log1p(adata, layer=output_layer)
     analysis_layer = output_layer
 
