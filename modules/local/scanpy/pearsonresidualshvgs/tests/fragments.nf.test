@@ -46,8 +46,8 @@ nextflow_process {
             process {
                 """
                 input[0] = SCANPY_PEARSONRESIDUALS_HVGS.out.h5ad
-                    .map { meta, h5ad -> [h5ad.baseName, meta, h5ad] }
-                    .join(SCANPY_PEARSONRESIDUALS_HVGS.out.var.map { fragment -> [fragment.baseName, fragment] })
+                    .map { meta, h5ad -> [h5ad.parent.toString(), meta, h5ad] }
+                    .join(SCANPY_PEARSONRESIDUALS_HVGS.out.var.map { fragment -> [fragment.parent.toString(), fragment] })
                     .combine(SCANPY_SAMPLE.out.h5ad.map { meta, h5ad -> h5ad })
                     .map { id, meta, selected, fragment, base -> [meta, base, [], [fragment], [], [], [], []] }
                 """

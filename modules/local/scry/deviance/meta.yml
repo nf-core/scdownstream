@@ -55,7 +55,7 @@ output:
   var:
     - "*_features.csv":
         type: file
-        description: CSV with binomial_deviance and highly_deviant columns per gene
+        description: CSV with <prefix>:binomial_deviance and <prefix>:highly_deviant columns per gene, using ext.prefix or meta.id when unset
         pattern: "*_features.csv"
         ontologies:
           - edam: "http://edamontology.org/format_3752"

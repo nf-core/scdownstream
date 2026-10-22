@@ -176,8 +176,8 @@ nextflow_process {
             }
             def var_fragment = path(process.out.var[0]).csv
             def cols = var_fragment.columns.keySet()
-            assert cols.contains('binomial_deviance:subset:CD4_T')
-            assert cols.contains('highly_deviant:subset:CD4_T')
+            assert cols.contains('deviance:subset:CD4_T:binomial_deviance')
+            assert cols.contains('deviance:subset:CD4_T:highly_deviant')
             assert !cols.any { it == 'binomial_deviance' || it == 'highly_deviant' }
         }
 
@@ -213,8 +213,8 @@ nextflow_process {
             }
             def var_fragment = path(process.out.var[0]).csv
             def cols = var_fragment.columns.keySet()
-            assert cols.contains('binomial_deviance')
-            assert cols.contains('highly_deviant')
+            assert cols.contains('deviance:binomial_deviance')
+            assert cols.contains('deviance:highly_deviant')
             assert !cols.any { it.contains(':subset:') }
         }
 
@@ -250,8 +250,8 @@ nextflow_process {
             }
             def var_fragment = path(process.out.var[0]).csv
             def cols = var_fragment.columns.keySet()
-            assert cols.contains('binomial_deviance')
-            assert cols.contains('highly_deviant')
+            assert cols.contains('deviance:binomial_deviance')
+            assert cols.contains('deviance:highly_deviant')
             assert !cols.any { it.contains(':subset:') }
         }
 

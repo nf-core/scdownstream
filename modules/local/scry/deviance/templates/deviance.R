@@ -59,10 +59,7 @@ features_df <- data.frame(
     row.names = rownames(sce)
 )
 
-subset <- trimws("${meta.subset}")
-if (nzchar(subset) && subset != "global" && subset != "null") {
-    colnames(features_df) <- paste0(colnames(features_df), ":subset:", subset)
-}
+colnames(features_df) <- paste0("${prefix}:", colnames(features_df))
 
 write.csv(features_df, "${prefix}_features.csv")
 
