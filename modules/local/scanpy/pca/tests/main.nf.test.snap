@@ -1,4 +1,56 @@
 {
+    "Should use an existing log1p layer without creating another expression matrix": {
+        "content": [
+            {
+                "SCANPY_PCA": {
+                    "pandas": "3.0.5",
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3"
+                }
+            },
+            {
+                "n_obs": 38234,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "counts",
+                    "log1p"
+                ],
+                "obsm": [
+                    "X_custom"
+                ],
+                "varm": [
+                    "X_custom"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_custom",
+                    "log1p"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-22T15:20:38.514512541",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
     "Should run without failures - stub": {
         "content": [
             {
@@ -63,7 +115,7 @@
                     ]
                 },
                 "layers": [
-                    
+                    "pca_log1p"
                 ],
                 "obsm": [
                     "X_pca"
@@ -78,11 +130,12 @@
                     
                 ],
                 "uns": [
-                    "X_pca"
+                    "X_pca",
+                    "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-10-21T14:37:56.425360039",
+        "timestamp": "2026-10-22T15:19:20.815580176",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -114,6 +167,7 @@
                 },
                 "layers": [
                     "counts",
+                    "pca_log1p",
                     "spliced",
                     "unspliced"
                 ],
@@ -130,11 +184,12 @@
                     
                 ],
                 "uns": [
-                    "X_pca"
+                    "X_pca",
+                    "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-10-21T14:40:12.803152183",
+        "timestamp": "2026-10-22T15:19:55.168169449",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

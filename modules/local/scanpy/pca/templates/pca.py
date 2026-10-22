@@ -21,25 +21,21 @@ if input_layer != "X" and input_layer not in adata.layers:
         f"input_layer {input_layer!r} is not present in adata.layers (available: {list(adata.layers.keys())})"
     )
 
-working = adata.copy()
-
-if input_layer != "X":
-    working.X = working.layers[input_layer]
-
+analysis_layer = None if input_layer == "X" else input_layer
 if log_normalize:
-    sc.pp.normalize_total(working)
-    sc.pp.log1p(working)
+    output_layer = "pca_log1p"
+    if output_layer in adata.layers:
+        raise ValueError(f"Normalisation output layer {output_layer!r} already exists")
+    adata.layers[output_layer] = sc.pp.normalize_total(adata, layer=analysis_layer, inplace=False)["X"]
+    sc.pp.log1p(adata, layer=output_layer)
+    analysis_layer = output_layer
 
 sc.pp.pca(
-    working,
+    adata,
+    layer=analysis_layer,
     random_state=0,
     key_added=key_added,
 )
-
-# Preserve original counts in output; copy only PCA results
-adata.obsm[key_added] = working.obsm[key_added]
-adata.varm[key_added] = working.varm[key_added]
-adata.uns[key_added] = working.uns[key_added]
 
 adata.write_h5ad(f"{prefix}.h5ad")
 df = pd.DataFrame(adata.obsm[key_added], index=adata.obs_names)

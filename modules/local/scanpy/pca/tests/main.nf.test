@@ -34,6 +34,7 @@ nextflow_process {
             assert "X_pca" in adata.obsm
             assert "X_pca" in adata.uns
             assert "X_pca" in adata.varm
+            assert "pca_log1p" in adata.layers
 
             assert snapshot(
                 path(process.out.versions[0]).yaml,
@@ -75,13 +76,54 @@ nextflow_process {
                 assert "counts" in layers
                 assert "spliced" in layers
                 assert "unspliced" in layers
-                assert layers.size() == 3
+                assert "pca_log1p" in layers
+                assert layers.size() == 4
             }
 
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml
             ).match()
+        }
+
+    }
+
+    test("Should use an existing log1p layer without creating another expression matrix") {
+
+        setup {
+            run("SCANPY_LOG1PNORM") {
+                script "../../log1pnorm/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'layered'],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ])
+                    """
+                }
+            }
+        }
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = SCANPY_LOG1PNORM.out.h5ad
+                input[1] = 'X_custom'
+                input[2] = 'log1p'
+                input[3] = false
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.layers.toSet() == ['counts', 'log1p'].toSet()
+            assert 'X_custom' in adata.obsm
+            assert 'X_custom' in adata.varm
+            assert 'X_custom' in adata.uns
+            assert snapshot(path(process.out.versions[0]).yaml, adata.yaml).match()
         }
 
     }

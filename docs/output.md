@@ -278,7 +278,7 @@ The standard final H5AD retains the following matrices even with `--save_interme
 
 The categorical `obs['ambient_correction_method']` records the applied method, or `none` for new uncorrected samples. `obs['analysis_counts_source']` records `raw_counts` or a selected method-specific correction layer.
 
-PCA and BBKNN compute embeddings and graphs from the requested analysis layer on a working copy. Their output objects retain the input counts in `X` and preserve the input layers for count-based downstream analyses.
+PCA and BBKNN read the requested analysis layer directly without copying the AnnData object or replacing `X`. When log-normalisation is requested within either module, the transformed matrix is stored in `pca_log1p` or `bbknn_log1p`, respectively. An existing layer with that output name causes an error rather than being overwritten. The standalone log-normalisation step writes `log1p` from `counts`. Each step normalises a copy of only the selected expression matrix and log-transforms the output layer in place.
 
 Optional RDS export retains raw, correction, and normalisation layers as uniquely named SingleCellExperiment assays. The requested analysis counts occupy the first assay, `counts`.
 

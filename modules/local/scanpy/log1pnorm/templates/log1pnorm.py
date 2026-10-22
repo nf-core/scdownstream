@@ -11,12 +11,8 @@ prefix = "${prefix}"
 if "counts" not in adata.layers:
     adata.layers["counts"] = adata.X.copy()
 
-adata_norm = adata.copy()
-adata_norm.X = adata.layers["counts"].copy()
-sc.pp.normalize_total(adata_norm, target_sum=None)
-sc.pp.log1p(adata_norm)
-
-adata.layers["log1p"] = adata_norm.X.copy()
+adata.layers["log1p"] = sc.pp.normalize_total(adata, layer="counts", target_sum=None, inplace=False)["X"]
+sc.pp.log1p(adata, layer="log1p")
 
 adata.write_h5ad(f"{prefix}.h5ad")
 

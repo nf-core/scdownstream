@@ -65,7 +65,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
-- Preserve selected counts and input layers in PCA and BBKNN outputs while calculating on working copies, by @nictru, Claude Sonnet 4.5 and GPT-6.1 Sol.
+- Preserve selected counts and input layers in PCA and BBKNN outputs with layer-aware calculation; avoid full AnnData copies in PCA, BBKNN and log-normalisation, by @nictru, Claude Sonnet 4.5 and GPT-6.1 Sol [[#349](https://github.com/nf-core/scdownstream/pull/349)].
 - Preserve `raw_counts` and named ambient-corrected layers in both analysis modes, respect sample overrides throughout downstream analysis, retain provenance with raw fallback in mixed cohorts, require explicit raw counts in bases, and preserve uniquely named RDS assays, by @nictru and GPT-6.1 Sol [[#345](https://github.com/nf-core/scdownstream/pull/345)].
 - Preserve counts during log1p normalisation and populate query expression layers before extension merges, with nf-test coverage for expression layers and scVI training, by @nictru and GPT-6.1 Sol [[#337](https://github.com/nf-core/scdownstream/pull/337)].
 - Pin `pandas` and `anndata` in `SCANPY_RANKGENESGROUPS`, `CYTETYPE`, and `ADATA_EXTEND` to avoid nullable-string H5AD writes; remove `allow_write_nullable_strings` opt-ins and cast remaining `StringDtype` columns to plain `object` at write boundaries by @nictru [[#310](https://github.com/nf-core/scdownstream/pull/310)].

@@ -20,34 +20,26 @@ if input_layer != "X" and input_layer not in adata.layers:
         f"input_layer {input_layer!r} is not present in adata.layers (available: {list(adata.layers.keys())})"
     )
 
-working = adata.copy()
-
-if input_layer != "X":
-    working.X = working.layers[input_layer]
-
+analysis_layer = None if input_layer == "X" else input_layer
 if log_normalize:
-    sc.pp.normalize_total(working)
-    sc.pp.log1p(working)
+    output_layer = "bbknn_log1p"
+    if output_layer in adata.layers:
+        raise ValueError(f"Normalisation output layer {output_layer!r} already exists")
+    adata.layers[output_layer] = sc.pp.normalize_total(adata, layer=analysis_layer, inplace=False)["X"]
+    sc.pp.log1p(adata, layer=output_layer)
+    analysis_layer = output_layer
 
-sc.tl.pca(working)
+sc.tl.pca(adata, layer=analysis_layer)
 
 kwargs = {
     "batch_key": "${batch_col}",
     "copy": False,
 }
 
-if working.n_obs >= 1e5:
+if adata.n_obs >= 1e5:
     kwargs["neighbors_within_batch"] = 25
 
-bbknn.bbknn(working, **kwargs)
-
-# Preserve original counts in output; copy only computed results
-adata.obsm["X_pca"] = working.obsm["X_pca"]
-adata.varm["PCs"] = working.varm["PCs"]
-adata.uns["pca"] = working.uns["pca"]
-adata.obsp["connectivities"] = working.obsp["connectivities"]
-adata.obsp["distances"] = working.obsp["distances"]
-adata.uns["neighbors"] = working.uns["neighbors"]
+bbknn.bbknn(adata, **kwargs)
 
 adata.write_h5ad(f"{prefix}.h5ad")
 

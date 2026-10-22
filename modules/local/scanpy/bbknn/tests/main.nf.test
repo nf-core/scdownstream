@@ -35,6 +35,7 @@ nextflow_process {
                 assert "PCs" in varm
                 assert "connectivities" in obsp
                 assert "distances" in obsp
+                assert "bbknn_log1p" in layers
             }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
@@ -78,6 +79,7 @@ nextflow_process {
             assert process.success
             def after = anndata(process.out.h5ad[0][1])
             assert after.layers.containsAll(['counts', 'log1p'])
+            assert !('bbknn_log1p' in after.layers)
             assert after.obs.get('sample').n_unique() > 1
             assert after.obsp.containsAll(['connectivities', 'distances'])
             assert 'PCs' in after.varm
