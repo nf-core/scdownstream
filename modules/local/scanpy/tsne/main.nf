@@ -9,6 +9,7 @@ process SCANPY_TSNE {
 
     input:
     tuple val(meta), path(h5ad, arity: 1)
+    val representation
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad

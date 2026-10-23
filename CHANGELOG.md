@@ -78,4 +78,5 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Reject samplesheets with duplicate `sample` names during input validation by @nictru and Claude [[#325](https://github.com/nf-core/scdownstream/pull/325)].
 - Emit required HVG metadata when the requested feature limit covers all available genes, by @nictru, Claude Sonnet 4.5 and GPT-6.1 Sol.
 - Use `batch_col` as `batch_key` in `SCANPY_HVGS`, which previously read an unset `ext.batch_key` and ignored batches, by @nictru and Claude [[#329](https://github.com/nf-core/scdownstream/pull/329)].
+- Use the selected integration representation for t-SNE and use PCA explicitly for BBKNN, by @nictru, Claude Sonnet 4.5 and GPT-6.1 Sol.
 - Wrap `--scvi_model`, `--scanvi_model` and `--mito_genes` in `file(..., checkIfExists: true)` before passing them to `path` inputs, so that relative local paths no longer abort the run with `Not a valid path value` by @nictru [[#335](https://github.com/nf-core/scdownstream/pull/335)].

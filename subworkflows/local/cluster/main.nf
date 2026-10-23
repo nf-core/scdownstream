@@ -52,8 +52,13 @@ workflow CLUSTER {
     ch_obsm = ch_obsm.mix(UMAP.out.obsm)
 
     if (tsne) {
+        ch_tsne = ch_h5ad_graph.multiMap { meta, h5ad ->
+            h5ad: [meta, h5ad]
+            representation: meta.integration == 'bbknn' ? 'X_pca' : embedding_key
+        }
         TSNE (
-            ch_h5ad_graph
+            ch_tsne.h5ad,
+            ch_tsne.representation,
         )
         ch_obsm = ch_obsm.mix(TSNE.out.obsm)
     }
