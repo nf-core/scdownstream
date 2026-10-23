@@ -174,8 +174,6 @@ CyteType runs after integration, clustering, and global differential expression.
       - `*.h5ad`: The H5AD file with the t-SNE coordinates.
       - `*.pkl`: The t-SNE coordinates in a pickle file.
 
-      t-SNE uses the selected integration embedding. For BBKNN, t-SNE uses `X_pca` because BBKNN corrects the neighbour graph rather than a dense embedding. BBKNN t-SNE coordinates do not represent its corrected graph.
-
 </details>
 
 The `05_cluster_dimred` directory contains the results of the clustering and dimensionality reduction step.
