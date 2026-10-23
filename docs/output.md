@@ -264,8 +264,6 @@ The `09_finalized` directory contains the final results of the pipeline.
 The final H5AD file contains all results from the pipeline and is stored in the `merged.h5ad` file.
 The metadata of the final H5AD file is stored in the `merged_metadata.csv` file.
 
-The final H5AD retains feature-selection annotations in `var`. HVG shards use `ext.prefix` as their column name: `highly_variable` for standard HVGs and `highly_variable:pearson_residuals` for Pearson residual HVGs, with `:subset:<subset>` appended for per-label integrations. Deviance shards export `<prefix>:binomial_deviance` and `<prefix>:highly_deviant`, with prefixes `deviance` globally and `deviance:subset:<subset>` for per-label integrations. These prefixes are configured in `conf/modules.config`. Selection calculations and internal selection columns remain unchanged.
-
 #### Expression matrices and provenance
 
 The standard final H5AD retains the following matrices even with `--save_intermediates false`:
