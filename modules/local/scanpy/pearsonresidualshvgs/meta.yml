@@ -59,7 +59,7 @@ output:
   var:
     - "*.pkl":
         type: file
-        description: Pickled DataFrame with highly variable gene annotations
+        description: Pickled HVG flags with the column named by ext.prefix, or meta.id when unset
         pattern: "*.pkl"
   versions:
     - versions.yml:

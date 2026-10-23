@@ -264,4 +264,134 @@ nextflow_process {
 
     }
 
+    test("Should namespace fragment columns for named subset") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', subset: 'T_cells' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = 'X'
+                input[4] = true
+                input[5] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert "highly_variable" in adata.var.colnames
+            // Verify pickle fragment exists for named subset case
+            assert path(process.out.var[0]).exists()
+        }
+
+    }
+
+    test("Should not namespace fragment columns for global subset") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', subset: 'global' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = 'X'
+                input[4] = true
+                input[5] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert "highly_variable" in adata.var.colnames
+            // Verify pickle fragment exists for global subset case
+            assert path(process.out.var[0]).exists()
+        }
+
+    }
+
+    test("Should not namespace fragment columns for missing subset") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = 'X'
+                input[4] = true
+                input[5] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert "highly_variable" in adata.var.colnames
+            // Verify pickle fragment exists for missing subset case
+            assert path(process.out.var[0]).exists()
+        }
+
+    }
+
+    test("Should not namespace fragment columns for select-all branch with named subset") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', subset: 'NK_cells' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 10000
+                input[2] = []
+                input[3] = 'X'
+                input[4] = true
+                input[5] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.n_vars == 9887
+            assert "highly_variable" in adata.var.colnames
+            assert adata.var.highly_variable.unique() == ['TRUE'].toSet()
+            // Verify pickle fragment exists for select-all with named subset
+            assert path(process.out.var[0]).exists()
+        }
+
+    }
+
 }

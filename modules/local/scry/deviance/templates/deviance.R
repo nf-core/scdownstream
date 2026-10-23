@@ -5,6 +5,7 @@ library(SingleCellExperiment)
 library(anndataR)
 
 set.seed(123)
+file_prefix <- gsub(":", "_", "${prefix}", fixed = TRUE)
 
 adata <- read_h5ad("${h5ad}")
 sce <- adata\$as_SingleCellExperiment(x_mapping = "counts", assays_mapping = FALSE)
@@ -58,7 +59,10 @@ features_df <- data.frame(
     highly_deviant = highly_deviant,
     row.names = rownames(sce)
 )
-write.csv(features_df, "${prefix}_features.csv")
+
+colnames(features_df) <- paste0("${prefix}:", colnames(features_df))
+
+write.csv(features_df, paste0(file_prefix, "_features.csv"))
 
 top_idx <- ord[seq_len(n_keep)]
 
@@ -92,7 +96,7 @@ if (ncol(adata_out\$obs) == 0 && ncol(obs_meta) > 0) {
 }
 adata_out\$var[["binomial_deviance"]] <- deviance[top_idx]
 adata_out\$var[["highly_deviant"]] <- highly_deviant[top_idx]
-write_h5ad(adata_out, "${prefix}.h5ad")
+write_h5ad(adata_out, paste0(file_prefix, ".h5ad"))
 
 r.version <- strsplit(version[['version.string']], ' ')[[1]][3]
 scry.version <- as.character(packageVersion('scry'))

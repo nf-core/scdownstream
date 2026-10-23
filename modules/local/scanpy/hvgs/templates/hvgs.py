@@ -11,6 +11,7 @@ sc.settings.n_jobs = int("${task.cpus}")
 
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
+file_prefix = prefix.replace(":", "_")
 n_hvgs = int("${n_hvgs}")
 batch_key = "${batch_key}"
 input_layer = "${input_layer}"
@@ -24,9 +25,10 @@ if "${excluded_genes}":
     adata = adata[:, mask].copy()
 
 if n_hvgs > 0 and adata.n_vars <= n_hvgs:
-    # When available genes <= positive requested limit, select all genes
     adata.var["highly_variable"] = True
-    adata.var[["highly_variable"]].to_pickle(f"{prefix}.pkl")
+    fragment = adata.var[["highly_variable"]].copy()
+    fragment.columns = [prefix]
+    fragment.to_pickle(f"{file_prefix}.pkl")
 elif adata.n_vars > n_hvgs:
     kwargs = {}
 
@@ -56,11 +58,13 @@ elif adata.n_vars > n_hvgs:
 
     sc.pp.highly_variable_genes(adata, layer=analysis_layer, **kwargs)
 
-    adata.var[["highly_variable"]].to_pickle(f"{prefix}.pkl")
+    fragment = adata.var[["highly_variable"]].copy()
+    fragment.columns = [prefix]
+    fragment.to_pickle(f"{file_prefix}.pkl")
 
     adata = adata[:, adata.var["highly_variable"]]
 
-adata.write_h5ad(f"{prefix}.h5ad")
+adata.write_h5ad(f"{file_prefix}.h5ad")
 
 # Versions
 

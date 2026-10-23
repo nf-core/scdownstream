@@ -248,6 +248,7 @@ workflow SCDOWNSTREAM {
                 force_obs_cols,
             )
             ch_obs = ch_obs.mix(COMBINE.out.obs)
+            ch_var = ch_var.mix(COMBINE.out.var)
             ch_obsm = ch_obsm.mix(COMBINE.out.obsm)
             ch_integrations = ch_integrations.mix(COMBINE.out.integrations)
             ch_finalization_base = COMBINE.out.h5ad
@@ -315,6 +316,7 @@ workflow SCDOWNSTREAM {
             )
             ch_integrations = ch_integrations.mix(SUB_INTEGRATE.out.integrations)
             ch_obs = ch_obs.mix(SUB_INTEGRATE.out.obs)
+            ch_var = ch_var.mix(SUB_INTEGRATE.out.var)
             ch_obsm = ch_obsm.mix(SUB_INTEGRATE.out.obsm)
             ch_finalization_base = SUB_INTEGRATE.out.h5ad
             ch_label_grouping = SUB_INTEGRATE.out.h5ad

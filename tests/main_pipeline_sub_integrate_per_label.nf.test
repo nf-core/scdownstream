@@ -41,6 +41,12 @@ nextflow_pipeline {
             assert "sample" in adata.obs.colnames
             assert pcaKeys.size() > 1
             assert umapKeys.size() > 1
+            def subsetVarCols = adata.var.colnames.findAll { it.contains(':subset:') }
+            assert subsetVarCols.size() > 0
+            def subsets = ['SRR28679756', 'SRR28679757', 'SRR28679758']
+            subsets.each { subset ->
+                assert "highly_variable:subset:${subset}".toString() in subsetVarCols
+            }
             assert file("$outputDir/10_reports/qc-report.html").text.contains("Each integration method run by the pipeline")
             // stable_name: All files + folders in ${params.outdir}/ with a stable name
             def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', '06_per_group/**', '11_multiqc/**'])

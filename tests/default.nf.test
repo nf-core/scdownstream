@@ -26,6 +26,8 @@ nextflow_pipeline {
             assert adata_merged.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
             assert !file("$outputDir/02_quality_control/finalized").exists()
             assert file("$outputDir/10_reports/qc-report.html").text.contains("Each integration method run by the pipeline")
+            assert "highly_variable" in adata_merged.var.colnames
+            assert !adata_merged.var.colnames.any { it.contains(':subset:') }
             // stable_path: All files + folders in ${params.outdir}/ with a stable path (including file name)
             def stable_path = getAllFilesFromDir(
                 params.outdir,
