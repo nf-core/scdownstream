@@ -59,7 +59,7 @@ nextflow_process {
             assert process.out.h5ad.collect { it[0].id }.toSet() == ['named', 'global', 'missing'].toSet()
             process.out.h5ad.each { meta, h5ad ->
                 def adata = anndata(h5ad)
-                def expected = meta.id == 'named' ? ['highly_variable:subset:B_cells'] : ['highly_variable']
+                def expected = meta.id == 'named' ? ['highly_variable:pearson_residuals:subset:B_cells'] : ['highly_variable:pearson_residuals']
                 assert adata.n_obs == 128
                 assert adata.n_vars > 100
                 assert adata.var.colnames.findAll { it == 'highly_variable' || it.startsWith('highly_variable:') }.toSet() == expected.toSet()
