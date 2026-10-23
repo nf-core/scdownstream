@@ -24,11 +24,11 @@ process SCANPY_HVGS {
     task.ext.when == null || task.ext.when
 
     script:
-    prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = (task.ext.prefix ?: "${meta.id}").replace(':', '_')
     template('hvgs.py')
 
     stub:
-    prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = (task.ext.prefix ?: "${meta.id}").replace(':', '_')
     """
     touch ${prefix}.h5ad
     touch ${prefix}.pkl

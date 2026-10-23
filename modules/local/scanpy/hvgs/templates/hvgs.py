@@ -26,7 +26,7 @@ if "${excluded_genes}":
 if n_hvgs > 0 and adata.n_vars <= n_hvgs:
     adata.var["highly_variable"] = True
     fragment = adata.var[["highly_variable"]].copy()
-    fragment.columns = [prefix]
+    fragment.columns = ["${task.ext.prefix ?: meta.id}"]
     fragment.to_pickle(f"{prefix}.pkl")
 elif adata.n_vars > n_hvgs:
     kwargs = {}
@@ -58,7 +58,7 @@ elif adata.n_vars > n_hvgs:
     sc.pp.highly_variable_genes(adata, layer=analysis_layer, **kwargs)
 
     fragment = adata.var[["highly_variable"]].copy()
-    fragment.columns = [prefix]
+    fragment.columns = ["${task.ext.prefix ?: meta.id}"]
     fragment.to_pickle(f"{prefix}.pkl")
 
     adata = adata[:, adata.var["highly_variable"]]

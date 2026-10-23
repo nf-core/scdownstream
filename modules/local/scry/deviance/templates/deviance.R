@@ -59,7 +59,7 @@ features_df <- data.frame(
     row.names = rownames(sce)
 )
 
-colnames(features_df) <- paste0("${prefix}:", colnames(features_df))
+colnames(features_df) <- paste0("${task.ext.prefix ?: meta.id}:", colnames(features_df))
 
 write.csv(features_df, "${prefix}_features.csv")
 

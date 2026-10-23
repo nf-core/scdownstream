@@ -22,11 +22,11 @@ process SCRY_DEVIANCE {
     task.ext.when == null || task.ext.when
 
     script:
-    prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = (task.ext.prefix ?: "${meta.id}").replace(':', '_')
     template 'deviance.R'
 
     stub:
-    prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = (task.ext.prefix ?: "${meta.id}").replace(':', '_')
     """
     touch ${prefix}.h5ad
     touch ${prefix}_features.csv

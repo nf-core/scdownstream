@@ -32,6 +32,8 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
             assert adata.n_vars == 100
+            assert !process.out.h5ad[0][1].toString().tokenize('/').last().contains(':')
+            assert !process.out.var[0].toString().tokenize('/').last().contains(':')
             assert "highly_variable" in adata.var.colnames
             assert snapshot(
                 path(process.out.versions[0]).yaml,

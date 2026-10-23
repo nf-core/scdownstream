@@ -55,7 +55,7 @@ if adata.n_vars > n_genes:
     sc.experimental.pp.highly_variable_genes(adata, **kwargs)
 
     fragment = adata.var[["highly_variable"]].copy()
-    fragment.columns = [prefix]
+    fragment.columns = ["${task.ext.prefix ?: meta.id}"]
     fragment.to_pickle(f"{prefix}.pkl")
 
     adata.X = raw_counts
@@ -63,7 +63,7 @@ if adata.n_vars > n_genes:
 else:
     adata.var["highly_variable"] = True
     fragment = adata.var[["highly_variable"]].copy()
-    fragment.columns = [prefix]
+    fragment.columns = ["${task.ext.prefix ?: meta.id}"]
     fragment.to_pickle(f"{prefix}.pkl")
     adata.X = raw_counts
 
