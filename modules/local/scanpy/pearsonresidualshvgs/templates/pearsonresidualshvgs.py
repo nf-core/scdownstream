@@ -11,6 +11,7 @@ sc.settings.n_jobs = int("${task.cpus}")
 
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
+file_prefix = prefix.replace(":", "_")
 n_genes = int("${n_genes}")
 batch_key = "${batch_key}"
 counts_layer = "${counts_layer}"
@@ -55,19 +56,19 @@ if adata.n_vars > n_genes:
     sc.experimental.pp.highly_variable_genes(adata, **kwargs)
 
     fragment = adata.var[["highly_variable"]].copy()
-    fragment.columns = ["${task.ext.prefix ?: meta.id}"]
-    fragment.to_pickle(f"{prefix}.pkl")
+    fragment.columns = [prefix]
+    fragment.to_pickle(f"{file_prefix}.pkl")
 
     adata.X = raw_counts
     adata = adata[:, adata.var["highly_variable"]]
 else:
     adata.var["highly_variable"] = True
     fragment = adata.var[["highly_variable"]].copy()
-    fragment.columns = ["${task.ext.prefix ?: meta.id}"]
-    fragment.to_pickle(f"{prefix}.pkl")
+    fragment.columns = [prefix]
+    fragment.to_pickle(f"{file_prefix}.pkl")
     adata.X = raw_counts
 
-adata.write_h5ad(f"{prefix}.h5ad")
+adata.write_h5ad(f"{file_prefix}.h5ad")
 
 versions = {"${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}}
 
