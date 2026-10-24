@@ -7,23 +7,7 @@ nextflow_pipeline {
     test("Should process data from scratch") {
 
         when {
-            def fixtureBase = System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')
-                ? new File(System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')).canonicalPath.replaceAll('/+$', '') + '/'
-                : 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
-            def referenceRoot = System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')
-                ? new File(System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')).canonicalPath.replaceAll('/+$', '') + '/'
-                : 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
-            def references = new File("$launchDir/references.csv")
-            references.text = "id,label,reference,version\nhpca_celldex,label.main,hpca,2024-02-26\nimmune_celldex,label.fine,monaco_immune,2024-02-26\nhpca_direct,label.main,${referenceRoot}singleR/celldex_hpca__2024-02-26_h5_se.tar,\nimmune_direct,label.fine,${referenceRoot}singleR/celldex_monaco_immune__2024-02-26_h5_se.tar,\n"
-            def samplesheet = new File("$launchDir/samplesheet.csv")
-            samplesheet.text = 'sample,filtered,unfiltered,batch_col\n' + [
-                "SRR28679756,${fixtureBase}pbmc/SRR28679756_filtered_matrix.h5ad,${fixtureBase}pbmc/SRR28679756_raw_matrix.h5ad,sample",
-                "SRR28679757,${fixtureBase}pbmc/SRR28679757_filtered_matrix.sce.rds,${fixtureBase}pbmc/SRR28679757_raw_matrix.sce.rds,sample",
-                "SRR28679758,${fixtureBase}pbmc/SRR28679758_filtered_matrix.seurat.rds,${fixtureBase}pbmc/SRR28679758_raw_matrix.seurat.rds,sample",
-            ].join('\n') + '\n'
             params {
-                input = samplesheet.toString()
-                celldex_reference = references.toString()
                 ambient_correction = 'decontx'
                 doublet_detection   = 'scrublet,scdblfinder'
                 cell_cycle_scoring  = false

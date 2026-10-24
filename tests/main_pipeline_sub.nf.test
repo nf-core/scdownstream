@@ -7,19 +7,11 @@ nextflow_pipeline {
     test("Should be able to perform subclustering") {
 
         when {
-            def referenceRoot = System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')
-                ? new File(System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')).canonicalPath.replaceAll('/+$', '') + '/'
-                : 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
-            def references = new File("$launchDir/references.csv")
-            references.text = "id,label,reference,version\nhpca_celldex,label.main,hpca,2024-02-26\nimmune_celldex,label.fine,monaco_immune,2024-02-26\nhpca_direct,label.main,${referenceRoot}singleR/celldex_hpca__2024-02-26_h5_se.tar,\nimmune_direct,label.fine,${referenceRoot}singleR/celldex_monaco_immune__2024-02-26_h5_se.tar,\n"
             params {
-                pipelines_testdata_base_path = System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')
-                    ? new File(System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')).canonicalPath.replaceAll('/+$', '') + '/'
-                    : 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
                 outdir                       = "$outputDir"
                 input                        = null
-                celldex_reference            = references.toString()
-                base_adata                   = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                base_adata                   = params.pipelines_testdata_base_path + 'extension_base/merged.h5ad'
                 base_embeddings              = 'scvi'
                 cluster_global               = false
                 cluster_per_label            = true
@@ -54,17 +46,10 @@ nextflow_pipeline {
     test("Should reject a legacy base-only input without raw counts") {
 
         when {
-            def referenceRoot = System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')
-                ? new File(System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')).canonicalPath.replaceAll('/+$', '') + '/'
-                : 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
-            def references = new File("$launchDir/references.csv")
-            references.text = "id,label,reference,version\nhpca_celldex,label.main,hpca,2024-02-26\nimmune_celldex,label.fine,monaco_immune,2024-02-26\nhpca_direct,label.main,${referenceRoot}singleR/celldex_hpca__2024-02-26_h5_se.tar,\nimmune_direct,label.fine,${referenceRoot}singleR/celldex_monaco_immune__2024-02-26_h5_se.tar,\n"
             params {
-                pipelines_testdata_base_path = System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')
-                    ? new File(System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')).canonicalPath.replaceAll('/+$', '') + '/'
-                    : 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
                 input                        = null
-                base_adata                   = pipelines_testdata_base_path + 'anndata-variations/counts_in_X.h5ad'
+                base_adata                   = params.pipelines_testdata_base_path + 'anndata-variations/counts_in_X.h5ad'
                 base_embeddings              = 'scvi'
                 outdir                       = "$outputDir"
             }
