@@ -80,7 +80,7 @@ model.train(
 # Round to ensure hashes are stable
 adata.obsm["X_emb"] = model.get_latent_representation()
 
-adata.write_h5ad("${prefix}.h5ad", compression="gzip")
+adata.write_h5ad("${prefix}.h5ad")
 model.save("${prefix}_model")
 
 df = pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names)

@@ -44,7 +44,7 @@ if original_index is not None:
     adata.var_names = original_index
 
 adata.obs[["S_score", "G2M_score", "phase"]].to_pickle(f"{prefix}.pkl")
-adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
+adata.write_h5ad(f"{prefix}.h5ad")
 
 if adata.obs["phase"].nunique() > 1:
     phase_counts = adata.obs["phase"].value_counts()

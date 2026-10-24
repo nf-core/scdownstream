@@ -74,7 +74,7 @@ df_out = adata_work.obs[library_cols].rename(columns=dict(zip(library_cols, outp
 df_out.to_pickle(f"{prefix}.pkl")
 
 adata.obs = pd.concat([adata.obs, df_out], axis=1)
-adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
+adata.write_h5ad(f"{prefix}.h5ad")
 
 versions = {
     "${task.process}": {

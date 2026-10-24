@@ -22,7 +22,7 @@ if axis == "obs":
 else:
     adata.var = df
 
-adata.write_h5ad("${prefix}.h5ad", compression="gzip")
+adata.write_h5ad("${prefix}.h5ad")
 
 # Versions
 

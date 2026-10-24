@@ -280,7 +280,7 @@ if adata.obs[obs_key].nunique() > 1:
         df: pd.DataFrame = adata.uns["liana_res"]
 
         df.to_pickle(f"{prefix}.pkl")
-        adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
+        adata.write_h5ad(f"{prefix}.h5ad")
         _write_liana_plots(adata, df, obs_key)
 
     except ValueError as e:

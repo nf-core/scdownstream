@@ -9,7 +9,7 @@ import yaml
 
 df = pd.read_csv("${csv}", index_col=0)
 adata = ad.AnnData(df)
-adata.write_h5ad("${prefix}.h5ad", compression="gzip")
+adata.write_h5ad("${prefix}.h5ad")
 
 # Versions
 

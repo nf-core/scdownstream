@@ -64,7 +64,7 @@ elif adata.n_vars > n_hvgs:
 
     adata = adata[:, adata.var["highly_variable"]]
 
-adata.write_h5ad(f"{file_prefix}.h5ad", compression="gzip")
+adata.write_h5ad(f"{file_prefix}.h5ad")
 
 # Versions
 

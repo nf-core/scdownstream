@@ -243,9 +243,6 @@ Do not set them in individual templates.
 Pass `task.cpus` to the tool explicitly, for example with `threadpool_limits(int("${task.cpus}"))` in Python.
 Set a fixed random seed for stochastic methods, for example with `set.seed()` in R.
 
-Write H5AD outputs with `compression="gzip"` in Python or `compression = "gzip"` in R.
-Keep the write call and its compression argument on the same line for the `h5ad-gzip` pre-commit check.
-
 Templates should follow this structure:
 
 1. Read inputs.

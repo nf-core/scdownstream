@@ -41,7 +41,7 @@ else:
     adata.obs[colname] = adata.obs[group_col].map(entropies).astype(float) / np.log2(n_observed_labels)
 
 adata.obs[[colname]].to_pickle(f"{prefix}.pkl")
-adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
+adata.write_h5ad(f"{prefix}.h5ad")
 
 if "${plot_basis ? 'true' : 'false'}" == "true":
     sc.pl.scatter(adata, title="${meta.id} Entropy", color=colname, show=False, basis="${plot_basis}")

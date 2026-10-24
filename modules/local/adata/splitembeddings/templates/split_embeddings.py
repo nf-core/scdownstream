@@ -17,7 +17,7 @@ adata.obsm = {}
 
 for embedding in embeddings:
     adata.obsm["X_emb"] = obsm[f"X_{embedding}"]
-    adata.write_h5ad(f"{embedding}.h5ad", compression="gzip")
+    adata.write_h5ad(f"{embedding}.h5ad")
 
 # Versions
 

@@ -22,7 +22,7 @@ if representation not in adata.obsm:
 
 sc.tl.tsne(adata, use_rep=representation, random_state=0)
 
-adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
+adata.write_h5ad(f"{prefix}.h5ad")
 df = pd.DataFrame(adata.obsm["X_tsne"], index=adata.obs_names)
 df.to_pickle(f"X_{prefix}.pkl")
 

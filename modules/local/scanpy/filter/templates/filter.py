@@ -340,7 +340,7 @@ if min_genes is not None:
 if min_cells is not None:
     sc.pp.filter_genes(adata, min_cells=min_cells)
 
-adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
+adata.write_h5ad(f"{prefix}.h5ad")
 
 # Versions
 

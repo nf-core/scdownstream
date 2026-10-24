@@ -33,7 +33,7 @@ adata = anndata2ri.rpy2py(sce)
 adata.obs.index = adata.obs.index.astype(str)
 adata.var.index = adata.var.index.astype(str)
 
-adata.write_h5ad("${prefix}.h5ad", compression="gzip")
+adata.write_h5ad("${prefix}.h5ad")
 
 versions = {
     "${task.process}": {

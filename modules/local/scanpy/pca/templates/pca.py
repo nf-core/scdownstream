@@ -39,7 +39,7 @@ sc.pp.pca(
     key_added=key_added,
 )
 
-adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
+adata.write_h5ad(f"{prefix}.h5ad")
 df = pd.DataFrame(adata.obsm[key_added], index=adata.obs_names)
 df.to_pickle(f"X_{prefix}.pkl")
 

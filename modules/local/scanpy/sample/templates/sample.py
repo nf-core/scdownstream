@@ -29,7 +29,7 @@ if "n" in kwargs and kwargs["n"] >= adata.n_obs:
 else:
     sc.pp.sample(adata, **kwargs)
 
-adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
+adata.write_h5ad(f"{prefix}.h5ad")
 
 # Versions
 

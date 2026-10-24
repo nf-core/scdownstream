@@ -96,7 +96,7 @@ if (ncol(adata_out\$obs) == 0 && ncol(obs_meta) > 0) {
 }
 adata_out\$var[["binomial_deviance"]] <- deviance[top_idx]
 adata_out\$var[["highly_deviant"]] <- highly_deviant[top_idx]
-write_h5ad(adata_out, paste0(file_prefix, ".h5ad"), compression = "gzip")
+write_h5ad(adata_out, paste0(file_prefix, ".h5ad"))
 
 r.version <- strsplit(version[['version.string']], ' ')[[1]][3]
 scry.version <- as.character(packageVersion('scry'))

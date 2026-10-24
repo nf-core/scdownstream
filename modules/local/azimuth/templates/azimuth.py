@@ -68,7 +68,7 @@ df_embedding.to_pickle("X_azimuth.pkl")
 
 adata.obs = pd.concat([adata.obs, df_azimuth], axis=1)
 adata.obsm["X_azimuth"] = embedding
-adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
+adata.write_h5ad(f"{prefix}.h5ad")
 
 # Versions
 
