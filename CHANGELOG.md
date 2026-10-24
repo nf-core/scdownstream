@@ -9,7 +9,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
-- Gzip-compress H5AD outputs from local Python and R modules and the QC report, excluding `hugounifier/apply` and nf-core modules, by @nictru and GPT-6.1 Sol.
+- Gzip-compress H5AD outputs from local Python and R modules and the QC report, excluding `hugounifier/apply` and nf-core modules, by @nictru and GPT-6.1 Sol [[#357](https://github.com/nf-core/scdownstream/pull/357)].
 - Migrate nf-test to compact biological fixtures with shared PCA and reference inputs, retain format and failure-path coverage, and regenerate snapshots, by @nictru and GPT-6.1 Sol [[#356](https://github.com/nf-core/scdownstream/pull/356)].
 - Handle empty doublet-overlap plots and nullable reference HVG flags during marker plotting, with regression tests, by @nictru and GPT-6.1 Sol [[#356](https://github.com/nf-core/scdownstream/pull/356)].
 - Generate small decoupler networks, sample identifier validation sheets and interesting-gene lists inline in nf-test, by @nictru and GPT-6.1 Sol [[#348](https://github.com/nf-core/scdownstream/pull/348)].
