@@ -7,7 +7,7 @@ import scanpy as sc
 import yaml
 
 adata = sc.read_10x_h5("${h5}")
-adata.write_h5ad("${prefix}.h5ad")
+adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 
 # Versions
 

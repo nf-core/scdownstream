@@ -91,14 +91,14 @@ adata_outer.X = csr_matrix(adata_outer.X)
 # Sort obs columns alphabetically to make reproducible
 adata_outer.obs = adata_outer.obs.reindex(sorted(adata_outer.obs.columns), axis=1)
 
-adata_outer.write("${prefix}_outer.h5ad")
+adata_outer.write_h5ad("${prefix}_outer.h5ad", compression="gzip")
 
 if base_path:
     adata_integrate = adata_outer[~adata_outer.obs.index.isin(adata_base.obs.index)].copy()
 
     known_labels = adata_base.obs["label"].unique()
     adata_integrate.obs["label"] = adata_integrate.obs["label"].map(lambda x: x if x in known_labels else "Unknown")
-    adata_integrate.write("${prefix}_integrate.h5ad")
+    adata_integrate.write_h5ad("${prefix}_integrate.h5ad", compression="gzip")
 else:
     os.symlink("${prefix}_outer.h5ad", "${prefix}_integrate.h5ad")
 

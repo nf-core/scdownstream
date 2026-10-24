@@ -35,7 +35,7 @@ if remove_doublets:
     mask = predictions.sum(axis=1) >= threshold
     adata = adata[~mask, :]
 
-adata.write_h5ad(f"{prefix}.h5ad")
+adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
 # Versions
 

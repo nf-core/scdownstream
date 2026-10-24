@@ -70,7 +70,7 @@ pdata.obs_names = obs["sample_id"].values
 if "psbulk_props" in pdata.layers:
     del pdata.layers["psbulk_props"]
 
-pdata.write_h5ad(f"{prefix}.h5ad")
+pdata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 obs[["sample_id", "donor", "celltype", "condition", "n_cells", "total_counts"]].to_csv(
     f"{prefix}_samples.tsv",
     sep="\t",

@@ -15,7 +15,7 @@ prefix = "${prefix}"
 
 sc.tl.umap(adata, random_state=0)
 
-adata.write_h5ad(f"{prefix}.h5ad")
+adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 df = pd.DataFrame(adata.obsm["X_umap"], index=adata.obs_names)
 df.to_pickle(f"X_{prefix}.pkl")
 
