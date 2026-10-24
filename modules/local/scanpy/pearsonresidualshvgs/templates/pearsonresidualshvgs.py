@@ -68,7 +68,7 @@ else:
     fragment.to_pickle(f"{file_prefix}.pkl")
     adata.X = raw_counts
 
-adata.write_h5ad(f"{file_prefix}.h5ad")
+adata.write_h5ad(f"{file_prefix}.h5ad", compression="gzip")
 
 versions = {"${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}}
 

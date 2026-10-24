@@ -27,7 +27,7 @@ if adata.obs[obs_key].value_counts().size > 1:
     pickle.dump(paga_dict, open(f"{prefix}.pkl", "wb"))
 
     np.save(f"{prefix}_connectivities.npy", adata.obsp["connectivities"])
-    adata.write_h5ad(f"{prefix}.h5ad")
+    adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
     # Plot
     sc.pl.paga(adata, title="${meta.id} PAGA", show=False)

@@ -41,7 +41,7 @@ if (!all(keep_cells)) {
 }
 
 adata_out\$layers[["scran"]] <- logcounts
-write_h5ad(adata_out, "${prefix}.h5ad")
+write_h5ad(adata_out, "${prefix}.h5ad", compression = "gzip")
 
 r.version <- strsplit(version[["version.string"]], " ")[[1]][3]
 scran.version <- as.character(packageVersion("scran"))

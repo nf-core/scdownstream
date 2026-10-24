@@ -28,7 +28,7 @@ outputs = [mapping.get(i, i) for i in inputs]
 
 adata.var["symbols"] = outputs
 
-adata.write_h5ad("${prefix}.h5ad")
+adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 
 # Versions
 

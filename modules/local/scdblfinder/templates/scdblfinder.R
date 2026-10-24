@@ -90,7 +90,7 @@ if (is.null(colnames(sce)) || length(colnames(sce)) != ncol(sce)) {
 }
 
 # Write the updated SingleCellExperiment directly as h5ad.
-write_h5ad(sce, "${prefix}.h5ad")
+write_h5ad(sce, "${prefix}.h5ad", compression = "gzip")
 
 # Extract predictions for doublet removal step
 # Create a binary doublet call based on class

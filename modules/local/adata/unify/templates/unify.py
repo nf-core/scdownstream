@@ -242,7 +242,7 @@ if adata.var.index.name is not None:
 if adata.obs.index.name is not None:
     adata.obs.index.name = None
 
-adata.write_h5ad("${prefix}.h5ad")
+adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 
 # Versions
 

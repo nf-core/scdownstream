@@ -43,7 +43,7 @@ if adata.n_obs >= 1e5:
 
 bbknn.bbknn(adata, **kwargs)
 
-adata.write_h5ad(f"{prefix}.h5ad")
+adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
 versions = {
     "${task.process}": {

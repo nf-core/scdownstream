@@ -71,7 +71,7 @@ if ("${output_layer}" == "X") {
 }
 
 # Save the output
-write_h5ad(adata, "${prefix}.h5ad")
+write_h5ad(adata, "${prefix}.h5ad", compression = "gzip")
 
 # Write version information
 writeLines(

@@ -62,6 +62,11 @@ repos:
         args: ["-output", "json"]
   - repo: local
     hooks:
+      - id: h5ad-gzip
+        name: Require gzip compression in H5AD write calls
+        entry: '(?m)^(?![^\n]*compression\s*=\s*["\x27]gzip["\x27])[^\n]*(?:write_h5ad\(|\.write\([^\n]*\.h5ad)'
+        language: pygrep
+        files: '^(modules/local/.*/templates/.*\.(py|R)|bin/.*\.qmd)$'
       - id: block-pipeline-outdir
         name: Prevent committing output from pipeline test runs to the pipeline code itself
         entry: ./.hooks/block_pipeline_outdir.sh

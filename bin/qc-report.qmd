@@ -111,7 +111,7 @@ if qc_only:
         adata_all[file].obs['file'] = file
     adata = ad.concat(adata_all)
     # Save to artefacts directory so that the user may further analyse the data
-    adata.write_h5ad('artifacts/concatenated.h5ad')
+    adata.write_h5ad('artifacts/concatenated.h5ad', compression="gzip")
 else:
     # Input data is integrated into a single `merged.h5ad` file
     adata = sc.read_h5ad(input_files[0])

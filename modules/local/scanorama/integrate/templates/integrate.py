@@ -39,7 +39,7 @@ sce.pp.scanorama_integrate(adata_proc, batch_col)
 
 adata.obsm["X_scanorama"] = adata_proc.obsm["X_scanorama"]
 adata.obsm["X_emb"] = adata_proc.obsm["X_scanorama"]
-adata.write_h5ad(f"{prefix}.h5ad")
+adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
 pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names).to_pickle(f"X_{prefix}.pkl")
 

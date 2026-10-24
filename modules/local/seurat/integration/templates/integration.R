@@ -44,7 +44,7 @@ colnames(emb) <- NULL
 
 adata\$obsm\$X_emb <- emb
 
-write_h5ad(adata, "${prefix}.h5ad")
+write_h5ad(adata, "${prefix}.h5ad", compression = "gzip")
 
 ################################################
 ## VERSIONS FILE                              ##

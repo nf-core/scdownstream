@@ -115,7 +115,7 @@ for path in layers_paths:
         layer = np.asarray(layer, dtype=np.float32)
     adata.layers[path.stem] = layer
 
-adata.write_h5ad(f"{prefix}.h5ad")
+adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 adata.obs.to_csv(f"{prefix}_metadata.csv")
 
 # Versions
