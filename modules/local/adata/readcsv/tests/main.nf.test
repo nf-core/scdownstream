@@ -17,7 +17,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/csv/SRR28679756_filtered_matrix.csv', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.csv', checkIfExists: true)
                     ]
                 )
                 """
@@ -48,7 +48,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/csv/SRR28679756_filtered_matrix.csv', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.csv', checkIfExists: true)
                     ]
                 )
                 """

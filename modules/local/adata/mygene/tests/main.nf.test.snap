@@ -40,7 +40,7 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,564f3f07311c5643f6228ac9f6755ce8"
+                        "test.h5ad:md5,bac784885eb207edd7fc430ab7679280"
                     ]
                 ],
                 "1": [
@@ -51,7 +51,7 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,564f3f07311c5643f6228ac9f6755ce8"
+                        "test.h5ad:md5,bac784885eb207edd7fc430ab7679280"
                     ]
                 ],
                 "versions": [
@@ -66,12 +66,21 @@
                 }
             },
             {
-                "n_obs": 7373,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample"
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts"
                     ]
                 },
                 "var": {
@@ -80,30 +89,18 @@
                         "symbols"
                     ]
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
-        "timestamp": "2026-09-26T11:45:30.101408819",
+        "timestamp": "2026-10-24T15:33:19.167066441",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }

@@ -9,37 +9,46 @@
                 }
             },
             {
-                "n_obs": 7373,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
-                        "leiden"
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "leiden",
+                        "donor",
+                        "condition",
+                        "label"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "symbols",
+                        "highly_variable"
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     "X_pca"
                 ],
-                "varm": [
-                    "X_pca"
-                ],
+                "varm": [],
                 "obsp": [
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "X_pca",
                     "leiden",
@@ -49,10 +58,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-17T15:58:38.044688474",
+        "timestamp": "2026-10-24T15:32:22.607564719",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - stub": {
@@ -75,9 +84,7 @@
                         "test_characteristic_genes_dotplot.png:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "3": [
-                    
-                ],
+                "3": [],
                 "4": [
                     [
                         {
@@ -103,9 +110,7 @@
                         "test_characteristic_genes.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "markers": [
-                    
-                ],
+                "markers": [],
                 "multiqc_files": [
                     [
                         "test_characteristic_genes_dotplot_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -166,37 +171,46 @@
                 }
             },
             {
-                "n_obs": 7373,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
-                        "leiden"
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "leiden",
+                        "donor",
+                        "condition",
+                        "label"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "symbols",
+                        "highly_variable"
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     "X_pca"
                 ],
-                "varm": [
-                    "X_pca"
-                ],
+                "varm": [],
                 "obsp": [
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "X_pca",
                     "leiden",
@@ -206,10 +220,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-08-10T10:27:14.005893044",
+        "timestamp": "2026-10-24T13:32:49.483074675",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run with condition subsetting": {
@@ -222,54 +236,60 @@
                 }
             },
             {
-                "n_obs": 4386,
-                "n_vars": 9887,
+                "n_obs": 383,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
-                        "label",
-                        "condition",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "batch",
-                        "sample_original",
+                        "donor",
+                        "condition",
+                        "label",
                         "leiden"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "highly_variable"
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     "X_pca"
                 ],
-                "varm": [
-                    "PCs"
-                ],
+                "varm": [],
                 "obsp": [
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
+                    "X_pca",
                     "leiden",
                     "log1p",
                     "neighbors",
-                    "pca",
                     "rank_genes_groups"
                 ]
             }
         ],
-        "timestamp": "2026-08-10T10:29:34.104270238",
+        "timestamp": "2026-10-24T15:33:14.369212126",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }

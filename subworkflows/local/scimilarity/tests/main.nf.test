@@ -23,7 +23,7 @@ nextflow_workflow {
                 """
                 input[0] = channel.of([
                         [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 // NOTE: This is a workaround to avoid the test failing because the model file is too large
@@ -52,7 +52,7 @@ nextflow_workflow {
                 """
                 input[0] = channel.of([
                         [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 // NOTE: This is a workaround to avoid the test failing because the model file is too large

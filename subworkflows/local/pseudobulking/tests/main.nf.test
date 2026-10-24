@@ -24,7 +24,7 @@ nextflow_workflow {
                             condition_col: 'condition',
                             donor_col: 'batch',
                         ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = 10

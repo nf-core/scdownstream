@@ -32,7 +32,7 @@ nextflow_workflow {
                 """
                 input[0] = channel.of([
                     [id: 'test', obs_key: 'leiden', condition_col: 'condition', integration: 'scvi', resolution: '0.5', analyses: ['paga'] as Set],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[1] = channel.empty()
                 input[2] = true
@@ -81,7 +81,7 @@ nextflow_workflow {
                 """
                 input[0] = channel.of([
                     [id: 'test', obs_key: 'leiden', condition_col: 'condition', integration: 'scvi', resolution: '0.5', analyses: ['paga'] as Set],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[1] = channel.empty()
                 input[2] = true
@@ -139,12 +139,12 @@ nextflow_workflow {
                 def h5ad = channel.of([
                     [
                         id: 'test',
-                        obs_key: 'batch',
+                        obs_key: 'sample',
                         condition_col: 'condition',
                         integration: 'merged',
                         analyses: ['paga', 'liana'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = h5ad
                 input[1] = h5ad
@@ -206,7 +206,7 @@ nextflow_workflow {
                         de_method: 'wilcoxon',
                         rank_key: 'rank_genes_groups',
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = h5ad
                 input[1] = h5ad
@@ -267,7 +267,7 @@ nextflow_workflow {
                         resolution: '0.5',
                         analyses: ['cell2cell'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = channel.empty()
                 input[1] = h5ad
@@ -324,7 +324,7 @@ nextflow_workflow {
                         de_method: 'wilcoxon',
                         rank_key: 'rank_genes_groups',
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = h5ad
                 input[1] = h5ad
@@ -394,7 +394,7 @@ nextflow_workflow {
                         de_method: 'wilcoxon',
                         rank_key: 'rank_genes_groups',
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = h5ad
                 input[1] = h5ad
@@ -457,7 +457,7 @@ nextflow_workflow {
                         condition_col: 'condition',
                         analyses: ['de'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = h5ad
                 input[1] = h5ad
@@ -521,7 +521,7 @@ nextflow_workflow {
                         condition_col: 'condition',
                         analyses: ['paga', 'liana'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = h5ad
                 input[1] = h5ad
@@ -582,7 +582,7 @@ nextflow_workflow {
                         condition_col: 'condition',
                         analyses: ['paga', 'de'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = h5ad
                 input[1] = h5ad
@@ -642,7 +642,7 @@ nextflow_workflow {
                         condition_col: 'condition',
                         analyses: ['de'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = h5ad
                 input[1] = h5ad
@@ -705,7 +705,7 @@ nextflow_workflow {
                         rank_key: 'rank_genes_groups',
                         analyses: ['cytetype'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = h5ad
                 input[1] = h5ad
@@ -768,7 +768,7 @@ nextflow_workflow {
                         rank_key: 'rank_genes_groups',
                         analyses: ['de', 'cytetype'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = h5ad
                 input[1] = h5ad
@@ -829,7 +829,7 @@ nextflow_workflow {
                         resolution: '0.5',
                         analyses: ['aggregate_per_cell_annotation'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = channel.empty()
                 input[1] = h5ad
@@ -888,7 +888,7 @@ nextflow_workflow {
                         condition_col: 'condition',
                         analyses: ['paga'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[1] = channel.empty()
                 input[2] = true
@@ -950,7 +950,7 @@ nextflow_workflow {
                         resolution: '0.5',
                         analyses: ['de', 'decoupler'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[2] = true
                 input[3] = 1000
@@ -1016,7 +1016,7 @@ nextflow_workflow {
                         resolution: '0.5',
                         analyses: ['de'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[2] = true
                 input[3] = 1000

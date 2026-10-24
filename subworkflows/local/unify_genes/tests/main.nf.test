@@ -19,7 +19,7 @@ nextflow_workflow {
                 """
                 input[0] = channel.of([
                     [id: 'test'],
-                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                 ])
                 """
             }
@@ -42,7 +42,7 @@ nextflow_workflow {
                 """
                 input[0] = channel.of([
                     [id: 'test'],
-                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                 ])
                 """
             }
@@ -75,8 +75,8 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = channel.of(
-                    [[id: 'test1'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)],
-                    [[id: 'test2'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)]
+                    [[id: 'test1'], file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)],
+                    [[id: 'test2'], file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)]
                 )
                 """
             }
@@ -98,8 +98,8 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = channel.of(
-                    [[id: 'test1'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)],
-                    [[id: 'test2'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)]
+                    [[id: 'test1'], file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)],
+                    [[id: 'test2'], file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)]
                 )
                 """
             }

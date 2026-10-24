@@ -7,7 +7,7 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,e74b26e72ce47aeb35be0b2e03124bdf"
+                        "test.h5ad:md5,a381cdab7c0651d53360cd0b6e7822a9"
                     ]
                 ],
                 "1": [
@@ -18,7 +18,7 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,e74b26e72ce47aeb35be0b2e03124bdf"
+                        "test.h5ad:md5,a381cdab7c0651d53360cd0b6e7822a9"
                     ]
                 ],
                 "versions": [
@@ -35,12 +35,21 @@
                 }
             },
             {
-                "n_obs": 12634,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample"
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts"
                     ]
                 },
                 "var": {
@@ -49,33 +58,22 @@
                         "gene_ids",
                         "feature_types",
                         "gene_symbol",
-                        "gene_versions"
+                        "gene_versions",
+                        "symbols"
                     ]
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
-        "timestamp": "2026-10-07T12:03:27.40261508",
+        "timestamp": "2026-10-24T15:33:20.757912184",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should read SCE file - stub": {
@@ -114,8 +112,8 @@
     "Should round trip layered export with the counts alias selected": {
         "content": [
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -125,39 +123,31 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
                     "X",
+                    "counts.1",
                     "spliced",
                     "unspliced"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             },
             [
-                "AAACCTGAGAGCTGGT",
-                "AAACCTGAGATGCCTT",
-                "AAACCTGAGCTGTTCA"
+                "cell_000",
+                "cell_001",
+                "cell_002"
             ],
             [
-                "LINC02934",
-                "PTCSC2",
-                "FAM177A1P1"
+                "GENE000",
+                "GENE001",
+                "GENE002"
             ],
             {
                 "ADATA_READRDS": {
@@ -169,10 +159,10 @@
                 }
             }
         ],
-        "timestamp": "2026-10-18T17:27:57.085156851",
+        "timestamp": "2026-10-23T20:31:56.493987711",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should read seurat file": {
@@ -183,7 +173,7 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,13ea94bfc83afdd3a33035a441ad999b"
+                        "test.h5ad:md5,fa7e64e1e0a036943216822ba8780656"
                     ]
                 ],
                 "1": [
@@ -194,7 +184,7 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,13ea94bfc83afdd3a33035a441ad999b"
+                        "test.h5ad:md5,fa7e64e1e0a036943216822ba8780656"
                     ]
                 ],
                 "versions": [
@@ -211,8 +201,8 @@
                 }
             },
             {
-                "n_obs": 12650,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -220,39 +210,34 @@
                         "nCount_RNA",
                         "nFeature_RNA",
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "ident"
                     ]
                 },
                 "var": {
                     "index": "_index",
-                    "columns": [
-                        
-                    ]
+                    "columns": []
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
-        "timestamp": "2026-10-07T12:02:37.604342336",
+        "timestamp": "2026-10-24T15:33:24.106129573",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should read seurat file - stub": {
@@ -291,8 +276,8 @@
     "Should round trip layered export with a named counts source": {
         "content": [
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -302,39 +287,31 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
                     "X",
+                    "counts.1",
                     "spliced",
                     "unspliced"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             },
             [
-                "AAACCTGAGAGCTGGT",
-                "AAACCTGAGATGCCTT",
-                "AAACCTGAGCTGTTCA"
+                "cell_000",
+                "cell_001",
+                "cell_002"
             ],
             [
-                "LINC02934",
-                "PTCSC2",
-                "FAM177A1P1"
+                "GENE000",
+                "GENE001",
+                "GENE002"
             ],
             {
                 "ADATA_READRDS": {
@@ -346,17 +323,17 @@
                 }
             }
         ],
-        "timestamp": "2026-10-18T17:26:38.390464846",
+        "timestamp": "2026-10-23T20:29:13.465350799",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should round trip layered export with counts from X": {
         "content": [
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -366,38 +343,30 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
+                    "counts.1",
                     "spliced",
                     "unspliced"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             },
             [
-                "AAACCTGAGAGCTGGT",
-                "AAACCTGAGATGCCTT",
-                "AAACCTGAGCTGTTCA"
+                "cell_000",
+                "cell_001",
+                "cell_002"
             ],
             [
-                "LINC02934",
-                "PTCSC2",
-                "FAM177A1P1"
+                "GENE000",
+                "GENE001",
+                "GENE002"
             ],
             {
                 "ADATA_READRDS": {
@@ -409,10 +378,10 @@
                 }
             }
         ],
-        "timestamp": "2026-10-18T17:25:30.700053553",
+        "timestamp": "2026-10-23T20:26:31.245686925",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }

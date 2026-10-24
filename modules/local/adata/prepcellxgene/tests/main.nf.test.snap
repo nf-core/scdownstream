@@ -40,7 +40,7 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,86c497b13488b07bb70f0744ce47e891"
+                        "test.h5ad:md5,edf940dad10a7a196b61383819611357"
                     ]
                 ],
                 "1": [
@@ -51,7 +51,7 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,86c497b13488b07bb70f0744ce47e891"
+                        "test.h5ad:md5,edf940dad10a7a196b61383819611357"
                     ]
                 ],
                 "versions": [
@@ -67,75 +67,67 @@
                 }
             },
             {
-                "n_obs": 23364,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 641,
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
-                        "celltypist:Adult_Human_Skin",
-                        "celltypist:Adult_Human_Skin:conf",
                         "condition",
+                        "donor",
+                        "is_selected_filtered_cell",
                         "label",
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
                         "n_counts",
                         "n_genes",
                         "n_genes_by_counts",
+                        "original_n_genes_by_counts",
+                        "original_total_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
                         "pct_counts_mt",
+                        "pct_counts_ribo",
                         "sample",
                         "sample_original",
+                        "source_barcode",
+                        "source_role",
+                        "source_sample",
+                        "synthetic_condition",
+                        "synthetic_donor",
+                        "synthetic_label",
                         "total_counts",
+                        "total_counts_hb",
                         "total_counts_mt",
-                        "bbknn-global-0.5:entropy",
-                        "bbknn-global-0.5_leiden",
-                        "bbknn-global-1.0:entropy",
-                        "bbknn-global-1.0_leiden",
-                        "combat-global-0.5:entropy",
-                        "combat-global-0.5_leiden",
-                        "combat-global-1.0:entropy",
-                        "combat-global-1.0_leiden",
-                        "harmony-global-0.5:entropy",
-                        "harmony-global-0.5_leiden",
-                        "harmony-global-1.0:entropy",
-                        "harmony-global-1.0_leiden",
-                        "scvi-global-0.5:entropy",
-                        "scvi-global-0.5_leiden",
-                        "scvi-global-1.0:entropy",
-                        "scvi-global-1.0_leiden"
+                        "total_counts_ribo"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "intersection"
+                        "intersection",
+                        "highly_variable"
                     ]
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    "X_1_scvi-global_umap",
-                    "X_2_bbknn-global_umap",
-                    "X_3_combat-global_umap",
-                    "X_harmony-global_umap"
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-09-25T10:51:28.027972074",
+        "timestamp": "2026-10-24T15:32:22.97385035",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }

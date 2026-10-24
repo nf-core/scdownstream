@@ -11,15 +11,11 @@
                         "bbknn.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "1": [
-                    
-                ],
+                "1": [],
                 "2": [
-                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "3": [
-                    
-                ],
+                "3": [],
                 "integrations": [
                     [
                         {
@@ -29,32 +25,41 @@
                         "bbknn.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "obs": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
+                "obs": [],
+                "obsm": [],
                 "var": [
-                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-07-13T13:10:59.281587038",
+        "timestamp": "2026-10-24T15:33:47.212295814",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - combat": {
         "content": [
             {
-                "n_obs": 12940,
+                "n_obs": 768,
                 "n_vars": 2000,
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "batch",
+                        "donor",
+                        "condition",
+                        "label",
                         "n_genes_by_counts",
                         "log1p_n_genes_by_counts",
                         "total_counts",
@@ -96,28 +101,21 @@
                 },
                 "layers": [
                     "combat",
-                    "counts",
                     "log1p"
                 ],
                 "obsm": [
                     "X_emb"
                 ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "hvg",
                     "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-10-22T18:12:50.586259166",
+        "timestamp": "2026-10-24T15:35:04.328861791",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
@@ -135,11 +133,9 @@
                         "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "1": [
-                    
-                ],
+                "1": [],
                 "2": [
-                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "3": [
                     "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -153,21 +149,19 @@
                         "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "obs": [
-                    
-                ],
+                "obs": [],
                 "obsm": [
                     "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "var": [
-                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-07-13T13:18:21.829636671",
+        "timestamp": "2026-10-24T15:33:39.318187861",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - scanorama - stub": {
@@ -182,11 +176,9 @@
                         "scanorama.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "1": [
-                    
-                ],
+                "1": [],
                 "2": [
-                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "3": [
                     "X_scanorama.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -200,21 +192,19 @@
                         "scanorama.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "obs": [
-                    
-                ],
+                "obs": [],
                 "obsm": [
                     "X_scanorama.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "var": [
-                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-07-13T13:27:38.728580289",
+        "timestamp": "2026-10-24T15:33:46.870305208",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - combat - stub": {
@@ -229,11 +219,9 @@
                         "combat.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "1": [
-                    
-                ],
+                "1": [],
                 "2": [
-                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "3": [
                     "combat.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -247,32 +235,43 @@
                         "combat.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "obs": [
-                    
-                ],
+                "obs": [],
                 "obsm": [
                     "combat.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "var": [
-                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-07-13T13:14:10.185229916",
+        "timestamp": "2026-10-24T15:33:29.027866338",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - bbknn": {
         "content": [
             {
-                "n_obs": 12940,
+                "n_obs": 768,
                 "n_vars": 2000,
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "batch",
+                        "donor",
+                        "condition",
+                        "label",
                         "n_genes_by_counts",
                         "log1p_n_genes_by_counts",
                         "total_counts",
@@ -313,7 +312,6 @@
                     ]
                 },
                 "layers": [
-                    "counts",
                     "log1p"
                 ],
                 "obsm": [
@@ -326,9 +324,7 @@
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "hvg",
                     "log1p",
@@ -337,7 +333,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-22T18:10:46.791200412",
+        "timestamp": "2026-10-24T15:34:53.746967503",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
@@ -355,11 +351,9 @@
                         "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "1": [
-                    
-                ],
+                "1": [],
                 "2": [
-                    "test_deviance_features.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "deviance_features.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "3": [
                     "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -373,32 +367,43 @@
                         "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "obs": [
-                    
-                ],
+                "obs": [],
                 "obsm": [
                     "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "var": [
-                    "test_deviance_features.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "deviance_features.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-07-13T13:23:48.617774516",
+        "timestamp": "2026-10-24T15:33:44.555789228",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - deviance": {
         "content": [
             {
-                "n_obs": 12940,
+                "n_obs": 768,
                 "n_vars": 500,
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "batch",
+                        "donor",
+                        "condition",
+                        "label",
                         "n_genes_by_counts",
                         "log1p_n_genes_by_counts",
                         "total_counts",
@@ -421,6 +426,7 @@
                     "index": "_index",
                     "columns": [
                         "symbols",
+                        "highly_variable",
                         "binomial_deviance",
                         "highly_deviant",
                         "mt",
@@ -437,7 +443,6 @@
                     ]
                 },
                 "layers": [
-                    "counts",
                     "log1p"
                 ],
                 "obsm": [
@@ -446,19 +451,15 @@
                 "varm": [
                     "X_emb"
                 ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "X_emb",
                     "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-10-22T18:18:13.140972667",
+        "timestamp": "2026-10-24T15:35:08.086372515",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
@@ -476,11 +477,9 @@
                         "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "1": [
-                    
-                ],
+                "1": [],
                 "2": [
-                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "3": [
                     "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -494,32 +493,43 @@
                         "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "obs": [
-                    
-                ],
+                "obs": [],
                 "obsm": [
                     "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "var": [
-                    "test_hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-07-13T13:07:46.892986083",
+        "timestamp": "2026-10-24T15:33:34.105167704",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - symphony": {
         "content": [
             {
-                "n_obs": 12940,
+                "n_obs": 768,
                 "n_vars": 2000,
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "batch",
+                        "donor",
+                        "condition",
+                        "label",
                         "n_genes_by_counts",
                         "log1p_n_genes_by_counts",
                         "total_counts",
@@ -560,29 +570,22 @@
                     ]
                 },
                 "layers": [
-                    "counts",
                     "log1p"
                 ],
                 "obsm": [
                     "X_emb",
                     "X_symphony"
                 ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "hvg",
                     "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-10-22T18:08:44.432218942",
+        "timestamp": "2026-10-24T15:35:07.857501785",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
@@ -600,12 +603,8 @@
                         "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "1": [
-                    
-                ],
-                "2": [
-                    
-                ],
+                "1": [],
+                "2": [],
                 "3": [
                     "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
@@ -618,15 +617,11 @@
                         "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "obs": [
-                    
-                ],
+                "obs": [],
                 "obsm": [
                     "X_symphony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "var": [
-                    
-                ]
+                "var": []
             }
         ],
         "timestamp": "2026-07-13T13:17:44.283871808",
@@ -638,12 +633,25 @@
     "Should run without failures - pca": {
         "content": [
             {
-                "n_obs": 12940,
+                "n_obs": 768,
                 "n_vars": 2000,
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "batch",
+                        "donor",
+                        "condition",
+                        "label",
                         "n_genes_by_counts",
                         "log1p_n_genes_by_counts",
                         "total_counts",
@@ -684,7 +692,6 @@
                     ]
                 },
                 "layers": [
-                    "counts",
                     "log1p"
                 ],
                 "obsm": [
@@ -693,12 +700,8 @@
                 "varm": [
                     "X_emb"
                 ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "X_emb",
                     "hvg",
@@ -706,7 +709,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-22T18:14:45.311265257",
+        "timestamp": "2026-10-24T15:35:15.92370762",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
@@ -715,44 +718,48 @@
     "Should run without failures - expimap": {
         "content": [
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 768,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "batch"
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "highly_variable"
                     ]
                 },
-                "layers": [
-                    "counts"
-                ],
+                "layers": [],
                 "obsm": [
                     "X_emb"
                 ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
-        "timestamp": "2026-06-21T21:58:37.690022279",
+        "timestamp": "2026-10-24T15:34:00.841645513",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - expimap - stub": {
@@ -767,12 +774,8 @@
                         "expimap.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "1": [
-                    
-                ],
-                "2": [
-                    
-                ],
+                "1": [],
+                "2": [],
                 "3": [
                     "X_expimap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
@@ -785,15 +788,11 @@
                         "expimap.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "obs": [
-                    
-                ],
+                "obs": [],
                 "obsm": [
                     "X_expimap.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "var": [
-                    
-                ]
+                "var": []
             }
         ],
         "timestamp": "2026-07-13T13:21:20.899603145",
@@ -814,11 +813,9 @@
                         "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "1": [
-                    
-                ],
+                "1": [],
                 "2": [
-                    "test_pearson_residuals_hvgs.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable_pearson_residuals.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "3": [
                     "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -832,21 +829,19 @@
                         "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "obs": [
-                    
-                ],
+                "obs": [],
                 "obsm": [
                     "X_pca_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "var": [
-                    "test_pearson_residuals_hvgs.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable_pearson_residuals.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-07-13T13:24:26.780689917",
+        "timestamp": "2026-10-24T15:33:45.966576221",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nextflow": "25.10.4"
         }
     }
 }

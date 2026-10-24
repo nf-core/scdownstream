@@ -14,7 +14,7 @@ nextflow_workflow {
                 """
                 input[0] = channel.of([
                     [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                 ])
                 """
             }
@@ -302,7 +302,7 @@ nextflow_workflow {
                 """
                 input[0] = channel.of([
                     [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                 ])
                 input[1] = true
                 input[2] = 'hvgs'
@@ -436,7 +436,7 @@ nextflow_workflow {
                 """
                 input[0] = channel.of([
                     [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                 ])
                 input[1] = true
                 input[2] = 'hvgs'
@@ -480,7 +480,7 @@ nextflow_workflow {
                 """
                 input[0] = channel.of([
                     [id: 'test'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                 ])
                 input[1] = true
                 input[2] = 'hvgs'

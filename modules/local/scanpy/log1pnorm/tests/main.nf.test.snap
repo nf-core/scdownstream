@@ -41,44 +41,50 @@
                 }
             },
             {
-                "n_obs": 38234,
-                "n_vars": 9887,
+                "n_obs": 768,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample"
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "symbols",
+                        "highly_variable"
                     ]
                 },
                 "layers": [
                     "log1p"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-10-22T16:18:12.13193714",
+        "timestamp": "2026-10-24T15:33:02.346554674",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should retain arbitrary input expression layers": {
@@ -90,47 +96,60 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 768,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample"
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label",
+                        "leiden"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "highly_variable"
                     ]
                 },
                 "layers": [
-                    "counts",
                     "log1p",
-                    "spliced",
-                    "unspliced"
+                    "raw_counts"
                 ],
                 "obsm": [
-                    
+                    "X_pca"
                 ],
-                "varm": [
-                    
-                ],
+                "varm": [],
                 "obsp": [
-                    
+                    "connectivities",
+                    "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
-                    "log1p"
+                    "X_pca",
+                    "leiden",
+                    "log1p",
+                    "neighbors"
                 ]
             }
         ],
-        "timestamp": "2026-10-22T16:52:26.709837897",
+        "timestamp": "2026-10-24T13:32:12.194032088",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }

@@ -14,18 +14,18 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'pca' ],
-                        file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = 'batch'
-                input[2] = ''
-                input[3] = ''
+                input[2] = 'label'
+                input[3] = 'condition'
                 input[4] = 'unknown'
                 input[5] = 'index'
                 input[6] = 'X'
                 input[7] = 'sum'
                 input[8] = false
-                input[9] = ""
+                input[9] = 'donor'
                 """
             }
         }
@@ -96,6 +96,12 @@ nextflow_process {
 
         then {
             assert process.success
+            // Setup channels exist in Nextflow, not this Groovy assertion scope.
+            // Inspect the actual input staged beside the benchmark output.
+            def inputAdata = anndata(new File(file(process.out.metrics[0]).parent, 'pca_pca.h5ad').toString())
+            assert inputAdata.obs.get('batch').unique().size() > 1
+            assert inputAdata.obs.get('label').unique().size() > 1
+            assert file(process.out.metrics[0]).size() > 0
             assert snapshot(path(process.out.versions[0]).yaml).match()
         }
 
@@ -113,7 +119,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'pca' ],
-                        file(params.pipelines_testdata_base_path + '/anndata-variations/batch_correct_name.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = 0

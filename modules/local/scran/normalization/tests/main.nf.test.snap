@@ -41,44 +41,43 @@
                 }
             },
             {
-                "n_obs": 7373,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample"
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "symbols"
                     ]
                 },
                 "layers": [
                     "scran"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
-        "timestamp": "2026-10-22T16:30:46.519780613",
+        "timestamp": "2026-10-24T15:32:52.47025591",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }

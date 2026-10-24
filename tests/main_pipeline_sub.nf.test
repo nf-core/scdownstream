@@ -8,10 +8,10 @@ nextflow_pipeline {
 
         when {
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/82e8bfa28e58c562b5b1fc89acd969e8726aba52/'
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
                 outdir                       = "$outputDir"
                 input                        = null
-                base_adata                   = pipelines_testdata_base_path + 'ambient_reference/merged.h5ad'
+                base_adata                   = params.pipelines_testdata_base_path + 'extension_base/merged.h5ad'
                 base_embeddings              = 'scvi'
                 cluster_global               = false
                 cluster_per_label            = true
@@ -47,9 +47,9 @@ nextflow_pipeline {
 
         when {
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/82e8bfa28e58c562b5b1fc89acd969e8726aba52/'
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
                 input                        = null
-                base_adata                   = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                base_adata                   = params.pipelines_testdata_base_path + 'anndata-variations/counts_in_X.h5ad'
                 base_embeddings              = 'scvi'
                 outdir                       = "$outputDir"
             }

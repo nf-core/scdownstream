@@ -16,11 +16,11 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = channel.fromList([
-                    [[id: 'SRR28679756'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true), file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)],
-                    [[id: 'SRR28679757'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679757_filtered_matrix.sce.rds', checkIfExists: true), file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679757_raw_matrix.sce.rds', checkIfExists: true)],
-                    [[id: 'SRR28679758'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679758_filtered_matrix.seurat.rds', checkIfExists: true), file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679758_raw_matrix.seurat.rds', checkIfExists: true)],
+                    [[id: 'SRR28679756'], file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true), file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_raw_matrix.h5ad', checkIfExists: true)],
+                    [[id: 'SRR28679757'], file(params.pipelines_testdata_base_path + '/pbmc/SRR28679757_filtered_matrix.sce.rds', checkIfExists: true), file(params.pipelines_testdata_base_path + '/pbmc/SRR28679757_raw_matrix.sce.rds', checkIfExists: true)],
+                    [[id: 'SRR28679758'], file(params.pipelines_testdata_base_path + '/pbmc/SRR28679758_filtered_matrix.seurat.rds', checkIfExists: true), file(params.pipelines_testdata_base_path + '/pbmc/SRR28679758_raw_matrix.seurat.rds', checkIfExists: true)],
                     [[id: 'h5'], file(params.pipelines_testdata_base_path + '/misc/filtered_feature_bc_matrix.h5', checkIfExists: true), []],
-                    [[id: 'csv'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/csv/SRR28679756_filtered_matrix.csv', checkIfExists: true), []],
+                    [[id: 'csv'], file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.csv', checkIfExists: true), []],
                 ])
                 """
             }
@@ -45,11 +45,11 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = channel.fromList([
-                    [[id: 'SRR28679756'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true), file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)],
-                    [[id: 'SRR28679757'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679757_filtered_matrix.sce.rds', checkIfExists: true), file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679757_raw_matrix.sce.rds', checkIfExists: true)],
-                    [[id: 'SRR28679758'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679758_filtered_matrix.seurat.rds', checkIfExists: true), file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679758_raw_matrix.seurat.rds', checkIfExists: true)],
+                    [[id: 'SRR28679756'], file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true), file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_raw_matrix.h5ad', checkIfExists: true)],
+                    [[id: 'SRR28679757'], file(params.pipelines_testdata_base_path + '/pbmc/SRR28679757_filtered_matrix.sce.rds', checkIfExists: true), file(params.pipelines_testdata_base_path + '/pbmc/SRR28679757_raw_matrix.sce.rds', checkIfExists: true)],
+                    [[id: 'SRR28679758'], file(params.pipelines_testdata_base_path + '/pbmc/SRR28679758_filtered_matrix.seurat.rds', checkIfExists: true), file(params.pipelines_testdata_base_path + '/pbmc/SRR28679758_raw_matrix.seurat.rds', checkIfExists: true)],
                     [[id: 'h5'], file(params.pipelines_testdata_base_path + '/misc/filtered_feature_bc_matrix.h5', checkIfExists: true), []],
-                    [[id: 'csv'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/csv/SRR28679756_filtered_matrix.csv', checkIfExists: true), []],
+                    [[id: 'csv'], file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.csv', checkIfExists: true), []],
                 ])
                 """
             }

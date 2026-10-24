@@ -14,7 +14,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'symphony' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = "sample"
@@ -34,7 +34,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'symphony' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = SYMPHONY_HARMONYINTEGRATE.out.reference
@@ -69,12 +69,12 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'symphony' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = channel.of([
                         [ id: 'symphony' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[2] = "sample"

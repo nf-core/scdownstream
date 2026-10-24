@@ -48,46 +48,53 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 768,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "batch"
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "highly_variable"
                     ]
                 },
                 "layers": [
                     "combat",
-                    "counts",
                     "log1p"
                 ],
                 "obsm": [
                     "X_emb"
                 ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
-                    
+                    "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-08-10T17:42:10.165721276",
+        "timestamp": "2026-10-24T15:33:42.345981767",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }

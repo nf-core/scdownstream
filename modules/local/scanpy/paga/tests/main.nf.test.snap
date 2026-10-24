@@ -64,20 +64,20 @@
                         {
                             "id": "test"
                         },
-                        "test_paga.h5ad:md5,68e65e90f98f32b0ebeb36b5d01a14f8"
+                        "test_paga.h5ad:md5,7df6800876830d0cd53ec333b82e2344"
                     ]
                 ],
                 "1": [
-                    "test_paga.pkl:md5,be4a96dcfb43fa22c2d2434ead197dc7"
+                    "test_paga.pkl:md5,25a0cd9750bcf713823459e8f894aa4c"
                 ],
                 "2": [
-                    "test_paga_connectivities.npy:md5,2e82cf3df20614e1fbcf55196c9f80a8"
+                    "test_paga_connectivities.npy:md5,0bb2b22c077bba2d11ddcf20b88761f7"
                 ],
                 "3": [
-                    "test_paga.png:md5,02109fcb6857815d747fdf5536016ac9"
+                    "test_paga.png:md5,2dbbcac83fb865cb16ee2376647c0759"
                 ],
                 "4": [
-                    "test_paga_mqc.json:md5,9de6805c0a27915da84f03069dd5e65a"
+                    "test_paga_mqc.json:md5,07fd0af0eae85f251305c2d2cd169e45"
                 ],
                 "5": [
                     "versions.yml:md5,701c799201a9b4810d15008294dea85a"
@@ -87,20 +87,20 @@
                         {
                             "id": "test"
                         },
-                        "test_paga.h5ad:md5,68e65e90f98f32b0ebeb36b5d01a14f8"
+                        "test_paga.h5ad:md5,7df6800876830d0cd53ec333b82e2344"
                     ]
                 ],
                 "multiqc_files": [
-                    "test_paga_mqc.json:md5,9de6805c0a27915da84f03069dd5e65a"
+                    "test_paga_mqc.json:md5,07fd0af0eae85f251305c2d2cd169e45"
                 ],
                 "obsp": [
-                    "test_paga_connectivities.npy:md5,2e82cf3df20614e1fbcf55196c9f80a8"
+                    "test_paga_connectivities.npy:md5,0bb2b22c077bba2d11ddcf20b88761f7"
                 ],
                 "plot": [
-                    "test_paga.png:md5,02109fcb6857815d747fdf5536016ac9"
+                    "test_paga.png:md5,2dbbcac83fb865cb16ee2376647c0759"
                 ],
                 "uns": [
-                    "test_paga.pkl:md5,be4a96dcfb43fa22c2d2434ead197dc7"
+                    "test_paga.pkl:md5,25a0cd9750bcf713823459e8f894aa4c"
                 ],
                 "versions": [
                     "versions.yml:md5,701c799201a9b4810d15008294dea85a"
@@ -113,37 +113,46 @@
                 }
             },
             {
-                "n_obs": 7373,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
-                        "leiden"
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "leiden",
+                        "donor",
+                        "condition",
+                        "label"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "symbols",
+                        "highly_variable"
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     "X_pca"
                 ],
-                "varm": [
-                    "X_pca"
-                ],
+                "varm": [],
                 "obsp": [
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "X_pca",
                     "leiden",
@@ -153,10 +162,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-25T10:53:08.945417838",
+        "timestamp": "2026-10-24T15:32:22.866740092",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }
