@@ -84,9 +84,22 @@ if not len(predictions.columns) > 1:
 
 contents = {column: predictions[column][predictions[column]].index.tolist() for column in predictions.columns}
 
-plot_data = upsetplot.from_contents(contents)
-
-upsetplot.plot(plot_data, sort_by="cardinality", show_counts=True, subset_size="count", min_subset_size=10)
+if any(contents.values()):
+    plot_data = upsetplot.from_contents(contents)
+    intersection_sizes = plot_data.groupby(level=list(range(len(contents)))).size()
+    # Keep the normal display cutoff, unless it would hide every intersection.
+    minimum_size = 10 if intersection_sizes.max() >= 10 else 1
+    upsetplot.plot(
+        plot_data,
+        sort_by="cardinality",
+        show_counts=True,
+        subset_size="count",
+        min_subset_size=minimum_size,
+    )
+else:
+    fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+    ax.text(0.5, 0.5, "No doublets predicted", ha="center", va="center", transform=ax.transAxes)
+    ax.set_axis_off()
 plot_path = f"{prefix}_predictions_mqc.png"
 plt.savefig(plot_path)
 

@@ -7,14 +7,14 @@
                         {
                             "id": "scanvi"
                         },
-                        "scanvi.h5ad:md5,cb3ce5439edf35f2a06d6b4cebecd18b"
+                        "scanvi.h5ad:md5,036682d24b41681333211ecfe2c022bc"
                     ]
                 ],
                 "1": [
-                    "scanvi.pkl:md5,021c4ddbdb63b10b918ef3beefd47311"
+                    "scanvi.pkl:md5,fac357c978123103224cf6ad3b861bd0"
                 ],
                 "2": [
-                    "X_scanvi.pkl:md5,3b6f16a88abca6674b745c0df749fcf7"
+                    "X_scanvi.pkl:md5,81d2f14bbc25aec40128da6a4d3da16a"
                 ],
                 "3": [
                     "versions.yml:md5,136f6ee0aa990e09fa2031803408d956"
@@ -24,14 +24,14 @@
                         {
                             "id": "scanvi"
                         },
-                        "scanvi.h5ad:md5,cb3ce5439edf35f2a06d6b4cebecd18b"
+                        "scanvi.h5ad:md5,036682d24b41681333211ecfe2c022bc"
                     ]
                 ],
                 "obs": [
-                    "scanvi.pkl:md5,021c4ddbdb63b10b918ef3beefd47311"
+                    "scanvi.pkl:md5,fac357c978123103224cf6ad3b861bd0"
                 ],
                 "obsm": [
-                    "X_scanvi.pkl:md5,3b6f16a88abca6674b745c0df749fcf7"
+                    "X_scanvi.pkl:md5,81d2f14bbc25aec40128da6a4d3da16a"
                 ],
                 "versions": [
                     "versions.yml:md5,136f6ee0aa990e09fa2031803408d956"
@@ -49,6 +49,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "base_only",
+                        "integrated_only",
                         "label:scANVI"
                     ]
                 },
@@ -78,10 +80,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-25T10:51:35.820128765",
+        "timestamp": "2026-10-23T16:54:21.259077161",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - stub": {
@@ -137,14 +139,14 @@
                         {
                             "id": "scvi"
                         },
-                        "scvi.h5ad:md5,a8b8a1ef15cbfb68a170504caa5c47ae"
+                        "scvi.h5ad:md5,0240cad2028a5ca4bdeddf6230b7595f"
                     ]
                 ],
                 "1": [
                     
                 ],
                 "2": [
-                    "X_scvi.pkl:md5,b263fd92dcf33fa04b981508a055075a"
+                    "X_scvi.pkl:md5,caf7824832e320cb7782325397097dfc"
                 ],
                 "3": [
                     "versions.yml:md5,136f6ee0aa990e09fa2031803408d956"
@@ -154,14 +156,14 @@
                         {
                             "id": "scvi"
                         },
-                        "scvi.h5ad:md5,a8b8a1ef15cbfb68a170504caa5c47ae"
+                        "scvi.h5ad:md5,0240cad2028a5ca4bdeddf6230b7595f"
                     ]
                 ],
                 "obs": [
                     
                 ],
                 "obsm": [
-                    "X_scvi.pkl:md5,b263fd92dcf33fa04b981508a055075a"
+                    "X_scvi.pkl:md5,caf7824832e320cb7782325397097dfc"
                 ],
                 "versions": [
                     "versions.yml:md5,136f6ee0aa990e09fa2031803408d956"
@@ -179,7 +181,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        
+                        "base_only",
+                        "integrated_only"
                     ]
                 },
                 "var": {
@@ -208,10 +211,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-25T10:51:16.647748556",
+        "timestamp": "2026-10-23T16:54:05.71555789",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }

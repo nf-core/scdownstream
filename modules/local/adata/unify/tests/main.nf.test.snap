@@ -7,7 +7,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,d31f093815d4a1692719ac6473165260"
+                        "test_unified.h5ad:md5,28f3c1212c241e46a6c1a15e4556164f"
                     ]
                 ],
                 "1": [
@@ -18,7 +18,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,d31f093815d4a1692719ac6473165260"
+                        "test_unified.h5ad:md5,28f3c1212c241e46a6c1a15e4556164f"
                     ]
                 ],
                 "versions": [
@@ -35,8 +35,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -53,7 +53,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -76,11 +77,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:05:59.773372533",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:43:50.947921506"
+            "nextflow": "25.10.4"
+        }
     },
     "Should handle sample column with different value": {
         "content": [
@@ -90,7 +91,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,3a4519c5bd7c690a26450a9d146718e6"
+                        "test_unified.h5ad:md5,05032717114c2da4af9b4768a21bc719"
                     ]
                 ],
                 "1": [
@@ -101,7 +102,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,3a4519c5bd7c690a26450a9d146718e6"
+                        "test_unified.h5ad:md5,05032717114c2da4af9b4768a21bc719"
                     ]
                 ],
                 "versions": [
@@ -118,91 +119,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
-                "obs": {
-                    "index": "_index",
-                    "columns": [
-                        "sample",
-                        "ambient_correction_method",
-                        "analysis_counts_source",
-                        "batch",
-                        "label",
-                        "condition",
-                        "donor",
-                        "sample_original"
-                    ]
-                },
-                "var": {
-                    "index": "_index",
-                    "columns": [
-                        "symbols"
-                    ]
-                },
-                "layers": [
-                    "raw_counts"
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
-            }
-        ],
-        "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:55:01.368368608"
-    },
-    "Should handle symbols in column": {
-        "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_unified.h5ad:md5,859425f2ea4ee8627305328a84f6ad4d"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_unified.h5ad:md5,859425f2ea4ee8627305328a84f6ad4d"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
-                ]
-            },
-            {
-                "ADATA_UNIFY": {
-                    "anndata": "0.13.2",
-                    "numpy": "2.5.3",
-                    "pandas": "3.0.6",
-                    "python": "3.13.12",
-                    "scipy": "1.18.1"
-                }
-            },
-            {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -220,6 +138,91 @@
                     "index": "_index",
                     "columns": [
                         "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-23T17:10:00.119741644",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should handle symbols in column": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,391d3b2d6dbee8dddee617eeba4b6323"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,391d3b2d6dbee8dddee617eeba4b6323"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.2",
+                    "numpy": "2.5.3",
+                    "pandas": "3.0.6",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id",
                         "original_index"
                     ]
                 },
@@ -243,11 +246,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:03:03.971561607",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:38:30.124855223"
+            "nextflow": "25.10.4"
+        }
     },
     "Should handle label column with different name": {
         "content": [
@@ -257,7 +260,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,a600bc43968a839b1d312420b2b8d649"
+                        "test_unified.h5ad:md5,d81ee14c89db410099a1dd0c5e44905e"
                     ]
                 ],
                 "1": [
@@ -268,7 +271,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,a600bc43968a839b1d312420b2b8d649"
+                        "test_unified.h5ad:md5,d81ee14c89db410099a1dd0c5e44905e"
                     ]
                 ],
                 "versions": [
@@ -285,263 +288,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
-                "obs": {
-                    "index": "_index",
-                    "columns": [
-                        "sample",
-                        "ambient_correction_method",
-                        "analysis_counts_source",
-                        "batch",
-                        "label",
-                        "condition",
-                        "donor",
-                        "sample_original"
-                    ]
-                },
-                "var": {
-                    "index": "_index",
-                    "columns": [
-                        "symbols"
-                    ]
-                },
-                "layers": [
-                    "raw_counts"
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
-            }
-        ],
-        "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:42:42.777937664"
-    },
-    "Should create condition column when missing": {
-        "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
-                ]
-            },
-            {
-                "ADATA_UNIFY": {
-                    "anndata": "0.13.2",
-                    "numpy": "2.5.3",
-                    "pandas": "3.0.6",
-                    "python": "3.13.12",
-                    "scipy": "1.18.1"
-                }
-            },
-            {
-                "n_obs": 12940,
-                "n_vars": 9887,
-                "obs": {
-                    "index": "_index",
-                    "columns": [
-                        "sample",
-                        "ambient_correction_method",
-                        "analysis_counts_source",
-                        "batch",
-                        "label",
-                        "condition",
-                        "donor",
-                        "sample_original"
-                    ]
-                },
-                "var": {
-                    "index": "_index",
-                    "columns": [
-                        "symbols"
-                    ]
-                },
-                "layers": [
-                    "raw_counts"
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
-            }
-        ],
-        "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:50:21.147783963"
-    },
-    "Should handle label column with unknown values": {
-        "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_unified.h5ad:md5,8e501e2b334e61fdc82d7c3bc1d761dc"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_unified.h5ad:md5,8e501e2b334e61fdc82d7c3bc1d761dc"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
-                ]
-            },
-            {
-                "ADATA_UNIFY": {
-                    "anndata": "0.13.2",
-                    "numpy": "2.5.3",
-                    "pandas": "3.0.6",
-                    "python": "3.13.12",
-                    "scipy": "1.18.1"
-                }
-            },
-            {
-                "n_obs": 12940,
-                "n_vars": 9887,
-                "obs": {
-                    "index": "_index",
-                    "columns": [
-                        "sample",
-                        "ambient_correction_method",
-                        "analysis_counts_source",
-                        "batch",
-                        "label",
-                        "condition",
-                        "donor",
-                        "sample_original"
-                    ]
-                },
-                "var": {
-                    "index": "_index",
-                    "columns": [
-                        "symbols"
-                    ]
-                },
-                "layers": [
-                    "raw_counts"
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
-            }
-        ],
-        "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:45:38.70408715"
-    },
-    "Should handle duplicates with sum aggregation": {
-        "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test",
-                            "raw_counts_layer": "X",
-                            "ambient_correction_layer": "X",
-                            "ambient_correction_method": "soupx"
-                        },
-                        "test_unified.h5ad:md5,13fb17c9351e5e889f1a789493fd5513"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "test",
-                            "raw_counts_layer": "X",
-                            "ambient_correction_layer": "X",
-                            "ambient_correction_method": "soupx"
-                        },
-                        "test_unified.h5ad:md5,13fb17c9351e5e889f1a789493fd5513"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
-                ]
-            },
-            {
-                "ADATA_UNIFY": {
-                    "anndata": "0.13.2",
-                    "numpy": "2.5.3",
-                    "pandas": "3.0.6",
-                    "python": "3.13.12",
-                    "scipy": "1.18.1"
-                }
-            },
-            {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -559,6 +307,265 @@
                     "index": "_index",
                     "columns": [
                         "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-23T17:05:43.893325854",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should create condition column when missing": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,dbe0dcbb493175f249d5d90894bbaad4"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,dbe0dcbb493175f249d5d90894bbaad4"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.2",
+                    "numpy": "2.5.3",
+                    "pandas": "3.0.6",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-23T17:08:09.626844985",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should handle label column with unknown values": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,8c0d667caa74599b5b6dad3e4d12d25a"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,8c0d667caa74599b5b6dad3e4d12d25a"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.2",
+                    "numpy": "2.5.3",
+                    "pandas": "3.0.6",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-23T17:06:32.313525215",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should handle duplicates with sum aggregation": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
+                        },
+                        "test_unified.h5ad:md5,abee2453c8f68c99bf26017045e5c4a1"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
+                        },
+                        "test_unified.h5ad:md5,abee2453c8f68c99bf26017045e5c4a1"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4596190c6d56d63127c3111752e685c7"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.2",
+                    "numpy": "2.5.3",
+                    "pandas": "3.0.6",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 120,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id",
                         "original_index"
                     ]
                 },
@@ -583,11 +590,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:03:20.012941239",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:38:53.353627699"
+            "nextflow": "25.10.4"
+        }
     },
     "Should create batch column when missing": {
         "content": [
@@ -597,7 +604,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,16b5b5344bcd68bc82fb33b3b6d909a6"
+                        "test_unified.h5ad:md5,b62138ec703e05c1abba106fbea4e031"
                     ]
                 ],
                 "1": [
@@ -608,7 +615,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,16b5b5344bcd68bc82fb33b3b6d909a6"
+                        "test_unified.h5ad:md5,b62138ec703e05c1abba106fbea4e031"
                     ]
                 ],
                 "versions": [
@@ -625,8 +632,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -642,7 +649,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -665,11 +673,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:05:12.152341402",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:41:44.303099148"
+            "nextflow": "25.10.4"
+        }
     },
     "Should retain named correction independently of raw analysis selection": {
         "content": [
@@ -683,7 +691,7 @@
                             "ambient_correction_method": "soupx",
                             "analysis_counts_source": "raw_counts"
                         },
-                        "test_unified.h5ad:md5,e7b26f55cae7c79df07e114c01ccd9ec"
+                        "test_unified.h5ad:md5,11345f82b941f2efe960bab3dd929ba5"
                     ]
                 ],
                 "1": [
@@ -698,7 +706,7 @@
                             "ambient_correction_method": "soupx",
                             "analysis_counts_source": "raw_counts"
                         },
-                        "test_unified.h5ad:md5,e7b26f55cae7c79df07e114c01ccd9ec"
+                        "test_unified.h5ad:md5,11345f82b941f2efe960bab3dd929ba5"
                     ]
                 ],
                 "versions": [
@@ -706,8 +714,8 @@
                 ]
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -724,7 +732,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -748,11 +757,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:01:24.861033069",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-10-18T18:14:08.11602426"
+        }
     },
     "Should run without failures - stub": {
         "content": [
@@ -781,11 +790,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-01-11T21:38:13.01844773",
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
-        },
-        "timestamp": "2026-01-11T21:38:13.01844773"
+        }
     },
     "Should handle duplicates with make_unique": {
         "content": [
@@ -798,7 +807,7 @@
                             "ambient_correction_layer": "X",
                             "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,caaa7445c1160ebbe66f5808be4dddb8"
+                        "test_unified.h5ad:md5,5a31dd8d29afe9ea8703090ade62253a"
                     ]
                 ],
                 "1": [
@@ -812,7 +821,7 @@
                             "ambient_correction_layer": "X",
                             "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,caaa7445c1160ebbe66f5808be4dddb8"
+                        "test_unified.h5ad:md5,5a31dd8d29afe9ea8703090ade62253a"
                     ]
                 ],
                 "versions": [
@@ -829,8 +838,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9937,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -848,6 +857,7 @@
                     "index": "_index",
                     "columns": [
                         "symbols",
+                        "gene_id",
                         "original_index"
                     ]
                 },
@@ -872,11 +882,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:04:08.508302236",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:40:27.494197951"
+            "nextflow": "25.10.4"
+        }
     },
     "Should handle condition column with different name": {
         "content": [
@@ -886,7 +896,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,c4cf958fd067ad04ec3c2de9ace0ba18"
+                        "test_unified.h5ad:md5,0ac55549f34334afe239b422a51fe4e6"
                     ]
                 ],
                 "1": [
@@ -897,7 +907,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,c4cf958fd067ad04ec3c2de9ace0ba18"
+                        "test_unified.h5ad:md5,0ac55549f34334afe239b422a51fe4e6"
                     ]
                 ],
                 "versions": [
@@ -914,8 +924,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -932,7 +942,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -955,11 +966,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:07:37.41576289",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:48:58.788843177"
+            "nextflow": "25.10.4"
+        }
     },
     "Should handle duplicates with mean aggregation": {
         "content": [
@@ -972,7 +983,7 @@
                             "ambient_correction_layer": "X",
                             "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,274230db64433cfff1d07800027b87b3"
+                        "test_unified.h5ad:md5,783d36f5739e7a7952de60ac7d9c39ad"
                     ]
                 ],
                 "1": [
@@ -986,7 +997,7 @@
                             "ambient_correction_layer": "X",
                             "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,274230db64433cfff1d07800027b87b3"
+                        "test_unified.h5ad:md5,783d36f5739e7a7952de60ac7d9c39ad"
                     ]
                 ],
                 "versions": [
@@ -1003,8 +1014,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 120,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -1022,6 +1033,7 @@
                     "index": "_index",
                     "columns": [
                         "symbols",
+                        "gene_id",
                         "original_index"
                     ]
                 },
@@ -1046,11 +1058,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:03:36.234845697",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:39:12.913878669"
+            "nextflow": "25.10.4"
+        }
     },
     "Should aggregate isoforms": {
         "content": [
@@ -1063,7 +1075,7 @@
                             "ambient_correction_layer": "X",
                             "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,e7b26f55cae7c79df07e114c01ccd9ec"
+                        "test_unified.h5ad:md5,8fc660b4b15c1b0d0ef05069d2bcb195"
                     ]
                 ],
                 "1": [
@@ -1077,7 +1089,7 @@
                             "ambient_correction_layer": "X",
                             "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,e7b26f55cae7c79df07e114c01ccd9ec"
+                        "test_unified.h5ad:md5,8fc660b4b15c1b0d0ef05069d2bcb195"
                     ]
                 ],
                 "versions": [
@@ -1094,8 +1106,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 120,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -1112,7 +1124,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -1136,11 +1149,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:04:24.829326967",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:40:47.10420762"
+            "nextflow": "25.10.4"
+        }
     },
     "Should handle condition column already named condition": {
         "content": [
@@ -1150,7 +1163,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,bcdf33dd5249407c936ddf1230990b9d"
+                        "test_unified.h5ad:md5,7ea2df5fb0c8fd588e16bac306f66f6f"
                     ]
                 ],
                 "1": [
@@ -1161,7 +1174,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,bcdf33dd5249407c936ddf1230990b9d"
+                        "test_unified.h5ad:md5,7ea2df5fb0c8fd588e16bac306f66f6f"
                     ]
                 ],
                 "versions": [
@@ -1178,8 +1191,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -1196,7 +1209,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -1219,11 +1233,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:07:53.218741177",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:49:33.838134305"
+            "nextflow": "25.10.4"
+        }
     },
     "Should remove obsm, varm, uns, and unrelated layers": {
         "content": [
@@ -1233,7 +1247,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
+                        "test_unified.h5ad:md5,c072e8fff5cf074228adf1941661e5fd"
                     ]
                 ],
                 "1": [
@@ -1244,7 +1258,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
+                        "test_unified.h5ad:md5,c072e8fff5cf074228adf1941661e5fd"
                     ]
                 ],
                 "versions": [
@@ -1261,8 +1275,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -1279,7 +1293,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -1292,7 +1307,7 @@
                     
                 ],
                 "obsp": [
-                    
+                    "connectivities"
                 ],
                 "varp": [
                     
@@ -1302,11 +1317,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:10:33.000407796",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:56:27.639337476"
+            "nextflow": "25.10.4"
+        }
     },
     "Should normalize label column with special characters": {
         "content": [
@@ -1316,7 +1331,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,efd5513f042274f216a588116046d683"
+                        "test_unified.h5ad:md5,b594d2799474b2884d2e93a28486acc7"
                     ]
                 ],
                 "1": [
@@ -1327,7 +1342,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,efd5513f042274f216a588116046d683"
+                        "test_unified.h5ad:md5,b594d2799474b2884d2e93a28486acc7"
                     ]
                 ],
                 "versions": [
@@ -1344,8 +1359,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -1362,7 +1377,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -1385,11 +1401,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:07:05.658236592",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:47:05.237759481"
+            "nextflow": "25.10.4"
+        }
     },
     "Should create label column when missing": {
         "content": [
@@ -1399,7 +1415,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
+                        "test_unified.h5ad:md5,0c66c380ac5de86a921e45a4dccefac2"
                     ]
                 ],
                 "1": [
@@ -1410,7 +1426,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
+                        "test_unified.h5ad:md5,0c66c380ac5de86a921e45a4dccefac2"
                     ]
                 ],
                 "versions": [
@@ -1427,8 +1443,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -1445,7 +1461,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -1468,11 +1485,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:06:16.161509631",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:44:46.228693302"
+            "nextflow": "25.10.4"
+        }
     },
     "Should handle CSR sparse matrix": {
         "content": [
@@ -1482,7 +1499,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,3b9da069090358f721ba96d975653909"
+                        "test_unified.h5ad:md5,afcd43e7c6441c3335071d327530ca92"
                     ]
                 ],
                 "1": [
@@ -1493,7 +1510,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,3b9da069090358f721ba96d975653909"
+                        "test_unified.h5ad:md5,afcd43e7c6441c3335071d327530ca92"
                     ]
                 ],
                 "versions": [
@@ -1510,8 +1527,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -1528,7 +1545,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -1551,11 +1569,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:09:12.159520885",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:53:05.028978145"
+            "nextflow": "25.10.4"
+        }
     },
     "Should replace reserved layers after copying aliased sources": {
         "content": [
@@ -1569,7 +1587,7 @@
                             "ambient_correction_method": "scar",
                             "analysis_counts_source": "ambient_corrected_scar"
                         },
-                        "test_unified.h5ad:md5,7b8b3943cbfc55fa16d2cf49c4eeb429"
+                        "test_unified.h5ad:md5,e1f9b4b41070bbeb67f0ee48da8137d0"
                     ]
                 ],
                 "1": [
@@ -1584,7 +1602,7 @@
                             "ambient_correction_method": "scar",
                             "analysis_counts_source": "ambient_corrected_scar"
                         },
-                        "test_unified.h5ad:md5,7b8b3943cbfc55fa16d2cf49c4eeb429"
+                        "test_unified.h5ad:md5,e1f9b4b41070bbeb67f0ee48da8137d0"
                     ]
                 ],
                 "versions": [
@@ -1592,8 +1610,8 @@
                 ]
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -1610,7 +1628,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -1634,11 +1653,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:02:00.383145271",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-10-18T18:15:38.632264827"
+        }
     },
     "Should handle CSC sparse matrix": {
         "content": [
@@ -1648,7 +1667,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
+                        "test_unified.h5ad:md5,967942f437e5898cd9c84cd93bf337dc"
                     ]
                 ],
                 "1": [
@@ -1659,7 +1678,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
+                        "test_unified.h5ad:md5,967942f437e5898cd9c84cd93bf337dc"
                     ]
                 ],
                 "versions": [
@@ -1676,8 +1695,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -1694,7 +1713,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -1717,11 +1737,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:09:28.254433725",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:53:44.816834045"
+            "nextflow": "25.10.4"
+        }
     },
     "Should handle batch column with different name": {
         "content": [
@@ -1731,7 +1751,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,0bc00164e4df7110107926b0b553fe70"
+                        "test_unified.h5ad:md5,517023380e81f8400363e236dfd362f8"
                     ]
                 ],
                 "1": [
@@ -1742,7 +1762,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,0bc00164e4df7110107926b0b553fe70"
+                        "test_unified.h5ad:md5,517023380e81f8400363e236dfd362f8"
                     ]
                 ],
                 "versions": [
@@ -1759,8 +1779,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -1776,7 +1796,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -1799,11 +1820,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:04:40.700942722",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:41:05.922035741"
+            "nextflow": "25.10.4"
+        }
     },
     "Should handle label column with NaN values": {
         "content": [
@@ -1813,7 +1834,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,de8db633d93a8aab161d3af8f62d21bd"
+                        "test_unified.h5ad:md5,2f3ba245025b4b2c5404d7f43572db81"
                     ]
                 ],
                 "1": [
@@ -1824,7 +1845,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,de8db633d93a8aab161d3af8f62d21bd"
+                        "test_unified.h5ad:md5,2f3ba245025b4b2c5404d7f43572db81"
                     ]
                 ],
                 "versions": [
@@ -1841,8 +1862,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -1859,7 +1880,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -1882,11 +1904,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:06:49.367154491",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:46:26.216976383"
+            "nextflow": "25.10.4"
+        }
     },
     "Should remove obsm, varm, uns, and layers": {
         "content": [
@@ -1962,11 +1984,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-09-26T10:31:06.094654236",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-09-26T10:31:06.094654236"
+        }
     },
     "Should handle duplicates with max aggregation": {
         "content": [
@@ -1979,7 +2001,7 @@
                             "ambient_correction_layer": "X",
                             "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,0fe264b2595d1f32a99529b9dbbfa747"
+                        "test_unified.h5ad:md5,7c6cafd28c55f760dce9c42239f0467c"
                     ]
                 ],
                 "1": [
@@ -1993,7 +2015,7 @@
                             "ambient_correction_layer": "X",
                             "ambient_correction_method": "soupx"
                         },
-                        "test_unified.h5ad:md5,0fe264b2595d1f32a99529b9dbbfa747"
+                        "test_unified.h5ad:md5,7c6cafd28c55f760dce9c42239f0467c"
                     ]
                 ],
                 "versions": [
@@ -2010,8 +2032,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 120,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -2029,6 +2051,7 @@
                     "index": "_index",
                     "columns": [
                         "symbols",
+                        "gene_id",
                         "original_index"
                     ]
                 },
@@ -2053,11 +2076,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:03:52.332536393",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:39:47.00513438"
+            "nextflow": "25.10.4"
+        }
     },
     "Should create donor column when missing": {
         "content": [
@@ -2067,7 +2090,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,16b5b5344bcd68bc82fb33b3b6d909a6"
+                        "test_unified.h5ad:md5,26cd3a029960197e62bf95e85046660b"
                     ]
                 ],
                 "1": [
@@ -2078,7 +2101,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,16b5b5344bcd68bc82fb33b3b6d909a6"
+                        "test_unified.h5ad:md5,26cd3a029960197e62bf95e85046660b"
                     ]
                 ],
                 "versions": [
@@ -2095,8 +2118,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -2112,7 +2135,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -2135,11 +2159,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:08:40.676902272",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:51:49.409641118"
+            "nextflow": "25.10.4"
+        }
     },
     "Should create sample column when missing": {
         "content": [
@@ -2149,7 +2173,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,5fb0c606171c0462c550922539d4822c"
+                        "test_unified.h5ad:md5,df605932ce852a9c983ec28749335186"
                     ]
                 ],
                 "1": [
@@ -2160,7 +2184,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,5fb0c606171c0462c550922539d4822c"
+                        "test_unified.h5ad:md5,df605932ce852a9c983ec28749335186"
                     ]
                 ],
                 "versions": [
@@ -2177,8 +2201,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -2195,7 +2219,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -2218,11 +2243,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:10:16.577752097",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:55:41.971854682"
+            "nextflow": "25.10.4"
+        }
     },
     "Should handle batch column already named batch": {
         "content": [
@@ -2232,7 +2257,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,34ac46211f258aa0ae6c207a68fe3de5"
+                        "test_unified.h5ad:md5,0e106bd5748ef4216dd65e19d2434c1a"
                     ]
                 ],
                 "1": [
@@ -2243,7 +2268,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,34ac46211f258aa0ae6c207a68fe3de5"
+                        "test_unified.h5ad:md5,0e106bd5748ef4216dd65e19d2434c1a"
                     ]
                 ],
                 "versions": [
@@ -2260,8 +2285,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -2277,7 +2302,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -2300,11 +2326,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:04:56.476854621",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:41:24.04610259"
+            "nextflow": "25.10.4"
+        }
     },
     "Should handle complex structure": {
         "content": [
@@ -2314,7 +2340,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,a6a9458c802d0507b902d7cadbb1587c"
+                        "test_unified.h5ad:md5,b23329122f86500a5c534d42abc54384"
                     ]
                 ],
                 "1": [
@@ -2325,7 +2351,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,a6a9458c802d0507b902d7cadbb1587c"
+                        "test_unified.h5ad:md5,b23329122f86500a5c534d42abc54384"
                     ]
                 ],
                 "versions": [
@@ -2342,8 +2368,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -2362,6 +2388,7 @@
                     "columns": [
                         "symbols",
                         "gene_id",
+                        "feature_type",
                         "original_index"
                     ]
                 },
@@ -2375,7 +2402,7 @@
                     
                 ],
                 "obsp": [
-                    
+                    "connectivities"
                 ],
                 "varp": [
                     
@@ -2385,11 +2412,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:11:05.654253804",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:57:42.114628535"
+            "nextflow": "25.10.4"
+        }
     },
     "Should handle counts in layer": {
         "content": [
@@ -2399,7 +2426,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,216141885300a1d1102febe285c4adfa"
+                        "test_unified.h5ad:md5,1833f3252dc0995e5a5bb3bd1f298c1c"
                     ]
                 ],
                 "1": [
@@ -2410,7 +2437,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,216141885300a1d1102febe285c4adfa"
+                        "test_unified.h5ad:md5,1833f3252dc0995e5a5bb3bd1f298c1c"
                     ]
                 ],
                 "versions": [
@@ -2427,8 +2454,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -2445,7 +2472,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -2468,11 +2496,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:00:51.90180099",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:35:36.14760817"
+            "nextflow": "25.10.4"
+        }
     },
     "Should handle counts in X matrix": {
         "content": [
@@ -2482,7 +2510,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,216141885300a1d1102febe285c4adfa"
+                        "test_unified.h5ad:md5,ed768ac176b0c7b825e8bb2213416d64"
                     ]
                 ],
                 "1": [
@@ -2493,7 +2521,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,216141885300a1d1102febe285c4adfa"
+                        "test_unified.h5ad:md5,ed768ac176b0c7b825e8bb2213416d64"
                     ]
                 ],
                 "versions": [
@@ -2510,8 +2538,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -2528,7 +2556,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -2551,11 +2580,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:00:35.8626968",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-10-18T18:09:11.868512153"
+        }
     },
     "Should handle symbols as index": {
         "content": [
@@ -2565,7 +2594,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,32923d23d65c13c8b566141be09d05b4"
+                        "test_unified.h5ad:md5,c1a5498a2ec041fd5932e71f7d90157d"
                     ]
                 ],
                 "1": [
@@ -2576,7 +2605,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,32923d23d65c13c8b566141be09d05b4"
+                        "test_unified.h5ad:md5,c1a5498a2ec041fd5932e71f7d90157d"
                     ]
                 ],
                 "versions": [
@@ -2593,8 +2622,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -2611,7 +2640,7 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -2634,11 +2663,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:02:47.734392448",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:38:05.736719847"
+            "nextflow": "25.10.4"
+        }
     },
     "Should select a named correction while retaining raw X": {
         "content": [
@@ -2652,7 +2681,7 @@
                             "ambient_correction_method": "decontx",
                             "analysis_counts_source": "ambient_corrected_decontx"
                         },
-                        "test_unified.h5ad:md5,a93d593714a712e5fe052944fdc9e88d"
+                        "test_unified.h5ad:md5,16117ef8b6dbd5738e21f0a2d83eb3dc"
                     ]
                 ],
                 "1": [
@@ -2667,7 +2696,7 @@
                             "ambient_correction_method": "decontx",
                             "analysis_counts_source": "ambient_corrected_decontx"
                         },
-                        "test_unified.h5ad:md5,a93d593714a712e5fe052944fdc9e88d"
+                        "test_unified.h5ad:md5,16117ef8b6dbd5738e21f0a2d83eb3dc"
                     ]
                 ],
                 "versions": [
@@ -2675,8 +2704,8 @@
                 ]
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -2693,7 +2722,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -2717,11 +2747,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:01:40.80352797",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-10-18T18:14:48.432951964"
+        }
     },
     "Should handle minimal structure": {
         "content": [
@@ -2731,7 +2761,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,16b5b5344bcd68bc82fb33b3b6d909a6"
+                        "test_unified.h5ad:md5,26cd3a029960197e62bf95e85046660b"
                     ]
                 ],
                 "1": [
@@ -2742,7 +2772,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,16b5b5344bcd68bc82fb33b3b6d909a6"
+                        "test_unified.h5ad:md5,26cd3a029960197e62bf95e85046660b"
                     ]
                 ],
                 "versions": [
@@ -2759,8 +2789,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -2776,7 +2806,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -2799,11 +2830,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:10:49.130668286",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:57:01.976753321"
+            "nextflow": "25.10.4"
+        }
     },
     "Should discard unrelated layers": {
         "content": [
@@ -2813,7 +2844,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
+                        "test_unified.h5ad:md5,d13b52cf5de3a41449e32f334bd21280"
                     ]
                 ],
                 "1": [
@@ -2824,7 +2855,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,dc47386f3fc82fd394aad7458ef15c5e"
+                        "test_unified.h5ad:md5,d13b52cf5de3a41449e32f334bd21280"
                     ]
                 ],
                 "versions": [
@@ -2832,8 +2863,8 @@
                 ]
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -2850,7 +2881,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -2873,11 +2905,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:01:08.599462106",
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.4",
             "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-10-18T18:13:19.32585388"
+        }
     },
     "Should handle duplicate cell names": {
         "content": [
@@ -2887,7 +2919,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,8edcf8166ffd079491c99a0ad52f5b1d"
+                        "test_unified.h5ad:md5,9b43418e59d15d94bff05909c43bce8a"
                     ]
                 ],
                 "1": [
@@ -2898,7 +2930,7 @@
                         {
                             "id": "test"
                         },
-                        "test_unified.h5ad:md5,8edcf8166ffd079491c99a0ad52f5b1d"
+                        "test_unified.h5ad:md5,9b43418e59d15d94bff05909c43bce8a"
                     ]
                 ],
                 "versions": [
@@ -2915,8 +2947,8 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -2933,7 +2965,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -2956,10 +2989,10 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-23T17:09:44.119555421",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
-        },
-        "timestamp": "2026-10-18T17:54:25.059675558"
+            "nextflow": "25.10.4"
+        }
     }
 }

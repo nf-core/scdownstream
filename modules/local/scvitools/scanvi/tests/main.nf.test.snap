@@ -71,16 +71,25 @@
                 }
             },
             {
-                "n_obs": 12940,
+                "n_obs": 768,
                 "n_vars": 100,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
-                        "label",
-                        "condition",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "batch",
-                        "sample_original",
+                        "donor",
+                        "condition",
+                        "label",
                         "leiden",
                         "label:scANVI"
                     ]
@@ -96,32 +105,29 @@
                     ]
                 },
                 "layers": [
-                    "hvgs_log1p"
+                    "hvgs_log1p",
+                    "raw_counts"
                 ],
                 "obsm": [
                     "X_emb",
                     "X_pca"
                 ],
-                "varm": [
-                    "PCs"
-                ],
+                "varm": [],
                 "obsp": [
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
+                    "X_pca",
                     "hvg",
                     "leiden",
                     "log1p",
-                    "neighbors",
-                    "pca"
+                    "neighbors"
                 ]
             }
         ],
-        "timestamp": "2026-10-23T10:02:16.379693458",
+        "timestamp": "2026-10-24T15:34:23.407109702",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
@@ -138,16 +144,25 @@
                 }
             },
             {
-                "n_obs": 12940,
+                "n_obs": 768,
                 "n_vars": 100,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
-                        "label",
-                        "condition",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "batch",
-                        "sample_original",
+                        "donor",
+                        "condition",
+                        "label",
                         "leiden",
                         "label:scANVI"
                     ]
@@ -163,32 +178,29 @@
                     ]
                 },
                 "layers": [
-                    "hvgs_log1p"
+                    "hvgs_log1p",
+                    "raw_counts"
                 ],
                 "obsm": [
                     "X_emb",
                     "X_pca"
                 ],
-                "varm": [
-                    "PCs"
-                ],
+                "varm": [],
                 "obsp": [
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
+                    "X_pca",
                     "hvg",
                     "leiden",
                     "log1p",
-                    "neighbors",
-                    "pca"
+                    "neighbors"
                 ]
             }
         ],
-        "timestamp": "2026-10-23T10:00:51.072678376",
+        "timestamp": "2026-10-24T13:33:18.287182656",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"

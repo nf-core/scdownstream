@@ -16,7 +16,7 @@ nextflow_workflow {
                     """
                     input[0] = channel.of([
                         [id: 'bbknn', integration: 'bbknn'],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ])
                     input[1] = 'sample'
                     input[2] = 'X'
@@ -120,10 +120,11 @@ nextflow_workflow {
 
         then {
             assert workflow.success
+            assert workflow.out.h5ad_neighbors.size() > 0
+            assert workflow.out.obsm.count { path(it).fileName.toString().endsWith('_umap.pkl') } == workflow.out.h5ad_neighbors.size()
             workflow.out.h5ad_neighbors.each { meta, h5ad ->
                 def adata = anndata(h5ad)
                 with(adata) {
-                    assert obsm.any { it.endsWith("_umap") }
                     assert "connectivities" in obsp
                     assert "distances" in obsp
                 }
@@ -200,10 +201,11 @@ nextflow_workflow {
 
         then {
             assert workflow.success
+            assert workflow.out.h5ad_neighbors.size() > 0
+            assert workflow.out.obsm.count { path(it).fileName.toString().endsWith('_umap.pkl') } == workflow.out.h5ad_neighbors.size()
             workflow.out.h5ad_neighbors.each { meta, h5ad ->
                 def adata = anndata(h5ad)
                 with(adata) {
-                    assert obsm.any { it.endsWith("_umap") }
                     assert "connectivities" in obsp
                     assert "distances" in obsp
                 }
@@ -280,10 +282,11 @@ nextflow_workflow {
 
         then {
             assert workflow.success
+            assert workflow.out.h5ad_neighbors.size() > 0
+            assert workflow.out.obsm.count { path(it).fileName.toString().endsWith('_umap.pkl') } == workflow.out.h5ad_neighbors.size()
             workflow.out.h5ad_neighbors.each { meta, h5ad ->
                 def adata = anndata(h5ad)
                 with(adata) {
-                    assert obsm.any { it.endsWith("_umap") }
                     assert "connectivities" in obsp
                     assert "distances" in obsp
                 }

@@ -40,7 +40,7 @@
                         {
                             "id": "test"
                         },
-                        "scvi.h5ad:md5,9895b317be6c1f28da7d0a2d744c5e0b"
+                        "scvi.h5ad:md5,9a020f7a9cec7753867aa12bf8d55f1a"
                     ]
                 ],
                 "1": [
@@ -51,7 +51,7 @@
                         {
                             "id": "test"
                         },
-                        "scvi.h5ad:md5,9895b317be6c1f28da7d0a2d744c5e0b"
+                        "scvi.h5ad:md5,9a020f7a9cec7753867aa12bf8d55f1a"
                     ]
                 ],
                 "versions": [
@@ -65,89 +65,72 @@
                 }
             },
             {
-                "n_obs": 23364,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 641,
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
                         "batch",
-                        "celltypist:Adult_Human_Skin",
-                        "celltypist:Adult_Human_Skin:conf",
                         "condition",
+                        "donor",
+                        "is_selected_filtered_cell",
                         "label",
+                        "log1p_n_genes_by_counts",
+                        "log1p_total_counts",
+                        "log1p_total_counts_hb",
+                        "log1p_total_counts_mt",
+                        "log1p_total_counts_ribo",
                         "n_counts",
                         "n_genes",
                         "n_genes_by_counts",
+                        "original_n_genes_by_counts",
+                        "original_total_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_20_genes",
                         "pct_counts_mt",
+                        "pct_counts_ribo",
                         "sample",
                         "sample_original",
+                        "source_barcode",
+                        "source_role",
+                        "source_sample",
+                        "synthetic_condition",
+                        "synthetic_donor",
+                        "synthetic_label",
                         "total_counts",
+                        "total_counts_hb",
                         "total_counts_mt",
-                        "bbknn-global-0.5:entropy",
-                        "bbknn-global-0.5_leiden",
-                        "bbknn-global-1.0:entropy",
-                        "bbknn-global-1.0_leiden",
-                        "combat-global-0.5:entropy",
-                        "combat-global-0.5_leiden",
-                        "combat-global-1.0:entropy",
-                        "combat-global-1.0_leiden",
-                        "harmony-global-0.5:entropy",
-                        "harmony-global-0.5_leiden",
-                        "harmony-global-1.0:entropy",
-                        "harmony-global-1.0_leiden",
-                        "scvi-global-0.5:entropy",
-                        "scvi-global-0.5_leiden",
-                        "scvi-global-1.0:entropy",
-                        "scvi-global-1.0_leiden"
+                        "total_counts_ribo"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "intersection"
+                        "intersection",
+                        "highly_variable"
                     ]
                 },
                 "layers": [
-                    
+                    "log1p",
+                    "raw_counts"
                 ],
                 "obsm": [
                     "X_emb"
                 ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
-                    "bbknn-global-0.5_characteristic_genes",
-                    "bbknn-global-0.5_paga",
-                    "bbknn-global-1.0_characteristic_genes",
-                    "bbknn-global-1.0_paga",
-                    "combat-global-0.5_characteristic_genes",
-                    "combat-global-0.5_liana",
-                    "combat-global-0.5_paga",
-                    "combat-global-1.0_characteristic_genes",
-                    "combat-global-1.0_liana",
-                    "combat-global-1.0_paga",
-                    "harmony-global-0.5_characteristic_genes",
-                    "harmony-global-0.5_paga",
-                    "harmony-global-1.0_characteristic_genes",
-                    "harmony-global-1.0_paga",
-                    "scvi-global-0.5_characteristic_genes",
-                    "scvi-global-0.5_paga",
-                    "scvi-global-1.0_characteristic_genes",
-                    "scvi-global-1.0_paga"
+                    "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-09-25T10:52:14.069970395",
+        "timestamp": "2026-10-24T15:32:35.902462941",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }

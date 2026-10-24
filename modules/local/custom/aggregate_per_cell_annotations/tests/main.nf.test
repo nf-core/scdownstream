@@ -14,7 +14,7 @@ nextflow_process {
                 script "../../../adata/extend/main.nf"
                 process {
                     """
-                    input[0] = channel.of('cell,annotation:test:per_cell\\nSRR28679756_AAACCTGAGAGCTGGT,T_cell\\nSRR28679756_AAACCTGAGATGCCTT,T_cell\\n')
+                    input[0] = channel.of('cell,annotation:test:per_cell\\nSRR28679756::CCTTTCTTCTGCTGCT,T_cell\\nSRR28679756::ATCATCTTCTGCTGTC,T_cell\\n')
                         .collectFile(name: 'annotations.csv')
                         .map { obs -> [
                             [id: 'annotations'],
@@ -70,7 +70,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = 'leiden'

@@ -38,15 +38,28 @@
                 "id": "test"
             },
             [
-                "highly_variable.pkl:md5,0bc138a2afaed0e4e153bd251a9be8da"
+                "highly_variable.pkl:md5,b6a95639a6dce259f4e9e42a0a65e3f2"
             ],
             {
-                "n_obs": 38234,
+                "n_obs": 768,
                 "n_vars": 2000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label",
                         "n_genes_by_counts",
                         "log1p_n_genes_by_counts",
                         "total_counts",
@@ -68,6 +81,7 @@
                 "var": {
                     "index": "_index",
                     "columns": [
+                        "symbols",
                         "highly_variable",
                         "means",
                         "dispersions",
@@ -88,25 +102,17 @@
                 "layers": [
                     "log1p"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "hvg",
                     "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-10-23T10:06:02.659362654",
+        "timestamp": "2026-10-24T15:34:31.50838286",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"

@@ -9,6 +9,8 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
+- Migrate nf-test to compact biological fixtures with shared PCA and reference inputs, retain format and failure-path coverage, and regenerate snapshots, by @nictru and GPT-6.1 Sol [[#356](https://github.com/nf-core/scdownstream/pull/356)].
+- Handle empty doublet-overlap plots and nullable reference HVG flags during marker plotting, with regression tests, by @nictru and GPT-6.1 Sol [[#356](https://github.com/nf-core/scdownstream/pull/356)].
 - Generate small decoupler networks, sample identifier validation sheets and interesting-gene lists inline in nf-test, by @nictru and GPT-6.1 Sol [[#348](https://github.com/nf-core/scdownstream/pull/348)].
 - Name the analysis-count selection flag and samplesheet column `use_ambient_corrected_counts`, without a legacy alias, by @nictru and GPT-6.1 Sol [[#345](https://github.com/nf-core/scdownstream/pull/345)].
 - Correct the `cluster_per_label` documentation and describe the two-column samplesheet minimum, optional fields and SoupX input requirement in README, usage and parameter help, by @nictru and GPT-6.1 Sol [[#347](https://github.com/nf-core/scdownstream/pull/347)].

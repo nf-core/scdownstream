@@ -9,8 +9,8 @@
                 }
             },
             {
-                "n_obs": 20313,
-                "n_vars": 9887,
+                "n_obs": 768,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -19,9 +19,18 @@
                         "batch",
                         "condition",
                         "donor",
+                        "is_selected_filtered_cell",
                         "label",
+                        "original_n_genes_by_counts",
+                        "original_total_counts",
                         "sample",
-                        "sample_original"
+                        "sample_original",
+                        "source_barcode",
+                        "source_role",
+                        "source_sample",
+                        "synthetic_condition",
+                        "synthetic_donor",
+                        "synthetic_label"
                     ]
                 },
                 "var": {
@@ -51,10 +60,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-22T16:08:08.58197135",
+        "timestamp": "2026-10-23T16:58:57.361138486",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - stub": {

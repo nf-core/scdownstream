@@ -7,7 +7,7 @@
                         {
                             "id": "test"
                         },
-                        "test_sampled.h5ad:md5,3144244dcb9a1cd578a457d46993c429"
+                        "test_sampled.h5ad:md5,f2aa0461ac82abab6f6cca2c7aa45cf3"
                     ]
                 ],
                 "1": [
@@ -18,7 +18,7 @@
                         {
                             "id": "test"
                         },
-                        "test_sampled.h5ad:md5,3144244dcb9a1cd578a457d46993c429"
+                        "test_sampled.h5ad:md5,f2aa0461ac82abab6f6cca2c7aa45cf3"
                     ]
                 ],
                 "versions": [
@@ -33,11 +33,20 @@
             },
             {
                 "n_obs": 100,
-                "n_vars": 9887,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample"
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts"
                     ]
                 },
                 "var": {
@@ -46,30 +55,18 @@
                         "symbols"
                     ]
                 },
-                "layers": [
-                    "counts"
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
-        "timestamp": "2026-09-25T10:54:36.386737615",
+        "timestamp": "2026-10-24T15:33:11.491367835",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run with fractional subsampling": {
@@ -80,7 +77,7 @@
                         {
                             "id": "test"
                         },
-                        "test_sampled.h5ad:md5,4530736de7047d380ca4a741e92fe07b"
+                        "test_sampled.h5ad:md5,b432fd68e3ca3eb842d97fdf74e421c8"
                     ]
                 ],
                 "1": [
@@ -91,7 +88,7 @@
                         {
                             "id": "test"
                         },
-                        "test_sampled.h5ad:md5,4530736de7047d380ca4a741e92fe07b"
+                        "test_sampled.h5ad:md5,b432fd68e3ca3eb842d97fdf74e421c8"
                     ]
                 ],
                 "versions": [
@@ -105,12 +102,21 @@
                 }
             },
             {
-                "n_obs": 6470,
-                "n_vars": 9887,
+                "n_obs": 192,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample"
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts"
                     ]
                 },
                 "var": {
@@ -119,30 +125,18 @@
                         "symbols"
                     ]
                 },
-                "layers": [
-                    "counts"
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
-        "timestamp": "2026-09-25T10:54:07.911382045",
+        "timestamp": "2026-10-24T15:32:54.664899495",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - stub": {

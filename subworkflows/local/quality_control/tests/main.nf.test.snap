@@ -2,37 +2,37 @@
     "Should run without ambient RNA removal and doublet detection": {
         "content": [
             [
-                "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
-                "test_filtered_qc_histograms_mqc.json:md5,6a36624c9ebdc48e60f9439094d248e4",
-                "test_preprocessed_mqc.json:md5,05b6d1b225fd376d6d4708d536f353ea",
-                "test_raw_mqc.json:md5,3b503d120255fd4a2cee945eace83d60"
+                "sizes_mqc.json:md5,8b10299ed20926c6e80a1ec5f1d0db16",
+                "test_filtered_qc_histograms_mqc.json:md5,e4aec283a82f24305651f583d40e3625",
+                "test_preprocessed_mqc.json:md5,8f61eefdbed9460b1d673168d9c58d3c",
+                "test_raw_mqc.json:md5,8de63d58faed7b809f2dbd2102653b4f"
             ],
             [
                 
             ]
         ],
-        "timestamp": "2026-09-25T19:08:33.932270207",
+        "timestamp": "2026-10-23T21:11:07.446374085",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without ambient RNA removal and doublet detection, but with custom mito genes": {
         "content": [
             [
-                "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
-                "test_filtered_qc_histograms_mqc.json:md5,6a36624c9ebdc48e60f9439094d248e4",
-                "test_preprocessed_mqc.json:md5,05b6d1b225fd376d6d4708d536f353ea",
-                "test_raw_mqc.json:md5,3b503d120255fd4a2cee945eace83d60"
+                "sizes_mqc.json:md5,8b10299ed20926c6e80a1ec5f1d0db16",
+                "test_filtered_qc_histograms_mqc.json:md5,e4aec283a82f24305651f583d40e3625",
+                "test_preprocessed_mqc.json:md5,8f61eefdbed9460b1d673168d9c58d3c",
+                "test_raw_mqc.json:md5,8de63d58faed7b809f2dbd2102653b4f"
             ],
             [
                 
             ]
         ],
-        "timestamp": "2026-09-25T19:09:48.151416385",
+        "timestamp": "2026-10-23T21:14:26.404019135",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run with ambient RNA removal and doublet detection - stub": {
@@ -125,23 +125,32 @@
     "Should run without ambient RNA removal and doublet detection - with MAD filtering": {
         "content": [
             [
-                "sizes_mqc.json:md5,ac78d5f442533ecb26886d95d03925ac",
-                "test_filtered_qc_histograms_mqc.json:md5,544a41ba9d925d6713be6858df922888",
-                "test_preprocessed_mqc.json:md5,56d75eba4e031a54b2fc381c92b1ed87",
-                "test_raw_mqc.json:md5,3b503d120255fd4a2cee945eace83d60"
+                "sizes_mqc.json:md5,33f9ad642c840ed123bee609b8350c8b",
+                "test_filtered_qc_histograms_mqc.json:md5,a53a24f55bab74b355e9957a3772f7fb",
+                "test_preprocessed_mqc.json:md5,98b6a7b920fa4a694a383b2e2d6098c5",
+                "test_raw_mqc.json:md5,8de63d58faed7b809f2dbd2102653b4f"
             ],
             [
                 
             ],
-            12663,
-            9887,
+            355,
+            3000,
             {
-                "n_obs": 12663,
-                "n_vars": 9887,
+                "n_obs": 355,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "ambient_correction_method",
                         "analysis_counts_source",
                         "batch",
@@ -200,32 +209,41 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T17:35:13.423844173",
+        "timestamp": "2026-10-23T21:22:44.101307954",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without ambient RNA removal and doublet detection - with partial MAD filtering": {
         "content": [
             [
-                "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
-                "test_filtered_qc_histograms_mqc.json:md5,f98fa0c08f18318eff3859967676b574",
-                "test_preprocessed_mqc.json:md5,05b6d1b225fd376d6d4708d536f353ea",
-                "test_raw_mqc.json:md5,3b503d120255fd4a2cee945eace83d60"
+                "sizes_mqc.json:md5,8b10299ed20926c6e80a1ec5f1d0db16",
+                "test_filtered_qc_histograms_mqc.json:md5,989aec375e1212c9831d24152550c7f7",
+                "test_preprocessed_mqc.json:md5,8f61eefdbed9460b1d673168d9c58d3c",
+                "test_raw_mqc.json:md5,8de63d58faed7b809f2dbd2102653b4f"
             ],
             [
                 
             ],
-            12940,
-            9887,
+            384,
+            3000,
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "ambient_correction_method",
                         "analysis_counts_source",
                         "batch",
@@ -285,10 +303,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T17:37:36.393936433",
+        "timestamp": "2026-10-23T21:27:11.45650062",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should retain named counts and correction through filtering and sampling with sample overrides": {
@@ -364,11 +382,20 @@
             [
                 {
                     "n_obs": 100,
-                    "n_vars": 1438,
+                    "n_vars": 484,
                     "obs": {
                         "index": "_index",
                         "columns": [
                             "sample",
+                            "source_sample",
+                            "source_barcode",
+                            "is_selected_filtered_cell",
+                            "source_role",
+                            "synthetic_donor",
+                            "synthetic_condition",
+                            "synthetic_label",
+                            "original_total_counts",
+                            "original_n_genes_by_counts",
                             "ambient_correction_method",
                             "analysis_counts_source",
                             "batch",
@@ -396,6 +423,7 @@
                     "var": {
                         "index": "_index",
                         "columns": [
+                            "symbols",
                             "mt",
                             "ribo",
                             "hb",
@@ -429,11 +457,20 @@
                 },
                 {
                     "n_obs": 100,
-                    "n_vars": 1438,
+                    "n_vars": 484,
                     "obs": {
                         "index": "_index",
                         "columns": [
                             "sample",
+                            "source_sample",
+                            "source_barcode",
+                            "is_selected_filtered_cell",
+                            "source_role",
+                            "synthetic_donor",
+                            "synthetic_condition",
+                            "synthetic_label",
+                            "original_total_counts",
+                            "original_n_genes_by_counts",
                             "ambient_correction_method",
                             "analysis_counts_source",
                             "batch",
@@ -461,6 +498,7 @@
                     "var": {
                         "index": "_index",
                         "columns": [
+                            "symbols",
                             "mt",
                             "ribo",
                             "hb",
@@ -495,11 +533,20 @@
                 },
                 {
                     "n_obs": 100,
-                    "n_vars": 1438,
+                    "n_vars": 484,
                     "obs": {
                         "index": "_index",
                         "columns": [
                             "sample",
+                            "source_sample",
+                            "source_barcode",
+                            "is_selected_filtered_cell",
+                            "source_role",
+                            "synthetic_donor",
+                            "synthetic_condition",
+                            "synthetic_label",
+                            "original_total_counts",
+                            "original_n_genes_by_counts",
                             "ambient_correction_method",
                             "analysis_counts_source",
                             "batch",
@@ -527,6 +574,7 @@
                     "var": {
                         "index": "_index",
                         "columns": [
+                            "symbols",
                             "mt",
                             "ribo",
                             "hb",
@@ -561,7 +609,7 @@
                 }
             ]
         ],
-        "timestamp": "2026-10-18T21:46:58.931396784",
+        "timestamp": "2026-10-23T21:33:24.115142107",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
@@ -570,23 +618,32 @@
     "Should run with ambient RNA removal and doublet detection": {
         "content": [
             [
-                "sizes_mqc.json:md5,1793ebee5833403df06e38d4c73f25c5",
-                "test_filtered_qc_histograms_mqc.json:md5,6a36624c9ebdc48e60f9439094d248e4",
-                "test_preprocessed_mqc.json:md5,e93799c6c97ab9f7e13de6e061f465ba",
-                "test_raw_mqc.json:md5,3b503d120255fd4a2cee945eace83d60"
+                "sizes_mqc.json:md5,b594f6dcf03e16fa44c94855057c94a5",
+                "test_filtered_qc_histograms_mqc.json:md5,e4aec283a82f24305651f583d40e3625",
+                "test_preprocessed_mqc.json:md5,bb50d125030dcebabdb66ac138711adc",
+                "test_raw_mqc.json:md5,8de63d58faed7b809f2dbd2102653b4f"
             ],
             [
                 
             ],
-            12939,
-            9887,
+            380,
+            3000,
             {
-                "n_obs": 12939,
-                "n_vars": 9887,
+                "n_obs": 380,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "ambient_correction_method",
                         "analysis_counts_source",
                         "batch",
@@ -648,10 +705,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T18:06:53.740784205",
+        "timestamp": "2026-10-23T21:19:00.415711378",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should apply sc-best-practices QC filtering when samplesheet defaults are present in meta": {
@@ -678,12 +735,21 @@
                 "symbol_col": "index"
             },
             {
-                "n_obs": 12663,
-                "n_vars": 1627,
+                "n_obs": 355,
+                "n_vars": 576,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "ambient_correction_method",
                         "analysis_counts_source",
                         "batch",
@@ -744,29 +810,29 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T17:36:22.066445132",
+        "timestamp": "2026-10-23T21:24:58.089036756",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run with cell cycle scoring": {
         "content": [
             [
-                "sizes_mqc.json:md5,756ad6aae0f322aadfac95c2b38fcef2",
-                "test_cellcycle_mqc.json:md5,a2b63acff78f71583490ac8bfa598564",
-                "test_filtered_qc_histograms_mqc.json:md5,6a36624c9ebdc48e60f9439094d248e4",
-                "test_preprocessed_mqc.json:md5,05b6d1b225fd376d6d4708d536f353ea",
-                "test_raw_mqc.json:md5,3b503d120255fd4a2cee945eace83d60"
+                "sizes_mqc.json:md5,8b10299ed20926c6e80a1ec5f1d0db16",
+                "test_cellcycle_mqc.json:md5,945472cc580f96f6e93569f545aef656",
+                "test_filtered_qc_histograms_mqc.json:md5,e4aec283a82f24305651f583d40e3625",
+                "test_preprocessed_mqc.json:md5,8f61eefdbed9460b1d673168d9c58d3c",
+                "test_raw_mqc.json:md5,8de63d58faed7b809f2dbd2102653b4f"
             ],
             [
                 
             ]
         ],
-        "timestamp": "2026-09-25T19:19:01.669281408",
+        "timestamp": "2026-10-23T21:29:26.000928772",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }

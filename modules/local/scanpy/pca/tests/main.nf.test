@@ -17,7 +17,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = "X_pca"
@@ -46,19 +46,29 @@ nextflow_process {
 
     test("Should preserve input layers") {
 
+        setup {
+            run("SCANPY_LOG1PNORM") {
+                script "../../log1pnorm/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'layered'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                    ])
+                    """
+                }
+            }
+        }
+
         when {
             params {
                 outdir = "$outputDir"
             }
             process {
                 """
-                input[0] = channel.of([
-                        [ id: 'test' ],
-                        file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true)
-                    ]
-                )
+                input[0] = SCANPY_LOG1PNORM.out.h5ad
                 input[1] = "X_pca"
-                input[2] = "counts"
+                input[2] = "raw_counts"
                 input[3] = true
                 """
             }
@@ -73,11 +83,7 @@ nextflow_process {
             assert "X_pca" in adata.varm
 
             with(adata) {
-                assert "counts" in layers
-                assert "spliced" in layers
-                assert "unspliced" in layers
-                assert "pca_log1p" in layers
-                assert layers.size() == 4
+                assert layers.toSet() == ['raw_counts', 'log1p', 'pca_log1p'].toSet()
             }
 
             assert snapshot(
@@ -97,7 +103,7 @@ nextflow_process {
                     """
                     input[0] = channel.of([
                         [id: 'layered'],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ])
                     """
                 }
@@ -140,7 +146,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = "X_pca"

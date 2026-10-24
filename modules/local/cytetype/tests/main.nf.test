@@ -1,5 +1,4 @@
-// CyteType calls the remote Nygen API (LLM-based annotation). Non-stub tests tolerate
-// remote job failures, but successful runs must satisfy all structural assertions.
+// CyteType calls the remote Nygen API. A failed call is not annotation coverage.
 
 nextflow_process {
 
@@ -17,7 +16,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'test' ],
-                        file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = "leiden"
@@ -39,7 +38,7 @@ nextflow_process {
                 """
                 input[0] = SCANPY_RANKGENESGROUPS.out.h5ad
                 input[1] = "index"
-                input[2] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[2] = "Human B-cell scRNA-seq subset from GSE263932 (SLE/CAR-T study); synthetic test-design metadata."
                 input[3] = "leiden"
                 input[4] = "rank_genes_groups"
                 input[5] = "scvi"
@@ -49,19 +48,13 @@ nextflow_process {
         }
 
         then {
-            if (process.success) {
-                def adata = anndata(process.out.h5ad[0][1])
-                with(adata) {
-                    assert "leiden" in obs.colnames
-                    assert obs.colnames.any { it.startsWith("annotation:cytetype:") }
-                }
-                assert snapshot(
-                    path(process.out.versions[0]).yaml,
-                    adata.yaml
-                ).match()
-            } else {
-                assert process.failed
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "leiden" in obs.colnames
+                assert obs.colnames.any { it.startsWith("annotation:cytetype:") }
             }
+            assert snapshot(path(process.out.versions[0]).yaml, adata.yaml).match()
         }
 
     }
@@ -76,7 +69,7 @@ nextflow_process {
                 """
                 input[0] = SCANPY_RANKGENESGROUPS.out.h5ad
                 input[1] = "symbols"
-                input[2] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[2] = "Human B-cell scRNA-seq subset from GSE263932 (SLE/CAR-T study); synthetic test-design metadata."
                 input[3] = "leiden"
                 input[4] = "rank_genes_groups"
                 input[5] = "scvi"
@@ -86,19 +79,13 @@ nextflow_process {
         }
 
         then {
-            if (process.success) {
-                def adata = anndata(process.out.h5ad[0][1])
-                with(adata) {
-                    assert "leiden" in obs.colnames
-                    assert obs.colnames.any { it.startsWith("annotation:cytetype:") }
-                }
-                assert snapshot(
-                    path(process.out.versions[0]).yaml,
-                    adata.yaml
-                ).match()
-            } else {
-                assert process.failed
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "leiden" in obs.colnames
+                assert obs.colnames.any { it.startsWith("annotation:cytetype:") }
             }
+            assert snapshot(path(process.out.versions[0]).yaml, adata.yaml).match()
         }
 
     }
@@ -113,7 +100,7 @@ nextflow_process {
                 """
                 input[0] = SCANPY_RANKGENESGROUPS.out.h5ad
                 input[1] = "not_a_column"
-                input[2] = "Human PBMC from healthy donor, 10X Genomics 3' scRNA-seq (nf-test)"
+                input[2] = "Human B-cell scRNA-seq subset from GSE263932 (SLE/CAR-T study); synthetic test-design metadata."
                 input[3] = "leiden"
                 input[4] = "rank_genes_groups"
                 input[5] = "scvi"
@@ -124,6 +111,7 @@ nextflow_process {
 
         then {
             assert process.failed
+            assert process.errorReport.contains('Symbol column not_a_column not found')
         }
 
     }
@@ -149,6 +137,7 @@ nextflow_process {
 
         then {
             assert process.failed
+            assert process.errorReport.contains('cytetype_study_context must be a non-empty string')
         }
 
     }

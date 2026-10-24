@@ -7,14 +7,14 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,c76acc821c72c16aff360cb31c8fcb68"
+                        "test.h5ad:md5,eb1263a8ecf394d3ab3e7131af6bfdb2"
                     ]
                 ],
                 "1": [
-                    "test_samples.tsv:md5,40d3c06cebddd742a806a52ac1aa2226"
+                    "test_samples.tsv:md5,93be0d8384e6c0086e5c3e03374b1dc2"
                 ],
                 "2": [
-                    "test_mqc.json:md5,16f5e02ceb48b06f05c5ada7441e567e"
+                    "test_mqc.json:md5,1cc0117bf934457980fbe76a17f0fe5b"
                 ],
                 "3": [
                     "versions.yml:md5,c038d52da375dc87900a713a0379fe41"
@@ -24,14 +24,14 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,c76acc821c72c16aff360cb31c8fcb68"
+                        "test.h5ad:md5,eb1263a8ecf394d3ab3e7131af6bfdb2"
                     ]
                 ],
                 "multiqc_files": [
-                    "test_mqc.json:md5,16f5e02ceb48b06f05c5ada7441e567e"
+                    "test_mqc.json:md5,1cc0117bf934457980fbe76a17f0fe5b"
                 ],
                 "samples": [
-                    "test_samples.tsv:md5,40d3c06cebddd742a806a52ac1aa2226"
+                    "test_samples.tsv:md5,93be0d8384e6c0086e5c3e03374b1dc2"
                 ],
                 "versions": [
                     "versions.yml:md5,c038d52da375dc87900a713a0379fe41"
@@ -46,16 +46,19 @@
                 }
             },
             {
-                "n_obs": 36,
-                "n_vars": 9887,
+                "n_obs": 15,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
                         "leiden_condition",
-                        "condition",
+                        "source_sample",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_condition",
                         "batch",
-                        "sample_original",
+                        "condition",
                         "leiden",
                         "psbulk_cells",
                         "psbulk_counts",
@@ -69,33 +72,22 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "highly_variable"
                     ]
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
-        "timestamp": "2026-08-10T10:25:01.551460407",
+        "timestamp": "2026-10-24T13:32:47.449291976",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - stub": {

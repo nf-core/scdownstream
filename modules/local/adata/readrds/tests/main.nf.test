@@ -38,9 +38,10 @@ nextflow_process {
         then {
             assert process.success
             def restored = anndata(process.out.h5ad[0][1])
-            assert restored.layers.sort() == ['spliced', 'unspliced']
-            assert restored.n_obs == 12940
-            assert restored.n_vars == 9887
+            // The source's distinct `counts` layer must survive alongside X, which is exported as `counts`.
+            assert restored.layers.sort() == ['counts.1', 'spliced', 'unspliced']
+            assert restored.n_obs == 128
+            assert restored.n_vars == 128
             assert restored.obs.rownames.size() == restored.n_obs
             assert restored.var.rownames.size() == restored.n_vars
             assert restored.obs.rownames.toUnique().size() == restored.n_obs
@@ -85,9 +86,10 @@ nextflow_process {
         then {
             assert process.success
             def restored = anndata(process.out.h5ad[0][1])
-            assert restored.layers.sort() == ['X', 'spliced', 'unspliced']
-            assert restored.n_obs == 12940
-            assert restored.n_vars == 9887
+            // `counts.1` retains the source layer that collides with the selected counts assay name.
+            assert restored.layers.sort() == ['X', 'counts.1', 'spliced', 'unspliced']
+            assert restored.n_obs == 128
+            assert restored.n_vars == 128
             assert restored.obs.rownames.size() == restored.n_obs
             assert restored.var.rownames.size() == restored.n_vars
             assert restored.obs.rownames.toUnique().size() == restored.n_obs
@@ -132,9 +134,10 @@ nextflow_process {
         then {
             assert process.success
             def restored = anndata(process.out.h5ad[0][1])
-            assert restored.layers.sort() == ['X', 'spliced', 'unspliced']
-            assert restored.n_obs == 12940
-            assert restored.n_vars == 9887
+            // The counts alias is selected into X while the original counts layer remains distinct.
+            assert restored.layers.sort() == ['X', 'counts.1', 'spliced', 'unspliced']
+            assert restored.n_obs == 128
+            assert restored.n_vars == 128
             assert restored.obs.rownames.size() == restored.n_obs
             assert restored.var.rownames.size() == restored.n_vars
             assert restored.obs.rownames.toUnique().size() == restored.n_obs
@@ -158,7 +161,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [id: 'test'],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679758_filtered_matrix.seurat.rds', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679758_filtered_matrix.seurat.rds', checkIfExists: true)
                     ]
                 )
                 """
@@ -189,7 +192,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [id: 'test'],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679758_filtered_matrix.seurat.rds', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679758_filtered_matrix.seurat.rds', checkIfExists: true)
                     ]
                 )
                 """
@@ -214,7 +217,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [id: 'test'],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679757_filtered_matrix.sce.rds', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679757_filtered_matrix.sce.rds', checkIfExists: true)
                     ]
                 )
                 """
@@ -245,7 +248,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [id: 'test'],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/rds/SRR28679757_filtered_matrix.sce.rds', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679757_filtered_matrix.sce.rds', checkIfExists: true)
                     ]
                 )
                 """

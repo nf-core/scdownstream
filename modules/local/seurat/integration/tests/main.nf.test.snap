@@ -42,12 +42,25 @@
                 }
             },
             {
-                "n_obs": 12381,
+                "n_obs": 768,
                 "n_vars": 100,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label",
                         "n_genes_by_counts",
                         "log1p_n_genes_by_counts",
                         "total_counts",
@@ -69,6 +82,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
+                        "symbols",
+                        "highly_variable",
                         "mt",
                         "ribo",
                         "hb",
@@ -80,7 +95,6 @@
                         "log1p_total_counts",
                         "n_counts",
                         "n_cells",
-                        "highly_variable",
                         "means",
                         "dispersions",
                         "dispersions_norm"
@@ -93,22 +107,16 @@
                 "obsm": [
                     "X_emb"
                 ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "hvg",
                     "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-10-23T10:04:41.948774044",
+        "timestamp": "2026-10-24T15:35:26.874097183",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"

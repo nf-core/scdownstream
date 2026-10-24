@@ -26,7 +26,7 @@ nextflow_workflow {
                         resolution: '0.5',
                         analyses: ['aggregate_per_cell_annotation'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = h5ad
                 input[1] = channel.empty()
@@ -61,7 +61,7 @@ nextflow_workflow {
                         condition_col: 'condition',
                         analyses: ['paga'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[1] = channel.empty()
                 input[2] = channel.of('annotation:celltypist:Adult_COVID19_PBMC:per_cell')
@@ -99,7 +99,7 @@ nextflow_workflow {
                         rank_key: 'rank_genes_groups',
                         analyses: ['cytetype'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = channel.empty()
                 input[1] = h5ad
@@ -141,7 +141,7 @@ nextflow_workflow {
                         rank_key: 'rank_genes_groups',
                         analyses: ['de'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = channel.empty()
                 input[1] = h5ad
@@ -177,7 +177,7 @@ nextflow_workflow {
                         resolution: '0.5',
                         analyses: ['aggregate_per_cell_annotation'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 def de_h5ad = channel.of([
                     [
@@ -191,7 +191,7 @@ nextflow_workflow {
                         rank_key: 'rank_genes_groups',
                         analyses: ['cytetype'] as Set,
                     ],
-                    file(params.pipelines_testdata_base_path + '/pbmc/with_label_and_condition_pca.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 input[0] = cluster_h5ad
                 input[1] = de_h5ad

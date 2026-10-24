@@ -7,11 +7,11 @@
                         {
                             "id": "test"
                         },
-                        "deviance.h5ad:md5,af49a6c531122541ed21a8bb0a68a40c"
+                        "deviance.h5ad:md5,23a2a6b97e6c1ca2fbdd17ae460fafdb"
                     ]
                 ],
                 "1": [
-                    "deviance_features.csv:md5,b133e030cc281e4843f1a3a38de8ce14"
+                    "deviance_features.csv:md5,a65b6954fa5fbaca6274fef0fab6a2c4"
                 ],
                 "2": [
                     "versions.yml:md5,4a3f9cbeeb0fb3f69921bb3d8a2b6c43"
@@ -21,11 +21,11 @@
                         {
                             "id": "test"
                         },
-                        "deviance.h5ad:md5,af49a6c531122541ed21a8bb0a68a40c"
+                        "deviance.h5ad:md5,23a2a6b97e6c1ca2fbdd17ae460fafdb"
                     ]
                 ],
                 "var": [
-                    "deviance_features.csv:md5,b133e030cc281e4843f1a3a38de8ce14"
+                    "deviance_features.csv:md5,a65b6954fa5fbaca6274fef0fab6a2c4"
                 ],
                 "versions": [
                     "versions.yml:md5,4a3f9cbeeb0fb3f69921bb3d8a2b6c43"
@@ -38,42 +38,45 @@
                 }
             },
             {
-                "n_obs": 38234,
-                "n_vars": 4000,
+                "n_obs": 768,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample"
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
+                        "symbols",
+                        "highly_variable",
                         "binomial_deviance",
                         "highly_deviant"
                     ]
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
-        "timestamp": "2026-10-22T21:49:22.648871551",
+        "timestamp": "2026-10-24T15:32:22.938198177",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
@@ -126,11 +129,11 @@
                         {
                             "id": "test"
                         },
-                        "deviance.h5ad:md5,4e49b5c2bfc41f49e752ccab5627237b"
+                        "deviance.h5ad:md5,bafee88c561601e08242e410051914b7"
                     ]
                 ],
                 "1": [
-                    "deviance_features.csv:md5,163e77b0fe0007c1dfc2b3336c01383c"
+                    "deviance_features.csv:md5,3d5967e15e7acc555c2c085c00ec567f"
                 ],
                 "2": [
                     "versions.yml:md5,4a3f9cbeeb0fb3f69921bb3d8a2b6c43"
@@ -140,11 +143,11 @@
                         {
                             "id": "test"
                         },
-                        "deviance.h5ad:md5,4e49b5c2bfc41f49e752ccab5627237b"
+                        "deviance.h5ad:md5,bafee88c561601e08242e410051914b7"
                     ]
                 ],
                 "var": [
-                    "deviance_features.csv:md5,163e77b0fe0007c1dfc2b3336c01383c"
+                    "deviance_features.csv:md5,3d5967e15e7acc555c2c085c00ec567f"
                 ],
                 "versions": [
                     "versions.yml:md5,4a3f9cbeeb0fb3f69921bb3d8a2b6c43"
@@ -157,42 +160,45 @@
                 }
             },
             {
-                "n_obs": 38234,
+                "n_obs": 768,
                 "n_vars": 100,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample"
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
+                        "symbols",
+                        "highly_variable",
                         "binomial_deviance",
                         "highly_deviant"
                     ]
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
-        "timestamp": "2026-10-22T21:50:23.295208176",
+        "timestamp": "2026-10-24T15:32:41.925279731",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
@@ -206,11 +212,11 @@
                         {
                             "id": "test"
                         },
-                        "deviance.h5ad:md5,f5b00ac2692c3082f9dc72bd7cf6532f"
+                        "deviance.h5ad:md5,279df8de15711cd56790f861faecf885"
                     ]
                 ],
                 "1": [
-                    "deviance_features.csv:md5,e1b4cab9a31221c069a3282e5cf8e81e"
+                    "deviance_features.csv:md5,f7a6a2527a60ec24cbda013d317ecd59"
                 ],
                 "2": [
                     "versions.yml:md5,4a3f9cbeeb0fb3f69921bb3d8a2b6c43"
@@ -220,11 +226,11 @@
                         {
                             "id": "test"
                         },
-                        "deviance.h5ad:md5,f5b00ac2692c3082f9dc72bd7cf6532f"
+                        "deviance.h5ad:md5,279df8de15711cd56790f861faecf885"
                     ]
                 ],
                 "var": [
-                    "deviance_features.csv:md5,e1b4cab9a31221c069a3282e5cf8e81e"
+                    "deviance_features.csv:md5,f7a6a2527a60ec24cbda013d317ecd59"
                 ],
                 "versions": [
                     "versions.yml:md5,4a3f9cbeeb0fb3f69921bb3d8a2b6c43"
@@ -237,42 +243,45 @@
                 }
             },
             {
-                "n_obs": 38234,
+                "n_obs": 768,
                 "n_vars": 100,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample"
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
+                        "symbols",
+                        "highly_variable",
                         "binomial_deviance",
                         "highly_deviant"
                     ]
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
-        "timestamp": "2026-10-22T21:51:07.299962661",
+        "timestamp": "2026-10-24T15:33:14.180071284",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"

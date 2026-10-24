@@ -7,11 +7,19 @@ nextflow_pipeline {
     test("Should integrate each label in sub mode") {
 
         when {
+            def referenceRoot = System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')
+                ? new File(System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')).canonicalPath.replaceAll('/+$', '') + '/'
+                : 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
+            def references = new File("$launchDir/references.csv")
+            references.text = "id,label,reference,version\nhpca_celldex,label.main,hpca,2024-02-26\nimmune_celldex,label.fine,monaco_immune,2024-02-26\nhpca_direct,label.main,${referenceRoot}singleR/celldex_hpca__2024-02-26_h5_se.tar,\nimmune_direct,label.fine,${referenceRoot}singleR/celldex_monaco_immune__2024-02-26_h5_se.tar,\n"
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/82e8bfa28e58c562b5b1fc89acd969e8726aba52/'
+                pipelines_testdata_base_path = System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')
+                    ? new File(System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')).canonicalPath.replaceAll('/+$', '') + '/'
+                    : 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
                 outdir                       = "$outputDir"
                 input                        = null
-                base_adata                   = pipelines_testdata_base_path + 'ambient_reference/merged.h5ad'
+                celldex_reference            = references.toString()
+                base_adata                   = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
                 base_embeddings              = null
                 base_label_col               = 'sample'
                 integrate_per_label          = true
@@ -63,11 +71,19 @@ nextflow_pipeline {
     test("Should integrate only whitelisted labels in sub mode") {
 
         when {
+            def referenceRoot = System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')
+                ? new File(System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')).canonicalPath.replaceAll('/+$', '') + '/'
+                : 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
+            def references = new File("$launchDir/references.csv")
+            references.text = "id,label,reference,version\nhpca_celldex,label.main,hpca,2024-02-26\nimmune_celldex,label.fine,monaco_immune,2024-02-26\nhpca_direct,label.main,${referenceRoot}singleR/celldex_hpca__2024-02-26_h5_se.tar,\nimmune_direct,label.fine,${referenceRoot}singleR/celldex_monaco_immune__2024-02-26_h5_se.tar,\n"
             params {
-                pipelines_testdata_base_path  = 'https://raw.githubusercontent.com/nictru/test-datasets/82e8bfa28e58c562b5b1fc89acd969e8726aba52/'
+                pipelines_testdata_base_path = System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')
+                    ? new File(System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')).canonicalPath.replaceAll('/+$', '') + '/'
+                    : 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
                 outdir                        = "$outputDir"
                 input                         = null
-                base_adata                    = pipelines_testdata_base_path + 'ambient_reference/merged.h5ad'
+                celldex_reference             = references.toString()
+                base_adata                    = pipelines_testdata_base_path + 'extension_base/merged.h5ad'
                 base_embeddings               = null
                 base_label_col                = 'sample'
                 integrate_per_label           = true
