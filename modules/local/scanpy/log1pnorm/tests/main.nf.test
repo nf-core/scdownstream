@@ -17,7 +17,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 """
@@ -45,7 +45,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                     [id: 'layered'],
-                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
                 ])
                 """
             }
@@ -54,7 +54,7 @@ nextflow_process {
         then {
             assert process.success
             def adata = anndata(process.out.h5ad[0][1])
-            assert adata.layers.toSet() == ['counts', 'spliced', 'unspliced', 'log1p'].toSet()
+            assert adata.layers.toSet() == ['raw_counts', 'log1p'].toSet()
             assert snapshot(path(process.out.versions[0]).yaml, adata.yaml).match()
         }
 
@@ -72,7 +72,7 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                         [ id: 'test' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/combined_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 """

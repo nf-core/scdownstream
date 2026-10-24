@@ -27,8 +27,8 @@ nextflow_workflow {
                             pct_counts_in_top_20_genes_nmads: 0,
                             pct_counts_mt_nmads: 0
                         ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = 'cellbender'
@@ -94,8 +94,8 @@ nextflow_workflow {
                             pct_counts_in_top_20_genes_nmads: 0,
                             pct_counts_mt_nmads: 0
                         ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = 'cellbender'
@@ -163,8 +163,8 @@ nextflow_workflow {
                             pct_counts_in_top_20_genes_nmads: 0,
                             pct_counts_mt_nmads: 0
                         ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = 'cellbender'
@@ -234,8 +234,8 @@ nextflow_workflow {
                 """
                 input[0] = channel.of([
                         [ id: 'test', batch_col: 'sample', counts_layer: 'X' ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = 'cellbender'
@@ -285,8 +285,8 @@ nextflow_workflow {
                             pct_counts_in_top_20_genes_nmads: 5,
                             pct_counts_mt_nmads: 3
                         ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = 'cellbender'
@@ -361,8 +361,8 @@ nextflow_workflow {
                             pct_counts_in_top_20_genes_nmads: 5,
                             pct_counts_mt_nmads: 3
                         ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = 'cellbender'
@@ -400,9 +400,10 @@ nextflow_workflow {
             assert adata.layers.size() == 1
             assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
             assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
-            // Samplesheet MAD defaults remove low-quality cells from the 12940-cell filtered input.
-            assert adata.n_obs < 12940
-            assert adata.n_obs > 10000
+            // Samplesheet MAD defaults remove low-quality cells from the rebuilt input.
+            assert adata.n_obs < 384
+            assert adata.n_obs > 0
+            assert adata.obs.get('pct_counts_mt').data.every { (it as double) <= 8 }
             with(adata) {
                 assert "log1p_total_counts" in obs.colnames
                 assert "pct_counts_mt" in obs.colnames
@@ -432,8 +433,8 @@ nextflow_workflow {
                             pct_counts_in_top_20_genes_nmads: 0,
                             pct_counts_mt_nmads: 3
                         ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = 'cellbender'
@@ -487,6 +488,8 @@ nextflow_workflow {
 
     test("Should run with cell cycle scoring") {
 
+        tag "cell_cycle_scoring"
+
         when {
             params {
                 outdir = "$outputDir"
@@ -505,8 +508,8 @@ nextflow_workflow {
                             pct_counts_in_top_20_genes_nmads: 0,
                             pct_counts_mt_nmads: 0
                         ],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
                     ]
                 )
                 input[1] = 'cellbender'
@@ -541,6 +544,13 @@ nextflow_workflow {
             assert meta.ambient_correction_method == 'none'
             assert meta.analysis_counts_source == 'raw_counts'
             assert 'raw_counts' in adata.layers
+            def cellcycleFragments = workflow.out.obs.findAll { entry -> file(entry[1]).name == 'test_cellcycle.pkl' }
+            assert cellcycleFragments.size() == 1
+            def fragmentFile = file(cellcycleFragments[0][1])
+            def scored = anndata(new File(fragmentFile.parent, 'test_cellcycle.h5ad').toString())
+            assert 'S_score' in scored.obs.colnames
+            assert 'G2M_score' in scored.obs.colnames
+            assert 'phase' in scored.obs.colnames
             assert adata.layers.size() == 1
             assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
             assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
@@ -561,7 +571,7 @@ nextflow_workflow {
                     """
                     input[0] = channel.of([
                         [id: 'source'],
-                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
                     ])
                     input[1] = 'sample'
                     input[2] = ''

@@ -7,17 +7,29 @@ nextflow_pipeline {
     test("Should perform scvi and symphony reference mapping") {
 
         when {
+            def fixtureBase = System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')
+                ? new File(System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')).canonicalPath.replaceAll('/+$', '') + '/'
+                : 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
+            def referenceRoot = System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')
+                ? new File(System.getenv('SCDOWNSTREAM_TEST_DATA_ROOT')).canonicalPath.replaceAll('/+$', '') + '/'
+                : 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
+            def references = new File("$launchDir/references.csv")
+            references.text = "id,label,reference,version\nhpca_celldex,label.main,hpca,2024-02-26\nimmune_celldex,label.fine,monaco_immune,2024-02-26\nhpca_direct,label.main,${referenceRoot}singleR/celldex_hpca__2024-02-26_h5_se.tar,\nimmune_direct,label.fine,${referenceRoot}singleR/celldex_monaco_immune__2024-02-26_h5_se.tar,\n"
+            def samplesheet = new File("$launchDir/samplesheet.csv")
+            samplesheet.text = "sample,filtered,unfiltered,batch_col\nSRR28679759,${fixtureBase}pbmc/SRR28679759_filtered_matrix.h5ad,${fixtureBase}pbmc/SRR28679759_raw_matrix.h5ad,sample\n"
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/82e8bfa28e58c562b5b1fc89acd969e8726aba52/'
-                input                        = pipelines_testdata_base_path + 'samplesheet_single.csv'
+                cell_cycle_scoring = false
+                pipelines_testdata_base_path = fixtureBase
+                input                        = samplesheet.toString()
+                celldex_reference            = references.toString()
                 integration_methods          = 'scvi,symphony'
                 ambient_correction           = 'decontx'
                 doublet_detection            = 'scrublet,scdblfinder'
                 celltypist_model             = 'Adult_COVID19_PBMC'
                 integration_n_features       = 500
                 outdir                       = "$outputDir"
-                scvi_model                   = pipelines_testdata_base_path + 'ambient_reference/model.pt'
-                symphony_reference           = pipelines_testdata_base_path + 'ambient_reference/symphony_reference.h5ad'
+                scvi_model                   = pipelines_testdata_base_path + 'extension_base/model.pt'
+                symphony_reference           = pipelines_testdata_base_path + 'extension_base/symphony_reference.h5ad'
             }
         }
 

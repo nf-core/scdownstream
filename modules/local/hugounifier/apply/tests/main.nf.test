@@ -16,8 +16,8 @@ nextflow_process {
                         [ id: 'test' ],
                         ['sample1', 'sample2'],
                         [
-                            file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                            file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                            file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                            file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                         ]
                     ]
                 )
@@ -37,7 +37,7 @@ nextflow_process {
                 input[0] = HUGOUNIFIER_GET.out.changes
                     .map { meta, changes -> [meta, changes[0]] }
                     .combine(
-                        channel.of(file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true))
+                        channel.of(file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true))
                     )
                     .map { meta, changes, h5ad -> [meta, h5ad, changes] }
                 """
@@ -72,7 +72,7 @@ nextflow_process {
                 input[0] = HUGOUNIFIER_GET.out.changes
                     .map { meta, changes -> [meta, changes[0]] }
                     .combine(
-                        channel.of(file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true))
+                        channel.of(file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true))
                     )
                     .map { meta, changes, h5ad -> [meta, h5ad, changes] }
                 """

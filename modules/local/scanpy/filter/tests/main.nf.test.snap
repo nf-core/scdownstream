@@ -42,7 +42,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,8227f04cef2b59e8c073d46c10a96b8b"
+                        "test_filtered.h5ad:md5,96c1f365989d947cc5c9962301dd03af"
                     ]
                 ],
                 "1": [
@@ -59,7 +59,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,8227f04cef2b59e8c073d46c10a96b8b"
+                        "test_filtered.h5ad:md5,96c1f365989d947cc5c9962301dd03af"
                     ]
                 ],
                 "multiqc_files": [
@@ -79,12 +79,21 @@
                 }
             },
             {
-                "n_obs": 12663,
-                "n_vars": 9887,
+                "n_obs": 355,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "n_genes_by_counts",
                         "log1p_n_genes_by_counts",
                         "total_counts",
@@ -121,7 +130,7 @@
                     ]
                 },
                 "layers": [
-                    "counts"
+                    
                 ],
                 "obsm": [
                     
@@ -140,10 +149,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-17T21:46:34.476892603",
+        "timestamp": "2026-10-23T18:35:00.444928134",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - with partial MAD filtering": {
@@ -154,7 +163,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,9a652534941a5bf37043eee13c4fd8cf"
+                        "test_filtered.h5ad:md5,19871bf6825db5de7adffd9c4163476e"
                     ]
                 ],
                 "1": [
@@ -171,7 +180,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,9a652534941a5bf37043eee13c4fd8cf"
+                        "test_filtered.h5ad:md5,19871bf6825db5de7adffd9c4163476e"
                     ]
                 ],
                 "multiqc_files": [
@@ -191,12 +200,21 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "n_genes_by_counts",
                         "log1p_n_genes_by_counts",
                         "total_counts",
@@ -233,7 +251,7 @@
                     ]
                 },
                 "layers": [
-                    "counts"
+                    
                 ],
                 "obsm": [
                     
@@ -252,10 +270,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-17T21:45:32.792769828",
+        "timestamp": "2026-10-23T18:33:31.112728523",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - with QC histogram plots": {
@@ -266,14 +284,14 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,1d115224d1d1e7ffb084542685013429"
+                        "test_filtered.h5ad:md5,7592c6593bde22bd9bac79db24479f10"
                     ]
                 ],
                 "1": [
-                    "test_filtered_qc_histograms.png:md5,9db249da5cc88e721f13aef845011321"
+                    "test_filtered_qc_histograms.png:md5,b606b0ba966590731bcd3aac66412bfc"
                 ],
                 "2": [
-                    "test_filtered_qc_histograms_mqc.json:md5,f87d4a70b2a11e45c4c511a5e090804d"
+                    "test_filtered_qc_histograms_mqc.json:md5,08662ea116351007413e96b418161024"
                 ],
                 "3": [
                     "versions.yml:md5,31655f67da41f4d216472f6339da0e6f"
@@ -283,14 +301,14 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,1d115224d1d1e7ffb084542685013429"
+                        "test_filtered.h5ad:md5,7592c6593bde22bd9bac79db24479f10"
                     ]
                 ],
                 "multiqc_files": [
-                    "test_filtered_qc_histograms_mqc.json:md5,f87d4a70b2a11e45c4c511a5e090804d"
+                    "test_filtered_qc_histograms_mqc.json:md5,08662ea116351007413e96b418161024"
                 ],
                 "plots": [
-                    "test_filtered_qc_histograms.png:md5,9db249da5cc88e721f13aef845011321"
+                    "test_filtered_qc_histograms.png:md5,b606b0ba966590731bcd3aac66412bfc"
                 ],
                 "versions": [
                     "versions.yml:md5,31655f67da41f4d216472f6339da0e6f"
@@ -304,12 +322,21 @@
                 }
             },
             {
-                "n_obs": 5502,
-                "n_vars": 926,
+                "n_obs": 355,
+                "n_vars": 263,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "n_genes_by_counts",
                         "log1p_n_genes_by_counts",
                         "total_counts",
@@ -346,7 +373,7 @@
                     ]
                 },
                 "layers": [
-                    "counts"
+                    
                 ],
                 "obsm": [
                     
@@ -365,10 +392,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-17T21:47:27.081817344",
+        "timestamp": "2026-10-23T18:35:59.103387312",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - with custom symbol column": {
@@ -379,7 +406,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,89d00dfaafec6ff2f9fd873c335348af"
+                        "test_filtered.h5ad:md5,a72a00545da4c571487597b9dee41843"
                     ]
                 ],
                 "1": [
@@ -396,7 +423,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,89d00dfaafec6ff2f9fd873c335348af"
+                        "test_filtered.h5ad:md5,a72a00545da4c571487597b9dee41843"
                     ]
                 ],
                 "multiqc_files": [
@@ -416,12 +443,21 @@
                 }
             },
             {
-                "n_obs": 5719,
-                "n_vars": 992,
+                "n_obs": 384,
+                "n_vars": 288,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "n_genes_by_counts",
                         "log1p_n_genes_by_counts",
                         "total_counts",
@@ -458,7 +494,7 @@
                     ]
                 },
                 "layers": [
-                    "counts"
+                    
                 ],
                 "obsm": [
                     
@@ -477,10 +513,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-17T21:42:55.099806952",
+        "timestamp": "2026-10-23T18:29:39.066031925",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - stub": {
@@ -536,7 +572,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,89d00dfaafec6ff2f9fd873c335348af"
+                        "test_filtered.h5ad:md5,a72a00545da4c571487597b9dee41843"
                     ]
                 ],
                 "1": [
@@ -553,7 +589,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,89d00dfaafec6ff2f9fd873c335348af"
+                        "test_filtered.h5ad:md5,a72a00545da4c571487597b9dee41843"
                     ]
                 ],
                 "multiqc_files": [
@@ -573,12 +609,21 @@
                 }
             },
             {
-                "n_obs": 5719,
-                "n_vars": 992,
+                "n_obs": 384,
+                "n_vars": 288,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "n_genes_by_counts",
                         "log1p_n_genes_by_counts",
                         "total_counts",
@@ -615,7 +660,7 @@
                     ]
                 },
                 "layers": [
-                    "counts"
+                    
                 ],
                 "obsm": [
                     
@@ -634,10 +679,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-17T21:42:03.308757307",
+        "timestamp": "2026-10-23T18:28:09.037939792",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - with custom mito genes": {
@@ -648,7 +693,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,89d00dfaafec6ff2f9fd873c335348af"
+                        "test_filtered.h5ad:md5,a72a00545da4c571487597b9dee41843"
                     ]
                 ],
                 "1": [
@@ -665,7 +710,7 @@
                         {
                             "id": "test"
                         },
-                        "test_filtered.h5ad:md5,89d00dfaafec6ff2f9fd873c335348af"
+                        "test_filtered.h5ad:md5,a72a00545da4c571487597b9dee41843"
                     ]
                 ],
                 "multiqc_files": [
@@ -685,12 +730,21 @@
                 }
             },
             {
-                "n_obs": 5719,
-                "n_vars": 992,
+                "n_obs": 384,
+                "n_vars": 288,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "n_genes_by_counts",
                         "log1p_n_genes_by_counts",
                         "total_counts",
@@ -727,7 +781,7 @@
                     ]
                 },
                 "layers": [
-                    "counts"
+                    
                 ],
                 "obsm": [
                     
@@ -746,10 +800,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-17T21:44:40.862300533",
+        "timestamp": "2026-10-23T18:32:02.181738125",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }

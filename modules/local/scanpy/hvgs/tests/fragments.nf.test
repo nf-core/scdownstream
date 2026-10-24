@@ -1,0 +1,62 @@
+nextflow_process {
+
+    name "Test HVG fragment namespaces through ADATA_EXTEND"
+    script "modules/local/adata/extend/main.nf"
+    process "ADATA_EXTEND"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should retain the base panel and namespace selected HVG fragments") {
+        setup {
+            run("SCANPY_HVGS") {
+                script "modules/local/scanpy/hvgs/main.nf"
+                process {
+                    """
+                    def base = file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    input[0] = channel.of(
+                        [[id: 'named', subset: 'B_cells'], base],
+                        [[id: 'global', subset: 'global'], base],
+                        [[id: 'missing'], base]
+                    )
+                    input[1] = 100
+                    input[2] = []
+                    input[3] = 'X'
+                    input[4] = true
+                    input[5] = ''
+                    """
+                }
+            }
+        }
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = SCANPY_HVGS.out.h5ad
+                    .map { meta, h5ad -> [h5ad.parent.toString(), meta] }
+                    .join(SCANPY_HVGS.out.var.map { fragment -> [fragment.parent.toString(), fragment] })
+                    .map { id, meta, fragment -> [
+                        meta,
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true),
+                        [], [fragment], [], [], [], []
+                    ] }
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert process.out.h5ad.collect { it[0].id }.toSet() == ['named', 'global', 'missing'].toSet()
+            process.out.h5ad.each { meta, h5ad ->
+                def adata = anndata(h5ad)
+                def column = meta.id == 'named' ? 'highly_variable:subset:B_cells' : 'highly_variable'
+                assert adata.var.colnames.findAll { it == 'highly_variable' || it.startsWith('highly_variable:') }.toSet() == (['highly_variable', column]).toSet()
+                assert adata.n_obs == 768
+                assert adata.n_vars == 3000
+                assert adata.var.get(column).data.count { it.toString().equalsIgnoreCase('true') } == 100
+                if (meta.id == 'named') {
+                    assert adata.var.get('highly_variable').data.every { it.toString().equalsIgnoreCase('true') }
+                }
+            }
+        }
+    }
+}

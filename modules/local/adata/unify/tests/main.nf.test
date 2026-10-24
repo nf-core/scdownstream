@@ -438,6 +438,7 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
             assert adata.var.rownames.toUnique().size() == adata.var.rownames.size()
+            assert adata.n_vars == 120
             assert snapshot(
                 process.out,
                 path(process.out.versions[0]).yaml,
@@ -475,6 +476,7 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
             assert adata.var.rownames.toUnique().size() == adata.var.rownames.size()
+            assert adata.n_vars == 120
             assert snapshot(
                 process.out,
                 path(process.out.versions[0]).yaml,
@@ -512,6 +514,7 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
             assert adata.var.rownames.toUnique().size() == adata.var.rownames.size()
+            assert adata.n_vars == 120
             assert snapshot(
                 process.out,
                 path(process.out.versions[0]).yaml,
@@ -549,6 +552,7 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
             assert adata.var.rownames.toUnique().size() == adata.var.rownames.size()
+            assert adata.n_vars == 128
             assert snapshot(
                 process.out,
                 path(process.out.versions[0]).yaml,
@@ -592,6 +596,8 @@ nextflow_process {
             with(adata) {
                 // After isoform aggregation, numeric suffixes should be removed
                 assert var.rownames.every { !it.matches(/.*\\.\\d+$/) }
+                assert var.rownames.toUnique().size() == var.rownames.size()
+                assert n_vars == 120
             }
             assert snapshot(
                 process.out,

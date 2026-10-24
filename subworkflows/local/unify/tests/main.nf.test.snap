@@ -73,7 +73,7 @@
                             "ambient_correction_method": "none",
                             "analysis_counts_source": "raw_counts"
                         },
-                        "test_unified.h5ad:md5,5e21344d8465f2f579cdaed85845dc1d"
+                        "test_unified.h5ad:md5,5e3a7f90ad87ee70ef17932eb680fbcc"
                     ]
                 ],
                 "1": [
@@ -95,7 +95,7 @@
                             "ambient_correction_method": "none",
                             "analysis_counts_source": "raw_counts"
                         },
-                        "test_unified.h5ad:md5,5e21344d8465f2f579cdaed85845dc1d"
+                        "test_unified.h5ad:md5,5e3a7f90ad87ee70ef17932eb680fbcc"
                     ]
                 ],
                 "multiqc_files": [
@@ -103,8 +103,8 @@
                 ]
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -121,7 +121,7 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -144,10 +144,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T17:41:24.029184356",
+        "timestamp": "2026-10-23T21:07:53.327897341",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should canonicalise a named input counts layer": {
@@ -167,8 +167,8 @@
                 "analysis_counts_source": "raw_counts"
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -185,7 +185,8 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        "symbols",
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -208,10 +209,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T18:08:13.266945446",
+        "timestamp": "2026-10-23T21:17:28.837355093",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - symbol_col index, unify_gene_symbols true": {
@@ -220,8 +221,8 @@
                 
             ],
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 128,
+                "n_vars": 128,
                 "obs": {
                     "index": "_index",
                     "columns": [
@@ -238,7 +239,7 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "gene_id"
                     ]
                 },
                 "layers": [
@@ -261,10 +262,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T17:48:21.434000034",
+        "timestamp": "2026-10-23T21:15:53.532529189",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - symbol_col index, unify_gene_symbols false - stub": {
@@ -415,12 +416,21 @@
             ],
             [
                 {
-                    "n_obs": 7373,
-                    "n_vars": 9887,
+                    "n_obs": 384,
+                    "n_vars": 3000,
                     "obs": {
                         "index": "_index",
                         "columns": [
                             "sample",
+                            "source_sample",
+                            "source_barcode",
+                            "is_selected_filtered_cell",
+                            "source_role",
+                            "synthetic_donor",
+                            "synthetic_condition",
+                            "synthetic_label",
+                            "original_total_counts",
+                            "original_n_genes_by_counts",
                             "ambient_correction_method",
                             "analysis_counts_source",
                             "batch",
@@ -433,7 +443,7 @@
                     "var": {
                         "index": "_index",
                         "columns": [
-                            
+                            "symbols"
                         ]
                     },
                     "layers": [
@@ -457,12 +467,21 @@
                     ]
                 },
                 {
-                    "n_obs": 7373,
-                    "n_vars": 9887,
+                    "n_obs": 384,
+                    "n_vars": 3000,
                     "obs": {
                         "index": "_index",
                         "columns": [
                             "sample",
+                            "source_sample",
+                            "source_barcode",
+                            "is_selected_filtered_cell",
+                            "source_role",
+                            "synthetic_donor",
+                            "synthetic_condition",
+                            "synthetic_label",
+                            "original_total_counts",
+                            "original_n_genes_by_counts",
                             "ambient_correction_method",
                             "analysis_counts_source",
                             "batch",
@@ -475,7 +494,7 @@
                     "var": {
                         "index": "_index",
                         "columns": [
-                            
+                            "symbols"
                         ]
                     },
                     "layers": [
@@ -500,7 +519,7 @@
                 }
             ]
         ],
-        "timestamp": "2026-10-18T21:49:31.655632598",
+        "timestamp": "2026-10-23T21:20:51.254122589",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
@@ -512,18 +531,28 @@
                 
             ],
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "ambient_correction_method",
                         "analysis_counts_source",
                         "batch",
                         "label",
                         "condition",
                         "donor",
-                        "sample"
+                        "sample_original"
                     ]
                 },
                 "var": {
@@ -553,10 +582,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T17:44:01.075640202",
+        "timestamp": "2026-10-23T21:11:18.631914021",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }

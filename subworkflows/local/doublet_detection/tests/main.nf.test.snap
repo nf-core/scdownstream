@@ -5,12 +5,21 @@
                 
             ],
             {
-                "n_obs": 6564,
-                "n_vars": 9887,
+                "n_obs": 367,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "test_scdblfinder",
                         "test_scrublet",
                         "test_solo"
@@ -19,7 +28,7 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "symbols"
                     ]
                 },
                 "layers": [
@@ -42,10 +51,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-25T19:31:31.120532403",
+        "timestamp": "2026-10-23T18:52:03.589625425",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - stub": {
@@ -89,19 +98,28 @@
                 
             ],
             {
-                "n_obs": 7373,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "test_scdblfinder"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "symbols"
                     ]
                 },
                 "layers": [
@@ -124,10 +142,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-11T13:48:36.415034393",
+        "timestamp": "2026-10-23T18:53:37.342976309",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.3"
+            "nextflow": "25.10.4"
         }
     }
 }

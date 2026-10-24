@@ -9,12 +9,25 @@
                 }
             },
             {
-                "n_obs": 38234,
-                "n_vars": 9887,
+                "n_obs": 768,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label",
                         "leiden",
                         "test:entropy"
                     ]
@@ -22,36 +35,33 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "symbols",
+                        "highly_variable"
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     "X_pca"
                 ],
-                "varm": [
-                    "PCs"
-                ],
+                "varm": [],
                 "obsp": [
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
+                    "X_pca",
                     "leiden",
-                    "neighbors",
-                    "pca"
+                    "neighbors"
                 ]
             }
         ],
-        "timestamp": "2026-10-21T14:28:19.961711456",
+        "timestamp": "2026-10-24T15:32:55.61795532",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should compute exactly 0.0 entropy for single observed label": {
@@ -64,38 +74,47 @@
                 }
             },
             {
-                "n_obs": 7373,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "leiden",
+                        "donor",
+                        "condition",
+                        "label",
                         "single:entropy"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "symbols",
+                        "highly_variable"
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     "X_pca"
                 ],
-                "varm": [
-                    "X_pca"
-                ],
+                "varm": [],
                 "obsp": [
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "X_pca",
                     "leiden",
@@ -103,10 +122,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-21T14:28:42.468377334",
+        "timestamp": "2026-10-24T15:32:55.373865782",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - stub": {

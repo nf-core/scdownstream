@@ -7,7 +7,7 @@
                         {
                             "id": "test"
                         },
-                        "test_cellcycle.pkl:md5,8a545c350b1d1f03715d3e41a812291f"
+                        "test_cellcycle.pkl:md5,4964b0b0704df9069af006ee1bee15aa"
                     ]
                 ],
                 "1": [
@@ -15,11 +15,11 @@
                         {
                             "id": "test"
                         },
-                        "test_cellcycle.h5ad:md5,6af138d8883199a4a8eaf1675a9f724e"
+                        "test_cellcycle.h5ad:md5,7eed51a3640bb9612268ce57f0995d51"
                     ]
                 ],
                 "2": [
-                    "test_cellcycle_mqc.json:md5,a2b63acff78f71583490ac8bfa598564"
+                    "test_cellcycle_mqc.json:md5,945472cc580f96f6e93569f545aef656"
                 ],
                 "3": [
                     "versions.yml:md5,0e2b8520fd42e7f861f65430e622fe61"
@@ -29,18 +29,18 @@
                         {
                             "id": "test"
                         },
-                        "test_cellcycle.h5ad:md5,6af138d8883199a4a8eaf1675a9f724e"
+                        "test_cellcycle.h5ad:md5,7eed51a3640bb9612268ce57f0995d51"
                     ]
                 ],
                 "multiqc_files": [
-                    "test_cellcycle_mqc.json:md5,a2b63acff78f71583490ac8bfa598564"
+                    "test_cellcycle_mqc.json:md5,945472cc580f96f6e93569f545aef656"
                 ],
                 "obs": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_cellcycle.pkl:md5,8a545c350b1d1f03715d3e41a812291f"
+                        "test_cellcycle.pkl:md5,4964b0b0704df9069af006ee1bee15aa"
                     ]
                 ],
                 "versions": [
@@ -54,12 +54,21 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
                         "S_score",
                         "G2M_score",
                         "phase"
@@ -72,7 +81,7 @@
                     ]
                 },
                 "layers": [
-                    "counts"
+                    
                 ],
                 "obsm": [
                     
@@ -91,10 +100,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-25T10:52:55.66384778",
+        "timestamp": "2026-10-23T21:05:42.978521854",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - stub": {

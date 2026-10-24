@@ -7,7 +7,7 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,d3b63c4237a2d15a9de2ea61fa4d80c8"
+                        "test.h5ad:md5,11d8fe77c05ae60872a29e29d470682d"
                     ]
                 ],
                 "1": [
@@ -18,7 +18,7 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,d3b63c4237a2d15a9de2ea61fa4d80c8"
+                        "test.h5ad:md5,11d8fe77c05ae60872a29e29d470682d"
                     ]
                 ],
                 "versions": [
@@ -32,12 +32,21 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample"
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts"
                     ]
                 },
                 "var": {
@@ -47,7 +56,7 @@
                     ]
                 },
                 "layers": [
-                    "counts"
+                    
                 ],
                 "obsm": [
                     
@@ -66,10 +75,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:07:14.224513104",
+        "timestamp": "2026-10-23T18:15:06.558804997",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - obs": {
@@ -80,7 +89,7 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,bfd1c3d585324ed230aee63f904e43d1"
+                        "test.h5ad:md5,bb58f3154d658a7a3d77fe8e99493218"
                     ]
                 ],
                 "1": [
@@ -91,7 +100,7 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,bfd1c3d585324ed230aee63f904e43d1"
+                        "test.h5ad:md5,bb58f3154d658a7a3d77fe8e99493218"
                     ]
                 ],
                 "versions": [
@@ -105,12 +114,21 @@
                 }
             },
             {
-                "n_obs": 12940,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample"
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts"
                     ]
                 },
                 "var": {
@@ -120,7 +138,7 @@
                     ]
                 },
                 "layers": [
-                    "counts"
+                    
                 ],
                 "obsm": [
                     
@@ -139,10 +157,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-26T10:06:54.176794914",
+        "timestamp": "2026-10-23T18:14:09.104066196",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     },
     "Should run without failures - stub": {

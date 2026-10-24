@@ -13,12 +13,8 @@
                 "1": [
                     "test_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "2": [
-                    
-                ],
-                "3": [
-                    
-                ],
+                "2": [],
+                "3": [],
                 "4": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
@@ -30,15 +26,11 @@
                         "test_leiden.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "multiqc_files": [
-                    
-                ],
+                "multiqc_files": [],
                 "obs": [
                     "test_leiden.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "plots": [
-                    
-                ],
+                "plots": [],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
@@ -59,37 +51,46 @@
                 }
             },
             {
-                "n_obs": 7373,
-                "n_vars": 9887,
+                "n_obs": 384,
+                "n_vars": 3000,
                 "obs": {
                     "index": "_index",
                     "columns": [
                         "sample",
-                        "leiden"
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "leiden",
+                        "donor",
+                        "condition",
+                        "label"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "symbols",
+                        "highly_variable"
                     ]
                 },
                 "layers": [
-                    
+                    "raw_counts"
                 ],
                 "obsm": [
                     "X_pca"
                 ],
-                "varm": [
-                    "X_pca"
-                ],
+                "varm": [],
                 "obsp": [
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "X_pca",
                     "leiden",
@@ -97,10 +98,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-08-10T20:37:47.722790939",
+        "timestamp": "2026-10-24T15:32:52.334939455",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }

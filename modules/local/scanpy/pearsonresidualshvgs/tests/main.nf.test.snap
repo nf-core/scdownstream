@@ -47,48 +47,52 @@
                 }
             },
             {
-                "n_obs": 38234,
+                "n_obs": 768,
                 "n_vars": 100,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample"
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
+                        "symbols",
+                        "highly_variable",
                         "means",
                         "variances",
                         "residual_variances",
-                        "highly_variable_rank",
-                        "highly_variable"
+                        "highly_variable_rank"
                     ]
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "hvg"
                 ]
             }
         ],
-        "timestamp": "2026-08-10T10:26:12.285728631",
+        "timestamp": "2026-10-24T13:32:12.610624378",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }
