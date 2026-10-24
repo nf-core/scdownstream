@@ -62,11 +62,11 @@ sp.pp.harmony_integrate(
 adata_proc.uns["symphony"] = adata_proc.uns["harmony"]
 adata_proc.uns["normalize"] = {"target_sum": target_sum}
 
-build_reference(adata_proc, target_sum).write_h5ad(f"{prefix}_reference.h5ad")
+build_reference(adata_proc, target_sum).write_h5ad(f"{prefix}_reference.h5ad", compression="gzip")
 
 adata.obsm["X_symphony"] = adata_proc.obsm["X_symphony"]
 adata.obsm["X_emb"] = adata_proc.obsm["X_symphony"]
-adata.write_h5ad(f"{prefix}.h5ad")
+adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
 pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names).to_pickle(f"X_{prefix}.pkl")
 

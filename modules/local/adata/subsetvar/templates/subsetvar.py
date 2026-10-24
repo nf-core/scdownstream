@@ -24,7 +24,7 @@ if not selected.any():
     raise ValueError(f"Column '{column}' selects zero genes")
 
 adata_subset = adata[:, selected].copy()
-adata_subset.write_h5ad("${prefix}.h5ad")
+adata_subset.write_h5ad("${prefix}.h5ad", compression="gzip")
 
 versions = {
     "${task.process}": {

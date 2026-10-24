@@ -36,7 +36,7 @@ sp.tl.map_embedding(
 adata.obsm["X_symphony"] = adata_proc.obsm["X_symphony"]
 adata.obsm["X_emb"] = adata_proc.obsm["X_symphony"]
 
-adata.write_h5ad(f"{prefix}.h5ad")
+adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names).to_pickle(f"X_{prefix}.pkl")
 
 versions = {

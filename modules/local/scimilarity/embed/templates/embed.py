@@ -34,7 +34,7 @@ embeddings = cq.get_embeddings(aligned.layers["log1p"])
 adata.obsm["X_emb"] = embeddings
 
 # Write the output
-adata.write_h5ad("${prefix}.h5ad")
+adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 df = pd.DataFrame(embeddings, index=adata.obs_names)
 df.to_pickle("X_${prefix}.pkl")
 

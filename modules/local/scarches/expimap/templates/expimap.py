@@ -101,7 +101,7 @@ intr_cvae.train(**train_kw)
 emb = intr_cvae.get_latent(only_active=True)
 adata.obsm["X_emb"] = emb
 
-adata.write_h5ad(f"{prefix}.h5ad")
+adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 df = pd.DataFrame(emb, index=adata.obs_names)
 df.to_pickle(f"X_{prefix}.pkl")
 

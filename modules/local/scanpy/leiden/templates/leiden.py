@@ -25,7 +25,7 @@ kwargs = {
 sc.tl.leiden(adata, **kwargs)
 
 adata.obs[[key_added]].to_pickle(f"{prefix}.pkl")
-adata.write_h5ad(f"{prefix}.h5ad")
+adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
 if "${plot_umap}" == "true":
     # Plot

@@ -18,7 +18,7 @@ predictions, nn_idxs, nn_dists, nn_stats = ca.get_predictions_knn(adata.obsm["X_
 adata_raw.obs["annotation:scimilarity"] = predictions.values
 
 # Write the output
-adata_raw.write_h5ad("${prefix}.h5ad")
+adata_raw.write_h5ad("${prefix}.h5ad", compression="gzip")
 adata_raw.obs[["annotation:scimilarity"]].to_pickle("${prefix}.pkl")
 
 versions = {

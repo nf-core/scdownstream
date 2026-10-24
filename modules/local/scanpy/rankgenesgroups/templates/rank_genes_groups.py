@@ -155,7 +155,7 @@ if len(valid_groups) >= 2:
         adata.uns[rank_key] = rgg_dict
 
         pickle.dump(rgg_dict, open(f"{prefix}.pkl", "wb"))
-        adata.write_h5ad(f"{prefix}.h5ad")
+        adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
         # Plot
         # Plotting handles the original missing names, whereas empty strings

@@ -20,7 +20,7 @@ if n_pcs:
 
 sc.pp.neighbors(adata, **kwargs)
 
-adata.write_h5ad(f"{prefix}.h5ad")
+adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
 # Versions
 
