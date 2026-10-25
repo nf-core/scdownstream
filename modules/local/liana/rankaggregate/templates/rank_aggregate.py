@@ -11,7 +11,6 @@ import numpy as np
 import pandas as pd
 import scanpy as sc
 import yaml
-from scipy.sparse import issparse
 from threadpoolctl import threadpool_limits
 
 threadpool_limits(int("${task.cpus}"))
@@ -266,8 +265,7 @@ if adata.obs[obs_key].nunique() > 1:
     )
     _log_subsample_info(subsample_info)
 
-    negative = adata.X < 0
-    if (negative.nnz if issparse(negative) else np.count_nonzero(negative)) == 0:
+    if "${apply_log1p}" == "true":
         sc.pp.log1p(adata)
     try:
         li.mt.rank_aggregate(

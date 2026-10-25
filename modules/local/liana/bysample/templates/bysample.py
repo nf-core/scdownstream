@@ -196,7 +196,8 @@ else:
             # In-place subset avoids holding the full object and a copy at once.
             adata._inplace_subset_obs(keep_indexer)
 
-            sc.pp.log1p(adata)
+            if "${apply_log1p}" == "true":
+                sc.pp.log1p(adata)
 
             li.mt.rank_aggregate.by_sample(
                 adata,
