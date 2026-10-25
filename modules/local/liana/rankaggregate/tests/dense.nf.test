@@ -1,0 +1,100 @@
+nextflow_process {
+
+    name "Test LIANA dense expression"
+    script "modules/local/liana/rankaggregate/main.nf"
+    process "LIANA_RANKAGGREGATE"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should aggregate interactions from dense consensus expression") {
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'dense_consensus', obs_key: 'group'],
+                    file('https://raw.githubusercontent.com/nictru/test-datasets/82aad9ec0d09391d30e8718629c285cc1e577d9a/anndata-variations/liana_dense_consensus.h5ad', checkIfExists: true)
+                ])
+                input[1] = 5
+                input[2] = 0
+                input[3] = 'stratified_obs'
+                input[4] = 20261025
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.h5ad.size() == 1
+            assert process.out.uns.size() == 1
+            assert file(process.out.uns[0]).length() > 0
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.n_obs == 40
+            assert adata.n_vars == 1877
+            assert adata.obs.index.values == (0..<40).collect { String.format('cell_%03d', it) }
+            assert adata.obs.get('group').data.count('sender') == 20
+            assert adata.obs.get('group').data.count('receiver') == 20
+            assert 'liana_res' in adata.uns
+            assert process.out.plots.flatten().size() > 0
+            assert process.out.multiqc_files.flatten().size() > 0
+            process.out.plots.flatten().each { plot -> assert file(plot).length() > 0 }
+            assert snapshot(path(process.out.versions[0]).yaml, adata.yaml).match()
+        }
+    }
+
+    test("Should reach resource validation for the existing dense CSV panel") {
+
+        setup {
+            run("ADATA_READCSV") {
+                script "../../../adata/readcsv/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'dense_input'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.csv', checkIfExists: true)
+                    ])
+                    """
+                }
+            }
+            run("ADATA_EXTEND") {
+                script "../../../adata/extend/main.nf"
+                process {
+                    """
+                    csv = file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.csv', checkIfExists: true)
+                    groups = csv.readLines().drop(1).withIndex().collect { line, i ->
+                        line.split(',')[0] + ',' + (i % 2 == 0 ? 'sender' : 'receiver')
+                    }
+                    obs = channel.of('cell,interaction_group\\n' + groups.join('\\n') + '\\n')
+                        .collectFile(name: 'groups.csv')
+                    input[0] = ADATA_READCSV.out.h5ad.combine(obs).map { meta, h5ad, fragment ->
+                        [[id: 'dense_groups'], h5ad, [fragment], [], [], [], [], []]
+                    }
+                    """
+                }
+            }
+        }
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = ADATA_EXTEND.out.h5ad.map { meta, h5ad ->
+                    [[id: 'dense_ranked', obs_key: 'interaction_group'], h5ad]
+                }
+                input[1] = 10
+                input[2] = 0
+                input[3] = 'stratified_obs'
+                input[4] = 42
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains('Too few features from the resource were found in the data')
+            assert !process.errorReport.contains("has no attribute 'nnz'")
+        }
+    }
+}
