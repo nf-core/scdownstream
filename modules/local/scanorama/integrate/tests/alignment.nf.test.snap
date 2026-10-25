@@ -1,0 +1,173 @@
+{
+    "Should preserve cell order with interleaved and contiguous batches": {
+        "content": [
+            {
+                "SCANORAMA_ALIGNMENT:SCANORAMA_INTEGRATE": {
+                    "pandas": "3.0.3",
+                    "python": "3.13.12",
+                    "scanorama": "1.7.4",
+                    "scanpy": "1.12.2"
+                }
+            },
+            [
+                [
+                    "contiguous_integrated",
+                    {
+                        "n_obs": 64,
+                        "n_vars": 128,
+                        "obs": {
+                            "index": "_index",
+                            "columns": [
+                                "regression_batch"
+                            ]
+                        },
+                        "var": {
+                            "index": "_index",
+                            "columns": [
+                                
+                            ]
+                        },
+                        "layers": [
+                            
+                        ],
+                        "obsm": [
+                            "X_emb",
+                            "X_scanorama"
+                        ],
+                        "varm": [
+                            
+                        ],
+                        "obsp": [
+                            
+                        ],
+                        "varp": [
+                            
+                        ],
+                        "uns": [
+                            
+                        ]
+                    }
+                ],
+                [
+                    "interleaved_integrated",
+                    {
+                        "n_obs": 64,
+                        "n_vars": 128,
+                        "obs": {
+                            "index": "_index",
+                            "columns": [
+                                "regression_batch"
+                            ]
+                        },
+                        "var": {
+                            "index": "_index",
+                            "columns": [
+                                
+                            ]
+                        },
+                        "layers": [
+                            
+                        ],
+                        "obsm": [
+                            "X_emb",
+                            "X_scanorama"
+                        ],
+                        "varm": [
+                            
+                        ],
+                        "obsp": [
+                            
+                        ],
+                        "varp": [
+                            
+                        ],
+                        "uns": [
+                            
+                        ]
+                    }
+                ]
+            ],
+            [
+                [
+                    "contiguous_integrated",
+                    {
+                        "n_obs": 64,
+                        "n_vars": 128,
+                        "obs": {
+                            "index": "_index",
+                            "columns": [
+                                "regression_batch"
+                            ]
+                        },
+                        "var": {
+                            "index": "_index",
+                            "columns": [
+                                
+                            ]
+                        },
+                        "layers": [
+                            
+                        ],
+                        "obsm": [
+                            "X_contiguous_integrated"
+                        ],
+                        "varm": [
+                            
+                        ],
+                        "obsp": [
+                            
+                        ],
+                        "varp": [
+                            
+                        ],
+                        "uns": [
+                            
+                        ]
+                    }
+                ],
+                [
+                    "interleaved_integrated",
+                    {
+                        "n_obs": 64,
+                        "n_vars": 128,
+                        "obs": {
+                            "index": "_index",
+                            "columns": [
+                                "regression_batch"
+                            ]
+                        },
+                        "var": {
+                            "index": "_index",
+                            "columns": [
+                                
+                            ]
+                        },
+                        "layers": [
+                            
+                        ],
+                        "obsm": [
+                            "X_interleaved_integrated"
+                        ],
+                        "varm": [
+                            
+                        ],
+                        "obsp": [
+                            
+                        ],
+                        "varp": [
+                            
+                        ],
+                        "uns": [
+                            
+                        ]
+                    }
+                ]
+            ]
+        ],
+        "timestamp": "2026-10-25T11:00:19.945110164",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.10.3"
+        }
+    }
+}
