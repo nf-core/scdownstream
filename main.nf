@@ -9,6 +9,61 @@
 ----------------------------------------------------------------------------------------
 */
 
+// Defaults remain in nextflow.config for config-time consumers and profile overrides.
+// help remains untyped because it accepts either a boolean or a section name.
+params {
+    save_intermediates: Boolean
+    unify_gene_symbols: Boolean
+    aggregate_isoforms: Boolean
+    cell_cycle_scoring: Boolean
+    use_ambient_corrected_counts: Boolean
+    doublet_detection_threshold: Integer
+    doublet_removal: Boolean
+    emptydrops_lower: Integer
+    emptydrops_fdr: Float
+    cellbender_epochs: Integer
+    sample_n: Integer?
+    sample_fraction: Float?
+    integration_n_features: Integer
+    integrate_per_label: Boolean
+    neighbors_n_pcs: Integer?
+    tsne: Boolean
+    cluster_per_label: Boolean
+    cluster_global: Boolean
+    qc_only: Boolean
+    skip_liana: Boolean
+    liana_n_perms: Integer
+    liana_max_cells: Integer?
+    liana_subsample_seed: Integer
+    cell2cell: Boolean
+    cell2cell_rank: Integer?
+    cell2cell_seed: Integer
+    skip_qc_report: Boolean
+    scib: Boolean
+    scib_max_cells: Integer?
+    scib_subsample_seed: Integer
+    pseudobulk: Boolean
+    prep_cellxgene: Boolean
+    tords: Boolean
+    scvi_n_latent: Integer
+    scvi_n_hidden: Integer
+    scvi_n_layers: Integer
+    scvi_max_epochs: Integer?
+    scvi_use_observed_lib_size: Boolean
+    pseudobulk_min_num_cells: Integer
+    pseudobulk_min_total_counts: Integer
+    decoupler: Boolean
+    decoupler_min_targets: Integer
+    memory_scale: Integer
+    azimuth: Boolean
+    plaintext_email: Boolean
+    monochrome_logs: Boolean
+    help_full: Boolean
+    show_hidden: Boolean
+    version: Boolean
+    validate_params: Boolean
+}
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
@@ -29,103 +84,102 @@ include { analysisPlanToList      } from './subworkflows/local/utils_nfcore_scdo
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
 workflow NFCORE_SCDOWNSTREAM {
-
     take:
-    samplesheet                   // channel: samplesheet read in from --input
-    ch_base                       // channel: [ val(meta), path(h5ad) ]
-    is_extension                  //   value: boolean
-    ch_input                      //    file: samplesheet.csv
-    empty_droplet_removal         //   value: string
-    ambient_correction            //   value: string
-    use_ambient_corrected_counts  //   value: boolean
-    doublet_detection             //   value: string
-    doublet_detection_threshold   //   value: integer
-    doublet_removal               //   value: boolean
-    scvi_max_epochs               //   value: integer
-    mito_genes                    //    path: file or null
-    sample_n                      //   value: string
-    sample_fraction               //   value: string
-    cell_cycle_scoring            //   value: boolean
-    s_genes                       //    path: file or []
-    g2m_genes                     //    path: file or []
-    species                       //   value: string
-    qc_only                       //   value: boolean
-    celldex_reference             //   value: string
-    celltypist_model              //   value: string
-    azimuth                       //   value: boolean
-    cytetype_study_context        //   value: string
-    unify_gene_symbols            //   value: boolean
-    duplicate_var_resolution      //   value: string
-    aggregate_isoforms            //   value: boolean
-    feature_selection             //   value: string
-    integration_n_features        //   value: integer
-    integration_methods           //   value: string
-    integration_excluded_genes    //   value: string
-    normalization_method          //   value: string
-    scvi_model                    //    path: file or null
-    scanvi_model                  //    path: file or null
-    scvi_categorical_covariates   //   value: string
-    scvi_continuous_covariates    //   value: string
-    scvi_n_hidden                 //   value: integer
-    scvi_n_layers                 //   value: integer
-    scvi_n_latent                 //   value: integer
-    scvi_dispersion               //   value: string
-    scvi_gene_likelihood          //   value: string
-    scvi_use_observed_lib_size    //   value: boolean
-    scimilarity_model             //   value: string
-    symphony_reference            //   value: string
-    expimap_gmt                   //   value: string
-    skip_liana                    //   value: boolean
-    liana_n_perms                 //   value: integer
-    liana_max_cells               //   value: integer or null
-    liana_subsample_strategy      //   value: string
-    liana_subsample_seed          //   value: integer
-    cell2cell                     //   value: boolean
-    cell2cell_rank                //   value: integer or null
-    cell2cell_seed                //   value: integer
-    skip_qc_report                //   value: boolean
-    scib                          //   value: boolean
-    scib_max_cells                //   value: integer or null
-    scib_subsample_strategy       //   value: string
-    scib_subsample_seed           //   value: integer
-    scib_metric_profile           //   value: string
-    force_obs_cols                //   value: string
-    base_embeddings               //   value: string
-    base_label_col                //   value: string
-    base_condition_col            //   value: string
-    base_donor_col                //   value: string
-    integrate_per_label           //   value: boolean
+    samplesheet // channel: samplesheet read in from --input
+    ch_base // channel: [ val(meta), path(h5ad) ]
+    is_extension //   value: boolean
+    ch_input //    file: samplesheet.csv
+    empty_droplet_removal //   value: string
+    ambient_correction //   value: string
+    use_ambient_corrected_counts //   value: boolean
+    doublet_detection //   value: string
+    doublet_detection_threshold //   value: integer
+    doublet_removal //   value: boolean
+    scvi_max_epochs //   value: integer
+    mito_genes //    path: file or null
+    sample_n //   value: string
+    sample_fraction //   value: string
+    cell_cycle_scoring //   value: boolean
+    s_genes //    path: file or []
+    g2m_genes //    path: file or []
+    species //   value: string
+    qc_only //   value: boolean
+    celldex_reference //   value: string
+    celltypist_model //   value: string
+    azimuth //   value: boolean
+    cytetype_study_context //   value: string
+    unify_gene_symbols //   value: boolean
+    duplicate_var_resolution //   value: string
+    aggregate_isoforms //   value: boolean
+    feature_selection //   value: string
+    integration_n_features //   value: integer
+    integration_methods //   value: string
+    integration_excluded_genes //   value: string
+    normalization_method //   value: string
+    scvi_model //    path: file or null
+    scanvi_model //    path: file or null
+    scvi_categorical_covariates //   value: string
+    scvi_continuous_covariates //   value: string
+    scvi_n_hidden //   value: integer
+    scvi_n_layers //   value: integer
+    scvi_n_latent //   value: integer
+    scvi_dispersion //   value: string
+    scvi_gene_likelihood //   value: string
+    scvi_use_observed_lib_size //   value: boolean
+    scimilarity_model //   value: string
+    symphony_reference //   value: string
+    expimap_gmt //   value: string
+    skip_liana //   value: boolean
+    liana_n_perms //   value: integer
+    liana_max_cells //   value: integer or null
+    liana_subsample_strategy //   value: string
+    liana_subsample_seed //   value: integer
+    cell2cell //   value: boolean
+    cell2cell_rank //   value: integer or null
+    cell2cell_seed //   value: integer
+    skip_qc_report //   value: boolean
+    scib //   value: boolean
+    scib_max_cells //   value: integer or null
+    scib_subsample_strategy //   value: string
+    scib_subsample_seed //   value: integer
+    scib_metric_profile //   value: string
+    force_obs_cols //   value: string
+    base_embeddings //   value: string
+    base_label_col //   value: string
+    base_condition_col //   value: string
+    base_donor_col //   value: string
+    integrate_per_label //   value: boolean
     integrate_per_label_whitelist //   value: string
-    cluster_per_label             //   value: boolean
-    cluster_global                //   value: boolean
-    clustering_resolutions        //   value: string
-    neighbors_n_pcs               //   value: integer or null
-    tsne                          //   value: boolean
-    analysis_plan                 //   value: list of plan rows parsed in main.nf
-    de_methods                    //   value: string
-    interesting_genes             //    path: file or []
-    pseudobulk                    //   value: boolean
-    pseudobulk_min_num_cells      //   value: integer
-    pseudobulk_min_total_counts   //   value: integer
-    reference_condition           //   value: string
-    decoupler                     //   value: boolean
-    decoupler_resources           //   value: string
-    decoupler_network             //    path: file or []
-    decoupler_method              //   value: string
-    decoupler_min_targets         //   value: integer
-    prep_cellxgene                //   value: boolean
-    tords                         //   value: boolean
-    outdir                        //   value: string
-    multiqc_config                //   value: string
-    multiqc_logo                  //   value: string
-    multiqc_methods_description   //   value: string
+    cluster_per_label //   value: boolean
+    cluster_global //   value: boolean
+    clustering_resolutions //   value: string
+    neighbors_n_pcs //   value: integer or null
+    tsne //   value: boolean
+    analysis_plan //   value: list of plan rows parsed in main.nf
+    de_methods //   value: string
+    interesting_genes //    path: file or []
+    pseudobulk //   value: boolean
+    pseudobulk_min_num_cells //   value: integer
+    pseudobulk_min_total_counts //   value: integer
+    reference_condition //   value: string
+    decoupler //   value: boolean
+    decoupler_resources //   value: string
+    decoupler_network //    path: file or []
+    decoupler_method //   value: string
+    decoupler_min_targets //   value: integer
+    prep_cellxgene //   value: boolean
+    tords //   value: boolean
+    outdir //   value: string
+    multiqc_config //   value: string
+    multiqc_logo //   value: string
+    multiqc_methods_description //   value: string
 
     main:
 
     //
     // WORKFLOW: Run pipeline
     //
-    SCDOWNSTREAM (
+    SCDOWNSTREAM(
         samplesheet,
         ch_base,
         is_extension,
@@ -227,12 +281,10 @@ workflow NFCORE_SCDOWNSTREAM {
 */
 
 workflow {
-
-    main:
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
-    PIPELINE_INITIALISATION (
+    PIPELINE_INITIALISATION(
         params.version,
         params.validate_params,
         params.monochrome_logs,
@@ -240,7 +292,7 @@ workflow {
         params.outdir,
         params.help,
         params.help_full,
-        params.show_hidden
+        params.show_hidden,
     )
 
     //
@@ -283,7 +335,7 @@ workflow {
         ? file(params.decoupler_network, checkIfExists: true)
         : []
 
-    NFCORE_SCDOWNSTREAM (
+    NFCORE_SCDOWNSTREAM(
         PIPELINE_INITIALISATION.out.samplesheet,
         ch_base_adata,
         params.base_adata != null,
@@ -371,24 +423,18 @@ workflow {
         params.outdir,
         params.multiqc_config,
         params.multiqc_logo,
-        params.multiqc_methods_description
+        params.multiqc_methods_description,
     )
 
     //
     // SUBWORKFLOW: Run completion tasks
     //
-    PIPELINE_COMPLETION (
+    PIPELINE_COMPLETION(
         params.email,
         params.email_on_fail,
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
-        NFCORE_SCDOWNSTREAM.out.multiqc_report
+        NFCORE_SCDOWNSTREAM.out.multiqc_report,
     )
 }
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/

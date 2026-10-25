@@ -1,0 +1,211 @@
+nextflow_pipeline {
+
+    name "Test scalar parameter types"
+    script "../main.nf"
+    tag "pipeline"
+
+    test("Should retain config defaults and nullable numbers") {
+        options "--help"
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assert workflow.success
+            def dumps = new File("$outputDir/pipeline_info").listFiles().findAll { it.name.startsWith('params_') && it.name.endsWith('.json') }
+            assert dumps.size() == 1
+            def values = new groovy.json.JsonSlurper().parse(dumps.first())
+            def schema = new groovy.json.JsonSlurper().parse(new File("$projectDir/nextflow_schema.json"))
+            def scalarTypes = [boolean: Boolean, integer: Integer, number: Number]
+            schema.'$defs'.values().each { group ->
+                group.properties.each { key, definition ->
+                    if (scalarTypes.containsKey(definition.type) && values.containsKey(key)) {
+                        assert scalarTypes[definition.type].isInstance(values[key])
+                    }
+                }
+            }
+            assert values.cluster_global == true
+            assert values.scvi_use_observed_lib_size == true
+            assert values.validate_params == true
+            assert values.save_intermediates == false
+            assert values.scvi_n_latent == 30
+            assert values.emptydrops_fdr == 0.01
+            assert values.memory_scale == 1
+            assert ['sample_n', 'sample_fraction', 'neighbors_n_pcs', 'liana_max_cells', 'cell2cell_rank', 'scib_max_cells'].every { !values.containsKey(it) }
+            if (values.config_profile_name == 'Test profile') {
+                assert values.cell_cycle_scoring == false
+                assert values.scib == true
+                assert values.integration_n_features == 500
+                assert values.scvi_max_epochs == 2
+            } else {
+                assert values.cell_cycle_scoring == true
+                assert values.scib == false
+                assert values.integration_n_features == 0
+                assert !values.containsKey('scvi_max_epochs')
+            }
+        }
+    }
+
+    test("Should convert CLI booleans before help and override parameter-file values") {
+        options "--help --cell_cycle_scoring false --save_intermediates false --scib true --tsne --version false --validate_params false"
+
+        when {
+            params {
+                outdir = "$outputDir"
+                cell_cycle_scoring = true
+                save_intermediates = true
+                scib = false
+                tsne = false
+                version = true
+                validate_params = true
+            }
+        }
+
+        then {
+            assert workflow.success
+            def dumps = new File("$outputDir/pipeline_info").listFiles().findAll { it.name.startsWith('params_') && it.name.endsWith('.json') }
+            assert dumps.size() == 1
+            def values = new groovy.json.JsonSlurper().parse(dumps.first())
+            assert values.cell_cycle_scoring == false
+            assert values.save_intermediates == false
+            assert values.scib == true
+            assert values.tsne == true
+            assert values.version == false
+            assert values.validate_params == false
+        }
+    }
+
+    test("Should convert CLI integers and decimals including zero and nullable overrides") {
+        options "--help --integration_n_features 0 --scvi_n_hidden 64 --sample_n 0 --neighbors_n_pcs 15 --liana_max_cells 100 --cell2cell_rank 3 --scib_max_cells 200 --scvi_max_epochs 1 --emptydrops_fdr 0.05 --sample_fraction 0.25 --memory_scale 2"
+
+        when {
+            params {
+                outdir = "$outputDir"
+                scvi_n_hidden = 128
+                sample_fraction = 0.5
+            }
+        }
+
+        then {
+            assert workflow.success
+            def dumps = new File("$outputDir/pipeline_info").listFiles().findAll { it.name.startsWith('params_') && it.name.endsWith('.json') }
+            assert dumps.size() == 1
+            def values = new groovy.json.JsonSlurper().parse(dumps.first())
+            def expected = [integration_n_features: 0, scvi_n_hidden: 64, sample_n: 0, neighbors_n_pcs: 15,
+                liana_max_cells: 100, cell2cell_rank: 3, scib_max_cells: 200, scvi_max_epochs: 1,
+                emptydrops_fdr: 0.05, sample_fraction: 0.25, memory_scale: 2]
+            expected.each { key, value ->
+                assert values[key] instanceof Number
+                assert values[key] == value
+            }
+        }
+    }
+
+    test("Should preserve section help") {
+        options "--help cell_cycle_scoring"
+
+        then {
+            assert workflow.success
+            assert path("$metaDir/nextflow.log").text.contains('Whether to perform cell cycle scoring')
+        }
+    }
+
+    test("Should preserve full help and hidden options") {
+        options "--help_full --show_hidden"
+
+        then {
+            assert workflow.success
+            assert path("$metaDir/nextflow.log").text.contains('--trace_report_suffix')
+        }
+    }
+
+    test("Should preserve version-only exit") {
+        options "--version"
+
+        then {
+            assert workflow.success
+            assert path("$metaDir/nextflow.log").text.contains('nf-core/scdownstream v')
+        }
+    }
+
+    test("Should reject an invalid boolean without schema validation") {
+        options "--validate_params false --cell_cycle_scoring maybe"
+
+        then {
+            assert workflow.failed
+            def log = path("$metaDir/nextflow.log").text
+            assert log.contains('cell_cycle_scoring')
+            assert log.contains('Boolean')
+            assert log.contains('cannot be assigned')
+            assert !log.contains('Validation of pipeline parameters failed!')
+        }
+    }
+
+    test("Should reject an invalid integer without schema validation") {
+        options "--validate_params false --scvi_n_hidden invalid"
+
+        then {
+            assert workflow.failed
+            def log = path("$metaDir/nextflow.log").text
+            assert log.contains('scvi_n_hidden')
+            assert log.contains('Integer')
+            assert log.contains('cannot be assigned')
+            assert !log.contains('Validation of pipeline parameters failed!')
+        }
+    }
+
+    test("Should reject an invalid float without schema validation") {
+        options "--validate_params false --emptydrops_fdr invalid"
+
+        then {
+            assert workflow.failed
+            def log = path("$metaDir/nextflow.log").text
+            assert log.contains('emptydrops_fdr')
+            assert log.contains('Float')
+            assert log.contains('cannot be assigned')
+            assert !log.contains('Validation of pipeline parameters failed!')
+        }
+    }
+
+    test("Should reject an invalid nullable integer without schema validation") {
+        options "--validate_params false --sample_n invalid"
+
+        then {
+            assert workflow.failed
+            def log = path("$metaDir/nextflow.log").text
+            assert log.contains('sample_n')
+            assert log.contains('Integer')
+            assert log.contains('cannot be assigned')
+            assert !log.contains('Validation of pipeline parameters failed!')
+        }
+    }
+
+    test("Should reject an invalid nullable float without schema validation") {
+        options "--validate_params false --sample_fraction invalid"
+
+        then {
+            assert workflow.failed
+            def log = path("$metaDir/nextflow.log").text
+            assert log.contains('sample_fraction')
+            assert log.contains('Float')
+            assert log.contains('cannot be assigned')
+            assert !log.contains('Validation of pipeline parameters failed!')
+        }
+    }
+
+    test("Should reject an invalid type with schema validation enabled") {
+        options "--validate_params true --scvi_n_hidden invalid"
+
+        then {
+            assert workflow.failed
+            def log = path("$metaDir/nextflow.log").text
+            assert log.contains('scvi_n_hidden')
+            assert log.contains('Integer')
+            assert log.contains('cannot be assigned')
+            assert !log.contains('Validation of pipeline parameters failed!')
+        }
+    }
+}
