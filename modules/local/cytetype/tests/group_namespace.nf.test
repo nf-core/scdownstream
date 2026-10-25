@@ -1,0 +1,62 @@
+nextflow_process {
+
+    name "Test CyteType grouping namespaces through finalisation"
+    script "modules/local/adata/extend/main.nf"
+    process "ADATA_EXTEND"
+    config "./adapter.config"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should retain different global and subset annotations on overlapping cells") {
+        setup {
+            run("ANNOTATE_GROUPS") {
+                script "./annotate_groups.nf"
+                workflow {
+                    """
+                    input[0] = channel.of([
+                        [id: 'global'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                    ])
+                    """
+                }
+            }
+        }
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = ANNOTATE_GROUPS.out.obs.collect().map { fragments -> [fragments] }
+                    .combine(ANNOTATE_GROUPS.out.subset_h5ad).combine(ANNOTATE_GROUPS.out.base_index)
+                    .map { fragments, _meta, subset, baseIndex -> [
+                    [id: 'finalised', subset_h5ad: subset.toString(), base_index: baseIndex],
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true),
+                    fragments, [], [], [], [], []
+                ] }
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def result = anndata(process.out.h5ad[0][1])
+            def subset = anndata(process.out.h5ad[0][0].subset_h5ad)
+            assert result.obs.index.values.toList() == process.out.h5ad[0][0].base_index
+            assert subset.n_obs > 0
+            assert subset.n_obs < result.n_obs
+            def fields = [cell_type: 'annotation', ontology_term: 'cellOntologyTerm', ontology_term_id: 'cellOntologyTermID', cell_state: 'cellState']
+            def overlap = result.obs.index.values.findIndexOf { it == subset.obs.index.values[0] }
+            assert overlap >= 0
+            fields.each { field, libraryField ->
+                def globalColumn = "annotation:cytetype:pca:0.5:pca-global-0.5_leiden:${field}".toString()
+                def subsetColumn = "annotation:cytetype:pca:0.5:pca-subset_with_underscore-0.5_leiden:${field}".toString()
+                assert globalColumn in result.obs.colnames
+                assert subsetColumn in result.obs.colnames
+                assert !("annotation:cytetype:pca:0.5:${field}".toString() in result.obs.colnames)
+                assert result.obs.get(globalColumn).data[overlap] == "pca-global-0.5_leiden:${libraryField}".toString()
+                assert result.obs.get(subsetColumn).data[overlap] == "pca-subset_with_underscore-0.5_leiden:${libraryField}".toString()
+            }
+        }
+    }
+}
