@@ -4,15 +4,6 @@
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
-## Nextflow version and parameter types
-
-The pipeline requires Nextflow 26.04.6 or later with the strict parser enabled, which is the default in this version.
-Boolean and numeric command-line parameters are converted to their declared types.
-For example, `--cell_cycle_scoring false` disables cell-cycle scoring, and `--scvi_max_epochs 2` supplies an integer.
-Invalid boolean or numeric values fail before pipeline initialisation, including with `--validate_params false`.
-Defaults remain in `nextflow.config`; profiles, parameter files and command-line overrides remain supported.
-The `--help` option still accepts either a bare flag or a parameter section name.
-
 ## Filtered and unfiltered matrices
 
 Throughout this documentation, you will find references to `filtered` and `unfiltered` matrices.
