@@ -32,7 +32,9 @@ The **Test strategy (this branch)** column describes what the tests on this bran
 
 ### Subworkflow tests
 
-Numerical Parquet assertions use `nictru-nft-parquet@0.1.0` from the tagged custom registry in `nf-test.config`, requiring nf-test 0.9.5 or later and Java 17 or later. The single-cell edgePython regression compares exported log2 fold changes with the pinned model coefficients divided by `log(2)`, using tolerances documented beside the test. It does not independently validate the model's statistical estimator.
+The matched Scanpy expression-source regressions compare gene-keyed Parquet rows and filtered marker sets across identical `X` inputs with absent or conflicting `.raw`. They use `nictru-nft-parquet@0.1.0` from the tagged custom registry in `nf-test.config`, requiring nf-test 0.9.5 or later and Java 17 or later. Existing structural snapshots remain unchanged. The fixture recipe and immutable fork URLs are documented beside the regression tests.
+
+The single-cell edgePython regression compares exported log2 fold changes with the pinned model coefficients divided by `log(2)`, using tolerances in the test assertions. It does not independently validate the model's statistical estimator.
 
 | Strategy     | What is checked                                                                                                                                                                                                                                                                                                                                                                                    |
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

@@ -34,7 +34,8 @@ workflow FINALIZE {
     ch_h5ad_cellxgene = channel.empty()
     if (prep_cellxgene) {
         ADATA_PREPCELLXGENE (
-            ADATA_EXTEND.out.h5ad
+            ADATA_EXTEND.out.h5ad,
+            true,
         )
         ch_h5ad_cellxgene = ADATA_PREPCELLXGENE.out.h5ad
     }
