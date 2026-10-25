@@ -69,7 +69,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
-- Keep CellBender correction destinations paired with their sample files after asynchronous task completion, by @nictru and GPT-6.1 Sol.
+- Keep CellBender correction destinations paired with their sample files after asynchronous task completion, by @nictru and GPT-6.1 Sol [[#363](https://github.com/nf-core/scdownstream/pull/363)].
 - Isolate reused nf-test setup processes with aliases and check initialisation diagnostics in the saved Nextflow log for compatibility with Nextflow 26.10, by @nictru and GPT-6.1 Sol [[#358](https://github.com/nf-core/scdownstream/pull/358)].
 - Preserve selected analysis counts in `X`, remove the pipeline-defined `counts` layer, and use dedicated normalisation layers across feature selection and integration; avoid full AnnData copies in PCA, BBKNN and log-normalisation, by @nictru, Claude Sonnet 4.5 and GPT-6.1 Sol [[#349](https://github.com/nf-core/scdownstream/pull/349)].
 - Preserve `raw_counts` and named ambient-corrected layers in both analysis modes, respect sample overrides throughout downstream analysis, retain provenance with raw fallback in mixed cohorts, require explicit raw counts in bases, and preserve uniquely named RDS assays, by @nictru and GPT-6.1 Sol [[#345](https://github.com/nf-core/scdownstream/pull/345)].
