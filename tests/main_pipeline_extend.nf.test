@@ -62,7 +62,7 @@ nextflow_pipeline {
 
         then {
             assert workflow.failed
-            assert workflow.stdout.toString().contains('base_adata must contain a raw_counts layer with genuine pre-correction counts')
+            assert path("$metaDir/nextflow.log").text.contains('base_adata must contain a raw_counts layer with genuine pre-correction counts')
         }
     }
 }

@@ -565,7 +565,7 @@ nextflow_workflow {
     test("Should retain named counts and correction through filtering and sampling with sample overrides") {
 
         setup {
-            run("ADATA_UNIFY") {
+            run("ADATA_UNIFY", alias: "SETUP_ADATA_UNIFY") {
                 script "modules/local/adata/unify/main.nf"
                 process {
                     """
@@ -593,7 +593,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = ADATA_UNIFY.out.h5ad.flatMap { meta, h5ad ->
+                input[0] = SETUP_ADATA_UNIFY.out.h5ad.flatMap { meta, h5ad ->
                     [
                         [id: 'global_corrected'],
                         [id: 'sample_raw', use_ambient_corrected_counts: false],
