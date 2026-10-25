@@ -33,7 +33,7 @@ df.to_pickle("${prefix}.pkl")
 
 adata = adata[~adata.obs["predicted_doublet"]].copy()
 
-adata.write_h5ad(f"{prefix}.h5ad")
+adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
 # Versions
 
