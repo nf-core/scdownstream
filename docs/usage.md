@@ -469,6 +469,8 @@ Because [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata) is e
 Subset names in `analysis_plan` match the filesystem-safe keys produced by splitting the AnnData object; spaces in group values are replaced with underscores.
 Per-label integrations are treated as already split for clustering, so the pipeline creates subset-specific embedding keys such as `X_pca-SRR28679756_pca` and UMAP keys such as `X_pca-SRR28679756_umap` in the finalized base AnnData.
 
+Subset filenames replace spaces in labels with underscores. Labels must produce distinct safe filenames: for example, `A B` and `A_B` cannot occur together. Empty names, path separators, traversal names and control characters are rejected before any subset files are written. Safe labels retain their existing filenames and subset identities.
+
 ### GPU acceleration
 
 :::warning{title="Experimental feature"}
