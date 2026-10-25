@@ -32,6 +32,8 @@ The **Test strategy (this branch)** column describes what the tests on this bran
 
 ### Subworkflow tests
 
+The matched Scanpy expression-source regressions compare gene-keyed Parquet rows and filtered marker sets across identical `X` inputs with absent or conflicting `.raw`. They use `nictru-nft-parquet@0.1.0` from the tagged custom registry in `nf-test.config`, requiring nf-test 0.9.5 or later and Java 17 or later. Existing structural snapshots remain unchanged. The fixture recipe and immutable fork URLs are documented beside the regression tests.
+
 | Strategy     | What is checked                                                                                                                                                                                                                                                                                                                                                                                    |
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `structural` | Typically `workflow.out.versions.collect { path(it).yaml }` and optionally `adata.yaml`, **`workflow.out` omitted** for unstable integration outputs.                                                                                                                                                                                                                                              |

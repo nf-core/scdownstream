@@ -70,6 +70,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Use selected expression in `X` consistently for Scanpy marker ranking, filtering and plotting when `.raw` is present, by @nictru and GPT-6.1 Sol [[#362](https://github.com/nf-core/scdownstream/pull/362)].
 - Support dense expression matrices in LIANA rank aggregation and let callers explicitly select log1p transformation in both LIANA modules, by @nictru and GPT-6.1 Sol [[#365](https://github.com/nf-core/scdownstream/pull/365)].
 - Let callers explicitly select log1p transformation for Scanpy marker ranking and CELLxGENE export, by @nictru and GPT-6.1 Sol [[#365](https://github.com/nf-core/scdownstream/pull/365)].
 - Calculate the top-20 QC metric with all available genes for panels below 20 genes and reject empty panels clearly, by @nictru and GPT-6.1 Sol [[#366](https://github.com/nf-core/scdownstream/pull/366)].
