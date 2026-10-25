@@ -70,6 +70,8 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Support dense expression matrices in LIANA rank aggregation and let callers explicitly select log1p transformation in both LIANA modules, by @nictru and GPT-6.1 Sol [[#365](https://github.com/nf-core/scdownstream/pull/365)].
+- Let callers explicitly select log1p transformation for Scanpy marker ranking and CELLxGENE export, by @nictru and GPT-6.1 Sol [[#365](https://github.com/nf-core/scdownstream/pull/365)].
 - Calculate the top-20 QC metric with all available genes for panels below 20 genes and reject empty panels clearly, by @nictru and GPT-6.1 Sol [[#366](https://github.com/nf-core/scdownstream/pull/366)].
 - Isolate reused nf-test setup processes with aliases and check initialisation diagnostics in the saved Nextflow log for compatibility with Nextflow 26.10, by @nictru and GPT-6.1 Sol [[#358](https://github.com/nf-core/scdownstream/pull/358)].
 - Preserve selected analysis counts in `X`, remove the pipeline-defined `counts` layer, and use dedicated normalisation layers across feature selection and integration; avoid full AnnData copies in PCA, BBKNN and log-normalisation, by @nictru, Claude Sonnet 4.5 and GPT-6.1 Sol [[#349](https://github.com/nf-core/scdownstream/pull/349)].
