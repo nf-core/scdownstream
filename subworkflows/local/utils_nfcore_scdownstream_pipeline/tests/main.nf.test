@@ -165,7 +165,7 @@ nextflow_workflow {
         then {
             assert workflow.failed
             assert workflow.trace.tasks().isEmpty()
-            assert workflow.stdout.toString().contains('Invalid CSV value')
+            assert path("$metaDir/nextflow.log").text.contains('Invalid CSV value')
         }
     }
 

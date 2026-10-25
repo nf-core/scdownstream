@@ -83,7 +83,7 @@ nextflow_workflow {
                     """
                 }
             }
-            run("SCANPY_LOG1PNORM") {
+            run("SCANPY_LOG1PNORM", alias: "SETUP_SCANPY_LOG1PNORM") {
                 script "modules/local/scanpy/log1pnorm/main.nf"
                 process {
                     """
@@ -100,7 +100,7 @@ nextflow_workflow {
             workflow {
                 """
                 input[0]  = ADATA_UNIFY.out.h5ad.filter { meta, _h5ad -> meta.id == 'query' }
-                input[1]  = SCANPY_LOG1PNORM.out.h5ad
+                input[1]  = SETUP_SCANPY_LOG1PNORM.out.h5ad
                 input[2]  = true
                 input[3]  = 'none'
                 input[4]  = 0

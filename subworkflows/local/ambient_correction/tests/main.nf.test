@@ -123,7 +123,7 @@ nextflow_workflow {
     test("Should preserve a raw selector that collides with the canonical correction destination") {
 
         setup {
-            run("CELDA_DECONTX") {
+            run("CELDA_DECONTX", alias: "SETUP_CELDA_DECONTX") {
                 script "modules/local/celda/decontx/main.nf"
                 process {
                     """
@@ -146,7 +146,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = CELDA_DECONTX.out.h5ad.flatMap { meta, h5ad ->
+                input[0] = SETUP_CELDA_DECONTX.out.h5ad.flatMap { meta, h5ad ->
                     [true, false].collect { selected ->
                         [meta + [id: "collision_\${selected}", counts_layer: 'ambient_corrected_decontx', use_ambient_corrected_counts: selected],
                          h5ad,
