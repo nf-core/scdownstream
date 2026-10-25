@@ -15,6 +15,7 @@ nextflow_pipeline {
 
         then {
             assert workflow.success
+            assert !path("$outputDir/pipeline_info/nf_core_scdownstream_software_mqc_versions.yml").exists()
             def dumps = new File("$outputDir/pipeline_info").listFiles().findAll { it.name.startsWith('params_') && it.name.endsWith('.json') }
             assert dumps.size() == 1
             def values = new groovy.json.JsonSlurper().parse(dumps.first())
