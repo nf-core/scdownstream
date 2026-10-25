@@ -1,4 +1,4 @@
-include { SCANPY_RANKGENESGROUPS    } from '../../../modules/local/scanpy/rankgenesgroups'
+include { SCANPY_RANKGENESGROUPS   } from '../../../modules/local/scanpy/rankgenesgroups'
 include { anndata                   } from 'plugin/nf-anndata'
 include { rankGenesGroupsMethods    } from '../utils_nfcore_scdownstream_pipeline'
 include { rankGenesGroupsMethodSlug } from '../utils_nfcore_scdownstream_pipeline'
@@ -10,7 +10,7 @@ workflow RANK_GENES_GROUPS {
     ch_h5ad // channel: [ meta, h5ad ], anndata objects with obs_key and condition_col in meta
 
     main:
-    ch_uns = channel.empty()
+    ch_uns           = channel.empty()
     ch_multiqc_files = channel.empty()
 
     ch_settings = ch_h5ad.map { meta, h5ad ->
@@ -34,32 +34,28 @@ workflow RANK_GENES_GROUPS {
     }
 
     // Structure: [meta, h5ad, filter_col, filter_val, obs_key]
-    ch_global_comparisons = ch_settings.map { meta, h5ad, _condition_col, _conditions, obs_key, _labels, _rgg_methods ->
-        [meta, h5ad, '', '', obs_key]
-    }
+    ch_global_comparisons = ch_settings
+        .map { meta, h5ad, _condition_col, _conditions, obs_key, _labels, _rgg_methods ->
+            [meta, h5ad, '', '', obs_key]
+        }
 
-    ch_condition_labels = ch_settings
-        .transpose(by: 3)
+    ch_condition_labels = ch_settings.transpose(by: 3)
         .map { meta, h5ad, condition_col, condition, obs_key, _labels, _rgg_methods ->
             [meta, h5ad, condition_col, condition, obs_key]
         }
 
-    ch_label_conditions = ch_settings
-        .transpose(by: 5)
+    ch_label_conditions = ch_settings.transpose(by: 5)
         .map { meta, h5ad, condition_col, _conditions, obs_key, label, _rgg_methods ->
             [meta, h5ad, obs_key, label, condition_col]
         }
 
-    ch_filtered_comparisons = ch_label_conditions
-        .mix(ch_condition_labels)
-        .map { meta, h5ad, filter_col, filter_val, obs_key ->
-            [meta, h5ad, filter_col as String, filter_val as String, obs_key]
-        }
+    ch_filtered_comparisons = ch_label_conditions.mix(ch_condition_labels).map { meta, h5ad, filter_col, filter_val, obs_key ->
+        [meta, h5ad, filter_col as String, filter_val as String, obs_key]
+    }
 
     ch_comparisons = ch_global_comparisons.mix(ch_filtered_comparisons)
 
-    ch_rankgenesgroups = ch_comparisons
-        .filter { meta, h5ad, filter_col, filter_val, obs_key ->
+    ch_rankgenesgroups = ch_comparisons.filter { meta, h5ad, filter_col, filter_val, obs_key ->
             hasMultipleObsGroups(meta, h5ad, 'SCANPY_RANKGENESGROUPS', obs_key, filter_col, filter_val, 2)
         }
         .flatMap { meta, h5ad, filter_col, filter_val, obs_key ->
@@ -103,12 +99,15 @@ workflow RANK_GENES_GROUPS {
         ch_rankgenesgroups.rank_key,
         true,
     )
-    ch_uns = ch_uns.mix(SCANPY_RANKGENESGROUPS.out.uns.flatten())
+    ch_uns           = ch_uns.mix(SCANPY_RANKGENESGROUPS.out.uns.flatten())
     ch_multiqc_files = ch_multiqc_files.mix(SCANPY_RANKGENESGROUPS.out.multiqc_files.flatten())
 
     emit:
-    uns           = ch_uns // channel: [ pkl ]
+    uns           = ch_uns           // channel: [ pkl ]
     multiqc_files = ch_multiqc_files // channel: [ json ]
     results       = SCANPY_RANKGENESGROUPS.out.results
-    h5ad          = SCANPY_RANKGENESGROUPS.out.h5ad.filter { meta, _h5ad -> meta.comparison_scope == 'global' }
+                                     // channel: [ meta, parquet ]
+    h5ad          = SCANPY_RANKGENESGROUPS.out.h5ad
+                        .filter { meta, _h5ad -> meta.comparison_scope == 'global' }
+                                     // channel: [ meta, h5ad ] — global comparisons only
 }

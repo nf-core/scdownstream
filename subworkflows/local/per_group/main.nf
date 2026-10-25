@@ -14,40 +14,42 @@ include { decouplerEnabled                  } from '../utils_nfcore_scdownstream
 
 workflow PER_GROUP {
     take:
-    ch_h5ad_with_neighbors // channel: [ meta, h5ad ]
-    ch_h5ad_no_neighbors // channel: [ meta, h5ad ]
-    skip_liana //   value: boolean
-    liana_n_perms //   value: integer
-    liana_max_cells //   value: integer or null
-    liana_subsample_strategy //   value: string
-    liana_subsample_seed //   value: integer
-    cell2cell //   value: boolean
-    cell2cell_rank //   value: integer or null
-    cell2cell_seed //   value: integer
-    cytetype_study_context //   value: string
-    de_methods_default //   value: string
-    pseudobulk //   value: boolean
-    pseudobulk_min_num_cells //   value: integer
-    pseudobulk_min_total_counts //   value: integer
+    ch_h5ad_with_neighbors         // channel: [ meta, h5ad ]
+    ch_h5ad_no_neighbors           // channel: [ meta, h5ad ]
+    skip_liana                     //   value: boolean
+    liana_n_perms                  //   value: integer
+    liana_max_cells                //   value: integer or null
+    liana_subsample_strategy       //   value: string
+    liana_subsample_seed           //   value: integer
+    cell2cell                      //   value: boolean
+    cell2cell_rank                 //   value: integer or null
+    cell2cell_seed                 //   value: integer
+    cytetype_study_context         //   value: string
+    de_methods_default             //   value: string
+    pseudobulk                     //   value: boolean
+    pseudobulk_min_num_cells       //   value: integer
+    pseudobulk_min_total_counts    //   value: integer
     ch_per_cell_annotation_columns // channel: string
-    reference_condition //   value: string
-    interesting_genes //   value: string (path) or []
-    species //   value: string
-    decoupler //   value: boolean
-    decoupler_resources //   value: string
-    decoupler_network //    path: file or []
-    decoupler_method //   value: string
-    decoupler_min_targets //   value: integer
+    reference_condition            //   value: string
+    interesting_genes              //   value: string (path) or []
+    species                        //   value: string
+    decoupler                      //   value: boolean
+    decoupler_resources            //   value: string
+    decoupler_network              //    path: file or []
+    decoupler_method               //   value: string
+    decoupler_min_targets          //   value: integer
 
     main:
-    ch_uns = channel.empty()
+    ch_uns           = channel.empty()
     ch_multiqc_files = channel.empty()
-    ch_h5ad = channel.empty()
+    ch_h5ad          = channel.empty()
 
     SCANPY_PAGA(
-        ch_h5ad_with_neighbors.filter { meta, _h5ad -> meta.analyses == null || 'paga' in meta.analyses }.filter { meta, h5ad -> hasMultipleObsGroups(meta, h5ad, 'SCANPY_PAGA') }
+        ch_h5ad_with_neighbors
+            .filter { meta, _h5ad -> meta.analyses == null || 'paga' in meta.analyses }
+            .filter { meta, h5ad -> hasMultipleObsGroups(meta, h5ad, 'SCANPY_PAGA') }
     )
-    ch_uns = ch_uns.mix(SCANPY_PAGA.out.uns)
+    ch_uns           = ch_uns.mix(SCANPY_PAGA.out.uns)
     ch_multiqc_files = ch_multiqc_files.mix(SCANPY_PAGA.out.multiqc_files)
 
     // Normalisation writes derived layers; X retains selected analysis counts.
@@ -55,14 +57,16 @@ workflow PER_GROUP {
 
     if (!skip_liana) {
         LIANA_RANKAGGREGATE(
-            ch_h5ad_no_neighbors.filter { meta, _h5ad -> meta.analyses == null || 'liana' in meta.analyses }.filter { meta, h5ad -> hasMultipleObsGroups(meta, h5ad, 'LIANA_RANKAGGREGATE') },
+            ch_h5ad_no_neighbors
+                .filter { meta, _h5ad -> meta.analyses == null || 'liana' in meta.analyses }
+                .filter { meta, h5ad -> hasMultipleObsGroups(meta, h5ad, 'LIANA_RANKAGGREGATE') },
             liana_n_perms,
             liana_max_cells ?: 0,
             liana_subsample_strategy,
             liana_subsample_seed,
             liana_apply_log1p,
         )
-        ch_uns = ch_uns.mix(LIANA_RANKAGGREGATE.out.uns)
+        ch_uns           = ch_uns.mix(LIANA_RANKAGGREGATE.out.uns)
         ch_multiqc_files = ch_multiqc_files.mix(LIANA_RANKAGGREGATE.out.multiqc_files)
     }
 
@@ -86,7 +90,9 @@ workflow PER_GROUP {
         )
 
         CELL2CELL_TENSOR(
-            LIANA_BYSAMPLE.out.results.join(LIANA_BYSAMPLE.out.contexts).map { meta, results, contexts -> [meta, results, contexts] },
+            LIANA_BYSAMPLE.out.results
+                .join(LIANA_BYSAMPLE.out.contexts)
+                .map { meta, results, contexts -> [meta, results, contexts] },
             LIANA_BYSAMPLE.out.results.map { meta, _results -> meta.donor_col ?: 'donor' },
             cell2cell_rank ?: '',
             cell2cell_seed,
@@ -95,14 +101,20 @@ workflow PER_GROUP {
         ch_multiqc_files = ch_multiqc_files.mix(CELL2CELL_TENSOR.out.multiqc_files)
     }
 
-    ch_h5ad_for_de = ch_h5ad_no_neighbors.map { meta, h5ad ->
-        [meta + resolveDeMethodsWithPrerequisites(meta, de_methods_default, cytetype_study_context), h5ad]
-    }
+    ch_h5ad_for_de = ch_h5ad_no_neighbors
+        .map { meta, h5ad ->
+            [meta + resolveDeMethodsWithPrerequisites(meta, de_methods_default, cytetype_study_context), h5ad]
+        }
 
-    ch_h5ad_de = ch_h5ad_for_de.filter { meta, _h5ad ->
-        def m = meta.de_methods_resolved
-        m && ((rankGenesGroupsAnalysisEnabled(meta) && m.intersect(cellLevelDeMethods())) || pseudobulkingEnabled(meta, pseudobulk, decoupler) || ((meta.analyses == null || 'de' in meta.analyses) && 'edgepython_sc' in m))
-    }
+    ch_h5ad_de = ch_h5ad_for_de
+        .filter { meta, _h5ad ->
+            def m = meta.de_methods_resolved
+            m && (
+                (rankGenesGroupsAnalysisEnabled(meta) && m.intersect(cellLevelDeMethods())) ||
+                pseudobulkingEnabled(meta, pseudobulk, decoupler) ||
+                ((meta.analyses == null || 'de' in meta.analyses) && 'edgepython_sc' in m)
+            )
+        }
 
     DIFFERENTIAL_EXPRESSION(
         ch_h5ad_de,
@@ -113,21 +125,23 @@ workflow PER_GROUP {
         reference_condition,
         interesting_genes,
     )
-    ch_uns = ch_uns.mix(DIFFERENTIAL_EXPRESSION.out.uns)
+    ch_uns           = ch_uns.mix(DIFFERENTIAL_EXPRESSION.out.uns)
     ch_multiqc_files = ch_multiqc_files.mix(DIFFERENTIAL_EXPRESSION.out.multiqc_files)
-    ch_h5ad = ch_h5ad.mix(DIFFERENTIAL_EXPRESSION.out.h5ad)
+    ch_h5ad          = ch_h5ad.mix(DIFFERENTIAL_EXPRESSION.out.h5ad)
 
     if (decoupler) {
         DECOUPLER(
-            DIFFERENTIAL_EXPRESSION.out.pseudobulk_h5ad.filter { meta, _h5ad -> decouplerEnabled(meta, decoupler) },
-            DIFFERENTIAL_EXPRESSION.out.pseudobulk_de_results.filter { meta, _results -> decouplerEnabled(meta, decoupler) },
+            DIFFERENTIAL_EXPRESSION.out.pseudobulk_h5ad
+                .filter { meta, _h5ad -> decouplerEnabled(meta, decoupler) },
+            DIFFERENTIAL_EXPRESSION.out.pseudobulk_de_results
+                .filter { meta, _results -> decouplerEnabled(meta, decoupler) },
             decoupler_resources,
             decoupler_network,
             species,
             decoupler_method,
             decoupler_min_targets,
         )
-        ch_uns = ch_uns.mix(DECOUPLER.out.uns)
+        ch_uns           = ch_uns.mix(DECOUPLER.out.uns)
         ch_multiqc_files = ch_multiqc_files.mix(DECOUPLER.out.multiqc_files)
     }
 
