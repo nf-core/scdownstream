@@ -1,0 +1,81 @@
+nextflow_process {
+
+    name "Test Scanpy explicit X expression source"
+    script "modules/local/scanpy/rankgenesgroups/main.nf"
+    process "SCANPY_RANKGENESGROUPS"
+
+    tag "modules"
+    tag "modules_local"
+    tag "explicit_x"
+
+    test("Should ignore conflicting raw in Wilcoxon ranking, filtering and plotting") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = channel.of('absent', 'conflicting').map { variant -> [
+                    [id: 'raw_' + variant, integration: 'none'],
+                    file('https://raw.githubusercontent.com/nictru/test-datasets/55565654bd8b77673cc6d8ebab39a16aea1e6822/anndata-variations/de_raw_' + variant + '.h5ad', checkIfExists: true)
+                ] }
+                input[1] = 'group'
+                input[2] = [[], []]
+                input[3] = 'wilcoxon'
+                input[4] = 'rank_genes_groups'
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert process.out.h5ad.size() == 2
+            assert process.out.markers.size() == 2
+            assert process.out.plots.flatten().size() == 4
+            assert process.out.multiqc_files.flatten().size() == 4
+            def outputs = process.out.h5ad.collectEntries { meta, h5ad -> [(meta.id): anndata(h5ad)] }
+            assert outputs.raw_absent.n_obs == 64
+            assert outputs.raw_absent.n_vars == 128
+            assert outputs.raw_absent.obs.index.values == outputs.raw_conflicting.obs.index.values
+            assert outputs.values().every { 'rank_genes_groups' in it.uns }
+            def tables = process.out.results.collectEntries { meta, table -> [(meta.id): parquet(table)] }
+            assert tables.raw_absent.rowCount == 256
+            assert tables.raw_absent.columnNames == tables.raw_conflicting.columnNames
+            assert tables.raw_absent.schema == tables.raw_conflicting.schema
+            def sortRows = { table -> table.rows.sort { a, b -> (a.group <=> b.group) ?: (a.gene <=> b.gene) } }
+            assert sortRows(tables.raw_absent) == sortRows(tables.raw_conflicting)
+            def markers = process.out.markers.collectEntries { marker -> [(file(marker).name): file(marker).text.readLines().drop(1).sort()] }
+            assert markers['raw_absent_characteristic_genes_markers.csv'] == markers['raw_conflicting_characteristic_genes_markers.csv']
+        }
+    }
+
+    test("Should ignore conflicting raw in t-test ranking, filtering and plotting") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = channel.of('absent', 'conflicting').map { variant -> [
+                    [id: 'raw_' + variant, integration: 'none'],
+                    file('https://raw.githubusercontent.com/nictru/test-datasets/55565654bd8b77673cc6d8ebab39a16aea1e6822/anndata-variations/de_raw_' + variant + '.h5ad', checkIfExists: true)
+                ] }
+                input[1] = 'group'
+                input[2] = [[], []]
+                input[3] = 't-test'
+                input[4] = 'rank_genes_groups'
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert process.out.h5ad.size() == 2
+            assert process.out.markers.size() == 2
+            assert process.out.plots.flatten().size() == 4
+            assert process.out.multiqc_files.flatten().size() == 4
+            def tables = process.out.results.collectEntries { meta, table -> [(meta.id): parquet(table)] }
+            assert tables.raw_absent.rowCount == 256
+            assert tables.raw_absent.columnNames == tables.raw_conflicting.columnNames
+            assert tables.raw_absent.schema == tables.raw_conflicting.schema
+            def sortRows = { table -> table.rows.sort { a, b -> (a.group <=> b.group) ?: (a.gene <=> b.gene) } }
+            assert sortRows(tables.raw_absent) == sortRows(tables.raw_conflicting)
+            def markers = process.out.markers.collectEntries { marker -> [(file(marker).name): file(marker).text.readLines().drop(1).sort()] }
+            assert markers['raw_absent_characteristic_genes_markers.csv'] == markers['raw_conflicting_characteristic_genes_markers.csv']
+        }
+    }
+}

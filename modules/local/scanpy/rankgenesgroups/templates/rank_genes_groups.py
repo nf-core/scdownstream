@@ -31,7 +31,7 @@ adata.obs[obs_key] = adata.obs[obs_key].astype(str)
 if filter_col and filter_val:
     adata = adata[adata.obs[filter_col] == filter_val].copy()
 
-kwargs = {"groupby": obs_key, "method": method, "pts": True, "key_added": rank_key}
+kwargs = {"groupby": obs_key, "method": method, "pts": True, "key_added": rank_key, "use_raw": False}
 filtered_rank_key = f"{rank_key}_filtered"
 
 STANDARD_DE_COLUMNS = ["gene", "log2fc", "pvalue", "padj", "group", "contrast", "stratum"]
@@ -116,6 +116,7 @@ if len(valid_groups) >= 2:
         adata,
         key=rank_key,
         key_added=filtered_rank_key,
+        use_raw=False,
         min_in_group_fraction=0.2,
         max_out_group_fraction=0.2,
     )
@@ -168,7 +169,7 @@ if len(valid_groups) >= 2:
         # Plotting uses the DE feature space, without nullable flags from joined references.
         if "X_pca" not in adata.obsm and adata.n_vars > sc.settings.N_PCS:
             sc.pp.pca(adata, mask_var=None)
-        sc.pl.rank_genes_groups_dotplot(adata, key=rank_key, show=False)
+        sc.pl.rank_genes_groups_dotplot(adata, key=rank_key, use_raw=False, show=False)
         adata.uns[rank_key] = rgg_dict
         dotplot_path = f"{prefix}_dotplot.png"
         plt.savefig(dotplot_path, bbox_inches="tight")

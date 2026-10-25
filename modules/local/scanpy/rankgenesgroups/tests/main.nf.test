@@ -75,6 +75,9 @@ nextflow_process {
             assert process.out.plots
             assert process.out.multiqc_files
             assert file(process.out.results[0][1]).name.contains("_results.parquet")
+            def rows = parquet(process.out.results[0][1]).rows
+            assert !rows.isEmpty()
+            assert rows.every { it.log2fc == null && it.pvalue == null && it.padj == null }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml
