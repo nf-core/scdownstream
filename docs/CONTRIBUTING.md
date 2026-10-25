@@ -147,6 +147,9 @@ Use the following naming schemes for channels to make the channel flow easier to
 
 Parameters should be initialised and defined with default values within the `params` scope in `nextflow.config`.
 They should also be documented in the pipeline JSON schema.
+Declare boolean and numeric parameter types in the `params` block in `main.nf`, without duplicating their defaults.
+Use nullable numeric types, such as `Integer?` and `Float?`, when the default is `null`.
+Keep string parameters and the boolean-or-string `help` parameter untyped.
 
 To update `nextflow_schema.json`, run:
 
