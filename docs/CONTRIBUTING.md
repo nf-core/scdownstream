@@ -92,6 +92,7 @@ nf-core pipelines lint <pipeline_directory>
 ```
 
 If you encounter failures or warnings, follow the linked documentation printed to screen.
+Generated pipeline logos can differ across CPU architectures. A local `files_unchanged` lint failure for a logo can therefore occur even when CI passes. Leave the logo images unchanged and use the CI result for this check.
 For more information about linting tests, see [nf-core/tools API documentation](https://nf-co.re/docs/nf-core-tools/api_reference/latest/pipeline_lint_tests/actions_awsfulltest).
 
 #### Pipeline tests
