@@ -1,0 +1,20 @@
+Changes in component 'nf-core/scvitools/solo'
+'modules/nf-core/scvitools/solo/environment.yml' is unchanged
+'modules/nf-core/scvitools/solo/meta.yml' is unchanged
+'modules/nf-core/scvitools/solo/main.nf' is unchanged
+'modules/nf-core/scvitools/solo/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/scvitools/solo/tests/main.nf.test' is unchanged
+Changes in 'scvitools/solo/templates/solo.py':
+--- modules/nf-core/scvitools/solo/templates/solo.py
++++ modules/nf-core/scvitools/solo/templates/solo.py
+@@ -64,7 +64,7 @@
+ del adata.uns["_scvi_manager_uuid"]
+ del adata.uns["_scvi_uuid"]
+ 
+-adata.write_h5ad("${prefix}.h5ad")
++adata.write_h5ad("${prefix}.h5ad", compression="gzip")
+ 
+ # Versions
+ 
+
+************************************************************
