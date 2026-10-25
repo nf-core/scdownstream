@@ -104,8 +104,6 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 
 ### sc-best-practices defaults
 
-For non-empty panels below 20 genes, `pct_counts_in_top_20_genes` uses all available genes. Cells with positive total counts therefore have a value of 100. The metric name and MAD cutoff remain unchanged. Empty panels are rejected before QC calculation.
-
 Pipeline defaults match the [sc-best-practices QC chapter](https://www.sc-best-practices.org/preprocessing_visualization/quality_control.html) out of the box. A minimal samplesheet with only `sample` and matrix paths is sufficient:
 
 ```csv title="samplesheet.csv"
