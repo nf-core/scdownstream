@@ -45,6 +45,67 @@ nextflow_process {
 
     }
 
+    test("Should accept MSE reconstruction loss") {
+
+        config './nextflow.config'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                expimap_test_recon_loss = 'mse'
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.value([
+                    [id: 'expimap'],
+                    file("${projectDir}/assets/databases/expimap/pathways.gmt", checkIfExists: true)
+                ])
+                input[2] = 'batch'
+                input[3] = 'X'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert 'X_emb' in anndata(process.out.h5ad[0][1]).obsm
+        }
+
+    }
+
+    test("Should reject ZINB reconstruction loss") {
+
+        config './nextflow.config'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                expimap_test_recon_loss = 'zinb'
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                input[1] = [[], []]
+                input[2] = 'batch'
+                input[3] = 'X'
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("invalid choice: 'zinb'")
+        }
+
+    }
+
     test("Should run without failures - stub") {
 
         options '-stub'

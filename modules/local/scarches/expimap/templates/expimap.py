@@ -32,7 +32,7 @@ parser.add_argument(
 parser.add_argument(
     "--recon-loss",
     default=None,
-    choices=["nb", "zinb", "poisson", "normal"],
+    choices=["mse", "nb"],
 )
 parser.add_argument("--n-epochs", type=int, default=None)
 parser.add_argument("--alpha-epoch-anneal", type=int, default=None)
