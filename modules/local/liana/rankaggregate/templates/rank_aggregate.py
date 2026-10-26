@@ -207,9 +207,7 @@ def _write_liana_plots(adata, df, obs_key):
     try:
         plot_adata = adata
         if not pd.api.types.is_string_dtype(adata.obs[obs_key]):
-            plot_adata = sc.AnnData(
-                obs=adata.obs[[obs_key]].copy(), uns={"liana_res": adata.uns["liana_res"].copy()}
-            )
+            plot_adata = sc.AnnData(obs=adata.obs[[obs_key]].copy(), uns={"liana_res": adata.uns["liana_res"].copy()})
             if f"{obs_key}_colors" in adata.uns:
                 plot_adata.uns[f"{obs_key}_colors"] = np.array(adata.uns[f"{obs_key}_colors"], copy=True)
             plot_adata.obs[obs_key] = plot_adata.obs[obs_key].astype(str)
