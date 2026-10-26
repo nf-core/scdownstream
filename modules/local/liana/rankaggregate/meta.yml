@@ -35,6 +35,9 @@ input:
   - subsample_seed:
       type: integer
       description: Random seed for subsampling and LIANA
+  - apply_log1p:
+      type: boolean
+      description: Apply log1p to X before LIANA; false when the caller supplies log-transformed expression
 
 output:
   h5ad:

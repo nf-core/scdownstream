@@ -1,0 +1,20 @@
+Changes in component 'nf-core/scanpy/scrublet'
+'modules/nf-core/scanpy/scrublet/environment.yml' is unchanged
+'modules/nf-core/scanpy/scrublet/meta.yml' is unchanged
+'modules/nf-core/scanpy/scrublet/main.nf' is unchanged
+'modules/nf-core/scanpy/scrublet/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/scanpy/scrublet/tests/main.nf.test' is unchanged
+Changes in 'scanpy/scrublet/templates/scrublet.py':
+--- modules/nf-core/scanpy/scrublet/templates/scrublet.py
++++ modules/nf-core/scanpy/scrublet/templates/scrublet.py
+@@ -33,7 +33,7 @@
+ 
+ adata = adata[~adata.obs["predicted_doublet"]].copy()
+ 
+-adata.write_h5ad(f"{prefix}.h5ad")
++adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
+ 
+ # Versions
+ 
+
+************************************************************
