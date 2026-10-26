@@ -13,13 +13,10 @@ column = "${column}"
 
 assert column in adata.obs.columns, f"Column {column} not found in adata."
 
-labels = adata.obs[column].unique()
 names = {}
-errors = []
-for value in labels:
+for value in adata.obs[column].unique():
     if not isinstance(value, str):
-        errors.append(f"{value!r} -> <unrepresentable>: labels must be non-missing strings")
-        continue
+        raise ValueError(f"{value!r}: subset labels must be non-missing strings")
     name = value.replace(" ", "_")
     if (
         name in ("", ".", "..")
@@ -27,21 +24,15 @@ for value in labels:
         or chr(92) in name
         or any(unicodedata.category(char) == "Cc" for char in name)
     ):
-        errors.append(f"{value!r} -> {name!r}: unsafe subset basename")
-    else:
-        destination = Path(f"{name}.h5ad")
-        if destination.exists() or destination.is_symlink():
-            errors.append(f"{value!r} -> {destination.name!r}: subset output path already exists")
-    names.setdefault(name, []).append(value)
+        raise ValueError(f"{value!r} -> {name!r}: unsafe subset basename")
+    if name in names:
+        raise ValueError(f"{[names[name], value]!r} -> {name!r}: subset basename collision")
+    destination = Path(f"{name}.h5ad")
+    if destination.exists() or destination.is_symlink():
+        raise ValueError(f"{value!r} -> {destination.name!r}: subset output path already exists")
+    names[name] = value
 
-for name, originals in names.items():
-    if len(originals) > 1:
-        errors.append(f"{originals!r} -> {name!r}: subset basename collision")
-
-if errors:
-    raise ValueError(f"Invalid subset labels in column {column!r}: " + "; ".join(errors))
-
-for name, (value,) in names.items():
+for name, value in names.items():
     adata_subset = adata[adata.obs[column] == value].copy()
     adata_subset.write_h5ad(f"{name}.h5ad", compression="gzip")
 
