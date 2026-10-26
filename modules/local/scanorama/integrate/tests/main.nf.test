@@ -104,6 +104,9 @@ nextflow_process {
                 assert adata.var.index.values == base.var.index.values
                 assert adata.obs.colnames == base.obs.colnames
                 assert adata.layers == base.layers
+                assert adata.var.colnames == base.var.colnames
+                assert adata.uns == base.uns
+                assert '_scanorama_work' !in adata.layers
             }
         }
     }

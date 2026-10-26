@@ -13,7 +13,6 @@ from threadpoolctl import threadpool_limits
 threadpool_limits(int("${task.cpus}"))
 
 adata = sc.read_h5ad("${h5ad}")
-adata_proc = adata.copy()
 prefix = "${prefix}"
 batch_col = "${batch_col}"
 input_layer = "${input_layer}"
@@ -26,26 +25,36 @@ if batch_col not in adata.obs:
 if adata.obs[batch_col].isna().any():
     raise ValueError(f"Scanorama batch column {batch_col!r} contains missing values.")
 
-if input_layer != "X" and input_layer not in adata_proc.layers:
+if input_layer != "X" and input_layer not in adata.layers:
     raise ValueError(
-        f"input_layer {input_layer!r} is not present in adata.layers (available: {list(adata_proc.layers.keys())})"
+        f"input_layer {input_layer!r} is not present in adata.layers (available: {list(adata.layers.keys())})"
     )
 
-if input_layer != "X":
-    adata_proc.X = adata_proc.layers[input_layer]
+working_layer = "_scanorama_work"
+if working_layer in adata.layers:
+    raise ValueError(f"Scanorama working layer {working_layer!r} already exists")
+source = adata.X if input_layer == "X" else adata.layers[input_layer]
+adata.layers[working_layer] = source.copy()
 
 if log_normalize:
-    target_sum = float(np.median(np.asarray(adata_proc.X.sum(axis=1)).ravel()))
-    sc.pp.normalize_total(adata_proc, target_sum=target_sum)
-    sc.pp.log1p(adata_proc)
+    target_sum = float(np.median(np.asarray(adata.layers[working_layer].sum(axis=1)).ravel()))
+    sc.pp.normalize_total(adata, layer=working_layer, target_sum=target_sum)
+    adata.layers[working_layer] = sc.pp.log1p(adata.layers[working_layer])
 
-sc.pp.scale(adata_proc, max_value=10)
-sc.pp.pca(adata_proc, n_comps=30, zero_center=False)
+adata.layers[working_layer] = sc.pp.scale(adata.layers[working_layer], max_value=10)
+pca = sc.pp.pca(
+    adata.layers[working_layer],
+    n_comps=30,
+    zero_center=False,
+    mask_var=adata.var["highly_variable"].to_numpy() if "highly_variable" in adata.var else None,
+)
+del adata.layers[working_layer]
 
 # Preserve first-seen batch order, including the existing contiguous-batch path.
-batch_codes, _ = pd.factorize(adata_proc.obs[batch_col], sort=False)
+batch_codes, _ = pd.factorize(adata.obs[batch_col], sort=False)
 permutation = np.argsort(batch_codes, kind="stable")
-adata_proc = adata_proc[permutation].copy()
+adata_proc = sc.AnnData(pca[permutation], obs=adata.obs[[batch_col]].iloc[permutation].copy())
+adata_proc.obsm["X_pca"] = adata_proc.X
 sce.pp.scanorama_integrate(adata_proc, batch_col)
 
 adata_proc = adata_proc[adata.obs_names]
