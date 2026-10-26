@@ -70,6 +70,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Include full grouping identity in every CyteType annotation column to preserve overlapping global and subset annotations, by @nictru and GPT-6.1 Sol [[#367](https://github.com/nf-core/scdownstream/pull/367)].
 - Keep CellBender correction destinations paired with their sample files after asynchronous task completion, by @nictru and GPT-6.1 Sol [[#363](https://github.com/nf-core/scdownstream/pull/363)].
 - Process interleaved Scanorama batches contiguously and restore embeddings to the original cell order, by @nictru and GPT-6.1 Sol [[#368](https://github.com/nf-core/scdownstream/pull/368)].
 - Use the experimental design when estimating pseudobulk edgePython dispersions, by @nictru and GPT-6.1 Sol [[#361](https://github.com/nf-core/scdownstream/pull/361)].
