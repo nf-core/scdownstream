@@ -154,8 +154,6 @@ The `04_celltypes` directory contains the results of the per-sample cell type an
 
 CyteType runs after integration, clustering, and global differential expression. Annotations are merged into the merged cohort AnnData object via the `FINALIZE` step.
 
-CyteType annotation columns use `annotation:cytetype:<integration>:<resolution>:<group_key>:<field>`. The complete grouping key distinguishes global and subset analyses, including annotations for overlapping cells. This replaces names that omitted `<group_key>`; downstream consumers must use the grouping-qualified names. Ambiguous legacy aliases are not emitted.
-
 ### Clustering and dimensionality reduction
 
 <details markdown="1">
