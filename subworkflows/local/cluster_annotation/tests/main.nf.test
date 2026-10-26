@@ -121,6 +121,45 @@ nextflow_workflow {
 
     }
 
+    test("Should route both global and subset groupings to cytetype - stub") {
+
+        options '-stub'
+
+        when {
+            params { outdir = "$outputDir" }
+            workflow {
+                """
+                input[0] = channel.empty()
+                input[1] = channel.of('global', 'subset_with_underscore').map { subset -> [
+                    [
+                        id: "pca-\${subset}-0.5:wilcoxon",
+                        obs_key: "pca-\${subset}-0.5_leiden",
+                        integration: 'pca',
+                        resolution: '0.5',
+                        subset: subset,
+                        comparison_scope: 'global',
+                        de_method: 'wilcoxon',
+                        rank_key: "rank_pca_\${subset}",
+                        analyses: ['cytetype'] as Set,
+                    ],
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                ] }
+                input[2] = channel.empty()
+                input[3] = 'Offline routing test'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.obs.size() == 2
+            assert workflow.out.obs.collect { file(it).name }.sort() == [
+                'pca-global-0.5:wilcoxon_cytetype.pkl',
+                'pca-subset_with_underscore-0.5:wilcoxon_cytetype.pkl',
+            ]
+        }
+    }
+
     test("Should skip cytetype when not listed in analyses - stub") {
 
         options '-stub'
