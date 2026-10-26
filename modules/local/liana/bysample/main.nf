@@ -16,6 +16,7 @@ process LIANA_BYSAMPLE {
     val subsample_strategy
     val subsample_seed
     val apply_log1p
+    val species
 
     output:
     tuple val(meta), path("*.csv.gz")      , emit: results, optional: true

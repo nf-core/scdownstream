@@ -38,6 +38,9 @@ input:
   - apply_log1p:
       type: boolean
       description: Apply log1p to X before LIANA; false when the caller supplies log-transformed expression
+  - species:
+      type: string
+      description: Species used to select the LIANA resource, human or mouse
 
 output:
   h5ad:

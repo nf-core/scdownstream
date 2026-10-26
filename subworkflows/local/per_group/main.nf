@@ -65,6 +65,7 @@ workflow PER_GROUP {
             liana_subsample_strategy,
             liana_subsample_seed,
             liana_apply_log1p,
+            species,
         )
         ch_uns           = ch_uns.mix(LIANA_RANKAGGREGATE.out.uns)
         ch_multiqc_files = ch_multiqc_files.mix(LIANA_RANKAGGREGATE.out.multiqc_files)
@@ -87,6 +88,7 @@ workflow PER_GROUP {
             liana_subsample_strategy,
             liana_subsample_seed,
             liana_apply_log1p,
+            species,
         )
 
         CELL2CELL_TENSOR(

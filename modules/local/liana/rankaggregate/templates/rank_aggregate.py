@@ -271,6 +271,7 @@ if adata.obs[obs_key].nunique() > 1:
         li.mt.rank_aggregate(
             adata,
             obs_key,
+            resource_name={"human": "consensus", "mouse": "mouseconsensus"}["${species}"],
             use_raw=False,
             verbose=True,
             n_jobs=int("${task.cpus}"),
