@@ -47,6 +47,13 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
+            def base = anndata(new File(file(process.out.h5ad[0][1]).parent, 'combined_filtered_matrix.h5ad').toString())
+            assert adata.obs.index.values == base.obs.index.values
+            assert adata.var.index.values == base.var.index.values
+            assert adata.obs.colnames == base.obs.colnames
+            assert adata.var.colnames == base.var.colnames
+            assert adata.layers == base.layers
+            assert adata.uns == base.uns
             assert "X_emb" in adata.obsm
             assert "X_symphony" in adata.obsm
             assert snapshot(

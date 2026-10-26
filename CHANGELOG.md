@@ -9,6 +9,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
+- Avoid full AnnData copies in ComBat, Symphony, CellTypist, SCimilarity annotation and LIANA circle plotting while retaining isolated working data and existing output contracts, by @nictru and GPT-6.1 Sol.
 - Gzip-compress H5AD outputs from the installed AnnData, CellBender, DoubletDetection, Scrublet, scAR and SOLO modules through tool-recorded patches, by @nictru and GPT-6.1 Sol [[#371](https://github.com/nf-core/scdownstream/pull/371)].
 - Type boolean and numeric parameters while retaining config defaults, and require Nextflow 26.04.6 or later, by @nictru and GPT-6.1 Sol [[#359](https://github.com/nf-core/scdownstream/pull/359)].
 - Gzip-compress H5AD outputs from local Python and R modules and the QC report, excluding `hugounifier/apply` and nf-core modules, by @nictru and GPT-6.1 Sol [[#357](https://github.com/nf-core/scdownstream/pull/357)].

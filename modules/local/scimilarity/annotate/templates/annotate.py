@@ -8,18 +8,17 @@ import yaml
 from scimilarity import CellAnnotation
 
 adata = sc.read_h5ad("${h5ad}")
-adata_raw = adata.copy()
 
 use_gpu = "${task.accelerator ? 'true' : 'false'}" == "true"
 ca = CellAnnotation("${model}", use_gpu=use_gpu)
 
 predictions, nn_idxs, nn_dists, nn_stats = ca.get_predictions_knn(adata.obsm["X_emb"])
 
-adata_raw.obs["annotation:scimilarity"] = predictions.values
+adata.obs["annotation:scimilarity"] = predictions.values
 
 # Write the output
-adata_raw.write_h5ad("${prefix}.h5ad", compression="gzip")
-adata_raw.obs[["annotation:scimilarity"]].to_pickle("${prefix}.pkl")
+adata.write_h5ad("${prefix}.h5ad", compression="gzip")
+adata.obs[["annotation:scimilarity"]].to_pickle("${prefix}.pkl")
 
 versions = {
     "${task.process}": {

@@ -7,19 +7,19 @@ import pandas as pd
 import scanpy as sc
 import symphonypy as sp
 import yaml
+from anndata import AnnData
 from threadpoolctl import threadpool_limits
 
 threadpool_limits(int("${task.cpus}"))
 
 adata = sc.read_h5ad("${h5ad}")
-adata_proc = adata.copy()
 adata_ref = sc.read_h5ad("reference/reference.h5ad")
 prefix = "${prefix}"
 batch_col = "${batch_col}"
 counts_layer = "${counts_layer}"
 
-if counts_layer != "X":
-    adata_proc.X = adata_proc.layers[counts_layer]
+source = adata.X if counts_layer == "X" else adata.layers[counts_layer]
+adata_proc = AnnData(X=source.copy(), obs=adata.obs.copy(), var=adata.var.copy())
 
 target_sum = float(adata_ref.uns["normalize"]["target_sum"])
 sc.pp.normalize_total(adata_proc, target_sum=target_sum)
