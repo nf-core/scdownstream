@@ -86,7 +86,7 @@ workflow SUB_INTEGRATE {
     ch_h5ad_split = SPLITCOL.out.h5ad
         .transpose()
         .map { meta, h5ad ->
-            def subset = h5ad.simpleName
+            def subset = h5ad.baseName
             [
                 meta + [
                     id: subset,
