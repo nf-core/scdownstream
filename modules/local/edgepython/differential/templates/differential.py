@@ -143,7 +143,7 @@ for celltype, celltype_data in adata.obs.groupby("celltype", observed=True):
         genes=pd.DataFrame({"genes": np.asarray(sub.var_names.astype(str))}),
     )
     y = ep.calc_norm_factors(y)
-    y = ep.estimate_disp(y)
+    y = ep.estimate_disp(y, design=design)
     fit = ep.glm_ql_fit(y, design)
     safe_celltype = safe_name(celltype)
 
