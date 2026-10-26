@@ -70,6 +70,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Keep CellBender correction destinations paired with their sample files after asynchronous task completion, by @nictru and GPT-6.1 Sol [[#363](https://github.com/nf-core/scdownstream/pull/363)].
 - Process interleaved Scanorama batches contiguously and restore embeddings to the original cell order, by @nictru and GPT-6.1 Sol [[#368](https://github.com/nf-core/scdownstream/pull/368)].
 - Use the experimental design when estimating pseudobulk edgePython dispersions, by @nictru and GPT-6.1 Sol [[#361](https://github.com/nf-core/scdownstream/pull/361)].
 - Convert single-cell edgePython effect sizes from natural-log coefficients to the advertised `log2fc` units, by @nictru and GPT-6.1 Sol [[#364](https://github.com/nf-core/scdownstream/pull/364)].
