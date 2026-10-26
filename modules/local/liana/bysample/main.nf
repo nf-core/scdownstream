@@ -15,6 +15,7 @@ process LIANA_BYSAMPLE {
     val max_cells
     val subsample_strategy
     val subsample_seed
+    val apply_log1p
 
     output:
     tuple val(meta), path("*.csv.gz")      , emit: results, optional: true
