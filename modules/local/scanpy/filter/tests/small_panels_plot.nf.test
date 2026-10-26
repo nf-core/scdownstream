@@ -1,0 +1,91 @@
+nextflow_process {
+
+    name "Test SCANPY_FILTER small panel plots and MAD"
+    script "modules/local/scanpy/filter/main.nf"
+    process "SCANPY_FILTER"
+
+    tag "modules"
+    tag "modules_local"
+
+    setup {
+        run("ADATA_READCSV") {
+            script "modules/local/adata/readcsv/main.nf"
+            process {
+                """
+                genes = (0..<32).collect { String.format('GENE%03d', it) }
+                // Positive totals isolate panel size from the existing zero-total histogram behaviour.
+                rows = (0..<8).collect { i -> 'cell_' + i + ',' + (0..<32).collect { j -> 1 + (i + j) % 7 }.join(',') }
+                input[0] = channel.of('cell,' + genes.join(',') + '\\n' + rows.join('\\n') + '\\n')
+                    .collectFile(name: 'positive_counts.csv')
+                    .map { csv -> [[id: 'positive'], csv] }
+                """
+            }
+        }
+        run("ADATA_EXTEND") {
+            script "modules/local/adata/extend/main.nf"
+            process {
+                """
+                rows = (0..<32).collect { i ->
+                    String.format('GENE%03d', i) + ',' + [1, 10, 19, 20, 32].collect { n -> i < n ? 'True' : 'False' }.join(',')
+                }
+                fragment = channel.of('gene,panel_1,panel_10,panel_19,panel_20,panel_32\\n' + rows.join('\\n') + '\\n')
+                    .collectFile(name: 'panels.csv')
+                input[0] = ADATA_READCSV.out.h5ad.combine(fragment)
+                    .map { meta, h5ad, var -> [[id: 'panels'], h5ad, [], [var], [], [], [], []] }
+                """
+            }
+        }
+        run("ADATA_SUBSETVAR") {
+            script "modules/local/adata/subsetvar/main.nf"
+            process {
+                """
+                panels = ADATA_EXTEND.out.h5ad.flatMap { meta, h5ad ->
+                    [1, 10, 19, 20, 32].collect { n -> [[id: 'panel_' + n, n_genes: n], h5ad] }
+                }.multiMap { meta, h5ad ->
+                    h5ad: [meta, h5ad]
+                    column: meta.id
+                }
+                input[0] = panels.h5ad
+                input[1] = panels.column
+                """
+            }
+        }
+    }
+
+    test("Should plot small panels and apply top-20 MAD through the canonical metric") {
+        when {
+            process {
+                """
+                input[0] = ADATA_SUBSETVAR.out.h5ad.map { meta, h5ad -> [meta + [id: 'qc_' + meta.n_genes], h5ad] }
+                input[1] = 'index'
+                input[2] = 0
+                input[3] = 0
+                input[4] = 0
+                input[5] = 0
+                input[6] = 100
+                input[7] = 0
+                input[8] = 100
+                input[9] = 0
+                input[10] = 0
+                input[11] = 3
+                input[12] = 0
+                input[13] = []
+                input[14] = true
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert process.out.h5ad.size() == 5
+            assert process.out.plots.size() == 5
+            assert process.out.multiqc_files.size() == 5
+            process.out.plots.each { assert java.nio.file.Files.size(path(it)) > 0 }
+            process.out.h5ad.each { meta, h5ad ->
+                def adata = anndata(h5ad)
+                assert adata.n_vars == meta.n_genes
+                assert adata.n_obs > 0
+                assert 'pct_counts_in_top_20_genes' in adata.obs.colnames
+            }
+        }
+    }
+}
