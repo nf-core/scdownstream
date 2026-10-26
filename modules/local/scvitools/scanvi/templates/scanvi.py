@@ -23,7 +23,6 @@ scvi.settings.num_threads = int("${task.cpus}")
 scvi.settings.seed = 0
 
 adata = ad.read_h5ad("${h5ad}")
-adata_work = adata.copy()
 reference_model_dir = "reference_model"
 reference_model_file = f"{reference_model_dir}/model.pt"
 reference_model_type = "${reference_model_type}"
@@ -33,10 +32,28 @@ plan_kwargs = {}
 if reference_model_type and reference_model_type not in ["scvi", "scanvi"]:
     raise ValueError(f"Invalid reference model type: {reference_model_type}")
 
-if reference_model_type == "scanvi":
-    state = torch.load(reference_model_file, map_location="cpu", weights_only=False)
-    setup = state["attr_dict"]["registry_"]["setup_args"]
+setup = {}
+if reference_model_type:
+    setup = torch.load(reference_model_file, map_location="cpu", weights_only=False)["attr_dict"]["registry_"][
+        "setup_args"
+    ]
 
+if "_scvi_adata_minify_type" in adata.uns or any(
+    key in adata.obsm for key in ("_scvi_latent_qzm", "_scvi_latent_qzv")
+):
+    # Minified inputs require model-specific latent fields and library sizes.
+    adata_work = adata.copy()
+else:
+    layer = setup.get("layer")
+    # Registration and query preparation must not mutate the output's expression or metadata.
+    adata_work = ad.AnnData(
+        X=adata.X.copy() if adata.X is not None else None,
+        obs=adata.obs.copy(),
+        var=adata.var.copy(),
+        layers={layer: adata.layers[layer].copy()} if layer is not None else {},
+    )
+
+if reference_model_type == "scanvi":
     batch_key = setup["batch_key"]
     if batch_key != "batch":
         adata_work.obs[batch_key] = adata_work.obs["batch"]
