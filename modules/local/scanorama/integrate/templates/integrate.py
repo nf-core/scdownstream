@@ -48,7 +48,8 @@ permutation = np.argsort(batch_codes, kind="stable")
 adata_proc = adata_proc[permutation].copy()
 sce.pp.scanorama_integrate(adata_proc, batch_col)
 
-embedding = adata_proc.obsm["X_scanorama"][np.argsort(permutation)]
+adata_proc = adata_proc[adata.obs_names]
+embedding = adata_proc.obsm["X_scanorama"]
 adata.obsm["X_scanorama"] = embedding
 adata.obsm["X_emb"] = embedding
 adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")

@@ -36,6 +36,78 @@ nextflow_process {
 
     }
 
+    test("Should preserve cell order with interleaved and contiguous batches") {
+
+        setup {
+            run("ADATA_READCSV") {
+                script "../../../adata/readcsv/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'dense'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.csv', checkIfExists: true)
+                    ])
+                    """
+                }
+            }
+            run("ADATA_EXTEND") {
+                script "../../../adata/extend/main.nf"
+                process {
+                    """
+                    csv = file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.csv', checkIfExists: true)
+                    cells = csv.readLines().drop(1).collect { it.split(',')[0] }
+                    obs = channel.of('interleaved', 'contiguous').map { mode ->
+                        def rows = cells.withIndex().collect { cell, i ->
+                            def batch = mode == 'interleaved' ? i % 2 : (i < 32 ? 0 : 1)
+                            cell + ',' + (batch == 0 ? 'z_batch' : 'a_batch')
+                        }
+                        [mode + '.csv', 'cell,regression_batch\\n' + rows.join('\\n') + '\\n']
+                    }.collectFile()
+                    input[0] = ADATA_READCSV.out.h5ad.combine(obs).map { meta, h5ad, fragment ->
+                        [[id: fragment.baseName], h5ad, [fragment], [], [], [], [], []]
+                    }
+                    """
+                }
+            }
+        }
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = ADATA_EXTEND.out.h5ad.map { meta, h5ad ->
+                    [meta + [id: meta.id + '_integrated'], h5ad]
+                }
+                input[1] = 'regression_batch'
+                input[2] = 'X'
+                input[3] = true
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.h5ad.size() == 2
+            assert process.out.obsm.size() == 2
+            process.out.h5ad.each { meta, output ->
+                def adata = anndata(output)
+                def base = anndata(new File(file(output).parent, meta.id.replace('_integrated', '') + '.h5ad').toString())
+                assert adata.n_obs == 64
+                assert adata.n_vars == 128
+                assert 'X_scanorama' in adata.obsm
+                assert 'X_emb' in adata.obsm
+                def expected = (0..<64).collect { i ->
+                    (meta.id.startsWith('interleaved') ? i % 2 == 0 : i < 32) ? 'z_batch' : 'a_batch'
+                }
+                assert adata.obs.get('regression_batch').data == expected
+                assert adata.obs.index.values == base.obs.index.values
+                assert adata.var.index.values == base.var.index.values
+                assert adata.obs.colnames == base.obs.colnames
+                assert adata.layers == base.layers
+            }
+        }
+    }
+
     test("Should run without failures - stub") {
 
         options '-stub'
