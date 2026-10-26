@@ -36,6 +36,20 @@ nextflow_process {
         then {
             assert process.success
             def adata = anndata(process.out.h5ad[0][1])
+            def base = anndata(new File(file(process.out.h5ad[0][1]).parent, 'combined_filtered_matrix.h5ad').toString())
+            assert adata.n_obs == base.n_obs
+            assert adata.n_vars == base.n_vars
+            assert adata.obs.index.values == base.obs.index.values
+            assert adata.var.index.values == base.var.index.values
+            assert adata.obs.colnames == base.obs.colnames
+            assert adata.var.colnames == base.var.colnames
+            assert adata.obs.get('batch').data == base.obs.get('batch').data
+            assert adata.layers == base.layers
+            assert adata.varm == base.varm
+            assert adata.uns == base.uns
+            assert adata.obsp == base.obsp
+            assert adata.varp == base.varp
+            assert adata.obsm.toSet() == (base.obsm + ['X_emb']).toSet()
             assert "X_emb" in adata.obsm
             assert snapshot(
                 path(process.out.versions[0]).yaml,

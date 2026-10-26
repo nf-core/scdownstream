@@ -55,10 +55,13 @@ early.add_argument(
 )
 cli = parser.parse_args(shlex.split(args_str) if args_str.strip() else [])
 
-adata_processing = adata.copy()
-
-if "${counts_layer}" != "X":
-    adata_processing.X = adata.layers["${counts_layer}"]
+counts = adata.X if "${counts_layer}" == "X" else adata.layers["${counts_layer}"]
+# scArches needs independent counts and metadata, not the original layers or raw.
+adata_processing = ad.AnnData(
+    X=counts.copy(),
+    obs=adata.obs.copy(),
+    var=adata.var.copy(),
+)
 
 raw_condition = "${condition_col}".strip()
 if not raw_condition:
