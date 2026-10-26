@@ -21,7 +21,7 @@ for value in adata.obs[column].unique():
     if (
         name in ("", ".", "..")
         or "/" in name
-        or chr(92) in name
+        or chr(92) in name  # Backslash
         or any(unicodedata.category(char) == "Cc" for char in name)
     ):
         raise ValueError(f"{value!r} -> {name!r}: unsafe subset basename")
