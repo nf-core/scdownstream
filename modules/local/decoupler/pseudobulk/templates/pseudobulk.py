@@ -7,8 +7,10 @@ import platform
 import anndata as ad
 import decoupler as dc
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import yaml
+from scipy.sparse import issparse
 
 adata = ad.read_h5ad("${h5ad}")
 donor_col = "${donor_col}"
@@ -24,14 +26,23 @@ for col in required_cols:
     if col not in adata.obs.columns:
         raise ValueError(f"Column '{col}' not found in adata.obs")
 
-layer = None if counts_layer == "X" else counts_layer
+if adata.obs[donor_col].isna().any():
+    raise ValueError(f"Donor column '{donor_col}' contains missing values")
 
+layer = None if counts_layer == "X" else counts_layer
+counts = adata.X if layer is None else adata.layers[layer]
+values = counts.data if issparse(counts) else np.asarray(counts)
+if not np.isfinite(values).all() or (values < 0).any():
+    raise ValueError(f"Counts source '{counts_layer}' must contain only finite, nonnegative values")
+
+# decoupler 2.1.6 couples its nonnegative check to its integer-count requirement.
 pdata = dc.pp.pseudobulk(
     adata,
     sample_col=donor_col,
     groups_col=[celltype_col, condition_col],
     layer=layer,
     mode="sum",
+    skip_checks=True,
 )
 
 dc.pp.filter_samples(
