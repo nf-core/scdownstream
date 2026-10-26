@@ -182,7 +182,7 @@ jobs:
           path: pr-comment-fragment/
 
   confirm-pass:
-    needs: [nf-test]
+    needs: [nf-test-changes, nf-test]
     if: always()
     runs-on: # use self-hosted runners
       - runs-on=${{ github.run_id }}-confirm-pass
