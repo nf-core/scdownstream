@@ -31,5 +31,14 @@ Changes in 'scvitools/solo/templates/solo.py':
  
      doublets = result[result == "doublet"].index.tolist()
      adata.obs.loc[doublets, "doublet"] = True
+@@ -64,7 +64,7 @@
+ del adata.uns["_scvi_manager_uuid"]
+ del adata.uns["_scvi_uuid"]
+ 
+-adata.write_h5ad("${prefix}.h5ad")
++adata.write_h5ad("${prefix}.h5ad", compression="gzip")
+ 
+ # Versions
+ 
 
 ************************************************************

@@ -64,7 +64,7 @@ adata.obs.drop("doublet", axis=1, inplace=True)
 del adata.uns["_scvi_manager_uuid"]
 del adata.uns["_scvi_uuid"]
 
-adata.write_h5ad("${prefix}.h5ad")
+adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 
 # Versions
 

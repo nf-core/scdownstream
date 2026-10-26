@@ -8,7 +8,8 @@
                     "anndata/barcodes": {
                         "branch": "master",
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
-                        "installed_by": ["h5ad_removebackground_barcodes_cellbender_anndata"]
+                        "installed_by": ["h5ad_removebackground_barcodes_cellbender_anndata"],
+                        "patch": "modules/nf-core/anndata/barcodes/anndata-barcodes.diff"
                     },
                     "cellbender/merge": {
                         "branch": "master",
@@ -24,7 +25,8 @@
                     "doubletdetection": {
                         "branch": "master",
                         "git_sha": "fcf2d1ae0a45af93c0ca5010a48ff257aa8340d3",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/doubletdetection/doubletdetection.diff"
                     },
                     "multiqc": {
                         "branch": "master",
@@ -39,12 +41,14 @@
                     "scanpy/scrublet": {
                         "branch": "master",
                         "git_sha": "fa506994bc44f45c9b76f42b6b021973a9f343f1",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/scanpy/scrublet/scanpy-scrublet.diff"
                     },
                     "scvitools/scar": {
                         "branch": "master",
                         "git_sha": "416bcdbf15649b918f1c38d3921f3182e97af530",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/scvitools/scar/scvitools-scar.diff"
                     },
                     "scvitools/solo": {
                         "branch": "master",

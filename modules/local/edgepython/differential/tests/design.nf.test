@@ -1,0 +1,129 @@
+nextflow_process {
+
+    name "Test edgePython dispersion designs"
+    script "modules/local/edgepython/differential/main.nf"
+    process "EDGEPYTHON_DIFFERENTIAL"
+
+    tag "modules"
+    tag "modules_local"
+    tag "dispersion_design"
+
+    setup {
+        run("DECOUPLER_PSEUDOBULK") {
+            script "modules/local/decoupler/pseudobulk/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'design', integration: 'none'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'X'
+                input[2] = 'donor'
+                input[3] = 'label'
+                input[4] = 'condition'
+                input[5] = 10
+                input[6] = 1000
+                """
+            }
+        }
+    }
+
+    test("Should fit a paired donor and condition design") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = DECOUPLER_PSEUDOBULK.out.h5ad
+                input[1] = 'Healthy'
+                """
+            }
+        }
+        then {
+            assert process.success
+            def tables = process.out.results[0][1]
+            assert tables.collect { file(it).name }.sort() == [
+                'design_edgepython_TypeA_Disease_results.parquet',
+                'design_edgepython_TypeB_Disease_results.parquet'
+            ]
+            assert tables.every { file(it).size() > 0 }
+            def table = parquet(tables.find { file(it).name.contains('_TypeA_') })
+            assert table.rowCount == 3000
+            assert table.columnNames.take(7) == ['gene', 'log2fc', 'pvalue', 'padj', 'group', 'contrast', 'stratum']
+            assert table.schema.fields.find { it.name == 'log2fc' }.physicalType == 'DOUBLE'
+            def row = table.rows.find { it.gene == 'FOXN3' }
+            assert row != null
+            assert row.group == 'Disease'
+            assert row.contrast == 'Disease vs Healthy'
+            assert row.stratum == 'celltype=TypeA'
+            assert Math.abs(row.log2fc - 1.2295950441713215d) < 1e-6d
+            assert Math.abs(row.pvalue - 0.008705917844970962d) < 1e-7d
+            assert Math.abs(row.padj - 1.0d) < 1e-8d
+        }
+    }
+
+    test("Should fit an unpaired condition design") {
+        setup {
+            run("ADATA_EXTEND") {
+                script "modules/local/adata/extend/main.nf"
+                process {
+                    """
+                    rows = ['sample_id,unpaired_donor']
+                    ['D01', 'D02', 'D03'].each { donor ->
+                        ['TypeA', 'TypeB'].each { label ->
+                            ['Healthy', 'Disease'].each { condition ->
+                                rows.add(donor + '__' + label + '__' + condition + ',' + donor + '_' + condition)
+                            }
+                        }
+                    }
+                    obs = channel.of(rows.join('\\n') + '\\n').collectFile(name: 'unpaired_obs.csv')
+                    input[0] = DECOUPLER_PSEUDOBULK.out.h5ad.combine(obs)
+                        .map { meta, h5ad, csv -> [meta + [id: 'unpaired'], h5ad, [csv], [], [], [], [], []] }
+                    """
+                }
+            }
+            run("DECOUPLER_PSEUDOBULK", alias: "UNPAIRED_PSEUDOBULK") {
+                script "modules/local/decoupler/pseudobulk/main.nf"
+                process {
+                    """
+                    input[0] = ADATA_EXTEND.out.h5ad.map { meta, h5ad -> [meta + [id: 'design'], h5ad] }
+                    input[1] = 'X'
+                    input[2] = 'unpaired_donor'
+                    input[3] = 'celltype'
+                    input[4] = 'condition'
+                    input[5] = 1
+                    input[6] = 1
+                    """
+                }
+            }
+        }
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = UNPAIRED_PSEUDOBULK.out.h5ad
+                input[1] = 'Healthy'
+                """
+            }
+        }
+        then {
+            assert process.success
+            def tables = process.out.results[0][1]
+            assert tables.collect { file(it).name }.sort() == [
+                'design_edgepython_TypeA_Disease_results.parquet',
+                'design_edgepython_TypeB_Disease_results.parquet'
+            ]
+            assert tables.every { file(it).size() > 0 }
+            def table = parquet(tables.find { file(it).name.contains('_TypeA_') })
+            assert table.rowCount == 3000
+            assert table.columnNames.take(7) == ['gene', 'log2fc', 'pvalue', 'padj', 'group', 'contrast', 'stratum']
+            def row = table.rows.find { it.gene == 'H4C15' }
+            assert row != null
+            assert row.group == 'Disease'
+            assert row.contrast == 'Disease vs Healthy'
+            assert row.stratum == 'celltype=TypeA'
+            assert Math.abs(row.log2fc - -0.48054392608872826d) < 1e-6d
+            assert Math.abs(row.pvalue - 0.006511532640851087d) < 1e-7d
+            assert Math.abs(row.padj - 0.928263826539495d) < 1e-6d
+        }
+    }
+}
