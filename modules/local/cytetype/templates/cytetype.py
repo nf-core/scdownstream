@@ -25,7 +25,7 @@ rank_key = "${rank_key}"
 _auth = os.environ.get("CYTETYPE_API_KEY")
 auth_token_arg = _auth.strip() if _auth and _auth.strip() else None
 
-cytetype_base = f"annotation:cytetype:{integration}:{resolution}"
+cytetype_base = f"annotation:cytetype:{integration}:{resolution}:{group_key}"
 output_cols = [
     f"{cytetype_base}:cell_type",
     f"{cytetype_base}:ontology_term",
