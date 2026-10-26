@@ -111,11 +111,9 @@ workflow PER_GROUP {
     ch_h5ad_de = ch_h5ad_for_de
         .filter { meta, _h5ad ->
             def m = meta.de_methods_resolved
-            m && (
-                (rankGenesGroupsAnalysisEnabled(meta) && m.intersect(cellLevelDeMethods())) ||
+            (rankGenesGroupsAnalysisEnabled(meta) && m.intersect(cellLevelDeMethods())) ||
                 pseudobulkingEnabled(meta, pseudobulk, decoupler) ||
                 ((meta.analyses == null || 'de' in meta.analyses) && 'edgepython_sc' in m)
-            )
         }
 
     DIFFERENTIAL_EXPRESSION(
