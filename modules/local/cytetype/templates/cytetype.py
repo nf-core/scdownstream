@@ -3,12 +3,14 @@
 
 import os
 import platform
+from copy import deepcopy
 from importlib.metadata import version
 
 import numpy as np
 import pandas as pd
 import scanpy as sc
 import yaml
+from anndata import AnnData
 from cytetype import CyteType
 
 adata = sc.read_h5ad("input.h5ad")
@@ -39,7 +41,16 @@ library_cols = [
     f"cytetype_cellState_{group_key}",
 ]
 
-adata_work = adata.copy()
+# CyteType 0.19.4 reads matrices but mutates obs, var and uns during artefact creation and annotation.
+adata_work = AnnData(
+    X=adata.X,
+    obs=adata.obs.copy(),
+    var=adata.var.copy(),
+    uns=deepcopy(adata.uns),
+    obsm=dict(adata.obsm),
+    layers=dict(adata.layers),
+    raw={"X": adata.raw.X, "var": adata.raw.var.copy()} if adata.raw is not None else None,
+)
 
 if symbol_col != "index" and symbol_col:
     if symbol_col not in adata_work.var.columns:

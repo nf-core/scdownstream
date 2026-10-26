@@ -84,6 +84,58 @@ nextflow_process {
 
     }
 
+    test("Should fail with a group key that does not exist") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_RANKGENESGROUPS.out.h5ad
+                input[1] = "index"
+                input[2] = "Human PBMC test context"
+                input[3] = "missing_group"
+                input[4] = "rank_genes_groups"
+                input[5] = "scvi"
+                input[6] = "0.5"
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Group key 'missing_group' not found in adata.obs.columns")
+        }
+
+    }
+
+    test("Should fail with a rank key that does not exist") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_RANKGENESGROUPS.out.h5ad
+                input[1] = "index"
+                input[2] = "Human PBMC test context"
+                input[3] = "leiden"
+                input[4] = "missing_rank"
+                input[5] = "scvi"
+                input[6] = "0.5"
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Rank key 'missing_rank' not found in adata.uns")
+        }
+
+    }
+
     test("Should fail with empty study context") {
 
         when {
