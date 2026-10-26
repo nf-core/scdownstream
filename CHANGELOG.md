@@ -70,6 +70,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Use the experimental design when estimating pseudobulk edgePython dispersions, by @nictru and GPT-6.1 Sol [[#361](https://github.com/nf-core/scdownstream/pull/361)].
 - Convert single-cell edgePython effect sizes from natural-log coefficients to the advertised `log2fc` units, by @nictru and GPT-6.1 Sol [[#364](https://github.com/nf-core/scdownstream/pull/364)].
 - Use selected expression in `X` consistently for Scanpy marker ranking, filtering and plotting when `.raw` is present, by @nictru and GPT-6.1 Sol [[#362](https://github.com/nf-core/scdownstream/pull/362)].
 - Support dense expression matrices in LIANA rank aggregation and let callers explicitly select log1p transformation in both LIANA modules, by @nictru and GPT-6.1 Sol [[#365](https://github.com/nf-core/scdownstream/pull/365)].
