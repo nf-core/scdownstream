@@ -146,8 +146,9 @@ if metric_profile == "full":
     sc.pp.normalize_total(ad_bm, target_sum=1e4)
     sc.pp.log1p(ad_bm)
 
-if labels.nunique() <= 1:
-    warnings.warn("obs['label'] has only one unique value; disabling BRAS (silhouette batch).")
+label_batches = adata.obs.groupby("label", observed=True)["batch"].agg(["nunique", "size"])
+if not ((label_batches["nunique"] > 1) & (label_batches["nunique"] < label_batches["size"])).any():
+    warnings.warn("No label has a valid within-label batch comparison; disabling BRAS (silhouette batch).")
     batch_cfg = bm_kw.get("batch_correction_metrics", BatchCorrection())
     bm_kw["batch_correction_metrics"] = replace(batch_cfg, bras=False)
 

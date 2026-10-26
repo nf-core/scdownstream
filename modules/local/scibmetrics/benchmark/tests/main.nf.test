@@ -102,6 +102,15 @@ nextflow_process {
             assert inputAdata.obs.get('batch').unique().size() > 1
             assert inputAdata.obs.get('label').unique().size() > 1
             assert file(process.out.metrics[0]).size() > 0
+            def labels = inputAdata.obs.get('label').data
+            def batches = inputAdata.obs.get('batch').data
+            def eligible = (0..<labels.size()).groupBy { labels[it] }.values().any { cells ->
+                def nBatches = cells.collect { batches[it] }.unique().size()
+                nBatches > 1 && nBatches < cells.size()
+            }
+            def metricNames = file(process.out.metrics[0]).readLines()[0].split('\t') as List
+            assert metricNames.contains('BRAS') == eligible
+            assert metricNames.containsAll(['iLISI', 'KBET', 'Graph connectivity'])
             assert snapshot(path(process.out.versions[0]).yaml).match()
         }
 
