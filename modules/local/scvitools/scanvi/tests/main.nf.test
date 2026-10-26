@@ -94,11 +94,11 @@ nextflow_process {
         config './nextflow.config'
 
         setup {
-            run("SCANVI_REFERENCE") {
+            run("SCVITOOLS_SCANVI", alias: "SCANVI_REFERENCE") {
                 script "modules/local/scvitools/scanvi/main.nf"
                 process {
                     """
-                    input[0] = SCANPY_HVGS.out.h5ad
+                    input[0] = SCANPY_HVGS.out.h5ad.map { meta, h5ad -> [meta + [id: 'reference_scanvi'], h5ad] }
                     input[1] = [[], []]
                     input[2] = ''
                     input[3] = ['label', 'Unknown']
@@ -166,11 +166,11 @@ nextflow_process {
         config './nextflow.config'
 
         setup {
-            run("SCVI_REFERENCE") {
+            run("SCVITOOLS_SCVI", alias: "SCVI_REFERENCE") {
                 script "modules/local/scvitools/scvi/main.nf"
                 process {
                     """
-                    input[0] = SCANPY_HVGS.out.h5ad
+                    input[0] = SCANPY_HVGS.out.h5ad.map { meta, h5ad -> [meta + [id: 'reference_scvi'], h5ad] }
                     input[1] = [[], []]
                     input[2] = 'batch'
                     input[3] = 'sample'

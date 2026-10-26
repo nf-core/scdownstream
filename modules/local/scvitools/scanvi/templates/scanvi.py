@@ -38,9 +38,8 @@ if reference_model_type:
         "setup_args"
     ]
 
-if "_scvi_adata_minify_type" in adata.uns or any(
-    key in adata.obsm for key in ("_scvi_latent_qzm", "_scvi_latent_qzv")
-):
+has_latent_params = any(key in adata.obsm for key in ("_scvi_latent_qzm", "_scvi_latent_qzv"))
+if "_scvi_adata_minify_type" in adata.uns or has_latent_params:
     # Minified inputs require model-specific latent fields and library sizes.
     adata_work = adata.copy()
 else:
