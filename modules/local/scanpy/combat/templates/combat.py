@@ -17,13 +17,15 @@ input_layer = "${input_layer}"
 log_normalize = "${log_normalize}" == "true"
 batch_col = "${batch_col}"
 
-if input_layer != "X" and input_layer not in adata.layers:
+adata_proc = adata.copy()
+
+if input_layer != "X" and input_layer not in adata_proc.layers:
     raise ValueError(
-        f"input_layer {input_layer!r} is not present in adata.layers (available: {list(adata.layers.keys())})"
+        f"input_layer {input_layer!r} is not present in adata.layers (available: {list(adata_proc.layers.keys())})"
     )
 
-source = adata.X if input_layer == "X" else adata.layers[input_layer]
-adata_proc = sc.AnnData(X=source.copy(), obs=adata.obs[[batch_col]].copy(), var=adata.var.copy())
+if input_layer != "X":
+    adata_proc.X = adata_proc.layers[input_layer]
 
 if log_normalize:
     sc.pp.normalize_total(adata_proc)

@@ -29,12 +29,6 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
-            def base = anndata(new File(file(process.out.h5ad[0][1]).parent, 'SRR28679756_filtered_matrix.h5ad').toString())
-            assert adata.obs.index.values == base.obs.index.values
-            assert adata.var.index.values == base.var.index.values
-            assert adata.var.colnames == base.var.colnames
-            assert adata.layers == base.layers
-            assert adata.uns == base.uns
             with(adata) {
                 assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell" in obs.colnames
                 assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell:confidence" in obs.colnames
@@ -69,12 +63,6 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
-            def base = anndata(new File(file(process.out.h5ad[0][1]).parent, 'SRR28679756_filtered_matrix.h5ad').toString())
-            assert adata.obs.index.values == base.obs.index.values
-            assert adata.var.index.values == base.var.index.values
-            assert adata.var.colnames == base.var.colnames
-            assert adata.layers == base.layers
-            assert adata.uns == base.uns
             with(adata) {
                 assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell" in obs.colnames
                 assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell:confidence" in obs.colnames

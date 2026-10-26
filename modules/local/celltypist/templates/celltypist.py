@@ -16,10 +16,7 @@ prefix = "${prefix}"
 
 models = "${models.join(' ')}".split()
 
-adata_celltypist = sc.AnnData(X=adata.X.copy(), obs=pd.DataFrame(index=adata.obs_names), var=adata.var.copy())
-if adata.raw is not None:
-    # CellTypist can fall back to raw expression, which its classifier only reads.
-    adata_celltypist.raw = sc.AnnData(X=adata.raw.X, obs=adata_celltypist.obs.copy(), var=adata.raw.var.copy())
+adata_celltypist = adata.copy()  # make a copy of our adata
 sc.pp.normalize_per_cell(adata_celltypist, counts_per_cell_after=10**4)  # normalize to 10,000 counts per cell
 sc.pp.log1p(adata_celltypist)  # log-transform
 

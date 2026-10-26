@@ -35,12 +35,13 @@ def build_reference(adata, target_sum):
 threadpool_limits(int("${task.cpus}"))
 
 adata = sc.read_h5ad("${h5ad}")
+adata_proc = adata.copy()
 prefix = "${prefix}"
 batch_col = "${batch_col}"
 counts_layer = "${counts_layer}"
 
-source = adata.X if counts_layer == "X" else adata.layers[counts_layer]
-adata_proc = AnnData(X=source.copy(), obs=adata.obs.copy(), var=adata.var.copy())
+if counts_layer != "X":
+    adata_proc.X = adata_proc.layers[counts_layer]
 
 target_sum = float(np.median(np.asarray(adata_proc.X.sum(axis=1)).ravel()))
 sc.pp.normalize_total(adata_proc, target_sum=target_sum)

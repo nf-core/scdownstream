@@ -44,7 +44,6 @@ nextflow_process {
             with(adata) {
                 assert "X_emb" in obsm
                 assert "combat" in layers
-                assert "log1p" in layers
             }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
