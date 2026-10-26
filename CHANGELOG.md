@@ -70,6 +70,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Reject colliding and unsafe subset filenames before writing split AnnData outputs, by @nictru and GPT-6.1 Sol [[#360](https://github.com/nf-core/scdownstream/pull/360)].
 - Retain the trained SCVI model across SOLO batch predictions, by @nictru and GPT-6.1 Sol [[#370](https://github.com/nf-core/scdownstream/pull/370)].
 - Preserve full integration and subset identities in QC report UMAP sections, by @nictru and GPT-6.1 Sol [[#369](https://github.com/nf-core/scdownstream/pull/369)].
 - Include full grouping identity in every CyteType annotation column to preserve overlapping global and subset annotations, by @nictru and GPT-6.1 Sol [[#367](https://github.com/nf-core/scdownstream/pull/367)].
