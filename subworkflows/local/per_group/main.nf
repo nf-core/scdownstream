@@ -52,6 +52,9 @@ workflow PER_GROUP {
     ch_uns           = ch_uns.mix(SCANPY_PAGA.out.uns)
     ch_multiqc_files = ch_multiqc_files.mix(SCANPY_PAGA.out.multiqc_files)
 
+    // Normalisation writes derived layers; X retains selected analysis counts.
+    def liana_apply_log1p = true
+
     if (!skip_liana) {
         LIANA_RANKAGGREGATE(
             ch_h5ad_no_neighbors
@@ -61,6 +64,7 @@ workflow PER_GROUP {
             liana_max_cells ?: 0,
             liana_subsample_strategy,
             liana_subsample_seed,
+            liana_apply_log1p,
         )
         ch_uns           = ch_uns.mix(LIANA_RANKAGGREGATE.out.uns)
         ch_multiqc_files = ch_multiqc_files.mix(LIANA_RANKAGGREGATE.out.multiqc_files)
@@ -82,6 +86,7 @@ workflow PER_GROUP {
             liana_max_cells ?: 0,
             liana_subsample_strategy,
             liana_subsample_seed,
+            liana_apply_log1p,
         )
 
         CELL2CELL_TENSOR(

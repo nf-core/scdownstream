@@ -97,6 +97,7 @@ workflow RANK_GENES_GROUPS {
         ch_rankgenesgroups.filter,
         ch_rankgenesgroups.method,
         ch_rankgenesgroups.rank_key,
+        true,
     )
     ch_uns           = ch_uns.mix(SCANPY_RANKGENESGROUPS.out.uns.flatten())
     ch_multiqc_files = ch_multiqc_files.mix(SCANPY_RANKGENESGROUPS.out.multiqc_files.flatten())

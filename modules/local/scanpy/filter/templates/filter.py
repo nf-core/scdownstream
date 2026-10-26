@@ -242,6 +242,9 @@ def plot_qc_histogram_panel(prefix, section_name, description, adata, thresholds
 
 
 adata = sc.read_h5ad("${h5ad}")
+if adata.n_vars == 0:
+    raise ValueError("Cannot calculate QC metrics for an empty gene panel (zero genes)")
+
 prefix = "${prefix}"
 symbol_col = "${symbol_col}"
 mito_genes = "${mito_genes}"
@@ -284,13 +287,16 @@ else:
 adata.var["ribo"] = adata.var_names.str.lower().str.match(r"^rp[sl]")
 adata.var["hb"] = adata.var_names.str.lower().str.match(r"^hb[^p]")
 
+top_n = min(20, adata.n_vars)
 sc.pp.calculate_qc_metrics(
     adata,
     qc_vars=["mt", "ribo", "hb"],
-    percent_top=[20],
+    percent_top=[top_n],
     log1p=True,
     inplace=True,
 )
+if top_n < 20:
+    adata.obs["pct_counts_in_top_20_genes"] = adata.obs.pop(f"pct_counts_in_top_{top_n}_genes")
 
 if plot:
     threshold_context = {

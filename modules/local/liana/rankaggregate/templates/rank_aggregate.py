@@ -265,7 +265,7 @@ if adata.obs[obs_key].nunique() > 1:
     )
     _log_subsample_info(subsample_info)
 
-    if (adata.X < 0).nnz == 0:
+    if "${apply_log1p}" == "true":
         sc.pp.log1p(adata)
     try:
         li.mt.rank_aggregate(
