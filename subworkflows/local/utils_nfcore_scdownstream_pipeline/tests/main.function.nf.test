@@ -1,0 +1,37 @@
+nextflow_function {
+
+    name "Test analysis plan resolution matching"
+    script "subworkflows/local/utils_nfcore_scdownstream_pipeline/main.nf"
+    function "matchesAnalysisPlanRow"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    [
+        [name: 'decimal scale', planned: '0.50', actual: '0.5', expected: true],
+        [name: 'numeric decimal scale', planned: 0.50, actual: '0.5', expected: true],
+        [name: 'integer scale', planned: 1, actual: '1.0', expected: true],
+        [name: 'zero matches zero', planned: 0, actual: '0.0', expected: true],
+        [name: 'zero is not a wildcard', planned: 0, actual: '0.5', expected: false],
+        [name: 'different resolutions', planned: 0.5, actual: '1', expected: false],
+        [name: 'null wildcard', planned: null, actual: '0.5', expected: true],
+        [name: 'empty wildcard', planned: '', actual: '0.5', expected: true],
+        [name: 'unspecified target resolution', planned: 0.5, actual: null, expected: true],
+    ].each { example ->
+        test("Should handle ${example.name}") {
+            when {
+                function {
+                    """
+                    input[0] = [integration: 'pca', subset: 'B.naive', resolution: ${example.planned.inspect()}]
+                    input[1] = [integration: 'pca', subset: 'B.naive']
+                    input[2] = ${example.actual.inspect()}
+                    """
+                }
+            }
+            then {
+                assert function.success
+                assert function.result == example.expected
+            }
+        }
+    }
+}

@@ -213,7 +213,8 @@ def analysisPlanToList() {
 def matchesAnalysisPlanRow(row, meta, resolution = null) {
     (!row.integration || row.integration == meta.integration) &&
     (!row.subset || row.subset == meta.subset) &&
-    (resolution == null || !row.resolution || (row.resolution as String) == (resolution as String))
+    (resolution == null || row.resolution == null || row.resolution == '' ||
+        row.resolution.toString().toBigDecimal() == resolution.toString().toBigDecimal())
 }
 
 def matchingAnalysisPlanRows(rows, meta, resolution = null) {
