@@ -38,6 +38,10 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
+            assert !('_scvi_batch' in adata.obs.colnames)
+            assert !('_scvi_labels' in adata.obs.colnames)
+            assert !('_scvi_uuid' in adata.uns)
+            assert path(process.out.model[0][1]).exists()
             with(adata) {
                 assert "X_emb" in obsm
             }
@@ -117,7 +121,86 @@ nextflow_process {
             assert 'X_emb' in adata.obsm
             assert !('counts' in adata.layers)
             assert 'log1p' in adata.layers
+            assert !('_scvi_batch' in adata.obs.colnames)
+            assert !('_scvi_labels' in adata.obs.colnames)
+            assert !('_scvi_uuid' in adata.uns)
+            assert path(process.out.model[0][1]).exists()
             assert adata.obs.get('n_genes_by_counts').data.every { it > 0 }
+        }
+    }
+
+    test("Should adapt a saved scVI reference without leaking setup metadata") {
+
+        setup {
+            run("SCANPY_SAMPLE") {
+                script "modules/local/scanpy/sample/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'reference_counts'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = 64
+                    input[2] = []
+                    """
+                }
+            }
+            run("SCVITOOLS_SCVI", alias: "SCVI_REFERENCE") {
+                script "modules/local/scvitools/scvi/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_SAMPLE.out.h5ad
+                    input[1] = [[], []]
+                    input[2] = 'sample'
+                    input[3] = ''
+                    input[4] = ''
+                    input[5] = 16
+                    input[6] = 1
+                    input[7] = 5
+                    input[8] = 'gene'
+                    input[9] = 'nb'
+                    input[10] = 1
+                    input[11] = true
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'query'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                input[1] = SCVI_REFERENCE.out.model.map { meta, model -> [[id: 'scvi'], model] }
+                input[2] = 'sample'
+                input[3] = ''
+                input[4] = ''
+                input[5] = 16
+                input[6] = 1
+                input[7] = 5
+                input[8] = 'gene'
+                input[9] = 'nb'
+                input[10] = 1
+                input[11] = true
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.n_obs == 768
+            assert adata.n_vars == 3000
+            assert 'X_emb' in adata.obsm
+            assert !('_scvi_batch' in adata.obs.colnames)
+            assert !('_scvi_labels' in adata.obs.colnames)
+            assert !('_scvi_uuid' in adata.uns)
+            assert path(process.out.model[0][1]).exists()
         }
     }
 

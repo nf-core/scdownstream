@@ -22,8 +22,22 @@ threadpool_limits(int("${task.cpus}"))
 scvi.settings.num_threads = int("${task.cpus}")
 scvi.settings.seed = 0
 
+
+def working_anndata(adata, layer=None):
+    # Minified inputs also require latent parameters in obsm and minification metadata.
+    if "_scvi_adata_minify_type" in adata.uns:
+        return adata.copy()
+
+    # Query preparation subsets/pads variables; setup can replace matrix storage and obs fields.
+    return ad.AnnData(
+        X=adata.X.copy() if adata.X is not None else None,
+        obs=adata.obs.copy(),
+        var=adata.var.copy(),
+        layers={layer: adata.layers[layer].copy()} if layer is not None else None,
+    )
+
+
 adata = ad.read_h5ad("${h5ad}")
-adata_work = adata.copy()
 reference_model_dir = "reference_model"
 reference_model_file = f"{reference_model_dir}/model.pt"
 reference_model_type = "${meta2.id ?: ''}"
@@ -36,6 +50,7 @@ if reference_model_type:
     elif reference_model_type == "scvi":
         state = torch.load(reference_model_file, map_location="cpu", weights_only=False)
         setup = state["attr_dict"]["registry_"]["setup_args"]
+        adata_work = working_anndata(adata, layer=setup.get("layer"))
         batch_key = setup["batch_key"]
         if batch_key != "batch":
             adata_work.obs[batch_key] = adata_work.obs["batch"]
@@ -45,6 +60,7 @@ if reference_model_type:
     else:
         raise ValueError(f"Invalid reference model type: {reference_model_type}")
 else:
+    adata_work = working_anndata(adata)
     categorical_covariates = "${categorical_covariates}"
     continuous_covariates = "${continuous_covariates}"
 
