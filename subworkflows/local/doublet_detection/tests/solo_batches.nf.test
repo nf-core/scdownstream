@@ -1,0 +1,58 @@
+nextflow_workflow {
+
+    name "Test Workflow DOUBLET_DETECTION across SOLO batches"
+    script "subworkflows/local/doublet_detection/main.nf"
+    workflow "DOUBLET_DETECTION"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should retain full-cell Boolean SOLO predictions across actual batches") {
+        setup {
+            run("ADATA_EXTEND") {
+                script "../../../../modules/local/adata/extend/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [id: 'source', batch_col: 'sample'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true),
+                        [], [], [], [], [], []
+                    ]
+                    """
+                }
+            }
+        }
+        when {
+            params { outdir = "$outputDir" }
+            workflow {
+                """
+                input[0] = ADATA_EXTEND.out.h5ad.map { meta, h5ad -> [meta + [id: 'multibatch'], h5ad] }
+                input[1] = ['solo']
+                input[2] = 1
+                input[3] = false
+                input[4] = 1
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def original = anndata("$outputDir/adata/source.h5ad")
+            def result = anndata(workflow.out.h5ad[0][1])
+            def batches = original.obs.get('sample').data.toList()
+            assert batches.toSet().size() >= 2
+            assert result.n_obs == original.n_obs
+            assert result.obs.index.values == original.obs.index.values
+            assert result.obs.get('sample').data.toList() == batches
+            def predictions = result.obs.get('multibatch_solo').data.toList()
+            assert predictions.size() == original.n_obs
+            assert predictions.every { it.toString().toLowerCase() in ['true', 'false'] }
+            assert batches.toSet().every { batch ->
+                (0..<original.n_obs).findAll { batches[it] == batch }.every {
+                    predictions[it].toString().toLowerCase() in ['true', 'false']
+                }
+            }
+            assert snapshot(result.yaml).match()
+        }
+    }
+}

@@ -1,0 +1,266 @@
+nextflow_process {
+
+    name "Test Process ADATA_READRDS"
+    script "modules/local/adata/readrds/main.nf"
+    process "ADATA_READRDS"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should round trip layered export with counts from X") {
+
+        setup {
+            run("ADATA_TORDS") {
+                script "modules/local/adata/tords/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'layered'],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = 'X'
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = ADATA_TORDS.out.rds
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def restored = anndata(process.out.h5ad[0][1])
+            // The source's distinct `counts` layer must survive alongside X, which is exported as `counts`.
+            assert restored.layers.sort() == ['counts.1', 'spliced', 'unspliced']
+            assert restored.n_obs == 128
+            assert restored.n_vars == 128
+            assert restored.obs.rownames.size() == restored.n_obs
+            assert restored.var.rownames.size() == restored.n_vars
+            assert restored.obs.rownames.toUnique().size() == restored.n_obs
+            assert restored.var.rownames.toUnique().size() == restored.n_vars
+            assert snapshot(
+                restored.yaml,
+                restored.obs.rownames.take(3),
+                restored.var.rownames.take(3),
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+    }
+
+    test("Should round trip layered export with a named counts source") {
+
+        setup {
+            run("ADATA_TORDS") {
+                script "modules/local/adata/tords/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'layered'],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = 'spliced'
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = ADATA_TORDS.out.rds
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def restored = anndata(process.out.h5ad[0][1])
+            // `counts.1` retains the source layer that collides with the selected counts assay name.
+            assert restored.layers.sort() == ['X', 'counts.1', 'spliced', 'unspliced']
+            assert restored.n_obs == 128
+            assert restored.n_vars == 128
+            assert restored.obs.rownames.size() == restored.n_obs
+            assert restored.var.rownames.size() == restored.n_vars
+            assert restored.obs.rownames.toUnique().size() == restored.n_obs
+            assert restored.var.rownames.toUnique().size() == restored.n_vars
+            assert snapshot(
+                restored.yaml,
+                restored.obs.rownames.take(3),
+                restored.var.rownames.take(3),
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+    }
+
+    test("Should round trip layered export with the counts alias selected") {
+
+        setup {
+            run("ADATA_TORDS") {
+                script "modules/local/adata/tords/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'layered'],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = 'counts'
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = ADATA_TORDS.out.rds
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def restored = anndata(process.out.h5ad[0][1])
+            // The counts alias is selected into X while the original counts layer remains distinct.
+            assert restored.layers.sort() == ['X', 'counts.1', 'spliced', 'unspliced']
+            assert restored.n_obs == 128
+            assert restored.n_vars == 128
+            assert restored.obs.rownames.size() == restored.n_obs
+            assert restored.var.rownames.size() == restored.n_vars
+            assert restored.obs.rownames.toUnique().size() == restored.n_obs
+            assert restored.var.rownames.toUnique().size() == restored.n_vars
+            assert snapshot(
+                restored.yaml,
+                restored.obs.rownames.take(3),
+                restored.var.rownames.take(3),
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+    }
+
+    test("Should read seurat file") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [id: 'test'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679758_filtered_matrix.seurat.rds', checkIfExists: true)
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should read seurat file - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [id: 'test'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679758_filtered_matrix.seurat.rds', checkIfExists: true)
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assert process.success
+
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+    test("Should read SCE file") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [id: 'test'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679757_filtered_matrix.sce.rds', checkIfExists: true)
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should read SCE file - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [id: 'test'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679757_filtered_matrix.sce.rds', checkIfExists: true)
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assert process.success
+
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

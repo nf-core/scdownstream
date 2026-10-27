@@ -1,0 +1,159 @@
+{
+    "Should run without failures when n_pcs is empty array": {
+        "content": [
+            {
+                "SCANPY_NEIGHBORS": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3"
+                }
+            },
+            {
+                "n_obs": 384,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "leiden",
+                        "donor",
+                        "condition",
+                        "label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [],
+                "uns": [
+                    "X_pca",
+                    "leiden",
+                    "neighbors"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-24T15:33:16.446278829",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-14T12:13:16.659775",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run without failures when n_pcs is provided": {
+        "content": [
+            {
+                "SCANPY_NEIGHBORS": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3"
+                }
+            },
+            {
+                "n_obs": 384,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "leiden",
+                        "donor",
+                        "condition",
+                        "label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [],
+                "uns": [
+                    "X_pca",
+                    "leiden",
+                    "neighbors"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-24T15:33:13.861604572",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    }
+}

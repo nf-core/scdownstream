@@ -1,0 +1,228 @@
+nextflow_process {
+
+    name "Test Process SCANPY_RANKGENESGROUPS"
+    script "modules/local/scanpy/rankgenesgroups/main.nf"
+    process "SCANPY_RANKGENESGROUPS"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "leiden"
+                input[2] = [[], []]
+                input[3] = "wilcoxon"
+                input[4] = "rank_genes_groups"
+                input[5] = true
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert "rank_genes_groups" in adata.uns
+            assert process.out.plots
+            assert process.out.multiqc_files
+            assert process.out.results
+            assert file(process.out.results[0][1]).name.contains("_results.parquet")
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should preserve rank and marker outputs with logreg missing statistics") {
+
+        tag "logreg"
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true)
+                    ])
+                input[1] = "leiden"
+                input[2] = [[], []]
+                input[3] = "logreg"
+                input[4] = "rank_genes_groups"
+                input[5] = true
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert "rank_genes_groups" in adata.uns
+            assert process.out.results
+            assert process.out.markers
+            assert process.out.plots
+            assert process.out.multiqc_files
+            assert file(process.out.results[0][1]).name.contains("_results.parquet")
+            def rows = parquet(process.out.results[0][1]).rows
+            assert !rows.isEmpty()
+            assert rows.every { it.log2fc == null && it.pvalue == null && it.padj == null }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+    }
+
+    test("Should rank already logged expression without another log1p") {
+
+        setup {
+            run("ADATA_PREPCELLXGENE") {
+                script "../../../adata/prepcellxgene/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'logged_input'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = true
+                    """
+                }
+            }
+        }
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = ADATA_PREPCELLXGENE.out.h5ad.map { meta, h5ad -> [meta + [id: 'logged_output'], h5ad] }
+                input[1] = 'leiden'
+                input[2] = [[], []]
+                input[3] = 'wilcoxon'
+                input[4] = 'rank_genes_groups'
+                input[5] = false
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.h5ad.size() == 1
+            assert process.out.results.size() == 1
+            assert 'rank_genes_groups' in anndata(process.out.h5ad[0][1]).uns
+        }
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "leiden"
+                input[2] = [[], []]
+                input[3] = "wilcoxon"
+                input[4] = "rank_genes_groups"
+                input[5] = true
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+    test("Should run with condition subsetting") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "leiden"
+                input[2] = ["condition", "Healthy"]
+                input[3] = "wilcoxon"
+                input[4] = "rank_genes_groups"
+                input[5] = true
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert "rank_genes_groups" in adata.uns
+            assert process.out.results
+            assert file(process.out.results[0][1]).name.contains("_results.parquet")
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with label subsetting") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "condition"
+                input[2] = ["label", "Tcell"]
+                input[3] = "wilcoxon"
+                input[4] = "rank_genes_groups"
+                input[5] = true
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.h5ad.size() == 0
+            assert snapshot(
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+}

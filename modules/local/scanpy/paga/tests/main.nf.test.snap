@@ -1,0 +1,175 @@
+{
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_paga.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "test_paga.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "test_paga_connectivities.npy:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "test_paga.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    "test_paga_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "5": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_paga.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "test_paga_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "obsp": [
+                    "test_paga_connectivities.npy:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "plot": [
+                    "test_paga.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "uns": [
+                    "test_paga.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-01-10T22:22:14.395891088",
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        }
+    },
+    "Should run without failures": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_paga.h5ad:md5,2ff4bb1b5bb7273453db92272abe3a31"
+                    ]
+                ],
+                "1": [
+                    "test_paga.pkl:md5,25a0cd9750bcf713823459e8f894aa4c"
+                ],
+                "2": [
+                    "test_paga_connectivities.npy:md5,0bb2b22c077bba2d11ddcf20b88761f7"
+                ],
+                "3": [
+                    "test_paga.png:md5,2dbbcac83fb865cb16ee2376647c0759"
+                ],
+                "4": [
+                    "test_paga_mqc.json:md5,07fd0af0eae85f251305c2d2cd169e45"
+                ],
+                "5": [
+                    "versions.yml:md5,701c799201a9b4810d15008294dea85a"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_paga.h5ad:md5,2ff4bb1b5bb7273453db92272abe3a31"
+                    ]
+                ],
+                "multiqc_files": [
+                    "test_paga_mqc.json:md5,07fd0af0eae85f251305c2d2cd169e45"
+                ],
+                "obsp": [
+                    "test_paga_connectivities.npy:md5,0bb2b22c077bba2d11ddcf20b88761f7"
+                ],
+                "plot": [
+                    "test_paga.png:md5,2dbbcac83fb865cb16ee2376647c0759"
+                ],
+                "uns": [
+                    "test_paga.pkl:md5,25a0cd9750bcf713823459e8f894aa4c"
+                ],
+                "versions": [
+                    "versions.yml:md5,701c799201a9b4810d15008294dea85a"
+                ]
+            },
+            {
+                "SCANPY_PAGA": {
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3"
+                }
+            },
+            {
+                "n_obs": 384,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "leiden",
+                        "donor",
+                        "condition",
+                        "label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_pca",
+                    "leiden",
+                    "leiden_sizes",
+                    "neighbors",
+                    "paga"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-24T21:03:07.398912422",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    }
+}

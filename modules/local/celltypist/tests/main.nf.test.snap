@@ -1,0 +1,129 @@
+{
+    "Should run with a symbol column other than index": {
+        "content": [
+            {
+                "CELLTYPES_CELLTYPIST": {
+                    "celltypist": "1.6.3",
+                    "pandas": "3.0.6",
+                    "python": "3.13.16",
+                    "scanpy": "1.10.4"
+                }
+            },
+            [
+                "sample",
+                "source_sample",
+                "source_barcode",
+                "is_selected_filtered_cell",
+                "source_role",
+                "synthetic_donor",
+                "synthetic_condition",
+                "synthetic_label",
+                "original_total_counts",
+                "original_n_genes_by_counts",
+                "annotation:celltypist:Adult_COVID19_PBMC:per_cell",
+                "annotation:celltypist:Adult_COVID19_PBMC:per_cell:confidence"
+            ]
+        ],
+        "timestamp": "2026-10-23T18:25:25.180050316",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_celltypist.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_celltypist.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_celltypist_annotation_columns.csv:md5,844397d2b335534df33b2700210dd8d3"
+                    ]
+                ],
+                "3": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "annotation_columns": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_celltypist_annotation_columns.csv:md5,844397d2b335534df33b2700210dd8d3"
+                    ]
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_celltypist.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_celltypist.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-11T13:24:17.743672",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run without failures": {
+        "content": [
+            {
+                "CELLTYPES_CELLTYPIST": {
+                    "celltypist": "1.6.3",
+                    "pandas": "3.0.6",
+                    "python": "3.13.16",
+                    "scanpy": "1.10.4"
+                }
+            },
+            [
+                "sample",
+                "source_sample",
+                "source_barcode",
+                "is_selected_filtered_cell",
+                "source_role",
+                "synthetic_donor",
+                "synthetic_condition",
+                "synthetic_label",
+                "original_total_counts",
+                "original_n_genes_by_counts",
+                "annotation:celltypist:Adult_COVID19_PBMC:per_cell",
+                "annotation:celltypist:Adult_COVID19_PBMC:per_cell:confidence"
+            ]
+        ],
+        "timestamp": "2026-10-23T18:23:53.10844978",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    }
+}

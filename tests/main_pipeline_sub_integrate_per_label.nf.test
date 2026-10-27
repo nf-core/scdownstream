@@ -1,0 +1,159 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf - integrate per label"
+    script "main.nf"
+    tag "pipeline"
+
+    test("Should integrate each label in sub mode") {
+
+        when {
+            params {
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
+                outdir                       = "$outputDir"
+                input                        = null
+                base_adata                   = params.pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                base_embeddings              = 'scvi'
+                base_label_col               = 'sample'
+                integrate_per_label          = true
+                integration_methods          = 'pca'
+                integration_n_features       = -1
+                normalization_method         = 'log1p'
+                cluster_global               = true
+                cluster_per_label            = false
+                clustering_resolutions       = '0.5'
+                skip_liana                   = true
+                de_methods                   = ''
+                analysis_plan                = null
+            }
+        }
+
+        then {
+            assert workflow.success
+            def adata = anndata("$outputDir/09_finalized/base.h5ad")
+            assert adata.n_obs > 0
+            assert adata.n_vars > 0
+            assert adata.layers.containsAll(['raw_counts', 'log1p'])
+            assert !adata.layers.any { it.startsWith('ambient_corrected_') }
+            assert adata.obs.get('sample').unique().toSet() == ['SRR28679756', 'SRR28679757', 'SRR28679758'].toSet()
+            assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
+            def pcaKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_pca") }
+            def umapKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_umap") }
+            assert "sample" in adata.obs.colnames
+            assert pcaKeys.size() > 1
+            assert umapKeys.size() > 1
+            def subsetVarCols = adata.var.colnames.findAll { it.contains(':subset:') }
+            assert subsetVarCols.size() > 0
+            def subsets = ['SRR28679756', 'SRR28679757', 'SRR28679758']
+            subsets.each { subset ->
+                assert "highly_variable:subset:${subset}".toString() in subsetVarCols
+            }
+            def report = file("$outputDir/10_reports/qc-report.html").text
+            def identities = adata.obsm.findAll { it ==~ /X_.+_umap/ }.collect { it.substring(2, it.length() - 5) }.sort()
+            assert 'scvi-global' in identities
+            subsets.each { subset -> assert "pca-${subset}".toString() in identities }
+            def headings = (report =~ /<h2[^>]*>(.*?)<\/h2>/).collect { it[1].replaceAll(/<[^>]+>/, '').trim() }
+            assert headings.findAll { it in identities }.sort() == identities
+            def sections = report.split(/(?=<section[^>]*class="level2">)/)
+            def clusterColumns = identities.collect { "${it}-0.5_leiden".toString() }
+            assert adata.obs.colnames.toList().containsAll(clusterColumns)
+            identities.each { identity ->
+                def section = sections.find { it.contains(">${identity}</h2>") }
+                assert section != null
+                clusterColumns.each { column ->
+                    assert section.contains(column) == (column == "${identity}-0.5_leiden".toString())
+                }
+            }
+            assert report.contains("Each integration method run by the pipeline")
+            // stable_name: All files + folders in ${params.outdir}/ with a stable name
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', '06_per_group/**', '11_multiqc/**'])
+            // stable_path: All files in ${params.outdir}/ with stable content
+            def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            assert snapshot(
+                removeNextflowVersion("$outputDir/pipeline_info/nf_core_scdownstream_software_mqc_versions.yml"),
+                stable_name,
+                stable_path
+            ).match()
+        }
+    }
+
+    test("Should integrate only whitelisted labels in sub mode") {
+
+        when {
+            params {
+                pipelines_testdata_base_path  = 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
+                outdir                        = "$outputDir"
+                input                         = null
+                base_adata                    = params.pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                base_embeddings               = null
+                base_label_col                = 'sample'
+                integrate_per_label           = true
+                integrate_per_label_whitelist = 'SRR28679756'
+                integration_methods           = 'pca'
+                integration_n_features        = -1
+                normalization_method          = 'log1p'
+                cluster_global                = false
+                cluster_per_label             = false
+                skip_liana                    = true
+                de_methods                    = ''
+                analysis_plan                 = "${projectDir}/tests/analysis_plan_sub.csv"
+            }
+        }
+
+        then {
+            assert workflow.success
+            def adata = anndata("$outputDir/09_finalized/base.h5ad")
+            assert adata.n_obs > 0
+            assert adata.n_vars > 0
+            assert adata.layers.containsAll(['raw_counts', 'log1p'])
+            assert !adata.layers.any { it.startsWith('ambient_corrected_') }
+            assert adata.obs.get('sample').unique().toSet() == ['SRR28679756', 'SRR28679757', 'SRR28679758'].toSet()
+            assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
+            def pcaKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_pca") }
+            def umapKeys = adata.obsm.findAll { it.startsWith("X_pca-") && it.endsWith("_umap") }
+            assert pcaKeys.size() == 1
+            assert pcaKeys[0] == 'X_pca-SRR28679756_pca'
+            assert umapKeys.size() == 1
+            assert umapKeys[0] == 'X_pca-SRR28679756_umap'
+            def report = file("$outputDir/10_reports/qc-report.html").text
+            def identity = umapKeys[0].substring(2, umapKeys[0].length() - 5)
+            def headings = (report =~ /<h2[^>]*>(.*?)<\/h2>/).collect { it[1].replaceAll(/<[^>]+>/, '').trim() }
+            assert headings.count(identity) == 1
+        }
+    }
+
+    test("Should preserve underscores in report subset identities") {
+
+        when {
+            params {
+                pipelines_testdata_base_path  = 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
+                outdir                        = "$outputDir"
+                input                         = null
+                base_adata                    = params.pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                base_embeddings               = null
+                base_label_col                = 'analysis_counts_source'
+                integrate_per_label           = true
+                integrate_per_label_whitelist = 'raw_counts'
+                integration_methods           = 'pca'
+                integration_n_features        = -1
+                normalization_method          = 'log1p'
+                cluster_global                = false
+                cluster_per_label             = false
+                skip_liana                    = true
+                de_methods                    = ''
+                analysis_plan                 = "${projectDir}/tests/analysis_plan_sub.csv"
+            }
+        }
+
+        then {
+            assert workflow.success
+            def adata = anndata("$outputDir/09_finalized/base.h5ad")
+            def identities = adata.obsm.findAll { it ==~ /X_.+_umap/ }.collect { it.substring(2, it.length() - 5) }.sort()
+            assert 'pca-raw_counts' in identities
+            def report = file("$outputDir/10_reports/qc-report.html").text
+            def headings = (report =~ /<h2[^>]*>(.*?)<\/h2>/).collect { it[1].replaceAll(/<[^>]+>/, '').trim() }
+            assert headings.findAll { it in identities }.sort() == identities
+        }
+    }
+}

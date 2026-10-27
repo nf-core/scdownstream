@@ -1,0 +1,211 @@
+nextflow_process {
+
+    name "Test Process ADATA_ENTROPY"
+    script "modules/local/adata/entropy/main.nf"
+    process "ADATA_ENTROPY"
+    tag "modules"
+    tag "modules_local"
+
+    test("Should compute finite entropy in [0,1] for multi-label case") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'leiden'
+                input[2] = 'sample'
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "test:entropy" in obs.colnames
+                def entropy_values = obs.get("test:entropy").data
+                def sample_labels = obs.get("sample").n_unique()
+                assert sample_labels > 1
+                assert entropy_values.every { it >= 0.0 && it <= 1.0 }
+                assert entropy_values.every { !it.isNaN() && !it.isInfinite() }
+            }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should compute exactly 0.0 entropy for single observed label") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'single' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'leiden'
+                input[2] = 'sample'
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "single:entropy" in obs.colnames
+                def sample_labels = obs.get("sample").n_unique()
+                def entropy_values = obs.get("single:entropy").data
+                assert sample_labels == 1
+                assert entropy_values.every { it == 0.0 }
+                assert entropy_values.every { !it.isNaN() && !it.isInfinite() }
+            }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should fail with missing grouping column") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'nonexistent_group_col'
+                input[2] = 'sample'
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("ValueError: Grouping column 'nonexistent_group_col' not found")
+        }
+
+    }
+
+    test("Should fail with missing entropy column") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'leiden'
+                input[2] = 'nonexistent_entropy_col'
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("ValueError: Entropy column 'nonexistent_entropy_col' not found")
+        }
+
+    }
+
+    test("Should fail when no batch labels are observed") {
+
+        setup {
+            run("ADATA_EXTEND") {
+                script "../../extend/main.nf"
+                process {
+                    """
+                    input[0] = channel.of('cell,empty_batch\\nnot_a_cell,\\n')
+                        .collectFile(name: 'empty_batch.csv')
+                        .map { obs -> [
+                            [id: 'empty'],
+                            file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true),
+                            [obs], [], [], [], [], []
+                        ] }
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = ADATA_EXTEND.out.h5ad
+                input[1] = 'leiden'
+                input[2] = 'empty_batch'
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("ValueError: No observed non-missing labels in entropy column 'empty_batch'")
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'leiden'
+                input[2] = 'sample'
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

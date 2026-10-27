@@ -1,0 +1,591 @@
+{
+    "Should run without failures - symbol_col none, unify_gene_symbols false - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": null,
+                            "ambient_correction_method": "none",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "unified_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": null,
+                            "ambient_correction_method": "none",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "unified_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-18T17:41:56.54115543",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - symbol_col index, unify_gene_symbols false": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": null,
+                            "ambient_correction_method": "none",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,48b2b4f25221f28c9bfd05dfdb768ce1"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": null,
+                            "ambient_correction_method": "none",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,48b2b4f25221f28c9bfd05dfdb768ce1"
+                    ]
+                ],
+                "multiqc_files": [
+                    
+                ]
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-24T21:06:49.032670119",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should canonicalise a named input counts layer": {
+        "content": [
+            {
+                "id": "named",
+                "symbol_col": "index",
+                "counts_layer": "X",
+                "batch_col": "batch",
+                "label_col": "label",
+                "condition_col": "condition",
+                "donor_col": "donor",
+                "unknown_label": "unknown",
+                "raw_counts_layer": "raw_counts",
+                "ambient_correction_layer": null,
+                "ambient_correction_method": "none",
+                "analysis_counts_source": "raw_counts"
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-23T21:17:28.837355093",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run without failures - symbol_col index, unify_gene_symbols true": {
+        "content": [
+            [
+                
+            ],
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-23T21:15:53.532529189",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run without failures - symbol_col index, unify_gene_symbols false - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": null,
+                            "ambient_correction_method": "none",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "unified_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": null,
+                            "ambient_correction_method": "none",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "unified_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-18T17:40:59.900725776",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - symbol_col index, unify_gene_symbols true - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": null,
+                            "ambient_correction_method": "none",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "raw_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "unified_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": null,
+                            "ambient_correction_method": "none",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "raw_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "unified_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-18T17:46:15.404998586",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should retain correction through symbol unification with either analysis selection": {
+        "content": [
+            [
+                {
+                    "id": "selected_false",
+                    "symbol_col": "index",
+                    "counts_layer": "X",
+                    "use_ambient_corrected_counts": false,
+                    "raw_counts_layer": "raw_counts",
+                    "ambient_correction_layer": "ambient_corrected_decontx",
+                    "ambient_correction_method": "decontx",
+                    "analysis_counts_source": "raw_counts",
+                    "batch_col": "batch",
+                    "label_col": "label",
+                    "condition_col": "condition",
+                    "donor_col": "donor",
+                    "unknown_label": "unknown"
+                },
+                {
+                    "id": "selected_true",
+                    "symbol_col": "index",
+                    "counts_layer": "X",
+                    "use_ambient_corrected_counts": true,
+                    "raw_counts_layer": "raw_counts",
+                    "ambient_correction_layer": "ambient_corrected_decontx",
+                    "ambient_correction_method": "decontx",
+                    "analysis_counts_source": "ambient_corrected_decontx",
+                    "batch_col": "batch",
+                    "label_col": "label",
+                    "condition_col": "condition",
+                    "donor_col": "donor",
+                    "unknown_label": "unknown"
+                }
+            ],
+            [
+                {
+                    "n_obs": 384,
+                    "n_vars": 3000,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample",
+                            "source_sample",
+                            "source_barcode",
+                            "is_selected_filtered_cell",
+                            "source_role",
+                            "synthetic_donor",
+                            "synthetic_condition",
+                            "synthetic_label",
+                            "original_total_counts",
+                            "original_n_genes_by_counts",
+                            "ambient_correction_method",
+                            "analysis_counts_source",
+                            "batch",
+                            "label",
+                            "condition",
+                            "donor",
+                            "sample_original"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "symbols"
+                        ]
+                    },
+                    "layers": [
+                        "ambient_corrected_decontx",
+                        "raw_counts"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                },
+                {
+                    "n_obs": 384,
+                    "n_vars": 3000,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample",
+                            "source_sample",
+                            "source_barcode",
+                            "is_selected_filtered_cell",
+                            "source_role",
+                            "synthetic_donor",
+                            "synthetic_condition",
+                            "synthetic_label",
+                            "original_total_counts",
+                            "original_n_genes_by_counts",
+                            "ambient_correction_method",
+                            "analysis_counts_source",
+                            "batch",
+                            "label",
+                            "condition",
+                            "donor",
+                            "sample_original"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "symbols"
+                        ]
+                    },
+                    "layers": [
+                        "ambient_corrected_decontx",
+                        "raw_counts"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                }
+            ]
+        ],
+        "timestamp": "2026-10-23T21:20:51.254122589",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run without failures - symbol_col none, unify_gene_symbols false": {
+        "content": [
+            [
+                
+            ],
+            {
+                "n_obs": 384,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "original_index"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-23T21:11:18.631914021",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    }
+}

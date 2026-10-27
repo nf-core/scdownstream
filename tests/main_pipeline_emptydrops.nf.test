@@ -1,0 +1,46 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+    tag "pipeline"
+
+    test("Should remove empty droplets with EmptyDrops") {
+
+        when {
+            def fixtureBase = 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
+            def samplesheet = new File("$launchDir/samplesheet.csv")
+            samplesheet.text = "sample,filtered,unfiltered,batch_col\nSRR28679759,,${fixtureBase}pbmc/SRR28679759_raw_matrix.h5ad,sample\n"
+            params {
+                input                 = samplesheet.toString()
+                empty_droplet_removal = 'emptydrops'
+                ambient_correction    = 'none'
+                doublet_detection     = 'scrublet'
+                // Too few cell cycle genes remain in the small EmptyDrops output for scoring
+                cell_cycle_scoring    = false
+                celltypist_model      = 'Adult_COVID19_PBMC'
+                qc_only               = true
+                save_intermediates    = true
+                outdir                = "$outputDir"
+            }
+        }
+
+        then {
+            // stable_name: All files + folders in ${params.outdir}/ with a stable name
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', '06_per_group/**', '11_multiqc/**'])
+            // stable_path: All files in ${params.outdir}/ with stable content
+            def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_scdownstream_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_name,
+                    // All files with stable contents
+                    stable_path
+                ).match() },
+                { assert file("$outputDir/02_quality_control/empty_droplet_removal").list().any { it.endsWith('_emptydrops_barcodes.csv') } }
+            )
+        }
+    }
+}

@@ -1,0 +1,122 @@
+#!/usr/bin/env python3
+
+import base64
+import json
+import platform
+
+import anndata as ad
+import matplotlib
+import matplotlib.pyplot as plt
+import pandas as pd
+import upsetplot
+import yaml
+
+adata = ad.read_h5ad("${h5ad}")
+threshold = int("${threshold}")
+remove_doublets = "${removal}" == "true"
+prefix = "${prefix}"
+
+
+def load(path: str) -> pd.DataFrame:
+    if path.endswith(".pkl"):
+        return pd.read_pickle(path)
+    if path.endswith(".csv"):
+        return pd.read_csv(path, index_col=0)
+
+
+predictions = pd.concat([load(f) for f in "${predictions}".split()], axis=1)
+predictions = predictions.reindex(adata.obs_names)
+# Stable column order so nf-test snapshots do not depend on process finish order.
+predictions = predictions.reindex(sorted(predictions.columns), axis=1)
+for column in predictions.columns:
+    adata.obs[column] = predictions[column]
+
+if remove_doublets:
+    mask = predictions.sum(axis=1) >= threshold
+    adata = adata[~mask, :]
+
+adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
+
+# Versions
+
+versions = {
+    "${task.process}": {
+        "python": platform.python_version(),
+        "anndata": ad.__version__,
+        "pandas": pd.__version__,
+        "matplotlib": matplotlib.__version__,
+        "upsetplot": upsetplot.__version__,
+    }
+}
+
+with open("versions.yml", "w") as f:
+    yaml.dump(versions, f)
+
+if not len(predictions.columns) > 1:
+    score_columns = [column for column in predictions.columns if "score" in column.lower()]
+    if score_columns:
+        score_col = score_columns[0]
+        fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+        adata.obs[score_col].hist(ax=ax, bins=50)
+        ax.set_xlabel(score_col)
+        ax.set_ylabel("Cells")
+        plot_path = f"{prefix}_doublet_scores.png"
+        plt.savefig(plot_path)
+
+        with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
+            image_string = base64.b64encode(f_plot.read()).decode("utf-8")
+            image_html = (
+                f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
+            )
+            custom_json = {
+                "id": "${prefix}",
+                "parent_id": "doublet_predictions",
+                "parent_name": "Doublet predictions",
+                "parent_description": "Doublet score distributions and tool overlap per sample.",
+                "section_name": "${meta.id}",
+                "plot_type": "image",
+                "data": image_html,
+            }
+            json.dump(custom_json, f_json)
+    exit(0)
+
+# Plot
+
+contents = {column: predictions[column][predictions[column]].index.tolist() for column in predictions.columns}
+
+if any(contents.values()):
+    plot_data = upsetplot.from_contents(contents)
+    intersection_sizes = plot_data.groupby(level=list(range(len(contents)))).size()
+    # Keep the normal display cutoff, unless it would hide every intersection.
+    minimum_size = 10 if intersection_sizes.max() >= 10 else 1
+    upsetplot.plot(
+        plot_data,
+        sort_by="cardinality",
+        show_counts=True,
+        subset_size="count",
+        min_subset_size=minimum_size,
+    )
+else:
+    fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+    ax.text(0.5, 0.5, "No doublets predicted", ha="center", va="center", transform=ax.transAxes)
+    ax.set_axis_off()
+plot_path = f"{prefix}_predictions_mqc.png"
+plt.savefig(plot_path)
+
+# MultiQC
+
+with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
+    image_string = base64.b64encode(f_plot.read()).decode("utf-8")
+    image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
+
+    custom_json = {
+        "id": "${prefix}",
+        "parent_id": "doublet_predictions",
+        "parent_name": "Doublet predictions",
+        "parent_description": "Upset plots of the various doublet prediction tools for each sample.",
+        "section_name": "${meta.id}",
+        "plot_type": "image",
+        "data": image_html,
+    }
+
+    json.dump(custom_json, f_json)

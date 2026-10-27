@@ -1,0 +1,420 @@
+{
+    "Should run when batch_col is missing": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.h5ad:md5,7273a58d16e9f81b5a563b9f943c39e9"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.csv:md5,6b2cab407757833906d0a18fd6dda6e2"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,ce056c78586769ad5433f5fbb86f70c7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.h5ad:md5,7273a58d16e9f81b5a563b9f943c39e9"
+                    ]
+                ],
+                "predictions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.csv:md5,6b2cab407757833906d0a18fd6dda6e2"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,ce056c78586769ad5433f5fbb86f70c7"
+                ]
+            },
+            {
+                "SCDBLFINDER": {
+                    "R": "4.5.3",
+                    "scDblFinder": "1.24.0"
+                }
+            },
+            {
+                "n_obs": 384,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "scdblfinder_class",
+                        "scdblfinder_score",
+                        "scdblfinder_weighted",
+                        "scdblfinder_cxds_score"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "scDblFinder.selected"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "scDblFinder.threshold"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-24T21:07:45.755636112",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "predictions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-12T12:34:23.397301125",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run with valid batch_col": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.h5ad:md5,4ab3550cc50e8844d6a2ecc770e76009"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.csv:md5,447079c7ce18bf149869855a31b01efe"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,ce056c78586769ad5433f5fbb86f70c7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.h5ad:md5,4ab3550cc50e8844d6a2ecc770e76009"
+                    ]
+                ],
+                "predictions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.csv:md5,447079c7ce18bf149869855a31b01efe"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,ce056c78586769ad5433f5fbb86f70c7"
+                ]
+            },
+            {
+                "SCDBLFINDER": {
+                    "R": "4.5.3",
+                    "scDblFinder": "1.24.0"
+                }
+            },
+            {
+                "n_obs": 384,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "scdblfinder_sample",
+                        "scdblfinder_class",
+                        "scdblfinder_score",
+                        "scdblfinder_weighted",
+                        "scdblfinder_cxds_score"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "scDblFinder.threshold"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-24T21:06:44.378007722",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run without failures": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.h5ad:md5,7273a58d16e9f81b5a563b9f943c39e9"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.csv:md5,6b2cab407757833906d0a18fd6dda6e2"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,ce056c78586769ad5433f5fbb86f70c7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.h5ad:md5,7273a58d16e9f81b5a563b9f943c39e9"
+                    ]
+                ],
+                "predictions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.csv:md5,6b2cab407757833906d0a18fd6dda6e2"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,ce056c78586769ad5433f5fbb86f70c7"
+                ]
+            },
+            {
+                "SCDBLFINDER": {
+                    "R": "4.5.3",
+                    "scDblFinder": "1.24.0"
+                }
+            },
+            {
+                "n_obs": 384,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "scdblfinder_class",
+                        "scdblfinder_score",
+                        "scdblfinder_weighted",
+                        "scdblfinder_cxds_score"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "scDblFinder.selected"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "scDblFinder.threshold"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-24T21:04:41.696137925",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run with provided doublet_rate": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.h5ad:md5,d85765f9e1a915c5eecf4fa7caff434f"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.csv:md5,5c38fcb7c4d50073883444aa35170bca"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,ce056c78586769ad5433f5fbb86f70c7"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.h5ad:md5,d85765f9e1a915c5eecf4fa7caff434f"
+                    ]
+                ],
+                "predictions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scdblfinder.csv:md5,5c38fcb7c4d50073883444aa35170bca"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,ce056c78586769ad5433f5fbb86f70c7"
+                ]
+            },
+            {
+                "SCDBLFINDER": {
+                    "R": "4.5.3",
+                    "scDblFinder": "1.24.0"
+                }
+            },
+            {
+                "n_obs": 384,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "scdblfinder_class",
+                        "scdblfinder_score",
+                        "scdblfinder_weighted",
+                        "scdblfinder_cxds_score"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "scDblFinder.selected"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "scDblFinder.threshold"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-24T21:05:42.692764946",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    }
+}

@@ -1,0 +1,97 @@
+name: "scanpy_leiden"
+description: Cluster cells with the Leiden algorithm and optionally plot UMAP
+keywords:
+  - clustering
+  - leiden
+  - scanpy
+  - single-cell
+tools:
+  - "scanpy":
+      description: "Single-cell analysis in Python"
+      homepage: "https://scanpy.readthedocs.io"
+      documentation: "https://scanpy.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/scanpy"
+      licence: ["BSD-3-Clause"]
+  - "leidenalg":
+      description: "Leiden community detection algorithm"
+      homepage: "https://github.com/vtraag/leidenalg"
+      documentation: "https://leidenalg.readthedocs.io"
+      tool_dev_url: "https://github.com/vtraag/leidenalg"
+      licence: ["GPL-3.0-or-later"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format with a neighbour graph
+        pattern: "*.{h5ad}"
+  - resolution:
+      type: number
+      description: Leiden clustering resolution
+  - key_added:
+      type: string
+      description: obs column name for cluster labels
+  - plot_umap:
+      type: boolean
+      description: Whether to write a UMAP coloured by clusters
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.h5ad":
+          type: file
+          description: AnnData with Leiden cluster labels
+          pattern: "*.h5ad"
+  obs:
+    - "*.pkl":
+        type: file
+        description: Pickled obs with Leiden cluster labels
+        pattern: "*.pkl"
+  plots:
+    - "*.png":
+        type: file
+        description: Optional UMAP plot coloured by clusters
+        pattern: "*.png"
+  multiqc_files:
+    - "*_mqc.json":
+        type: file
+        description: Optional MultiQC custom content for the UMAP plot
+        pattern: "*_mqc.json"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:ce926a86f015211a
+      build_id: bd-ce926a86f015211a_1
+      scan_id: sc-5a4f68a112b1dca0_2
+    linux/arm64:
+      name: community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:31e5c9d4aa830c6e
+      build_id: bd-31e5c9d4aa830c6e_1
+      scan_id: sc-3b2e42c8f0b553e0_2
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:5947fe0b8b0892f8
+      build_id: bd-5947fe0b8b0892f8_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f9/f905954a8298dd4d0c74515b14dc542d4ff9d5e16ac0328ca31b5fac553b6c39/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:46f198136eb937c0
+      build_id: bd-46f198136eb937c0_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8e/8e1b5af758a6affaf729c39cd892232f40ad3a26b8e0cfd39c695dbfe2f42909/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scanpy/leiden/.conda-lock/linux_amd64-bd-ce926a86f015211a_1.txt
+    linux/arm64:
+      lock_file: modules/local/scanpy/leiden/.conda-lock/linux_arm64-bd-31e5c9d4aa830c6e_1.txt

@@ -1,0 +1,114 @@
+nextflow_process {
+
+    name "Test Process DECOUPLER_ACTIVITY"
+    script "modules/local/decoupler/activity/main.nf"
+    process "DECOUPLER_ACTIVITY"
+
+    tag "modules"
+    tag "modules_local"
+
+    def networkTsv = [
+        'source\ttarget\tweight',
+        'AP1\tCD69\t1\nAP1\tFOS\t1\nAP1\tJUNB\t1\nAP1\tHSPA8\t1\nAP1\tPDCD4\t-1\nAP1\tCDKN1B\t-1',
+        'BCELL\tCD22\t1\nBCELL\tCD79A\t1\nBCELL\tCR2\t1\nBCELL\tFCER2\t1\nBCELL\tFCRL1\t1\nBCELL\tFCRL3\t1\nBCELL\tIGHM\t1\nBCELL\tTNFRSF13C\t1',
+        'IFN\tDDX60\t1\nIFN\tIFNGR2\t1\nIFN\tSP100\t1\nIFN\tSP140\t1\nIFN\tSTAT1\t1\nIFN\tZC3HAV1\t1',
+        'MHC\tB2M\t1\nMHC\tCD74\t1\nMHC\tHLA-A\t1\nMHC\tHLA-B\t1\nMHC\tHLA-C\t1\nMHC\tHLA-DPA1\t1\nMHC\tHLA-DPB1\t1\nMHC\tHLA-DRA\t1\nMHC\tHLA-DRB1\t1\nMHC\tHLA-E\t1',
+        'RIBO\tRPL11\t1\nRIBO\tRPL4\t1\nRIBO\tRPL8\t1\nRIBO\tRPS15\t1\nRIBO\tRPS23\t1\nRIBO\tRPS24\t1\nRIBO\tRPSA\t1',
+        'SMALL\tCD44\t1\nSMALL\tVIM\t1\nSMALL\tNOTAGENE\t1',
+    ].join('\n') + '\n'
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = channel.of('''${networkTsv}''').collectFile(name: 'network.tsv')
+                input[2] = 'ulm'
+                input[3] = 5
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+    test("Should score pseudobulk profiles with a custom network") {
+
+        setup {
+            run("DECOUPLER_PSEUDOBULK") {
+                script "modules/local/decoupler/pseudobulk/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                            [ id: 'test', integration: 'scvi' ],
+                            file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                        ]
+                    )
+                    input[1] = 'X'
+                    input[2] = 'sample'
+                    input[3] = 'leiden'
+                    input[4] = 'condition'
+                    input[5] = 10
+                    input[6] = 1000
+                    """
+                }
+            }
+            run("DECOUPLER_NETWORK") {
+                script "modules/local/decoupler/network/main.nf"
+                process {
+                    """
+                    input[0] = channel.of('''${networkTsv}''')
+                        .collectFile(name: 'network.tsv')
+                        .map { network -> [[ id: 'custom' ], network] }
+                    input[1] = 'human'
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = DECOUPLER_PSEUDOBULK.out.h5ad
+                input[1] = DECOUPLER_NETWORK.out.network.map { _meta, tsv -> tsv }.collect()
+                input[2] = 'ulm'
+                input[3] = 5
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert file(process.out.scores[0][1]).name == 'test_custom_scores.parquet'
+            assert file(process.out.uns[0]).name == 'test_decoupler_activity.pkl'
+            assert file(process.out.multiqc_files[0]).name == 'test_custom_activity_mqc.json'
+            // Score tables differ in the last float digits across CPUs, so only their names are snapshotted
+            assert snapshot(
+                process.out.scores.collect { meta, parquet -> [meta, file(parquet).name] },
+                process.out.uns.collect { file(it).name },
+                process.out.plots,
+                process.out.multiqc_files,
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+}

@@ -1,0 +1,37 @@
+Changes in component 'nf-core/cellbender/merge'
+'modules/nf-core/cellbender/merge/environment.yml' is unchanged
+'modules/nf-core/cellbender/merge/meta.yml' is unchanged
+'modules/nf-core/cellbender/merge/main.nf' is unchanged
+'modules/nf-core/cellbender/merge/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/cellbender/merge/tests/main.nf.test' is unchanged
+Changes in 'cellbender/merge/templates/merge.py':
+--- modules/nf-core/cellbender/merge/templates/merge.py
++++ modules/nf-core/cellbender/merge/templates/merge.py
+@@ -29,14 +29,23 @@
+ 
+ adata_cellbender = load_anndata_from_input_and_output("${unfiltered}", "${cellbender_h5}", analyzed_barcodes_only=False)
+ 
+-adata_cellbender = adata_cellbender[adata.obs_names]
++# Subset to the barcodes and genes present in the filtered matrix.
++# Gene symbols (var index) may not be unique, so prefer Ensembl IDs when present.
++# Column names differ: 10x/readh5 uses 'gene_ids'; unify/cellbender uses 'gene_id'.
++filtered_gene_id_col = next((col for col in ("gene_ids", "gene_id") if col in adata.var.columns), None)
++cellbender_gene_id_col = next((col for col in ("gene_id", "gene_ids") if col in adata_cellbender.var.columns), None)
++filtered_ids = adata.var[filtered_gene_id_col] if filtered_gene_id_col else adata.var.index
++cellbender_ids = adata_cellbender.var[cellbender_gene_id_col] if filtered_gene_id_col and cellbender_gene_id_col else adata_cellbender.var.index
++cb_id_to_pos = {gid: i for i, gid in enumerate(cellbender_ids)}
++var_positions = [cb_id_to_pos[gid] for gid in filtered_ids]
++adata_cellbender = adata_cellbender[adata.obs_names, var_positions]
+ 
+ if "${output_layer}" == "X":
+     adata.X = adata_cellbender.layers["cellbender"]
+ else:
+     adata.layers["${output_layer}"] = adata_cellbender.layers["cellbender"]
+ 
+-adata.write_h5ad("${prefix}.h5ad")
++adata.write_h5ad("${prefix}.h5ad", compression="gzip")
+ 
+ # Versions
+ 
+
+************************************************************

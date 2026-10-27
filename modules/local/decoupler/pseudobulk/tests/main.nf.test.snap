@@ -1,0 +1,154 @@
+{
+    "Should aggregate pseudobulk profiles with decoupler": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,eed12c60de6a568bbe207c1594a456da"
+                    ]
+                ],
+                "1": [
+                    "test_samples.tsv:md5,93be0d8384e6c0086e5c3e03374b1dc2"
+                ],
+                "2": [
+                    "test_mqc.json:md5,1cc0117bf934457980fbe76a17f0fe5b"
+                ],
+                "3": [
+                    "versions.yml:md5,c038d52da375dc87900a713a0379fe41"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,eed12c60de6a568bbe207c1594a456da"
+                    ]
+                ],
+                "multiqc_files": [
+                    "test_mqc.json:md5,1cc0117bf934457980fbe76a17f0fe5b"
+                ],
+                "samples": [
+                    "test_samples.tsv:md5,93be0d8384e6c0086e5c3e03374b1dc2"
+                ],
+                "versions": [
+                    "versions.yml:md5,c038d52da375dc87900a713a0379fe41"
+                ]
+            },
+            {
+                "DECOUPLER_PSEUDOBULK": {
+                    "anndata": "0.12.19",
+                    "decoupler": "2.1.6",
+                    "pandas": "2.3.3",
+                    "python": "3.12.13"
+                }
+            },
+            {
+                "n_obs": 15,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "leiden_condition",
+                        "source_sample",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_condition",
+                        "batch",
+                        "condition",
+                        "leiden",
+                        "psbulk_cells",
+                        "psbulk_counts",
+                        "donor",
+                        "celltype",
+                        "n_cells",
+                        "total_counts",
+                        "sample_id"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-24T21:04:08.849219262",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "obs_key": "leiden",
+                            "condition_col": "condition"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "test_samples.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "test_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "obs_key": "leiden",
+                            "condition_col": "condition"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "test_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "samples": [
+                    "test_samples.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-11T10:50:07.72506882",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    }
+}

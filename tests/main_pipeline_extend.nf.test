@@ -1,0 +1,68 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+    tag "pipeline"
+
+    test("Should perform scvi and symphony reference extension") {
+
+        when {
+            params {
+                cell_cycle_scoring           = false
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
+                input                        = params.pipelines_testdata_base_path + 'samplesheet_single.csv'
+                integration_methods          = 'scvi,symphony'
+                ambient_correction           = 'decontx'
+                doublet_detection            = 'scrublet,scdblfinder'
+                celltypist_model             = 'Adult_COVID19_PBMC'
+                integration_n_features       = 500
+                outdir                       = "$outputDir"
+                scvi_model                   = params.pipelines_testdata_base_path + 'extension_base/model.pt'
+                symphony_reference           = params.pipelines_testdata_base_path + 'extension_base/symphony_reference.h5ad'
+                base_adata                   = params.pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+            }
+        }
+
+        then {
+            assert workflow.success
+            def adata = anndata("$outputDir/09_finalized/merged.h5ad")
+            assert adata.n_obs > 0
+            assert adata.n_vars > 0
+            assert adata.layers.containsAll(['raw_counts', 'ambient_corrected_decontx', 'log1p'])
+            assert adata.obs.get('sample').unique().toSet() == ['SRR28679756', 'SRR28679757', 'SRR28679758', 'SRR28679759'].toSet()
+            def samples = adata.obs.get('sample').data.toList()
+            def methods = adata.obs.get('ambient_correction_method').data.toList()
+            assert samples.indices.every { methods[it] == (samples[it] == 'SRR28679759' ? 'decontx' : 'none') }
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
+            assert file("$outputDir/10_reports/qc-report.html").text.contains("Each integration method run by the pipeline")
+            // stable_name: All files + folders in ${params.outdir}/ with a stable name
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', '06_per_group/**', '11_multiqc/**'])
+            // stable_path: All files in ${params.outdir}/ with stable content
+            def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            assert snapshot(
+                removeNextflowVersion("$outputDir/pipeline_info/nf_core_scdownstream_software_mqc_versions.yml"),
+                stable_name,
+                stable_path
+            ).match()
+        }
+    }
+
+    test("Should reject a legacy extension base without raw counts") {
+
+        when {
+            params {
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
+                input                        = params.pipelines_testdata_base_path + 'samplesheet_single.csv'
+                base_adata                   = params.pipelines_testdata_base_path + 'anndata-variations/counts_in_X.h5ad'
+                integration_methods          = 'scvi'
+                scvi_model                   = params.pipelines_testdata_base_path + 'extension_base/model.pt'
+                outdir                       = "$outputDir"
+            }
+        }
+
+        then {
+            assert workflow.failed
+            assert path("$metaDir/nextflow.log").text.contains('base_adata must contain a raw_counts layer with genuine pre-correction counts')
+        }
+    }
+}
