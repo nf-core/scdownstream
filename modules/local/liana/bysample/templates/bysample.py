@@ -201,6 +201,7 @@ else:
 
             li.mt.rank_aggregate.by_sample(
                 adata,
+                resource_name={"human": "consensus", "mouse": "mouseconsensus"}["${species}"],
                 groupby=obs_key,
                 sample_key=context_key,
                 use_raw=False,

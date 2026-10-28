@@ -25,6 +25,7 @@ nextflow_process {
                 input[3] = 'stratified_obs'
                 input[4] = 42
                 input[5] = true
+                input[6] = 'human'
                 """
             }
         }
@@ -59,6 +60,7 @@ nextflow_process {
                 input[3] = 'stratified_obs'
                 input[4] = 42
                 input[5] = true
+                input[6] = 'human'
                 """
             }
         }
@@ -73,6 +75,33 @@ nextflow_process {
             ).match()
         }
 
+    }
+
+    test("Should select the mouse resource for mouse analysis") {
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'mouse_resource', obs_key: 'leiden'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true)
+                ])
+                input[1] = 10
+                input[2] = 500
+                input[3] = 'stratified_obs'
+                input[4] = 42
+                input[5] = true
+                input[6] = 'mouse'
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains('mouseconsensus')
+            assert process.errorReport.contains('Too few features from the resource were found in the data')
+        }
     }
 
     test("Should run without failures - stub") {
@@ -95,6 +124,7 @@ nextflow_process {
                 input[3] = 'stratified_obs'
                 input[4] = 42
                 input[5] = true
+                input[6] = 'human'
                 """
             }
         }

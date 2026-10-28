@@ -1196,6 +1196,131 @@ nextflow_process {
         }
     }
 
+    test("Should use the same source for batch and donor") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/batch_different_name.h5ad', checkIfExists: true)
+                ])
+                input[1] = "batch_id"
+                input[2] = ""
+                input[3] = ""
+                input[4] = "unknown"
+                input[5] = "index"
+                input[6] = "X"
+                input[7] = "sum"
+                input[8] = false
+                input[9] = "batch_id"
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.obs.get("donor").unique() == ["sample_0", "sample_1"].toSet()
+            assert adata.obs.get("batch").unique() == ["sample_0_test", "sample_1_test"].toSet()
+            assert !("batch_id" in adata.obs.colnames)
+        }
+    }
+
+    test("Should use the same source for batch and condition") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/condition_different_name.h5ad', checkIfExists: true)
+                ])
+                input[1] = "disease_state"
+                input[2] = ""
+                input[3] = "disease_state"
+                input[4] = "unknown"
+                input[5] = "index"
+                input[6] = "X"
+                input[7] = "sum"
+                input[8] = false
+                input[9] = ""
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.obs.get("condition").unique() == ["Healthy", "Disease", "Treated"].toSet()
+            assert adata.obs.get("batch").unique() == ["Healthy_test", "Disease_test", "Treated_test"].toSet()
+            assert !("disease_state" in adata.obs.colnames)
+        }
+    }
+
+    test("Should reuse a batch source name as the condition destination") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/condition_different_name.h5ad', checkIfExists: true)
+                ])
+                input[1] = "condition"
+                input[2] = ""
+                input[3] = "disease_state"
+                input[4] = "unknown"
+                input[5] = "index"
+                input[6] = "X"
+                input[7] = "sum"
+                input[8] = false
+                input[9] = ""
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.obs.get("condition").unique() == ["Healthy", "Disease", "Treated"].toSet()
+            assert adata.obs.get("batch").unique() == ["test_test"].toSet()
+            assert !("disease_state" in adata.obs.colnames)
+        }
+    }
+
+    test("Should reject missing identities in the selected donor column") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/label_with_nan.h5ad', checkIfExists: true)
+                ])
+                input[1] = "sample"
+                input[2] = ""
+                input[3] = ""
+                input[4] = "unknown"
+                input[5] = "index"
+                input[6] = "X"
+                input[7] = "sum"
+                input[8] = false
+                input[9] = "cell_type"
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Sample test: donor column 'cell_type' contains missing values")
+        }
+    }
+
     test("Should create donor column when missing") {
         when {
             params {

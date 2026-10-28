@@ -24,7 +24,7 @@ if "${excluded_genes}":
     mask = ~adata.var_names.isin(excluded_genes)
     adata = adata[:, mask].copy()
 
-if n_hvgs > 0 and adata.n_vars <= n_hvgs:
+if n_hvgs < 0 or (n_hvgs > 0 and adata.n_vars <= n_hvgs):
     adata.var["highly_variable"] = True
     fragment = adata.var[["highly_variable"]].copy()
     fragment.columns = [prefix]

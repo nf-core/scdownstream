@@ -14,6 +14,7 @@ process LIANA_RANKAGGREGATE {
     val subsample_strategy
     val subsample_seed
     val apply_log1p
+    val species
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad         , optional: true

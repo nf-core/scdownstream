@@ -991,6 +991,107 @@ nextflow_workflow {
 
     }
 
+    test("Should pseudobulk with empty DE methods - stub") {
+
+        tag "stub"
+        tag "empty_de_methods"
+        options '-stub'
+
+        when {
+            params { outdir = "$outputDir" }
+            workflow {
+                """
+                input[0] = channel.empty()
+                input[1] = channel.of([
+                    [id: 'test', obs_key: 'leiden', condition_col: 'condition', donor_col: 'sample', analyses: ['paga'] as Set],
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                ])
+                input[2] = true
+                input[3] = 10
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = false
+                input[8] = ''
+                input[9] = 42
+                input[10] = ''
+                input[11] = ''
+                input[12] = true
+                input[13] = 10
+                input[14] = 1000
+                input[15] = channel.empty()
+                input[16] = 'Healthy'
+                input[17] = []
+                input[18] = 'human'
+                input[19] = false
+                input[20] = ''
+                input[21] = []
+                input[22] = 'ulm'
+                input[23] = 5
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.trace.tasks().any { task -> task.name.contains(':PSEUDOBULKING:PSEUDOBULK') }
+            assert !workflow.trace.tasks().any { task -> task.name.contains(':PSEUDOBULK_DE:') }
+            assert workflow.out.multiqc_files.any { file(it).name == 'test_pseudobulk_mqc.json' }
+        }
+    }
+
+    test("Should run decoupler with empty DE methods - stub") {
+
+        tag "stub"
+        tag "decoupler"
+        tag "empty_de_methods"
+        options '-stub'
+
+        when {
+            params { outdir = "$outputDir" }
+            workflow {
+                """
+                input[0] = channel.empty()
+                input[1] = channel.of([
+                    [id: 'test', obs_key: 'leiden', condition_col: 'condition', donor_col: 'sample', analyses: ['decoupler'] as Set],
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                ])
+                input[2] = true
+                input[3] = 10
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = false
+                input[8] = ''
+                input[9] = 42
+                input[10] = ''
+                input[11] = ''
+                input[12] = false
+                input[13] = 10
+                input[14] = 1000
+                input[15] = channel.empty()
+                input[16] = 'Healthy'
+                input[17] = []
+                input[18] = 'human'
+                input[19] = true
+                input[20] = ''
+                input[21] = file('network.tsv')
+                input[21].text = '''${networkTsv}'''
+                input[22] = 'ulm'
+                input[23] = 5
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.trace.tasks().any { task -> task.name.contains(':PSEUDOBULKING:PSEUDOBULK') }
+            assert !workflow.trace.tasks().any { task -> task.name.contains(':PSEUDOBULK_DE:') }
+            assert workflow.out.uns.collect { file(it).name } == ['test_decoupler_activity.pkl']
+            assert workflow.out.multiqc_files.any { file(it).name == 'test_network_activity_mqc.json' }
+        }
+    }
+
     test("Should skip decoupler when not listed in analyses - stub") {
 
         tag "stub"

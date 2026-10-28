@@ -7,6 +7,74 @@ nextflow_workflow {
     tag "subworkflows"
     tag "subworkflows_local"
 
+    test("Should preserve periods in whitelisted subset identities") {
+
+        setup {
+            run("ADATA_UNIFY") {
+                script "../../../../modules/local/adata/unify/main.nf"
+                process {
+                    """
+                    input[0] = channel.of('B.naive', 'B.memory').map { id ->
+                        [[id: id], file(params.pipelines_testdata_base_path + '/anndata-variations/counts_in_X.h5ad', checkIfExists: true)]
+                    }
+                    input[1] = 'sample'
+                    input[2] = ''
+                    input[3] = ''
+                    input[4] = 'unknown'
+                    input[5] = 'index'
+                    input[6] = 'X'
+                    input[7] = 'sum'
+                    input[8] = false
+                    input[9] = ''
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = ADATA_UNIFY.out.h5ad
+                input[1] = 'sample'
+                input[2] = 'hvgs'
+                input[3] = -1
+                input[4] = []
+                input[5] = 'log1p'
+                input[6] = ['pca']
+                input[7] = null
+                input[8] = null
+                input[9] = ''
+                input[10] = ''
+                input[11] = 128
+                input[12] = 2
+                input[13] = 30
+                input[14] = 'gene'
+                input[15] = 'zinb'
+                input[16] = 5
+                input[17] = true
+                input[18] = null
+                input[19] = null
+                input[20] = null
+                input[21] = 'condition'
+                input[22] = ' B.naive, B.memory '
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.integrations.size() == 2
+            assert workflow.out.integrations.collect { it[0].subset }.toSet() == ['B.naive', 'B.memory'].toSet()
+            assert workflow.out.integrations.collect { it[0].id }.toSet() == ['pca-B.naive', 'pca-B.memory'].toSet()
+            workflow.out.integrations.each { meta, h5ad ->
+                assert anndata(h5ad).obs['sample'].unique() == [meta.subset].toSet()
+            }
+        }
+    }
+
     test("Should integrate each group with PCA") {
 
         when {
@@ -219,6 +287,56 @@ nextflow_workflow {
             }
         }
 
+    }
+
+    test("Should publish a distinct Symphony reference for each subset - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                save_intermediates = false
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'base'],
+                    file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'sample'
+                input[2] = 'hvgs'
+                input[3] = -1
+                input[4] = []
+                input[5] = 'log1p'
+                input[6] = ['symphony']
+                input[7] = null
+                input[8] = null
+                input[9] = ''
+                input[10] = ''
+                input[11] = 128
+                input[12] = 2
+                input[13] = 30
+                input[14] = 'gene'
+                input[15] = 'zinb'
+                input[16] = 5
+                input[17] = true
+                input[18] = null
+                input[19] = null
+                input[20] = null
+                input[21] = 'condition'
+                input[22] = null
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.integrations.collect { it[0].subset }.toSet() == ['A', 'B'].toSet()
+            assert path("$outputDir/03_combine/integrate/symphony/symphony-A_reference.h5ad").exists()
+            assert path("$outputDir/03_combine/integrate/symphony/symphony-B_reference.h5ad").exists()
+            assert !path("$outputDir/03_combine/integrate/symphony/symphony_reference.h5ad").exists()
+        }
     }
 
     test("Should run without failures - stub") {
