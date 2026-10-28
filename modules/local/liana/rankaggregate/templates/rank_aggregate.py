@@ -294,9 +294,11 @@ else:
 # Versions
 
 versions = {
-    "python": platform.python_version(),
-    "scanpy": sc.__version__,
-    "liana": li.__version__,
+    "${task.process}": {
+        "python": platform.python_version(),
+        "scanpy": sc.__version__,
+        "liana": li.__version__,
+    }
 }
 
 with open("versions.yml", "w") as f:
