@@ -182,7 +182,7 @@ jobs:
           path: pr-comment-fragment/
 
   confirm-pass:
-    needs: [nf-test-changes, nf-test]
+    needs: [nf-test]
     if: always()
     runs-on: # use self-hosted runners
       - runs-on=${{ github.run_id }}-confirm-pass
@@ -202,14 +202,11 @@ jobs:
 
       - name: debug-print
         if: always()
-        env:
-          NEEDS_JSON: ${{ toJSON(needs) }}
-          RESULTS_JSON: ${{ toJSON(needs.*.result) }}
         run: |
-          printf '%s\n' '::group::DEBUG: needs Contents'
-          printf 'DEBUG: toJSON(needs) = %s\n' "$NEEDS_JSON"
-          printf 'DEBUG: toJSON(needs.*.result) = %s\n' "$RESULTS_JSON"
-          printf '%s\n' '::endgroup::'
+          echo "::group::DEBUG: `needs` Contents"
+          echo "DEBUG: toJSON(needs) = ${{ toJSON(needs) }}"
+          echo "DEBUG: toJSON(needs.*.result) = ${{ toJSON(needs.*.result) }}"
+          echo "::endgroup::"
 
       - name: Download PR comment fragments
         if: ${{ always() }}
