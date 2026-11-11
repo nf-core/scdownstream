@@ -10,6 +10,7 @@ process CELLTYPES_CELLTYPIST {
     input:
     tuple val(meta), path(h5ad), val(symbol_col)
     val models
+    path model_files, arity: '0..*', stageAs: 'celltypist_models/*'
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad

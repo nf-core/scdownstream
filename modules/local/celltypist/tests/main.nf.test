@@ -22,6 +22,7 @@ nextflow_process {
                     ]
                 )
                 input[1] = ["Adult_COVID19_PBMC"]
+                input[2] = []
                 """
             }
         }
@@ -56,6 +57,7 @@ nextflow_process {
                     ]
                 )
                 input[1] = ["Adult_COVID19_PBMC"]
+                input[2] = []
                 """
             }
         }
@@ -90,6 +92,68 @@ nextflow_process {
                     ]
                 )
                 input[1] = ["Adult_COVID19_PBMC"]
+                input[2] = []
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+        }
+
+    }
+
+    test("Should run with a custom model file") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index"
+                    ]
+                )
+                input[1] = []
+                input[2] = [file('https://celltypist.cog.sanger.ac.uk/models/Pan_Immune_CellTypist/v2/Immune_All_Low.pkl', checkIfExists: true)]
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "annotation:celltypist:Immune_All_Low:per_cell" in obs.colnames
+                assert "annotation:celltypist:Immune_All_Low:per_cell:confidence" in obs.colnames
+            }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.obs.colnames
+            ).match()
+        }
+
+    }
+
+    test("Should fail with duplicate model names") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index"
+                    ]
+                )
+                input[1] = ["Immune_All_Low"]
+                input[2] = [file('https://celltypist.cog.sanger.ac.uk/models/Pan_Immune_CellTypist/v2/Immune_All_Low.pkl', checkIfExists: true)]
                 """
             }
         }
@@ -117,6 +181,7 @@ nextflow_process {
                     ]
                 )
                 input[1] = ["Adult_COVID19_PBMC"]
+                input[2] = []
                 """
             }
         }
