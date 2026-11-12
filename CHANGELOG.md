@@ -71,6 +71,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Add PyArrow to the `ADATA_EXTEND` environment so finalisation can load Arrow-backed pandas fragments, and regenerate containers and Conda lock files, by @nictru and GPT-6.1 Sol [[#385](https://github.com/nf-core/scdownstream/pull/385)].
 - Correct reference mapping, donor handling, pseudobulk validation, species-specific LIANA resources, subset routing, analysis edge cases and CI gating, by @nictru and GPT-6.1 Sol [[#378](https://github.com/nf-core/scdownstream/pull/378)].
 - Reject colliding and unsafe subset filenames before writing split AnnData outputs, by @nictru and GPT-6.1 Sol [[#360](https://github.com/nf-core/scdownstream/pull/360)].
 - Retain the trained SCVI model across SOLO batch predictions, by @nictru and GPT-6.1 Sol [[#370](https://github.com/nf-core/scdownstream/pull/370)].
