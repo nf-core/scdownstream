@@ -200,6 +200,8 @@ The pipeline supports automated cell type annotation with [Celltypist](https://g
 
 [Celltypist](https://github.com/Teichlab/celltypist) annotates cells using pretrained logistic regression models. Specify the models with [`celltypist_model`](https://nf-co.re/scdownstream/dev/parameters/#celltypist_model); use a comma-separated list for multiple models. Available models are listed on the [Celltypist models page](https://www.celltypist.org/models). When this parameter is empty (the default), Celltypist is skipped.
 
+You can also use custom or pre-downloaded models by giving the path or URL of a `.pkl` model file in place of a name, for example `--celltypist_model Immune_All_Low,/path/to/my_model.pkl`. Entries ending in `.pkl` are staged and loaded directly; all other entries are downloaded by name. The file name without the `.pkl` extension becomes the model name in the output columns (e.g. `annotation:celltypist:my_model:per_cell`), so every model must end up with a unique name. The pipeline fails if two entries resolve to the same name.
+
 #### singleR
 
 For `singleR`, you can provide a CSV file with information about the celldex references to use for the singleR cell type annotation with the [`celldex_reference` parameter](https://nf-co.re/scdownstream/dev/parameters/#celldex_reference).

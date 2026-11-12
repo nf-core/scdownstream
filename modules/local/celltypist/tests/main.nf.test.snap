@@ -1,4 +1,35 @@
 {
+    "Should run with a custom model file": {
+        "content": [
+            {
+                "CELLTYPES_CELLTYPIST": {
+                    "celltypist": "1.6.3",
+                    "pandas": "3.0.6",
+                    "python": "3.13.16",
+                    "scanpy": "1.10.4"
+                }
+            },
+            [
+                "sample",
+                "source_sample",
+                "source_barcode",
+                "is_selected_filtered_cell",
+                "source_role",
+                "synthetic_donor",
+                "synthetic_condition",
+                "synthetic_label",
+                "original_total_counts",
+                "original_n_genes_by_counts",
+                "annotation:celltypist:Immune_All_Low:per_cell",
+                "annotation:celltypist:Immune_All_Low:per_cell:confidence"
+            ]
+        ],
+        "timestamp": "2026-11-12T15:09:13.513701146",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "Should run with a symbol column other than index": {
         "content": [
             {
