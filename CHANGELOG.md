@@ -54,7 +54,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Added`
 
-- Accept custom CellTypist model files (local paths or URLs ending in `.pkl`) in `--celltypist_model`, alongside model names ([#213](https://github.com/nf-core/scdownstream/issues/213)) by @kroy3, with AI assistance [[#384](https://github.com/nf-core/scdownstream/pull/384)].
+- Accept custom CellTypist model files (local paths or URLs ending in `.pkl`) in `--celltypist_model`, alongside model names ([#213](https://github.com/nf-core/scdownstream/issues/213)) by @kroy3 [[#384](https://github.com/nf-core/scdownstream/pull/384)].
 - Add opt-in pathway and transcription factor activity analysis with decoupler (`--decoupler`), scoring pseudobulk profiles and pseudobulk DE contrasts with PROGENy, CollecTRI, MSigDB Hallmark or a custom network (`decoupler/network`, `decoupler/activity`, `decoupler/enrichment`, `decoupler` subworkflow), by @nictru and Cursor [[#321](https://github.com/nf-core/scdownstream/pull/321)].
 - Add EmptyDrops from DropletUtils as an alternative empty droplet removal method, selectable with `--empty_droplet_removal emptydrops` and tuned via `--emptydrops_lower` and `--emptydrops_fdr` ([#169](https://github.com/nf-core/scdownstream/issues/169)) by @nictru and Cursor [[#322](https://github.com/nf-core/scdownstream/pull/322)].
 - Add opt-in `--tords` to convert the final AnnData object to RDS via `ADATA_TORDS` (off by default) by @nictru [[#308](https://github.com/nf-core/scdownstream/pull/308)].
