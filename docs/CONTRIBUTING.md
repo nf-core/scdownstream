@@ -92,6 +92,7 @@ nf-core pipelines lint <pipeline_directory>
 ```
 
 If you encounter failures or warnings, follow the linked documentation printed to screen.
+Generated pipeline logos can differ across CPU architectures. A local `files_unchanged` lint failure for a logo can therefore occur even when CI passes. Leave the logo images unchanged and use the CI result for this check.
 For more information about linting tests, see [nf-core/tools API documentation](https://nf-co.re/docs/nf-core-tools/api_reference/latest/pipeline_lint_tests/actions_awsfulltest).
 
 #### Pipeline tests
@@ -147,6 +148,9 @@ Use the following naming schemes for channels to make the channel flow easier to
 
 Parameters should be initialised and defined with default values within the `params` scope in `nextflow.config`.
 They should also be documented in the pipeline JSON schema.
+Declare boolean and numeric parameter types in the `params` block in `main.nf`, without duplicating their defaults.
+Use nullable numeric types, such as `Integer?` and `Float?`, when the default is `null`.
+Keep string parameters and the boolean-or-string `help` parameter untyped.
 
 To update `nextflow_schema.json`, run:
 

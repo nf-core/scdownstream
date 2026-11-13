@@ -19,7 +19,7 @@ scores = clf.doublet_score()
 adata.obs["doublet"] = [label == 1 for label in doublets]
 adata.obs["doublet_score"] = scores
 
-adata.write_h5ad("${prefix}.h5ad")
+adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 
 df = adata.obs[["doublet"]]
 df.columns = ["${prefix}"]

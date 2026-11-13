@@ -25,6 +25,10 @@ input:
         ontologies:
           - edam: "http://edamontology.org/format_3590"
 
+  - apply_log1p:
+      type: boolean
+      description: Apply log1p to X before export; false when the caller supplies log-transformed expression
+
 output:
   h5ad:
     - - meta:

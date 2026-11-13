@@ -11,7 +11,7 @@ adata = ad.read_h5ad("${h5ad}")
 
 adata = adata[df[0].values]
 
-adata.write_h5ad("${prefix}.h5ad")
+adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 
 # Versions
 

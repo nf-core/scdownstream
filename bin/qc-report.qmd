@@ -20,6 +20,8 @@ import matplotlib.pyplot as plt
 import scanpy as sc
 import anndata as ad
 import glob
+import re
+import numpy as np
 from textwrap import dedent
 from IPython.display import display, Markdown
 ```
@@ -429,15 +431,15 @@ def plot_qc_umap(adata, basis, group):
         title="", palette=palette)
     return fig
 
-# Loop over existing UMAPs
-umaps = [obsm for obsm in adata.obsm if 'umap' in obsm]
+umaps = sorted(obsm for obsm in adata.obsm if re.fullmatch(r'X_.+_umap', obsm))
 umap_dict = {}
 for umap in umaps:
 
-    # Find all performed clusterings
-    umap_pattern = umap.split('_')[1]
-    umap_name = umap_pattern.split('-')[0]
-    clusterings = [col for col in adata.obs.columns if umap_pattern in col]
+    umap_name = umap.removeprefix('X_').removesuffix('_umap')
+    clustering_pattern = re.escape(umap_name) + r'-[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?_leiden'
+    clusterings = sorted(col for col in adata.obs.columns if re.fullmatch(clustering_pattern, col))
+    # Finalisation pads subset embeddings with NaN for cells outside the subset.
+    adata_umap = adata[np.isfinite(np.asarray(adata.obsm[umap])).all(axis=1)].copy()
 
     # Define grouping parameters
     ct_columns_top10 = [col + '_top10' for col in ct_columns]
@@ -451,7 +453,7 @@ for umap in umaps:
             group_name = group.split('__')[0].split('.')[0]
         else:
             group_name = group
-        fig = plot_qc_umap(adata, umap, group)
+        fig = plot_qc_umap(adata_umap, umap, group)
         umap_plots.append((group_name, fig))
 
     # Store plot list inside dictionary for programmatic header/tabset creation

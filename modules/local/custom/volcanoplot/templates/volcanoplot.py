@@ -139,8 +139,10 @@ def prepare_volcano_df(df, interesting):
     plot_df["gene"] = plot_df["gene"].astype(str)
     plot_df["log2fc"] = pd.to_numeric(plot_df["log2fc"], errors="coerce")
     plot_df[p_use] = pd.to_numeric(plot_df[p_use], errors="coerce")
+    # Zero p-values can result from numerical underflow; floor only the plotting coordinates.
+    p_for_plot = plot_df[p_use].astype(float).mask(plot_df[p_use] == 0, np.nextafter(0.0, 1.0))
     with np.errstate(divide="ignore", invalid="ignore"):
-        plot_df["neglog10"] = -np.log10(plot_df[p_use])
+        plot_df["neglog10"] = -np.log10(p_for_plot)
     plot_df["neglog10"] = plot_df["neglog10"].replace([np.inf, -np.inf], np.nan)
     plot_df = plot_df.dropna(subset=["log2fc", "neglog10"])
     if len(plot_df) < 2:

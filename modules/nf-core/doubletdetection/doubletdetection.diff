@@ -1,0 +1,20 @@
+Changes in component 'nf-core/doubletdetection'
+'modules/nf-core/doubletdetection/environment.yml' is unchanged
+'modules/nf-core/doubletdetection/meta.yml' is unchanged
+'modules/nf-core/doubletdetection/main.nf' is unchanged
+'modules/nf-core/doubletdetection/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/doubletdetection/tests/main.nf.test' is unchanged
+Changes in 'doubletdetection/templates/doubletdetection.py':
+--- modules/nf-core/doubletdetection/templates/doubletdetection.py
++++ modules/nf-core/doubletdetection/templates/doubletdetection.py
+@@ -19,7 +19,7 @@
+ adata.obs["doublet"] = [label == 1 for label in doublets]
+ adata.obs["doublet_score"] = scores
+ 
+-adata.write_h5ad("${prefix}.h5ad")
++adata.write_h5ad("${prefix}.h5ad", compression="gzip")
+ 
+ df = adata.obs[["doublet"]]
+ df.columns = ["${prefix}"]
+
+************************************************************

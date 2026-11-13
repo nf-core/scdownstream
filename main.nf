@@ -9,6 +9,61 @@
 ----------------------------------------------------------------------------------------
 */
 
+// Defaults remain in nextflow.config for config-time consumers and profile overrides.
+// help remains untyped because it accepts either a boolean or a section name.
+params {
+    save_intermediates: Boolean
+    unify_gene_symbols: Boolean
+    aggregate_isoforms: Boolean
+    cell_cycle_scoring: Boolean
+    use_ambient_corrected_counts: Boolean
+    doublet_detection_threshold: Integer
+    doublet_removal: Boolean
+    emptydrops_lower: Integer
+    emptydrops_fdr: Float
+    cellbender_epochs: Integer
+    sample_n: Integer?
+    sample_fraction: Float?
+    integration_n_features: Integer
+    integrate_per_label: Boolean
+    neighbors_n_pcs: Integer?
+    tsne: Boolean
+    cluster_per_label: Boolean
+    cluster_global: Boolean
+    qc_only: Boolean
+    skip_liana: Boolean
+    liana_n_perms: Integer
+    liana_max_cells: Integer?
+    liana_subsample_seed: Integer
+    cell2cell: Boolean
+    cell2cell_rank: Integer?
+    cell2cell_seed: Integer
+    skip_qc_report: Boolean
+    scib: Boolean
+    scib_max_cells: Integer?
+    scib_subsample_seed: Integer
+    pseudobulk: Boolean
+    prep_cellxgene: Boolean
+    tords: Boolean
+    scvi_n_latent: Integer
+    scvi_n_hidden: Integer
+    scvi_n_layers: Integer
+    scvi_max_epochs: Integer?
+    scvi_use_observed_lib_size: Boolean
+    pseudobulk_min_num_cells: Integer
+    pseudobulk_min_total_counts: Integer
+    decoupler: Boolean
+    decoupler_min_targets: Integer
+    memory_scale: Integer
+    azimuth: Boolean
+    plaintext_email: Boolean
+    monochrome_logs: Boolean
+    help_full: Boolean
+    show_hidden: Boolean
+    version: Boolean
+    validate_params: Boolean
+}
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS

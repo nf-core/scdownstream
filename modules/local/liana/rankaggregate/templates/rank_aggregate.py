@@ -265,12 +265,13 @@ if adata.obs[obs_key].nunique() > 1:
     )
     _log_subsample_info(subsample_info)
 
-    if (adata.X < 0).nnz == 0:
+    if "${apply_log1p}" == "true":
         sc.pp.log1p(adata)
     try:
         li.mt.rank_aggregate(
             adata,
             obs_key,
+            resource_name={"human": "consensus", "mouse": "mouseconsensus"}["${species}"],
             use_raw=False,
             verbose=True,
             n_jobs=int("${task.cpus}"),
@@ -294,9 +295,11 @@ else:
 # Versions
 
 versions = {
-    "python": platform.python_version(),
-    "scanpy": sc.__version__,
-    "liana": li.__version__,
+    "${task.process}": {
+        "python": platform.python_version(),
+        "scanpy": sc.__version__,
+        "liana": li.__version__,
+    }
 }
 
 with open("versions.yml", "w") as f:

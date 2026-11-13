@@ -45,7 +45,7 @@ if "${output_layer}" == "X":
 else:
     adata.layers["${output_layer}"] = adata_cellbender.layers["cellbender"]
 
-adata.write_h5ad("${prefix}.h5ad")
+adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 
 # Versions
 

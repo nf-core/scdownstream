@@ -33,7 +33,7 @@ workflow CLUSTER_TARGETS {
         ch_targets = ch_targets.mix(
             SPLITCOL.out.h5ad
                 .transpose()
-                .map { meta, h5ad -> [meta + [subset: h5ad.simpleName], h5ad] }
+                .map { meta, h5ad -> [meta + [subset: h5ad.baseName], h5ad] }
         )
     }
 

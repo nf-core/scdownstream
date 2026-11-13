@@ -138,6 +138,8 @@ for treatment in treatments:
     res = ep.glm_sc_test(fit, coef=coef)
     results = res["table"] if isinstance(res, dict) else res
     results = results.copy() if hasattr(results, "copy") else pd.DataFrame(results)
+    # glm_sc_test returns coefficients on the natural-log link scale.
+    results["logFC"] = results["logFC"] / np.log(2)
     if "genes" not in results.columns:
         if len(gene_labels) != len(results):
             raise ValueError(f"Gene label length ({len(gene_labels)}) does not match results ({len(results)})")

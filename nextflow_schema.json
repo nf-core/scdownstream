@@ -345,8 +345,8 @@
                 "celltypist_model": {
                     "type": "string",
                     "description": "Specify the models to use for the celltypist cell type annotation",
-                    "help_text": "If you want to use multiple models, separate them with a comma. Available models can be found [here](https://www.celltypist.org/models).",
-                    "pattern": "^([a-zA-Z0-9_]*(,[a-zA-Z0-9_]*)*)?$"
+                    "help_text": "If you want to use multiple models, separate them with a comma. Available models can be found [here](https://www.celltypist.org/models). To use a custom model, provide the path or URL of its `.pkl` file instead of a name, for example `Immune_All_Low,/path/to/my_model.pkl`. The file name without the `.pkl` extension is used as the model name in the output columns, so it must not clash with another selected model.",
+                    "pattern": "^(([a-zA-Z0-9_]+|[^,\\s]+\\.pkl)(,([a-zA-Z0-9_]+|[^,\\s]+\\.pkl))*)?$"
                 },
                 "azimuth": {
                     "type": "boolean",
@@ -767,7 +767,7 @@
                 },
                 "trace_report_suffix": {
                     "type": "string",
-                    "fa_icon": "far calendar",
+                    "fa_icon": "far fa-calendar",
                     "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
                     "hidden": true
                 },

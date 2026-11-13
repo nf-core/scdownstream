@@ -45,7 +45,7 @@ else:
 
 del adata.uns["_scvi_uuid"], adata.uns["_scvi_manager_uuid"]
 
-adata.write_h5ad("${prefix}.h5ad")
+adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 
 # Versions
 versions = {"${task.process}": {"scvi": scvi.__version__}}

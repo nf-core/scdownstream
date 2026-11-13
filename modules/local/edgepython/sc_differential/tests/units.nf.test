@@ -1,0 +1,52 @@
+nextflow_process {
+
+    name "Test edgePython single-cell fold-change units"
+    script "modules/local/edgepython/sc_differential/main.nf"
+    process "EDGEPYTHON_SCDIFFERENTIAL"
+
+    tag "modules"
+    tag "modules_local"
+    tag "singlecell_units"
+
+    test("Should fit an eligible single-cell condition contrast") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'units', celltype: 'TypeA', condition_col: 'condition'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'donor'
+                input[2] = 'condition'
+                input[3] = 'label'
+                input[4] = 'TypeA'
+                input[5] = 'Healthy'
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert process.out.results.size() == 1
+            def table = process.out.results[0][1]
+            assert file(table).name == 'units_TypeA_edgepython_sc_Disease_results.parquet'
+            assert file(table).size() > 0
+            def result = parquet(table)
+            assert result.rowCount == 1314
+            assert result.columnNames.take(7) == ['gene', 'log2fc', 'pvalue', 'padj', 'group', 'contrast', 'stratum']
+            assert result.schema.fields.find { it.name == 'log2fc' }.physicalType == 'DOUBLE'
+            assert result.schema.fields.find { it.name == 'log2fc' }.nullable
+            def positive = result.rows.find { it.gene == 'FOXN3' }
+            def negative = result.rows.find { it.gene == 'CRTAP' }
+            assert positive != null
+            assert negative != null
+            assert positive.group == 'Disease'
+            assert positive.contrast == 'Disease vs Healthy'
+            assert positive.stratum == 'celltype=TypeA'
+            assert Math.abs(positive.log2fc - 1.2370226089406087d) < 1e-4d
+            assert Math.abs(negative.log2fc - -2.062184319422321d) < 1e-4d
+            assert Math.abs(positive.pvalue - 0.004165649756740918d) < 1e-6d
+            assert Math.abs(positive.padj - 0.9614059396460176d) < 1e-5d
+        }
+    }
+}

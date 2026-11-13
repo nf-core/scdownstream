@@ -67,17 +67,23 @@ workflow AMBIENT_CORRECTION {
             ch_multi.input.map { meta, _filtered, unfiltered -> [meta, unfiltered] }
         )
 
-        CELLBENDER_MERGE(
-            ch_multi.input.map { meta, filtered, raw -> [meta.id, meta, filtered, raw] }.join(
+        ch_cellbender_merge = ch_multi.input
+            .map { meta, filtered, raw -> [meta.id, meta, filtered, raw] }
+            .join(
                 CELLBENDER_REMOVEBACKGROUND.out.h5.map { meta, h5 ->
                     [meta.id, h5]
                 },
                 by: 0,
                 failOnMismatch: true,
-            ).map { _id, meta, filtered, raw, h5 ->
-                [meta, filtered, raw, h5]
-            },
-            ch_multi.output_layer,
+            )
+            .multiMap { _id, meta, filtered, raw, h5 ->
+                input: [meta, filtered, raw, h5]
+                output_layer: meta.ambient_correction_layer
+            }
+
+        CELLBENDER_MERGE(
+            ch_cellbender_merge.input,
+            ch_cellbender_merge.output_layer,
         )
         ch_h5ad = ch_h5ad.mix(CELLBENDER_MERGE.out.h5ad)
     }
