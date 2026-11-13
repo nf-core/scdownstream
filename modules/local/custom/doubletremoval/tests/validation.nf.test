@@ -138,7 +138,7 @@ nextflow_process {
         }
     }
 
-    test("Should reject duplicate prediction CSV headers before pandas renames them") {
+    test("Should reject duplicate prediction CSV headers as multiple prediction columns") {
         when {
             params { outdir = "$outputDir" }
             process {
@@ -153,7 +153,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains("solo table 'predictions/headers.csv' contains duplicate CSV headers")
+            assert process.errorReport.contains("solo prediction 'predictions/headers.csv' must contain exactly one Boolean column")
         }
     }
 

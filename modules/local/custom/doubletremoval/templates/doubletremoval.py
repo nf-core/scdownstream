@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import base64
-import csv
 import json
 import platform
 
@@ -23,19 +22,13 @@ prediction_paths = json.loads("""${predictions_json}""")
 def load(path, method):
     source = f"{method} table '{path}'"
     if path.endswith(".csv"):
-        with open(path, newline="") as handle:
-            header = next(csv.reader(handle), [])
-        if len(header) != len(set(header)):
-            raise ValueError(f"{source} contains duplicate CSV headers")
         table = pd.read_csv(path, index_col=0, converters={0: str})
     elif path.endswith(".pkl"):
         table = pd.read_pickle(path)
     else:
         raise ValueError(f"{source} must be CSV or pickle")
-    if not isinstance(table, pd.DataFrame):
-        raise ValueError(f"{source} must contain a DataFrame")
-    if not table.columns.is_unique:
-        raise ValueError(f"{source} contains duplicate columns")
+    if len(table.columns) != 1:
+        raise ValueError(f"{method} prediction '{path}' must contain exactly one Boolean column")
     if not table.index.is_unique:
         duplicates = table.index[table.index.duplicated()].tolist()[:5]
         raise ValueError(f"{source} contains duplicate indices: {duplicates}")
@@ -82,15 +75,11 @@ votes = pd.DataFrame(index=adata.obs_names)
 annotations = pd.DataFrame(index=adata.obs_names)
 for method, prediction_path in zip(methods, prediction_paths):
     prediction = load(prediction_path, method)
-    if len(prediction.columns) != 1:
-        raise ValueError(f"{method} prediction '{prediction_path}' must contain exactly one Boolean column")
     vote = boolean_votes(prediction.iloc[:, 0], f"{method} prediction '{prediction_path}'")
     votes[method] = vote
     annotations[f"{method}_predicted_doublet"] = vote
     annotations[f"{method}_class"] = vote.map({False: "singlet", True: "doublet"})
 
-if not annotations.columns.is_unique:
-    raise ValueError("Canonical annotation names collide")
 collisions = annotations.columns.intersection(adata.obs.columns).tolist()
 if collisions:
     raise ValueError(f"Canonical annotation names collide with input observation columns: {collisions}")
