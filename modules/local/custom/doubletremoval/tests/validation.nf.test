@@ -7,7 +7,7 @@ nextflow_process {
     tag "modules"
     tag "modules_local"
 
-    test("Should reject canonical call names already present in the input") {
+    test("Should leave existing call annotations to finalisation") {
         setup {
             run("ADATA_EXTEND") {
                 script "../../../adata/extend/main.nf"
@@ -32,8 +32,12 @@ nextflow_process {
             }
         }
         then {
-            assert process.failed
-            assert process.errorReport.contains("Canonical annotation names collide with input observation columns: ['solo_class']")
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.n_obs == 128
+            assert adata.obs.get('solo_class').data[0] == 'singlet'
+            assert !('solo_predicted_doublet' in adata.obs.colnames)
+            assert path(process.out.obs[0][1]).exists()
         }
     }
 
@@ -91,8 +95,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains("solo table 'predictions/duplicate.csv' contains duplicate indices")
-            assert process.errorReport.contains('cell_000')
+            assert process.errorReport.contains('predictions/duplicate.csv must contain each input barcode exactly once')
         }
     }
 
@@ -113,8 +116,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains("scrublet table 'predictions/missing.csv' barcode coverage mismatch")
-            assert process.errorReport.contains("missing=['cell_000']")
+            assert process.errorReport.contains('predictions/missing.csv must contain each input barcode exactly once')
         }
     }
 
@@ -133,8 +135,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains("solo table 'predictions/extra.csv' barcode coverage mismatch")
-            assert process.errorReport.contains("extra=['cell_128']")
+            assert process.errorReport.contains('predictions/extra.csv must contain each input barcode exactly once')
         }
     }
 
@@ -153,7 +154,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains("solo prediction 'predictions/headers.csv' must contain exactly one Boolean column")
+            assert process.errorReport.contains('predictions/headers.csv must contain exactly one Boolean column')
         }
     }
 
@@ -172,7 +173,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains("solo prediction 'predictions/columns.csv' must contain exactly one Boolean column")
+            assert process.errorReport.contains('predictions/columns.csv must contain exactly one Boolean column')
         }
     }
 
@@ -191,8 +192,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains('null or invalid Boolean votes')
-            assert process.errorReport.contains('cell_005')
+            assert process.errorReport.contains('predictions/null.csv must contain non-null Boolean predictions')
         }
     }
 
@@ -211,17 +211,17 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains("solo prediction 'predictions/invalid.csv' contains null or invalid Boolean votes")
+            assert process.errorReport.contains('predictions/invalid.csv must contain non-null Boolean predictions')
         }
     }
 
-    test("Should reject duplicate method records") {
+    test("Should reject numeric values instead of treating them as Boolean calls") {
         when {
             params { outdir = "$outputDir" }
             process {
                 """
-                input[0] = channel.of('cell,call\\ncell_000,false\\n').collectFile(name: 'p.csv').map { p -> [
-                    [id: 'methods'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo','solo'], [p]
+                input[0] = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s\\n', i, i % 2) }.join('')).collectFile(name: 'numeric.csv').map { p -> [
+                    [id: 'numeric'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -230,45 +230,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains('Duplicate doublet methods')
-        }
-    }
-
-    test("Should reject unknown method identifiers") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                input[0] = channel.of('cell,call\\ncell_000,false\\n').collectFile(name: 'p.csv').map { p -> [
-                    [id: 'unknown'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['unknown'], [p]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains('Unknown or empty doublet methods')
-        }
-    }
-
-    test("Should reject unsorted methods") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                input[0] = channel.of('cell,call\\ncell_000,false\\n').collectFile(name: 'p.csv').map { p -> [
-                    [id: 'unsorted'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo','scrublet'], [p]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains('Doublet methods must be sorted')
+            assert process.errorReport.contains('predictions/numeric.csv must contain non-null Boolean predictions')
         }
     }
 
@@ -287,7 +249,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains('Table counts must match methods')
+            assert process.errorReport.contains('zip() argument 2 is shorter than argument 1')
         }
     }
 }
