@@ -78,7 +78,6 @@ workflow PIPELINE_INITIALISATION {
 
     command = "nextflow run ${workflow.manifest.name} -profile <docker/singularity/.../institute> --input samplesheet.csv --outdir <OUTDIR>"
 
-    // Nextflow handles scalar types; schema casting would reinterpret numeric-looking strings.
     UTILS_NFSCHEMA_PLUGIN (
         workflow,
         validate_params,
