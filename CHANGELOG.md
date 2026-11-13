@@ -54,6 +54,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Added`
 
+- Propagate doublet calls, scDblFinder scores and classes into the finalized and merged AnnData under dataset-independent `obs` column names (`scdblfinder`, `scdblfinder_score`, `scdblfinder_class`, ...; calls were previously named `<sample>_<method>` and lost during merging), join predictions on the exact cell barcode and fail on missing, duplicated or unmatched predictions ([#391](https://github.com/nf-core/scdownstream/issues/391)) by @kroy3.
 - Add optional global `--scdblfinder_dbr_sd` with inclusive 0-1 validation, default-preserving argument handling and regression tests, by @nictru and GPT-6.1 Sol [[#388](https://github.com/nf-core/scdownstream/pull/388)].
 - Accept custom CellTypist model files (local paths or URLs ending in `.pkl`) in `--celltypist_model`, alongside model names ([#213](https://github.com/nf-core/scdownstream/issues/213)) by @kroy3 [[#384](https://github.com/nf-core/scdownstream/pull/384)].
 - Add opt-in pathway and transcription factor activity analysis with decoupler (`--decoupler`), scoring pseudobulk profiles and pseudobulk DE contrasts with PROGENy, CollecTRI, MSigDB Hallmark or a custom network (`decoupler/network`, `decoupler/activity`, `decoupler/enrichment`, `decoupler` subworkflow), by @nictru and Cursor [[#321](https://github.com/nf-core/scdownstream/pull/321)].

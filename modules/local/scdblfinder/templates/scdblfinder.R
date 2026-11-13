@@ -108,17 +108,18 @@ if (is.null(colnames(sce)) || length(colnames(sce)) != ncol(sce)) {
 # Write the updated SingleCellExperiment directly as h5ad.
 write_h5ad(sce, "${prefix}.h5ad", compression = "gzip")
 
-# Extract predictions for doublet removal step
-# Create a binary doublet call based on class
-
-# Create predictions vector
-doublet_calls <- colData(sce)\$scdblfinder_class == "doublet"
-
-# Create data frame without row.names first, then add them
-predictions <- data.frame(doublet = doublet_calls)
+# Extract predictions for the doublet removal step.
+# The first column is the binary doublet call that takes part in the vote across
+# doublet detection methods. The remaining columns are annotations in the
+# "scdblfinder_" namespace that are carried along but never counted as votes.
+predictions <- data.frame(
+  doublet = colData(sce)\$scdblfinder_class == "doublet",
+  scdblfinder_score = colData(sce)\$scdblfinder_score,
+  scdblfinder_class = as.character(colData(sce)\$scdblfinder_class)
+)
 row.names(predictions) <- colnames(sce)
 
-colnames(predictions) <- "${prefix}"
+colnames(predictions)[1] <- "${prefix}"
 
 # Save predictions to CSV
 write.csv(predictions, "${prefix}.csv")

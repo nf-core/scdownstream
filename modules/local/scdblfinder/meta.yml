@@ -64,7 +64,10 @@ output:
             e.g. `[ id:'sample1' ]`
       - "*.csv":
           type: file
-          description: CSV file containing doublet predictions (boolean)
+          description: |
+            CSV file indexed by cell barcode, containing the boolean doublet call
+            (column named after the output prefix), the scDblFinder score
+            (scdblfinder_score) and the classification (scdblfinder_class)
           pattern: "*.csv"
           ontologies:
             - edam: "http://edamontology.org/format_3752" # CSV

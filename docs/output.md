@@ -76,7 +76,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
     - `(doubletdetection|scdblfinder|scrublet|solo)/`: Results of doublet detection.
       Each directory contains a filtered `h5ad`/`rds` and a `csv`/`pkl` file
       with the doublet annotations.
-    - `${sample_id}.h5ad`: The H5AD without doublets.
+    - `${sample_id}.h5ad`: The H5AD with the doublet annotations in `obs` (the boolean call of each method, plus `scdblfinder_score` and `scdblfinder_class`), and without the doublets if `--doublet_removal` is enabled.
   - `qc_filtered/`: QC plots for the preprocessed data.
   - `cell_cycle/`: Cell cycle scoring results.
     - `${sample_id}_cellcycle.pkl`: `S_score`, `G2M_score`, and `phase` columns

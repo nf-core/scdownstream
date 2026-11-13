@@ -44,7 +44,7 @@ nextflow_workflow {
             assert result.n_obs == original.n_obs
             assert result.obs.index.values == original.obs.index.values
             assert result.obs.get('sample').data.toList() == batches
-            def predictions = result.obs.get('multibatch_solo').data.toList()
+            def predictions = result.obs.get('solo').data.toList()
             assert predictions.size() == original.n_obs
             assert predictions.every { it.toString().toLowerCase() in ['true', 'false'] }
             assert batches.toSet().every { batch ->

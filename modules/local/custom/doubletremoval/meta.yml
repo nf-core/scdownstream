@@ -29,7 +29,13 @@ input:
         pattern: "*.{h5ad}"
     - predictions:
         type: file
-        description: Doublet prediction tables in CSV or pickle format
+        description: |
+          Doublet prediction tables in CSV or pickle format, indexed by cell barcode.
+          Boolean columns are doublet calls that count as votes. A leading
+          "<meta.id>_" is removed from their names. All other columns are annotations
+          (e.g. scores, classes) that are copied to obs but never count as votes; their
+          names must start with the name of a call column from the same table and "_".
+          Every table must contain exactly the cells of the AnnData object.
         pattern: "*.{csv,pkl}"
   - threshold:
       type: integer

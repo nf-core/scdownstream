@@ -63,7 +63,7 @@ nextflow_workflow {
             assert workflow.success
             assert adata.n_obs > 0
             assert adata.n_obs < 384
-            def predictions = ['test_solo', 'test_scrublet', 'test_scdblfinder'].collect { adata.obs.get(it).data }
+            def predictions = ['solo', 'scrublet', 'scdblfinder'].collect { adata.obs.get(it).data }
             assert (0..<adata.n_obs).every { row -> predictions.count { it[row].toString().equalsIgnoreCase('true') } < 2 }
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml },
@@ -99,7 +99,12 @@ nextflow_workflow {
 
             assert workflow.success
             assert adata.n_obs == 384
-            assert "test_scdblfinder" in adata.obs.colnames
+            // The call, score and class are stored under dataset-independent names
+            assert ["scdblfinder", "scdblfinder_score", "scdblfinder_class"].every { it in adata.obs.colnames }
+            assert !adata.obs.colnames.any { it.startsWith("test_") }
+            def calls = adata.obs.get("scdblfinder").data
+            def classes = adata.obs.get("scdblfinder_class").data
+            assert (0..<adata.n_obs).every { row -> calls[row].toString().toBoolean() == (classes[row].toString() == "doublet") }
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml },
                 adata.yaml
@@ -135,7 +140,7 @@ nextflow_workflow {
             assert workflow.success
             def adata = anndata(workflow.out.h5ad[0][1])
             assert adata.n_obs == 384
-            assert 'test_scdblfinder' in adata.obs.colnames
+            assert ['scdblfinder', 'scdblfinder_score', 'scdblfinder_class'].every { it in adata.obs.colnames }
         }
 
     }

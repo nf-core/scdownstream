@@ -1,0 +1,250 @@
+nextflow_process {
+
+    name "Test doublet score and class propagation"
+    script "modules/local/custom/doubletremoval/main.nf"
+    process "CUSTOM_DOUBLETREMOVAL"
+
+    tag "modules"
+    tag "modules_local"
+
+    // The input AnnData has 128 cells named cell_000 ... cell_127, in that order.
+    // Every prediction value below is a function of the cell number, so the tests can
+    // check for each cell that it received the values that belong to its own barcode.
+
+    test("Should join reordered predictions by barcode and keep annotations out of the vote") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                // Rows in reverse order
+                def scdblfinder = channel.of(
+                    'cell,ds1_scdblfinder,scdblfinder_score,scdblfinder_class\\n' + (127..0).collect { i ->
+                        String.format('cell_%03d,%s,%s,%s\\n', i, i % 4 == 0, i / 1000, i % 4 == 0 ? 'doublet' : 'singlet')
+                    }.join('')
+                ).collectFile(name: 'ds1_scdblfinder.csv')
+                // Odd cells first, then even cells. The scores are far above the vote threshold:
+                // if they were counted as votes, every cell would be flagged.
+                def scrublet = channel.of(
+                    'cell,ds1_scrublet,scrublet_score\\n' + ((0..<128).findAll { it % 2 == 1 } + (0..<128).findAll { it % 2 == 0 }).collect { i ->
+                        String.format('cell_%03d,%s,%s\\n', i, i % 8 == 0, 5 + i)
+                    }.join('')
+                ).collectFile(name: 'ds1_scrublet.csv')
+                input[0] = scdblfinder.combine(scrublet).map { first, second -> [
+                    [id: 'ds1'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
+                    [first, second]
+                ] }
+                input[1] = 2
+                input[2] = false
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            // No cells are removed and the observation order is preserved
+            assert adata.n_obs == 128
+            def cells = adata.obs.rownames.toList()
+            assert cells == (0..<128).collect { String.format('cell_%03d', it) }
+            assert adata.layers.toSet() == ['counts', 'spliced', 'unspliced'].toSet()
+            // Dataset-independent column names, one namespace per method
+            assert ['scdblfinder', 'scdblfinder_class', 'scdblfinder_score', 'scrublet', 'scrublet_score'].every { it in adata.obs.colnames }
+            assert !adata.obs.colnames.any { it.startsWith('ds1_') }
+            def call_scdblfinder = adata.obs.get('scdblfinder').data
+            def call_scrublet = adata.obs.get('scrublet').data
+            def score_scdblfinder = adata.obs.get('scdblfinder_score').data
+            def score_scrublet = adata.obs.get('scrublet_score').data
+            def class_scdblfinder = adata.obs.get('scdblfinder_class').data
+            cells.eachWithIndex { cell, row ->
+                def i = cell.replace('cell_', '').toInteger()
+                assert call_scdblfinder[row].toString().toBoolean() == (i % 4 == 0)
+                assert call_scrublet[row].toString().toBoolean() == (i % 8 == 0)
+                assert Math.abs((score_scdblfinder[row] as double) - i / 1000) < 1e-9
+                assert Math.abs((score_scrublet[row] as double) - (5 + i)) < 1e-9
+                assert class_scdblfinder[row].toString() == (i % 4 == 0 ? 'doublet' : 'singlet')
+            }
+        }
+    }
+
+    test("Should remove cells by vote only and keep retained annotations aligned") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                def scdblfinder = channel.of(
+                    'cell,ds1_scdblfinder,scdblfinder_score,scdblfinder_class\\n' + (127..0).collect { i ->
+                        String.format('cell_%03d,%s,%s,%s\\n', i, i % 4 == 0, i / 1000, i % 4 == 0 ? 'doublet' : 'singlet')
+                    }.join('')
+                ).collectFile(name: 'ds1_scdblfinder.csv')
+                def scrublet = channel.of(
+                    'cell,ds1_scrublet,scrublet_score\\n' + ((0..<128).findAll { it % 2 == 1 } + (0..<128).findAll { it % 2 == 0 }).collect { i ->
+                        String.format('cell_%03d,%s,%s\\n', i, i % 8 == 0, 5 + i)
+                    }.join('')
+                ).collectFile(name: 'ds1_scrublet.csv')
+                input[0] = scdblfinder.combine(scrublet).map { first, second -> [
+                    [id: 'ds1'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
+                    [first, second]
+                ] }
+                input[1] = 2
+                input[2] = true
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            // Two votes are needed: only the 16 cells flagged by both methods are removed,
+            // although every scrublet_score is larger than the threshold.
+            def cells = adata.obs.rownames.toList()
+            assert cells == (0..<128).findAll { it % 8 != 0 }.collect { String.format('cell_%03d', it) }
+            assert adata.n_obs == 112
+            def call_scdblfinder = adata.obs.get('scdblfinder').data
+            def call_scrublet = adata.obs.get('scrublet').data
+            def score_scdblfinder = adata.obs.get('scdblfinder_score').data
+            def score_scrublet = adata.obs.get('scrublet_score').data
+            def class_scdblfinder = adata.obs.get('scdblfinder_class').data
+            cells.eachWithIndex { cell, row ->
+                def i = cell.replace('cell_', '').toInteger()
+                assert call_scdblfinder[row].toString().toBoolean() == (i % 4 == 0)
+                assert !call_scrublet[row].toString().toBoolean()
+                assert Math.abs((score_scdblfinder[row] as double) - i / 1000) < 1e-9
+                assert Math.abs((score_scrublet[row] as double) - (5 + i)) < 1e-9
+                assert class_scdblfinder[row].toString() == (i % 4 == 0 ? 'doublet' : 'singlet')
+            }
+        }
+    }
+
+    test("Should fail when a cell has no prediction") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                def predictions = channel.of(
+                    'cell,ds1_scdblfinder,scdblfinder_score\\n' + (0..<127).collect { i ->
+                        String.format('cell_%03d,%s,%s\\n', i, i % 4 == 0, i / 1000)
+                    }.join('')
+                ).collectFile(name: 'ds1_scdblfinder.csv')
+                input[0] = predictions.map { table -> [
+                    [id: 'ds1'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
+                    [table]
+                ] }
+                input[1] = 1
+                input[2] = false
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains('1 cells have no prediction (cell_127)')
+        }
+    }
+
+    test("Should fail when a prediction has no matching cell") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                def predictions = channel.of(
+                    'cell,ds1_scdblfinder,scdblfinder_score\\n' + (0..<128).collect { i ->
+                        String.format('cell_%03d,%s,%s\\n', i, i % 4 == 0, i / 1000)
+                    }.join('') + 'other_cell,true,0.9\\n'
+                ).collectFile(name: 'ds1_scdblfinder.csv')
+                input[0] = predictions.map { table -> [
+                    [id: 'ds1'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
+                    [table]
+                ] }
+                input[1] = 1
+                input[2] = false
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains('1 predictions have no matching cell (other_cell)')
+        }
+    }
+
+    test("Should fail on duplicated prediction barcodes") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                def predictions = channel.of(
+                    'cell,ds1_scdblfinder,scdblfinder_score\\n' + (0..<128).collect { i ->
+                        String.format('cell_%03d,%s,%s\\n', i, i % 4 == 0, i / 1000)
+                    }.join('') + 'cell_005,true,0.9\\n'
+                ).collectFile(name: 'ds1_scdblfinder.csv')
+                input[0] = predictions.map { table -> [
+                    [id: 'ds1'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
+                    [table]
+                ] }
+                input[1] = 1
+                input[2] = false
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains('has 1 duplicated cell barcodes (cell_005)')
+        }
+    }
+
+    test("Should fail on missing doublet calls instead of treating them as singlets") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                def predictions = channel.of(
+                    'cell,ds1_scdblfinder,scdblfinder_score\\n' + (0..<128).collect { i ->
+                        String.format('cell_%03d,%s,%s\\n', i, i == 7 ? '' : i % 4 == 0, i / 1000)
+                    }.join('')
+                ).collectFile(name: 'ds1_scdblfinder.csv')
+                input[0] = predictions.map { table -> [
+                    [id: 'ds1'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
+                    [table]
+                ] }
+                input[1] = 1
+                input[2] = false
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Doublet call column 'scdblfinder'")
+            assert process.errorReport.contains('has 1 missing values')
+        }
+    }
+
+    test("Should fail on annotations outside the namespace of their method") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                def predictions = channel.of(
+                    'cell,ds1_scdblfinder,scrublet_score\\n' + (0..<128).collect { i ->
+                        String.format('cell_%03d,%s,%s\\n', i, i % 4 == 0, i / 1000)
+                    }.join('')
+                ).collectFile(name: 'ds1_scdblfinder.csv')
+                input[0] = predictions.map { table -> [
+                    [id: 'ds1'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
+                    [table]
+                ] }
+                input[1] = 1
+                input[2] = false
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Annotation column 'scrublet_score'")
+            assert process.errorReport.contains("must start with one of: 'scdblfinder_'")
+        }
+    }
+
+}

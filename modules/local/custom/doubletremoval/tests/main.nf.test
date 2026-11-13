@@ -35,7 +35,7 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
             assert adata.n_obs == 370
-            def predictions = ['test_doubletdetection', 'test_scrublet', 'test_solo'].collect { adata.obs.get(it).data }
+            def predictions = ['doubletdetection', 'scrublet', 'solo'].collect { adata.obs.get(it).data }
             assert (0..<adata.n_obs).every { row -> predictions.count { it[row].toString().equalsIgnoreCase('true') } < 2 }
             def versions = path(process.out.versions[0]).yaml.CUSTOM_DOUBLETREMOVAL
             assert snapshot(
@@ -75,9 +75,13 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
             assert adata.n_obs == 384
-            assert "test_scrublet" in adata.obs.colnames
-            assert "test_solo" in adata.obs.colnames
-            assert "test_doubletdetection" in adata.obs.colnames
+            // Call columns are named after the method only, so that they are identical across datasets
+            assert "scrublet" in adata.obs.colnames
+            assert "solo" in adata.obs.colnames
+            assert "doubletdetection" in adata.obs.colnames
+            assert !adata.obs.colnames.any { it.startsWith("test_") }
+            // A method that was not run must not show up as an implicit singlet call
+            assert !("scdblfinder" in adata.obs.colnames)
         }
 
     }

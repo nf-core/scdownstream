@@ -1,0 +1,129 @@
+nextflow_process {
+
+    name "Test doublet annotations from detection to merge"
+    script "modules/local/adata/merge/main.nf"
+    process "ADATA_MERGE"
+
+    tag "modules"
+    tag "modules_local"
+
+    // Follows the doublet annotations of two datasets with distinct barcodes along the
+    // same path as in the pipeline: detection, doublet handling, QC finalization and merge.
+    // Between detection and doublet handling, the prediction rows are reversed and a check
+    // column is added whose value only depends on the cell barcode. If the check column is
+    // still correct for every cell in the merged object, so are the scores and classes that
+    // travelled in the same prediction rows.
+    setup {
+        run("ADATA_UNIFY") {
+            script "modules/local/adata/unify/main.nf"
+            process {
+                """
+                input[0] = channel.of(
+                    [
+                        [id: 'SRR28679756'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ],
+                    [
+                        [id: 'SRR28679759'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'sample'
+                input[2] = ''
+                input[3] = ''
+                input[4] = 'unknown'
+                input[5] = 'index'
+                input[6] = 'X'
+                input[7] = 'make_unique'
+                input[8] = false
+                input[9] = ""
+                """
+            }
+        }
+        run("SCDBLFINDER") {
+            script "modules/local/scdblfinder/main.nf"
+            process {
+                """
+                input[0] = ADATA_UNIFY.out.h5ad.map { meta, h5ad -> [meta, h5ad, null, null, null] }
+                """
+            }
+        }
+        run("CUSTOM_DOUBLETREMOVAL", alias: "DOUBLETREMOVAL") {
+            script "modules/local/custom/doubletremoval/main.nf"
+            process {
+                """
+                def reordered = SCDBLFINDER.out.predictions
+                    .map { _meta, csv ->
+                        def lines = csv.readLines()
+                        def rows = lines.tail().reverse().collect { line ->
+                            def barcode = line.split(',')[0].replaceAll('"', '')
+                            line + ',' + (Math.abs(barcode.hashCode() % 1000) / 1000)
+                        }
+                        [csv.name, ([lines[0] + ',"scdblfinder_barcode_check"'] + rows).join('\\n') + '\\n']
+                    }
+                    .collectFile()
+                    .map { table -> [table.name - '_scdblfinder.csv', table] }
+                input[0] = ADATA_UNIFY.out.h5ad
+                    .map { meta, h5ad -> [meta.id, meta, h5ad] }
+                    .join(reordered)
+                    .map { _id, meta, h5ad, table -> [meta, h5ad, [table]] }
+                input[1] = 1
+                input[2] = false
+                """
+            }
+        }
+        run("ADATA_EXTEND", alias: "FINALIZE_QC_ANNDATAS") {
+            script "modules/local/adata/extend/main.nf"
+            process {
+                """
+                input[0] = DOUBLETREMOVAL.out.h5ad.map { meta, h5ad -> [meta, h5ad, [], [], [], [], [], []] }
+                """
+            }
+        }
+    }
+
+    test("Should keep doublet scores and classes aligned through finalization and merge") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = FINALIZE_QC_ANNDATAS.out.h5ad.map{ _meta, h5ad -> [[id: 'combined'], h5ad] }.groupTuple().map{ meta, h5ads -> [meta, h5ads.sort{ a, b -> a.name <=> b.name }] }
+                input[1] = [[], []]
+                input[2] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.outer[0][1])
+            // Doublet removal is disabled: all cells of both datasets are present
+            def cells = adata.obs.rownames.toList()
+            assert adata.n_obs == 768
+            assert cells.count { it.startsWith('SRR28679756_') } == 384
+            assert cells.count { it.startsWith('SRR28679759_') } == 384
+            assert cells.toSet().size() == 768
+            // The dataset-independent columns survive the obs column intersection of the
+            // merge without force_obs_cols; no dataset-specific column is left behind
+            assert ['scdblfinder', 'scdblfinder_class', 'scdblfinder_score', 'scdblfinder_barcode_check'].every { it in adata.obs.colnames }
+            assert !adata.obs.colnames.any { it.startsWith('SRR28679756_') || it.startsWith('SRR28679759_') }
+            def calls = adata.obs.get('scdblfinder').data
+            def classes = adata.obs.get('scdblfinder_class').data
+            def scores = adata.obs.get('scdblfinder_score').data
+            def checks = adata.obs.get('scdblfinder_barcode_check').data
+            cells.eachWithIndex { cell, row ->
+                assert Math.abs((checks[row] as double) - Math.abs(cell.hashCode() % 1000) / 1000) < 1e-9
+                assert classes[row].toString() in ['singlet', 'doublet']
+                assert calls[row].toString().toBoolean() == (classes[row].toString() == 'doublet')
+                assert (scores[row] as double) >= 0 && (scores[row] as double) <= 1
+            }
+            // Both classes occur, so the checks above are not trivially true
+            assert classes.collect { it.toString() }.toSet() == ['singlet', 'doublet'].toSet()
+        }
+
+    }
+
+}
