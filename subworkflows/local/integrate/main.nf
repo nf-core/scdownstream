@@ -95,7 +95,7 @@ workflow INTEGRATE {
     }
 
     if (methods.contains('scanvi')) {
-        ch_scanvi_h5ad = (scvi_model ? ch_h5ad : ch_h5ad_hvg)
+        ch_scanvi_h5ad = (scvi_model || scanvi_model ? ch_h5ad : ch_h5ad_hvg)
             .map { meta, h5ad ->
                 [meta + [integration: 'scanvi'], h5ad]
             }

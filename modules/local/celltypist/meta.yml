@@ -30,8 +30,12 @@ input:
         type: string
         description: Feature metadata column containing gene symbols
   - models:
-      type: string
-      description: CellTypist model name or path to use for annotation
+      type: list
+      description: Names of CellTypist models to download and use for annotation
+  - model_files:
+      type: file
+      description: Custom CellTypist model files to use for annotation. The file stem is used as the model name.
+      pattern: "*.pkl"
 
 output:
   h5ad:

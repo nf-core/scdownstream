@@ -35,6 +35,9 @@ input:
   - rank_key:
       type: string
       description: uns key for rank_genes_groups results
+  - apply_log1p:
+      type: boolean
+      description: Apply log1p to X before differential expression; false when the caller supplies log-transformed expression
 
 output:
   h5ad:

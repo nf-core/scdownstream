@@ -1,0 +1,94 @@
+nextflow_process {
+
+    name "Test SCANPY_FILTER small gene panels"
+    script "modules/local/scanpy/filter/main.nf"
+    process "SCANPY_FILTER"
+
+    tag "modules"
+    tag "modules_local"
+
+    setup {
+        run("ADATA_EXTEND") {
+            script "modules/local/adata/extend/main.nf"
+            process {
+                """
+                rows = (0..<128).collect { i ->
+                    String.format('GENE%03d', i) + ',' + [1, 10, 19, 20, 32].collect { n -> i < n ? 'True' : 'False' }.join(',')
+                }
+                var_fragment = channel.of('gene,panel_1,panel_10,panel_19,panel_20,panel_32\\n' + rows.join('\\n') + '\\n')
+                    .collectFile(name: 'panels.csv')
+                obs_rows = (0..<128).collect { String.format('cell_%03d,17.0', it) }
+                obs_fragment = channel.of('cell,pct_counts_in_top_20_genes\\n' + obs_rows.join('\\n') + '\\n')
+                    .collectFile(name: 'previous_qc.csv')
+                input[0] = var_fragment.combine(obs_fragment)
+                    .map { var, obs -> [
+                        [id: 'panels'],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/counts_in_X.h5ad', checkIfExists: true),
+                        [obs], [var], [], [], [], []
+                    ] }
+                """
+            }
+        }
+        run("ADATA_SUBSETVAR") {
+            script "modules/local/adata/subsetvar/main.nf"
+            process {
+                """
+                panels = ADATA_EXTEND.out.h5ad.flatMap { meta, h5ad ->
+                    [1, 10, 19, 20, 32].collect { n -> [[id: 'panel_' + n, n_genes: n], h5ad] }
+                }.multiMap { meta, h5ad ->
+                    h5ad: [meta, h5ad]
+                    column: meta.id
+                }
+                input[0] = panels.h5ad
+                input[1] = panels.column
+                """
+            }
+        }
+    }
+
+    test("Should calculate canonical top-20 metrics for 1, 10, 19, 20 and 32 genes without plots") {
+        tag "small_panel_qc"
+
+        when {
+            process {
+                """
+                input[0] = ADATA_SUBSETVAR.out.h5ad.map { meta, h5ad -> [meta + [id: 'qc_' + meta.n_genes], h5ad] }
+                input[1] = 'index'
+                input[2] = 0
+                input[3] = 0
+                input[4] = 0
+                input[5] = 0
+                input[6] = 100
+                input[7] = 'null'
+                input[8] = 'null'
+                input[9] = 0
+                input[10] = 0
+                input[11] = 0
+                input[12] = 0
+                input[13] = []
+                input[14] = false
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert process.out.h5ad.size() == 5
+            assert process.out.plots.isEmpty()
+            process.out.h5ad.each { meta, h5ad ->
+                def adata = anndata(h5ad)
+                assert adata.n_vars == meta.n_genes
+                assert adata.n_obs == 128
+                assert 'pct_counts_in_top_20_genes' in adata.obs.colnames
+                assert adata.obs.colnames.toList().count('pct_counts_in_top_20_genes') == 1
+                if (meta.n_genes < 20) {
+                    assert !("pct_counts_in_top_${meta.n_genes}_genes" in adata.obs.colnames)
+                    def totals = adata.obs.get('total_counts').data
+                    def fractions = adata.obs.get('pct_counts_in_top_20_genes').data
+                    assert totals.indices.findAll { totals[it] > 0 }.every { Math.abs(fractions[it] - 100.0) < 1e-8 }
+                    assert totals.indices.findAll { totals[it] == 0 }.every { fractions[it] == null || fractions[it].toString() == 'NaN' }
+                }
+            }
+        }
+    }
+
+}

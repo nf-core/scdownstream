@@ -1,0 +1,20 @@
+Changes in component 'nf-core/scvitools/scar'
+'modules/nf-core/scvitools/scar/environment.yml' is unchanged
+'modules/nf-core/scvitools/scar/meta.yml' is unchanged
+'modules/nf-core/scvitools/scar/main.nf' is unchanged
+'modules/nf-core/scvitools/scar/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/scvitools/scar/tests/main.nf.test' is unchanged
+Changes in 'scvitools/scar/templates/scar.py':
+--- modules/nf-core/scvitools/scar/templates/scar.py
++++ modules/nf-core/scvitools/scar/templates/scar.py
+@@ -45,7 +45,7 @@
+ 
+ del adata.uns["_scvi_uuid"], adata.uns["_scvi_manager_uuid"]
+ 
+-adata.write_h5ad("${prefix}.h5ad")
++adata.write_h5ad("${prefix}.h5ad", compression="gzip")
+ 
+ # Versions
+ versions = {"${task.process}": {"scvi": scvi.__version__}}
+
+************************************************************

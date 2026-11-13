@@ -1,0 +1,20 @@
+Changes in component 'nf-core/anndata/barcodes'
+'modules/nf-core/anndata/barcodes/environment.yml' is unchanged
+'modules/nf-core/anndata/barcodes/meta.yml' is unchanged
+'modules/nf-core/anndata/barcodes/main.nf' is unchanged
+'modules/nf-core/anndata/barcodes/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/anndata/barcodes/tests/main.nf.test' is unchanged
+Changes in 'anndata/barcodes/templates/barcodes.py':
+--- modules/nf-core/anndata/barcodes/templates/barcodes.py
++++ modules/nf-core/anndata/barcodes/templates/barcodes.py
+@@ -11,7 +11,7 @@
+ 
+ adata = adata[df[0].values]
+ 
+-adata.write_h5ad("${prefix}.h5ad")
++adata.write_h5ad("${prefix}.h5ad", compression="gzip")
+ 
+ # Versions
+ 
+
+************************************************************

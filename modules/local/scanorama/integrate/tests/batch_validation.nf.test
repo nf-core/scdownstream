@@ -1,0 +1,64 @@
+nextflow_process {
+
+    name "Test Scanorama batch validation"
+    script "modules/local/scanorama/integrate/main.nf"
+    process "SCANORAMA_INTEGRATE"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should reject a missing batch column before integration") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'missing_batch_column'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'missing_batch_column'
+                input[2] = 'X'
+                input[3] = true
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Scanorama batch column 'missing_batch_column' is not present in obs")
+        }
+    }
+
+    test("Should reject missing batch labels before integration") {
+        setup {
+            run("ADATA_EXTEND") {
+                script "../../../adata/extend/main.nf"
+                process {
+                    """
+                    input[0] = channel.of('cell,regression_batch\\nSRR28679756::CCTTTCTTCTGCTGCT,batch_a\\n')
+                        .collectFile(name: 'missing_batch.csv')
+                        .map { obs -> [
+                            [id: 'missing_batch_labels'],
+                            file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true),
+                            [obs], [], [], [], [], []
+                        ] }
+                    """
+                }
+            }
+        }
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = ADATA_EXTEND.out.h5ad
+                input[1] = 'regression_batch'
+                input[2] = 'X'
+                input[3] = true
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Scanorama batch column 'regression_batch' contains missing values")
+        }
+    }
+}

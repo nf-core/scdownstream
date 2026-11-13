@@ -9,6 +9,7 @@ process ADATA_PREPCELLXGENE {
 
     input:
     tuple val(meta), path(h5ad)
+    val apply_log1p
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad

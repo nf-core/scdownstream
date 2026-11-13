@@ -38,7 +38,8 @@ for df in [adata.obs, adata.var]:
             df[col] = df[col].astype(np.float32)
 
 adata.X = csc_matrix(adata.X).astype(np.float32)
-sc.pp.log1p(adata)
+if "${apply_log1p}" == "true":
+    sc.pp.log1p(adata)
 
 adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 

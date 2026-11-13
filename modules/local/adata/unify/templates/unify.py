@@ -119,6 +119,12 @@ def unify_obs_column(
 
 adata = ad.read_h5ad("$h5ad")
 sample_id = "${meta.id}"
+donor_col = "${donor_col}"
+if donor_col:
+    if donor_col not in adata.obs:
+        raise ValueError(f"The specified donor column does not exist in the dataset: '{donor_col}'")
+    if adata.obs[donor_col].isna().any():
+        raise ValueError(f"Sample {sample_id}: donor column '{donor_col}' contains missing values")
 
 counts_layer = "${counts_layer}"
 raw_counts_layer = "${meta.raw_counts_layer ?: counts_layer}"
@@ -184,6 +190,7 @@ adata.obs_names = "${meta.id}_" + adata.obs_names
 
 # Unify batches
 batch_col = "${batch_col}"
+condition_col = "${condition_col}"
 if batch_col not in adata.obs:
     adata.obs[batch_col] = "${meta.id}"
 
@@ -191,7 +198,7 @@ if batch_col != "batch":
     if "batch" in adata.obs:
         raise ValueError("The batch column already exists.")
     adata.obs["batch"] = adata.obs[batch_col]
-    if batch_col not in [label_col, "sample"]:
+    if batch_col not in [label_col, condition_col, donor_col, "sample"]:
         del adata.obs[batch_col]
 adata.obs["batch"] = adata.obs["batch"].astype(str).astype("category")
 
@@ -205,8 +212,6 @@ unify_obs_column(
 )
 
 # Unify conditions
-condition_col = "${condition_col}"
-
 unify_obs_column(
     adata,
     condition_col,
@@ -216,14 +221,15 @@ unify_obs_column(
 )
 
 # Unify donor / biological replicate column for pseudobulk analyses
-donor_col = "${donor_col}"
-
 unify_obs_column(
     adata,
     donor_col,
     "donor",
     default_value="unknown",
 )
+
+if batch_col not in ["batch", "label", "condition", "donor", "sample"] and batch_col in adata.obs:
+    del adata.obs[batch_col]
 
 # Add "sample" column
 if "sample" in adata.obs and not adata.obs["sample"].equals("${meta.id}"):

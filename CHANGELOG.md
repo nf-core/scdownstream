@@ -9,6 +9,9 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
+- Annotate SCimilarity predictions directly on the input AnnData without copying unrelated data, by @nictru and GPT-6.1 Sol [[#376](https://github.com/nf-core/scdownstream/pull/376)].
+- Gzip-compress H5AD outputs from the installed AnnData, CellBender, DoubletDetection, Scrublet, scAR and SOLO modules through tool-recorded patches, by @nictru and GPT-6.1 Sol [[#371](https://github.com/nf-core/scdownstream/pull/371)].
+- Type boolean and numeric parameters while retaining config defaults, and require Nextflow 26.04.6 or later, by @nictru and GPT-6.1 Sol [[#359](https://github.com/nf-core/scdownstream/pull/359)].
 - Gzip-compress H5AD outputs from local Python and R modules and the QC report, excluding `hugounifier/apply` and nf-core modules, by @nictru and GPT-6.1 Sol [[#357](https://github.com/nf-core/scdownstream/pull/357)].
 - Migrate nf-test to compact biological fixtures with shared PCA and reference inputs, retain format and failure-path coverage, and regenerate snapshots, by @nictru and GPT-6.1 Sol [[#356](https://github.com/nf-core/scdownstream/pull/356)].
 - Handle empty doublet-overlap plots and nullable reference HVG flags during marker plotting, with regression tests, by @nictru and GPT-6.1 Sol [[#356](https://github.com/nf-core/scdownstream/pull/356)].
@@ -51,6 +54,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Added`
 
+- Accept custom CellTypist model files (local paths or URLs ending in `.pkl`) in `--celltypist_model`, alongside model names ([#213](https://github.com/nf-core/scdownstream/issues/213)) by @kroy3 [[#384](https://github.com/nf-core/scdownstream/pull/384)].
 - Add opt-in pathway and transcription factor activity analysis with decoupler (`--decoupler`), scoring pseudobulk profiles and pseudobulk DE contrasts with PROGENy, CollecTRI, MSigDB Hallmark or a custom network (`decoupler/network`, `decoupler/activity`, `decoupler/enrichment`, `decoupler` subworkflow), by @nictru and Cursor [[#321](https://github.com/nf-core/scdownstream/pull/321)].
 - Add EmptyDrops from DropletUtils as an alternative empty droplet removal method, selectable with `--empty_droplet_removal emptydrops` and tuned via `--emptydrops_lower` and `--emptydrops_fdr` ([#169](https://github.com/nf-core/scdownstream/issues/169)) by @nictru and Cursor [[#322](https://github.com/nf-core/scdownstream/pull/322)].
 - Add opt-in `--tords` to convert the final AnnData object to RDS via `ADATA_TORDS` (off by default) by @nictru [[#308](https://github.com/nf-core/scdownstream/pull/308)].
@@ -68,6 +72,22 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Update scDblFinder to 1.24.10, pin xgboost 3.4.2 and rebuild amd64 and arm64 containers to fix classifier compatibility, by @nictru and GPT-6.1 Sol [[#387](https://github.com/nf-core/scdownstream/pull/387)].
+- Give `QC_REPORT` a task-local temporary directory inside its container without changing the container runtime's host temporary directory, by @nictru and GPT-6.1 Sol [[#385](https://github.com/nf-core/scdownstream/pull/385)].
+- Add PyArrow to the `ADATA_EXTEND` environment so finalisation can load Arrow-backed pandas fragments, and regenerate containers and Conda lock files, by @nictru and GPT-6.1 Sol [[#385](https://github.com/nf-core/scdownstream/pull/385)].
+- Correct reference mapping, donor handling, pseudobulk validation, species-specific LIANA resources, subset routing, analysis edge cases and CI gating, by @nictru and GPT-6.1 Sol [[#378](https://github.com/nf-core/scdownstream/pull/378)].
+- Reject colliding and unsafe subset filenames before writing split AnnData outputs, by @nictru and GPT-6.1 Sol [[#360](https://github.com/nf-core/scdownstream/pull/360)].
+- Retain the trained SCVI model across SOLO batch predictions, by @nictru and GPT-6.1 Sol [[#370](https://github.com/nf-core/scdownstream/pull/370)].
+- Preserve full integration and subset identities in QC report UMAP sections, by @nictru and GPT-6.1 Sol [[#369](https://github.com/nf-core/scdownstream/pull/369)].
+- Include full grouping identity in every CyteType annotation column to preserve overlapping global and subset annotations, by @nictru and GPT-6.1 Sol [[#367](https://github.com/nf-core/scdownstream/pull/367)].
+- Keep CellBender correction destinations paired with their sample files after asynchronous task completion, by @nictru and GPT-6.1 Sol [[#363](https://github.com/nf-core/scdownstream/pull/363)].
+- Process interleaved Scanorama batches contiguously and restore embeddings to the original cell order, by @nictru and GPT-6.1 Sol [[#368](https://github.com/nf-core/scdownstream/pull/368)].
+- Use the experimental design when estimating pseudobulk edgePython dispersions, by @nictru and GPT-6.1 Sol [[#361](https://github.com/nf-core/scdownstream/pull/361)].
+- Convert single-cell edgePython effect sizes from natural-log coefficients to the advertised `log2fc` units, by @nictru and GPT-6.1 Sol [[#364](https://github.com/nf-core/scdownstream/pull/364)].
+- Use selected expression in `X` consistently for Scanpy marker ranking, filtering and plotting when `.raw` is present, by @nictru and GPT-6.1 Sol [[#362](https://github.com/nf-core/scdownstream/pull/362)].
+- Support dense expression matrices in LIANA rank aggregation and let callers explicitly select log1p transformation in both LIANA modules, by @nictru and GPT-6.1 Sol [[#365](https://github.com/nf-core/scdownstream/pull/365)].
+- Let callers explicitly select log1p transformation for Scanpy marker ranking and CELLxGENE export, by @nictru and GPT-6.1 Sol [[#365](https://github.com/nf-core/scdownstream/pull/365)].
+- Calculate the top-20 QC metric with all available genes for panels below 20 genes and reject empty panels clearly, by @nictru and GPT-6.1 Sol [[#366](https://github.com/nf-core/scdownstream/pull/366)].
 - Isolate reused nf-test setup processes with aliases and check initialisation diagnostics in the saved Nextflow log for compatibility with Nextflow 26.10, by @nictru and GPT-6.1 Sol [[#358](https://github.com/nf-core/scdownstream/pull/358)].
 - Preserve selected analysis counts in `X`, remove the pipeline-defined `counts` layer, and use dedicated normalisation layers across feature selection and integration; avoid full AnnData copies in PCA, BBKNN and log-normalisation, by @nictru, Claude Sonnet 4.5 and GPT-6.1 Sol [[#349](https://github.com/nf-core/scdownstream/pull/349)].
 - Preserve `raw_counts` and named ambient-corrected layers in both analysis modes, respect sample overrides throughout downstream analysis, retain provenance with raw fallback in mixed cohorts, require explicit raw counts in bases, and preserve uniquely named RDS assays, by @nictru and GPT-6.1 Sol [[#345](https://github.com/nf-core/scdownstream/pull/345)].

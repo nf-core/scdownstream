@@ -28,14 +28,21 @@ workflow PER_CELL_ANNOTATION {
     }
 
     if (celltypist_model) {
-        celltypist_models = channel.value(celltypist_model
+        // Entries ending in .pkl are model files (local paths or URLs), all others are CellTypist model names
+        celltypist_entries = celltypist_model
             .split(',')
-            .collect{ it -> it.trim() }
-        )
+            .collect { entry -> entry.trim() }
+            .findAll { entry -> entry }
+        celltypist_model_names = celltypist_entries
+            .findAll { entry -> !entry.endsWith('.pkl') }
+        celltypist_model_files = celltypist_entries
+            .findAll { entry -> entry.endsWith('.pkl') }
+            .collect { entry -> file(entry, checkIfExists: true) }
 
         CELLTYPES_CELLTYPIST (
             ch_h5ad.map { meta, h5ad, symbol_col, _counts_layer -> [meta, h5ad, symbol_col] },
-            celltypist_models
+            channel.value(celltypist_model_names),
+            channel.value(celltypist_model_files)
         )
         ch_obs = ch_obs.mix(CELLTYPES_CELLTYPIST.out.obs)
         ch_annotation_column_rows = ch_annotation_column_rows.mix(CELLTYPES_CELLTYPIST.out.annotation_columns)
