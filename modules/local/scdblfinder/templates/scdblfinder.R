@@ -9,6 +9,18 @@ library(anndataR)
 # Set random seed for reproducibility
 set.seed(123)
 
+dbr_sd_raw <- trimws("${dbr_sd != null ? dbr_sd : ''}")
+dbr_sd <- NULL
+if (nzchar(dbr_sd_raw)) {
+  dbr_sd <- suppressWarnings(as.numeric(dbr_sd_raw))
+  if (!is.finite(dbr_sd) || dbr_sd < 0 || dbr_sd > 1) {
+    stop("scdblfinder_dbr_sd must be a number between 0 and 1.")
+  }
+  message(paste0("Using provided scDblFinder doublet-rate uncertainty (dbr.sd): ", dbr_sd))
+} else {
+  message("No scdblfinder_dbr_sd provided; using scDblFinder package default for dbr.sd")
+}
+
 adata <- read_h5ad("${h5ad}")
 sce <- adata\$as_SingleCellExperiment()
 
@@ -63,6 +75,10 @@ scdblfinder_args <- list(
 
 if (!is.null(sample_groups)) {
   scdblfinder_args\$samples <- sample_groups
+}
+
+if (!is.null(dbr_sd)) {
+  scdblfinder_args\$dbr.sd <- dbr_sd
 }
 
 # Run scDblFinder on the counts matrix (first assay)

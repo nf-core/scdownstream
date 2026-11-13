@@ -136,6 +136,13 @@
                     "default": 1,
                     "description": "Number of tools that need to agree on a doublet for it to be removed when `doublet_removal` is true"
                 },
+                "scdblfinder_dbr_sd": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Global doublet-rate uncertainty passed to scDblFinder as dbr.sd.",
+                    "help_text": "Leave unset to retain the scDblFinder package default. Values from 0 to 1 inclusive are accepted. This does not change the samplesheet doublet_rate or batch_col settings."
+                },
                 "doublet_removal": {
                     "type": "boolean",
                     "default": false,

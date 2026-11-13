@@ -37,6 +37,11 @@ input:
         description: |
           Optional column in the AnnData obs / SingleCellExperiment colData used
           to split cells by capture or batch via scDblFinder's samples argument.
+    - dbr_sd:
+        type: number
+        description: |
+          Optional doublet-rate uncertainty (0-1), passed as dbr.sd.
+          If null, scDblFinder uses its package default.
 
 output:
   h5ad:
