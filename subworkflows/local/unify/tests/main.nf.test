@@ -7,6 +7,154 @@ nextflow_workflow {
     tag "subworkflows"
     tag "subworkflows_local"
 
+    test("Should skip HUGO for mouse and preserve gene indices for every sample") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of('mouse_a', 'mouse_b').map { id -> [
+                    [id: id, symbol_col: 'index', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/symbols_as_index.h5ad', checkIfExists: true)
+                ] }
+                input[1] = true
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'mouse'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def tasks = workflow.trace.tasks()
+            assert !tasks.any { task -> ['HUGOUNIFIER_GET', 'HUGOUNIFIER_APPLY', 'SET_INDEX', 'UPSET_GENES_RAW'].any { name -> task.name.contains(":${name}") } }
+            assert tasks.count { task -> task.name.contains(':ADATA_UNIFY') } == 2
+            assert tasks.any { task -> task.name.contains(':UPSET_GENES (') }
+            def messages = workflow.stdout.toString() + workflow.stderr.toString()
+            assert messages.count('Skipping HUGO-unifier') == 1
+            assert messages.contains("--species is 'mouse'")
+            assert messages.contains('HUGO-unifier supports only --species human.')
+            def stagedInput = new File(new File(workflow.out.h5ad[0][1].toString()).parentFile, 'symbols_as_index.h5ad')
+            def inputData = anndata(stagedInput.toString())
+            def expectedGenes = inputData.var.rownames.toList()
+            assert expectedGenes.toSet().size() == expectedGenes.size()
+            def outputs = workflow.out.h5ad.sort { it[0].id }
+            assert outputs.collect { it[0].id } == ['mouse_a', 'mouse_b']
+            outputs.each { meta, h5ad ->
+                def adata = anndata(h5ad)
+                assert adata.var.rownames.toList() == expectedGenes
+                assert adata.n_obs == inputData.n_obs
+                assert meta.symbol_col == 'index'
+                assert meta.counts_layer == 'X'
+                assert meta.raw_counts_layer == 'raw_counts'
+                assert meta.ambient_correction_layer == null
+                assert meta.ambient_correction_method == 'none'
+                assert meta.analysis_counts_source == 'raw_counts'
+                assert adata.layers.toSet() == ['raw_counts'].toSet()
+                assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
+                assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
+            }
+            assert snapshot(outputs.collect { it[0] }, outputs.collect { anndata(it[1]).yaml }).match()
+        }
+    }
+
+    test("Should skip HUGO silently when disabled for mouse - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'index', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/symbols_as_index.h5ad', checkIfExists: true)
+                ])
+                input[1] = false
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'mouse'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert !workflow.trace.tasks().any { task -> task.name.contains(':HUGOUNIFIER_') }
+            assert !(workflow.stdout.toString() + workflow.stderr.toString()).contains('Skipping HUGO-unifier')
+            assert snapshot(workflow.out).match()
+        }
+    }
+
+    test("Should skip HUGO for other non-human species - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'index', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/symbols_as_index.h5ad', checkIfExists: true)
+                ])
+                input[1] = true
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'rat'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert !workflow.trace.tasks().any { task -> task.name.contains(':HUGOUNIFIER_') }
+            def messages = workflow.stdout.toString() + workflow.stderr.toString()
+            assert messages.count('Skipping HUGO-unifier') == 1
+            assert messages.contains("--species is 'rat'")
+            assert snapshot(workflow.out).match()
+        }
+    }
+
+    test("Should require exact human species spelling for HUGO - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'index', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/symbols_as_index.h5ad', checkIfExists: true)
+                ])
+                input[1] = true
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'Human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert !workflow.trace.tasks().any { task -> task.name.contains(':HUGOUNIFIER_') }
+            def messages = workflow.stdout.toString() + workflow.stderr.toString()
+            assert messages.count('Skipping HUGO-unifier') == 1
+            assert messages.contains("--species is 'Human'")
+            assert snapshot(workflow.out).match()
+        }
+    }
+
     test("Should run without failures - symbol_col index, unify_gene_symbols false - stub") {
 
         options '-stub'
@@ -32,6 +180,8 @@ nextflow_workflow {
 
         then {
             assert workflow.success
+            assert !workflow.trace.tasks().any { task -> task.name.contains(':HUGOUNIFIER_') }
+            assert !(workflow.stdout.toString() + workflow.stderr.toString()).contains('Skipping HUGO-unifier')
             assert snapshot(workflow.out).match()
         }
 
@@ -60,6 +210,8 @@ nextflow_workflow {
 
         then {
             assert workflow.success
+            assert !workflow.trace.tasks().any { task -> task.name.contains(':HUGOUNIFIER_') }
+            assert !(workflow.stdout.toString() + workflow.stderr.toString()).contains('Skipping HUGO-unifier')
             def adata = anndata(workflow.out.h5ad[0][1])
             def meta = workflow.out.h5ad[0][0]
             assert meta.counts_layer == 'X'
@@ -191,6 +343,9 @@ nextflow_workflow {
 
         then {
             assert workflow.success
+            assert workflow.trace.tasks().any { task -> task.name.contains(':HUGOUNIFIER_GET') }
+            assert workflow.trace.tasks().any { task -> task.name.contains(':HUGOUNIFIER_APPLY') }
+            assert !(workflow.stdout.toString() + workflow.stderr.toString()).contains('Skipping HUGO-unifier')
             assert snapshot(workflow.out).match()
         }
 
@@ -219,6 +374,9 @@ nextflow_workflow {
 
         then {
             assert workflow.success
+            assert workflow.trace.tasks().any { task -> task.name.contains(':HUGOUNIFIER_GET') }
+            assert workflow.trace.tasks().any { task -> task.name.contains(':HUGOUNIFIER_APPLY') }
+            assert !(workflow.stdout.toString() + workflow.stderr.toString()).contains('Skipping HUGO-unifier')
             def adata = anndata(workflow.out.h5ad[0][1])
             with(adata) {
                 assert "batch" in obs.colnames
