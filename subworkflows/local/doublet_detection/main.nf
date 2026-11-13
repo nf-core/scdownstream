@@ -60,13 +60,12 @@ workflow DOUBLET_DETECTION {
         ch_results = ch_results
             .groupTuple()
             .map { meta, detector_methods, predictions ->
-                def records = (0..<detector_methods.size()).collect { i ->
-                    [detector_methods[i], predictions[i]]
-                }.sort { record -> record[0] }
-                if (records.collect { record -> record[0] } != methods.sort(false)) {
+                def records = [detector_methods, predictions].transpose().sort { record -> record[0] }
+                def method_order = records.collect { record -> record[0] }
+                if (method_order != methods.sort(false)) {
                     error("Unexpected doublet detector results for '${meta.id}': expected ${methods}, received ${detector_methods}")
                 }
-                [meta, records.collect { record -> record[0] }, records.collect { record -> record[1] }]
+                [meta, method_order, records.collect { record -> record[1] }]
             }
 
         DOUBLETREMOVAL(

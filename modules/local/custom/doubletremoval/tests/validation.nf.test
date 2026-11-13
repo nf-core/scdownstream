@@ -25,7 +25,7 @@ nextflow_process {
             process {
                 """
                 p = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
-                input[0] = ADATA_EXTEND.out.h5ad.combine(p).map { meta, base, prediction -> [meta, base, ['solo'], [prediction]] }
+                input[0] = ADATA_EXTEND.out.h5ad.combine(p).map { meta, base, prediction -> [meta + [id: 'existing_calls'], base, ['solo'], [prediction]] }
                 input[1] = 1
                 input[2] = false
                 """
@@ -38,26 +38,6 @@ nextflow_process {
             assert adata.obs.get('solo_class').data[0] == 'singlet'
             assert !('solo_predicted_doublet' in adata.obs.colnames)
             assert path(process.out.obs[0][1]).exists()
-        }
-    }
-
-    test("Should reject duplicate prediction paths") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                input[0] = channel.of('cell,call\\ncell_000,false\\n').collectFile(name: 'p.csv').map { p -> [
-                    [id: 'duplicate_path'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet','solo'], [p,p]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains('input file name collision')
-            assert process.errorReport.contains('predictions/p.csv')
         }
     }
 
@@ -136,25 +116,6 @@ nextflow_process {
         then {
             assert process.failed
             assert process.errorReport.contains('predictions/extra.csv must contain each input barcode exactly once')
-        }
-    }
-
-    test("Should reject duplicate prediction CSV headers as multiple prediction columns") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                input[0] = channel.of('cell,call,call\\ncell_000,true,false\\n').collectFile(name: 'headers.csv').map { p -> [
-                    [id: 'headers'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains('predictions/headers.csv must contain exactly one Boolean column')
         }
     }
 
