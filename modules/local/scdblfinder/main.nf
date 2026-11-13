@@ -8,7 +8,7 @@ process SCDBLFINDER {
         : 'community.wave.seqera.io/library/scdblfinder:df554d9606cea6b6'}"
 
     input:
-    tuple val(meta), path(h5ad), val(dbr), val(batch_col)
+    tuple val(meta), path(h5ad), val(dbr), val(batch_col), val(dbr_sd)
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
