@@ -2,6 +2,7 @@
 
 import os
 import platform
+from pathlib import Path
 
 os.environ["CELLTYPIST_FOLDER"] = "./tmp/celltypist"
 
@@ -14,7 +15,17 @@ from celltypist import models as ct_models
 adata = sc.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 
-models = "${models.join(' ')}".split()
+model_names = "${models.join(' ')}".split()
+model_files = "${model_files}".split()
+
+# (model name, path to a local model file or None to download it by name)
+model_specs = [(name[:-4] if name.endswith(".pkl") else name, None) for name in model_names]
+model_specs += [(Path(model_file).stem, model_file) for model_file in model_files]
+
+spec_names = [name for name, _ in model_specs]
+duplicate_names = sorted({name for name in spec_names if spec_names.count(name) > 1})
+if duplicate_names:
+    raise ValueError(f"CellTypist model names must be unique, found duplicates: {', '.join(duplicate_names)}")
 
 adata_celltypist = adata.copy()  # make a copy of our adata
 sc.pp.normalize_per_cell(adata_celltypist, counts_per_cell_after=10**4)  # normalize to 10,000 counts per cell
@@ -33,11 +44,11 @@ adata_celltypist.var_names = adata_celltypist.var_names.astype(str)
 df_list = []
 manifest_rows = []
 
-for model in models:
-    model_file = f"{model}.pkl" if not model.endswith(".pkl") else model
-    model_name = model_file[:-4]
-    ct_models.download_models(model=model_file)
-    model_obj = ct_models.Model.load(model_file)
+for model_name, model_path in model_specs:
+    if model_path is None:
+        model_path = f"{model_name}.pkl"
+        ct_models.download_models(model=model_path)
+    model_obj = ct_models.Model.load(model_path)
 
     predictions = celltypist.annotate(adata_celltypist, model=model_obj)
     predictions_adata = predictions.to_adata()
