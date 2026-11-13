@@ -105,6 +105,52 @@ nextflow_pipeline {
         }
     }
 
+    test("Should preserve a single clustering resolution from the CLI") {
+        options "--clustering_resolutions 0.5"
+
+        when {
+            params {
+                outdir = "$outputDir"
+                input = null
+                base_adata = null
+            }
+        }
+
+        then {
+            assert workflow.failed
+            def log = path("$metaDir/nextflow.log").text
+            assert log.contains('Either an input samplesheet or')
+            assert !log.contains('Validation of pipeline parameters failed!')
+            def dumps = new File("$outputDir/pipeline_info").listFiles().findAll { it.name.startsWith('params_') && it.name.endsWith('.json') }
+            assert dumps.size() == 1
+            def values = new groovy.json.JsonSlurper().parse(dumps.first())
+            assert values.clustering_resolutions == '0.5'
+        }
+    }
+
+    test("Should preserve a single clustering resolution from a parameter file") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                input = null
+                base_adata = null
+                clustering_resolutions = '0.5'
+            }
+        }
+
+        then {
+            assert workflow.failed
+            def log = path("$metaDir/nextflow.log").text
+            assert log.contains('Either an input samplesheet or')
+            assert !log.contains('Validation of pipeline parameters failed!')
+            def dumps = new File("$outputDir/pipeline_info").listFiles().findAll { it.name.startsWith('params_') && it.name.endsWith('.json') }
+            assert dumps.size() == 1
+            def values = new groovy.json.JsonSlurper().parse(dumps.first())
+            assert values.clustering_resolutions == '0.5'
+        }
+    }
+
     test("Should preserve section help") {
         options "--help cell_cycle_scoring"
 
