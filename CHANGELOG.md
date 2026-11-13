@@ -54,6 +54,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Added`
 
+- Add optional global `--scdblfinder_dbr_sd` with inclusive 0-1 validation, default-preserving argument handling and regression tests, by @nictru and GPT-6.1 Sol [[#388](https://github.com/nf-core/scdownstream/pull/388)].
 - Accept custom CellTypist model files (local paths or URLs ending in `.pkl`) in `--celltypist_model`, alongside model names ([#213](https://github.com/nf-core/scdownstream/issues/213)) by @kroy3 [[#384](https://github.com/nf-core/scdownstream/pull/384)].
 - Add opt-in pathway and transcription factor activity analysis with decoupler (`--decoupler`), scoring pseudobulk profiles and pseudobulk DE contrasts with PROGENy, CollecTRI, MSigDB Hallmark or a custom network (`decoupler/network`, `decoupler/activity`, `decoupler/enrichment`, `decoupler` subworkflow), by @nictru and Cursor [[#321](https://github.com/nf-core/scdownstream/pull/321)].
 - Add EmptyDrops from DropletUtils as an alternative empty droplet removal method, selectable with `--empty_droplet_removal emptydrops` and tuned via `--emptydrops_lower` and `--emptydrops_fdr` ([#169](https://github.com/nf-core/scdownstream/issues/169)) by @nictru and Cursor [[#322](https://github.com/nf-core/scdownstream/pull/322)].
