@@ -45,6 +45,7 @@ params {
     pseudobulk: Boolean
     prep_cellxgene: Boolean
     tords: Boolean
+    gene_annotation: Boolean
     scvi_n_latent: Integer
     scvi_n_hidden: Integer
     scvi_n_layers: Integer
@@ -170,6 +171,8 @@ workflow NFCORE_SCDOWNSTREAM {
     decoupler_min_targets         //   value: integer
     prep_cellxgene                //   value: boolean
     tords                         //   value: boolean
+    gene_annotation               //   value: boolean
+    gene_annotation_gtf           //    path: file or []
     outdir                        //   value: string
     multiqc_config                //   value: string
     multiqc_logo                  //   value: string
@@ -265,6 +268,8 @@ workflow NFCORE_SCDOWNSTREAM {
         decoupler_min_targets,
         prep_cellxgene,
         tords,
+        gene_annotation,
+        gene_annotation_gtf,
         outdir,
         multiqc_config,
         multiqc_logo,
@@ -336,6 +341,10 @@ workflow {
 
     def decoupler_network_file = params.decoupler_network
         ? file(params.decoupler_network, checkIfExists: true)
+        : []
+
+    def gene_annotation_gtf_file = params.gene_annotation_gtf
+        ? file(params.gene_annotation_gtf, checkIfExists: true)
         : []
 
     NFCORE_SCDOWNSTREAM (
@@ -423,6 +432,8 @@ workflow {
         params.decoupler_min_targets,
         params.prep_cellxgene,
         params.tords,
+        params.gene_annotation,
+        gene_annotation_gtf_file,
         params.outdir,
         params.multiqc_config,
         params.multiqc_logo,

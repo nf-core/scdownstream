@@ -1,0 +1,70 @@
+nextflow_workflow {
+
+    name "Test Workflow GENE_ANNOTATION"
+    script "subworkflows/local/gene_annotation/main.nf"
+    workflow "GENE_ANNOTATION"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "gene_annotation"
+
+    test("Should annotate genes from a GTF") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'merged'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
+                ])
+                input[1] = file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.gtf', checkIfExists: true)
+                input[2] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def lines = path(workflow.out.csv[0]).readLines()
+            assertAll(
+                { assert lines[0] == ',gene_biotype,chromosome,biotype_group,gene_annotation_ambiguous' },
+                { assert lines.size() > 1 },
+                { assert workflow.out.var.size() == 1 }
+            )
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'merged'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
+                ])
+                input[1] = []
+                input[2] = 'human'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.var.size() == 1 }
+            )
+        }
+
+    }
+
+}
