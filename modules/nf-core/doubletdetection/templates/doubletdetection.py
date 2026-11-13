@@ -18,6 +18,7 @@ scores = clf.doublet_score()
 
 adata.obs["doublet"] = [label == 1 for label in doublets]
 adata.obs["doublet_score"] = scores
+adata.obs[["doublet_score", "doublet"]].to_csv("${prefix}.scores.csv")
 
 adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 

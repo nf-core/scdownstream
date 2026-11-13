@@ -31,11 +31,16 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.trace.tasks().size() == 0
+            assert workflow.out.h5ad.size() == 1
+            assert workflow.out.h5ad[0][0] == [id: 'test', batch_col: 'sample']
+            assert path(workflow.out.h5ad[0][1]).fileName.toString() == 'SRR28679759_filtered_matrix.h5ad'
+            assert workflow.out.obs.size() == 0
+            assert workflow.out.multiqc_files.size() == 0
         }
 
     }
 
-    test("Should run with all methods except doubletdetection") {
+    test("Should run with all four methods and emit annotations separately") {
 
         when {
             params {
@@ -49,7 +54,7 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
-                input[1] = ['solo', 'scrublet', 'scdblfinder']
+                input[1] = ['solo', 'scrublet', 'scdblfinder', 'doubletdetection']
                 input[2] = 2
                 input[3] = true
                 input[4] = 1
@@ -58,17 +63,17 @@ nextflow_workflow {
         }
 
         then {
-            def adata = anndata(workflow.out.h5ad[0][1])
-
             assert workflow.success
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert adata.n_obs > 0
             assert adata.n_obs < 384
-            def predictions = ['test_solo', 'test_scrublet', 'test_scdblfinder'].collect { adata.obs.get(it).data }
-            assert (0..<adata.n_obs).every { row -> predictions.count { it[row].toString().equalsIgnoreCase('true') } < 2 }
-            assert snapshot(
-                workflow.out.versions.collect { path(it).yaml },
-                adata.yaml
-            ).match()
+            assert workflow.out.obs.size() == 1
+            assert workflow.out.obs[0][0] == workflow.out.h5ad[0][0]
+            assert path(workflow.out.obs[0][1]).fileName.toString() == 'test.obs.pkl'
+            assert !adata.obs.colnames.any { it.startsWith('test_') || it.endsWith('_predicted_doublet') }
+            assert !adata.obs.colnames.any { it in ['solo_class', 'scrublet_score', 'scdblfinder_score', 'doubletdetection_score'] }
+            assert workflow.out.multiqc_files.size() == 1
+            assert snapshot(adata.yaml).match()
         }
 
     }
@@ -95,15 +100,12 @@ nextflow_workflow {
         }
 
         then {
-            def adata = anndata(workflow.out.h5ad[0][1])
-
             assert workflow.success
+            def adata = anndata(workflow.out.h5ad[0][1])
             assert adata.n_obs == 384
-            assert "test_scdblfinder" in adata.obs.colnames
-            assert snapshot(
-                workflow.out.versions.collect { path(it).yaml },
-                adata.yaml
-            ).match()
+            assert workflow.out.obs.size() == 1
+            assert !adata.obs.colnames.any { it.startsWith('scdblfinder_') || it.startsWith('scDblFinder.') || it == 'test_scdblfinder' }
+            assert snapshot(adata.yaml).match()
         }
 
     }
@@ -135,7 +137,8 @@ nextflow_workflow {
             assert workflow.success
             def adata = anndata(workflow.out.h5ad[0][1])
             assert adata.n_obs == 384
-            assert 'test_scdblfinder' in adata.obs.colnames
+            assert workflow.out.obs.size() == 1
+            assert !adata.obs.colnames.any { it.startsWith('scdblfinder_') || it.startsWith('scDblFinder.') }
         }
 
     }
@@ -155,7 +158,7 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
                     ]
                 )
-                input[1] = ['solo', 'scrublet', 'doubletdetection']
+                input[1] = ['solo', 'scrublet', 'doubletdetection', 'scdblfinder']
                 input[2] = 2
                 input[3] = true
                 input[4] = 1

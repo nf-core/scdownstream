@@ -1,0 +1,180 @@
+nextflow_process {
+
+    name "Test doublet fragments at QC finalisation"
+    script "modules/local/adata/extend/main.nf"
+    process "ADATA_EXTEND"
+
+    tag "modules"
+    tag "modules_local"
+
+    setup {
+        run("ADATA_UNIFY") {
+            script "modules/local/adata/unify/main.nf"
+            process {
+                """
+                input[0] = channel.of('sample_a', 'sample_b').map { id -> [
+                    [id: id],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true)
+                ] }
+                input[1] = 'sample'
+                input[2] = ''
+                input[3] = ''
+                input[4] = 'unknown'
+                input[5] = 'index'
+                input[6] = 'X'
+                input[7] = 'make_unique'
+                input[8] = false
+                input[9] = ''
+                """
+            }
+        }
+        run("CUSTOM_DOUBLETREMOVAL") {
+            script "modules/local/custom/doubletremoval/main.nf"
+            process {
+                """
+                scdblfinder_predictions = channel.of('sample_a', 'sample_b').map { id ->
+                    def calls = id == 'sample_a' ? [1, 2, 7] : [4, 5, 10]
+                    [id + '.scdblfinder.predictions.csv', 'cell,scdblfinder_predicted_doublet\\n' +
+                        (0..<128).reverse().collect { i -> String.format('%s_cell_%03d,%s\\n', id, i, i in calls) }.join('')]
+                }.collectFile { name, contents -> [name, contents] }
+                    .map { table -> [[id: table.name.tokenize('.')[0]], table] }
+                scrublet_predictions = channel.of('sample_a', 'sample_b').map { id ->
+                    def calls = id == 'sample_a' ? [0, 2, 7] : [3, 5, 10]
+                    [id + '.scrublet.predictions.csv', 'cell,scrublet_predicted_doublet\\n' +
+                        ((1..<128).step(2) + (0..<128).step(2)).collect { i ->
+                            String.format('%s_cell_%03d,%s\\n', id, i, i in calls)
+                        }.join('')]
+                }.collectFile { name, contents -> [name, contents] }
+                    .map { table -> [[id: table.name.tokenize('.')[0]], table] }
+                scdblfinder_scores = channel.of('sample_a', 'sample_b').map { id ->
+                    def offset = id == 'sample_a' ? 1000 : 2000
+                    def calls = id == 'sample_a' ? [1, 2, 7] : [4, 5, 10]
+                    [id + '.scdblfinder.scores.csv', 'cell,scDblFinder.score,scDblFinder.class\\n' +
+                        ((64..<128) + (0..<64)).collect { i ->
+                            String.format('%s_cell_%03d,%s,%s\\n', id, i, offset + i + 0.5, i in calls ? 'doublet' : 'singlet')
+                        }.join('')]
+                }.collectFile { name, contents -> [name, contents] }
+                    .map { table -> [[id: table.name.tokenize('.')[0]], table] }
+                scrublet_scores = channel.of('sample_a', 'sample_b').map { id ->
+                    def offset = id == 'sample_a' ? 1000 : 2000
+                    def calls = id == 'sample_a' ? [0, 2, 7] : [3, 5, 10]
+                    [id + '.scrublet.scores.csv', 'cell,doublet_score,predicted_doublet\\n' +
+                        (0..<128).reverse().collect { i ->
+                            String.format('%s_cell_%03d,%s,%s\\n', id, i, offset + i + 0.25, i in calls)
+                        }.join('')]
+                }.collectFile { name, contents -> [name, contents] }
+                    .map { table -> [[id: table.name.tokenize('.')[0]], table] }
+                input[0] = ADATA_UNIFY.out.h5ad
+                    .join(scdblfinder_predictions).join(scrublet_predictions)
+                    .join(scdblfinder_scores).join(scrublet_scores)
+                    .map { meta, h5ad, scdblfinder_prediction, scrublet_prediction, scdblfinder_score, scrublet_score -> [
+                        meta, h5ad, ['scdblfinder', 'scrublet'],
+                        [scdblfinder_prediction, scrublet_prediction], [scdblfinder_score, scrublet_score]
+                    ] }
+                input[1] = 2
+                input[2] = params.doublet_removal
+                """
+            }
+        }
+    }
+
+    test("Should finalise all cells with barcode-aligned detector scores when removal is disabled") {
+        when {
+            params {
+                outdir = "$outputDir"
+                doublet_removal = false
+            }
+            process {
+                """
+                input[0] = CUSTOM_DOUBLETREMOVAL.out.h5ad.join(CUSTOM_DOUBLETREMOVAL.out.obs)
+                    .map { meta, h5ad, obs -> [meta + [id: meta.id + '_qc'], h5ad, [obs], [], [], [], [], []] }
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert process.out.h5ad.size() == 2
+            def outputs = process.out.h5ad.sort { it[0].id }
+            def adatas = outputs.collect { anndata(it[1]) }
+            outputs.eachWithIndex { output, sample ->
+                def id = output[0].id.replaceFirst(/_qc$/, '')
+                def adata = adatas[sample]
+                def offset = id == 'sample_a' ? 1000 : 2000
+                def scdblfinderCalls = id == 'sample_a' ? [1, 2, 7] : [4, 5, 10]
+                def scrubletCalls = id == 'sample_a' ? [0, 2, 7] : [3, 5, 10]
+                assert adata.n_obs == 128
+                assert adata.obs.index.values == (0..<128).collect { String.format('%s_cell_%03d', id, it) }
+                assert adata.obs.get('scdblfinder_score').data == (0..<128).collect { offset + it + 0.5 }
+                assert adata.obs.get('scrublet_score').data == (0..<128).collect { offset + it + 0.25 }
+                assert adata.obs.get('scdblfinder_score').data.every { it instanceof Number }
+                assert adata.obs.get('scrublet_score').data.every { it instanceof Number }
+                assert adata.obs.get('scdblfinder_class').data == (0..<128).collect { it in scdblfinderCalls ? 'doublet' : 'singlet' }
+                assert adata.obs.get('scrublet_class').data == (0..<128).collect { it in scrubletCalls ? 'doublet' : 'singlet' }
+                assert adata.obs.get('scdblfinder_predicted_doublet').data.collect { it.toString().toLowerCase() } ==
+                    (0..<128).collect { (it in scdblfinderCalls).toString() }
+                assert adata.obs.get('scrublet_predicted_doublet').data.collect { it.toString().toLowerCase() } ==
+                    (0..<128).collect { (it in scrubletCalls).toString() }
+                assert adata.obs.colnames.toList().unique().size() == adata.obs.colnames.size()
+                assert adata.obs.colnames.findAll { it.startsWith('scdblfinder_') || it.startsWith('scrublet_') }.sort() ==
+                    ['scdblfinder_class', 'scdblfinder_predicted_doublet', 'scdblfinder_score', 'scrublet_class', 'scrublet_predicted_doublet', 'scrublet_score']
+                assert !adata.obs.colnames.any { it in ['doublet_score', 'predicted_doublet'] || it.startsWith('scDblFinder.') || it ==~ /.*\.[0-9]+$/ }
+            }
+            assert snapshot(
+                process.out,
+                process.out.versions.collect { path(it).yaml },
+                adatas.collect { it.yaml }
+            ).match()
+        }
+    }
+
+    test("Should finalise survivors in original order using boolean votes rather than large detector scores") {
+        when {
+            params {
+                outdir = "$outputDir"
+                doublet_removal = true
+            }
+            process {
+                """
+                input[0] = CUSTOM_DOUBLETREMOVAL.out.h5ad.join(CUSTOM_DOUBLETREMOVAL.out.obs)
+                    .map { meta, h5ad, obs -> [meta + [id: meta.id + '_qc'], h5ad, [obs], [], [], [], [], []] }
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert process.out.h5ad.size() == 2
+            def outputs = process.out.h5ad.sort { it[0].id }
+            def adatas = outputs.collect { anndata(it[1]) }
+            outputs.eachWithIndex { output, sample ->
+                def id = output[0].id.replaceFirst(/_qc$/, '')
+                def adata = adatas[sample]
+                def offset = id == 'sample_a' ? 1000 : 2000
+                def removed = id == 'sample_a' ? [2, 7] : [5, 10]
+                def survivors = (0..<128).findAll { !(it in removed) }
+                def scdblfinderCalls = id == 'sample_a' ? [1, 2, 7] : [4, 5, 10]
+                def scrubletCalls = id == 'sample_a' ? [0, 2, 7] : [3, 5, 10]
+                assert adata.n_obs == 126
+                assert adata.obs.index.values == survivors.collect { String.format('%s_cell_%03d', id, it) }
+                assert adata.obs.get('scdblfinder_score').data == survivors.collect { offset + it + 0.5 }
+                assert adata.obs.get('scrublet_score').data == survivors.collect { offset + it + 0.25 }
+                assert adata.obs.get('scdblfinder_score').data.every { it instanceof Number }
+                assert adata.obs.get('scrublet_score').data.every { it instanceof Number }
+                assert adata.obs.get('scdblfinder_class').data == survivors.collect { it in scdblfinderCalls ? 'doublet' : 'singlet' }
+                assert adata.obs.get('scrublet_class').data == survivors.collect { it in scrubletCalls ? 'doublet' : 'singlet' }
+                assert adata.obs.get('scdblfinder_predicted_doublet').data.collect { it.toString().toLowerCase() } ==
+                    survivors.collect { (it in scdblfinderCalls).toString() }
+                assert adata.obs.get('scrublet_predicted_doublet').data.collect { it.toString().toLowerCase() } ==
+                    survivors.collect { (it in scrubletCalls).toString() }
+                assert adata.obs.colnames.toList().unique().size() == adata.obs.colnames.size()
+                assert adata.obs.colnames.findAll { it.startsWith('scdblfinder_') || it.startsWith('scrublet_') }.sort() ==
+                    ['scdblfinder_class', 'scdblfinder_predicted_doublet', 'scdblfinder_score', 'scrublet_class', 'scrublet_predicted_doublet', 'scrublet_score']
+                assert !adata.obs.colnames.any { it in ['doublet_score', 'predicted_doublet'] || it.startsWith('scDblFinder.') || it ==~ /.*\.[0-9]+$/ }
+            }
+            assert snapshot(
+                process.out,
+                process.out.versions.collect { path(it).yaml },
+                adatas.collect { it.yaml }
+            ).match()
+        }
+    }
+}

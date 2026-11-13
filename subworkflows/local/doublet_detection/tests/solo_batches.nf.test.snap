@@ -1,6 +1,24 @@
 {
     "Should retain full-cell Boolean SOLO predictions across actual batches": {
         "content": [
+            [
+                {
+                    "ADATA_EXTEND": {
+                        "anndata": "0.13.2",
+                        "numpy": "2.5.4",
+                        "pandas": "3.0.5",
+                        "python": "3.13.12"
+                    }
+                },
+                {
+                    "ADATA_EXTEND": {
+                        "anndata": "0.13.2",
+                        "numpy": "2.5.4",
+                        "pandas": "3.0.5",
+                        "python": "3.13.12"
+                    }
+                }
+            ],
             {
                 "n_obs": 768,
                 "n_vars": 3000,
@@ -21,7 +39,8 @@
                         "donor",
                         "condition",
                         "label",
-                        "multibatch_solo"
+                        "solo_class",
+                        "solo_predicted_doublet"
                     ]
                 },
                 "var": {
@@ -51,7 +70,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-25T11:41:14.94244968",
+        "timestamp": "2026-11-13T17:43:22.664109758",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

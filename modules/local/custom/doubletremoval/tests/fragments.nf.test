@@ -1,0 +1,112 @@
+nextflow_process {
+
+    name "Test canonical doublet fragment attachment"
+    script "modules/local/adata/extend/main.nf"
+    process "ADATA_EXTEND"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should attach reordered native scores and classes for every method without inventing SOLO scores") {
+        setup {
+            run("CUSTOM_DOUBLETREMOVAL") {
+                script "../main.nf"
+                process {
+                    """
+                    pdd = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i < 3) }.join('')).collectFile(name: 'dd.csv')
+                    psc = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i in [1,3]) }.join('')).collectFile(name: 'sc.csv')
+                    pscr = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i in [0,3]) }.join('')).collectFile(name: 'scr.csv')
+                    psolo = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i == 4) }.join('')).collectFile(name: 'solo.csv')
+                    sdd = channel.of('cell,doublet_score,doublet\\n' + ((64..<128)+(0..<64)).collect { i -> String.format('cell_%03d,%s,%s\\n', i, 1000+i, i < 3) }.join('')).collectFile(name: 'dd.csv')
+                    ssc = channel.of('cell,scDblFinder.score,scDblFinder.class,scDblFinder.cxds_score,scDblFinder.mostLikelyOrigin\\n' + ((64..<128)+(0..<64)).collect { i -> String.format('cell_%03d,%s,%s,%s,A+B\\n', i, 2000+i, i in [1,3] ? 'doublet' : 'singlet', i/2.0) }.join('')).collectFile(name: 'sc.csv')
+                    sscr = channel.of('cell,doublet_score,predicted_doublet\\n' + ((64..<128)+(0..<64)).collect { i -> String.format('cell_%03d,%s,%s\\n', i, i == 2 ? '' : 3000+i, i in [0,3]) }.join('')).collectFile(name: 'scr.csv')
+                    input[0] = pdd.combine(psc).combine(pscr).combine(psolo).combine(sdd).combine(ssc).combine(sscr).map { a,b,c,d,e,f,g -> [
+                        [id: 'all'],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
+                        ['doubletdetection','scdblfinder','scrublet','solo'], [a,b,c,d], [e,f,g]
+                    ] }
+                    input[1] = 2
+                    input[2] = false
+                    """
+                }
+            }
+        }
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = CUSTOM_DOUBLETREMOVAL.out.h5ad.join(CUSTOM_DOUBLETREMOVAL.out.obs).map { meta, base, obs -> [meta + [id: meta.id + '_finalized'], base, [obs], [], [], [], [], []] }
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.obs.index.values == (0..<128).collect { String.format('cell_%03d', it) }
+            assert adata.obs.get('doubletdetection_score').data == (0..<128).collect { 1000+it }
+            assert adata.obs.get('scdblfinder_score').data == (0..<128).collect { 2000+it }
+            assert adata.obs.get('scdblfinder_cxds_score').data == (0..<128).collect { it/2.0 }
+            assert adata.obs.get('scdblfinder_mostLikelyOrigin').data.every { it == 'A+B' }
+            assert adata.obs.get('scrublet_score').data.take(2) == [3000,3001]
+            def missing = adata.obs.get('scrublet_score').data[2]
+            assert missing == null || missing.toString().equalsIgnoreCase('nan')
+            assert adata.obs.get('scrublet_score').data.drop(3) == (3..<128).collect { 3000+it }
+            assert adata.obs.get('doubletdetection_class').data == (0..<128).collect { it < 3 ? 'doublet' : 'singlet' }
+            assert adata.obs.get('scdblfinder_class').data == (0..<128).collect { it in [1,3] ? 'doublet' : 'singlet' }
+            assert adata.obs.get('scrublet_class').data == (0..<128).collect { it in [0,3] ? 'doublet' : 'singlet' }
+            assert adata.obs.get('solo_class').data == (0..<128).collect { it == 4 ? 'doublet' : 'singlet' }
+            assert adata.obs.get('doubletdetection_predicted_doublet').data.collect { it.toString().toLowerCase() } == (0..<128).collect { (it < 3).toString() }
+            assert adata.obs.get('scdblfinder_predicted_doublet').data.collect { it.toString().toLowerCase() } == (0..<128).collect { (it in [1,3]).toString() }
+            assert adata.obs.get('scrublet_predicted_doublet').data.collect { it.toString().toLowerCase() } == (0..<128).collect { (it in [0,3]).toString() }
+            assert adata.obs.get('solo_predicted_doublet').data.collect { it.toString().toLowerCase() } == (0..<128).collect { (it == 4).toString() }
+            assert !('solo_score' in adata.obs.colnames)
+            assert snapshot(adata.yaml).match()
+        }
+    }
+
+    test("Should attach full-cell fragments only to retained cells in their original order") {
+        setup {
+            run("CUSTOM_DOUBLETREMOVAL") {
+                script "../main.nf"
+                process {
+                    """
+                    p = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i in [0,3]) }.join('')).collectFile(name: 'p.csv')
+                    s = channel.of('cell,doublet_score,predicted_doublet\\n' + (127..0).collect { i -> String.format('cell_%03d,%s,%s\\n', i, 3000+i, i in [0,3]) }.join('')).collectFile(name: 's.csv')
+                    input[0] = p.combine(s).map { a,b -> [
+                        [id: 'retained'],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
+                        ['scrublet'], [a], [b]
+                    ] }
+                    input[1] = 1
+                    input[2] = true
+                    """
+                }
+            }
+        }
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = CUSTOM_DOUBLETREMOVAL.out.h5ad.join(CUSTOM_DOUBLETREMOVAL.out.obs).flatMap { meta, base, obs -> [
+                    [meta + [id: 'retained_finalized'], base, [obs], [], [], [], [], []],
+                    [meta + [id: 'full_fragment'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), [obs], [], [], [], [], []]
+                ] }
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad.find { it[0].id == 'retained_finalized' }[1])
+            def full = anndata(process.out.h5ad.find { it[0].id == 'full_fragment' }[1])
+            def retained = (0..<128).findAll { !(it in [0,3]) }
+            assert adata.obs.index.values == retained.collect { String.format('cell_%03d', it) }
+            assert adata.obs.get('scrublet_score').data == retained.collect { 3000+it }
+            assert adata.obs.get('scrublet_class').data.every { it == 'singlet' }
+            assert adata.obs.get('scrublet_predicted_doublet').data.every { it.toString().equalsIgnoreCase('false') }
+            assert full.obs.index.values == (0..<128).collect { String.format('cell_%03d', it) }
+            assert full.obs.get('scrublet_score').data == (0..<128).collect { 3000+it }
+            assert full.obs.get('scrublet_class').data == (0..<128).collect { it in [0,3] ? 'doublet' : 'singlet' }
+            assert snapshot(adata.yaml, full.yaml).match()
+        }
+    }
+}

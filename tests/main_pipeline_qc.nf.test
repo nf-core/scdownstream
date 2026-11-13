@@ -13,12 +13,25 @@ nextflow_pipeline {
                 cell_cycle_scoring  = false
                 celltypist_model    = 'Adult_COVID19_PBMC'
                 qc_only             = true
+                save_intermediates  = true
                 outdir              = "$outputDir"
             }
         }
 
         then {
             assert workflow.success
+            def qcFiles = new File("$outputDir/02_quality_control/finalized").listFiles().findAll { it.name.endsWith('_qc.h5ad') }
+            assert qcFiles.size() >= 2
+            qcFiles.each { qcFile ->
+                def adata = anndata(qcFile.toString())
+                ['scrublet', 'scdblfinder'].each { method ->
+                    assert (method + '_predicted_doublet') in adata.obs.colnames
+                    assert (method + '_class') in adata.obs.colnames
+                    assert adata.obs.get("${method}_score").data.every { it instanceof Number }
+                    assert adata.obs.get("${method}_class").data.every { it in ['singlet', 'doublet'] }
+                }
+                assert adata.obs.index.values.toList().toSet().size() == adata.n_obs
+            }
             assert file("$outputDir/10_reports/qc-report.html").text.contains("Thus, only the QC-related plots above are shown")
             // stable_name: All files + folders in ${params.outdir}/ with a stable name
             def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', '06_per_group/**', '11_multiqc/**'])

@@ -1,15 +1,62 @@
 Changes in component 'nf-core/doubletdetection'
 'modules/nf-core/doubletdetection/environment.yml' is unchanged
-'modules/nf-core/doubletdetection/meta.yml' is unchanged
-'modules/nf-core/doubletdetection/main.nf' is unchanged
+Changes in 'doubletdetection/meta.yml':
+--- modules/nf-core/doubletdetection/meta.yml
++++ modules/nf-core/doubletdetection/meta.yml
+@@ -46,6 +46,18 @@
+           description: pandas dataframe containing the doublet classification
+           pattern: "*.pkl"
+           ontologies: []
++  scores:
++    - - meta:
++          type: map
++          description: |
++            Groovy Map containing sample information
++            e.g. `[ id:'sample1', single_end:false ]`
++      - "${prefix}.scores.csv":
++          type: file
++          description: Per-cell doublet scores and predictions indexed by input cell identifiers
++          pattern: "*.scores.csv"
++          ontologies:
++            - edam: http://edamontology.org/format_3752 # CSV
+   versions:
+     - versions.yml:
+         type: file
+
+Changes in 'doubletdetection/main.nf':
+--- modules/nf-core/doubletdetection/main.nf
++++ modules/nf-core/doubletdetection/main.nf
+@@ -12,8 +12,9 @@
+ 
+     output:
+     tuple val(meta), path("*.h5ad"), emit: h5ad
+-    tuple val(meta), path("*.pkl") , emit: predictions
+-    path "versions.yml"            , emit: versions, topic: versions
++    tuple val(meta), path("*.pkl"), emit: predictions
++    tuple val(meta), path("${prefix}.scores.csv"), emit: scores
++    path "versions.yml", emit: versions, topic: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+@@ -27,6 +28,7 @@
+     """
+     touch ${prefix}.h5ad
+     touch ${prefix}.pkl
++    touch ${prefix}.scores.csv
+ 
+     cat <<-END_VERSIONS > versions.yml
+     ${task.process}:
+
 'modules/nf-core/doubletdetection/tests/main.nf.test.snap' is unchanged
 'modules/nf-core/doubletdetection/tests/main.nf.test' is unchanged
 Changes in 'doubletdetection/templates/doubletdetection.py':
 --- modules/nf-core/doubletdetection/templates/doubletdetection.py
 +++ modules/nf-core/doubletdetection/templates/doubletdetection.py
-@@ -19,7 +19,7 @@
+@@ -18,8 +18,9 @@
+ 
  adata.obs["doublet"] = [label == 1 for label in doublets]
  adata.obs["doublet_score"] = scores
++adata.obs[["doublet_score", "doublet"]].to_csv("${prefix}.scores.csv")
  
 -adata.write_h5ad("${prefix}.h5ad")
 +adata.write_h5ad("${prefix}.h5ad", compression="gzip")

@@ -7,22 +7,20 @@ nextflow_process {
     tag "modules"
     tag "modules_local"
 
-    test("Should report zero doublet predictions without removing cells") {
+    test("Should report zero positive votes despite large scores") {
         when {
             params { outdir = "$outputDir" }
             process {
                 """
-                def predictions = channel.of(
-                    'cell,first,second\\n' + (0..<128).collect { i ->
-                        String.format('cell_%03d,false,false\\n', i)
-                    }.join('')
-                ).collectFile(name: 'predictions.csv')
-                input[0] = predictions.map { table -> [
+                p = channel.of('cell,any_prefix\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
+                solo = channel.of('cell,any_prefix\\n' + (0..<128).collect { i -> String.format('cell_%03d,FALSE\\n', i) }.join('')).collectFile(name: 'solo.csv')
+                s = channel.of('cell,doublet_score,predicted_doublet\\n' + (0..<128).collect { i -> String.format('cell_%03d,9999,false\\n', i) }.join('')).collectFile(name: 's.csv')
+                input[0] = p.combine(solo).combine(s).map { a,b,c -> [
                     [id: 'zero'],
                     file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
-                    [table]
+                    ['scrublet','solo'], [a,b], [c]
                 ] }
-                input[1] = 2
+                input[1] = 1
                 input[2] = true
                 """
             }
@@ -30,9 +28,7 @@ nextflow_process {
         then {
             assert process.success
             def adata = anndata(process.out.h5ad[0][1])
-            assert adata.n_obs == 128
-            assert adata.obs.get('first').data.every { it.toString().equalsIgnoreCase('false') }
-            assert adata.obs.get('second').data.every { it.toString().equalsIgnoreCase('false') }
+            assert adata.obs.index.values == (0..<128).collect { String.format('cell_%03d', it) }
             assert path(process.out.multiqc_files[0]).exists()
         }
     }
@@ -42,15 +38,13 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                def predictions = channel.of(
-                    'cell,first,second\\n' + (0..<128).collect { i ->
-                        String.format('cell_%03d,%s,%s\\n', i, i == 0, i == 0)
-                    }.join('')
-                ).collectFile(name: 'predictions.csv')
-                input[0] = predictions.map { table -> [
+                p = channel.of('cell,any_prefix\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s\\n', i, i == 0) }.join('')).collectFile(name: 'p.csv')
+                solo = channel.of('cell,any_prefix\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s\\n', i, i == 0) }.join('')).collectFile(name: 'solo.csv')
+                s = channel.of('cell,doublet_score,predicted_doublet\\n' + (0..<128).collect { i -> String.format('cell_%03d,9999,%s\\n', i, i == 0) }.join('')).collectFile(name: 's.csv')
+                input[0] = p.combine(solo).combine(s).map { a,b,c -> [
                     [id: 'small'],
                     file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
-                    [table]
+                    ['scrublet','solo'], [a,b], [c]
                 ] }
                 input[1] = 2
                 input[2] = true
@@ -60,8 +54,7 @@ nextflow_process {
         then {
             assert process.success
             def adata = anndata(process.out.h5ad[0][1])
-            assert adata.n_obs == 127
-            assert !('cell_000' in adata.obs.index.values)
+            assert adata.obs.index.values == (1..<128).collect { String.format('cell_%03d', it) }
             assert path(process.out.multiqc_files[0]).exists()
         }
     }

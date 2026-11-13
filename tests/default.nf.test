@@ -24,6 +24,17 @@ nextflow_pipeline {
             assert "scran" in adata_merged.layers || "log1p" in adata_merged.layers
             assert adata_merged.obs.get('ambient_correction_method').unique().toSet() == ['decontx'].toSet()
             assert adata_merged.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
+            ['solo', 'scrublet', 'scdblfinder'].each { method ->
+                assert (method + '_predicted_doublet') in adata_merged.obs.colnames
+                def calls = adata_merged.obs.get("${method}_predicted_doublet").data.toList()
+                def classes = adata_merged.obs.get("${method}_class").data.toList()
+                assert calls.every { it.toString().toLowerCase() in ['true', 'false'] }
+                assert classes == calls.collect { it.toString().equalsIgnoreCase('true') ? 'doublet' : 'singlet' }
+            }
+            ['scrublet', 'scdblfinder'].each { method ->
+                assert adata_merged.obs.get("${method}_score").data.every { it instanceof Number }
+            }
+            assert !('solo_score' in adata_merged.obs.colnames)
             assert !file("$outputDir/02_quality_control/finalized").exists()
             assert file("$outputDir/10_reports/qc-report.html").text.contains("Each integration method run by the pipeline")
             assert "highly_variable" in adata_merged.var.colnames

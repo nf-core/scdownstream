@@ -66,10 +66,8 @@ nextflow_workflow {
             assert adata.layers.size() == 1
             assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
             assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
-            assert snapshot(
-                workflow.out.multiqc_files,
-                workflow.out.versions.collect { path(it).yaml }
-            ).match()
+            assert workflow.out.obs.size() == 0
+            assert snapshot(workflow.out.multiqc_files).match()
         }
 
     }
@@ -134,10 +132,8 @@ nextflow_workflow {
             assert adata.layers.size() == 1
             assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
             assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
-            assert snapshot(
-                workflow.out.multiqc_files,
-                workflow.out.versions.collect { path(it).yaml }
-            ).match()
+            assert workflow.out.obs.size() == 0
+            assert snapshot(workflow.out.multiqc_files).match()
         }
 
     }
@@ -204,6 +200,10 @@ nextflow_workflow {
             assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
             assert adata.n_obs == adata.obs.rownames.size()
             assert adata.n_vars == adata.var.rownames.size()
+            assert workflow.out.obs.size() == 1
+            assert workflow.out.obs[0][0] == meta
+            assert path(workflow.out.obs[0][1]).fileName.toString() == 'test.obs.pkl'
+            assert !adata.obs.colnames.any { it in ['test_scrublet', 'scrublet_score', 'scrublet_class', 'scrublet_predicted_doublet'] }
             with(adata) {
                 assert "pct_counts_mt" in obs.colnames
                 assert "batch" in obs.colnames
@@ -213,7 +213,6 @@ nextflow_workflow {
             }
             assert snapshot(
                 workflow.out.multiqc_files,
-                workflow.out.versions.collect { path(it).yaml },
                 adata.n_obs,
                 adata.n_vars,
                 adata.yaml
@@ -331,7 +330,6 @@ nextflow_workflow {
             }
             assert snapshot(
                 workflow.out.multiqc_files,
-                workflow.out.versions.collect { path(it).yaml },
                 adata.n_obs,
                 adata.n_vars,
                 adata.yaml
@@ -477,7 +475,6 @@ nextflow_workflow {
             }
             assert snapshot(
                 workflow.out.multiqc_files,
-                workflow.out.versions.collect { path(it).yaml },
                 adata.n_obs,
                 adata.n_vars,
                 adata.yaml
@@ -486,7 +483,7 @@ nextflow_workflow {
 
     }
 
-    test("Should run with cell cycle scoring") {
+    test("Should emit separate doublet and cell cycle fragments together") {
 
         tag "cell_cycle_scoring"
 
@@ -518,7 +515,7 @@ nextflow_workflow {
                 input[4] = false
                 input[5] = 'sum'
                 input[6] = false
-                input[7] = []
+                input[7] = ['scrublet']
                 input[8] = 1
                 input[9] = false
                 input[10] = null
@@ -546,6 +543,11 @@ nextflow_workflow {
             assert 'raw_counts' in adata.layers
             def cellcycleFragments = workflow.out.obs.findAll { entry -> file(entry[1]).name == 'test_cellcycle.pkl' }
             assert cellcycleFragments.size() == 1
+            def doubletFragments = workflow.out.obs.findAll { entry -> file(entry[1]).name == 'test.obs.pkl' }
+            assert doubletFragments.size() == 1
+            assert workflow.out.obs.size() == 2
+            assert workflow.out.obs.every { entry -> entry[0] == meta }
+            assert !adata.obs.colnames.any { it in ['test_scrublet', 'scrublet_score', 'scrublet_class', 'scrublet_predicted_doublet', 'S_score', 'G2M_score', 'phase'] }
             def fragmentFile = file(cellcycleFragments[0][1])
             def scored = anndata(new File(fragmentFile.parent, 'test_cellcycle.h5ad').toString())
             assert 'S_score' in scored.obs.colnames
@@ -554,10 +556,7 @@ nextflow_workflow {
             assert adata.layers.size() == 1
             assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
             assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
-            assert snapshot(
-                workflow.out.multiqc_files,
-                workflow.out.versions.collect { path(it).yaml }
-            ).match()
+            assert snapshot(workflow.out.multiqc_files, workflow.out.obs.collect { path(it[1]).fileName.toString() }.sort()).match()
         }
 
     }

@@ -1,0 +1,384 @@
+{
+    "Should finalise survivors in original order using boolean votes rather than large detector scores": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "sample_a_qc"
+                        },
+                        "sample_a_qc.h5ad:md5,c8ceae91547bae2532900e7d36500f40"
+                    ],
+                    [
+                        {
+                            "id": "sample_b_qc"
+                        },
+                        "sample_b_qc.h5ad:md5,61f177255bcf617b90332c9bea488b17"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "sample_a_qc"
+                        },
+                        "sample_a_qc_metadata.csv:md5,0409e2a442fd378f1eb1b390efff577c"
+                    ],
+                    [
+                        {
+                            "id": "sample_b_qc"
+                        },
+                        "sample_b_qc_metadata.csv:md5,ee72d5a299b291d757137a1428891408"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,1c13caddd94f0788de1d0d266af77037",
+                    "versions.yml:md5,1c13caddd94f0788de1d0d266af77037"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "sample_a_qc"
+                        },
+                        "sample_a_qc.h5ad:md5,c8ceae91547bae2532900e7d36500f40"
+                    ],
+                    [
+                        {
+                            "id": "sample_b_qc"
+                        },
+                        "sample_b_qc.h5ad:md5,61f177255bcf617b90332c9bea488b17"
+                    ]
+                ],
+                "metadata": [
+                    [
+                        {
+                            "id": "sample_a_qc"
+                        },
+                        "sample_a_qc_metadata.csv:md5,0409e2a442fd378f1eb1b390efff577c"
+                    ],
+                    [
+                        {
+                            "id": "sample_b_qc"
+                        },
+                        "sample_b_qc_metadata.csv:md5,ee72d5a299b291d757137a1428891408"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,1c13caddd94f0788de1d0d266af77037",
+                    "versions.yml:md5,1c13caddd94f0788de1d0d266af77037"
+                ]
+            },
+            [
+                {
+                    "ADATA_EXTEND": {
+                        "anndata": "0.13.2",
+                        "numpy": "2.5.4",
+                        "pandas": "3.0.5",
+                        "python": "3.13.12"
+                    }
+                },
+                {
+                    "ADATA_EXTEND": {
+                        "anndata": "0.13.2",
+                        "numpy": "2.5.4",
+                        "pandas": "3.0.5",
+                        "python": "3.13.12"
+                    }
+                }
+            ],
+            [
+                {
+                    "n_obs": 126,
+                    "n_vars": 128,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample",
+                            "ambient_correction_method",
+                            "analysis_counts_source",
+                            "batch",
+                            "label",
+                            "condition",
+                            "donor",
+                            "sample_original",
+                            "scdblfinder_class",
+                            "scdblfinder_predicted_doublet",
+                            "scdblfinder_score",
+                            "scrublet_class",
+                            "scrublet_predicted_doublet",
+                            "scrublet_score"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "symbols",
+                            "gene_id"
+                        ]
+                    },
+                    "layers": [
+                        "raw_counts"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                },
+                {
+                    "n_obs": 126,
+                    "n_vars": 128,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample",
+                            "ambient_correction_method",
+                            "analysis_counts_source",
+                            "batch",
+                            "label",
+                            "condition",
+                            "donor",
+                            "sample_original",
+                            "scdblfinder_class",
+                            "scdblfinder_predicted_doublet",
+                            "scdblfinder_score",
+                            "scrublet_class",
+                            "scrublet_predicted_doublet",
+                            "scrublet_score"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "symbols",
+                            "gene_id"
+                        ]
+                    },
+                    "layers": [
+                        "raw_counts"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                }
+            ]
+        ],
+        "timestamp": "2026-11-13T17:22:51.556570176",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should finalise all cells with barcode-aligned detector scores when removal is disabled": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "sample_a_qc"
+                        },
+                        "sample_a_qc.h5ad:md5,1375bf691d86ccef1c44744c609dbb89"
+                    ],
+                    [
+                        {
+                            "id": "sample_b_qc"
+                        },
+                        "sample_b_qc.h5ad:md5,7a4c83dd9229a3b3254fed214001c00b"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "sample_a_qc"
+                        },
+                        "sample_a_qc_metadata.csv:md5,19b1b6c560bf57bf34d4c82cee889659"
+                    ],
+                    [
+                        {
+                            "id": "sample_b_qc"
+                        },
+                        "sample_b_qc_metadata.csv:md5,1fc1a233e39968d1e99e5a472cc99424"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,1c13caddd94f0788de1d0d266af77037",
+                    "versions.yml:md5,1c13caddd94f0788de1d0d266af77037"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "sample_a_qc"
+                        },
+                        "sample_a_qc.h5ad:md5,1375bf691d86ccef1c44744c609dbb89"
+                    ],
+                    [
+                        {
+                            "id": "sample_b_qc"
+                        },
+                        "sample_b_qc.h5ad:md5,7a4c83dd9229a3b3254fed214001c00b"
+                    ]
+                ],
+                "metadata": [
+                    [
+                        {
+                            "id": "sample_a_qc"
+                        },
+                        "sample_a_qc_metadata.csv:md5,19b1b6c560bf57bf34d4c82cee889659"
+                    ],
+                    [
+                        {
+                            "id": "sample_b_qc"
+                        },
+                        "sample_b_qc_metadata.csv:md5,1fc1a233e39968d1e99e5a472cc99424"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,1c13caddd94f0788de1d0d266af77037",
+                    "versions.yml:md5,1c13caddd94f0788de1d0d266af77037"
+                ]
+            },
+            [
+                {
+                    "ADATA_EXTEND": {
+                        "anndata": "0.13.2",
+                        "numpy": "2.5.4",
+                        "pandas": "3.0.5",
+                        "python": "3.13.12"
+                    }
+                },
+                {
+                    "ADATA_EXTEND": {
+                        "anndata": "0.13.2",
+                        "numpy": "2.5.4",
+                        "pandas": "3.0.5",
+                        "python": "3.13.12"
+                    }
+                }
+            ],
+            [
+                {
+                    "n_obs": 128,
+                    "n_vars": 128,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample",
+                            "ambient_correction_method",
+                            "analysis_counts_source",
+                            "batch",
+                            "label",
+                            "condition",
+                            "donor",
+                            "sample_original",
+                            "scdblfinder_class",
+                            "scdblfinder_predicted_doublet",
+                            "scdblfinder_score",
+                            "scrublet_class",
+                            "scrublet_predicted_doublet",
+                            "scrublet_score"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "symbols",
+                            "gene_id"
+                        ]
+                    },
+                    "layers": [
+                        "raw_counts"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                },
+                {
+                    "n_obs": 128,
+                    "n_vars": 128,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample",
+                            "ambient_correction_method",
+                            "analysis_counts_source",
+                            "batch",
+                            "label",
+                            "condition",
+                            "donor",
+                            "sample_original",
+                            "scdblfinder_class",
+                            "scdblfinder_predicted_doublet",
+                            "scdblfinder_score",
+                            "scrublet_class",
+                            "scrublet_predicted_doublet",
+                            "scrublet_score"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "symbols",
+                            "gene_id"
+                        ]
+                    },
+                    "layers": [
+                        "raw_counts"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                }
+            ]
+        ],
+        "timestamp": "2026-11-13T17:20:48.836758738",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

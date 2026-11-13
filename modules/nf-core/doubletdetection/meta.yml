@@ -46,6 +46,18 @@ output:
           description: pandas dataframe containing the doublet classification
           pattern: "*.pkl"
           ontologies: []
+  scores:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - "${prefix}.scores.csv":
+          type: file
+          description: Per-cell doublet scores and predictions indexed by input cell identifiers
+          pattern: "*.scores.csv"
+          ontologies:
+            - edam: http://edamontology.org/format_3752 # CSV
   versions:
     - versions.yml:
         type: file

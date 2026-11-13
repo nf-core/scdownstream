@@ -1,13 +1,65 @@
 Changes in component 'nf-core/scanpy/scrublet'
 'modules/nf-core/scanpy/scrublet/environment.yml' is unchanged
-'modules/nf-core/scanpy/scrublet/meta.yml' is unchanged
-'modules/nf-core/scanpy/scrublet/main.nf' is unchanged
+Changes in 'scanpy/scrublet/meta.yml':
+--- modules/nf-core/scanpy/scrublet/meta.yml
++++ modules/nf-core/scanpy/scrublet/meta.yml
+@@ -58,6 +58,18 @@
+           pattern: "*.pkl"
+           ontologies:
+             - edam: "http://edamontology.org/format_3553" # Pickle format
++  scores:
++    - - meta:
++          type: map
++          description: |
++            Groovy Map containing sample information
++            e.g. [ id:'test' ]
++      - "${prefix}.scores.csv":
++          type: file
++          description: Per-cell doublet scores and predictions indexed by input cell identifiers
++          pattern: "*.scores.csv"
++          ontologies:
++            - edam: http://edamontology.org/format_3752 # CSV
+   versions:
+     - versions.yml:
+         type: file
+
+Changes in 'scanpy/scrublet/main.nf':
+--- modules/nf-core/scanpy/scrublet/main.nf
++++ modules/nf-core/scanpy/scrublet/main.nf
+@@ -13,8 +13,9 @@
+ 
+     output:
+     tuple val(meta), path("*.h5ad"), emit: h5ad
+-    tuple val(meta), path("*.pkl") , emit: predictions
+-    path "versions.yml"            , emit: versions, topic: versions
++    tuple val(meta), path("*.pkl"), emit: predictions
++    tuple val(meta), path("${prefix}.scores.csv"), emit: scores
++    path "versions.yml", emit: versions, topic: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+@@ -39,6 +40,7 @@
+ 
+     touch ${prefix}.h5ad
+     touch ${prefix}.pkl
++    touch ${prefix}.scores.csv
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+
 'modules/nf-core/scanpy/scrublet/tests/main.nf.test.snap' is unchanged
 'modules/nf-core/scanpy/scrublet/tests/main.nf.test' is unchanged
 Changes in 'scanpy/scrublet/templates/scrublet.py':
 --- modules/nf-core/scanpy/scrublet/templates/scrublet.py
 +++ modules/nf-core/scanpy/scrublet/templates/scrublet.py
-@@ -33,7 +33,7 @@
+@@ -27,13 +27,14 @@
+ sc.pp.scrublet(adata, **kwargs)
+ 
+ adata.obs["predicted_doublet"] = adata.obs["predicted_doublet"].astype(bool)
++adata.obs[["doublet_score", "predicted_doublet"]].to_csv("${prefix}.scores.csv")
+ df = adata.obs[["predicted_doublet"]]
+ df.columns = ["${prefix}"]
+ df.to_pickle("${prefix}.pkl")
  
  adata = adata[~adata.obs["predicted_doublet"]].copy()
  

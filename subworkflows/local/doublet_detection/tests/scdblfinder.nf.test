@@ -1,0 +1,249 @@
+nextflow_process {
+
+    name "Test upstream SCDBLFINDER migration"
+    script "modules/nf-core/scdblfinder/main.nf"
+    process "SCDBLFINDER"
+    config "./scdblfinder.config"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should preserve native results with default rate, supplied rate and optional batches") {
+        tag "scdblfinder_defaults"
+
+        when {
+            params {
+                outdir = "$outputDir"
+                scdblfinder_dbr_sd = null
+            }
+            process {
+                """
+                input[0] = channel.of(
+                    [id: 'defaults'],
+                    [id: 'unset_rate', doublet_rate: []],
+                    [id: 'rate', doublet_rate: 0.08],
+                    [id: 'batch', batch_col: 'sample'],
+                    [id: 'null_batch', batch_col: null],
+                    [id: 'empty_batch', batch_col: '']
+                ).map { meta -> [meta, file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)] }
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.h5ad.size() == 6
+            assert process.out.predictions.size() == 6
+            assert process.out.scores.size() == 6
+            assert process.out.versions_scdblfinder.size() == 6
+            def outputs = process.out.h5ad.sort { it[0].id }
+            outputs.each { meta, h5ad ->
+                def adata = anndata(h5ad)
+                def original = anndata(path(h5ad).parent.resolve('SRR28679759_filtered_matrix.h5ad'))
+                assert adata.n_obs == 384
+                assert adata.obs.index.values == original.obs.index.values
+                assert adata.var.index.values == original.var.index.values
+                assert 'scDblFinder.score' in adata.obs.colnames
+                assert 'scDblFinder.class' in adata.obs.colnames
+                assert adata.obs.get('scDblFinder.score').data.every { it instanceof Number }
+                assert adata.obs.get('scDblFinder.class').data.every { it in ['singlet', 'doublet'] }
+                assert !('scdblfinder_score' in adata.obs.colnames)
+                assert !('scdblfinder_class' in adata.obs.colnames)
+                assert !path(h5ad).parent.resolve('.command.sh').text.contains('dbr.sd =')
+                if (meta.id == 'unset_rate') {
+                    assert !path(h5ad).parent.resolve('.command.sh').readLines().find { it.startsWith('extra <- list(') }.contains('dbr =')
+                }
+            }
+            process.out.versions_scdblfinder.each { report ->
+                def versions = path(report).yaml.values().first()
+                assert versions.scdblfinder.toString() == '1.24.10'
+                assert versions.anndatar.toString() == '1.2.3'
+            }
+            assert snapshot(
+                outputs.collect { it[0] },
+                outputs.collect { anndata(it[1]).yaml },
+                process.out.versions_scdblfinder.collect { path(it).yaml }
+            ).match()
+        }
+    }
+
+    test("Should pass dbr.sd of one with doublet_rate and batch_col") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                scdblfinder_dbr_sd = 1
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test', doublet_rate: 0.08, batch_col: 'sample'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.n_obs == 384
+            assert 'scDblFinder.score' in adata.obs.colnames
+            assert 'scDblFinder.class' in adata.obs.colnames
+            def command = path(process.out.h5ad[0][1]).parent.resolve('.command.sh').text
+            assert command.contains('dbr.sd = 1.0')
+            assert command.contains('dbr = 0.08')
+            assert command.contains('samples = "sample"')
+        }
+    }
+
+    test("Should preserve dbr.sd of zero") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                scdblfinder_dbr_sd = 0
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.n_obs == 384
+            assert 'scDblFinder.score' in adata.obs.colnames
+            assert 'scDblFinder.class' in adata.obs.colnames
+            assert path(process.out.h5ad[0][1]).parent.resolve('.command.sh').text.contains('dbr.sd = 0.0')
+        }
+    }
+
+    test("Should reject negative dbr.sd") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                scdblfinder_dbr_sd = -0.1
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains('scdblfinder_dbr_sd must be a number between 0 and 1')
+        }
+    }
+
+    test("Should reject dbr.sd above one") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                scdblfinder_dbr_sd = 1.1
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains('scdblfinder_dbr_sd must be a number between 0 and 1')
+        }
+    }
+
+    test("Should fail with non-existing batch_col") {
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test', batch_col: 'non_existing_col'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Column 'non_existing_col' is not in the cell metadata")
+        }
+    }
+
+    test("Should fail when the batch column contains missing values") {
+
+        setup {
+            run("ADATA_EXTEND") {
+                script "../../../../modules/local/adata/extend/main.nf"
+                process {
+                    """
+                    input[0] = channel.of('cell,incomplete_batch\\nSRR28679756::CCTTTCTTCTGCTGCT,batch_a\\n')
+                        .collectFile(name: 'batch.csv')
+                        .map { obs -> [
+                            [id: 'source'],
+                            file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                            [obs], [], [], [], [], []
+                        ] }
+                    """
+                }
+            }
+        }
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = ADATA_EXTEND.out.h5ad.map { meta, h5ad -> [meta + [batch_col: 'incomplete_batch'], h5ad] }
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Column 'incomplete_batch' contains NA values")
+        }
+    }
+
+    test("Should run upstream scdblfinder without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.versions_scdblfinder.size() == 1
+            assert snapshot(process.out).match()
+        }
+    }
+}
