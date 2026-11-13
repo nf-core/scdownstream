@@ -286,6 +286,10 @@ Select the appropriate species with `--species`:
 nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results --species mouse
 ```
 
+HUGO-unifier (`--unify_gene_symbols`) runs only when `--species` is exactly `human`.
+For any other species, the pipeline skips HUGO-unifier and emits a warning if `--unify_gene_symbols` is enabled.
+Species-aware MyGene.info conversion and standard gene and metadata cleanup still run as applicable.
+
 #### Custom gene lists
 
 For other organisms (e.g. rat, zebrafish), you can provide your own gene lists, with one gene symbol per line, via `--s_genes` and `--g2m_genes`:

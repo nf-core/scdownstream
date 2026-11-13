@@ -7,11 +7,11 @@ include { ADATA_UNIFY                         } from '../../../modules/local/ada
 
 workflow UNIFY {
     take:
-    ch_h5ad                  // channel: [ meta, h5ad ]
-    unify_gene_symbols       //   value: boolean
+    ch_h5ad // channel: [ meta, h5ad ]
+    unify_gene_symbols //   value: boolean
     duplicate_var_resolution //   value: string
-    aggregate_isoforms       //   value: boolean
-    species                  //   value: string
+    aggregate_isoforms //   value: boolean
+    species //   value: string
 
     main:
     ch_multiqc_files = channel.empty()
@@ -21,50 +21,48 @@ workflow UNIFY {
         needs_symbol_conversion: true
     }
 
-    ch_mygene = ch_h5ad.needs_symbol_conversion
-        .multiMap { meta, h5ad ->
-            h5ad: [meta, h5ad]
-            input_col: meta.geneid_col ?: 'index'
-        }
-    MYGENE (
+    ch_mygene = ch_h5ad.needs_symbol_conversion.multiMap { meta, h5ad ->
+        h5ad: [meta, h5ad]
+        input_col: meta.geneid_col ?: 'index'
+    }
+    MYGENE(
         ch_mygene.h5ad,
         species,
-        ch_mygene.input_col
+        ch_mygene.input_col,
     )
     ch_h5ad = ch_h5ad.has_symbol_col.mix(
         MYGENE.out.h5ad.map { meta, h5ad -> [meta + [symbol_col: 'symbols'], h5ad] }
     )
 
-    if (unify_gene_symbols) {
+    if (unify_gene_symbols && species != 'human') {
+        log.warn("Skipping HUGO-unifier because --unify_gene_symbols is enabled but --species is '${species}'. HUGO-unifier supports only --species human.")
+    }
+
+    if (unify_gene_symbols && species == 'human') {
         ch_h5ad = ch_h5ad.branch { meta, _h5ad ->
             has_symbols_as_index: meta.symbol_col == "index"
             needs_index_updating: true
         }
 
-        ch_setindex = ch_h5ad.needs_index_updating
-            .multiMap {
-                meta, h5ad ->
-                h5ad: [meta, h5ad]
-                column: meta.symbol_col
-            }
-        SET_INDEX (
+        ch_setindex = ch_h5ad.needs_index_updating.multiMap { meta, h5ad ->
+            h5ad: [meta, h5ad]
+            column: meta.symbol_col
+        }
+        SET_INDEX(
             ch_setindex.h5ad,
             'var',
-            ch_setindex.column
+            ch_setindex.column,
         )
         ch_h5ad = ch_h5ad.has_symbols_as_index.mix(
-            SET_INDEX.out.h5ad
-                .map { meta, h5ad -> [meta + [symbol_col: 'index'], h5ad] }
+            SET_INDEX.out.h5ad.map { meta, h5ad -> [meta + [symbol_col: 'index'], h5ad] }
         )
 
-        UPSET_GENES_RAW (
-            ch_h5ad
-                .map { meta, h5ad -> [[id: 'raw'], meta.id, h5ad] }
-                .groupTuple()
+        UPSET_GENES_RAW(
+            ch_h5ad.map { meta, h5ad -> [[id: 'raw'], meta.id, h5ad] }.groupTuple()
         )
         ch_multiqc_files = ch_multiqc_files.mix(UPSET_GENES_RAW.out.multiqc_files)
 
-        UNIFY_GENES (
+        UNIFY_GENES(
             ch_h5ad
         )
         ch_h5ad = UNIFY_GENES.out.h5ad
@@ -92,31 +90,16 @@ workflow UNIFY {
         aggregate_isoforms,
         ch_adata_unify.donor_col,
     )
-    ch_h5ad = ADATA_UNIFY.out.h5ad.map { meta, h5ad -> [
-        meta + [
-            batch_col: 'batch',
-            label_col: 'label',
-            condition_col: 'condition',
-            donor_col: 'donor',
-            unknown_label: 'unknown',
-            symbol_col: 'index',
-            counts_layer: 'X',
-            raw_counts_layer: 'raw_counts',
-            ambient_correction_layer: meta.ambient_correction_layer ? "ambient_corrected_${meta.ambient_correction_method}" : null,
-            ambient_correction_method: meta.ambient_correction_method ?: 'none',
-            analysis_counts_source: meta.analysis_counts_source ?: 'raw_counts'
-        ],
-        h5ad]
+    ch_h5ad = ADATA_UNIFY.out.h5ad.map { meta, h5ad ->
+        [meta + [batch_col: 'batch', label_col: 'label', condition_col: 'condition', donor_col: 'donor', unknown_label: 'unknown', symbol_col: 'index', counts_layer: 'X', raw_counts_layer: 'raw_counts', ambient_correction_layer: meta.ambient_correction_layer ? "ambient_corrected_${meta.ambient_correction_method}" : null, ambient_correction_method: meta.ambient_correction_method ?: 'none', analysis_counts_source: meta.analysis_counts_source ?: 'raw_counts'], h5ad]
     }
 
-    UPSET_GENES (
-        ch_h5ad
-            .map { meta, h5ad -> [[id: 'unified'], meta.id, h5ad] }
-            .groupTuple()
+    UPSET_GENES(
+        ch_h5ad.map { meta, h5ad -> [[id: 'unified'], meta.id, h5ad] }.groupTuple()
     )
     ch_multiqc_files = ch_multiqc_files.mix(UPSET_GENES.out.multiqc_files)
 
     emit:
-    h5ad          = ch_h5ad          // channel: [ meta, h5ad ]
+    h5ad          = ch_h5ad // channel: [ meta, h5ad ]
     multiqc_files = ch_multiqc_files // channel: [ json ]
 }

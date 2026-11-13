@@ -1,4 +1,127 @@
 {
+    "Should skip HUGO for mouse and preserve gene indices for every sample": {
+        "content": [
+            [
+                {
+                    "id": "mouse_a",
+                    "symbol_col": "index",
+                    "batch_col": "batch",
+                    "label_col": "label",
+                    "condition_col": "condition",
+                    "donor_col": "donor",
+                    "unknown_label": "unknown",
+                    "counts_layer": "X",
+                    "raw_counts_layer": "raw_counts",
+                    "ambient_correction_layer": null,
+                    "ambient_correction_method": "none",
+                    "analysis_counts_source": "raw_counts"
+                },
+                {
+                    "id": "mouse_b",
+                    "symbol_col": "index",
+                    "batch_col": "batch",
+                    "label_col": "label",
+                    "condition_col": "condition",
+                    "donor_col": "donor",
+                    "unknown_label": "unknown",
+                    "counts_layer": "X",
+                    "raw_counts_layer": "raw_counts",
+                    "ambient_correction_layer": null,
+                    "ambient_correction_method": "none",
+                    "analysis_counts_source": "raw_counts"
+                }
+            ],
+            [
+                {
+                    "n_obs": 128,
+                    "n_vars": 128,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample",
+                            "ambient_correction_method",
+                            "analysis_counts_source",
+                            "batch",
+                            "label",
+                            "condition",
+                            "donor",
+                            "sample_original"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "gene_id"
+                        ]
+                    },
+                    "layers": [
+                        "raw_counts"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                },
+                {
+                    "n_obs": 128,
+                    "n_vars": 128,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample",
+                            "ambient_correction_method",
+                            "analysis_counts_source",
+                            "batch",
+                            "label",
+                            "condition",
+                            "donor",
+                            "sample_original"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "gene_id"
+                        ]
+                    },
+                    "layers": [
+                        "raw_counts"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                }
+            ]
+        ],
+        "timestamp": "2026-11-13T12:02:37.740647139",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
     "Should run without failures - symbol_col none, unify_gene_symbols false - stub": {
         "content": [
             {
@@ -150,6 +273,116 @@
             "nextflow": "25.10.4"
         }
     },
+    "Should require exact human species spelling for HUGO - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": null,
+                            "ambient_correction_method": "none",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "unified_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": null,
+                            "ambient_correction_method": "none",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "unified_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-13T11:57:56.520395289",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should skip HUGO for other non-human species - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": null,
+                            "ambient_correction_method": "none",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "unified_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": null,
+                            "ambient_correction_method": "none",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "unified_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-13T11:57:29.651650592",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
     "Should canonicalise a named input counts layer": {
         "content": [
             {
@@ -266,6 +499,61 @@
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
+        }
+    },
+    "Should skip HUGO silently when disabled for mouse - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": null,
+                            "ambient_correction_method": "none",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "unified_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "symbol_col": "index",
+                            "batch_col": "batch",
+                            "label_col": "label",
+                            "condition_col": "condition",
+                            "donor_col": "donor",
+                            "unknown_label": "unknown",
+                            "counts_layer": "X",
+                            "raw_counts_layer": "raw_counts",
+                            "ambient_correction_layer": null,
+                            "ambient_correction_method": "none",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "multiqc_files": [
+                    "unified_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-13T11:57:02.411648272",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures - symbol_col index, unify_gene_symbols false - stub": {
