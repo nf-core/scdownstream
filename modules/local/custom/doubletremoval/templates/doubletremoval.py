@@ -18,7 +18,6 @@ remove_doublets = "${removal}" == "true"
 prefix = "${prefix}"
 methods = json.loads("""${methods_json}""")
 prediction_paths = json.loads("""${predictions_json}""")
-score_paths = json.loads("""${scores_json}""")
 
 
 def load(path, method):
@@ -58,13 +57,6 @@ def boolean_votes(values, source):
     return normalised.astype(bool)
 
 
-def numeric_scores(values, source):
-    try:
-        return pd.to_numeric(values, errors="raise")
-    except (TypeError, ValueError) as error:
-        raise ValueError(f"{source} contains invalid numeric scores") from error
-
-
 if not adata.obs_names.is_unique:
     duplicates = adata.obs_names[adata.obs_names.duplicated()].tolist()[:5]
     raise ValueError(f"Input H5AD contains duplicate barcodes: {duplicates}")
@@ -81,57 +73,21 @@ if len(methods) != len(set(methods)):
     raise ValueError(f"Duplicate doublet methods: {methods}")
 if methods != sorted(methods):
     raise ValueError(f"Doublet methods must be sorted: {methods}")
-if len(prediction_paths) != len(methods) or len(score_paths) != sum(method != "solo" for method in methods):
-    raise ValueError("Table counts must match methods: one prediction per method and one score per non-SOLO method")
-if len(prediction_paths) != len(set(prediction_paths)) or len(score_paths) != len(set(score_paths)):
+if len(prediction_paths) != len(methods):
+    raise ValueError("Table counts must match methods: one prediction per method")
+if len(prediction_paths) != len(set(prediction_paths)):
     raise ValueError("Duplicate input table paths")
 
 votes = pd.DataFrame(index=adata.obs_names)
 annotations = pd.DataFrame(index=adata.obs_names)
-score_iterator = iter(score_paths)
 for method, prediction_path in zip(methods, prediction_paths):
     prediction = load(prediction_path, method)
     if len(prediction.columns) != 1:
         raise ValueError(f"{method} prediction '{prediction_path}' must contain exactly one Boolean column")
     vote = boolean_votes(prediction.iloc[:, 0], f"{method} prediction '{prediction_path}'")
     votes[method] = vote
-    fields = pd.DataFrame(index=adata.obs_names)
-    fields[f"{method}_predicted_doublet"] = vote
-    fields[f"{method}_class"] = vote.map({False: "singlet", True: "doublet"})
-    if method != "solo":
-        score_path = next(score_iterator)
-        scores = load(score_path, method)
-        source = f"{method} scores '{score_path}'"
-        required = {
-            "scdblfinder": {"scDblFinder.score", "scDblFinder.class"},
-            "scrublet": {"doublet_score", "predicted_doublet"},
-            "doubletdetection": {"doublet_score", "doublet"},
-        }[method]
-        missing_fields = required.difference(scores.columns)
-        if missing_fields:
-            raise ValueError(f"{source} lacks required native fields: {sorted(missing_fields)}")
-        if method == "scdblfinder":
-            if any(not isinstance(column, str) or not column.startswith("scDblFinder.") for column in scores.columns):
-                raise ValueError(f"{source} contains fields outside the scDblFinder.* namespace")
-            names = [
-                "scdblfinder_" + column.removeprefix("scDblFinder.").replace(".", "_") for column in scores.columns
-            ]
-            if len(names) != len(set(names)) or "scdblfinder_predicted_doublet" in names:
-                raise ValueError(f"{source} contains normalised name collisions")
-            classes = scores["scDblFinder.class"]
-            if not classes.isin(["singlet", "doublet"]).all() or not classes.eq(fields["scdblfinder_class"]).all():
-                raise ValueError(f"{source} native class contradicts Boolean predictions or contains invalid classes")
-            scores = scores.set_axis(names, axis=1)
-            scores["scdblfinder_score"] = numeric_scores(scores["scdblfinder_score"], source)
-            for column in scores:
-                fields[column] = scores[column]
-        else:
-            native_call = "predicted_doublet" if method == "scrublet" else "doublet"
-            calls = boolean_votes(scores[native_call], source)
-            if not calls.eq(vote).all():
-                raise ValueError(f"{source} native call contradicts Boolean predictions")
-            fields[f"{method}_score"] = numeric_scores(scores["doublet_score"], source)
-    annotations = pd.concat([annotations, fields], axis=1)
+    annotations[f"{method}_predicted_doublet"] = vote
+    annotations[f"{method}_class"] = vote.map({False: "singlet", True: "doublet"})
 
 if not annotations.columns.is_unique:
     raise ValueError("Canonical annotation names collide")

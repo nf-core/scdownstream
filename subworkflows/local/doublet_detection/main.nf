@@ -29,7 +29,7 @@ workflow DOUBLET_DETECTION {
                 ch_batch_col,
                 scvi_max_epochs ?: [],
             )
-            ch_results = ch_results.mix(SCVITOOLS_SOLO.out.predictions.map { meta, predictions -> [meta, 'solo', predictions, []] })
+            ch_results = ch_results.mix(SCVITOOLS_SOLO.out.predictions.map { meta, predictions -> [meta, 'solo', predictions] })
         }
 
         if (methods.contains('scrublet')) {
@@ -37,42 +37,36 @@ workflow DOUBLET_DETECTION {
                 ch_h5ad,
                 ch_batch_col,
             )
-            ch_results = ch_results.mix(
-                SCANPY_SCRUBLET.out.predictions.join(SCANPY_SCRUBLET.out.scores, failOnDuplicate: true, failOnMismatch: true).map { meta, predictions, scores -> [meta, 'scrublet', predictions, scores] }
-            )
+            ch_results = ch_results.mix(SCANPY_SCRUBLET.out.predictions.map { meta, predictions -> [meta, 'scrublet', predictions] })
+            ch_obs = ch_obs.mix(SCANPY_SCRUBLET.out.scores)
         }
 
         if (methods.contains('doubletdetection')) {
             DOUBLETDETECTION(
                 ch_h5ad
             )
-            ch_results = ch_results.mix(
-                DOUBLETDETECTION.out.predictions.join(DOUBLETDETECTION.out.scores, failOnDuplicate: true, failOnMismatch: true).map { meta, predictions, scores -> [meta, 'doubletdetection', predictions, scores] }
-            )
+            ch_results = ch_results.mix(DOUBLETDETECTION.out.predictions.map { meta, predictions -> [meta, 'doubletdetection', predictions] })
+            ch_obs = ch_obs.mix(DOUBLETDETECTION.out.scores)
         }
 
         if (methods.contains('scdblfinder')) {
             SCDBLFINDER(
                 ch_h5ad
             )
-            ch_results = ch_results.mix(
-                SCDBLFINDER.out.predictions.join(SCDBLFINDER.out.scores, failOnDuplicate: true, failOnMismatch: true).map { meta, predictions, scores -> [meta, 'scdblfinder', predictions, scores] }
-            )
+            ch_results = ch_results.mix(SCDBLFINDER.out.predictions.map { meta, predictions -> [meta, 'scdblfinder', predictions] })
+            ch_obs = ch_obs.mix(SCDBLFINDER.out.scores)
         }
 
         ch_results = ch_results
             .groupTuple()
-            .map { meta, detector_methods, predictions, scores ->
-                def records = (0..<detector_methods
-                    .size())
-                    .collect { i ->
-                        [detector_methods[i], predictions[i], scores[i]]
-                    }
-                    .sort { record -> record[0] }
+            .map { meta, detector_methods, predictions ->
+                def records = (0..<detector_methods.size()).collect { i ->
+                    [detector_methods[i], predictions[i]]
+                }.sort { record -> record[0] }
                 if (records.collect { record -> record[0] } != methods.sort(false)) {
                     error("Unexpected doublet detector results for '${meta.id}': expected ${methods}, received ${detector_methods}")
                 }
-                [meta, records.collect { record -> record[0] }, records.collect { record -> record[1] }, records.findAll { record -> record[0] != 'solo' }.collect { record -> record[2] }]
+                [meta, records.collect { record -> record[0] }, records.collect { record -> record[1] }]
             }
 
         DOUBLETREMOVAL(
@@ -82,12 +76,12 @@ workflow DOUBLET_DETECTION {
         )
 
         ch_h5ad = DOUBLETREMOVAL.out.h5ad
-        ch_obs = DOUBLETREMOVAL.out.obs
+        ch_obs = ch_obs.mix(DOUBLETREMOVAL.out.obs)
         ch_multiqc_files = ch_multiqc_files.mix(DOUBLETREMOVAL.out.multiqc_files)
     }
 
     emit:
     h5ad          = ch_h5ad // channel: [ meta, h5ad ]
-    obs           = ch_obs // channel: [ meta, pkl ]
+    obs           = ch_obs // channel: [ meta, csv/parquet/pkl ]
     multiqc_files = ch_multiqc_files // channel: [ json ]
 }

@@ -27,9 +27,12 @@ nextflow_pipeline {
                 ['scrublet', 'scdblfinder'].each { method ->
                     assert (method + '_predicted_doublet') in adata.obs.colnames
                     assert (method + '_class') in adata.obs.colnames
-                    assert adata.obs.get("${method}_score").data.every { it instanceof Number }
                     assert adata.obs.get("${method}_class").data.every { it in ['singlet', 'doublet'] }
                 }
+                ['scrublet_score', 'scDblFinder.score'].each { column ->
+                    assert adata.obs.get(column).data.every { it instanceof Number }
+                }
+                assert adata.obs.get('scDblFinder.class').data == adata.obs.get('scdblfinder_class').data
                 assert adata.obs.index.values.toList().toSet().size() == adata.n_obs
             }
             assert file("$outputDir/10_reports/qc-report.html").text.contains("Thus, only the QC-related plots above are shown")

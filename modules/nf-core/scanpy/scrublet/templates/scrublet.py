@@ -27,7 +27,7 @@ if batch_col and adata.obs[batch_col].nunique() > 1:
 sc.pp.scrublet(adata, **kwargs)
 
 adata.obs["predicted_doublet"] = adata.obs["predicted_doublet"].astype(bool)
-adata.obs[["doublet_score", "predicted_doublet"]].to_csv("${prefix}.scores.csv")
+adata.obs[["doublet_score"]].rename(columns={"doublet_score": "scrublet_score"}).to_parquet("${prefix}.scores.parquet")
 df = adata.obs[["predicted_doublet"]]
 df.columns = ["${prefix}"]
 df.to_pickle("${prefix}.pkl")

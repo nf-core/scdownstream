@@ -16,13 +16,10 @@ nextflow_process {
                 psc = channel.of('cell,arbitrary_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i in [1,3]) }.join('')).collectFile(name: 'sc.csv')
                 pscr = channel.of('cell,arbitrary_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i in [0,3]) }.join('')).collectFile(name: 'scr.csv')
                 psolo = channel.of('cell,arbitrary_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i == 4) }.join('')).collectFile(name: 'solo.csv')
-                sdd = channel.of('cell,doublet_score,doublet\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s,%s\\n', i, 1000+i, i < 3) }.join('')).collectFile(name: 'dd.csv')
-                ssc = channel.of('cell,scDblFinder.score,scDblFinder.class,scDblFinder.cxds_score,scDblFinder.mostLikelyOrigin\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s,%s,%s,A+B\\n', i, 2000+i, i in [1,3] ? 'doublet' : 'singlet', i/2.0) }.join('')).collectFile(name: 'sc.csv')
-                sscr = channel.of('cell,doublet_score,predicted_doublet\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s,%s\\n', i, i == 2 ? '' : 3000+i, i in [0,3]) }.join('')).collectFile(name: 'scr.csv')
-                input[0] = pdd.combine(psc).combine(pscr).combine(psolo).combine(sdd).combine(ssc).combine(sscr).map { a,b,c,d,e,f,g -> [
+                input[0] = pdd.combine(psc).combine(pscr).combine(psolo).map { a,b,c,d -> [
                     [id: 'votes', counts_layer: 'X'],
                     file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
-                    ['doubletdetection','scdblfinder','scrublet','solo'], [a,b,c,d], [e,f,g]
+                    ['doubletdetection','scdblfinder','scrublet','solo'], [a,b,c,d]
                 ] }
                 input[1] = 2
                 input[2] = true
@@ -51,11 +48,10 @@ nextflow_process {
             process {
                 """
                 p = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,true\\n', i) }.join('')).collectFile(name: 'p.csv')
-                s = channel.of('cell,doublet_score,predicted_doublet\\n' + (0..<128).collect { i -> String.format('cell_%03d,9999,true\\n', i) }.join('')).collectFile(name: 's.csv')
-                input[0] = p.combine(s).map { prediction, score -> [
+                input[0] = p.map { prediction -> [
                     [id: 'annotate'],
                     file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
-                    ['scrublet'], [prediction], [score]
+                    ['scrublet'], [prediction]
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -76,7 +72,7 @@ nextflow_process {
         }
     }
 
-    test("Should accept SOLO alone with an empty score list") {
+    test("Should accept SOLO alone without score inputs") {
         when {
             params { outdir = "$outputDir" }
             process {
@@ -85,7 +81,7 @@ nextflow_process {
                     .collectFile(name: 'solo.csv').map { p -> [
                         [id: 'solo'],
                         file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
-                        ['solo'], [p], []
+                        ['solo'], [p]
                     ] }
                 input[1] = 1
                 input[2] = true
@@ -112,7 +108,7 @@ nextflow_process {
                 input[0] = channel.of('cell,solo\\ncell_000,true\\n').collectFile(name: 'solo.csv').map { p -> [
                     [id: 'stub'],
                     file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
-                    ['solo'], [p], []
+                    ['solo'], [p]
                 ] }
                 input[1] = 1
                 input[2] = true
@@ -134,7 +130,7 @@ nextflow_process {
                     [id: 'pickle'],
                     file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
                     ['solo'],
-                    [file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_solo.pkl', checkIfExists: true)], []
+                    [file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/test_solo.pkl', checkIfExists: true)]
                 ])
                 input[1] = 1
                 input[2] = false

@@ -1,14 +1,13 @@
 nextflow_process {
 
-    name "Test strict doublet table validation"
+    name "Test strict doublet prediction validation"
     script "modules/local/custom/doubletremoval/main.nf"
     process "CUSTOM_DOUBLETREMOVAL"
 
     tag "modules"
     tag "modules_local"
 
-    test("Should reject canonical names already present in the input without overwriting them") {
-        tag "doublet_existing_columns"
+    test("Should reject canonical call names already present in the input") {
         setup {
             run("ADATA_EXTEND") {
                 script "../../../adata/extend/main.nf"
@@ -26,7 +25,7 @@ nextflow_process {
             process {
                 """
                 p = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
-                input[0] = ADATA_EXTEND.out.h5ad.combine(p).map { meta, base, prediction -> [meta, base, ['solo'], [prediction], []] }
+                input[0] = ADATA_EXTEND.out.h5ad.combine(p).map { meta, base, prediction -> [meta, base, ['solo'], [prediction]] }
                 input[1] = 1
                 input[2] = false
                 """
@@ -38,13 +37,33 @@ nextflow_process {
         }
     }
 
+    test("Should reject duplicate prediction paths") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = channel.of('cell,call\\ncell_000,false\\n').collectFile(name: 'p.csv').map { p -> [
+                    [id: 'duplicate_path'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet','solo'], [p,p]
+                ] }
+                input[1] = 1
+                input[2] = false
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains('input file name collision')
+            assert process.errorReport.contains('predictions/p.csv')
+        }
+    }
+
     test("Should reject duplicate input H5AD barcodes") {
         when {
             params { outdir = "$outputDir" }
             process {
                 """
                 input[0] = channel.of('cell,call\\ncell_000,false\\n').collectFile(name: 'p.csv').map { p -> [
-                    [id: 'input'], file(params.pipelines_testdata_base_path + '/anndata-variations/obs_duplicate_names.h5ad', checkIfExists: true), ['solo'], [p], []
+                    [id: 'input'], file(params.pipelines_testdata_base_path + '/anndata-variations/obs_duplicate_names.h5ad', checkIfExists: true), ['solo'], [p]
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -63,7 +82,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call\\ncell_000,true\\ncell_000,false\\n').collectFile(name: 'duplicate.csv').map { p -> [
-                    [id: 'duplicate'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p], []
+                    [id: 'duplicate'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -84,9 +103,8 @@ nextflow_process {
                 """
                 p = channel.of('cell,call\\n' + (1..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'missing.csv')
                 solo = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'complete.csv')
-                s = channel.of('cell,doublet_score,predicted_doublet\\n' + (0..<128).collect { i -> String.format('cell_%03d,1,false\\n', i) }.join('')).collectFile(name: 'scores.csv')
-                input[0] = p.combine(solo).combine(s).map { a,b,c -> [
-                    [id: 'missing'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet','solo'], [a,b], [c]
+                input[0] = p.combine(solo).map { a,b -> [
+                    [id: 'missing'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet','solo'], [a,b]
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -106,7 +124,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call\\n' + (0..128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'extra.csv').map { p -> [
-                    [id: 'extra'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p], []
+                    [id: 'extra'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -126,7 +144,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call,call\\ncell_000,true,false\\n').collectFile(name: 'headers.csv').map { p -> [
-                    [id: 'headers'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p], []
+                    [id: 'headers'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -145,7 +163,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call,score\\n' + (0..<128).collect { i -> String.format('cell_%03d,false,9999\\n', i) }.join('')).collectFile(name: 'columns.csv').map { p -> [
-                    [id: 'columns'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p], []
+                    [id: 'columns'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -164,7 +182,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s\\n', i, i == 5 ? '' : 'false') }.join('')).collectFile(name: 'null.csv').map { p -> [
-                    [id: 'null'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p], []
+                    [id: 'null'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -184,7 +202,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s\\n', i, i == 5 ? 'singlet' : 'false') }.join('')).collectFile(name: 'invalid.csv').map { p -> [
-                    [id: 'invalid'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p], []
+                    [id: 'invalid'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -203,7 +221,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call\\ncell_000,false\\n').collectFile(name: 'p.csv').map { p -> [
-                    [id: 'methods'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo','solo'], [p], []
+                    [id: 'methods'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo','solo'], [p]
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -222,7 +240,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call\\ncell_000,false\\n').collectFile(name: 'p.csv').map { p -> [
-                    [id: 'unknown'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['unknown'], [p], []
+                    [id: 'unknown'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['unknown'], [p]
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -241,7 +259,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call\\ncell_000,false\\n').collectFile(name: 'p.csv').map { p -> [
-                    [id: 'unsorted'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo','scrublet'], [p], []
+                    [id: 'unsorted'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo','scrublet'], [p]
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -260,7 +278,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                    [id: 'count'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [], []
+                    [id: 'count'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], []
                 ])
                 input[1] = 1
                 input[2] = false
@@ -270,280 +288,6 @@ nextflow_process {
         then {
             assert process.failed
             assert process.errorReport.contains('Table counts must match methods')
-        }
-    }
-
-    test("Should reject missing score files") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                input[0] = channel.of('cell,call\\ncell_000,false\\n').collectFile(name: 'p.csv').map { p -> [
-                    [id: 'count'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet'], [p], []
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains('Table counts must match methods')
-        }
-    }
-
-    test("Should reject unexpected SOLO score files") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                p = channel.of('cell,call\\ncell_000,false\\n').collectFile(name: 'p.csv')
-                s = channel.of('cell,score\\ncell_000,1\\n').collectFile(name: 's.csv')
-                input[0] = p.combine(s).map { a,b -> [
-                    [id: 'solo_scores'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [a], [b]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains('Table counts must match methods')
-        }
-    }
-
-    test("Should reject duplicate table paths") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                p = channel.of('cell,call\\ncell_000,false\\n').collectFile(name: 'p.csv')
-                s = channel.of('cell,doublet_score,predicted_doublet\\ncell_000,1,false\\n').collectFile(name: 's.csv')
-                input[0] = p.combine(s).map { a,b -> [
-                    [id: 'duplicate_path'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet','solo'], [a,a], [b]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains('input file name collision')
-            assert process.errorReport.contains('predictions/p.csv')
-        }
-    }
-
-    test("Should reject duplicate score indices") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                p = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
-                s = channel.of('cell,doublet_score,predicted_doublet\\ncell_000,1,false\\ncell_000,2,false\\n').collectFile(name: 'duplicate.csv')
-                input[0] = p.combine(s).map { a,b -> [
-                    [id: 'duplicate'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet'], [a], [b]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains("scrublet table 'scores/duplicate.csv' contains duplicate indices")
-        }
-    }
-
-    test("Should reject missing score barcodes independently of predictions") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                p = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
-                s = channel.of('cell,doublet_score,predicted_doublet\\n' + (1..<128).collect { i -> String.format('cell_%03d,1,false\\n', i) }.join('')).collectFile(name: 'missing.csv')
-                input[0] = p.combine(s).map { a,b -> [
-                    [id: 'missing'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet'], [a], [b]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains("scrublet table 'scores/missing.csv' barcode coverage mismatch")
-            assert process.errorReport.contains("missing=['cell_000']")
-        }
-    }
-
-    test("Should reject extra score barcodes") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                p = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
-                s = channel.of('cell,doublet_score,predicted_doublet\\n' + (0..128).collect { i -> String.format('cell_%03d,1,false\\n', i) }.join('')).collectFile(name: 'extra.csv')
-                input[0] = p.combine(s).map { a,b -> [
-                    [id: 'extra'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet'], [a], [b]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains("scrublet table 'scores/extra.csv' barcode coverage mismatch")
-            assert process.errorReport.contains("extra=['cell_128']")
-        }
-    }
-
-    test("Should reject duplicate score CSV headers") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                p = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
-                s = channel.of('cell,doublet_score,doublet_score,predicted_doublet\\ncell_000,1,2,false\\n').collectFile(name: 'headers.csv')
-                input[0] = p.combine(s).map { a,b -> [
-                    [id: 'headers'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet'], [a], [b]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains("scrublet table 'scores/headers.csv' contains duplicate CSV headers")
-        }
-    }
-
-    test("Should reject missing required native fields") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                p = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
-                s = channel.of('cell,doublet_score\\n' + (0..<128).collect { i -> String.format('cell_%03d,1\\n', i) }.join('')).collectFile(name: 'missing_field.csv')
-                input[0] = p.combine(s).map { a,b -> [
-                    [id: 'fields'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet'], [a], [b]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains("lacks required native fields: ['predicted_doublet']")
-        }
-    }
-
-    test("Should reject contradictory native Boolean calls") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                p = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
-                s = channel.of('cell,doublet_score,doublet\\n' + (0..<128).collect { i -> String.format('cell_%03d,1,%s\\n', i, i == 3) }.join('')).collectFile(name: 'contradiction.csv')
-                input[0] = p.combine(s).map { a,b -> [
-                    [id: 'native'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['doubletdetection'], [a], [b]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains("doubletdetection scores 'scores/contradiction.csv' native call contradicts Boolean predictions")
-        }
-    }
-
-    test("Should reject null native Boolean calls") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                p = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
-                s = channel.of('cell,doublet_score,predicted_doublet\\n' + (0..<128).collect { i -> String.format('cell_%03d,1,%s\\n', i, i == 3 ? '' : 'false') }.join('')).collectFile(name: 'null_native.csv')
-                input[0] = p.combine(s).map { a,b -> [
-                    [id: 'native'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet'], [a], [b]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains("scrublet scores 'scores/null_native.csv' contains null or invalid Boolean votes")
-        }
-    }
-
-    test("Should reject contradictory native scDblFinder classes") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                p = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
-                s = channel.of('cell,scDblFinder.score,scDblFinder.class\\n' + (0..<128).collect { i -> String.format('cell_%03d,1,%s\\n', i, i == 3 ? 'doublet' : 'singlet') }.join('')).collectFile(name: 'contradiction.csv')
-                input[0] = p.combine(s).map { a,b -> [
-                    [id: 'class'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scdblfinder'], [a], [b]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains('native class contradicts Boolean predictions or contains invalid classes')
-        }
-    }
-
-    test("Should reject normalised scDblFinder name collisions") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                p = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
-                s = channel.of('cell,scDblFinder.score,scDblFinder.class,scDblFinder.a.b,scDblFinder.a_b\\n' + (0..<128).collect { i -> String.format('cell_%03d,1,singlet,1,2\\n', i) }.join('')).collectFile(name: 'collision.csv')
-                input[0] = p.combine(s).map { a,b -> [
-                    [id: 'collision'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scdblfinder'], [a], [b]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains("scdblfinder scores 'scores/collision.csv' contains normalised name collisions")
-        }
-    }
-
-    test("Should reject invalid numeric scores rather than using them as votes") {
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                p = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
-                s = channel.of('cell,doublet_score,predicted_doublet\\n' + (0..<128).collect { i -> String.format('cell_%03d,not_numeric,false\\n', i) }.join('')).collectFile(name: 'invalid_score.csv')
-                input[0] = p.combine(s).map { a,b -> [
-                    [id: 'numeric'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet'], [a], [b]
-                ] }
-                input[1] = 1
-                input[2] = false
-                """
-            }
-        }
-        then {
-            assert process.failed
-            assert process.errorReport.contains("scrublet scores 'scores/invalid_score.csv' contains invalid numeric scores")
         }
     }
 }

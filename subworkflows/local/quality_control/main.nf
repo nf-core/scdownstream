@@ -239,6 +239,6 @@ workflow QUALITY_CONTROL {
     emit:
     h5ad          = ch_h5ad // channel: [ meta, h5ad ]
     sizes         = ch_sizes // channel: [ tsv ]
-    obs           = ch_obs_per_sample // channel: [ meta, pkl ]
+    obs           = ch_obs_per_sample // channel: [ meta, csv/parquet/pkl ]
     multiqc_files = ch_multiqc_files // channel: [ json ]
 }

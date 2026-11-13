@@ -200,9 +200,9 @@ nextflow_workflow {
             assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
             assert adata.n_obs == adata.obs.rownames.size()
             assert adata.n_vars == adata.var.rownames.size()
-            assert workflow.out.obs.size() == 1
-            assert workflow.out.obs[0][0] == meta
-            assert path(workflow.out.obs[0][1]).fileName.toString() == 'test.obs.pkl'
+            assert workflow.out.obs.size() == 2
+            assert workflow.out.obs.every { it[0] == meta }
+            assert workflow.out.obs.collect { path(it[1]).fileName.toString() }.sort() == ['test.obs.pkl', 'test_scrublet.scores.parquet']
             assert !adata.obs.colnames.any { it in ['test_scrublet', 'scrublet_score', 'scrublet_class', 'scrublet_predicted_doublet'] }
             with(adata) {
                 assert "pct_counts_mt" in obs.colnames
@@ -545,7 +545,7 @@ nextflow_workflow {
             assert cellcycleFragments.size() == 1
             def doubletFragments = workflow.out.obs.findAll { entry -> file(entry[1]).name == 'test.obs.pkl' }
             assert doubletFragments.size() == 1
-            assert workflow.out.obs.size() == 2
+            assert workflow.out.obs.size() == 3
             assert workflow.out.obs.every { entry -> entry[0] == meta }
             assert !adata.obs.colnames.any { it in ['test_scrublet', 'scrublet_score', 'scrublet_class', 'scrublet_predicted_doublet', 'S_score', 'G2M_score', 'phase'] }
             def fragmentFile = file(cellcycleFragments[0][1])

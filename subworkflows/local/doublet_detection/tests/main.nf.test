@@ -67,9 +67,16 @@ nextflow_workflow {
             def adata = anndata(workflow.out.h5ad[0][1])
             assert adata.n_obs > 0
             assert adata.n_obs < 384
-            assert workflow.out.obs.size() == 1
-            assert workflow.out.obs[0][0] == workflow.out.h5ad[0][0]
-            assert path(workflow.out.obs[0][1]).fileName.toString() == 'test.obs.pkl'
+            assert workflow.out.obs.size() == 4
+            assert workflow.out.obs.every { it[0] == workflow.out.h5ad[0][0] }
+            assert workflow.out.obs.collect { path(it[1]).fileName.toString() }.sort() ==
+                ['test.obs.pkl', 'test_doubletdetection.scores.parquet', 'test_scdblfinder.scores.csv', 'test_scrublet.scores.parquet']
+            ['scrublet', 'doubletdetection'].each { method ->
+                def table = workflow.out.obs.find { path(it[1]).fileName.toString() == "test_${method}.scores.parquet" }[1]
+                def rows = parquet(table).rows
+                assert rows.size() == 384
+                assert rows.every { it[method + '_score'] instanceof Number }
+            }
             assert !adata.obs.colnames.any { it.startsWith('test_') || it.endsWith('_predicted_doublet') }
             assert !adata.obs.colnames.any { it in ['solo_class', 'scrublet_score', 'scdblfinder_score', 'doubletdetection_score'] }
             assert workflow.out.multiqc_files.size() == 1
@@ -103,7 +110,7 @@ nextflow_workflow {
             assert workflow.success
             def adata = anndata(workflow.out.h5ad[0][1])
             assert adata.n_obs == 384
-            assert workflow.out.obs.size() == 1
+            assert workflow.out.obs.size() == 2
             assert !adata.obs.colnames.any { it.startsWith('scdblfinder_') || it.startsWith('scDblFinder.') || it == 'test_scdblfinder' }
             assert snapshot(adata.yaml).match()
         }
@@ -137,7 +144,7 @@ nextflow_workflow {
             assert workflow.success
             def adata = anndata(workflow.out.h5ad[0][1])
             assert adata.n_obs == 384
-            assert workflow.out.obs.size() == 1
+            assert workflow.out.obs.size() == 2
             assert !adata.obs.colnames.any { it.startsWith('scdblfinder_') || it.startsWith('scDblFinder.') }
         }
 

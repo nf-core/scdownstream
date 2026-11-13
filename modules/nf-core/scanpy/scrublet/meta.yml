@@ -1,91 +1,114 @@
 name: scanpy_scrublet
 description: Detect doublets in single-cell RNA-seq data using Scrublet via Scanpy
 keywords:
-  - scrublet
-  - doublet-detection
-  - scanpy
-  - single-cell
+- scrublet
+- doublet-detection
+- scanpy
+- single-cell
 tools:
-  - scanpy:
-      description: Single-Cell Analysis in Python
-      homepage: https://scanpy.readthedocs.io
-      documentation: https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html
-      tool_dev_url: https://github.com/scverse/scanpy
-      doi: 10.1186/s13059-017-1382-0
-      licence: ["BSD-3-Clause"]
-      identifier: biotools:scanpy
+- scanpy:
+    description: Single-Cell Analysis in Python
+    homepage: https://scanpy.readthedocs.io
+    documentation: https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html
+    tool_dev_url: https://github.com/scverse/scanpy
+    doi: 10.1186/s13059-017-1382-0
+    licence: ["BSD-3-Clause"]
+    identifier: biotools:scanpy
 
 input:
+- - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test' ]
+  - h5ad:
+      type: file
+      description: AnnData object in h5ad format
+      pattern: "*.{h5ad}"
+      ontologies:
+      - edam: "http://edamontology.org/format_3590"     # HDF5 format
+- batch_col:
+    type: string
+    description: |
+      Optional column name in adata.obs containing batch information
+      If provided and contains multiple batches, will be used as batch_key parameter
+
+output:
+  h5ad:
   - - meta:
         type: map
         description: |
           Groovy Map containing sample information
           e.g. [ id:'test' ]
-    - h5ad:
+    - "*.h5ad":
         type: file
-        description: AnnData object in h5ad format
-        pattern: "*.{h5ad}"
+        description: AnnData object with doublets removed
+        pattern: "*.h5ad"
         ontologies:
-          - edam: "http://edamontology.org/format_3590" # HDF5 format
-  - batch_col:
-      type: string
-      description: |
-        Optional column name in adata.obs containing batch information
-        If provided and contains multiple batches, will be used as batch_key parameter
-
-output:
-  h5ad:
-    - - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. [ id:'test' ]
-      - "*.h5ad":
-          type: file
-          description: AnnData object with doublets removed
-          pattern: "*.h5ad"
-          ontologies:
-            - edam: "http://edamontology.org/format_3590" # HDF5 format
+        - edam: "http://edamontology.org/format_3590"     # HDF5 format
   predictions:
-    - - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. [ id:'test' ]
-      - "*.pkl":
-          type: file
-          description: Pickle file containing doublet predictions
-          pattern: "*.pkl"
-          ontologies:
-            - edam: "http://edamontology.org/format_3553" # Pickle format
-  scores:
-    - - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. [ id:'test' ]
-      - "${prefix}.scores.csv":
-          type: file
-          description: Per-cell doublet scores and predictions indexed by input cell identifiers
-          pattern: "*.scores.csv"
-          ontologies:
-            - edam: http://edamontology.org/format_3752 # CSV
-  versions:
-    - versions.yml:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test' ]
+    - "*.pkl":
         type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+        description: Pickle file containing doublet predictions
+        pattern: "*.pkl"
         ontologies:
-          - edam: http://edamontology.org/format_3750 # YAML
+        - edam: "http://edamontology.org/format_3553"     # Pickle format
+  scores:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test' ]
+    - "${prefix}.scores.parquet":
+        type: file
+        description: Full-cell scrublet_score values indexed by input cell identifiers
+        pattern: "*.scores.parquet"
+        ontologies: []
+  versions:
+  - versions.yml:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+      ontologies:
+      - edam: http://edamontology.org/format_3750     # YAML
 topics:
   versions:
-    - versions.yml:
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
-        ontologies:
-          - edam: http://edamontology.org/format_3750 # YAML
+  - versions.yml:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+      ontologies:
+      - edam: http://edamontology.org/format_3750     # YAML
 authors:
-  - "@nictru"
+- "@nictru"
 maintainers:
-  - "@nictru"
+- "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy_scikit-image:2773943d60a0daea
+      build_id: bd-2773943d60a0daea_1
+      scan_id: sc-b02cf48f5b933077_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy_scikit-image:cb2d30a43fce52a9
+      build_id: bd-cb2d30a43fce52a9_1
+      scan_id: sc-117d397e179a6adf_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy_scikit-image:b3d83e3cce987f7b
+      build_id: bd-b3d83e3cce987f7b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/32/32201f72155a28ab2e8e2e93a293068652cdabbc944e17da4f5d369d38453b57/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy_scikit-image:5961827be08ad1ca
+      build_id: bd-5961827be08ad1ca_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/2c/2c708068dc5df6b862e71c9bcbd19c664328575b72c5063827ee52b16014d857/data
+  conda:
+    linux/amd64:
+      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_amd64-bd-cb2d30a43fce52a9_1.txt
+    linux/arm64:
+      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_arm64-bd-2773943d60a0daea_1.txt

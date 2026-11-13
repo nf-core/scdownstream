@@ -31,9 +31,10 @@ nextflow_pipeline {
                 assert calls.every { it.toString().toLowerCase() in ['true', 'false'] }
                 assert classes == calls.collect { it.toString().equalsIgnoreCase('true') ? 'doublet' : 'singlet' }
             }
-            ['scrublet', 'scdblfinder'].each { method ->
-                assert adata_merged.obs.get("${method}_score").data.every { it instanceof Number }
+            ['scrublet_score', 'scDblFinder.score'].each { column ->
+                assert adata_merged.obs.get(column).data.every { it instanceof Number }
             }
+            assert adata_merged.obs.get('scDblFinder.class').data == adata_merged.obs.get('scdblfinder_class').data
             assert !('solo_score' in adata_merged.obs.colnames)
             assert !file("$outputDir/02_quality_control/finalized").exists()
             assert file("$outputDir/10_reports/qc-report.html").text.contains("Each integration method run by the pipeline")

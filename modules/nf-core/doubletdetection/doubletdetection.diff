@@ -1,39 +1,191 @@
 Changes in component 'nf-core/doubletdetection'
-'modules/nf-core/doubletdetection/environment.yml' is unchanged
+Changes in 'doubletdetection/environment.yml':
+--- modules/nf-core/doubletdetection/environment.yml
++++ modules/nf-core/doubletdetection/environment.yml
+@@ -3,6 +3,7 @@
+   - bioconda
+ 
+ dependencies:
++  - conda-forge::pyarrow=21.0.0
+   - conda-forge::anndata=0.11.4
+   - conda-forge::pip=25.0.1
+   - conda-forge::python=3.13.3
+
 Changes in 'doubletdetection/meta.yml':
 --- modules/nf-core/doubletdetection/meta.yml
 +++ modules/nf-core/doubletdetection/meta.yml
-@@ -46,6 +46,18 @@
-           description: pandas dataframe containing the doublet classification
-           pattern: "*.pkl"
-           ontologies: []
-+  scores:
-+    - - meta:
-+          type: map
-+          description: |
-+            Groovy Map containing sample information
-+            e.g. `[ id:'sample1', single_end:false ]`
-+      - "${prefix}.scores.csv":
-+          type: file
-+          description: Per-cell doublet scores and predictions indexed by input cell identifiers
-+          pattern: "*.scores.csv"
-+          ontologies:
-+            - edam: http://edamontology.org/format_3752 # CSV
-   versions:
-     - versions.yml:
+@@ -1,67 +1,102 @@
+ name: "doubletdetection"
+ description: Doublet detection in single-cell RNA-seq data
+ keywords:
+-  - single-cell
+-  - doublets
+-  - doublet_detection
++- single-cell
++- doublets
++- doublet_detection
+ tools:
+-  - "doubletdetection":
+-      description: "Doublet detection in single-cell RNA-seq data"
+-      tool_dev_url: "https://github.com/JonathanShor/DoubletDetection"
+-      doi: "10.5281/zenodo.6349517"
+-      licence:
+-        - "MIT"
+-      identifier: biotools:DoubletDetection
++- "doubletdetection":
++    description: "Doublet detection in single-cell RNA-seq data"
++    tool_dev_url: "https://github.com/JonathanShor/DoubletDetection"
++    doi: "10.5281/zenodo.6349517"
++    licence:
++    - "MIT"
++    identifier: biotools:DoubletDetection
+ input:
++- - meta:
++      type: map
++      description: |
++        Groovy Map containing sample information
++        e.g. `[ id:'sample1', single_end:false ]`
++  - h5ad:
++      type: file
++      description: H5AD anndata object
++      pattern: "*.h5ad"
++      ontologies: []
++output:
++  h5ad:
+   - - meta:
+         type: map
+         description: |
+           Groovy Map containing sample information
+           e.g. `[ id:'sample1', single_end:false ]`
+-    - h5ad:
++    - "*.h5ad":
          type: file
+         description: H5AD anndata object
+         pattern: "*.h5ad"
+         ontologies: []
+-output:
+-  h5ad:
+-    - - meta:
+-          type: map
+-          description: |
+-            Groovy Map containing sample information
+-            e.g. `[ id:'sample1', single_end:false ]`
+-      - "*.h5ad":
+-          type: file
+-          description: H5AD anndata object
+-          pattern: "*.h5ad"
+-          ontologies: []
+   predictions:
+-    - - meta:
+-          type: map
+-          description: |
+-            Groovy Map containing sample information
+-            e.g. `[ id:'sample1', single_end:false ]`
+-      - "*.pkl":
+-          type: file
+-          description: pandas dataframe containing the doublet classification
+-          pattern: "*.pkl"
+-          ontologies: []
++  - - meta:
++        type: map
++        description: |
++          Groovy Map containing sample information
++          e.g. `[ id:'sample1', single_end:false ]`
++    - "*.pkl":
++        type: file
++        description: pandas dataframe containing the doublet classification
++        pattern: "*.pkl"
++        ontologies: []
++  scores:
++  - - meta:
++        type: map
++        description: |
++          Groovy Map containing sample information
++          e.g. `[ id:'sample1', single_end:false ]`
++    - "${prefix}.scores.parquet":
++        type: file
++        description: Full-cell doubletdetection_score values indexed by input cell identifiers
++        pattern: "*.scores.parquet"
++        ontologies: []
+   versions:
+-    - versions.yml:
+-        type: file
+-        description: File containing software versions
+-        pattern: "versions.yml"
+-        ontologies:
+-          - edam: http://edamontology.org/format_3750 # YAML
++  - versions.yml:
++      type: file
++      description: File containing software versions
++      pattern: "versions.yml"
++      ontologies:
++      - edam: http://edamontology.org/format_3750     # YAML
+ topics:
+   versions:
+-    - versions.yml:
+-        type: file
+-        description: File containing software versions
+-        pattern: "versions.yml"
+-        ontologies:
+-          - edam: http://edamontology.org/format_3750 # YAML
++  - versions.yml:
++      type: file
++      description: File containing software versions
++      pattern: "versions.yml"
++      ontologies:
++      - edam: http://edamontology.org/format_3750     # YAML
+ authors:
+-  - "@LeonHafner"
++- "@LeonHafner"
+ maintainers:
+-  - "@LeonHafner"
++- "@LeonHafner"
++containers:
++  docker:
++    linux/arm64:
++      name: community.wave.seqera.io/library/pyarrow_anndata_pip_python_pruned:00cefe86fd22d0fa
++      build_id: bd-00cefe86fd22d0fa_1
++      scan_id: sc-ac90f5527bf01fa0_1
++    linux/amd64:
++      name: community.wave.seqera.io/library/pyarrow_anndata_pip_python_pruned:3f0caa6e8b12d282
++      build_id: bd-3f0caa6e8b12d282_1
++      scan_id: sc-c413c835743c3038_1
++  singularity:
++    linux/arm64:
++      name: oras://community.wave.seqera.io/library/pyarrow_anndata_pip_python_pruned:aa375361f0bade4a
++      build_id: bd-aa375361f0bade4a_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/55/5588303ef3e19e42b47afbf6360f9704d26c34c59727b054e3a7f403ec263983/data
++    linux/amd64:
++      name: oras://community.wave.seqera.io/library/pyarrow_anndata_pip_python_pruned:3f5bc6b9769f247c
++      build_id: bd-3f5bc6b9769f247c_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ce/ce3f7d8de7d80f778378c205ce0cf65822e6e02a06e6c819644da98e02cca779/data
++  conda:
++    linux/amd64:
++      lock_file: modules/nf-core/doubletdetection/.conda-lock/linux_amd64-bd-3f0caa6e8b12d282_1.txt
++    linux/arm64:
++      lock_file: modules/nf-core/doubletdetection/.conda-lock/linux_arm64-bd-00cefe86fd22d0fa_1.txt
 
 Changes in 'doubletdetection/main.nf':
 --- modules/nf-core/doubletdetection/main.nf
 +++ modules/nf-core/doubletdetection/main.nf
-@@ -12,8 +12,9 @@
+@@ -4,16 +4,17 @@
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/96/96f52092a8472acb59ded59ab5ec4a29a56627f0c78e3cc8a0b916c6bedd67d6/data'
+-        : 'community.wave.seqera.io/library/pyyaml_pip_doubletdetection:5af145ffec01d7da'}"
++        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ce/ce3f7d8de7d80f778378c205ce0cf65822e6e02a06e6c819644da98e02cca779/data'
++        : 'community.wave.seqera.io/library/pyarrow_anndata_pip_python_pruned:3f0caa6e8b12d282'}"
+ 
+     input:
+     tuple val(meta), path(h5ad)
  
      output:
      tuple val(meta), path("*.h5ad"), emit: h5ad
 -    tuple val(meta), path("*.pkl") , emit: predictions
 -    path "versions.yml"            , emit: versions, topic: versions
 +    tuple val(meta), path("*.pkl"), emit: predictions
-+    tuple val(meta), path("${prefix}.scores.csv"), emit: scores
++    tuple val(meta), path("${prefix}.scores.parquet"), emit: scores
 +    path "versions.yml", emit: versions, topic: versions
  
      when:
@@ -42,13 +194,15 @@ Changes in 'doubletdetection/main.nf':
      """
      touch ${prefix}.h5ad
      touch ${prefix}.pkl
-+    touch ${prefix}.scores.csv
++    touch ${prefix}.scores.parquet
  
      cat <<-END_VERSIONS > versions.yml
      ${task.process}:
 
 'modules/nf-core/doubletdetection/tests/main.nf.test.snap' is unchanged
 'modules/nf-core/doubletdetection/tests/main.nf.test' is unchanged
+'modules/nf-core/doubletdetection/.conda-lock/linux_amd64-bd-3f0caa6e8b12d282_1.txt' was created
+'modules/nf-core/doubletdetection/.conda-lock/linux_arm64-bd-00cefe86fd22d0fa_1.txt' was created
 Changes in 'doubletdetection/templates/doubletdetection.py':
 --- modules/nf-core/doubletdetection/templates/doubletdetection.py
 +++ modules/nf-core/doubletdetection/templates/doubletdetection.py
@@ -56,7 +210,7 @@ Changes in 'doubletdetection/templates/doubletdetection.py':
  
  adata.obs["doublet"] = [label == 1 for label in doublets]
  adata.obs["doublet_score"] = scores
-+adata.obs[["doublet_score", "doublet"]].to_csv("${prefix}.scores.csv")
++adata.obs[["doublet_score"]].rename(columns={"doublet_score": "doubletdetection_score"}).to_parquet("${prefix}.scores.parquet")
  
 -adata.write_h5ad("${prefix}.h5ad")
 +adata.write_h5ad("${prefix}.h5ad", compression="gzip")

@@ -119,9 +119,9 @@ With no QC columns, each sample receives:
 
 Doublet handling also follows the book: `--doublet_detection` defaults to `scdblfinder`, and `--doublet_removal` defaults to `false`, so doublet scores are written to `adata.obs` without removing cells until you opt in. Ambient RNA correction defaults to SoupX and requires an unfiltered matrix for each corrected sample.
 
-Each selected method adds `<method>_predicted_doublet` and `<method>_class` (`singlet` or `doublet`) to the finalised QC object. scDblFinder, Scrublet and DoubletDetection also add `<method>_score`. SOLO exports hard calls only, without a continuous score. scDblFinder's other per-cell results use the `scdblfinder_` prefix. These stable names replace the former sample-prefixed Boolean columns.
+Each selected method adds `<method>_predicted_doublet` and `<method>_class` (`singlet` or `doublet`) to the finalised QC object. These stable names replace the former sample-prefixed Boolean columns. Scrublet and DoubletDetection also add `scrublet_score` and `doubletdetection_score` from indexed Parquet fragments. scDblFinder's CSV fragment retains its native `scDblFinder.score`, `scDblFinder.class` and auxiliary fields. SOLO exports hard calls only, without a continuous score.
 
-Doublet annotations are joined by exact cell barcode at QC finalisation. With removal enabled, annotations remain aligned to the retained cells. Only Boolean calls contribute to `--doublet_detection_threshold`; scores do not count as votes. This annotation path does not change the selected expression or count layers and does not require `--save_intermediates`.
+Detector score fragments pass directly to QC finalisation and are aligned by cell barcode. With removal enabled, finalisation ignores rows for removed cells. Doublet removal validates exact barcode coverage of prediction tables and uses only Boolean calls for `--doublet_detection_threshold`; it does not read or validate scores. This annotation path does not change the selected expression or count layers and does not require `--save_intermediates`.
 
 Native merging retains the observation-column intersection. Doublet fields therefore reach the merged object when present in every input dataset. Fields missing from another dataset or a historical base may be dropped. Use the finalised per-sample QC outputs to inspect dataset-specific fields.
 

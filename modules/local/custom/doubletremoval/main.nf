@@ -4,11 +4,11 @@ process CUSTOM_DOUBLETREMOVAL {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7f/7f257d17ec38c213802f67cbe15cb9928b46d1aca4f492154b958f8b9195681c/data'
-        : 'community.wave.seqera.io/library/doublet_removal:be35baa3d64eb9b7'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/56/56e5b2e0a7deae4516efa83ada0d514260d70199270fdd7d66e0ed7841bc3f27/data'
+        : 'community.wave.seqera.io/library/doublet_removal:3e0acc996063ca2e'}"
 
     input:
-    tuple val(meta), path(h5ad), val(methods), path(predictions, stageAs: 'predictions/*'), path(scores, stageAs: 'scores/*')
+    tuple val(meta), path(h5ad), val(methods), path(predictions, stageAs: 'predictions/*')
     val threshold
     val removal
 
@@ -25,7 +25,6 @@ process CUSTOM_DOUBLETREMOVAL {
     prefix = task.ext.prefix ?: "${meta.id}"
     methods_json = groovy.json.JsonOutput.toJson(methods)
     predictions_json = groovy.json.JsonOutput.toJson(predictions instanceof List ? predictions.collect { table -> table.toString() } : [predictions.toString()])
-    scores_json = groovy.json.JsonOutput.toJson(scores instanceof List ? scores.collect { table -> table.toString() } : [scores.toString()])
     template('doubletremoval.py')
 
     stub:
