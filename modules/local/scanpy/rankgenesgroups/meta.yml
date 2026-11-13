@@ -1,0 +1,112 @@
+name: "scanpy_rankgenesgroups"
+description: Run Scanpy rank_genes_groups differential expression
+keywords:
+  - differential-expression
+  - scanpy
+  - single-cell
+tools:
+  - "scanpy":
+      description: "Single-cell analysis in Python"
+      homepage: "https://scanpy.readthedocs.io"
+      documentation: "https://scanpy.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/scanpy"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+  - obs_key:
+      type: string
+      description: obs column used to group cells for differential expression
+  - - filter_col:
+        type: string
+        description: Optional obs column used to subset cells before DE
+    - filter_val:
+        type: string
+        description: Optional value of filter_col to retain
+  - method:
+      type: string
+      description: Scanpy rank_genes_groups statistical method
+  - rank_key:
+      type: string
+      description: uns key for rank_genes_groups results
+  - apply_log1p:
+      type: boolean
+      description: Apply log1p to X before differential expression; false when the caller supplies log-transformed expression
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.h5ad":
+          type: file
+          description: AnnData with rank_genes_groups results
+          pattern: "*.h5ad"
+  uns:
+    - "*.pkl":
+        type: file
+        description: Pickled uns contents including rank_genes_groups
+        pattern: "*.pkl"
+  plots:
+    - "*.png":
+        type: file
+        description: Rank gene and dot plots
+        pattern: "*.png"
+  markers:
+    - "*.csv":
+        type: file
+        description: Marker gene tables
+        pattern: "*.csv"
+  results:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*_results.parquet":
+          type: file
+          description: Standardised differential expression results in parquet format
+          pattern: "*_results.parquet"
+  multiqc_files:
+    - "*_mqc.json":
+        type: file
+        description: MultiQC custom content JSON for rank gene and dot plots
+        pattern: "*_mqc.json"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:f7393f16a921c030
+      build_id: bd-f7393f16a921c030_1
+      scan_id: sc-943129a9dd847743_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:945304f1772e9924
+      build_id: bd-945304f1772e9924_1
+      scan_id: sc-ae10e4db1a131d54_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:5a5b5680dc3b1ecf
+      build_id: bd-5a5b5680dc3b1ecf_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a1/a194f12854e4f73b2b4aab27102b3178bfd4dd50fb1332db413205ef3cbfca90/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:c397ed9eb14afbe0
+      build_id: bd-c397ed9eb14afbe0_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/76/762b5f0003ccd8b1346ad24a880c1af803023f420f5c7a41acfe123fc71e346c/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_amd64-bd-f7393f16a921c030_1.txt
+    linux/arm64:
+      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_arm64-bd-945304f1772e9924_1.txt

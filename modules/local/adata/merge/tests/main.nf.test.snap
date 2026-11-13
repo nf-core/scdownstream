@@ -1,0 +1,458 @@
+{
+    "Should run without base": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_outer.h5ad:md5,10ae1acadb92141bb169e10f95ab68d8"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_integrate.h5ad:md5,10ae1acadb92141bb169e10f95ab68d8"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,fd78b51c7048b98ae1baf46368dc0843"
+                ],
+                "integrate": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_integrate.h5ad:md5,10ae1acadb92141bb169e10f95ab68d8"
+                    ]
+                ],
+                "outer": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_outer.h5ad:md5,10ae1acadb92141bb169e10f95ab68d8"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,fd78b51c7048b98ae1baf46368dc0843"
+                ]
+            },
+            {
+                "ADATA_MERGE": {
+                    "anndata": "0.13.2",
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3",
+                    "scipy": "1.18.0"
+                }
+            },
+            {
+                "n_obs": 768,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "condition",
+                        "donor",
+                        "is_selected_filtered_cell",
+                        "label",
+                        "original_n_genes_by_counts",
+                        "original_total_counts",
+                        "sample",
+                        "sample_original",
+                        "source_barcode",
+                        "source_role",
+                        "source_sample",
+                        "synthetic_condition",
+                        "synthetic_donor",
+                        "synthetic_label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "intersection"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_decontx",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            },
+            {
+                "n_obs": 768,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "condition",
+                        "donor",
+                        "is_selected_filtered_cell",
+                        "label",
+                        "original_n_genes_by_counts",
+                        "original_total_counts",
+                        "sample",
+                        "sample_original",
+                        "source_barcode",
+                        "source_role",
+                        "source_sample",
+                        "synthetic_condition",
+                        "synthetic_donor",
+                        "synthetic_label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "intersection"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_decontx",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-24T21:02:03.455524452",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run with base": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "SRR28679756_outer.h5ad:md5,9b72cc648d2cf826ac7a097faa7e03c2"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "SRR28679756_integrate.h5ad:md5,5e8ec443998319f23d6bca4aa2414b84"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,fd78b51c7048b98ae1baf46368dc0843"
+                ],
+                "integrate": [
+                    [
+                        {
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "SRR28679756_integrate.h5ad:md5,5e8ec443998319f23d6bca4aa2414b84"
+                    ]
+                ],
+                "outer": [
+                    [
+                        {
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "SRR28679756_outer.h5ad:md5,9b72cc648d2cf826ac7a097faa7e03c2"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,fd78b51c7048b98ae1baf46368dc0843"
+                ]
+            },
+            {
+                "ADATA_MERGE": {
+                    "anndata": "0.13.2",
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3",
+                    "scipy": "1.18.0"
+                }
+            },
+            {
+                "n_obs": 768,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "condition",
+                        "donor",
+                        "is_selected_filtered_cell",
+                        "label",
+                        "original_n_genes_by_counts",
+                        "original_total_counts",
+                        "sample",
+                        "sample_original",
+                        "source_barcode",
+                        "source_role",
+                        "source_sample",
+                        "synthetic_condition",
+                        "synthetic_donor",
+                        "synthetic_label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "intersection"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_decontx",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            },
+            {
+                "n_obs": 384,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "condition",
+                        "donor",
+                        "is_selected_filtered_cell",
+                        "label",
+                        "original_n_genes_by_counts",
+                        "original_total_counts",
+                        "sample",
+                        "sample_original",
+                        "source_barcode",
+                        "source_role",
+                        "source_sample",
+                        "synthetic_condition",
+                        "synthetic_donor",
+                        "synthetic_label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "intersection"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_decontx",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-24T21:05:05.276621725",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run without base - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_outer.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_integrate.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrate": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_integrate.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "outer": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_outer.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-13T12:50:24.222222655",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.3"
+        }
+    },
+    "Should run with base - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "SRR28679756_outer.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "SRR28679756_integrate.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrate": [
+                    [
+                        {
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "SRR28679756_integrate.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "outer": [
+                    [
+                        {
+                            "id": "SRR28679756",
+                            "raw_counts_layer": "X",
+                            "counts_layer": "X",
+                            "ambient_correction_layer": "ambient_corrected_decontx",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "SRR28679756_outer.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-18T17:33:13.356336464",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

@@ -1,0 +1,60 @@
+nextflow_process {
+
+    name "Test Process CUSTOM_COLLECTSIZES"
+    script "modules/local/custom/collectsizes/main.nf"
+    process "CUSTOM_COLLECTSIZES"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of('state\\tsample\\tsize\\nunfiltered\\tsample1\\t1000\\nfiltered\\tsample1\\t800\\nthresholded\\tsample1\\t750\\ndedoubleted\\tsample1\\t700')
+                    .collectFile(name: 'sizes.tsv')
+                    .map { file -> [[ id: 'test' ], file] }
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of('state\\tsample\\tsize\\nunfiltered\\tsample1\\t1000')
+                    .collectFile(name: 'sizes.tsv')
+                    .map { file -> [[ id: 'test' ], file] }
+                """
+            }
+        }
+
+        then {
+            assert process.success
+
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

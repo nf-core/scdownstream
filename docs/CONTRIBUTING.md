@@ -38,7 +38,7 @@ If you are not used to this workflow with Git, see the [GitHub documentation](ht
 
 The nf-core stance on the use of AI and LLMs is that humans are still ultimately responsible for their submitted code, regardless of the tools they use.
 
-If you’re using AI tools, try to stick by these guidelines:
+If you're using AI tools, try to stick by these guidelines:
 
 - Keep PRs as small and focused as possible
 - Avoid any unnecessary changes, such as moving or refactoring code (unless that is the explicit intention of the PR)
@@ -92,6 +92,7 @@ nf-core pipelines lint <pipeline_directory>
 ```
 
 If you encounter failures or warnings, follow the linked documentation printed to screen.
+Generated pipeline logos can differ across CPU architectures. A local `files_unchanged` lint failure for a logo can therefore occur even when CI passes. Leave the logo images unchanged and use the CI result for this check.
 For more information about linting tests, see [nf-core/tools API documentation](https://nf-co.re/docs/nf-core-tools/api_reference/latest/pipeline_lint_tests/actions_awsfulltest).
 
 #### Pipeline tests
@@ -107,7 +108,7 @@ These tests are run with the latest available version of Nextflow and the minimu
 > Only in the unlikely event of a release that contains a critical bug.
 
 - [ ] Create a new branch `patch` on your fork based on `upstream/main` or `upstream/master`.
-- [ ] Fix the bug and use nf-core/tools to bump the version to the next semantic version, for example, `1.2.3` → `1.2.4`.
+- [ ] Fix the bug and use nf-core/tools to bump the version to the next semantic version, for example, `1.2.3` to `1.2.4`.
 - [ ] Open a Pull Request from `patch` directly to `main`/`master` with the changes.
 
 ### Pipeline contribution conventions
@@ -147,6 +148,9 @@ Use the following naming schemes for channels to make the channel flow easier to
 
 Parameters should be initialised and defined with default values within the `params` scope in `nextflow.config`.
 They should also be documented in the pipeline JSON schema.
+Declare boolean and numeric parameter types in the `params` block in `main.nf`, without duplicating their defaults.
+Use nullable numeric types, such as `Integer?` and `Float?`, when the default is `null`.
+Keep string parameters and the boolean-or-string `help` parameter untyped.
 
 To update `nextflow_schema.json`, run:
 
@@ -182,4 +186,143 @@ If you update images or graphics, follow the nf-core [style guidelines](https://
 
 ## Pipeline specific contribution guidelines
 
-<!-- TODO nf-core: Add any pipeline specific contribution guidelines here, such as coding styles, procedures, checklists etc. -->
+### Harshil alignment
+
+Use [Harshil alignment](https://nf-co.re/docs/developing/documentation/harshil-alignment) where applicable.
+Do not add more spaces than the widest element requires.
+
+### Linting and formatting
+
+Stage your changes and run [`prek`](https://github.com/j178/prek) before each commit.
+The hooks in `.pre-commit-config.yaml` run Prettier, `nextflow lint`, and `ruff` for Python code.
+The `ruff` rules are configured in `ruff.toml`.
+
+### Local modules
+
+Local modules follow the [nf-core module specifications](https://nf-co.re/docs/specifications/components/modules/general).
+
+### Meta map fields
+
+In addition to `id`, local modules and subworkflows use the following meta fields:
+
+| Field                             | Set by                                               | Meaning                                                                           |
+| --------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `batch_col`                       | Samplesheet                                          | `obs` column holding batch labels, used for batch-aware QC and feature selection. |
+| `symbol_col`                      | Samplesheet                                          | `var` column holding gene symbols.                                                |
+| `counts_layer`                    | Samplesheet, ambient correction, unification         | Selected counts source; defaults to `X` and becomes `X` after unification.        |
+| `condition_col`, `donor_col`      | Samplesheet                                          | `obs` columns used for differential expression and pseudobulking.                 |
+| `integration`                     | Integration step                                     | Name of the integration method that produced the embedding.                       |
+| `subset`                          | `CLUSTER_TARGETS`, `SUB_INTEGRATE`                   | `global` for the full dataset, otherwise the name of the subset.                  |
+| `resolution`                      | Clustering step                                      | Leiden resolution of the clustering.                                              |
+| `obs_key`                         | `workflows/scdownstream.nf`                          | `obs` column that defines the groups for per-group analyses.                      |
+| `analyses`, `de_methods_resolved` | Analysis plan (`utils_nfcore_scdownstream_pipeline`) | Per-group analyses and DE methods to run. `null` means all.                       |
+
+Channel operations must preserve these fields.
+Add new fields to this table when you introduce them.
+
+Ambient correction resolves the expression-source fields before unification:
+
+| Field                       | Before unification                                           | After unification                        |
+| --------------------------- | ------------------------------------------------------------ | ---------------------------------------- |
+| `counts_layer`              | Physical source of selected analysis counts.                 | `X`.                                     |
+| `raw_counts_layer`          | Selected original input source before this correction stage. | `raw_counts`.                            |
+| `ambient_correction_layer`  | Generated correction source, or `null` when bypassed.        | `ambient_corrected_<method>`, or `null`. |
+| `ambient_correction_method` | Applied method, or `none`.                                   | Unchanged.                               |
+| `analysis_counts_source`    | `raw_counts` or canonical `ambient_corrected_<method>`.      | Unchanged.                               |
+
+An explicit sample selection flag overrides the global flag. Disabled correction and method `none` select raw counts. Unification preserves required sources before replacing reserved names, then applies a common gene grouping and order to `X` and every retained layer. `X` holds the selected analysis counts; `raw_counts` retains the original raw counts, and `ambient_corrected_<method>` retains corrected counts. Normalisation writes derived layers such as `log1p` and `scran` without replacing `X`.
+
+The two provenance fields also become categorical `obs` columns. Merging fills unavailable method layers from each sample's `raw_counts` and retains provenance independently of the ordinary observation-column intersection. Historical bases require explicit `raw_counts`. Missing historical provenance remains `unknown`, without inference from layer names.
+
+### Process templates
+
+Many processes in this pipeline use templates containing Python or R scripts.
+Nextflow interprets strings prefixed with `$` as Nextflow variables - this is especially relevant for R scripts.
+The process fails if such a variable is not defined in the associated Nextflow process.
+To use a literal `$` character in a template, escape it with a backslash (`\$`).
+In R templates, this applies to every use of the `$` operator, for example `adata\$as_SingleCellExperiment()` or `rowData(sce)\$highly_deviant`.
+
+Environment variables that apply to all Python processes, such as `NUMBA_CACHE_DIR` and `MPLCONFIGDIR`, are set in the `env` scope of `nextflow.config`.
+Do not set them in individual templates.
+Pass `task.cpus` to the tool explicitly, for example with `threadpool_limits(int("${task.cpus}"))` in Python.
+Set a fixed random seed for stochastic methods, for example with `set.seed()` in R.
+
+Write H5AD outputs with `compression="gzip"` in Python or `compression = "gzip"` in R.
+Keep the write call and its compression argument on the same line for the `h5ad-gzip` pre-commit check.
+
+Templates should follow this structure:
+
+1. Read inputs.
+2. Perform processing.
+3. Write outputs:
+   - Primary outputs, such as updated AnnData files.
+   - Fragments, such as added `obs` columns or layers, in relevant formats.
+   - MultiQC inputs.
+   - `versions.yml` containing the versions of the language and all relevant packages.
+
+### Fragments
+
+A fragment contains only the data that a module adds to an AnnData object.
+`workflows/scdownstream.nf` collects fragments on the `ch_obs`, `ch_var`, `ch_obsm`, `ch_obsp`, and `ch_uns` channels, and on their `_per_sample` counterparts (including `ch_layers_per_sample`) before combination.
+`ADATA_EXTEND` merges them into the H5AD files, once per sample after quality control (`FINALIZE_QC_ANNDATAS`) and once at the end of the pipeline (`FINALIZE`).
+Emit each fragment on a channel named after its AnnData slot and use a format that `modules/local/adata/extend` can read:
+
+| Slot     | Format                                               | Index                                 |
+| -------- | ---------------------------------------------------- | ------------------------------------- |
+| `obs`    | Pickled or CSV `pandas.DataFrame`                    | `obs_names`                           |
+| `var`    | Pickled or CSV `pandas.DataFrame`                    | `var_names`                           |
+| `obsm`   | Pickled `pandas.DataFrame`, file name `X_<name>.pkl` | `obs_names`                           |
+| `obsp`   | NumPy `.npy` file containing a sparse matrix         | None                                  |
+| `uns`    | Pickled Python object                                | None                                  |
+| `layers` | `.npz`, `.mtx`, or `.npy` matrix                     | Same cell and gene order as the input |
+
+The file stem becomes the key in `obsm`, `obsp`, `uns`, and `layers`.
+
+### MultiQC custom content
+
+Modules that produce plots for the MultiQC report write a `<prefix>_mqc.json` file with an embedded base64 PNG image.
+Set `parent_id`, `parent_name`, and `parent_description` from `meta.integration` so that MultiQC groups the section with the other results of the same integration.
+`modules/local/scanpy/leiden/templates/leiden.py` contains a reference implementation.
+Add new sections to `assets/multiqc_config.yml` in the order of the pipeline steps.
+
+### Output directories
+
+`conf/modules.config` publishes results into numbered top-level directories that follow the order of the pipeline steps, for example `02_quality_control` or `05_cluster_dimred`.
+Place outputs of new steps into the matching directory.
+Guard intermediate outputs with `enabled: params.save_intermediates`.
+Update `docs/output.md` with the new files.
+
+### Python-only profile
+
+The `python_only` profile in `conf/python_only.config` replaces R-based default tools with Python alternatives.
+If you add an R-based tool as a new default, add a Python alternative to this profile.
+If no alternative exists, document the limitation in the comment block of `conf/python_only.config`.
+
+### Testing conventions
+
+Write pipeline tests in nf-test and extend the existing module or subworkflow `.nf.test` suites where applicable.
+Do not add standalone Python tests or test-only processes for assertions.
+
+Ambient count-retention tests use the existing `nft-anndata` metadata interface: layer keys, dimensions, cell/gene indices, categorical provenance, and existing scalar QC fields. Assertions must not read, decode, compare, sum, or slice `X` or layer arrays. Do not add matrix-reading helpers, backend readers, or production diagnostic passes solely for tests. Use sequential assertions and place the snapshot assertion last.
+
+These metadata checks do not prove equality of retained matrix values or exact raw-fallback values. Review source copying, alias handling, sparse-zero aggregation, and common axes directly. RDS round trips use the production conversion modules and inspect resulting AnnData metadata, not expression arrays.
+
+CI runs three nf-test categories, selected by tag:
+
+- `modules_local` for local module tests.
+- `subworkflows_local` for local subworkflow tests.
+- `pipeline` for end-to-end tests in `tests/`.
+
+Tag new tests accordingly.
+
+[`docs/reproducibility.md`](reproducibility.md) classifies every local module and subworkflow by the reproducibility of its outputs and assigns a snapshot strategy to each.
+When you add a module or subworkflow, add a row to this file and write the test according to the assigned strategy.
+Snapshot files must never be edited by hand; regenerate them with `nf-test test --update-snapshot`.
+
+Test data must not be committed to this repository.
+Generate test inputs in nf-test `setup` blocks with existing production modules or subworkflows on data from test-datasets (for example `DECOUPLER_PSEUDOBULK` followed by `EDGEPYTHON_DIFFERENTIAL` to obtain DE tables).
+Do not create modules or processes solely to generate fixtures.
+Only add a fixture if no module can produce it, or if the setup modules would make the test too slow.
+Store such fixtures, and the scripts that generate them, in the `scdownstream` branch of [nf-core/test-datasets](https://github.com/nf-core/test-datasets/tree/scdownstream) and reference them through `params.pipelines_testdata_base_path`.
+
+For AnnData API usage, consult the [nf-anndata README](https://github.com/nictru/nf-anndata/blob/main/README.md) and [nft-anndata README](https://github.com/nictru/nft-anndata/blob/main/README.md).

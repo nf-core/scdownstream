@@ -1,0 +1,72 @@
+name: "pydeseq2_differential"
+description: Run PyDESeq2 on pseudobulk counts per cell-type stratum
+keywords:
+  - differential-expression
+  - pseudobulk
+  - pydeseq2
+tools:
+  - "pydeseq2":
+      description: "A Python implementation of the DESeq2 pipeline for bulk RNA-seq DE analysis"
+      homepage: "https://github.com/owkin/PyDESeq2"
+      documentation: "https://pydeseq2.readthedocs.io/"
+      tool_dev_url: "https://github.com/owkin/PyDESeq2"
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - h5ad:
+        type: file
+        description: Pseudobulk AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+  - design_formula:
+      type: string
+      description: Unused; design uses condition only, or donor and condition when donors span conditions
+  - reference_condition:
+      type: string
+      description: Reference condition level for contrasts
+
+output:
+  results:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*_results.parquet":
+          type: file
+          description: Standardised PyDESeq2 results per cell-type stratum in parquet format
+          pattern: "*_results.parquet"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/pydeseq2_differential:42831fea4fd7c416
+      build_id: bd-42831fea4fd7c416_1
+      scan_id: sc-73b24e7018cc2af8_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/pydeseq2_differential:9a1f81f4b5f29ff3
+      build_id: bd-9a1f81f4b5f29ff3_1
+      scan_id: sc-88932463ec37ca5e_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/pydeseq2_differential:c99d0709b2d5bd74
+      build_id: bd-c99d0709b2d5bd74_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/66/66e86197f026938b2273d24dc545b6a9f195699bafe7739e06f7875ca81568a1/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/pydeseq2_differential:0ea19933605d13fb
+      build_id: bd-0ea19933605d13fb_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/77/779736ea3b01e9f685d5a23697524e4a558e59284a73a51c779713cb697a4f59/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/pydeseq2/differential/.conda-lock/linux_amd64-bd-42831fea4fd7c416_1.txt
+    linux/arm64:
+      lock_file: modules/local/pydeseq2/differential/.conda-lock/linux_arm64-bd-9a1f81f4b5f29ff3_1.txt

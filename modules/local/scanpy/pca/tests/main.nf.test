@@ -1,0 +1,167 @@
+nextflow_process {
+
+    name "Test Process SCANPY_PCA"
+    script "modules/local/scanpy/pca/main.nf"
+    process "SCANPY_PCA"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "X_pca"
+                input[2] = 'X'
+                input[3] = true
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+
+            assert process.success
+            assert "X_pca" in adata.obsm
+            assert "X_pca" in adata.uns
+            assert "X_pca" in adata.varm
+            assert "pca_log1p" in adata.layers
+
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should preserve input layers") {
+
+        setup {
+            run("SCANPY_LOG1PNORM") {
+                script "../../log1pnorm/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'layered'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                    ])
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_LOG1PNORM.out.h5ad
+                input[1] = "X_pca"
+                input[2] = "raw_counts"
+                input[3] = true
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+
+            assert process.success
+            assert "X_pca" in adata.obsm
+            assert "X_pca" in adata.uns
+            assert "X_pca" in adata.varm
+
+            with(adata) {
+                assert layers.toSet() == ['raw_counts', 'log1p', 'pca_log1p'].toSet()
+            }
+
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should use an existing log1p layer without creating another expression matrix") {
+
+        setup {
+            run("SCANPY_LOG1PNORM") {
+                script "../../log1pnorm/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'layered'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ])
+                    """
+                }
+            }
+        }
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = SCANPY_LOG1PNORM.out.h5ad
+                input[1] = 'X_custom'
+                input[2] = 'log1p'
+                input[3] = false
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.layers.toSet() == ['log1p'].toSet()
+            assert 'X_custom' in adata.obsm
+            assert 'X_custom' in adata.varm
+            assert 'X_custom' in adata.uns
+            assert snapshot(path(process.out.versions[0]).yaml, adata.yaml).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = "X_pca"
+                input[2] = 'X'
+                input[3] = true
+                """
+            }
+        }
+
+        then {
+            assert process.success
+
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

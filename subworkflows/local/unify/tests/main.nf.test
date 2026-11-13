@@ -1,0 +1,354 @@
+nextflow_workflow {
+
+    name "Test Workflow UNIFY"
+    script "subworkflows/local/unify/main.nf"
+    workflow "UNIFY"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should run without failures - symbol_col index, unify_gene_symbols false - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                unify_gene_symbols = false
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'index', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/symbols_as_index.h5ad', checkIfExists: true)
+                ])
+                input[1] = false
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - symbol_col index, unify_gene_symbols false") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                unify_gene_symbols = false
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'index', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/symbols_as_index.h5ad', checkIfExists: true)
+                ])
+                input[1] = false
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def adata = anndata(workflow.out.h5ad[0][1])
+            def meta = workflow.out.h5ad[0][0]
+            assert meta.counts_layer == 'X'
+            assert meta.raw_counts_layer == 'raw_counts'
+            assert meta.ambient_correction_layer == null
+            assert meta.ambient_correction_method == 'none'
+            assert meta.analysis_counts_source == 'raw_counts'
+            assert 'raw_counts' in adata.layers
+            assert adata.layers.size() == 1
+            assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
+            with(adata) {
+                assert "batch" in obs.colnames
+                assert "label" in obs.colnames
+                assert "condition" in obs.colnames
+                assert "sample" in obs.colnames
+                assert var.rownames.size() > 0
+                assert obs.rownames.size() > 0
+            }
+            assert snapshot(
+                workflow.out,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - symbol_col none, unify_gene_symbols false - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                unify_gene_symbols = false
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'none', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/minimal_structure.h5ad', checkIfExists: true)
+                ])
+                input[1] = false
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - symbol_col none, unify_gene_symbols false") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                unify_gene_symbols = false
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'none', batch_col: 'sample', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                input[1] = false
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.out.h5ad[0][0].raw_counts_layer == 'raw_counts'
+            assert workflow.out.h5ad[0][0].counts_layer == 'X'
+            assert workflow.out.h5ad[0][0].ambient_correction_layer == null
+            assert workflow.out.h5ad[0][0].ambient_correction_method == 'none'
+            assert workflow.out.h5ad[0][0].analysis_counts_source == 'raw_counts'
+            assert 'raw_counts' in adata.layers
+            assert adata.layers.size() == 1
+            assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
+            with(adata) {
+                assert "batch" in obs.colnames
+                assert "label" in obs.colnames
+                assert "condition" in obs.colnames
+                assert "sample" in obs.colnames
+                assert var.rownames.size() > 0
+                assert obs.rownames.size() > 0
+            }
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml },
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - symbol_col index, unify_gene_symbols true - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+                unify_gene_symbols = true
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'index', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/symbols_as_index.h5ad', checkIfExists: true)
+                ])
+                input[1] = true
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(workflow.out).match()
+        }
+
+    }
+
+    test("Should run without failures - symbol_col index, unify_gene_symbols true") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                unify_gene_symbols = true
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', symbol_col: 'index', batch_col: 'batch', label_col: ''],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/symbols_as_index.h5ad', checkIfExists: true)
+                ])
+                input[1] = true
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def adata = anndata(workflow.out.h5ad[0][1])
+            with(adata) {
+                assert "batch" in obs.colnames
+                assert "label" in obs.colnames
+                assert "condition" in obs.colnames
+                assert "sample" in obs.colnames
+                assert var.rownames.size() > 0
+                assert obs.rownames.size() > 0
+            }
+            assert workflow.out.h5ad[0][0].counts_layer == 'X'
+            assert workflow.out.h5ad[0][0].raw_counts_layer == 'raw_counts'
+            assert workflow.out.h5ad[0][0].ambient_correction_layer == null
+            assert workflow.out.h5ad[0][0].ambient_correction_method == 'none'
+            assert workflow.out.h5ad[0][0].analysis_counts_source == 'raw_counts'
+            assert 'raw_counts' in adata.layers
+            assert adata.layers.size() == 1
+            assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
+            assert snapshot(
+                workflow.out.versions.collect { path(it).yaml },
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should canonicalise a named input counts layer") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'named', symbol_col: 'index', counts_layer: 'counts'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/counts_in_layer.h5ad', checkIfExists: true)
+                ])
+                input[1] = false
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def meta = workflow.out.h5ad[0][0]
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert meta.counts_layer == 'X'
+            assert meta.raw_counts_layer == 'raw_counts'
+            assert meta.ambient_correction_layer == null
+            assert meta.ambient_correction_method == 'none'
+            assert meta.analysis_counts_source == 'raw_counts'
+            assert 'raw_counts' in adata.layers
+            assert adata.layers.size() == 1
+            assert adata.n_obs > 0
+            assert adata.n_vars > 0
+            assert adata.n_obs == adata.obs.rownames.size()
+            assert adata.n_vars == adata.var.rownames.size()
+            assert adata.obs.rownames.every { it.startsWith('named_') }
+            assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
+            assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
+            assert snapshot(meta, adata.yaml).match()
+        }
+    }
+
+    test("Should retain correction through symbol unification with either analysis selection") {
+
+        setup {
+            run("AMBIENT_CORRECTION") {
+                script "subworkflows/local/ambient_correction/main.nf"
+                workflow {
+                    """
+                    input[0] = channel.of(true, false).map { selected -> [
+                        [id: "selected_\${selected}", symbol_col: 'index', counts_layer: 'X', use_ambient_corrected_counts: selected],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_raw_matrix.h5ad', checkIfExists: true)
+                    ] }
+                    input[1] = 'decontx'
+                    input[2] = false
+                    input[3] = null
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = AMBIENT_CORRECTION.out.h5ad
+                input[1] = true
+                input[2] = 'sum'
+                input[3] = false
+                input[4] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad.size() == 2
+            def outputs = workflow.out.h5ad.sort { it[0].id }
+            outputs.each { meta, h5ad ->
+                def expectedSource = meta.use_ambient_corrected_counts ? 'ambient_corrected_decontx' : 'raw_counts'
+                def adata = anndata(h5ad)
+                assert meta.counts_layer == 'X'
+                assert meta.raw_counts_layer == 'raw_counts'
+                assert meta.ambient_correction_layer == 'ambient_corrected_decontx'
+                assert meta.ambient_correction_method == 'decontx'
+                assert meta.analysis_counts_source == expectedSource
+                assert 'raw_counts' in adata.layers
+                assert 'ambient_corrected_decontx' in adata.layers
+                assert adata.layers.size() == 2
+                assert adata.n_obs == adata.obs.rownames.size()
+                assert adata.n_vars == adata.var.rownames.size()
+                assert adata.obs.rownames.toList().toSet().size() == adata.n_obs
+                assert adata.var.rownames.toList().toSet().size() == adata.n_vars
+                assert adata.obs.get('ambient_correction_method').unique().toSet() == ['decontx'].toSet()
+                assert adata.obs.get('analysis_counts_source').unique().toSet() == [expectedSource].toSet()
+            }
+            assert anndata(outputs[0][1]).obs.rownames.collect { it.substring(outputs[0][0].id.size() + 1) } ==
+                anndata(outputs[1][1]).obs.rownames.collect { it.substring(outputs[1][0].id.size() + 1) }
+            assert anndata(outputs[0][1]).var.rownames.toList() == anndata(outputs[1][1]).var.rownames.toList()
+            assert snapshot(outputs.collect { it[0] }, outputs.collect { anndata(it[1]).yaml }).match()
+        }
+    }
+
+}

@@ -1,0 +1,25 @@
+title: nf-core Quarto Extension
+author: Erik Fasterius
+version: 1.0.0
+quarto-required: ">=1.2.0"
+contributes:
+  formats:
+    html:
+      code-fold: true
+      df-print: paged
+      embed-resources: true
+      highlight-style: nf-core.theme
+      smooth-scroll: true
+      theme: [default, nf-core.scss]
+      toc: true
+      toc-image: nf-core-scdownstream_logo_light.png
+      toc-location: left
+      template-partials:
+        - toc.html
+    revealjs:
+      code-line-numbers: false
+      embed-resources: true
+      logo: nf-core-scdownstream_logo_light.png
+      slide-level: 2
+      slide-number: false
+      theme: [default, nf-core.scss]

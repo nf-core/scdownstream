@@ -1,0 +1,68 @@
+name: "scimilarity_annotate"
+description: Annotate cell types by nearest-neighbour search in the SCimilarity reference
+keywords:
+  - annotation
+  - cell-type
+  - scimilarity
+  - single-cell
+tools:
+  - "scimilarity":
+      description: "A unifying representation of single cell expression profiles for cell search and annotation"
+      homepage: "https://genentech.github.io/scimilarity"
+      documentation: "https://genentech.github.io/scimilarity"
+      tool_dev_url: "https://github.com/Genentech/scimilarity"
+      licence: ["Apache-2.0"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format with a SCimilarity embedding in obsm X_emb
+        pattern: "*.{h5ad}"
+  - - meta2:
+        type: map
+        description: Groovy Map containing model information
+    - model:
+        type: directory
+        description: Directory containing the pretrained SCimilarity model
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.h5ad":
+          type: file
+          description: AnnData with SCimilarity cell type annotation in obs
+          pattern: "*.h5ad"
+  obs:
+    - "*.pkl":
+        type: file
+        description: Pickled obs data frame with the SCimilarity annotation column
+        pattern: "*.pkl"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/python_anndata_pyyaml_zarr_pruned:726de88bc84fbfa1
+      build_id: bd-726de88bc84fbfa1_1
+      scan_id: sc-52b8e59e4cf2fca2_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python_anndata_pyyaml_zarr_pruned:014d6bb1b34745a6
+      build_id: bd-014d6bb1b34745a6_3
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c9/c90e92bde5ea63596f8af5f32ca881d0dc1053bd7c8d1e484a70b1d3d6fef56d/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scimilarity/annotate/.conda-lock/linux_amd64-bd-726de88bc84fbfa1_1.txt

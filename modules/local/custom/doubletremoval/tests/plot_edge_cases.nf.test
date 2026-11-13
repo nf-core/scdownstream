@@ -1,0 +1,68 @@
+nextflow_process {
+
+    name "Test doublet overlap plotting on small inputs"
+    script "modules/local/custom/doubletremoval/main.nf"
+    process "CUSTOM_DOUBLETREMOVAL"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should report zero doublet predictions without removing cells") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                def predictions = channel.of(
+                    'cell,first,second\\n' + (0..<128).collect { i ->
+                        String.format('cell_%03d,false,false\\n', i)
+                    }.join('')
+                ).collectFile(name: 'predictions.csv')
+                input[0] = predictions.map { table -> [
+                    [id: 'zero'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
+                    [table]
+                ] }
+                input[1] = 2
+                input[2] = true
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.n_obs == 128
+            assert adata.obs.get('first').data.every { it.toString().equalsIgnoreCase('false') }
+            assert adata.obs.get('second').data.every { it.toString().equalsIgnoreCase('false') }
+            assert path(process.out.multiqc_files[0]).exists()
+        }
+    }
+
+    test("Should plot doublet intersections smaller than ten cells") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                def predictions = channel.of(
+                    'cell,first,second\\n' + (0..<128).collect { i ->
+                        String.format('cell_%03d,%s,%s\\n', i, i == 0, i == 0)
+                    }.join('')
+                ).collectFile(name: 'predictions.csv')
+                input[0] = predictions.map { table -> [
+                    [id: 'small'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
+                    [table]
+                ] }
+                input[1] = 2
+                input[2] = true
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.n_obs == 127
+            assert !('cell_000' in adata.obs.index.values)
+            assert path(process.out.multiqc_files[0]).exists()
+        }
+    }
+}

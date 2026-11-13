@@ -1,0 +1,92 @@
+name: "decoupler_activity"
+description: Score pathway and transcription factor activities on pseudobulk profiles with decoupler
+keywords:
+  - pathway
+  - transcription-factor
+  - pseudobulk
+  - single-cell
+tools:
+  - "decoupler":
+      description: "Python package to perform enrichment and pseudobulk analysis from omics data"
+      homepage: "https://decoupler.readthedocs.io/"
+      documentation: "https://decoupler.readthedocs.io/"
+      tool_dev_url: "https://github.com/saezlab/decoupler-py"
+      licence: ["GPL-3.0"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - h5ad:
+        type: file
+        description: Pseudobulk AnnData with raw counts in X, as written by DECOUPLER_PSEUDOBULK
+        pattern: "*.{h5ad}"
+  - networks:
+      type: file
+      description: Networks from DECOUPLER_NETWORK; the file stem names the resource
+      pattern: "*.tsv"
+  - method:
+      type: string
+      description: decoupler method name, for example `ulm`, `mlm`, `viper` or `aucell`
+  - tmin:
+      type: integer
+      description: Minimum number of targets per source after intersection with the data
+
+output:
+  scores:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "${prefix}_*_scores.parquet":
+          type: file
+          description: Long table of scores and adjusted p-values per pseudobulk sample and source, one file per network
+          pattern: "*_scores.parquet"
+  uns:
+    - "${prefix}_decoupler_activity.pkl":
+        type: file
+        description: Pickled dict of score tables keyed by network, stored in `uns`
+        pattern: "*_decoupler_activity.pkl"
+  plots:
+    - "*_activity.png":
+        type: file
+        description: Heatmap of mean scores per cell type and condition
+        pattern: "*_activity.png"
+  multiqc_files:
+    - "*_mqc.json":
+        type: file
+        description: MultiQC custom content with the embedded heatmap
+        pattern: "*_mqc.json"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/decoupler_activity:8d8ed42929b0d74b
+      build_id: bd-8d8ed42929b0d74b_1
+      scan_id: sc-294379e7523fe283_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/decoupler_activity:abd74ab6556bda11
+      build_id: bd-abd74ab6556bda11_1
+      scan_id: sc-baf09d6d40128a95_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/decoupler_activity:73184d342e03c6e0
+      build_id: bd-73184d342e03c6e0_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/3e/3e84eb2fae9159846aa779beb88d658d1bb0fb12ac2abb21cd9705cf46ed82bd/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/decoupler_activity:3f239e06651226ff
+      build_id: bd-3f239e06651226ff_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5c/5ca309507e02db5a619c02a9d8bb1d5b969ef6a815cceca6693784ee7fd061ec/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/decoupler/activity/.conda-lock/linux_amd64-bd-8d8ed42929b0d74b_1.txt
+    linux/arm64:
+      lock_file: modules/local/decoupler/activity/.conda-lock/linux_arm64-bd-abd74ab6556bda11_1.txt

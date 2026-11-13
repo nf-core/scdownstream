@@ -1,0 +1,189 @@
+{
+    "Should run with a symbol column other than index": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test_singler_predictions.csv:md5,df7977c00e03fb11e8246d69722a9662"
+                ]
+            ],
+            "test_singler_hpca_distribution.pdf",
+            "test_singler_hpca_heatmap.pdf",
+            {
+                "CELLTYPES_SINGLER": {
+                    "R": "R version 4.5.3 (2026-03-11)",
+                    "SingleR": "2.12.0",
+                    "anndataR": "1.0.2",
+                    "ggplot2": "4.0.2"
+                }
+            }
+        ],
+        "timestamp": "2026-10-23T18:41:31.144623209",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run after celldex reference is fetched": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test_singler_predictions.csv:md5,5fd4431b8be1dc5d72fff1db05405e9a"
+                ]
+            ],
+            "test_singler_test_distribution.pdf",
+            "test_singler_test_heatmap.pdf",
+            {
+                "CELLTYPES_SINGLER": {
+                    "R": "R version 4.5.3 (2026-03-11)",
+                    "SingleR": "2.12.0",
+                    "anndataR": "1.0.2",
+                    "ggplot2": "4.0.2"
+                }
+            }
+        ],
+        "timestamp": "2026-10-23T18:39:34.381089353",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run with a single reference": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test_singler_predictions.csv:md5,df7977c00e03fb11e8246d69722a9662"
+                ]
+            ],
+            "test_singler_hpca_distribution.pdf",
+            "test_singler_hpca_heatmap.pdf",
+            {
+                "CELLTYPES_SINGLER": {
+                    "R": "R version 4.5.3 (2026-03-11)",
+                    "SingleR": "2.12.0",
+                    "anndataR": "1.0.2",
+                    "ggplot2": "4.0.2"
+                }
+            }
+        ],
+        "timestamp": "2026-10-23T18:40:33.015832337",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run with a single reference - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_predictions.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_annotation_columns.csv:md5,844397d2b335534df33b2700210dd8d3"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_distribution.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_heatmap.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "annotation_columns": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_annotation_columns.csv:md5,844397d2b335534df33b2700210dd8d3"
+                    ]
+                ],
+                "distribution": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_distribution.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "heatmap": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_heatmap.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_predictions.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-10T14:09:29.60511",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "Should run with two references": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test_singler_predictions.csv:md5,fac4a1833e6e409e14811df8c9a8e1c4"
+                ]
+            ],
+            {
+                "CELLTYPES_SINGLER": {
+                    "R": "R version 4.5.3 (2026-03-11)",
+                    "SingleR": "2.12.0",
+                    "anndataR": "1.0.2",
+                    "ggplot2": "4.0.2"
+                }
+            }
+        ],
+        "timestamp": "2026-10-23T18:43:23.718732135",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    }
+}

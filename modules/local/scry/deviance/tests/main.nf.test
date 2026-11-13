@@ -1,0 +1,260 @@
+nextflow_process {
+
+    name "Test Process SCRY_DEVIANCE"
+    script "modules/local/scry/deviance/main.nf"
+    process "SCRY_DEVIANCE"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without a specified number of deviant genes") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 0
+                input[2] = []
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "highly_deviant" in var.colnames
+                assert "binomial_deviance" in var.colnames
+                assert n_vars <= 4000
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with a specified number of deviant genes") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "highly_deviant" in var.colnames
+                assert n_vars == 100
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with a list of genes excluded from integration") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = channel.of('ANXA1\\nJCHAIN\\nGPNMB\\nHSPA12B\\nVCAN')
+                    .collectFile(name: 'excluded_genes.txt')
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "highly_deviant" in var.colnames
+                assert !var_names.contains('ANXA1')
+            }
+            assert snapshot(
+                process.out,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+    test("Should namespace fragment columns for named subset") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', subset: 'CD4_T' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "highly_deviant" in var.colnames
+                assert "binomial_deviance" in var.colnames
+                assert n_vars == 100
+            }
+            def var_fragment = path(process.out.var[0]).csv
+            def cols = var_fragment.columns.keySet()
+            assert cols.contains('deviance:subset:CD4_T:binomial_deviance')
+            assert cols.contains('deviance:subset:CD4_T:highly_deviant')
+            assert !cols.any { it == 'binomial_deviance' || it == 'highly_deviant' }
+        }
+
+    }
+
+    test("Should not namespace fragment columns for global subset") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test', subset: 'global' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "highly_deviant" in var.colnames
+                assert "binomial_deviance" in var.colnames
+                assert n_vars == 100
+            }
+            def var_fragment = path(process.out.var[0]).csv
+            def cols = var_fragment.columns.keySet()
+            assert cols.contains('deviance:binomial_deviance')
+            assert cols.contains('deviance:highly_deviant')
+            assert !cols.any { it.contains(':subset:') }
+        }
+
+    }
+
+    test("Should not namespace fragment columns for missing subset") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 100
+                input[2] = []
+                input[3] = ''
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "highly_deviant" in var.colnames
+                assert "binomial_deviance" in var.colnames
+                assert n_vars == 100
+            }
+            def var_fragment = path(process.out.var[0]).csv
+            def cols = var_fragment.columns.keySet()
+            assert cols.contains('deviance:binomial_deviance')
+            assert cols.contains('deviance:highly_deviant')
+            assert !cols.any { it.contains(':subset:') }
+        }
+
+    }
+
+}

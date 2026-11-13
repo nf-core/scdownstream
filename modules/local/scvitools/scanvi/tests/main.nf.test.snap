@@ -1,0 +1,209 @@
+{
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scanvi.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "model.pt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    "test_scanvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "X_test_scanvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scanvi.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "model": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "model.pt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    "test_scanvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "obsm": [
+                    "X_test_scanvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-01-25T17:12:07.460137485",
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Should write label predictions to obs": {
+        "content": [
+            "test_scanvi.h5ad",
+            "model.pt",
+            "X_test_scanvi.pkl",
+            {
+                "SCVITOOLS_SCANVI": {
+                    "scvi": "1.4.3"
+                }
+            },
+            {
+                "n_obs": 768,
+                "n_vars": 100,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label",
+                        "leiden",
+                        "label:scANVI"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable",
+                        "means",
+                        "dispersions",
+                        "dispersions_norm"
+                    ]
+                },
+                "layers": [
+                    "hvgs_log1p",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    "X_emb",
+                    "X_pca"
+                ],
+                "varm": [],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [],
+                "uns": [
+                    "X_pca",
+                    "hvg",
+                    "leiden",
+                    "log1p",
+                    "neighbors"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-24T15:34:23.407109702",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run without failures": {
+        "content": [
+            "test_scanvi.h5ad",
+            "model.pt",
+            "X_test_scanvi.pkl",
+            {
+                "SCVITOOLS_SCANVI": {
+                    "scvi": "1.4.3"
+                }
+            },
+            {
+                "n_obs": 768,
+                "n_vars": 100,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label",
+                        "leiden",
+                        "label:scANVI"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable",
+                        "means",
+                        "dispersions",
+                        "dispersions_norm"
+                    ]
+                },
+                "layers": [
+                    "hvgs_log1p",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    "X_emb",
+                    "X_pca"
+                ],
+                "varm": [],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [],
+                "uns": [
+                    "X_pca",
+                    "hvg",
+                    "leiden",
+                    "log1p",
+                    "neighbors"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-24T13:33:18.287182656",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    }
+}

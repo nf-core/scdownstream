@@ -5,18 +5,74 @@
         "https://github.com/nf-core/modules.git": {
             "modules": {
                 "nf-core": {
+                    "anndata/barcodes": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["h5ad_removebackground_barcodes_cellbender_anndata"],
+                        "patch": "modules/nf-core/anndata/barcodes/anndata-barcodes.diff"
+                    },
+                    "cellbender/merge": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/cellbender/merge/cellbender-merge.diff"
+                    },
+                    "cellbender/removebackground": {
+                        "branch": "master",
+                        "git_sha": "416bcdbf15649b918f1c38d3921f3182e97af530",
+                        "installed_by": ["h5ad_removebackground_barcodes_cellbender_anndata"]
+                    },
+                    "doubletdetection": {
+                        "branch": "master",
+                        "git_sha": "fcf2d1ae0a45af93c0ca5010a48ff257aa8340d3",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/doubletdetection/doubletdetection.diff"
+                    },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "98403d15b0e50edae1f3fec5eae5e24982f1fade",
+                        "installed_by": ["modules"]
+                    },
+                    "quarto/notebook": {
+                        "branch": "master",
+                        "git_sha": "b0c002b4eeaae7b0fa0181b098bb318269b11cf5",
+                        "installed_by": ["modules"]
+                    },
+                    "scanpy/scrublet": {
+                        "branch": "master",
+                        "git_sha": "fa506994bc44f45c9b76f42b6b021973a9f343f1",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/scanpy/scrublet/scanpy-scrublet.diff"
+                    },
+                    "scvitools/scar": {
+                        "branch": "master",
+                        "git_sha": "416bcdbf15649b918f1c38d3921f3182e97af530",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/scvitools/scar/scvitools-scar.diff"
+                    },
+                    "scvitools/solo": {
+                        "branch": "master",
+                        "git_sha": "416bcdbf15649b918f1c38d3921f3182e97af530",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/scvitools/solo/scvitools-solo.diff"
+                    },
+                    "untar": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
                         "installed_by": ["modules"]
                     }
                 }
             },
             "subworkflows": {
                 "nf-core": {
+                    "h5ad_removebackground_barcodes_cellbender_anndata": {
+                        "branch": "master",
+                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
+                        "installed_by": ["subworkflows"]
+                    },
                     "utils_nextflow_pipeline": {
                         "branch": "master",
-                        "git_sha": "c2b22d85f30a706a3073387f30380704fcae013b",
+                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nfcore_pipeline": {
