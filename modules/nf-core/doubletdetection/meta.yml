@@ -41,10 +41,10 @@ output:
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1', single_end:false ]`
-    - "*.pkl":
+    - "${prefix}.pkl":
         type: file
         description: pandas dataframe containing the doublet classification
-        pattern: "*.pkl"
+        pattern: "${prefix}.pkl"
         ontologies: []
   scores:
   - - meta:
@@ -52,10 +52,10 @@ output:
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1', single_end:false ]`
-    - "${prefix}.scores.parquet":
+    - "${prefix}.scores.pkl":
         type: file
         description: Full-cell doubletdetection_score values indexed by input cell identifiers
-        pattern: "*.scores.parquet"
+        pattern: "*.scores.pkl"
         ontologies: []
   versions:
   - versions.yml:

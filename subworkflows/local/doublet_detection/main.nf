@@ -81,6 +81,6 @@ workflow DOUBLET_DETECTION {
 
     emit:
     h5ad          = ch_h5ad // channel: [ meta, h5ad ]
-    obs           = ch_obs // channel: [ meta, csv/parquet/pkl ]
+    obs           = ch_obs // channel: [ meta, csv/pkl ]
     multiqc_files = ch_multiqc_files // channel: [ json ]
 }

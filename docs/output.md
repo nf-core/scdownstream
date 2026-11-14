@@ -74,7 +74,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - `doublet_detection/`: Directories related to doublet detection.
     - `(doubletdetection|scdblfinder|scrublet|solo)/`: Results of doublet detection.
       Each directory contains a detector H5AD and Boolean predictions covering all input cells, as CSV for scDblFinder or pickle for other methods. Scrublet and SOLO H5ADs contain singlets only; scDblFinder and DoubletDetection H5ADs retain all cells.
-      scDblFinder scores and classes are in `<prefix>.scores.csv`. Scrublet and DoubletDetection scores are in `<prefix>.scores.parquet`. SOLO exports no continuous scores.
+      scDblFinder scores and classes are in `<prefix>.scores.csv`. Scrublet and DoubletDetection scores are in `<prefix>.scores.pkl`. SOLO exports no continuous scores.
     - `${sample_id}.h5ad`: The QC object after optional doublet removal, based on agreement between Boolean predictions rather than numeric scores.
     - `${sample_id}.obs.pkl`: Per-cell Boolean calls and classifications for each selected detector.
   - `qc_filtered/`: QC plots for the preprocessed data.

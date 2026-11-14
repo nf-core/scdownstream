@@ -91,10 +91,10 @@ Changes in 'doubletdetection/meta.yml':
 +        description: |
 +          Groovy Map containing sample information
 +          e.g. `[ id:'sample1', single_end:false ]`
-+    - "*.pkl":
++    - "${prefix}.pkl":
 +        type: file
 +        description: pandas dataframe containing the doublet classification
-+        pattern: "*.pkl"
++        pattern: "${prefix}.pkl"
 +        ontologies: []
 +  scores:
 +  - - meta:
@@ -102,10 +102,10 @@ Changes in 'doubletdetection/meta.yml':
 +        description: |
 +          Groovy Map containing sample information
 +          e.g. `[ id:'sample1', single_end:false ]`
-+    - "${prefix}.scores.parquet":
++    - "${prefix}.scores.pkl":
 +        type: file
 +        description: Full-cell doubletdetection_score values indexed by input cell identifiers
-+        pattern: "*.scores.parquet"
++        pattern: "*.scores.pkl"
 +        ontologies: []
    versions:
 -    - versions.yml:
@@ -184,8 +184,8 @@ Changes in 'doubletdetection/main.nf':
      tuple val(meta), path("*.h5ad"), emit: h5ad
 -    tuple val(meta), path("*.pkl") , emit: predictions
 -    path "versions.yml"            , emit: versions, topic: versions
-+    tuple val(meta), path("*.pkl"), emit: predictions
-+    tuple val(meta), path("${prefix}.scores.parquet"), emit: scores
++    tuple val(meta), path("${prefix}.pkl"), emit: predictions
++    tuple val(meta), path("${prefix}.scores.pkl"), emit: scores
 +    path "versions.yml", emit: versions, topic: versions
  
      when:
@@ -194,7 +194,7 @@ Changes in 'doubletdetection/main.nf':
      """
      touch ${prefix}.h5ad
      touch ${prefix}.pkl
-+    touch ${prefix}.scores.parquet
++    touch ${prefix}.scores.pkl
  
      cat <<-END_VERSIONS > versions.yml
      ${task.process}:
@@ -210,7 +210,7 @@ Changes in 'doubletdetection/templates/doubletdetection.py':
  
  adata.obs["doublet"] = [label == 1 for label in doublets]
  adata.obs["doublet_score"] = scores
-+adata.obs[["doublet_score"]].rename(columns={"doublet_score": "doubletdetection_score"}).to_parquet("${prefix}.scores.parquet")
++adata.obs[["doublet_score"]].rename(columns={"doublet_score": "doubletdetection_score"}).to_pickle("${prefix}.scores.pkl")
  
 -adata.write_h5ad("${prefix}.h5ad")
 +adata.write_h5ad("${prefix}.h5ad", compression="gzip")

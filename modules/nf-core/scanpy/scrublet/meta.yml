@@ -52,10 +52,10 @@ output:
         description: |
           Groovy Map containing sample information
           e.g. [ id:'test' ]
-    - "*.pkl":
+    - "${prefix}.pkl":
         type: file
         description: Pickle file containing doublet predictions
-        pattern: "*.pkl"
+        pattern: "${prefix}.pkl"
         ontologies:
         - edam: "http://edamontology.org/format_3553"     # Pickle format
   scores:
@@ -64,10 +64,10 @@ output:
         description: |
           Groovy Map containing sample information
           e.g. [ id:'test' ]
-    - "${prefix}.scores.parquet":
+    - "${prefix}.scores.pkl":
         type: file
         description: Full-cell scrublet_score values indexed by input cell identifiers
-        pattern: "*.scores.parquet"
+        pattern: "*.scores.pkl"
         ontologies: []
   versions:
   - versions.yml:

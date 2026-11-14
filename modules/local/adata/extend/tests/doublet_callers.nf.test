@@ -72,8 +72,12 @@ nextflow_process {
             }
             assert result.obs.get('scDblFinder.class').data == result.obs.get('scdblfinder_class').data
             ['scrublet', 'doubletdetection'].each { method ->
-                def table = path(outputs.finalised).parent.resolve("obs/test_${method}.scores.parquet")
-                assert result.obs.get(method + '_score').data.toList() == parquet(table).rows.collect { it[method + '_score'] }
+                def table = path(outputs.finalised).parent.resolve("obs/test_${method}.scores.pkl")
+                def caller = anndata(table.toRealPath().parent.resolve("test_${method}.h5ad"))
+                def rows = caller.obs.index.values.collect { result.obs.index.values.toList().indexOf(it) }
+                def scores = result.obs.get(method + '_score').data.toList()
+                assert rows.every { it >= 0 }
+                assert rows.collect { scores[it] } == caller.obs.get('doublet_score').data.toList()
             }
             assert !('solo_score' in result.obs.colnames)
             assert result.obs.colnames.toList().unique().size() == result.obs.colnames.size()

@@ -202,7 +202,7 @@ nextflow_workflow {
             assert adata.n_vars == adata.var.rownames.size()
             assert workflow.out.obs.size() == 2
             assert workflow.out.obs.every { it[0] == meta }
-            assert workflow.out.obs.collect { path(it[1]).fileName.toString() }.sort() == ['test.obs.pkl', 'test_scrublet.scores.parquet']
+            assert workflow.out.obs.collect { path(it[1]).fileName.toString() }.sort() == ['test.obs.pkl', 'test_scrublet.scores.pkl']
             assert !adata.obs.colnames.any { it in ['test_scrublet', 'scrublet_score', 'scrublet_class', 'scrublet_predicted_doublet'] }
             with(adata) {
                 assert "pct_counts_mt" in obs.colnames

@@ -115,10 +115,10 @@ Changes in 'scanpy/scrublet/meta.yml':
 +        description: |
 +          Groovy Map containing sample information
 +          e.g. [ id:'test' ]
-+    - "*.pkl":
++    - "${prefix}.pkl":
 +        type: file
 +        description: Pickle file containing doublet predictions
-+        pattern: "*.pkl"
++        pattern: "${prefix}.pkl"
 +        ontologies:
 +        - edam: "http://edamontology.org/format_3553"     # Pickle format
 +  scores:
@@ -127,10 +127,10 @@ Changes in 'scanpy/scrublet/meta.yml':
 +        description: |
 +          Groovy Map containing sample information
 +          e.g. [ id:'test' ]
-+    - "${prefix}.scores.parquet":
++    - "${prefix}.scores.pkl":
 +        type: file
 +        description: Full-cell scrublet_score values indexed by input cell identifiers
-+        pattern: "*.scores.parquet"
++        pattern: "*.scores.pkl"
 +        ontologies: []
    versions:
 -    - versions.yml:
@@ -210,8 +210,8 @@ Changes in 'scanpy/scrublet/main.nf':
      tuple val(meta), path("*.h5ad"), emit: h5ad
 -    tuple val(meta), path("*.pkl") , emit: predictions
 -    path "versions.yml"            , emit: versions, topic: versions
-+    tuple val(meta), path("*.pkl"), emit: predictions
-+    tuple val(meta), path("${prefix}.scores.parquet"), emit: scores
++    tuple val(meta), path("${prefix}.pkl"), emit: predictions
++    tuple val(meta), path("${prefix}.scores.pkl"), emit: scores
 +    path "versions.yml", emit: versions, topic: versions
  
      when:
@@ -220,7 +220,7 @@ Changes in 'scanpy/scrublet/main.nf':
  
      touch ${prefix}.h5ad
      touch ${prefix}.pkl
-+    touch ${prefix}.scores.parquet
++    touch ${prefix}.scores.pkl
  
      cat <<-END_VERSIONS > versions.yml
      "${task.process}":
@@ -236,7 +236,7 @@ Changes in 'scanpy/scrublet/templates/scrublet.py':
  sc.pp.scrublet(adata, **kwargs)
  
  adata.obs["predicted_doublet"] = adata.obs["predicted_doublet"].astype(bool)
-+adata.obs[["doublet_score"]].rename(columns={"doublet_score": "scrublet_score"}).to_parquet("${prefix}.scores.parquet")
++adata.obs[["doublet_score"]].rename(columns={"doublet_score": "scrublet_score"}).to_pickle("${prefix}.scores.pkl")
  df = adata.obs[["predicted_doublet"]]
  df.columns = ["${prefix}"]
  df.to_pickle("${prefix}.pkl")

@@ -26,8 +26,6 @@ layers_paths = sorted(Path("layers/").glob("*"))
 def load_dataframe(path):
     if path.suffix == ".pkl":
         return pd.read_pickle(path)
-    elif path.suffix == ".parquet":
-        return pd.read_parquet(path)
     elif path.suffix == ".csv":
         with path.open(newline="") as handle:
             columns = next(csv.reader(handle))[1:]

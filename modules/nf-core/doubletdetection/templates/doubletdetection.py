@@ -18,7 +18,7 @@ scores = clf.doublet_score()
 
 adata.obs["doublet"] = [label == 1 for label in doublets]
 adata.obs["doublet_score"] = scores
-adata.obs[["doublet_score"]].rename(columns={"doublet_score": "doubletdetection_score"}).to_parquet("${prefix}.scores.parquet")
+adata.obs[["doublet_score"]].rename(columns={"doublet_score": "doubletdetection_score"}).to_pickle("${prefix}.scores.pkl")
 
 adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 

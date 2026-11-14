@@ -26,12 +26,12 @@ input:
           - edam: "http://edamontology.org/format_3590"
     - obs:
         type: file
-        description: Optional indexed obs tables as pickle, CSV or Parquet files
-        pattern: "*.{pkl,csv,parquet}"
+        description: Optional indexed obs tables as pickle or CSV files
+        pattern: "*.{pkl,csv}"
     - var:
         type: file
-        description: Optional indexed var tables as pickle, CSV or Parquet files
-        pattern: "*.{pkl,csv,parquet}"
+        description: Optional indexed var tables as pickle or CSV files
+        pattern: "*.{pkl,csv}"
     - obsm:
         type: file
         description: Optional obsm matrices as pickle or numpy files

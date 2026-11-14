@@ -13,8 +13,8 @@ process SCANPY_SCRUBLET {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    tuple val(meta), path("*.pkl"), emit: predictions
-    tuple val(meta), path("${prefix}.scores.parquet"), emit: scores
+    tuple val(meta), path("${prefix}.pkl"), emit: predictions
+    tuple val(meta), path("${prefix}.scores.pkl"), emit: scores
     path "versions.yml", emit: versions, topic: versions
 
     when:
@@ -40,7 +40,7 @@ process SCANPY_SCRUBLET {
 
     touch ${prefix}.h5ad
     touch ${prefix}.pkl
-    touch ${prefix}.scores.parquet
+    touch ${prefix}.scores.pkl
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
