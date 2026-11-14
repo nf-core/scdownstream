@@ -48,7 +48,7 @@ obs_col_intersection = sorted(obs_col_intersection.union(force_obs_cols.split(",
 
 
 def get_columns(adata):
-    return {dtype: adata.obs.select_dtypes(include=dtype).columns for dtype in ["object", "category", "number"]}
+    return {dtype: adata.obs.select_dtypes(include=dtype).columns for dtype in ["object", "category", "number", "bool"]}
 
 
 column_dtypes = defaultdict(set)
@@ -77,7 +77,7 @@ for adata in adatas:
     adata.obs = adata.obs[obs_col_intersection]
 
     for col in obs_col_intersection:
-        if column_dtypes[col] == {"number"}:
+        if column_dtypes[col] in ({"number"}, {"bool"}):
             continue
         adata.obs[col] = adata.obs[col].astype(str).astype("category")
 
