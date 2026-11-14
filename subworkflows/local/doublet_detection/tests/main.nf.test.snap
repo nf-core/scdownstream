@@ -1,9 +1,6 @@
 {
-    "Should run with all methods except doubletdetection": {
+    "Should run with all four methods and emit annotations separately": {
         "content": [
-            [
-                
-            ],
             {
                 "n_obs": 364,
                 "n_vars": 3000,
@@ -19,10 +16,7 @@
                         "synthetic_condition",
                         "synthetic_label",
                         "original_total_counts",
-                        "original_n_genes_by_counts",
-                        "test_scdblfinder",
-                        "test_scrublet",
-                        "test_solo"
+                        "original_n_genes_by_counts"
                     ]
                 },
                 "var": {
@@ -51,10 +45,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-23T18:52:03.589625425",
+        "timestamp": "2026-11-13T17:31:21.082781537",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures - stub": {
@@ -70,6 +64,36 @@
                     ]
                 ],
                 "1": [
+                    [
+                        {
+                            "id": "test",
+                            "batch_col": "sample"
+                        },
+                        "test.obs.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "test",
+                            "batch_col": "sample"
+                        },
+                        "test_doubletdetection.scores.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "test",
+                            "batch_col": "sample"
+                        },
+                        "test_scdblfinder.scores.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "test",
+                            "batch_col": "sample"
+                        },
+                        "test_scrublet.scores.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
                     "test_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "h5ad": [
@@ -83,20 +107,47 @@
                 ],
                 "multiqc_files": [
                     "test_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "obs": [
+                    [
+                        {
+                            "id": "test",
+                            "batch_col": "sample"
+                        },
+                        "test.obs.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "test",
+                            "batch_col": "sample"
+                        },
+                        "test_doubletdetection.scores.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "test",
+                            "batch_col": "sample"
+                        },
+                        "test_scdblfinder.scores.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        {
+                            "id": "test",
+                            "batch_col": "sample"
+                        },
+                        "test_scrublet.scores.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
                 ]
             }
         ],
-        "timestamp": "2026-05-20T20:50:29.732293024",
+        "timestamp": "2026-11-14T12:32:16.3886679",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     },
     "Should annotate doublets without removing cells when doublet_removal is false": {
         "content": [
-            [
-                
-            ],
             {
                 "n_obs": 384,
                 "n_vars": 3000,
@@ -112,8 +163,7 @@
                         "synthetic_condition",
                         "synthetic_label",
                         "original_total_counts",
-                        "original_n_genes_by_counts",
-                        "test_scdblfinder"
+                        "original_n_genes_by_counts"
                     ]
                 },
                 "var": {
@@ -142,10 +192,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-23T18:53:37.342976309",
+        "timestamp": "2026-11-13T17:32:44.398820204",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

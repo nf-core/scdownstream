@@ -1,0 +1,181 @@
+nextflow_process {
+
+    name "Test merging QC-finalised doublet fragments"
+    script "modules/local/adata/merge/main.nf"
+    process "ADATA_MERGE"
+
+    tag "modules"
+    tag "modules_local"
+
+    setup {
+        run("ADATA_UNIFY") {
+            script "modules/local/adata/unify/main.nf"
+            process {
+                """
+                input[0] = channel.of('sample_a', 'sample_b').map { id -> [
+                    [id: id],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true)
+                ] }
+                input[1] = 'sample'
+                input[2] = ''
+                input[3] = ''
+                input[4] = 'unknown'
+                input[5] = 'index'
+                input[6] = 'X'
+                input[7] = 'make_unique'
+                input[8] = false
+                input[9] = ''
+                """
+            }
+        }
+        run("CUSTOM_DOUBLETREMOVAL") {
+            script "modules/local/custom/doubletremoval/main.nf"
+            process {
+                """
+                scdblfinder_predictions = channel.of('sample_a', 'sample_b').map { id ->
+                    def calls = id == 'sample_a' ? [1, 2, 7] : [4, 5, 10]
+                    [id + '.scdblfinder.predictions.csv', 'cell,scdblfinder_predicted_doublet\\n' +
+                        (0..<128).reverse().collect { i -> String.format('%s_cell_%03d,%s\\n', id, i, i in calls) }.join('')]
+                }.collectFile { name, contents -> [name, contents] }
+                    .map { table -> [[id: table.name.tokenize('.')[0]], table] }
+                scrublet_predictions = channel.of('sample_a', 'sample_b').map { id ->
+                    def calls = id == 'sample_a' ? [0, 2, 7] : [3, 5, 10]
+                    [id + '.scrublet.predictions.csv', 'cell,scrublet_predicted_doublet\\n' +
+                        ((1..<128).step(2) + (0..<128).step(2)).collect { i ->
+                            String.format('%s_cell_%03d,%s\\n', id, i, i in calls)
+                        }.join('')]
+                }.collectFile { name, contents -> [name, contents] }
+                    .map { table -> [[id: table.name.tokenize('.')[0]], table] }
+                input[0] = ADATA_UNIFY.out.h5ad
+                    .join(scdblfinder_predictions).join(scrublet_predictions)
+                    .map { meta, h5ad, scdblfinder_prediction, scrublet_prediction -> [
+                        meta, h5ad, ['scdblfinder', 'scrublet'],
+                        [scdblfinder_prediction, scrublet_prediction]
+                    ] }
+                input[1] = 2
+                input[2] = params.doublet_removal
+                """
+            }
+        }
+        run("ADATA_EXTEND") {
+            script "modules/local/adata/extend/main.nf"
+            process {
+                """
+                scores = channel.of('sample_a', 'sample_b').map { id ->
+                    def offset = id == 'sample_a' ? 1000 : 2000
+                    def calls = id == 'sample_a' ? [1, 2, 7] : [4, 5, 10]
+                    [id + '.scores.csv', 'cell,scDblFinder.score,scDblFinder.class,scrublet_score\\n' +
+                        (127..0).collect { i -> String.format('%s_cell_%03d,%s,%s,%s\\n', id, i, offset+i+0.5, i in calls ? 'doublet' : 'singlet', offset+i+0.25) }.join('')]
+                }.collectFile { name, contents -> [name, contents] }
+                    .map { table -> [[id: table.name.tokenize('.')[0]], table] }
+                input[0] = CUSTOM_DOUBLETREMOVAL.out.h5ad.join(CUSTOM_DOUBLETREMOVAL.out.obs).join(scores)
+                    .map { meta, h5ad, obs, score -> [meta + [id: meta.id + '_qc'], h5ad, [obs, score], [], [], [], [], []] }
+                """
+            }
+        }
+    }
+
+    test("Should retain common detector columns through the native obs intersection without removing cells") {
+        when {
+            params {
+                outdir = "$outputDir"
+                doublet_removal = false
+            }
+            process {
+                """
+                input[0] = ADATA_EXTEND.out.h5ad.collect(flat: false)
+                    .map { samples -> [[id: 'combined'], samples.sort { it[0].id }.collect { it[1] }] }
+                input[1] = [[], []]
+                input[2] = ''
+                """
+            }
+        }
+        then {
+            assert process.success
+            def outer = anndata(process.out.outer[0][1])
+            def integrate = anndata(process.out.integrate[0][1])
+            def expected = ['sample_a', 'sample_b'].collectMany { id ->
+                (0..<128).collect { [id, it] }
+            }
+            [outer, integrate].each { adata ->
+                assert adata.n_obs == 256
+                assert adata.obs.index.values == expected.collect { id, i -> String.format('%s_cell_%03d', id, i) }
+                assert adata.obs.get('sample').data == expected.collect { it[0] }
+                assert adata.obs.get('scDblFinder.score').data == expected.collect { id, i -> (id == 'sample_a' ? 1000 : 2000) + i + 0.5 }
+                assert adata.obs.get('scrublet_score').data == expected.collect { id, i -> (id == 'sample_a' ? 1000 : 2000) + i + 0.25 }
+                assert adata.obs.get('scDblFinder.score').data.every { it instanceof Number }
+                assert adata.obs.get('scDblFinder.class').data == adata.obs.get('scdblfinder_class').data
+                assert adata.obs.get('scrublet_score').data.every { it instanceof Number }
+                assert adata.obs.get('scdblfinder_class').data == expected.collect { id, i ->
+                    i in (id == 'sample_a' ? [1, 2, 7] : [4, 5, 10]) ? 'doublet' : 'singlet'
+                }
+                assert adata.obs.get('scrublet_class').data == expected.collect { id, i ->
+                    i in (id == 'sample_a' ? [0, 2, 7] : [3, 5, 10]) ? 'doublet' : 'singlet'
+                }
+                assert adata.obs.get('scdblfinder_predicted_doublet').data.collect { it.toString().toLowerCase() } == expected.collect { id, i ->
+                    (i in (id == 'sample_a' ? [1, 2, 7] : [4, 5, 10])).toString()
+                }
+                assert adata.obs.get('scrublet_predicted_doublet').data.collect { it.toString().toLowerCase() } == expected.collect { id, i ->
+                    (i in (id == 'sample_a' ? [0, 2, 7] : [3, 5, 10])).toString()
+                }
+                assert adata.obs.colnames.toList().unique().size() == adata.obs.colnames.size()
+                assert adata.obs.colnames.findAll { it.startsWith('scdblfinder_') || it.startsWith('scrublet_') }.sort() ==
+                    ['scdblfinder_class', 'scdblfinder_predicted_doublet', 'scrublet_class', 'scrublet_predicted_doublet', 'scrublet_score']
+                assert !adata.obs.colnames.any { it in ['doublet_score', 'predicted_doublet'] || it ==~ /.*\.[0-9]+$/ }
+            }
+            assert snapshot(process.out, path(process.out.versions[0]).yaml, outer.yaml, integrate.yaml).match()
+        }
+    }
+
+    test("Should merge threshold-vote survivors with exact scores and original within-sample order") {
+        when {
+            params {
+                outdir = "$outputDir"
+                doublet_removal = true
+            }
+            process {
+                """
+                input[0] = ADATA_EXTEND.out.h5ad.collect(flat: false)
+                    .map { samples -> [[id: 'combined'], samples.sort { it[0].id }.collect { it[1] }] }
+                input[1] = [[], []]
+                input[2] = ''
+                """
+            }
+        }
+        then {
+            assert process.success
+            def outer = anndata(process.out.outer[0][1])
+            def integrate = anndata(process.out.integrate[0][1])
+            def expected = ['sample_a', 'sample_b'].collectMany { id ->
+                (0..<128).findAll { !(it in (id == 'sample_a' ? [2, 7] : [5, 10])) }.collect { [id, it] }
+            }
+            [outer, integrate].each { adata ->
+                assert adata.n_obs == 252
+                assert adata.obs.index.values == expected.collect { id, i -> String.format('%s_cell_%03d', id, i) }
+                assert adata.obs.get('sample').data == expected.collect { it[0] }
+                assert adata.obs.get('scDblFinder.score').data == expected.collect { id, i -> (id == 'sample_a' ? 1000 : 2000) + i + 0.5 }
+                assert adata.obs.get('scrublet_score').data == expected.collect { id, i -> (id == 'sample_a' ? 1000 : 2000) + i + 0.25 }
+                assert adata.obs.get('scDblFinder.score').data.every { it instanceof Number }
+                assert adata.obs.get('scDblFinder.class').data == adata.obs.get('scdblfinder_class').data
+                assert adata.obs.get('scrublet_score').data.every { it instanceof Number }
+                assert adata.obs.get('scdblfinder_class').data == expected.collect { id, i ->
+                    i in (id == 'sample_a' ? [1, 2, 7] : [4, 5, 10]) ? 'doublet' : 'singlet'
+                }
+                assert adata.obs.get('scrublet_class').data == expected.collect { id, i ->
+                    i in (id == 'sample_a' ? [0, 2, 7] : [3, 5, 10]) ? 'doublet' : 'singlet'
+                }
+                assert adata.obs.get('scdblfinder_predicted_doublet').data.collect { it.toString().toLowerCase() } == expected.collect { id, i ->
+                    (i in (id == 'sample_a' ? [1, 2, 7] : [4, 5, 10])).toString()
+                }
+                assert adata.obs.get('scrublet_predicted_doublet').data.collect { it.toString().toLowerCase() } == expected.collect { id, i ->
+                    (i in (id == 'sample_a' ? [0, 2, 7] : [3, 5, 10])).toString()
+                }
+                assert adata.obs.colnames.toList().unique().size() == adata.obs.colnames.size()
+                assert adata.obs.colnames.findAll { it.startsWith('scdblfinder_') || it.startsWith('scrublet_') }.sort() ==
+                    ['scdblfinder_class', 'scdblfinder_predicted_doublet', 'scrublet_class', 'scrublet_predicted_doublet', 'scrublet_score']
+                assert !adata.obs.colnames.any { it in ['doublet_score', 'predicted_doublet'] || it ==~ /.*\.[0-9]+$/ }
+            }
+            assert snapshot(process.out, path(process.out.versions[0]).yaml, outer.yaml, integrate.yaml).match()
+        }
+    }
+}

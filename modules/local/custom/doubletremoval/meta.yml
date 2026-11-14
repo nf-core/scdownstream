@@ -1,5 +1,5 @@
 name: "custom_doubletremoval"
-description: Merge doublet predictions into AnnData and optionally remove doublets
+description: Validate Boolean predictions, emit method-scoped calls and optionally remove doublets
 keywords:
   - doublets
   - filtering
@@ -27,6 +27,9 @@ input:
         type: file
         description: AnnData object in h5ad format
         pattern: "*.{h5ad}"
+    - methods:
+        type: list
+        description: Sorted unique method identifiers aligned with predictions (doubletdetection, scdblfinder, scrublet, solo)
     - predictions:
         type: file
         description: Doublet prediction tables in CSV or pickle format
@@ -36,7 +39,7 @@ input:
       description: Minimum number of positive doublet calls required to flag a cell
   - removal:
       type: string
-      description: Whether to remove flagged doublets (true) or only annotate them (false)
+      description: Whether to remove flagged doublets (true) or retain all cells (false)
 
 output:
   h5ad:
@@ -45,8 +48,16 @@ output:
           description: Groovy Map containing sample information
       - "*.h5ad":
           type: file
-          description: AnnData with doublet annotations and optional filtering applied
+          description: Original AnnData with only optional cell filtering applied, without newly computed annotations
           pattern: "*.h5ad"
+  obs:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.obs.pkl":
+          type: file
+          description: Full-cell indexed method-scoped Boolean calls and classes; no scores
+          pattern: "*.obs.pkl"
   multiqc_files:
     - "*_mqc.json":
         type: file
@@ -65,24 +76,24 @@ maintainers:
 containers:
   docker:
     linux/amd64:
-      name: community.wave.seqera.io/library/doublet_removal:be35baa3d64eb9b7
-      build_id: bd-be35baa3d64eb9b7_1
-      scan_id: sc-ccdcf588fdc37bb8_2
+      name: community.wave.seqera.io/library/doublet_removal:3e0acc996063ca2e
+      build_id: bd-3e0acc996063ca2e_1
+      scan_id: sc-30df361a70184d3b_1
     linux/arm64:
-      name: community.wave.seqera.io/library/doublet_removal:600e58acb27a85dd
-      build_id: bd-600e58acb27a85dd_1
-      scan_id: sc-35495ef13f986183_2
+      name: community.wave.seqera.io/library/doublet_removal:b73ea98cfdcd9515
+      build_id: bd-b73ea98cfdcd9515_1
+      scan_id: sc-ca91b0d57666bfcb_1
   singularity:
-    linux/arm64:
-      name: oras://community.wave.seqera.io/library/doublet_removal:e4f376f41190cfe2
-      build_id: bd-e4f376f41190cfe2_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/13/1398c273f0185c9ededa9e012a62b07d030a103f84f2939191559a528e2c654a/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/doublet_removal:4df6b76062dbef38
-      build_id: bd-4df6b76062dbef38_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7f/7f257d17ec38c213802f67cbe15cb9928b46d1aca4f492154b958f8b9195681c/data
+      name: oras://community.wave.seqera.io/library/doublet_removal:a7f1ea29dda30a88
+      build_id: bd-a7f1ea29dda30a88_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/56/56e5b2e0a7deae4516efa83ada0d514260d70199270fdd7d66e0ed7841bc3f27/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/doublet_removal:ba033db3be4cf50c
+      build_id: bd-ba033db3be4cf50c_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/98/98e0601b016ef6782f54ff5cb524d21c38ddc8699272376301ed9497f46ab9f1/data
   conda:
     linux/amd64:
-      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_amd64-bd-be35baa3d64eb9b7_1.txt
+      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_amd64-bd-3e0acc996063ca2e_1.txt
     linux/arm64:
-      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_arm64-bd-600e58acb27a85dd_1.txt
+      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_arm64-bd-b73ea98cfdcd9515_1.txt

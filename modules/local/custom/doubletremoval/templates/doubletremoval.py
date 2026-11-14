@@ -15,29 +15,80 @@ adata = ad.read_h5ad("${h5ad}")
 threshold = int("${threshold}")
 remove_doublets = "${removal}" == "true"
 prefix = "${prefix}"
+methods = "${methods.join(' ')}".split()
+prediction_paths = r"""${predictions.join('\n')}""".splitlines()
 
 
-def load(path: str) -> pd.DataFrame:
-    if path.endswith(".pkl"):
-        return pd.read_pickle(path)
+def load_predictions(path):
     if path.endswith(".csv"):
-        return pd.read_csv(path, index_col=0)
+        table = pd.read_csv(path, index_col=0, converters={0: str})
+    elif path.endswith(".pkl"):
+        table = pd.read_pickle(path)
+    else:
+        raise ValueError(f"{path} must be CSV or pickle")
+    if len(table.columns) != 1:
+        raise ValueError(f"{path} must contain exactly one Boolean column")
+    if not table.index.is_unique or set(table.index) != set(adata.obs_names):
+        raise ValueError(f"{path} must contain each input barcode exactly once")
+    calls = table.iloc[:, 0]
+    if not pd.api.types.is_bool_dtype(calls) or calls.isna().any():
+        raise ValueError(f"{path} must contain non-null Boolean predictions")
+    return calls.reindex(adata.obs_names)
 
 
-predictions = pd.concat([load(f) for f in "${predictions}".split()], axis=1)
-predictions = predictions.reindex(adata.obs_names)
-# Stable column order so nf-test snapshots do not depend on process finish order.
-predictions = predictions.reindex(sorted(predictions.columns), axis=1)
-for column in predictions.columns:
-    adata.obs[column] = predictions[column]
+if not adata.obs_names.is_unique:
+    raise ValueError("Input H5AD contains duplicate barcodes")
+
+votes = pd.DataFrame(index=adata.obs_names)
+annotations = pd.DataFrame(index=adata.obs_names)
+for method, prediction_path in zip(methods, prediction_paths, strict=True):
+    vote = load_predictions(prediction_path)
+    votes[method] = vote
+    annotations[f"{method}_predicted_doublet"] = vote
+    annotations[f"{method}_class"] = vote.map({False: "singlet", True: "doublet"})
+
+annotations = annotations.reindex(sorted(annotations.columns), axis=1)
 
 if remove_doublets:
-    mask = predictions.sum(axis=1) >= threshold
-    adata = adata[~mask, :]
+    adata = adata[~(votes.sum(axis=1) >= threshold), :].copy()
 
 adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
+annotations.to_pickle(f"{prefix}.obs.pkl")
 
-# Versions
+if len(votes.columns) > 1:
+    contents = {column: votes.index[votes[column]].tolist() for column in votes}
+    if any(contents.values()):
+        plot_data = upsetplot.from_contents(contents)
+        intersection_sizes = plot_data.groupby(level=list(range(len(contents)))).size()
+        # The usual cutoff can hide every intersection in small samples.
+        minimum_size = 10 if intersection_sizes.max() >= 10 else 1
+        upsetplot.plot(
+            plot_data,
+            sort_by="cardinality",
+            show_counts=True,
+            subset_size="count",
+            min_subset_size=minimum_size,
+        )
+    else:
+        fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+        ax.text(0.5, 0.5, "No doublets predicted", ha="center", va="center", transform=ax.transAxes)
+        ax.set_axis_off()
+    plot_path = f"{prefix}_predictions_mqc.png"
+    plt.savefig(plot_path)
+    plt.close()
+    with open(plot_path, "rb") as handle:
+        image_string = base64.b64encode(handle.read()).decode("utf-8")
+    custom_json = {
+        "id": "${prefix}",
+        "parent_id": "doublet_predictions",
+        "parent_name": "Doublet predictions",
+        "parent_description": "Upset plots of the various doublet prediction tools for each sample.",
+        "section_name": "${meta.id}",
+        "plot_type": "image",
+        "data": f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>',
+    }
+    with open(f"{prefix}_mqc.json", "w") as handle:
+        json.dump(custom_json, handle)
 
 versions = {
     "${task.process}": {
@@ -48,75 +99,5 @@ versions = {
         "upsetplot": upsetplot.__version__,
     }
 }
-
-with open("versions.yml", "w") as f:
-    yaml.dump(versions, f)
-
-if not len(predictions.columns) > 1:
-    score_columns = [column for column in predictions.columns if "score" in column.lower()]
-    if score_columns:
-        score_col = score_columns[0]
-        fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
-        adata.obs[score_col].hist(ax=ax, bins=50)
-        ax.set_xlabel(score_col)
-        ax.set_ylabel("Cells")
-        plot_path = f"{prefix}_doublet_scores.png"
-        plt.savefig(plot_path)
-
-        with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
-            image_string = base64.b64encode(f_plot.read()).decode("utf-8")
-            image_html = (
-                f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
-            )
-            custom_json = {
-                "id": "${prefix}",
-                "parent_id": "doublet_predictions",
-                "parent_name": "Doublet predictions",
-                "parent_description": "Doublet score distributions and tool overlap per sample.",
-                "section_name": "${meta.id}",
-                "plot_type": "image",
-                "data": image_html,
-            }
-            json.dump(custom_json, f_json)
-    exit(0)
-
-# Plot
-
-contents = {column: predictions[column][predictions[column]].index.tolist() for column in predictions.columns}
-
-if any(contents.values()):
-    plot_data = upsetplot.from_contents(contents)
-    intersection_sizes = plot_data.groupby(level=list(range(len(contents)))).size()
-    # Keep the normal display cutoff, unless it would hide every intersection.
-    minimum_size = 10 if intersection_sizes.max() >= 10 else 1
-    upsetplot.plot(
-        plot_data,
-        sort_by="cardinality",
-        show_counts=True,
-        subset_size="count",
-        min_subset_size=minimum_size,
-    )
-else:
-    fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
-    ax.text(0.5, 0.5, "No doublets predicted", ha="center", va="center", transform=ax.transAxes)
-    ax.set_axis_off()
-plot_path = f"{prefix}_predictions_mqc.png"
-plt.savefig(plot_path)
-
-# MultiQC
-
-with open(plot_path, "rb") as f_plot, open("${prefix}_mqc.json", "w") as f_json:
-    image_string = base64.b64encode(f_plot.read()).decode("utf-8")
-    image_html = f'<div class="mqc-custom-content-image"><img src="data:image/png;base64,{image_string}" /></div>'
-
-    custom_json = {
-        "id": "${prefix}",
-        "parent_id": "doublet_predictions",
-        "parent_name": "Doublet predictions",
-        "parent_description": "Upset plots of the various doublet prediction tools for each sample.",
-        "section_name": "${meta.id}",
-        "plot_type": "image",
-        "data": image_html,
-    }
-
-    json.dump(custom_json, f_json)
+with open("versions.yml", "w") as handle:
+    yaml.dump(versions, handle)
