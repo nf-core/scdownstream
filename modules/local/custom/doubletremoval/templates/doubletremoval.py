@@ -15,8 +15,8 @@ adata = ad.read_h5ad("${h5ad}")
 threshold = int("${threshold}")
 remove_doublets = "${removal}" == "true"
 prefix = "${prefix}"
-methods = json.loads("""${methods_json}""")
-prediction_paths = json.loads("""${predictions_json}""")
+methods = "${methods.join(' ')}".split()
+prediction_paths = r"""${predictions.join('\n')}""".splitlines()
 
 
 def load_predictions(path):

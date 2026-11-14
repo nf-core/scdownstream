@@ -195,14 +195,14 @@ nextflow_process {
         }
     }
 
-    test("Should reject missing prediction files") {
+    test("Should reject fewer prediction files than methods") {
         when {
             params { outdir = "$outputDir" }
             process {
                 """
-                input[0] = channel.of([
-                    [id: 'count'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], []
-                ])
+                input[0] = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv').map { p -> [
+                    [id: 'count'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo', 'scrublet'], [p]
+                ] }
                 input[1] = 1
                 input[2] = false
                 """

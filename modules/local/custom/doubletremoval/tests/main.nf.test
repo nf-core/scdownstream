@@ -12,7 +12,7 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                pdd = channel.of('cell,arbitrary_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i < 3) }.join('')).collectFile(name: 'dd.csv')
+                pdd = channel.of('cell,arbitrary_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i < 3) }.join('')).collectFile(name: 'dd calls.csv')
                 psc = channel.of('cell,arbitrary_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i in [1,3]) }.join('')).collectFile(name: 'sc.csv')
                 pscr = channel.of('cell,arbitrary_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i in [0,3]) }.join('')).collectFile(name: 'scr.csv')
                 psolo = channel.of('cell,arbitrary_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i == 4) }.join('')).collectFile(name: 'solo.csv')
@@ -47,7 +47,7 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                p = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,true\\n', i) }.join('')).collectFile(name: 'p.csv')
+                p = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,true\\n', i) }.join('')).collectFile(name: 'scrublet calls.csv')
                 input[0] = p.map { prediction -> [
                     [id: 'annotate'],
                     file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),

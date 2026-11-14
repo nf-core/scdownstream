@@ -8,7 +8,7 @@ process CUSTOM_DOUBLETREMOVAL {
         : 'community.wave.seqera.io/library/doublet_removal:3e0acc996063ca2e'}"
 
     input:
-    tuple val(meta), path(h5ad), val(methods), path(predictions, stageAs: 'predictions/*')
+    tuple val(meta), path(h5ad), val(methods), path(predictions, stageAs: 'predictions/*', arity: '1..*')
     val threshold
     val removal
 
@@ -23,8 +23,6 @@ process CUSTOM_DOUBLETREMOVAL {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    methods_json = groovy.json.JsonOutput.toJson(methods)
-    predictions_json = groovy.json.JsonOutput.toJson(predictions instanceof List ? predictions.collect { table -> table.toString() } : [predictions.toString()])
     template('doubletremoval.py')
 
     stub:
