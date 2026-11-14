@@ -1,0 +1,109 @@
+name: "adata_geneannotation"
+description: Annotate the genes of an AnnData object with biotype, chromosome and a broad biotype group, from a GTF-derived table or from mygene
+keywords:
+  - gene-annotation
+  - biotype
+  - mygene
+  - gtf
+  - anndata
+  - single-cell
+tools:
+  - "mygene":
+      description: "Python client for MyGene.info gene annotation services"
+      homepage: "https://docs.mygene.info"
+      documentation: "https://docs.mygene.info/en/latest/"
+      tool_dev_url: "https://github.com/biothings/mygene.py"
+      licence: ["BSD-3-Clause"]
+  - "anndata":
+      description: "Annotated data matrices in Python"
+      homepage: "https://anndata.readthedocs.io"
+      documentation: "https://anndata.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/anndata"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'merged' ]`
+    - h5ad:
+        type: file
+        description: AnnData object whose var index holds the genes to annotate
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - gene_table:
+      type: file
+      description: |
+        Optional tab-separated gene table as written by atlasgeneannotationmanipulation/gtf2featureannotation
+        (columns gene_id, chromosome, gene_biotype or gene_type, and optionally gene_name).
+        When empty, annotations are retrieved from mygene.
+      pattern: "*.tsv"
+      ontologies:
+        - edam: "http://edamontology.org/format_3475"
+  - species:
+      type: string
+      description: Species name or taxonomy identifier passed to mygene. Unused when a gene table is given.
+
+output:
+  var:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'merged' ]`
+      - "*.pkl":
+          type: file
+          description: |
+            Pickled pandas DataFrame indexed by var name with categorical columns gene_biotype,
+            chromosome and biotype_group, and boolean gene_annotation_ambiguous, for ADATA_EXTEND
+          pattern: "*.pkl"
+  csv:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'merged' ]`
+      - "*.csv":
+          type: file
+          description: The same gene table as CSV
+          pattern: "*.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@kroy3"
+maintainers:
+  - "@kroy3"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/mygene_anndata_python_pyyaml:0b27d9b10dbf88bf
+      build_id: bd-0b27d9b10dbf88bf_1
+      scan_id: sc-6afcc6072476f1fe_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/mygene_anndata_python_pyyaml:70180f55d662c9ed
+      build_id: bd-70180f55d662c9ed_1
+      scan_id: sc-056244e9e21135b3_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/mygene_anndata_python_pyyaml:23e28828e7c4fefa
+      build_id: bd-23e28828e7c4fefa_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cc/ccc5af513e241deec87c61698bd3d49f458a78938474ff6e2b9a006dfc51690a/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/mygene_anndata_python_pyyaml:87618251893c6f82
+      build_id: bd-87618251893c6f82_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/36/36983652c493b5cc151de1cda0a18cd6652868b949ab12d96eef599591475f18/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/adata/geneannotation/.conda-lock/linux_amd64-bd-0b27d9b10dbf88bf_1.txt
+    linux/arm64:
+      lock_file: modules/local/adata/geneannotation/.conda-lock/linux_arm64-bd-70180f55d662c9ed_1.txt
