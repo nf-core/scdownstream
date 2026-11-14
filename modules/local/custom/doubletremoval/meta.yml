@@ -1,5 +1,5 @@
 name: "custom_doubletremoval"
-description: Validate doublet predictions and score coverage, emit method-scoped calls and optionally remove doublets
+description: Validate Boolean predictions, emit method-scoped calls and optionally remove doublets
 keywords:
   - doublets
   - filtering
@@ -33,10 +33,6 @@ input:
     - predictions:
         type: file
         description: Doublet prediction tables in CSV or pickle format
-        pattern: "*.{csv,pkl}"
-    - scores:
-        type: file
-        description: Optional detector score tables in CSV or pickle format, covering every input cell exactly once before removal
         pattern: "*.{csv,pkl}"
   - threshold:
       type: integer

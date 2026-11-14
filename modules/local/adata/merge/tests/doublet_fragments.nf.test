@@ -50,7 +50,7 @@ nextflow_process {
                     .join(scdblfinder_predictions).join(scrublet_predictions)
                     .map { meta, h5ad, scdblfinder_prediction, scrublet_prediction -> [
                         meta, h5ad, ['scdblfinder', 'scrublet'],
-                        [scdblfinder_prediction, scrublet_prediction], []
+                        [scdblfinder_prediction, scrublet_prediction]
                     ] }
                 input[1] = 2
                 input[2] = params.doublet_removal

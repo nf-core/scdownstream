@@ -8,7 +8,7 @@ process CUSTOM_DOUBLETREMOVAL {
         : 'community.wave.seqera.io/library/doublet_removal:3e0acc996063ca2e'}"
 
     input:
-    tuple val(meta), path(h5ad), val(methods), path(predictions, stageAs: 'predictions/*', arity: '1..*'), path(scores, stageAs: 'scores/*', arity: '0..*')
+    tuple val(meta), path(h5ad), val(methods), path(predictions, stageAs: 'predictions/*', arity: '1..*')
     val threshold
     val removal
 
