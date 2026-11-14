@@ -17,19 +17,25 @@ remove_doublets = "${removal}" == "true"
 prefix = "${prefix}"
 methods = "${methods.join(' ')}".split()
 prediction_paths = r"""${predictions.join('\n')}""".splitlines()
+score_paths = r"""${scores.join('\n')}""".splitlines()
 
 
-def load_predictions(path):
+def load_table(path):
     if path.endswith(".csv"):
         table = pd.read_csv(path, index_col=0, converters={0: str})
     elif path.endswith(".pkl"):
         table = pd.read_pickle(path)
     else:
         raise ValueError(f"{path} must be CSV or pickle")
-    if len(table.columns) != 1:
-        raise ValueError(f"{path} must contain exactly one Boolean column")
     if not table.index.is_unique or set(table.index) != set(adata.obs_names):
         raise ValueError(f"{path} must contain each input barcode exactly once")
+    return table
+
+
+def load_predictions(path):
+    table = load_table(path)
+    if len(table.columns) != 1:
+        raise ValueError(f"{path} must contain exactly one Boolean column")
     calls = table.iloc[:, 0]
     if not pd.api.types.is_bool_dtype(calls) or calls.isna().any():
         raise ValueError(f"{path} must contain non-null Boolean predictions")
@@ -38,6 +44,9 @@ def load_predictions(path):
 
 if not adata.obs_names.is_unique:
     raise ValueError("Input H5AD contains duplicate barcodes")
+
+for score_path in score_paths:
+    load_table(score_path)
 
 votes = pd.DataFrame(index=adata.obs_names)
 annotations = pd.DataFrame(index=adata.obs_names)

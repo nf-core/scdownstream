@@ -25,7 +25,7 @@ nextflow_process {
             process {
                 """
                 p = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
-                input[0] = ADATA_EXTEND.out.h5ad.combine(p).map { meta, base, prediction -> [meta + [id: 'existing_calls'], base, ['solo'], [prediction]] }
+                input[0] = ADATA_EXTEND.out.h5ad.combine(p).map { meta, base, prediction -> [meta + [id: 'existing_calls'], base, ['solo'], [prediction], []] }
                 input[1] = 1
                 input[2] = false
                 """
@@ -47,7 +47,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call\\ncell_000,false\\n').collectFile(name: 'p.csv').map { p -> [
-                    [id: 'input'], file(params.pipelines_testdata_base_path + '/anndata-variations/obs_duplicate_names.h5ad', checkIfExists: true), ['solo'], [p]
+                    [id: 'input'], file(params.pipelines_testdata_base_path + '/anndata-variations/obs_duplicate_names.h5ad', checkIfExists: true), ['solo'], [p], []
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -66,7 +66,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call\\ncell_000,true\\ncell_000,false\\n').collectFile(name: 'duplicate.csv').map { p -> [
-                    [id: 'duplicate'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
+                    [id: 'duplicate'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p], []
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -87,7 +87,7 @@ nextflow_process {
                 p = channel.of('cell,call\\n' + (1..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'missing.csv')
                 solo = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'complete.csv')
                 input[0] = p.combine(solo).map { a,b -> [
-                    [id: 'missing'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet','solo'], [a,b]
+                    [id: 'missing'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet','solo'], [a,b], []
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -106,7 +106,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call\\n' + (0..128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'extra.csv').map { p -> [
-                    [id: 'extra'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
+                    [id: 'extra'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p], []
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -125,7 +125,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call,score\\n' + (0..<128).collect { i -> String.format('cell_%03d,false,9999\\n', i) }.join('')).collectFile(name: 'columns.csv').map { p -> [
-                    [id: 'columns'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
+                    [id: 'columns'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p], []
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -144,7 +144,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s\\n', i, i == 5 ? '' : 'false') }.join('')).collectFile(name: 'null.csv').map { p -> [
-                    [id: 'null'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
+                    [id: 'null'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p], []
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -163,7 +163,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s\\n', i, i == 5 ? 'singlet' : 'false') }.join('')).collectFile(name: 'invalid.csv').map { p -> [
-                    [id: 'invalid'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
+                    [id: 'invalid'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p], []
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -182,7 +182,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s\\n', i, i % 2) }.join('')).collectFile(name: 'numeric.csv').map { p -> [
-                    [id: 'numeric'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
+                    [id: 'numeric'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p], []
                 ] }
                 input[1] = 1
                 input[2] = false
@@ -201,7 +201,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv').map { p -> [
-                    [id: 'count'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo', 'scrublet'], [p]
+                    [id: 'count'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo', 'scrublet'], [p], []
                 ] }
                 input[1] = 1
                 input[2] = false

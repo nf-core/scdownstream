@@ -17,7 +17,7 @@ nextflow_process {
                 input[0] = p.combine(solo).map { a,b -> [
                     [id: 'zero'],
                     file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
-                    ['scrublet','solo'], [a,b]
+                    ['scrublet','solo'], [a,b], []
                 ] }
                 input[1] = 1
                 input[2] = true
@@ -42,7 +42,7 @@ nextflow_process {
                 input[0] = p.combine(solo).map { a,b -> [
                     [id: 'small'],
                     file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
-                    ['scrublet','solo'], [a,b]
+                    ['scrublet','solo'], [a,b], []
                 ] }
                 input[1] = 2
                 input[2] = true

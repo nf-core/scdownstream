@@ -20,7 +20,7 @@ nextflow_process {
                     input[0] = pdd.combine(psc).combine(pscr).combine(psolo).map { a,b,c,d -> [
                         [id: 'all'],
                         file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
-                        ['doubletdetection','scdblfinder','scrublet','solo'], [a,b,c,d]
+                        ['doubletdetection','scdblfinder','scrublet','solo'], [a,b,c,d], []
                     ] }
                     input[1] = 2
                     input[2] = false
@@ -77,7 +77,7 @@ nextflow_process {
                     input[0] = p.map { a -> [
                         [id: 'retained'],
                         file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
-                        ['scrublet'], [a]
+                        ['scrublet'], [a], []
                     ] }
                     input[1] = 1
                     input[2] = true
