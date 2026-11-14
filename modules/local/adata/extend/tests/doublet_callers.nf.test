@@ -4,14 +4,14 @@ nextflow_process {
     script "modules/local/adata/extend/main.nf"
     process "ADATA_EXTEND"
 
-    tag "subworkflows"
-    tag "subworkflows_local"
+    tag "modules"
+    tag "modules_local"
 
     test("Should finalise numeric scores and classes for all four methods without removing cells") {
 
         setup {
             run("DOUBLET_DETECTION") {
-                script "../main.nf"
+                script "../../../../../subworkflows/local/doublet_detection/main.nf"
                 workflow {
                     """
                     input[0] = channel.of([
@@ -85,7 +85,7 @@ nextflow_process {
 
         setup {
             run("DOUBLET_DETECTION") {
-                script "../main.nf"
+                script "../../../../../subworkflows/local/doublet_detection/main.nf"
                 workflow {
                     """
                     input[0] = channel.of([

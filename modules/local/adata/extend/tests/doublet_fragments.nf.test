@@ -10,7 +10,7 @@ nextflow_process {
     test("Should attach reordered native scores and classes for every method without inventing SOLO scores") {
         setup {
             run("CUSTOM_DOUBLETREMOVAL") {
-                script "../main.nf"
+                script "../../../custom/doubletremoval/main.nf"
                 process {
                     """
                     pdd = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i < 3) }.join('')).collectFile(name: 'dd.csv')
@@ -70,7 +70,7 @@ nextflow_process {
     test("Should attach full-cell fragments only to retained cells in their original order") {
         setup {
             run("CUSTOM_DOUBLETREMOVAL") {
-                script "../main.nf"
+                script "../../../custom/doubletremoval/main.nf"
                 process {
                     """
                     p = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i in [0,3]) }.join('')).collectFile(name: 'p.csv')
