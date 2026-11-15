@@ -2,15 +2,34 @@
 
 import platform
 import warnings
+from pathlib import Path
 
 import anndata as ad
 import numpy as np
 import pandas as pd
+import pyarrow as pa
 import scanpy as sc
 import scimilarity
 import yaml
 from scimilarity import CellQuery
 from scimilarity.utils import align_dataset
+
+
+def write_fragment(frame, path):
+    fragment = frame.copy()
+    fragment.columns = fragment.columns.map(str)
+    if "__index__" in fragment.columns or not fragment.columns.is_unique:
+        raise ValueError("Fragment columns must be unique and must not contain reserved column '__index__'.")
+    if (
+        fragment.index.nlevels != 1
+        or not fragment.index.is_unique
+        or fragment.index.hasnans
+        or not all(isinstance(value, str) for value in fragment.index)
+    ):
+        raise ValueError("Fragment axis identifiers must be unique, non-null strings.")
+    fragment = fragment.reset_index(names="__index__")
+    fragment.to_parquet(str(Path(path).resolve()), engine="pyarrow", index=False, compression="snappy")
+
 
 adata = sc.read_h5ad("${h5ad}")
 
@@ -36,13 +55,14 @@ adata.obsm["X_emb"] = embeddings
 # Write the output
 adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 df = pd.DataFrame(embeddings, index=adata.obs_names)
-df.to_pickle("X_${prefix}.pkl")
+write_fragment(df, "X_${prefix}.parquet")
 
 versions = {
     "${task.process}": {
         "python": platform.python_version(),
         "scimilarity": scimilarity.__version__,
         "scanpy": sc.__version__,
+        "pyarrow": pa.__version__,
     }
 }
 

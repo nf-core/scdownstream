@@ -14,13 +14,12 @@ nextflow_process {
                 script "../../../adata/extend/main.nf"
                 process {
                     """
-                    input[0] = channel.of('cell,annotation:test:per_cell\\nSRR28679756::CCTTTCTTCTGCTGCT,T_cell\\nSRR28679756::ATCATCTTCTGCTGTC,T_cell\\n')
-                        .collectFile(name: 'annotations.csv')
-                        .map { obs -> [
+                    input[0] = channel.of([
                             [id: 'annotations'],
                             file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
-                            [obs], [], [], [], [], []
-                        ] }
+                            [file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/annotations.parquet', checkIfExists: true)],
+                            [], [], [], [], []
+                        ])
                     """
                 }
             }
@@ -55,6 +54,20 @@ nextflow_process {
             assert names.global == ['annotation:test:aggregated:scvi:0.5']
             assert names.unsplit == names.global
             assert names.named == ['annotation:test:aggregated:scvi:0.5:subset:T_cells']
+            process.out.obs.each { meta, obs ->
+                def fragment = parquet(obs)
+                assert file(obs).name == "${meta.id}.parquet"
+                assert fragment.columnNames == ['__index__'] + names[meta.id]
+                assert fragment.compressionCodecs == ['SNAPPY']
+                assert fragment.schema.fields.every { it.logicalType.type == 'STRING' }
+                def rows = fragment.rows
+                assert rows.every { it.__index__ instanceof String }
+                assert rows.collect { it.__index__ }.toSet().size() == fragment.rowCount
+                assert rows.any { it[names[meta.id][0]] == 'T_cell' }
+                assert rows.every { it[names[meta.id][0]] == null || it[names[meta.id][0]] == 'T_cell' }
+                def h5ad = process.out.h5ad.find { it[0].id == meta.id }[1]
+                assert rows.collect { it.__index__ } == anndata(h5ad).obs.index.values.toList()
+            }
             assert snapshot(names).match()
         }
 

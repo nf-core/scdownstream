@@ -38,10 +38,10 @@ output:
           description: AnnData with SCimilarity cell type annotation in obs
           pattern: "*.h5ad"
   obs:
-    - "*.pkl":
+    - "*.parquet":
         type: file
-        description: Pickled obs data frame with the SCimilarity annotation column
-        pattern: "*.pkl"
+        description: Parquet obs data frame with the SCimilarity annotation and an explicit __index__ column
+        pattern: "*.parquet"
   versions:
     - versions.yml:
         type: file
@@ -55,14 +55,14 @@ maintainers:
 containers:
   docker:
     linux/amd64:
-      name: community.wave.seqera.io/library/python_anndata_pyyaml_zarr_pruned:726de88bc84fbfa1
-      build_id: bd-726de88bc84fbfa1_1
-      scan_id: sc-52b8e59e4cf2fca2_1
+      name: community.wave.seqera.io/library/python_anndata_pyarrow_pyyaml_pruned:f4f0615a5198942f
+      build_id: bd-f4f0615a5198942f_1
+      scan_id: sc-eef9e437547c5870_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/python_anndata_pyyaml_zarr_pruned:014d6bb1b34745a6
-      build_id: bd-014d6bb1b34745a6_3
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c9/c90e92bde5ea63596f8af5f32ca881d0dc1053bd7c8d1e484a70b1d3d6fef56d/data
+      name: oras://community.wave.seqera.io/library/python_anndata_pyarrow_pyyaml_pruned:7fe476bf95733733
+      build_id: bd-7fe476bf95733733_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/4b/4be3b0a53a34f772027d3132d99e71448cbfe0092cfcb034a45c9ab66cf30721/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scimilarity/annotate/.conda-lock/linux_amd64-bd-726de88bc84fbfa1_1.txt
+      lock_file: modules/local/scimilarity/annotate/.conda-lock/linux_amd64-bd-f4f0615a5198942f_1.txt

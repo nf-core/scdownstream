@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
 import os
+from pathlib import Path
 
 os.environ["MPLCONFIGDIR"] = "./tmp"
 os.environ.setdefault("TORCHINDUCTOR_CACHE_DIR", os.path.join(os.getcwd(), "torch_cache"))
 
 import anndata as ad
+import pyarrow
 import scvi
 import torch
 import yaml
@@ -54,9 +56,12 @@ for batch in batches:
     adata.obs.loc[doublets, "doublet"] = True
 
 
-df = adata.obs[["doublet"]]
+df = adata.obs[["doublet"]].copy()
 df.columns = ["${prefix}"]
-df.to_pickle("${prefix}.pkl")
+if df.index.hasnans or not df.index.is_unique or not all(isinstance(cell, str) for cell in df.index):
+    raise ValueError("Doublet predictions require unique, non-null string cell IDs")
+df.insert(0, "__index__", df.index)
+df.to_parquet(Path("${prefix}.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
 
 adata = adata[~adata.obs["doublet"]].copy()
 adata.obs.drop("doublet", axis=1, inplace=True)
@@ -71,6 +76,9 @@ adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 versions = {
     "${task.process}": {
         "scvi": scvi.__version__,
+        "pyarrow": pyarrow.__version__,
+        "torch": str(torch.__version__),
+        "cuda": torch.version.cuda or "no CUDA available",
     }
 }
 

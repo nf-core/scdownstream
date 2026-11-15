@@ -4,11 +4,13 @@ import base64
 import json
 import platform
 import warnings
+from pathlib import Path
 
 import liana as li
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import pyarrow
 import scanpy as sc
 import yaml
 from threadpoolctl import threadpool_limits
@@ -280,7 +282,9 @@ if adata.obs[obs_key].nunique() > 1:
         )
         df: pd.DataFrame = adata.uns["liana_res"]
 
-        df.to_pickle(f"{prefix}.pkl")
+        fragment = df.copy()
+        fragment.insert(0, "__index__", df.index)
+        fragment.to_parquet(Path(f"{prefix}.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
         adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
         _write_liana_plots(adata, df, obs_key)
 
@@ -299,6 +303,7 @@ versions = {
         "python": platform.python_version(),
         "scanpy": sc.__version__,
         "liana": li.__version__,
+        "pyarrow": pyarrow.__version__,
     }
 }
 

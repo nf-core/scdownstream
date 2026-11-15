@@ -31,6 +31,11 @@ nextflow_process {
             assert process.success
             assert path(process.out.h5ad[0][1]).parent.resolve('.command.err').text.contains('using scDblFinder package default for dbr.sd')
             def adata = anndata(process.out.h5ad[0][1])
+            def predictions = parquet(process.out.predictions[0][1])
+            assert predictions.columnNames == ['__index__', 'test_scdblfinder']
+            assert predictions.compressionCodecs == ['SNAPPY']
+            assert predictions.rows.collect { it.__index__ } == adata.obs.rownames.toList()
+            assert predictions.rows.every { it.test_scdblfinder instanceof Boolean }
             with(adata) {
                 assert "scdblfinder_class" in obs.colnames
                 assert "scdblfinder_score" in obs.colnames

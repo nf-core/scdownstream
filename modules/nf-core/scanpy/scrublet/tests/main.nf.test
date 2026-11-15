@@ -27,6 +27,18 @@ nextflow_process {
         then {
             assertAll(
             { assert process.success },
+            {
+                def predictions = parquet(process.out.predictions[0][1])
+                assert file(process.out.predictions[0][1]).name == 'test_scrublet.parquet'
+                assert predictions.columnNames == ['__index__', 'test_scrublet']
+                assert predictions.schema.fields.find { it.name == 'test_scrublet' }.physicalType == 'BOOLEAN'
+                assert predictions.compressionCodecs == ['SNAPPY']
+                def rows = predictions.rows
+                assert rows.size() > 0
+                assert rows.every { it.__index__ instanceof String && it.test_scrublet instanceof Boolean }
+                assert rows.collect { it.__index__ }.toSet().size() == rows.size()
+                assert rows.findAll { !it.test_scrublet }.collect { it.__index__ } == anndata(process.out.h5ad[0][1]).obs.index.values
+            },
             { assert snapshot(
                 sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions"]),
                 process.out.versions.collect { path(it).yaml }

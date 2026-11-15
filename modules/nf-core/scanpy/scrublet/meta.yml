@@ -52,12 +52,11 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. [ id:'test' ]
-      - "*.pkl":
+      - "*.parquet":
           type: file
-          description: Pickle file containing doublet predictions
-          pattern: "*.pkl"
-          ontologies:
-            - edam: "http://edamontology.org/format_3553" # Pickle format
+          description: Boolean doublet predictions with unique cell IDs in a physical __index__ column
+          pattern: "*.parquet"
+          ontologies: []
   versions:
     - versions.yml:
         type: file
@@ -77,3 +76,27 @@ authors:
   - "@nictru"
 maintainers:
   - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:511ffe8348319831
+      build_id: bd-511ffe8348319831_1
+      scan_id: sc-184168edfd04236f_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:ac9ac46a258a87b1
+      build_id: bd-ac9ac46a258a87b1_1
+      scan_id: sc-60deac606e315845_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:6b1ea5e75ae18d52
+      build_id: bd-6b1ea5e75ae18d52_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/43/43dcd1c3ddc54ccb49c4100926138f4abb8e257f36cebd1ce9f43861788351f2/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:fec239b336e76aa3
+      build_id: bd-fec239b336e76aa3_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/10/10972f38ba264f2b0eb0a4f4dfde4978d5f2404245cf75b45305870d1ac54e34/data
+  conda:
+    linux/amd64:
+      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_amd64-bd-511ffe8348319831_1.txt
+    linux/arm64:
+      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_arm64-bd-ac9ac46a258a87b1_1.txt

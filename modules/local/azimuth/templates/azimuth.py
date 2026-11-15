@@ -3,6 +3,7 @@
 import os
 import platform
 from importlib.metadata import version
+from pathlib import Path
 
 # panhumanpy caches the model weights in Path.home(), which is resolved at import time
 os.environ["HOME"] = os.path.abspath("./tmp")
@@ -10,8 +11,26 @@ os.environ["HOME"] = os.path.abspath("./tmp")
 import anndata as ad
 import pandas as pd
 import panhumanpy as ph
+import pyarrow as pa
 import tensorflow as tf
 import yaml
+
+
+def write_fragment(frame, path):
+    fragment = frame.copy()
+    fragment.columns = fragment.columns.map(str)
+    if "__index__" in fragment.columns or not fragment.columns.is_unique:
+        raise ValueError("Fragment columns must be unique and must not contain reserved column '__index__'.")
+    if (
+        fragment.index.nlevels != 1
+        or not fragment.index.is_unique
+        or fragment.index.hasnans
+        or not all(isinstance(value, str) for value in fragment.index)
+    ):
+        raise ValueError("Fragment axis identifiers must be unique, non-null strings.")
+    fragment = fragment.reset_index(names="__index__")
+    fragment.to_parquet(str(Path(path).resolve()), engine="pyarrow", index=False, compression="snappy")
+
 
 tf.config.threading.set_intra_op_parallelism_threads(int("${task.cpus}"))
 tf.config.threading.set_inter_op_parallelism_threads(int("${task.cpus}"))
@@ -57,14 +76,14 @@ for dst, aggregatable in columns.values():
     if aggregatable == "true":
         df_azimuth[dst] = df_azimuth[dst].astype(str).replace("False", "Unassigned")
 
-df_azimuth.to_pickle(f"{prefix}.pkl")
+write_fragment(df_azimuth, f"{prefix}.parquet")
 
 pd.DataFrame([{"obs_column": dst, "aggregatable": aggregatable} for dst, aggregatable in columns.values()]).to_csv(
     f"{prefix}_annotation_columns.csv", index=False
 )
 
 df_embedding = pd.DataFrame(embedding, index=adata.obs_names)
-df_embedding.to_pickle("X_azimuth.pkl")
+write_fragment(df_embedding, "X_azimuth.parquet")
 
 adata.obs = pd.concat([adata.obs, df_azimuth], axis=1)
 adata.obsm["X_azimuth"] = embedding
@@ -76,6 +95,7 @@ versions = {
     "${task.process}": {
         "python": platform.python_version(),
         "pandas": pd.__version__,
+        "pyarrow": pa.__version__,
         "anndata": version("anndata"),
         "tensorflow": tf.__version__,
         "panhumanpy": ph.__version__,

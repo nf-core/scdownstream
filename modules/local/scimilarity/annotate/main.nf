@@ -5,8 +5,8 @@ process SCIMILARITY_ANNOTATE {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c9/c90e92bde5ea63596f8af5f32ca881d0dc1053bd7c8d1e484a70b1d3d6fef56d/data'
-        : 'community.wave.seqera.io/library/python_anndata_pyyaml_zarr_pruned:726de88bc84fbfa1'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/4b/4be3b0a53a34f772027d3132d99e71448cbfe0092cfcb034a45c9ab66cf30721/data'
+        : 'community.wave.seqera.io/library/python_anndata_pyarrow_pyyaml_pruned:f4f0615a5198942f'}"
 
     input:
     tuple val(meta), path(h5ad)
@@ -14,8 +14,8 @@ process SCIMILARITY_ANNOTATE {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path ("${prefix}.pkl")                 , emit: obs
-    path "versions.yml"                    , emit: versions, topic: versions
+    path ("${prefix}.parquet"), emit: obs
+    path "versions.yml", emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -32,7 +32,7 @@ process SCIMILARITY_ANNOTATE {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch "${prefix}.h5ad"
-    touch "${prefix}.pkl"
+    touch "${prefix}.parquet"
     touch "versions.yml"
     """
 }

@@ -4,8 +4,8 @@ process SCANPY_SCRUBLET {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cc/cc499354bb89be6429cfc8d8416a340c2327a72732fb6ae33c346feef17b5ffb/data'
-        : 'community.wave.seqera.io/library/python_pyyaml_scanpy_scikit-image:750e7b74b6d036e4'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/43/43dcd1c3ddc54ccb49c4100926138f4abb8e257f36cebd1ce9f43861788351f2/data'
+        : 'community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:511ffe8348319831'}"
 
     input:
     tuple val(meta), path(h5ad)
@@ -13,8 +13,8 @@ process SCANPY_SCRUBLET {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    tuple val(meta), path("*.pkl") , emit: predictions
-    path "versions.yml"            , emit: versions, topic: versions
+    tuple val(meta), path("*.parquet"), emit: predictions
+    path "versions.yml", emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -38,12 +38,13 @@ process SCANPY_SCRUBLET {
     export NUMBA_CACHE_DIR=./tmp/numba
 
     touch ${prefix}.h5ad
-    touch ${prefix}.pkl
+    touch ${prefix}.parquet
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(python3 -c 'import platform; print(platform.python_version())')
         scanpy: \$(python3 -c 'import scanpy; print(scanpy.__version__)')
+        pyarrow: \$(python3 -c 'import pyarrow; print(pyarrow.__version__)')
     END_VERSIONS
     """
 }

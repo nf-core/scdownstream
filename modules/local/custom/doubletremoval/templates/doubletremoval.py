@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 import base64
+import importlib.metadata
 import json
 import platform
+from pathlib import Path
 
 import anndata as ad
 import matplotlib
@@ -18,10 +20,22 @@ prefix = "${prefix}"
 
 
 def load(path: str) -> pd.DataFrame:
-    if path.endswith(".pkl"):
-        return pd.read_pickle(path)
-    if path.endswith(".csv"):
-        return pd.read_csv(path, index_col=0)
+    source = Path(path)
+    if source.suffix != ".parquet":
+        raise ValueError(f"Unsupported prediction file extension: {source}")
+    frame = pd.read_parquet(source.resolve(), engine="pyarrow")
+    if not frame.columns.is_unique:
+        raise ValueError(f"Prediction table '{source.name}' contains duplicate column names")
+    if "__index__" not in frame.columns:
+        raise ValueError(f"Prediction table '{source.name}' is missing the '__index__' column")
+    frame = frame.set_index("__index__").rename_axis(None)
+    if frame.index.hasnans:
+        raise ValueError(f"Prediction table '{source.name}' contains null indices")
+    if not frame.index.is_unique:
+        raise ValueError(f"Prediction table '{source.name}' contains duplicate indices")
+    if any(not isinstance(value, str) for value in frame.index):
+        raise ValueError(f"Prediction table '{source.name}' contains non-string indices")
+    return frame
 
 
 predictions = pd.concat([load(f) for f in "${predictions}".split()], axis=1)
@@ -44,6 +58,7 @@ versions = {
         "python": platform.python_version(),
         "anndata": ad.__version__,
         "pandas": pd.__version__,
+        "pyarrow": importlib.metadata.version("pyarrow"),
         "matplotlib": matplotlib.__version__,
         "upsetplot": upsetplot.__version__,
     }

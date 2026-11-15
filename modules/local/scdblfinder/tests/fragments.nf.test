@@ -1,0 +1,51 @@
+nextflow_process {
+
+    name "Test scDblFinder predictions through ADATA_EXTEND"
+    script "modules/local/adata/extend/main.nf"
+    process "ADATA_EXTEND"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should preserve cell identifiers and logical predictions") {
+        setup {
+            run("SCDBLFINDER") {
+                script "modules/local/scdblfinder/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'test:doublets'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                        null, '', null
+                    ])
+                    """
+                }
+            }
+        }
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = SCDBLFINDER.out.predictions.map { meta, fragment -> [
+                    meta,
+                    file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                    [fragment], [], [], [], [], []
+                ] }
+                """
+            }
+        }
+        then {
+            assert process.success
+            def output = path(process.out.h5ad[0][1])
+            def adata = anndata(output)
+            def fragment = parquet(output.parent.resolve('obs/test:doublets_scdblfinder.parquet'))
+            def column = 'test:doublets_scdblfinder'
+            assert fragment.columnNames == ['__index__', column]
+            assert fragment.rows.collect { it.__index__ } == adata.obs.rownames.toList()
+            assert !adata.obs.colnames.contains('__index__')
+            assert column in adata.obs.colnames
+            assert fragment.rows.every { it[column] instanceof Boolean }
+            assert adata.obs.get(column).data.collect { it.toString().toLowerCase() } == fragment.rows.collect { it[column].toString() }
+        }
+    }
+}

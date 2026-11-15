@@ -6,6 +6,7 @@ nextflow_process {
 
     tag "modules"
     tag "modules_local"
+    tag "fragment_embeddings"
 
     test("Should reject a missing batch column before integration") {
         when {
@@ -34,13 +35,12 @@ nextflow_process {
                 script "../../../adata/extend/main.nf"
                 process {
                     """
-                    input[0] = channel.of('cell,regression_batch\\nSRR28679756::CCTTTCTTCTGCTGCT,batch_a\\n')
-                        .collectFile(name: 'missing_batch.csv')
-                        .map { obs -> [
-                            [id: 'missing_batch_labels'],
-                            file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true),
-                            [obs], [], [], [], [], []
-                        ] }
+                    input[0] = channel.of([
+                        [id: 'missing_batch_labels'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true),
+                        [file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/missing_batch.parquet', checkIfExists: true)],
+                        [], [], [], [], []
+                    ])
                     """
                 }
             }

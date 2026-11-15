@@ -41,6 +41,7 @@ nextflow_workflow {
             params {
                 outdir = "$outputDir"
                 scvi_max_epochs = 2
+                save_intermediates = true
             }
             workflow {
                 """
@@ -65,6 +66,23 @@ nextflow_workflow {
             assert adata.n_obs < 384
             def predictions = ['test_solo', 'test_scrublet', 'test_scdblfinder'].collect { adata.obs.get(it).data }
             assert (0..<adata.n_obs).every { row -> predictions.count { it[row].toString().equalsIgnoreCase('true') } < 2 }
+            def inputCells = anndata("$outputDir/02_quality_control/doublet_detection/scdblfinder/test_scdblfinder.h5ad").obs.index.values
+            ['solo', 'scrublet', 'scdblfinder'].each { detector ->
+                def column = "test_${detector}".toString()
+                def table = parquet("$outputDir/02_quality_control/doublet_detection/${detector}/${column}.parquet")
+                assert table.columnNames == ['__index__', column]
+                assert table.schema.fields.find { it.name == column }.physicalType == 'BOOLEAN'
+                assert table.schema.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
+                assert table.compressionCodecs == ['SNAPPY']
+                def rows = table.rows
+                assert rows.size() == 384
+                assert rows.every { it.__index__ instanceof String && it[column] instanceof Boolean }
+                assert rows.collect { it.__index__ }.toSet().size() == rows.size()
+                assert rows.collect { it.__index__ } == inputCells
+                def retained = rows.findAll { it.__index__ in adata.obs.index.values }
+                assert retained.collect { it.__index__ } == adata.obs.index.values
+                assert retained.collect { it[column] } == adata.obs.get(column).data.collect { it.toString().equalsIgnoreCase('true') }
+            }
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml },
                 adata.yaml
@@ -78,6 +96,7 @@ nextflow_workflow {
         when {
             params {
                 outdir = "$outputDir"
+                save_intermediates = true
             }
             workflow {
                 """
@@ -100,12 +119,62 @@ nextflow_workflow {
             assert workflow.success
             assert adata.n_obs == 384
             assert "test_scdblfinder" in adata.obs.colnames
+            def table = parquet("$outputDir/02_quality_control/doublet_detection/scdblfinder/test_scdblfinder.parquet")
+            assert table.columnNames == ['__index__', 'test_scdblfinder']
+            assert table.schema.fields.find { it.name == 'test_scdblfinder' }.physicalType == 'BOOLEAN'
+            assert table.schema.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
+            assert table.compressionCodecs == ['SNAPPY']
+            def rows = table.rows
+            assert rows.size() == 384
+            assert rows.every { it.__index__ instanceof String && it.test_scdblfinder instanceof Boolean }
+            assert rows.collect { it.__index__ }.toSet().size() == rows.size()
+            assert rows.collect { it.__index__ } == adata.obs.index.values
+            assert rows.collect { it.test_scdblfinder } == adata.obs.get('test_scdblfinder').data.collect { it.toString().equalsIgnoreCase('true') }
             assert snapshot(
                 workflow.out.versions.collect { path(it).yaml },
                 adata.yaml
             ).match()
         }
 
+    }
+
+    test("Should retain full-cell Boolean doubletdetection predictions") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                save_intermediates = true
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test', batch_col: 'sample'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                ])
+                input[1] = ['doubletdetection']
+                input[2] = 1
+                input[3] = false
+                input[4] = 1
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert adata.n_obs == 384
+            def table = parquet("$outputDir/02_quality_control/doublet_detection/doubletdetection/test_doubletdetection.parquet")
+            assert table.columnNames == ['__index__', 'test_doubletdetection']
+            assert table.schema.fields.find { it.name == 'test_doubletdetection' }.physicalType == 'BOOLEAN'
+            assert table.schema.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
+            assert table.compressionCodecs == ['SNAPPY']
+            def rows = table.rows
+            assert rows.size() == 384
+            assert rows.every { it.__index__ instanceof String && it.test_doubletdetection instanceof Boolean }
+            assert rows.collect { it.__index__ }.toSet().size() == rows.size()
+            assert rows.collect { it.__index__ } == adata.obs.index.values
+            assert rows.collect { it.test_doubletdetection } == adata.obs.get('test_doubletdetection').data.collect { it.toString().equalsIgnoreCase('true') }
+        }
     }
 
     test("Should accept global scdblfinder_dbr_sd without removing cells") {

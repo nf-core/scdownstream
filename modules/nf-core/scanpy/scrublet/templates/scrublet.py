@@ -8,7 +8,9 @@ os.environ["MPLCONFIGDIR"] = "./tmp/mpl"
 os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
 
 import platform
+from pathlib import Path
 
+import pyarrow
 import scanpy as sc
 import yaml
 from threadpoolctl import threadpool_limits
@@ -27,9 +29,12 @@ if batch_col and adata.obs[batch_col].nunique() > 1:
 sc.pp.scrublet(adata, **kwargs)
 
 adata.obs["predicted_doublet"] = adata.obs["predicted_doublet"].astype(bool)
-df = adata.obs[["predicted_doublet"]]
+df = adata.obs[["predicted_doublet"]].copy()
 df.columns = ["${prefix}"]
-df.to_pickle("${prefix}.pkl")
+if df.index.hasnans or not df.index.is_unique or not all(isinstance(cell, str) for cell in df.index):
+    raise ValueError("Doublet predictions require unique, non-null string cell IDs")
+df.insert(0, "__index__", df.index)
+df.to_parquet(Path("${prefix}.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
 
 adata = adata[~adata.obs["predicted_doublet"]].copy()
 
@@ -37,7 +42,13 @@ adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
 # Versions
 
-versions = {"${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}}
+versions = {
+    "${task.process}": {
+        "python": platform.python_version(),
+        "scanpy": sc.__version__,
+        "pyarrow": pyarrow.__version__,
+    }
+}
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)

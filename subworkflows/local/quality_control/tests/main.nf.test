@@ -544,7 +544,7 @@ nextflow_workflow {
             assert meta.ambient_correction_method == 'none'
             assert meta.analysis_counts_source == 'raw_counts'
             assert 'raw_counts' in adata.layers
-            def cellcycleFragments = workflow.out.obs.findAll { entry -> file(entry[1]).name == 'test_cellcycle.pkl' }
+            def cellcycleFragments = workflow.out.obs.findAll { entry -> file(entry[1]).name == 'test_cellcycle.parquet' }
             assert cellcycleFragments.size() == 1
             def fragmentFile = file(cellcycleFragments[0][1])
             def scored = anndata(new File(fragmentFile.parent, 'test_cellcycle.h5ad').toString())

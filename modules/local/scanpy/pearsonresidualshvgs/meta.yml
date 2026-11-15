@@ -57,10 +57,10 @@ output:
           ontologies:
             - edam: "http://edamontology.org/format_3590"
   var:
-    - "*.pkl":
+    - "*.parquet":
         type: file
-        description: Pickled HVG flags with the column named by ext.prefix, or meta.id when unset
-        pattern: "*.pkl"
+        description: Snappy-compressed Parquet HVG flags with explicit __index__ gene identifiers and the column named by ext.prefix, or meta.id when unset
+        pattern: "*.parquet"
   versions:
     - versions.yml:
         type: file
@@ -75,25 +75,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/python_pyyaml_scanpy:1ffabec2e58c5ef2
-      build_id: bd-1ffabec2e58c5ef2_1
-      scan_id: sc-11af35eb64ff8b64_1
     linux/amd64:
-      name: community.wave.seqera.io/library/python_pyyaml_scanpy:641b33efb395c24e
-      build_id: bd-641b33efb395c24e_1
-      scan_id: sc-e813ca3671686f02_1
+      name: community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy:bf28df5a8172ceca
+      build_id: bd-bf28df5a8172ceca_1
+      scan_id: sc-c9873cd1ff92b52c_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy:5ee2c5596f10840c
+      build_id: bd-5ee2c5596f10840c_1
+      scan_id: sc-24d05ea958500c30_1
   singularity:
-    linux/arm64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy:4b54127cdfe403f0
-      build_id: bd-4b54127cdfe403f0_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/18/188995f4986086c3b17bdefed71c7241576caa857a4388900df1313464893d2f/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy:e4262d9e523d875f
-      build_id: bd-e4262d9e523d875f_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f6/f692c0c793f5ac7da42963b22084153c26be689e512864095832318e77dee2f9/data
+      name: oras://community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy:a9ac9a759207e751
+      build_id: bd-a9ac9a759207e751_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0f/0fcad28c1a4f695002836139b6c7c2a65e60794545b7929bc491dbe64b6373e0/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy:693f21fb8e895f50
+      build_id: bd-693f21fb8e895f50_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5d/5d37be3386c988946478103f5ad32e3422e5851794946cb2b92e3fb768eab9aa/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/pearsonresidualshvgs/.conda-lock/linux_amd64-bd-641b33efb395c24e_1.txt
+      lock_file: modules/local/scanpy/pearsonresidualshvgs/.conda-lock/linux_amd64-bd-bf28df5a8172ceca_1.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/pearsonresidualshvgs/.conda-lock/linux_arm64-bd-1ffabec2e58c5ef2_1.txt
+      lock_file: modules/local/scanpy/pearsonresidualshvgs/.conda-lock/linux_arm64-bd-5ee2c5596f10840c_1.txt

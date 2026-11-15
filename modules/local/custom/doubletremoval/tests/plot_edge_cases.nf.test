@@ -12,16 +12,11 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                def predictions = channel.of(
-                    'cell,first,second\\n' + (0..<128).collect { i ->
-                        String.format('cell_%03d,false,false\\n', i)
-                    }.join('')
-                ).collectFile(name: 'predictions.csv')
-                input[0] = predictions.map { table -> [
+                input[0] = [
                     [id: 'zero'],
                     file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
-                    [table]
-                ] }
+                    [file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/zero_predictions.parquet', checkIfExists: true)]
+                ]
                 input[1] = 2
                 input[2] = true
                 """
@@ -42,16 +37,11 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                def predictions = channel.of(
-                    'cell,first,second\\n' + (0..<128).collect { i ->
-                        String.format('cell_%03d,%s,%s\\n', i, i == 0, i == 0)
-                    }.join('')
-                ).collectFile(name: 'predictions.csv')
-                input[0] = predictions.map { table -> [
+                input[0] = [
                     [id: 'small'],
                     file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
-                    [table]
-                ] }
+                    [file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/small_predictions.parquet', checkIfExists: true)]
+                ]
                 input[1] = 2
                 input[2] = true
                 """

@@ -23,7 +23,10 @@ nextflow_workflow {
             }
         }
         when {
-            params { outdir = "$outputDir" }
+            params {
+                outdir = "$outputDir"
+                save_intermediates = true
+            }
             workflow {
                 """
                 input[0] = ADATA_EXTEND.out.h5ad.map { meta, h5ad -> [meta + [id: 'multibatch'], h5ad] }
@@ -52,6 +55,17 @@ nextflow_workflow {
                     predictions[it].toString().toLowerCase() in ['true', 'false']
                 }
             }
+            def table = parquet("$outputDir/02_quality_control/doublet_detection/solo/multibatch_solo.parquet")
+            assert table.columnNames == ['__index__', 'multibatch_solo']
+            assert table.schema.fields.find { it.name == 'multibatch_solo' }.physicalType == 'BOOLEAN'
+            assert table.schema.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
+            assert table.compressionCodecs == ['SNAPPY']
+            def rows = table.rows
+            assert rows.size() == original.n_obs
+            assert rows.every { it.__index__ instanceof String && it.multibatch_solo instanceof Boolean }
+            assert rows.collect { it.__index__ }.toSet().size() == rows.size()
+            assert rows.collect { it.__index__ } == original.obs.index.values
+            assert rows.collect { it.multibatch_solo } == predictions.collect { it.toString().equalsIgnoreCase('true') }
             assert snapshot(result.yaml).match()
         }
     }

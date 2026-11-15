@@ -6,6 +6,7 @@ nextflow_process {
 
     tag "modules"
     tag "modules_local"
+    tag "fragment_embeddings"
 
     test("Should run without failures") {
 
@@ -31,6 +32,16 @@ nextflow_process {
             assert process.success
             assert process.out.h5ad.size() == 1
             assert process.out.obsm.size() == 1
+            assert file(process.out.obsm[0]).name == 'X_test.parquet'
+            def adata = anndata(process.out.h5ad[0][1])
+            def embedding = parquet(process.out.obsm[0])
+            assert embedding.rowCount == adata.n_obs
+            assert embedding.columnNames[0] == '__index__'
+            assert embedding.columnNames.drop(1) == (0..<(embedding.columnNames.size() - 1)).collect { it.toString() }
+            assert embedding.schema.fields[0].logicalType.type == 'STRING'
+            assert embedding.schema.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.compressionCodecs == ['SNAPPY']
+            assert embedding.rows.collect { it.__index__ } == adata.obs.index.values
             assert snapshot(path(process.out.versions[0]).yaml).match()
         }
 
@@ -54,15 +65,9 @@ nextflow_process {
                 script "../../../adata/extend/main.nf"
                 process {
                     """
-                    csv = file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.csv', checkIfExists: true)
-                    cells = csv.readLines().drop(1).collect { it.split(',')[0] }
                     obs = channel.of('interleaved', 'contiguous').map { mode ->
-                        def rows = cells.withIndex().collect { cell, i ->
-                            def batch = mode == 'interleaved' ? i % 2 : (i < 32 ? 0 : 1)
-                            cell + ',' + (batch == 0 ? 'z_batch' : 'a_batch')
-                        }
-                        [mode + '.csv', 'cell,regression_batch\\n' + rows.join('\\n') + '\\n']
-                    }.collectFile()
+                        file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/' + mode + '.parquet', checkIfExists: true)
+                    }
                     input[0] = ADATA_READCSV.out.h5ad.combine(obs).map { meta, h5ad, fragment ->
                         [[id: fragment.baseName], h5ad, [fragment], [], [], [], [], []]
                     }
@@ -107,6 +112,16 @@ nextflow_process {
                 assert adata.var.colnames == base.var.colnames
                 assert adata.uns == base.uns
                 assert '_scanorama_work' !in adata.layers
+                def fragment = process.out.obsm.find { file(it).name == 'X_' + meta.id + '.parquet' }
+                assert fragment != null
+                def embedding = parquet(fragment)
+                assert embedding.rowCount == adata.n_obs
+                assert embedding.columnNames[0] == '__index__'
+                assert embedding.columnNames.drop(1) == (0..<(embedding.columnNames.size() - 1)).collect { it.toString() }
+                assert embedding.schema.fields[0].logicalType.type == 'STRING'
+                assert embedding.schema.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+                assert embedding.compressionCodecs == ['SNAPPY']
+                assert embedding.rows.collect { it.__index__ } == adata.obs.index.values
             }
         }
     }

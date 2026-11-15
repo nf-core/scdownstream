@@ -120,8 +120,15 @@ row.names(predictions) <- colnames(sce)
 
 colnames(predictions) <- "${prefix}"
 
-# Save predictions to CSV
-write.csv(predictions, "${prefix}.csv")
+if ("__index__" %in% colnames(predictions) || anyDuplicated(colnames(predictions))) {
+  stop("Fragment columns must be unique and must not contain the reserved '__index__' column")
+}
+predictions <- data.frame(
+  "__index__" = rownames(predictions),
+  predictions,
+  check.names = FALSE
+)
+arrow::write_parquet(predictions, file.path(getwd(), "${prefix}.parquet"), compression = "snappy")
 
 ################################################
 ################################################
@@ -136,7 +143,8 @@ writeLines(
     c(
         '"${task.process}":',
         paste('    R:', r.version),
-        paste('    scDblFinder:', scDblFinder.version)
+        paste('    scDblFinder:', scDblFinder.version),
+        paste('    arrow:', as.character(packageVersion('arrow')))
     ),
 'versions.yml')
 

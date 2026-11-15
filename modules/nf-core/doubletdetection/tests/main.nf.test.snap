@@ -1,20 +1,55 @@
 {
     "scdownsteam - h5ad": {
         "content": [
-            3262106,
-            148146,
+            {
+                "n_obs": 7373,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "doublet",
+                        "doublet_score"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            },
             {
                 "DOUBLETDETECTION": {
                     "anndata": "0.11.4",
                     "doubletdetection": "4.3.0.post1",
+                    "pyarrow": "21.0.0",
                     "python": "3.13.3"
                 }
             }
         ],
-        "timestamp": "2026-04-23T17:14:06.033746024",
+        "timestamp": "2026-11-15T15:47:50.155894301",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.03.2"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "scdownstream - h5ad - stub": {
@@ -25,7 +60,7 @@
                         {
                             "id": "test"
                         },
-                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_doubletdetection.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "predictions": [
@@ -33,25 +68,26 @@
                         {
                             "id": "test"
                         },
-                        "test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_doubletdetection.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,3ed20fc4bca7372f427cb84f3e689992"
+                    "versions.yml:md5,119ce850e469029acb5cf3be436db92e"
                 ]
             },
             {
                 "DOUBLETDETECTION": {
                     "python": "3.13.3",
                     "anndata": "0.11.4",
-                    "doubletdetection": null
+                    "doubletdetection": "4.3.0.post1",
+                    "pyarrow": "21.0.0"
                 }
             }
         ],
-        "timestamp": "2026-04-23T17:14:23.856426678",
+        "timestamp": "2026-11-15T15:28:41.861886488",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.03.2"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     }
 }

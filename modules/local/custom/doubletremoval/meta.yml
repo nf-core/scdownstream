@@ -29,8 +29,8 @@ input:
         pattern: "*.{h5ad}"
     - predictions:
         type: file
-        description: Doublet prediction tables in CSV or pickle format
-        pattern: "*.{csv,pkl}"
+        description: Parquet doublet prediction tables with cell identifiers in __index__
+        pattern: "*.parquet"
   - threshold:
       type: integer
       description: Minimum number of positive doublet calls required to flag a cell
@@ -64,25 +64,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/amd64:
-      name: community.wave.seqera.io/library/doublet_removal:be35baa3d64eb9b7
-      build_id: bd-be35baa3d64eb9b7_1
-      scan_id: sc-ccdcf588fdc37bb8_2
     linux/arm64:
-      name: community.wave.seqera.io/library/doublet_removal:600e58acb27a85dd
-      build_id: bd-600e58acb27a85dd_1
-      scan_id: sc-35495ef13f986183_2
+      name: community.wave.seqera.io/library/doublet_removal:34aebf34591b6b8b
+      build_id: bd-34aebf34591b6b8b_1
+      scan_id: sc-237db6c416275459_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/doublet_removal:63f2fac2263c1509
+      build_id: bd-63f2fac2263c1509_1
+      scan_id: sc-6321d868b00e8d8f_1
   singularity:
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/doublet_removal:e4f376f41190cfe2
-      build_id: bd-e4f376f41190cfe2_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/13/1398c273f0185c9ededa9e012a62b07d030a103f84f2939191559a528e2c654a/data
+      name: oras://community.wave.seqera.io/library/doublet_removal:9ce6600a621f3332
+      build_id: bd-9ce6600a621f3332_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/3d/3d052096cd73bcac7690267a7b316846126a0b11b4ccb37128f7d2a175f86388/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/doublet_removal:4df6b76062dbef38
-      build_id: bd-4df6b76062dbef38_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7f/7f257d17ec38c213802f67cbe15cb9928b46d1aca4f492154b958f8b9195681c/data
+      name: oras://community.wave.seqera.io/library/doublet_removal:1cf5ebe9df5ad5f6
+      build_id: bd-1cf5ebe9df5ad5f6_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a2/a21cf60bcbd677ce80713d63416986d615a3774d790a2136c848102b707b438f/data
   conda:
     linux/amd64:
-      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_amd64-bd-be35baa3d64eb9b7_1.txt
+      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_amd64-bd-63f2fac2263c1509_1.txt
     linux/arm64:
-      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_arm64-bd-600e58acb27a85dd_1.txt
+      lock_file: modules/local/custom/doubletremoval/.conda-lock/linux_arm64-bd-34aebf34591b6b8b_1.txt

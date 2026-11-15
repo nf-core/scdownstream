@@ -1,13 +1,294 @@
 Changes in component 'nf-core/scanpy/scrublet'
-'modules/nf-core/scanpy/scrublet/environment.yml' is unchanged
-'modules/nf-core/scanpy/scrublet/meta.yml' is unchanged
-'modules/nf-core/scanpy/scrublet/main.nf' is unchanged
-'modules/nf-core/scanpy/scrublet/tests/main.nf.test.snap' is unchanged
-'modules/nf-core/scanpy/scrublet/tests/main.nf.test' is unchanged
+Changes in 'scanpy/scrublet/environment.yml':
+--- modules/nf-core/scanpy/scrublet/environment.yml
++++ modules/nf-core/scanpy/scrublet/environment.yml
+@@ -4,6 +4,8 @@
+   - conda-forge
+   - bioconda
+ dependencies:
++  - conda-forge::pyarrow=21.0.0
++  - conda-forge::pynndescent=0.5.13
+   - conda-forge::python=3.12.11
+   - conda-forge::pyyaml=6.0.2
+   - conda-forge::scanpy=1.11.2
+
+Changes in 'scanpy/scrublet/meta.yml':
+--- modules/nf-core/scanpy/scrublet/meta.yml
++++ modules/nf-core/scanpy/scrublet/meta.yml
+@@ -52,12 +52,11 @@
+           description: |
+             Groovy Map containing sample information
+             e.g. [ id:'test' ]
+-      - "*.pkl":
++      - "*.parquet":
+           type: file
+-          description: Pickle file containing doublet predictions
+-          pattern: "*.pkl"
+-          ontologies:
+-            - edam: "http://edamontology.org/format_3553" # Pickle format
++          description: Boolean doublet predictions with unique cell IDs in a physical __index__ column
++          pattern: "*.parquet"
++          ontologies: []
+   versions:
+     - versions.yml:
+         type: file
+@@ -77,3 +76,27 @@
+   - "@nictru"
+ maintainers:
+   - "@nictru"
++containers:
++  docker:
++    linux/amd64:
++      name: community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:511ffe8348319831
++      build_id: bd-511ffe8348319831_1
++      scan_id: sc-184168edfd04236f_1
++    linux/arm64:
++      name: community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:ac9ac46a258a87b1
++      build_id: bd-ac9ac46a258a87b1_1
++      scan_id: sc-60deac606e315845_1
++  singularity:
++    linux/amd64:
++      name: oras://community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:6b1ea5e75ae18d52
++      build_id: bd-6b1ea5e75ae18d52_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/43/43dcd1c3ddc54ccb49c4100926138f4abb8e257f36cebd1ce9f43861788351f2/data
++    linux/arm64:
++      name: oras://community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:fec239b336e76aa3
++      build_id: bd-fec239b336e76aa3_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/10/10972f38ba264f2b0eb0a4f4dfde4978d5f2404245cf75b45305870d1ac54e34/data
++  conda:
++    linux/amd64:
++      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_amd64-bd-511ffe8348319831_1.txt
++    linux/arm64:
++      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_arm64-bd-ac9ac46a258a87b1_1.txt
+
+Changes in 'scanpy/scrublet/main.nf':
+--- modules/nf-core/scanpy/scrublet/main.nf
++++ modules/nf-core/scanpy/scrublet/main.nf
+@@ -4,8 +4,8 @@
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cc/cc499354bb89be6429cfc8d8416a340c2327a72732fb6ae33c346feef17b5ffb/data'
+-        : 'community.wave.seqera.io/library/python_pyyaml_scanpy_scikit-image:750e7b74b6d036e4'}"
++        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/43/43dcd1c3ddc54ccb49c4100926138f4abb8e257f36cebd1ce9f43861788351f2/data'
++        : 'community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:511ffe8348319831'}"
+ 
+     input:
+     tuple val(meta), path(h5ad)
+@@ -13,8 +13,8 @@
+ 
+     output:
+     tuple val(meta), path("*.h5ad"), emit: h5ad
+-    tuple val(meta), path("*.pkl") , emit: predictions
+-    path "versions.yml"            , emit: versions, topic: versions
++    tuple val(meta), path("*.parquet"), emit: predictions
++    path "versions.yml", emit: versions, topic: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+@@ -38,12 +38,13 @@
+     export NUMBA_CACHE_DIR=./tmp/numba
+ 
+     touch ${prefix}.h5ad
+-    touch ${prefix}.pkl
++    touch ${prefix}.parquet
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+         python: \$(python3 -c 'import platform; print(platform.python_version())')
+         scanpy: \$(python3 -c 'import scanpy; print(scanpy.__version__)')
++        pyarrow: \$(python3 -c 'import pyarrow; print(pyarrow.__version__)')
+     END_VERSIONS
+     """
+ }
+
+Changes in 'scanpy/scrublet/tests/main.nf.test.snap':
+--- modules/nf-core/scanpy/scrublet/tests/main.nf.test.snap
++++ modules/nf-core/scanpy/scrublet/tests/main.nf.test.snap
+@@ -15,26 +15,27 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_scrublet.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "versions": [
+-                    "versions.yml:md5,0062f21e6708c6615291d3107896c6fa"
++                    "versions.yml:md5,bdfe848707463f2ae33d60bfa1298570"
+                 ]
+             },
+             [
+                 {
+                     "SCANPY_SCRUBLET": {
+                         "python": "3.12.11",
+-                        "scanpy": "1.11.2"
++                        "scanpy": "1.11.2",
++                        "pyarrow": "21.0.0"
+                     }
+                 }
+             ]
+         ],
+-        "timestamp": "2026-08-16T15:06:16.505801",
++        "timestamp": "2026-11-15T14:31:41.15341473",
+         "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.04.0"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
+         }
+     },
+     "Should run without failures": {
+@@ -53,26 +54,27 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl"
++                        "test_scrublet.parquet"
+                     ]
+                 ],
+                 "versions": [
+-                    "versions.yml:md5,7b82a4b5cf47958c4d0cb9bba81cce40"
++                    "versions.yml:md5,199d82214040d35353ee6c8d9acf1f86"
+                 ]
+             },
+             [
+                 {
+                     "SCANPY_SCRUBLET": {
++                        "pyarrow": "21.0.0",
+                         "python": "3.12.11",
+                         "scanpy": "1.11.2"
+                     }
+                 }
+             ]
+         ],
+-        "timestamp": "2026-08-16T15:04:52.727938",
++        "timestamp": "2026-11-15T14:53:10.184152825",
+         "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.04.0"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
+         }
+     },
+     "Should run with empty string for batch_col": {
+@@ -91,26 +93,27 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl"
++                        "test_scrublet.parquet"
+                     ]
+                 ],
+                 "versions": [
+-                    "versions.yml:md5,7b82a4b5cf47958c4d0cb9bba81cce40"
++                    "versions.yml:md5,199d82214040d35353ee6c8d9acf1f86"
+                 ]
+             },
+             [
+                 {
+                     "SCANPY_SCRUBLET": {
++                        "pyarrow": "21.0.0",
+                         "python": "3.12.11",
+                         "scanpy": "1.11.2"
+                     }
+                 }
+             ]
+         ],
+-        "timestamp": "2026-08-16T15:05:27.44104",
++        "timestamp": "2026-11-15T14:55:02.12511162",
+         "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.04.0"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
+         }
+     },
+     "Should run with empty array for batch_col": {
+@@ -129,26 +132,27 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl"
++                        "test_scrublet.parquet"
+                     ]
+                 ],
+                 "versions": [
+-                    "versions.yml:md5,7b82a4b5cf47958c4d0cb9bba81cce40"
++                    "versions.yml:md5,199d82214040d35353ee6c8d9acf1f86"
+                 ]
+             },
+             [
+                 {
+                     "SCANPY_SCRUBLET": {
++                        "pyarrow": "21.0.0",
+                         "python": "3.12.11",
+                         "scanpy": "1.11.2"
+                     }
+                 }
+             ]
+         ],
+-        "timestamp": "2026-08-16T15:06:01.974464",
++        "timestamp": "2026-11-15T14:56:54.132331925",
+         "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.04.0"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
+         }
+     }
+-}
++}
+Changes in 'scanpy/scrublet/tests/main.nf.test':
+--- modules/nf-core/scanpy/scrublet/tests/main.nf.test
++++ modules/nf-core/scanpy/scrublet/tests/main.nf.test
+@@ -27,6 +27,18 @@
+         then {
+             assertAll(
+             { assert process.success },
++            {
++                def predictions = parquet(process.out.predictions[0][1])
++                assert file(process.out.predictions[0][1]).name == 'test_scrublet.parquet'
++                assert predictions.columnNames == ['__index__', 'test_scrublet']
++                assert predictions.schema.fields.find { it.name == 'test_scrublet' }.physicalType == 'BOOLEAN'
++                assert predictions.compressionCodecs == ['SNAPPY']
++                def rows = predictions.rows
++                assert rows.size() > 0
++                assert rows.every { it.__index__ instanceof String && it.test_scrublet instanceof Boolean }
++                assert rows.collect { it.__index__ }.toSet().size() == rows.size()
++                assert rows.findAll { !it.test_scrublet }.collect { it.__index__ } == anndata(process.out.h5ad[0][1]).obs.index.values
++            },
+             { assert snapshot(
+                 sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions"]),
+                 process.out.versions.collect { path(it).yaml }
+
+'modules/nf-core/scanpy/scrublet/.conda-lock/linux_arm64-bd-ac9ac46a258a87b1_1.txt' was created
+'modules/nf-core/scanpy/scrublet/.conda-lock/linux_amd64-bd-511ffe8348319831_1.txt' was created
 Changes in 'scanpy/scrublet/templates/scrublet.py':
 --- modules/nf-core/scanpy/scrublet/templates/scrublet.py
 +++ modules/nf-core/scanpy/scrublet/templates/scrublet.py
-@@ -33,7 +33,7 @@
+@@ -8,7 +8,9 @@
+ os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
+ 
+ import platform
++from pathlib import Path
+ 
++import pyarrow
+ import scanpy as sc
+ import yaml
+ from threadpoolctl import threadpool_limits
+@@ -27,17 +29,26 @@
+ sc.pp.scrublet(adata, **kwargs)
+ 
+ adata.obs["predicted_doublet"] = adata.obs["predicted_doublet"].astype(bool)
+-df = adata.obs[["predicted_doublet"]]
++df = adata.obs[["predicted_doublet"]].copy()
+ df.columns = ["${prefix}"]
+-df.to_pickle("${prefix}.pkl")
++if df.index.hasnans or not df.index.is_unique or not all(isinstance(cell, str) for cell in df.index):
++    raise ValueError("Doublet predictions require unique, non-null string cell IDs")
++df.insert(0, "__index__", df.index)
++df.to_parquet(Path("${prefix}.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
  
  adata = adata[~adata.obs["predicted_doublet"]].copy()
  
@@ -16,5 +297,16 @@ Changes in 'scanpy/scrublet/templates/scrublet.py':
  
  # Versions
  
+-versions = {"${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}}
++versions = {
++    "${task.process}": {
++        "python": platform.python_version(),
++        "scanpy": sc.__version__,
++        "pyarrow": pyarrow.__version__,
++    }
++}
+ 
+ with open("versions.yml", "w") as f:
+     yaml.dump(versions, f)
 
 ************************************************************

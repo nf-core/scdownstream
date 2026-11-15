@@ -47,10 +47,10 @@ output:
           description: AnnData with Leiden cluster labels
           pattern: "*.h5ad"
   obs:
-    - "*.pkl":
+    - "*.parquet":
         type: file
-        description: Pickled obs with Leiden cluster labels
-        pattern: "*.pkl"
+        description: Parquet obs with Leiden cluster labels and an explicit __index__ column
+        pattern: "*.parquet"
   plots:
     - "*.png":
         type: file
@@ -74,24 +74,24 @@ maintainers:
 containers:
   docker:
     linux/amd64:
-      name: community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:ce926a86f015211a
-      build_id: bd-ce926a86f015211a_1
-      scan_id: sc-5a4f68a112b1dca0_2
+      name: community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:085892d5c5a30e57
+      build_id: bd-085892d5c5a30e57_1
+      scan_id: sc-011cb60add0031c2_1
     linux/arm64:
-      name: community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:31e5c9d4aa830c6e
-      build_id: bd-31e5c9d4aa830c6e_1
-      scan_id: sc-3b2e42c8f0b553e0_2
+      name: community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:58bafa6e3d6796d2
+      build_id: bd-58bafa6e3d6796d2_1
+      scan_id: sc-c166630796b0a9b8_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:5947fe0b8b0892f8
-      build_id: bd-5947fe0b8b0892f8_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f9/f905954a8298dd4d0c74515b14dc542d4ff9d5e16ac0328ca31b5fac553b6c39/data
+      name: oras://community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:2f9816b892520cdc
+      build_id: bd-2f9816b892520cdc_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/04/04307b777a83d13f004023a046a677adc1c444edcae99a1232cc5b82e88968df/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/leidenalg_python-igraph_python_pyyaml_scanpy:46f198136eb937c0
-      build_id: bd-46f198136eb937c0_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8e/8e1b5af758a6affaf729c39cd892232f40ad3a26b8e0cfd39c695dbfe2f42909/data
+      name: oras://community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:e8e1c729f0a0eb27
+      build_id: bd-e8e1c729f0a0eb27_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/14/14fe67fb2719321f142025e25959940fb5ab88735eea3738ab08327fbbe5bffb/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/leiden/.conda-lock/linux_amd64-bd-ce926a86f015211a_1.txt
+      lock_file: modules/local/scanpy/leiden/.conda-lock/linux_amd64-bd-085892d5c5a30e57_1.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/leiden/.conda-lock/linux_arm64-bd-31e5c9d4aa830c6e_1.txt
+      lock_file: modules/local/scanpy/leiden/.conda-lock/linux_arm64-bd-58bafa6e3d6796d2_1.txt

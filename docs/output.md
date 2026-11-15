@@ -8,6 +8,14 @@ Most of the plots are taken from the MultiQC report, which summarises results at
 The directories listed below will be created in the results directory after the pipeline has finished.
 All paths are relative to the top-level results directory.
 
+### Fragment formats
+
+Tabular `obs`, `var`, and `obsm` fragments, including all four doublet callers' predictions, use `.parquet`. LIANA's tabular `uns` fragment also uses Parquet. Each table stores its index in an ordinary physical `__index__` column. Cell and gene indices are strings. Fragment stems and prefixes are unchanged.
+
+Nested PAGA, Scanpy rank-genes-groups, and decoupler `uns` objects remain `.pkl`. CellTypist model files and Tensor-cell2cell tensor objects also remain pickled. `obsp` and layer matrix formats are unchanged. CSV/TSV reports, metadata exports, annotation-column manifests, and expression CSV inputs retain their formats. Fragment readers reject legacy CSV and pickle tables.
+
+Intermediate fragments are published only under the existing module-specific `--save_intermediates` rules. The `.parquet` suffix does not make an intermediate fragment a published report table. LIANA result tables remain conditional on `--save_intermediates`.
+
 ## Pipeline overview
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
@@ -74,12 +82,12 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - `doublet_detection/`: Directories related to doublet detection.
     - `input_rds/`: RDS version of the H5AD file that is used as input to the doublet detection tools.
     - `(doubletdetection|scdblfinder|scrublet|solo)/`: Results of doublet detection.
-      Each directory contains a filtered `h5ad`/`rds` and a `csv`/`pkl` file
+      Each directory contains a filtered `h5ad`/`rds` and a `.parquet` file
       with the doublet annotations.
     - `${sample_id}.h5ad`: The H5AD without doublets.
   - `qc_filtered/`: QC plots for the preprocessed data.
   - `cell_cycle/`: Cell cycle scoring results.
-    - `${sample_id}_cellcycle.pkl`: `S_score`, `G2M_score`, and `phase` columns
+    - `${sample_id}_cellcycle.parquet`: `S_score`, `G2M_score`, and `phase` columns
       for each cell. Merged into the final H5AD via `FINALIZE_QC_ANNDATAS`.
     - `${sample_id}_cellcycle.h5ad`: Intermediate H5AD with cell cycle scores added, available for inspection.
   - `sizes/`: Cell counts at each QC stage (MultiQC table input).
@@ -107,7 +115,7 @@ Per-sample QC outputs live under `02_quality_control/`.
       - `*.rds`: RDS version of the H5AD file.
     - `${tool}`
       - `*.h5ad/*.rds`: The integrated H5AD or RDS file.
-      - `X_${tool}.pkl`: Low-dimensional representation of the integrated data.
+      - `X_${tool}.parquet`: Low-dimensional representation of the integrated data.
       - `symphony_reference.h5ad` (Symphony only): Compact Symphony reference AnnData for query mapping, published from de novo Symphony runs.
 
 </details>
@@ -125,14 +133,15 @@ The integrated H5AD files are stored in subdirectories named after the integrati
 - `04_celltypes/`
   - `celltypist/`
     - `*.h5ad`: The H5AD file with cell type annotations.
-    - `*.pkl`: The cell type annotations in a pickle file.
+    - `*.parquet`: The cell type annotations as an indexed table.
   - `azimuth/`
     - `*.h5ad`: The H5AD file with Pan-human Azimuth annotations in `obs` and the Azimuth embedding in `obsm['X_azimuth']`.
-    - `*.pkl`: The Pan-human Azimuth annotations in a pickle file.
+    - `*.parquet`: The Pan-human Azimuth annotations as an indexed table. The `X_azimuth.parquet` embedding fragment is not published.
     - `*_annotation_columns.csv`: The added `obs` columns and whether they are used for per-cluster aggregation.
   - `singleR`
     - `*.h5ad`: The H5AD file with cell type annotations.
-    - `*.csv`: The cell type annotations in a CSV file.
+    - `*_predictions.parquet`: The cell type annotations as an indexed table.
+    - `*_annotation_columns.csv`: The added `obs` columns and whether they are used for per-cluster aggregation.
     - `*.pdf`: The cell type annotation plots in PDF format.
   - `celldexreferenceprocessing`
     - `dir`: A directory containing `h5` and `rds` files for the reference(s)
@@ -148,7 +157,7 @@ The `04_celltypes` directory contains the results of the per-sample cell type an
 
 - `08_cytetype/`
   - `*.h5ad`: The H5AD file with CyteType annotations merged into `adata.obs` (only if `--save_intermediates` is enabled).
-  - `*.pkl`: The CyteType-added obs columns in a pickle file (always emitted; merged into the final merged cohort H5AD by `FINALIZE`).
+  - `*.parquet`: The CyteType-added `obs` columns (always emitted, published only with `--save_intermediates`, and merged into the final merged cohort H5AD by `FINALIZE`).
 
 </details>
 
@@ -166,13 +175,13 @@ CyteType runs after integration, clustering, and global differential expression.
     - `leiden/`
       - ${resolution}/`
         - `*.h5ad`: The H5AD file with the Leiden clustering.
-        - `*.pkl`: The Leiden clustering in a pickle file.
+        - `*.parquet`: The Leiden clustering as an indexed table.
     - `umap/`
       - `*.h5ad`: The H5AD file with the UMAP coordinates.
-      - `*.pkl`: The UMAP coordinates in a pickle file.
+      - `*.parquet`: The UMAP coordinates as an indexed table.
     - `tsne/` (when `--tsne` is enabled)
       - `*.h5ad`: The H5AD file with the t-SNE coordinates.
-      - `*.pkl`: The t-SNE coordinates in a pickle file.
+      - `*.parquet`: The t-SNE coordinates as an indexed table.
 
 </details>
 
@@ -196,7 +205,7 @@ The results are stored in subdirectories named after the integration tool used.
       - `*_dotplot.png`: Dotplot of top ligand-receptor interactions (always published).
       - `*_circle.png`: Circle plot of interaction counts between cell groups (always published).
       - `*_tileplot.png`: Tileplot of the top ligand-receptor interactions (always published).
-      - `*.h5ad` / `*.pkl`: Rank-aggregate AnnData and results table (when `--save_intermediates`).
+      - `*.h5ad` / `*.parquet`: Rank-aggregate AnnData and indexed results table (when `--save_intermediates`).
       - `by_sample/` (when `--cell2cell` and `--save_intermediates`)
         - `*.csv.gz`: Long-format LIANA results per context.
         - `*_contexts.tsv`: Context metadata with optional condition labels.

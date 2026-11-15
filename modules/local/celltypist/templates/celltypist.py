@@ -8,6 +8,7 @@ os.environ["CELLTYPIST_FOLDER"] = "./tmp/celltypist"
 
 import celltypist
 import pandas as pd
+import pyarrow
 import scanpy as sc
 import yaml
 from celltypist import models as ct_models
@@ -66,7 +67,18 @@ for model_name, model_path in model_specs:
     )
 
 df_celltypist = pd.concat(df_list, axis=1)
-df_celltypist.to_pickle("${prefix}.pkl")
+obs_fragment = df_celltypist.copy()
+if "__index__" in obs_fragment.columns or not obs_fragment.columns.is_unique:
+    raise ValueError("Observation fragment columns must be unique and must not contain reserved '__index__'")
+if (
+    obs_fragment.index.hasnans
+    or not obs_fragment.index.is_unique
+    or not all(isinstance(value, str) for value in obs_fragment.index)
+):
+    raise ValueError("Observation fragment index must contain unique, non-null strings")
+obs_fragment.reset_index(names="__index__").to_parquet(
+    Path(f"{prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 pd.DataFrame(manifest_rows).to_csv(f"{prefix}_annotation_columns.csv", index=False)
 
@@ -79,6 +91,7 @@ versions = {
     "${task.process}": {
         "python": platform.python_version(),
         "pandas": pd.__version__,
+        "pyarrow": pyarrow.__version__,
         "scanpy": sc.__version__,
         "celltypist": celltypist.__version__,
     }

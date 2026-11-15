@@ -51,10 +51,10 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.pkl":
+      - "*.parquet":
           type: file
-          description: pandas dataframe containing the doublet classification
-          pattern: "*.pkl"
+          description: Boolean doublet classifications with unique cell IDs in a physical __index__ column
+          pattern: "*.parquet"
           ontologies: []
   versions:
     - versions.yml:
@@ -72,3 +72,27 @@ authors:
   - "@LeonHafner"
 maintainers:
   - "@LeonHafner"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/pyarrow_scvi-tools:9264982dd7b84d1c
+      build_id: bd-9264982dd7b84d1c_1
+      scan_id: sc-c12034f0532d7e8b_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/pyarrow_scvi-tools:002a45f506b3d900
+      build_id: bd-002a45f506b3d900_1
+      scan_id: sc-bdca218f985e5406_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/pyarrow_scvi-tools:695339805fd699bc
+      build_id: bd-695339805fd699bc_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/dc/dc93a0ed0412548a3ee8df41f4aa5781aeca6409502b82ff1af7173a4984e4e3/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/pyarrow_scvi-tools:9b077efbbff5b3be
+      build_id: bd-9b077efbbff5b3be_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ba/ba88d310e8f5d69d321b94bb73012e8f5571ec4aee16e1047e7dd378b606fb2a/data
+  conda:
+    linux/amd64:
+      lock_file: modules/nf-core/scvitools/solo/.conda-lock/linux_amd64-bd-002a45f506b3d900_1.txt
+    linux/arm64:
+      lock_file: modules/nf-core/scvitools/solo/.conda-lock/linux_arm64-bd-9264982dd7b84d1c_1.txt

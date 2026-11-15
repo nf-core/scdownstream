@@ -15,26 +15,27 @@
                         {
                             "id": "test"
                         },
-                        "test_scrublet.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_scrublet.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,0062f21e6708c6615291d3107896c6fa"
+                    "versions.yml:md5,bdfe848707463f2ae33d60bfa1298570"
                 ]
             },
             [
                 {
                     "SCANPY_SCRUBLET": {
                         "python": "3.12.11",
-                        "scanpy": "1.11.2"
+                        "scanpy": "1.11.2",
+                        "pyarrow": "21.0.0"
                     }
                 }
             ]
         ],
-        "timestamp": "2026-08-16T15:06:16.505801",
+        "timestamp": "2026-11-15T14:31:41.15341473",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures": {
@@ -53,26 +54,27 @@
                         {
                             "id": "test"
                         },
-                        "test_scrublet.pkl"
+                        "test_scrublet.parquet"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,7b82a4b5cf47958c4d0cb9bba81cce40"
+                    "versions.yml:md5,199d82214040d35353ee6c8d9acf1f86"
                 ]
             },
             [
                 {
                     "SCANPY_SCRUBLET": {
+                        "pyarrow": "21.0.0",
                         "python": "3.12.11",
                         "scanpy": "1.11.2"
                     }
                 }
             ]
         ],
-        "timestamp": "2026-08-16T15:04:52.727938",
+        "timestamp": "2026-11-15T14:53:10.184152825",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should run with empty string for batch_col": {
@@ -91,26 +93,27 @@
                         {
                             "id": "test"
                         },
-                        "test_scrublet.pkl"
+                        "test_scrublet.parquet"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,7b82a4b5cf47958c4d0cb9bba81cce40"
+                    "versions.yml:md5,199d82214040d35353ee6c8d9acf1f86"
                 ]
             },
             [
                 {
                     "SCANPY_SCRUBLET": {
+                        "pyarrow": "21.0.0",
                         "python": "3.12.11",
                         "scanpy": "1.11.2"
                     }
                 }
             ]
         ],
-        "timestamp": "2026-08-16T15:05:27.44104",
+        "timestamp": "2026-11-15T14:55:02.12511162",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should run with empty array for batch_col": {
@@ -129,26 +132,27 @@
                         {
                             "id": "test"
                         },
-                        "test_scrublet.pkl"
+                        "test_scrublet.parquet"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,7b82a4b5cf47958c4d0cb9bba81cce40"
+                    "versions.yml:md5,199d82214040d35353ee6c8d9acf1f86"
                 ]
             },
             [
                 {
                     "SCANPY_SCRUBLET": {
+                        "pyarrow": "21.0.0",
                         "python": "3.12.11",
                         "scanpy": "1.11.2"
                     }
                 }
             ]
         ],
-        "timestamp": "2026-08-16T15:06:01.974464",
+        "timestamp": "2026-11-15T14:56:54.132331925",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     }
 }

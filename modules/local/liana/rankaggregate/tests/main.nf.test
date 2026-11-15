@@ -34,6 +34,14 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
             assert "liana_res" in adata.uns
+            assert file(process.out.uns[0]).name == 'test_liana.parquet'
+            def result = parquet(process.out.uns[0])
+            assert result.columnNames[0] == '__index__'
+            assert result.columnNames.containsAll(['source', 'target', 'magnitude_rank', 'specificity_rank'])
+            assert result.schema.fields.find { it.name == '__index__' }.physicalType in ['INT32', 'INT64']
+            assert result.compressionCodecs == ['SNAPPY']
+            assert result.rowCount > 0
+            assert result.rows.every { it.__index__ instanceof Number }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml
@@ -69,6 +77,11 @@ nextflow_process {
             assert process.success
             def adata = anndata(process.out.h5ad[0][1])
             assert "liana_res" in adata.uns
+            def result = parquet(process.out.uns[0])
+            assert result.columnNames[0] == '__index__'
+            assert result.schema.fields.find { it.name == '__index__' }.physicalType in ['INT32', 'INT64']
+            assert result.compressionCodecs == ['SNAPPY']
+            assert result.rowCount > 0
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml
@@ -131,7 +144,7 @@ nextflow_process {
 
         then {
             assert process.success
-
+            assert file(process.out.uns[0]).name == 'test_liana.parquet'
             assert snapshot(process.out).match()
         }
 

@@ -101,15 +101,15 @@ output:
           description: Trained scANVI model
           pattern: "*_model/model.pt"
   obs:
-    - "*.pkl":
+    - "*.parquet":
         type: file
-        description: Pickled obs table with label predictions
-        pattern: "*.pkl"
+        description: Parquet label predictions with explicit __index__ cell identifiers
+        pattern: "*.parquet"
   obsm:
-    - "X_*.pkl":
+    - "X_*.parquet":
         type: file
-        description: Pickled scANVI latent embedding matrix
-        pattern: "X_*.pkl"
+        description: Parquet scANVI latent embedding matrix with explicit __index__ cell identifiers
+        pattern: "X_*.parquet"
   versions:
     - versions.yml:
         type: file
@@ -124,25 +124,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/scvi-tools:1.4.3--fc95d2eb26ebf7cc
-      build_id: bd-fc95d2eb26ebf7cc_1
-      scan_id: sc-a5c97b99635848a1_2
     linux/amd64:
-      name: community.wave.seqera.io/library/scvi-tools:1.4.3--05da7945b26925f8
-      build_id: bd-05da7945b26925f8_1
-      scan_id: sc-16d2655c56a3a5f1_1
+      name: community.wave.seqera.io/library/pyarrow_scvi-tools:002a45f506b3d900
+      build_id: bd-002a45f506b3d900_1
+      scan_id: sc-bdca218f985e5406_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/pyarrow_scvi-tools:9264982dd7b84d1c
+      build_id: bd-9264982dd7b84d1c_1
+      scan_id: sc-c12034f0532d7e8b_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/scvi-tools:1.4.3--d13481fa82528f78
-      build_id: bd-d13481fa82528f78_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/9e/9ea53a1a670cb5d83abab8b885034e786fed9ff52cb683aa3f1cc9bd5aae2d93/data
+      name: oras://community.wave.seqera.io/library/pyarrow_scvi-tools:9b077efbbff5b3be
+      build_id: bd-9b077efbbff5b3be_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ba/ba88d310e8f5d69d321b94bb73012e8f5571ec4aee16e1047e7dd378b606fb2a/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/scvi-tools:1.4.3--9f0c02ed8f8737fd
-      build_id: bd-9f0c02ed8f8737fd_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5f/5f0578f672f1d3cffaf0d7e069ee2bea0eda8653ce273af902190795ae10892e/data
+      name: oras://community.wave.seqera.io/library/pyarrow_scvi-tools:695339805fd699bc
+      build_id: bd-695339805fd699bc_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/dc/dc93a0ed0412548a3ee8df41f4aa5781aeca6409502b82ff1af7173a4984e4e3/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scvitools/scanvi/.conda-lock/linux_amd64-bd-05da7945b26925f8_1.txt
+      lock_file: modules/local/scvitools/scanvi/.conda-lock/linux_amd64-bd-002a45f506b3d900_1.txt
     linux/arm64:
-      lock_file: modules/local/scvitools/scanvi/.conda-lock/linux_arm64-bd-fc95d2eb26ebf7cc_1.txt
+      lock_file: modules/local/scvitools/scanvi/.conda-lock/linux_arm64-bd-9264982dd7b84d1c_1.txt

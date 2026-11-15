@@ -32,14 +32,16 @@
                 },
                 "CELLTYPES_CELLTYPIST": {
                     "celltypist": "1.6.3",
-                    "pandas": "3.0.6",
-                    "python": "3.13.16",
+                    "pandas": "3.1.1",
+                    "pyarrow": "21.0.0",
+                    "python": "3.13.18",
                     "scanpy": "1.10.4"
                 },
                 "CELLTYPES_SINGLER": {
                     "R": "R version 4.5.3 (2026-03-11)",
                     "SingleR": "2.12.0",
                     "anndataR": "1.0.2",
+                    "arrow": "21.0.0",
                     "ggplot2": "4.0.2"
                 },
                 "COLLECT_SIZES": {
@@ -48,8 +50,9 @@
                 },
                 "DOUBLETREMOVAL": {
                     "anndata": "0.12.10",
-                    "matplotlib": "3.11.1",
+                    "matplotlib": "3.10.9",
                     "pandas": "2.3.3",
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12",
                     "upsetplot": "0.9.0"
                 },
@@ -57,6 +60,7 @@
                     "anndata": "0.13.2",
                     "numpy": "2.5.4",
                     "pandas": "3.0.5",
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12"
                 },
                 "QC_FILTERED": {
@@ -79,11 +83,13 @@
                     "scanpy": "1.12.3"
                 },
                 "SCANPY_SCRUBLET": {
+                    "pyarrow": "21.0.0",
                     "python": "3.12.11",
                     "scanpy": "1.11.2"
                 },
                 "SCDBLFINDER": {
                     "R": "4.5.3",
+                    "arrow": "21.0.0",
                     "scDblFinder": "1.24.10"
                 },
                 "UPSET_GENES": {
@@ -126,7 +132,7 @@
                 "04_celltypes/singler/SRR28679756_singler_immune_celldex_heatmap.pdf",
                 "04_celltypes/singler/SRR28679756_singler_immune_direct_distribution.pdf",
                 "04_celltypes/singler/SRR28679756_singler_immune_direct_heatmap.pdf",
-                "04_celltypes/singler/SRR28679756_singler_predictions.csv",
+                "04_celltypes/singler/SRR28679756_singler_predictions.parquet",
                 "04_celltypes/singler/SRR28679757_singler_annotation_columns.csv",
                 "04_celltypes/singler/SRR28679757_singler_hpca_celldex_distribution.pdf",
                 "04_celltypes/singler/SRR28679757_singler_hpca_celldex_heatmap.pdf",
@@ -136,7 +142,7 @@
                 "04_celltypes/singler/SRR28679757_singler_immune_celldex_heatmap.pdf",
                 "04_celltypes/singler/SRR28679757_singler_immune_direct_distribution.pdf",
                 "04_celltypes/singler/SRR28679757_singler_immune_direct_heatmap.pdf",
-                "04_celltypes/singler/SRR28679757_singler_predictions.csv",
+                "04_celltypes/singler/SRR28679757_singler_predictions.parquet",
                 "04_celltypes/singler/SRR28679758_singler_annotation_columns.csv",
                 "04_celltypes/singler/SRR28679758_singler_hpca_celldex_distribution.pdf",
                 "04_celltypes/singler/SRR28679758_singler_hpca_celldex_heatmap.pdf",
@@ -146,7 +152,7 @@
                 "04_celltypes/singler/SRR28679758_singler_immune_celldex_heatmap.pdf",
                 "04_celltypes/singler/SRR28679758_singler_immune_direct_distribution.pdf",
                 "04_celltypes/singler/SRR28679758_singler_immune_direct_heatmap.pdf",
-                "04_celltypes/singler/SRR28679758_singler_predictions.csv",
+                "04_celltypes/singler/SRR28679758_singler_predictions.parquet",
                 "10_reports",
                 "10_reports/_extensions",
                 "10_reports/_extensions/nf-core",
@@ -174,7 +180,7 @@
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
             ]
         ],
-        "timestamp": "2026-11-12T23:23:37.682668257",
+        "timestamp": "2026-11-15T17:06:59.417466858",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

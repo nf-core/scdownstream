@@ -32,6 +32,14 @@ nextflow_process {
             assert process.out.h5ad.size() == 1
             assert process.out.uns.size() == 1
             assert file(process.out.uns[0]).length() > 0
+            assert file(process.out.uns[0]).name == 'dense_consensus_liana.parquet'
+            def result = parquet(process.out.uns[0])
+            assert result.columnNames[0] == '__index__'
+            assert result.columnNames.containsAll(['source', 'target', 'magnitude_rank', 'specificity_rank'])
+            assert result.schema.fields.find { it.name == '__index__' }.physicalType in ['INT32', 'INT64']
+            assert result.compressionCodecs == ['SNAPPY']
+            assert result.rowCount > 0
+            assert result.rows.every { it.__index__ instanceof Number }
             def adata = anndata(process.out.h5ad[0][1])
             assert adata.n_obs == 40
             assert adata.n_vars == 1877
@@ -87,6 +95,11 @@ nextflow_process {
             assert process.success
             assert process.out.h5ad.size() == 1
             assert 'liana_res' in anndata(process.out.h5ad[0][1]).uns
+            def result = parquet(process.out.uns[0])
+            assert result.columnNames[0] == '__index__'
+            assert result.schema.fields.find { it.name == '__index__' }.physicalType in ['INT32', 'INT64']
+            assert result.compressionCodecs == ['SNAPPY']
+            assert result.rowCount > 0
         }
     }
 
@@ -108,12 +121,7 @@ nextflow_process {
                 script "../../../adata/extend/main.nf"
                 process {
                     """
-                    csv = file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.csv', checkIfExists: true)
-                    groups = csv.readLines().drop(1).withIndex().collect { line, i ->
-                        line.split(',')[0] + ',' + (i % 2 == 0 ? 'sender' : 'receiver')
-                    }
-                    obs = channel.of('cell,interaction_group\\n' + groups.join('\\n') + '\\n')
-                        .collectFile(name: 'groups.csv')
+                    obs = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/groups.parquet', checkIfExists: true))
                     input[0] = ADATA_READCSV.out.h5ad.combine(obs).map { meta, h5ad, fragment ->
                         [[id: 'dense_groups'], h5ad, [fragment], [], [], [], [], []]
                     }

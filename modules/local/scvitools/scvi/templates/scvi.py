@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+from pathlib import Path
 
 os.environ.setdefault("TORCHINDUCTOR_CACHE_DIR", os.path.join(os.getcwd(), "torch_cache"))
 
@@ -8,11 +9,29 @@ os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
 
 import anndata as ad
 import pandas as pd
+import pyarrow as pa
 import scvi
 import torch
 import yaml
 from scvi.model import SCVI
 from threadpoolctl import threadpool_limits
+
+
+def write_fragment(frame, path):
+    fragment = frame.copy()
+    fragment.columns = fragment.columns.map(str)
+    if "__index__" in fragment.columns or not fragment.columns.is_unique:
+        raise ValueError("Fragment columns must be unique and must not contain reserved column '__index__'.")
+    if (
+        fragment.index.nlevels != 1
+        or not fragment.index.is_unique
+        or fragment.index.hasnans
+        or not all(isinstance(value, str) for value in fragment.index)
+    ):
+        raise ValueError("Fragment axis identifiers must be unique, non-null strings.")
+    fragment = fragment.reset_index(names="__index__")
+    fragment.to_parquet(str(Path(path).resolve()), engine="pyarrow", index=False, compression="snappy")
+
 
 torch.set_float32_matmul_precision("medium")
 torch.use_deterministic_algorithms(True)
@@ -84,11 +103,18 @@ adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 model.save("${prefix}_model")
 
 df = pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names)
-df.to_pickle("X_${prefix}.pkl")
+write_fragment(df, "X_${prefix}.parquet")
 
 # Versions
 
-versions = {"${task.process}": {"scvi": scvi.__version__}}
+versions = {
+    "${task.process}": {
+        "scvi": scvi.__version__,
+        "pyarrow": pa.__version__,
+        "torch": str(torch.__version__),
+        "cuda": torch.version.cuda or "no CUDA available",
+    }
+}
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)
