@@ -90,6 +90,7 @@ The pipeline uses the following tools:
       - [LIANA+](https://liana-py.readthedocs.io/)
       - [Tensor-cell2cell](https://github.com/earmingol/cell2cell) (optional via `--cell2cell`)
 6. Export the final H5AD file
+   - Gene biotype and chromosome annotation from a GTF or [MyGene.info](https://mygene.info/) (optional via `--gene_annotation`)
    - SingleCellExperiment RDS file (optional via `--tords`)
    - [CELLxGENE](https://cellxgene.cziscience.com/)-compatible H5AD file (optional via `--prep_cellxgene`)
 7. Create [Quarto](https://quarto.org/) and ([`MultiQC`](http://multiqc.info/)) reports

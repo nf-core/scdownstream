@@ -259,6 +259,9 @@ LIANA rank-aggregate writes a dotplot and tileplot of top interactions by `magni
   - `merged.h5ad`: The final H5AD file with all results.
   - `merged.rds`: RDS version of the final H5AD file (only when `--tords` is enabled).
   - `merged_metadata.csv`: Metadata of the final H5AD file.
+  - `gene_annotation/` (only with `--gene_annotation` and `--save_intermediates`)
+    - `merged_gene_annotation.csv`: Per-gene annotations added to `adata.var` of `merged.h5ad`.
+    - `<gtf>.anno.tsv`: Gene table derived from `--gene_annotation_gtf`.
 
 </details>
 
