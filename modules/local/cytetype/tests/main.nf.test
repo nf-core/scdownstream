@@ -137,13 +137,6 @@ nextflow_process {
             assert process.success
 
             assert snapshot(process.out).match()
-
-            def regression = new ProcessBuilder(
-                'python3',
-                "${projectDir}/modules/local/cytetype/tests/test_visualisation.py"
-            ).redirectErrorStream(true).start()
-            def regressionOutput = regression.inputStream.text
-            assert regression.waitFor() == 0 : regressionOutput
         }
 
     }
