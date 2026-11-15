@@ -75,6 +75,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Send empty CyteType visualisation arrays for inputs without embeddings, preserving existing coordinates and group labels, by @nictru and GPT-6.1 Sol [[#396](https://github.com/nf-core/scdownstream/pull/396)].
 - Skip HUGO-unifier for non-human species and warn when gene symbol unification is requested, by GPT-6.1 Sol ([#389](https://github.com/nf-core/scdownstream/issues/389)) [[#390](https://github.com/nf-core/scdownstream/pull/390)].
 
 - Update scDblFinder to 1.24.10, pin xgboost 3.4.2 and rebuild amd64 and arm64 containers to fix classifier compatibility, by @nictru and GPT-6.1 Sol [[#387](https://github.com/nf-core/scdownstream/pull/387)].
