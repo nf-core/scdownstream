@@ -59,6 +59,10 @@ annotator = CyteType(
     rank_key=rank_key,
     auth_token=auth_token_arg,
 )
+# The API requires arrays even when the input has no visualisation coordinates.
+if annotator.visualization_data.get("coordinates") is None:
+    annotator.visualization_data = {"coordinates": [], "clusters": []}
+
 adata_work = annotator.run(
     study_context=study_context,
     show_progress=False,
