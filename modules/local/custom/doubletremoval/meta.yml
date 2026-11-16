@@ -1,5 +1,5 @@
 name: "custom_doubletremoval"
-description: Merge doublet predictions into AnnData and optionally remove doublets
+description: Validate Boolean predictions, emit method-scoped calls and optionally remove doublets
 keywords:
   - doublets
   - filtering
@@ -27,6 +27,9 @@ input:
         type: file
         description: AnnData object in h5ad format
         pattern: "*.{h5ad}"
+    - methods:
+        type: list
+        description: Sorted unique method identifiers aligned with predictions (doubletdetection, scdblfinder, scrublet, solo)
     - predictions:
         type: file
         description: Parquet doublet prediction tables with cell identifiers in __index__
@@ -36,7 +39,7 @@ input:
       description: Minimum number of positive doublet calls required to flag a cell
   - removal:
       type: string
-      description: Whether to remove flagged doublets (true) or only annotate them (false)
+      description: Whether to remove flagged doublets (true) or retain all cells (false)
 
 output:
   h5ad:
@@ -45,8 +48,16 @@ output:
           description: Groovy Map containing sample information
       - "*.h5ad":
           type: file
-          description: AnnData with doublet annotations and optional filtering applied
+          description: Original AnnData with only optional cell filtering applied, without newly computed annotations
           pattern: "*.h5ad"
+  obs:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.obs.parquet":
+          type: file
+          description: Full-cell indexed method-scoped Boolean calls and classes; no scores
+          pattern: "*.obs.parquet"
   multiqc_files:
     - "*_mqc.json":
         type: file

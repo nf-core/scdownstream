@@ -35,6 +35,9 @@ if df.index.hasnans or not df.index.is_unique or not all(isinstance(cell, str) f
     raise ValueError("Doublet predictions require unique, non-null string cell IDs")
 df.insert(0, "__index__", df.index)
 df.to_parquet(Path("${prefix}.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
+scores = adata.obs[["doublet_score"]].rename(columns={"doublet_score": "scrublet_score"})
+scores.insert(0, "__index__", scores.index)
+scores.to_parquet(Path("${prefix}.scores.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
 
 adata = adata[~adata.obs["predicted_doublet"]].copy()
 

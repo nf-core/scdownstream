@@ -8,12 +8,13 @@ process CUSTOM_DOUBLETREMOVAL {
         : 'community.wave.seqera.io/library/doublet_removal:63f2fac2263c1509'}"
 
     input:
-    tuple val(meta), path(h5ad), path(predictions)
+    tuple val(meta), path(h5ad), val(methods), path(predictions, stageAs: 'predictions/*', arity: '1..*')
     val threshold
     val removal
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
+    tuple val(meta), path("*.obs.parquet"), emit: obs
     path ("*_mqc.json"), emit: multiqc_files, optional: true
     path "versions.yml", emit: versions, topic: versions
 
@@ -28,6 +29,7 @@ process CUSTOM_DOUBLETREMOVAL {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
+    touch ${prefix}.obs.parquet
     touch ${prefix}_mqc.json
     touch versions.yml
     """

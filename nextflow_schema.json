@@ -56,7 +56,7 @@
             "properties": {
                 "unify_gene_symbols": {
                     "type": "boolean",
-                    "description": "Unify gene symbols to the latest version of the Ensembl database"
+                    "description": "Unify human gene symbols with HUGO-unifier. Runs only when species is exactly human; other species skip this step with a warning when enabled."
                 },
                 "duplicate_var_resolution": {
                     "type": "string",

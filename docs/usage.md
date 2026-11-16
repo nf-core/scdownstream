@@ -119,7 +119,7 @@ With no QC columns, each sample receives:
 
 Doublet handling also follows the book: `--doublet_detection` defaults to `scdblfinder`, and `--doublet_removal` defaults to `false`, so doublet scores are written to `adata.obs` without removing cells until you opt in. Ambient RNA correction defaults to SoupX and requires an unfiltered matrix for each corrected sample.
 
-Set `--scdblfinder_dbr_sd` to a number between 0 and 1 to control scDblFinder's doublet-rate uncertainty (`dbr.sd`) globally, for example `--scdblfinder_dbr_sd 1`. Both endpoints are valid, including `0`. When unset, the pipeline omits `dbr.sd` and retains the package default. The process log records whether the value was supplied. This parameter does not change the samplesheet `doublet_rate` or `batch_col` settings.
+Set `--scdblfinder_dbr_sd` to a number between 0 and 1 to control scDblFinder's doublet-rate uncertainty (`dbr.sd`) globally, for example `--scdblfinder_dbr_sd 1`. Both endpoints are valid, including `0`. When unset, the pipeline omits `dbr.sd` and retains the package default. This parameter does not change the samplesheet `doublet_rate` or `batch_col` settings.
 
 Before integration, merged counts are subset to informative genes. By default, [`feature_selection`](https://nf-co.re/scdownstream/parameters#feature_selection) is `deviance` (binomial deviance via scry, ~4,000 genes when [`integration_n_features`](https://nf-co.re/scdownstream/parameters#integration_n_features) is `0`). Use `--feature_selection hvgs` for scanpy highly variable genes, `--feature_selection pearson_residuals_hvgs` for Pearson-residual HVG selection on the counts, or `--feature_selection none` to skip gene filtering. The `python_only` profile sets `feature_selection` to `hvgs` automatically.
 
@@ -285,6 +285,10 @@ Select the appropriate species with `--species`:
 # mouse
 nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results --species mouse
 ```
+
+HUGO-unifier (`--unify_gene_symbols`) runs only when `--species` is exactly `human`.
+For any other species, the pipeline skips HUGO-unifier and emits a warning if `--unify_gene_symbols` is enabled.
+Species-aware MyGene.info conversion and standard gene and metadata cleanup still run as applicable.
 
 #### Custom gene lists
 

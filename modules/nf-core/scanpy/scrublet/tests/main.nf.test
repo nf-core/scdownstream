@@ -38,9 +38,14 @@ nextflow_process {
                 assert rows.every { it.__index__ instanceof String && it.test_scrublet instanceof Boolean }
                 assert rows.collect { it.__index__ }.toSet().size() == rows.size()
                 assert rows.findAll { !it.test_scrublet }.collect { it.__index__ } == anndata(process.out.h5ad[0][1]).obs.index.values
+                def scores = parquet(process.out.scores[0][1])
+                assert scores.columnNames == ['__index__', 'scrublet_score']
+                assert scores.compressionCodecs == ['SNAPPY']
+                assert scores.rows.collect { it.__index__ } == rows.collect { it.__index__ }
+                assert scores.rows.every { it.scrublet_score instanceof Number }
             },
             { assert snapshot(
-                sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions"]),
+                sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions", "scores"]),
                 process.out.versions.collect { path(it).yaml }
             ).match() }
             )
@@ -66,8 +71,11 @@ nextflow_process {
         then {
             assertAll(
             { assert process.success },
-            { assert snapshot(
-                sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions"]),
+            {
+                def unbatchedScores = parquet(process.out.scores[0][1])
+                assert unbatchedScores.columnNames == ['__index__', 'scrublet_score']
+                assert snapshot(
+                sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions", "scores"]),
                 process.out.versions.collect { path(it).yaml }
             ).match() }
             )
@@ -93,8 +101,11 @@ nextflow_process {
         then {
             assertAll(
             { assert process.success },
-            { assert snapshot(
-                sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions"]),
+            {
+                def emptyBatchScores = parquet(process.out.scores[0][1])
+                assert emptyBatchScores.rows.collect { it.__index__ } == parquet(process.out.predictions[0][1]).rows.collect { it.__index__ }
+                assert snapshot(
+                sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions", "scores"]),
                 process.out.versions.collect { path(it).yaml }
             ).match() }
             )

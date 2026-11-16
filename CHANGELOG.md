@@ -9,7 +9,9 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
-- Write tabular AnnData fragments and doublet predictions as Parquet with explicit cell or gene identifiers, retain nested-object and matrix formats, and reject legacy pickle/CSV table inputs, by @nictru and GPT-6.1 Sol.
+- Write tabular AnnData fragments and doublet predictions as Parquet with explicit cell or gene identifiers, retain nested-object and matrix formats, and reject legacy pickle/CSV table inputs, by @nictru and GPT-6.1 Sol [[#397](https://github.com/nf-core/scdownstream/pull/397)].
+- Preserve Boolean doublet calls through merging, by @nictru and GPT-6.1 Sol [[#395](https://github.com/nf-core/scdownstream/pull/395)].
+- Preserve doublet scores and classifications in QC and merged AnnData outputs, including runs without cell removal, by @nictru and GPT-6.1 Sol [[#393](https://github.com/nf-core/scdownstream/pull/393)].
 - Annotate SCimilarity predictions directly on the input AnnData without copying unrelated data, by @nictru and GPT-6.1 Sol [[#376](https://github.com/nf-core/scdownstream/pull/376)].
 - Gzip-compress H5AD outputs from the installed AnnData, CellBender, DoubletDetection, Scrublet, scAR and SOLO modules through tool-recorded patches, by @nictru and GPT-6.1 Sol [[#371](https://github.com/nf-core/scdownstream/pull/371)].
 - Type boolean and numeric parameters while retaining config defaults, and require Nextflow 26.04.6 or later, by @nictru and GPT-6.1 Sol [[#359](https://github.com/nf-core/scdownstream/pull/359)].
@@ -73,6 +75,9 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 - Add `scDblFinder` module for doublet detection, which reads the per-sample expected doublet rate from the optional `doublet_rate` samplesheet column or otherwise estimates it internally, by @KurayiChawatama [[#261](https://github.com/nf-core/scdownstream/pull/261)].
 
 ### `Fixed`
+
+- Send empty CyteType visualisation arrays for inputs without embeddings, preserving existing coordinates and group labels, by @nictru and GPT-6.1 Sol [[#396](https://github.com/nf-core/scdownstream/pull/396)].
+- Skip HUGO-unifier for non-human species and warn when gene symbol unification is requested, by GPT-6.1 Sol ([#389](https://github.com/nf-core/scdownstream/issues/389)) [[#390](https://github.com/nf-core/scdownstream/pull/390)].
 
 - Update scDblFinder to 1.24.10, pin xgboost 3.4.2 and rebuild amd64 and arm64 containers to fix classifier compatibility, by @nictru and GPT-6.1 Sol [[#387](https://github.com/nf-core/scdownstream/pull/387)].
 - Give `QC_REPORT` a task-local temporary directory inside its container without changing the container runtime's host temporary directory, by @nictru and GPT-6.1 Sol [[#385](https://github.com/nf-core/scdownstream/pull/385)].

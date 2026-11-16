@@ -52,10 +52,21 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. [ id:'test' ]
-      - "*.parquet":
+      - "${prefix}.parquet":
           type: file
           description: Boolean doublet predictions with unique cell IDs in a physical __index__ column
-          pattern: "*.parquet"
+          pattern: "${prefix}.parquet"
+          ontologies: []
+  scores:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test' ]
+      - "${prefix}.scores.parquet":
+          type: file
+          description: Full-cell scrublet_score values with explicit __index__ cell identifiers
+          pattern: "*.scores.parquet"
           ontologies: []
   versions:
     - versions.yml:

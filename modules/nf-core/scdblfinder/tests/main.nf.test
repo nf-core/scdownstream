@@ -1,0 +1,113 @@
+nextflow_process {
+
+    name "Test Process SCDBLFINDER"
+    script "../main.nf"
+    config "./nextflow.config"
+    process "SCDBLFINDER"
+
+    tag "modules"
+    tag "modules_nfcore"
+    tag "scdblfinder"
+
+    test("homo sapiens - pbmc1k - h5ad") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/pbmc1k.h5ad', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def calls = parquet(process.out.predictions[0][1])
+            assert calls.columnNames == ['__index__', 'test_scdblfinder']
+            assert calls.rows.size() == 1000
+            assert calls.rows.every { it.__index__ instanceof String && it.test_scdblfinder instanceof Boolean }
+            def scores = parquet(process.out.scores[0][1])
+            assert scores.rows.size() == 1000
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "scDblFinder.class" in obs.colnames
+                assert "scDblFinder.score" in obs.colnames
+            }
+            assert calls.rows.collect { it.__index__ } == adata.obs.index.values
+            assert calls.rows.collect { it.test_scdblfinder } == adata.obs.get('scDblFinder.class').data.collect { it == 'doublet' }
+            assert scores.rows.collect { it['scDblFinder.score'] } == adata.obs.get('scDblFinder.score').data
+            assert snapshot(
+                sanitizeOutput(process.out, unstableKeys: ['h5ad', 'scores']),
+                scores.rows.size(),
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("homo sapiens - pbmc1k - h5ad - doublet rate and batch column") {
+
+        when {
+            params {
+                module_args = 'dbr = 0.08, samples = "batch"'
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/pbmc1k.h5ad', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def batchCalls = parquet(process.out.predictions[0][1])
+            assert batchCalls.columnNames == ['__index__', 'test_scdblfinder']
+            assert batchCalls.rows.size() == 1000
+            assert batchCalls.rows.every { it.__index__ instanceof String && it.test_scdblfinder instanceof Boolean }
+            def batchScores = parquet(process.out.scores[0][1])
+            assert batchScores.rows.size() == 1000
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "scDblFinder.class" in obs.colnames
+                assert "scDblFinder.score" in obs.colnames
+            }
+            assert batchCalls.rows.collect { it.__index__ } == adata.obs.index.values
+            assert batchCalls.rows.collect { it.test_scdblfinder } == adata.obs.get('scDblFinder.class').data.collect { it == 'doublet' }
+            assert batchScores.rows.collect { it['scDblFinder.score'] } == adata.obs.get('scDblFinder.score').data
+            assert snapshot(
+                sanitizeOutput(process.out, unstableKeys: ['h5ad', 'scores']),
+                batchScores.rows.size(),
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("homo sapiens - pbmc1k - h5ad - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/pbmc1k.h5ad', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(sanitizeOutput(process.out)).match()
+        }
+
+    }
+
+}

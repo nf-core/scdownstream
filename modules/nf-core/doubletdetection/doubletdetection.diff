@@ -2,8 +2,11 @@ Changes in component 'nf-core/doubletdetection'
 Changes in 'doubletdetection/environment.yml':
 --- modules/nf-core/doubletdetection/environment.yml
 +++ modules/nf-core/doubletdetection/environment.yml
-@@ -5,6 +5,7 @@
+@@ -3,8 +3,10 @@
+   - bioconda
+ 
  dependencies:
++  - conda-forge::pyarrow=21.0.0
    - conda-forge::anndata=0.11.4
    - conda-forge::pip=25.0.1
 +  - conda-forge::pyarrow=21.0.0
@@ -14,21 +17,32 @@ Changes in 'doubletdetection/environment.yml':
 Changes in 'doubletdetection/meta.yml':
 --- modules/nf-core/doubletdetection/meta.yml
 +++ modules/nf-core/doubletdetection/meta.yml
-@@ -41,10 +41,10 @@
+@@ -41,10 +41,21 @@
            description: |
              Groovy Map containing sample information
              e.g. `[ id:'sample1', single_end:false ]`
 -      - "*.pkl":
-+      - "*.parquet":
++      - "${prefix}.parquet":
            type: file
 -          description: pandas dataframe containing the doublet classification
 -          pattern: "*.pkl"
 +          description: Boolean doublet classifications with unique cell IDs in a physical __index__ column
-+          pattern: "*.parquet"
++          pattern: "${prefix}.parquet"
++          ontologies: []
++  scores:
++    - - meta:
++          type: map
++          description: |
++            Groovy Map containing sample information
++            e.g. `[ id:'sample1', single_end:false ]`
++      - "${prefix}.scores.parquet":
++          type: file
++          description: Full-cell doubletdetection_score values with explicit __index__ cell identifiers
++          pattern: "*.scores.parquet"
            ontologies: []
    versions:
      - versions.yml:
-@@ -65,3 +65,27 @@
+@@ -65,3 +76,27 @@
    - "@LeonHafner"
  maintainers:
    - "@LeonHafner"
@@ -60,7 +74,7 @@ Changes in 'doubletdetection/meta.yml':
 Changes in 'doubletdetection/main.nf':
 --- modules/nf-core/doubletdetection/main.nf
 +++ modules/nf-core/doubletdetection/main.nf
-@@ -4,16 +4,16 @@
+@@ -4,16 +4,17 @@
  
      conda "${moduleDir}/environment.yml"
      container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
@@ -76,17 +90,19 @@ Changes in 'doubletdetection/main.nf':
      tuple val(meta), path("*.h5ad"), emit: h5ad
 -    tuple val(meta), path("*.pkl") , emit: predictions
 -    path "versions.yml"            , emit: versions, topic: versions
-+    tuple val(meta), path("*.parquet"), emit: predictions
++    tuple val(meta), path("${prefix}.parquet"), emit: predictions
++    tuple val(meta), path("${prefix}.scores.parquet"), emit: scores
 +    path "versions.yml", emit: versions, topic: versions
  
      when:
      task.ext.when == null || task.ext.when
-@@ -26,13 +26,14 @@
+@@ -26,13 +27,15 @@
      prefix = task.ext.prefix ?: "${meta.id}"
      """
      touch ${prefix}.h5ad
 -    touch ${prefix}.pkl
 +    touch ${prefix}.parquet
++    touch ${prefix}.scores.parquet
  
      cat <<-END_VERSIONS > versions.yml
      ${task.process}:
@@ -171,12 +187,20 @@ Changes in 'doubletdetection/tests/main.nf.test.snap':
                      ]
                  ],
                  "predictions": [
-@@ -33,25 +68,26 @@
+@@ -33,25 +68,34 @@
                          {
                              "id": "test"
                          },
 -                        "test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
 +                        "test_doubletdetection.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
++                    ]
++                ],
++                "scores": [
++                    [
++                        {
++                            "id": "test"
++                        },
++                        "test_doubletdetection.scores.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                      ]
                  ],
                  "versions": [
@@ -195,7 +219,7 @@ Changes in 'doubletdetection/tests/main.nf.test.snap':
              }
          ],
 -        "timestamp": "2026-04-23T17:14:23.856426678",
-+        "timestamp": "2026-11-15T15:28:41.861886488",
++        "timestamp": "2026-11-15T22:50:41.43575713",
          "meta": {
 -            "nf-test": "0.9.5",
 -            "nextflow": "26.03.2"
@@ -207,7 +231,7 @@ Changes in 'doubletdetection/tests/main.nf.test.snap':
 Changes in 'doubletdetection/tests/main.nf.test':
 --- modules/nf-core/doubletdetection/tests/main.nf.test
 +++ modules/nf-core/doubletdetection/tests/main.nf.test
-@@ -24,15 +24,31 @@
+@@ -24,15 +24,36 @@
              assertAll(
                  { assert process.success },
  
@@ -234,6 +258,11 @@ Changes in 'doubletdetection/tests/main.nf.test':
 +                    }
 +                    assert rows.collect { it.test_doubletdetection } == calls
 +                    assert adata.obs.get('doublet_score').data.every { it instanceof Number }
++                    def scores = parquet(process.out.scores[0][1])
++                    assert scores.columnNames == ['__index__', 'doubletdetection_score']
++                    assert scores.compressionCodecs == ['SNAPPY']
++                    assert scores.rows.collect { it.__index__ } == rows.collect { it.__index__ }
++                    assert scores.rows.collect { it.doubletdetection_score } == adata.obs.get('doublet_score').data
 +                },
  
                  { assert snapshot(
@@ -264,7 +293,7 @@ Changes in 'doubletdetection/templates/doubletdetection.py':
  import yaml
  
  adata = ad.read_h5ad("${h5ad}")
-@@ -19,11 +21,14 @@
+@@ -19,11 +21,17 @@
  adata.obs["doublet"] = [label == 1 for label in doublets]
  adata.obs["doublet_score"] = scores
  
@@ -279,10 +308,13 @@ Changes in 'doubletdetection/templates/doubletdetection.py':
 +    raise ValueError("Doublet predictions require unique, non-null string cell IDs")
 +df.insert(0, "__index__", df.index)
 +df.to_parquet(Path("${prefix}.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
++scores = adata.obs[["doublet_score"]].rename(columns={"doublet_score": "doubletdetection_score"})
++scores.insert(0, "__index__", scores.index)
++scores.to_parquet(Path("${prefix}.scores.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
  
  # Versions
  versions = {
-@@ -31,6 +36,7 @@
+@@ -31,6 +39,7 @@
          "python": platform.python_version(),
          "anndata": ad.__version__,
          "doubletdetection": doubletdetection.__version__,

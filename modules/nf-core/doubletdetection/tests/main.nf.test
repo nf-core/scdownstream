@@ -45,6 +45,11 @@ nextflow_process {
                     }
                     assert rows.collect { it.test_doubletdetection } == calls
                     assert adata.obs.get('doublet_score').data.every { it instanceof Number }
+                    def scores = parquet(process.out.scores[0][1])
+                    assert scores.columnNames == ['__index__', 'doubletdetection_score']
+                    assert scores.compressionCodecs == ['SNAPPY']
+                    assert scores.rows.collect { it.__index__ } == rows.collect { it.__index__ }
+                    assert scores.rows.collect { it.doubletdetection_score } == adata.obs.get('doublet_score').data
                 },
 
                 { assert snapshot(

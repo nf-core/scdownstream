@@ -15,24 +15,35 @@ Changes in 'scanpy/scrublet/environment.yml':
 Changes in 'scanpy/scrublet/meta.yml':
 --- modules/nf-core/scanpy/scrublet/meta.yml
 +++ modules/nf-core/scanpy/scrublet/meta.yml
-@@ -52,12 +52,11 @@
+@@ -52,12 +52,22 @@
            description: |
              Groovy Map containing sample information
              e.g. [ id:'test' ]
 -      - "*.pkl":
-+      - "*.parquet":
++      - "${prefix}.parquet":
            type: file
 -          description: Pickle file containing doublet predictions
 -          pattern: "*.pkl"
 -          ontologies:
 -            - edam: "http://edamontology.org/format_3553" # Pickle format
 +          description: Boolean doublet predictions with unique cell IDs in a physical __index__ column
-+          pattern: "*.parquet"
++          pattern: "${prefix}.parquet"
++          ontologies: []
++  scores:
++    - - meta:
++          type: map
++          description: |
++            Groovy Map containing sample information
++            e.g. [ id:'test' ]
++      - "${prefix}.scores.parquet":
++          type: file
++          description: Full-cell scrublet_score values with explicit __index__ cell identifiers
++          pattern: "*.scores.parquet"
 +          ontologies: []
    versions:
      - versions.yml:
          type: file
-@@ -77,3 +76,27 @@
+@@ -77,3 +87,27 @@
    - "@nictru"
  maintainers:
    - "@nictru"
@@ -75,23 +86,25 @@ Changes in 'scanpy/scrublet/main.nf':
  
      input:
      tuple val(meta), path(h5ad)
-@@ -13,8 +13,8 @@
+@@ -13,8 +13,9 @@
  
      output:
      tuple val(meta), path("*.h5ad"), emit: h5ad
 -    tuple val(meta), path("*.pkl") , emit: predictions
 -    path "versions.yml"            , emit: versions, topic: versions
-+    tuple val(meta), path("*.parquet"), emit: predictions
++    tuple val(meta), path("${prefix}.parquet"), emit: predictions
++    tuple val(meta), path("${prefix}.scores.parquet"), emit: scores
 +    path "versions.yml", emit: versions, topic: versions
  
      when:
      task.ext.when == null || task.ext.when
-@@ -38,12 +38,13 @@
+@@ -38,12 +39,14 @@
      export NUMBA_CACHE_DIR=./tmp/numba
  
      touch ${prefix}.h5ad
 -    touch ${prefix}.pkl
 +    touch ${prefix}.parquet
++    touch ${prefix}.scores.parquet
  
      cat <<-END_VERSIONS > versions.yml
      "${task.process}":
@@ -105,12 +118,20 @@ Changes in 'scanpy/scrublet/main.nf':
 Changes in 'scanpy/scrublet/tests/main.nf.test.snap':
 --- modules/nf-core/scanpy/scrublet/tests/main.nf.test.snap
 +++ modules/nf-core/scanpy/scrublet/tests/main.nf.test.snap
-@@ -15,26 +15,27 @@
+@@ -15,26 +15,35 @@
                          {
                              "id": "test"
                          },
 -                        "test_scrublet.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
 +                        "test_scrublet.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
++                    ]
++                ],
++                "scores": [
++                    [
++                        {
++                            "id": "test"
++                        },
++                        "test_scrublet.scores.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                      ]
                  ],
                  "versions": [
@@ -130,7 +151,7 @@ Changes in 'scanpy/scrublet/tests/main.nf.test.snap':
              ]
          ],
 -        "timestamp": "2026-08-16T15:06:16.505801",
-+        "timestamp": "2026-11-15T14:31:41.15341473",
++        "timestamp": "2026-11-15T23:00:22.175276929",
          "meta": {
 -            "nf-test": "0.9.5",
 -            "nextflow": "26.04.0"
@@ -139,12 +160,20 @@ Changes in 'scanpy/scrublet/tests/main.nf.test.snap':
          }
      },
      "Should run without failures": {
-@@ -53,26 +54,27 @@
+@@ -53,26 +62,35 @@
                          {
                              "id": "test"
                          },
 -                        "test_scrublet.pkl"
 +                        "test_scrublet.parquet"
++                    ]
++                ],
++                "scores": [
++                    [
++                        {
++                            "id": "test"
++                        },
++                        "test_scrublet.scores.parquet"
                      ]
                  ],
                  "versions": [
@@ -163,7 +192,7 @@ Changes in 'scanpy/scrublet/tests/main.nf.test.snap':
              ]
          ],
 -        "timestamp": "2026-08-16T15:04:52.727938",
-+        "timestamp": "2026-11-15T14:53:10.184152825",
++        "timestamp": "2026-11-15T22:53:14.128675231",
          "meta": {
 -            "nf-test": "0.9.5",
 -            "nextflow": "26.04.0"
@@ -172,12 +201,20 @@ Changes in 'scanpy/scrublet/tests/main.nf.test.snap':
          }
      },
      "Should run with empty string for batch_col": {
-@@ -91,26 +93,27 @@
+@@ -91,26 +109,35 @@
                          {
                              "id": "test"
                          },
 -                        "test_scrublet.pkl"
 +                        "test_scrublet.parquet"
++                    ]
++                ],
++                "scores": [
++                    [
++                        {
++                            "id": "test"
++                        },
++                        "test_scrublet.scores.parquet"
                      ]
                  ],
                  "versions": [
@@ -196,7 +233,7 @@ Changes in 'scanpy/scrublet/tests/main.nf.test.snap':
              ]
          ],
 -        "timestamp": "2026-08-16T15:05:27.44104",
-+        "timestamp": "2026-11-15T14:55:02.12511162",
++        "timestamp": "2026-11-15T22:55:35.563850768",
          "meta": {
 -            "nf-test": "0.9.5",
 -            "nextflow": "26.04.0"
@@ -205,12 +242,20 @@ Changes in 'scanpy/scrublet/tests/main.nf.test.snap':
          }
      },
      "Should run with empty array for batch_col": {
-@@ -129,26 +132,27 @@
+@@ -129,26 +156,35 @@
                          {
                              "id": "test"
                          },
 -                        "test_scrublet.pkl"
 +                        "test_scrublet.parquet"
++                    ]
++                ],
++                "scores": [
++                    [
++                        {
++                            "id": "test"
++                        },
++                        "test_scrublet.scores.parquet"
                      ]
                  ],
                  "versions": [
@@ -229,7 +274,7 @@ Changes in 'scanpy/scrublet/tests/main.nf.test.snap':
              ]
          ],
 -        "timestamp": "2026-08-16T15:06:01.974464",
-+        "timestamp": "2026-11-15T14:56:54.132331925",
++        "timestamp": "2026-11-15T22:58:12.221994017",
          "meta": {
 -            "nf-test": "0.9.5",
 -            "nextflow": "26.04.0"
@@ -242,7 +287,7 @@ Changes in 'scanpy/scrublet/tests/main.nf.test.snap':
 Changes in 'scanpy/scrublet/tests/main.nf.test':
 --- modules/nf-core/scanpy/scrublet/tests/main.nf.test
 +++ modules/nf-core/scanpy/scrublet/tests/main.nf.test
-@@ -27,6 +27,18 @@
+@@ -27,8 +27,25 @@
          then {
              assertAll(
              { assert process.success },
@@ -257,10 +302,46 @@ Changes in 'scanpy/scrublet/tests/main.nf.test':
 +                assert rows.every { it.__index__ instanceof String && it.test_scrublet instanceof Boolean }
 +                assert rows.collect { it.__index__ }.toSet().size() == rows.size()
 +                assert rows.findAll { !it.test_scrublet }.collect { it.__index__ } == anndata(process.out.h5ad[0][1]).obs.index.values
++                def scores = parquet(process.out.scores[0][1])
++                assert scores.columnNames == ['__index__', 'scrublet_score']
++                assert scores.compressionCodecs == ['SNAPPY']
++                assert scores.rows.collect { it.__index__ } == rows.collect { it.__index__ }
++                assert scores.rows.every { it.scrublet_score instanceof Number }
 +            },
              { assert snapshot(
-                 sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions"]),
+-                sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions"]),
++                sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions", "scores"]),
                  process.out.versions.collect { path(it).yaml }
+             ).match() }
+             )
+@@ -54,8 +71,11 @@
+         then {
+             assertAll(
+             { assert process.success },
+-            { assert snapshot(
+-                sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions"]),
++            {
++                def unbatchedScores = parquet(process.out.scores[0][1])
++                assert unbatchedScores.columnNames == ['__index__', 'scrublet_score']
++                assert snapshot(
++                sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions", "scores"]),
+                 process.out.versions.collect { path(it).yaml }
+             ).match() }
+             )
+@@ -81,8 +101,11 @@
+         then {
+             assertAll(
+             { assert process.success },
+-            { assert snapshot(
+-                sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions"]),
++            {
++                def emptyBatchScores = parquet(process.out.scores[0][1])
++                assert emptyBatchScores.rows.collect { it.__index__ } == parquet(process.out.predictions[0][1]).rows.collect { it.__index__ }
++                assert snapshot(
++                sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions", "scores"]),
+                 process.out.versions.collect { path(it).yaml }
+             ).match() }
+             )
 
 'modules/nf-core/scanpy/scrublet/.conda-lock/linux_arm64-bd-ac9ac46a258a87b1_1.txt' was created
 'modules/nf-core/scanpy/scrublet/.conda-lock/linux_amd64-bd-511ffe8348319831_1.txt' was created
@@ -277,7 +358,7 @@ Changes in 'scanpy/scrublet/templates/scrublet.py':
  import scanpy as sc
  import yaml
  from threadpoolctl import threadpool_limits
-@@ -27,17 +29,26 @@
+@@ -27,17 +29,29 @@
  sc.pp.scrublet(adata, **kwargs)
  
  adata.obs["predicted_doublet"] = adata.obs["predicted_doublet"].astype(bool)
@@ -289,6 +370,9 @@ Changes in 'scanpy/scrublet/templates/scrublet.py':
 +    raise ValueError("Doublet predictions require unique, non-null string cell IDs")
 +df.insert(0, "__index__", df.index)
 +df.to_parquet(Path("${prefix}.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
++scores = adata.obs[["doublet_score"]].rename(columns={"doublet_score": "scrublet_score"})
++scores.insert(0, "__index__", scores.index)
++scores.to_parquet(Path("${prefix}.scores.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
  
  adata = adata[~adata.obs["predicted_doublet"]].copy()
  

@@ -12,7 +12,8 @@ process DOUBLETDETECTION {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    tuple val(meta), path("*.parquet"), emit: predictions
+    tuple val(meta), path("${prefix}.parquet"), emit: predictions
+    tuple val(meta), path("${prefix}.scores.parquet"), emit: scores
     path "versions.yml", emit: versions, topic: versions
 
     when:
@@ -27,6 +28,7 @@ process DOUBLETDETECTION {
     """
     touch ${prefix}.h5ad
     touch ${prefix}.parquet
+    touch ${prefix}.scores.parquet
 
     cat <<-END_VERSIONS > versions.yml
     ${task.process}:
