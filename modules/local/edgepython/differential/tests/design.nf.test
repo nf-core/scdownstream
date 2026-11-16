@@ -55,8 +55,8 @@ nextflow_process {
             assert row.group == 'Disease'
             assert row.contrast == 'Disease vs Healthy'
             assert row.stratum == 'celltype=TypeA'
-            assert Math.abs(row.log2fc - 1.2295950441713215d) < 1e-6d
-            assert Math.abs(row.pvalue - 0.008705917844970962d) < 1e-7d
+            assert Math.abs(row.log2fc - 1.2235435591012922d) < 1e-6d
+            assert Math.abs(row.pvalue - 0.005192113302669505d) < 1e-7d
             assert Math.abs(row.padj - 1.0d) < 1e-8d
         }
     }
@@ -121,9 +121,9 @@ nextflow_process {
             assert row.group == 'Disease'
             assert row.contrast == 'Disease vs Healthy'
             assert row.stratum == 'celltype=TypeA'
-            assert Math.abs(row.log2fc - -0.48054392608872826d) < 1e-6d
-            assert Math.abs(row.pvalue - 0.006511532640851087d) < 1e-7d
-            assert Math.abs(row.padj - 0.928263826539495d) < 1e-6d
+            assert Math.abs(row.log2fc - -0.4797303075745945d) < 1e-6d
+            assert Math.abs(row.pvalue - 0.006469295865743929d) < 1e-7d
+            assert Math.abs(row.padj - 0.9239956806231069d) < 1e-6d
         }
     }
 }

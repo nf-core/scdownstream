@@ -6,12 +6,11 @@ from pathlib import Path
 
 import anndata as ad
 import edgepython as ep
+import h5py
 import numpy as np
 import pandas as pd
-import scipy.sparse as sp
 import yaml
 
-adata = ad.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 donor_col = "${donor_col}"
 condition_col = "${condition_col}"
@@ -84,39 +83,56 @@ def safe_name(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9._-]+", "_", str(value))
 
 
-for col in [donor_col, condition_col, celltype_col]:
-    if col not in adata.obs.columns:
-        raise ValueError(f"Column '{col}' not found in adata.obs")
+with h5py.File("${h5ad}", "r") as handle:
+    obs = ad.io.read_elem(handle["obs"])
+    for col in [donor_col, condition_col, celltype_col]:
+        if col not in obs.columns:
+            raise ValueError(f"Column '{col}' not found in adata.obs")
 
-subset = adata[adata.obs[celltype_col].astype(str) == str(celltype_value)].copy()
-if subset.n_obs < 10:
-    raise ValueError(f"Too few cells ({subset.n_obs}) in cell type '{celltype_value}'")
+    rows = np.flatnonzero(obs[celltype_col].astype(str).to_numpy() == str(celltype_value))
+    subset_obs = obs.iloc[rows].copy()
+    if len(rows) < 10:
+        raise ValueError(f"Too few cells ({len(rows)}) in cell type '{celltype_value}'")
 
-condition_values = subset.obs[condition_col].astype(str)
-conditions = sorted(condition_values.unique())
-donors = sorted(subset.obs[donor_col].astype(str).unique())
-if len(conditions) < 2:
-    raise ValueError("At least two conditions are required for differential expression")
-if len(donors) < 2:
-    raise ValueError("At least two donors are required for edgepython_sc")
+    # edgePython groups donors in first-seen order; pre-grouping avoids its dense copy.
+    donor_codes = pd.factorize(subset_obs[donor_col].astype(str), sort=False)[0]
+    order = np.argsort(donor_codes, kind="stable")
+    rows = rows[order]
+    subset_obs = subset_obs.iloc[order]
+    gene_names = np.asarray(ad.io.read_elem(handle["var"][handle["var"].attrs["_index"]]), dtype=str)
 
-treatments = [condition for condition in conditions if condition != reference_condition]
-if not treatments:
-    raise ValueError(f"Reference condition '{reference_condition}' is the only condition present")
+    condition_values = subset_obs[condition_col].astype(str)
+    conditions = sorted(condition_values.unique())
+    donors = sorted(subset_obs[donor_col].astype(str).unique())
+    if len(conditions) < 2:
+        raise ValueError("At least two conditions are required for differential expression")
+    if len(donors) < 2:
+        raise ValueError("At least two donors are required for edgepython_sc")
 
-counts = subset.X
-if sp.issparse(counts):
-    counts = counts.toarray()
-counts = np.asarray(counts).T
+    treatments = [condition for condition in conditions if condition != reference_condition]
+    if not treatments:
+        raise ValueError(f"Reference condition '{reference_condition}' is the only condition present")
+
+    matrix = handle["X"]
+    if isinstance(matrix, h5py.Group):
+        counts = ad.io.sparse_dataset(matrix)[rows, :]
+        counts = counts.astype(np.float64).toarray().T
+    else:
+        counts = np.empty((len(rows), matrix.shape[1]), dtype=np.float64)
+        for start in range(0, len(rows), 256):
+            # HDF5 dense indexing requires increasing row indices.
+            indices = start + np.argsort(rows[start : start + 256], kind="stable")
+            counts[indices] = matrix[rows[indices], :]
+        counts = counts.T
 
 design = pd.DataFrame(
-    {"Intercept": np.ones(subset.n_obs, dtype=float)},
-    index=subset.obs_names,
+    {"Intercept": np.ones(len(subset_obs), dtype=float)},
+    index=subset_obs.index,
 )
 for treatment in treatments:
     design[treatment] = (condition_values == treatment).astype(float)
 
-sample_ids = subset.obs[donor_col].astype(str).to_numpy()
+sample_ids = subset_obs[donor_col].astype(str).to_numpy()
 
 fit = ep.glm_sc_fit(
     counts,
@@ -129,9 +145,9 @@ fit = ep.shrink_sc_disp(fit, robust=True)
 written = []
 gene_mask = fit.get("gene_mask")
 if gene_mask is not None:
-    gene_labels = np.asarray(subset.var_names.astype(str))[np.asarray(gene_mask, dtype=bool)]
+    gene_labels = gene_names[np.asarray(gene_mask, dtype=bool)]
 else:
-    gene_labels = np.asarray(subset.var_names.astype(str))
+    gene_labels = gene_names
 
 for treatment in treatments:
     coef = design.columns.get_loc(treatment)
