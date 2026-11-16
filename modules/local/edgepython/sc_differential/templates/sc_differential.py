@@ -9,7 +9,6 @@ import edgepython as ep
 import h5py
 import numpy as np
 import pandas as pd
-import scipy.sparse as sp
 import yaml
 
 prefix = "${prefix}"
@@ -84,36 +83,6 @@ def safe_name(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9._-]+", "_", str(value))
 
 
-def read_counts(matrix, rows):
-    """Read selected cells into one float64 matrix with bounded dense blocks."""
-    if isinstance(matrix, h5py.Group):
-        matrix = ad.io.sparse_dataset(matrix)
-    n_genes = matrix.shape[1]
-    counts = np.empty((n_genes, len(rows)), dtype=np.float64, order="F")
-    block_bytes = 64 * 1024**2
-
-    # CSC storage needs column slices to avoid materialising the full sparse matrix.
-    if getattr(matrix, "format", None) == "csc":
-        block_size = max(1, block_bytes // (len(rows) * counts.dtype.itemsize))
-        for start in range(0, n_genes, block_size):
-            stop = min(start + block_size, n_genes)
-            block = matrix[:, start:stop][rows, :].astype(np.float64, copy=False).toarray()
-            counts[start:stop, :] = block.T
-    else:
-        block_size = max(1, block_bytes // max(1, n_genes * counts.dtype.itemsize))
-        for start in range(0, len(rows), block_size):
-            block_rows = rows[start : start + block_size]
-            # HDF5 dense indexing requires increasing row indices.
-            order = np.argsort(block_rows, kind="stable")
-            block = matrix[block_rows[order], :]
-            if sp.issparse(block):
-                block = block.astype(np.float64, copy=False).toarray()
-            else:
-                block = np.asarray(block, dtype=np.float64)
-            counts[:, start + order] = block.T
-    return counts
-
-
 with h5py.File("${h5ad}", "r") as handle:
     obs = ad.io.read_elem(handle["obs"])
     for col in [donor_col, condition_col, celltype_col]:
@@ -144,7 +113,17 @@ with h5py.File("${h5ad}", "r") as handle:
     if not treatments:
         raise ValueError(f"Reference condition '{reference_condition}' is the only condition present")
 
-    counts = read_counts(handle["X"], rows)
+    matrix = handle["X"]
+    if isinstance(matrix, h5py.Group):
+        counts = ad.io.sparse_dataset(matrix)[rows, :]
+        counts = counts.astype(np.float64).toarray().T
+    else:
+        counts = np.empty((len(rows), matrix.shape[1]), dtype=np.float64)
+        for start in range(0, len(rows), 256):
+            # HDF5 dense indexing requires increasing row indices.
+            indices = start + np.argsort(rows[start : start + 256], kind="stable")
+            counts[indices] = matrix[rows[indices], :]
+        counts = counts.T
 
 design = pd.DataFrame(
     {"Intercept": np.ones(len(subset_obs), dtype=float)},
