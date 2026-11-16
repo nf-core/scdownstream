@@ -6,12 +6,12 @@ from pathlib import Path
 
 import anndata as ad
 import edgepython as ep
+import h5py
 import numpy as np
 import pandas as pd
 import scipy.sparse as sp
 import yaml
 
-adata = ad.read_h5ad("${h5ad}")
 prefix = "${prefix}"
 donor_col = "${donor_col}"
 condition_col = "${condition_col}"
@@ -84,39 +84,76 @@ def safe_name(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9._-]+", "_", str(value))
 
 
-for col in [donor_col, condition_col, celltype_col]:
-    if col not in adata.obs.columns:
-        raise ValueError(f"Column '{col}' not found in adata.obs")
+def read_counts(matrix, rows):
+    """Read selected cells into one float64 matrix with bounded dense blocks."""
+    if isinstance(matrix, h5py.Group):
+        matrix = ad.io.sparse_dataset(matrix)
+    n_genes = matrix.shape[1]
+    counts = np.empty((n_genes, len(rows)), dtype=np.float64, order="F")
+    block_bytes = 64 * 1024**2
 
-subset = adata[adata.obs[celltype_col].astype(str) == str(celltype_value)].copy()
-if subset.n_obs < 10:
-    raise ValueError(f"Too few cells ({subset.n_obs}) in cell type '{celltype_value}'")
+    # CSC storage needs column slices to avoid materialising the full sparse matrix.
+    if getattr(matrix, "format", None) == "csc":
+        block_size = max(1, block_bytes // (len(rows) * counts.dtype.itemsize))
+        for start in range(0, n_genes, block_size):
+            stop = min(start + block_size, n_genes)
+            block = matrix[:, start:stop][rows, :].astype(np.float64, copy=False).toarray()
+            counts[start:stop, :] = block.T
+    else:
+        block_size = max(1, block_bytes // max(1, n_genes * counts.dtype.itemsize))
+        for start in range(0, len(rows), block_size):
+            block_rows = rows[start : start + block_size]
+            # HDF5 dense indexing requires increasing row indices.
+            order = np.argsort(block_rows, kind="stable")
+            block = matrix[block_rows[order], :]
+            if sp.issparse(block):
+                block = block.astype(np.float64, copy=False).toarray()
+            else:
+                block = np.asarray(block, dtype=np.float64)
+            counts[:, start + order] = block.T
+    return counts
 
-condition_values = subset.obs[condition_col].astype(str)
-conditions = sorted(condition_values.unique())
-donors = sorted(subset.obs[donor_col].astype(str).unique())
-if len(conditions) < 2:
-    raise ValueError("At least two conditions are required for differential expression")
-if len(donors) < 2:
-    raise ValueError("At least two donors are required for edgepython_sc")
 
-treatments = [condition for condition in conditions if condition != reference_condition]
-if not treatments:
-    raise ValueError(f"Reference condition '{reference_condition}' is the only condition present")
+with h5py.File("${h5ad}", "r") as handle:
+    obs = ad.io.read_elem(handle["obs"])
+    for col in [donor_col, condition_col, celltype_col]:
+        if col not in obs.columns:
+            raise ValueError(f"Column '{col}' not found in adata.obs")
 
-counts = subset.X
-if sp.issparse(counts):
-    counts = counts.toarray()
-counts = np.asarray(counts).T
+    rows = np.flatnonzero(obs[celltype_col].astype(str).to_numpy() == str(celltype_value))
+    subset_obs = obs.iloc[rows].copy()
+    if len(rows) < 10:
+        raise ValueError(f"Too few cells ({len(rows)}) in cell type '{celltype_value}'")
+
+    # edgePython groups donors in first-seen order; pre-grouping avoids its dense copy.
+    donor_codes = pd.factorize(subset_obs[donor_col].astype(str), sort=False)[0]
+    order = np.argsort(donor_codes, kind="stable")
+    rows = rows[order]
+    subset_obs = subset_obs.iloc[order]
+    gene_names = np.asarray(ad.io.read_elem(handle["var"][handle["var"].attrs["_index"]]), dtype=str)
+
+    condition_values = subset_obs[condition_col].astype(str)
+    conditions = sorted(condition_values.unique())
+    donors = sorted(subset_obs[donor_col].astype(str).unique())
+    if len(conditions) < 2:
+        raise ValueError("At least two conditions are required for differential expression")
+    if len(donors) < 2:
+        raise ValueError("At least two donors are required for edgepython_sc")
+
+    treatments = [condition for condition in conditions if condition != reference_condition]
+    if not treatments:
+        raise ValueError(f"Reference condition '{reference_condition}' is the only condition present")
+
+    counts = read_counts(handle["X"], rows)
 
 design = pd.DataFrame(
-    {"Intercept": np.ones(subset.n_obs, dtype=float)},
-    index=subset.obs_names,
+    {"Intercept": np.ones(len(subset_obs), dtype=float)},
+    index=subset_obs.index,
 )
 for treatment in treatments:
     design[treatment] = (condition_values == treatment).astype(float)
 
-sample_ids = subset.obs[donor_col].astype(str).to_numpy()
+sample_ids = subset_obs[donor_col].astype(str).to_numpy()
 
 fit = ep.glm_sc_fit(
     counts,
@@ -129,9 +166,9 @@ fit = ep.shrink_sc_disp(fit, robust=True)
 written = []
 gene_mask = fit.get("gene_mask")
 if gene_mask is not None:
-    gene_labels = np.asarray(subset.var_names.astype(str))[np.asarray(gene_mask, dtype=bool)]
+    gene_labels = gene_names[np.asarray(gene_mask, dtype=bool)]
 else:
-    gene_labels = np.asarray(subset.var_names.astype(str))
+    gene_labels = gene_names
 
 for treatment in treatments:
     coef = design.columns.get_loc(treatment)
