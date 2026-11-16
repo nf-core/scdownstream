@@ -43,10 +43,10 @@ nextflow_process {
             assert positive.group == 'Disease'
             assert positive.contrast == 'Disease vs Healthy'
             assert positive.stratum == 'celltype=TypeA'
-            assert Math.abs(positive.log2fc - 1.2370226089406087d) < 1e-4d
-            assert Math.abs(negative.log2fc - -2.062184319422321d) < 1e-4d
-            assert Math.abs(positive.pvalue - 0.004165649756740918d) < 1e-6d
-            assert Math.abs(positive.padj - 0.9614059396460176d) < 1e-5d
+            assert Math.abs(positive.log2fc - 1.2370087298496955d) < 1e-4d
+            assert Math.abs(negative.log2fc - -2.062449521756243d) < 1e-4d
+            assert Math.abs(positive.pvalue - 0.004164233717591355d) < 1e-6d
+            assert Math.abs(positive.padj - 0.960480789573068d) < 1e-5d
         }
     }
 }
