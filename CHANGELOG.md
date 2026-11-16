@@ -9,6 +9,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
+- Write tabular AnnData fragments and doublet predictions as Parquet with explicit cell or gene identifiers, retain nested-object and matrix formats, and reject legacy pickle/CSV table inputs, by @nictru and GPT-6.1 Sol [[#397](https://github.com/nf-core/scdownstream/pull/397)].
 - Preserve Boolean doublet calls through merging, by @nictru and GPT-6.1 Sol [[#395](https://github.com/nf-core/scdownstream/pull/395)].
 - Preserve doublet scores and classifications in QC and merged AnnData outputs, including runs without cell removal, by @nictru and GPT-6.1 Sol [[#393](https://github.com/nf-core/scdownstream/pull/393)].
 - Annotate SCimilarity predictions directly on the input AnnData without copying unrelated data, by @nictru and GPT-6.1 Sol [[#376](https://github.com/nf-core/scdownstream/pull/376)].

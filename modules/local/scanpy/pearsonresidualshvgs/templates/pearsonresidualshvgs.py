@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 import platform
+from pathlib import Path
 
+import pyarrow
 import scanpy as sc
 import yaml
 from threadpoolctl import threadpool_limits
@@ -31,6 +33,13 @@ if "${excluded_genes}":
     mask = ~adata.var_names.isin(excluded_genes)
     adata = adata[:, mask].copy()
 
+if (
+    not adata.var_names.is_unique
+    or adata.var_names.hasnans
+    or not all(isinstance(value, str) for value in adata.var_names)
+):
+    raise ValueError("Fragment axis identifiers must be unique, non-null strings.")
+
 if counts_layer == "X":
     raw_counts = adata.X.copy()
     pearson_layer = None
@@ -57,7 +66,10 @@ if adata.n_vars > n_genes:
 
     fragment = adata.var[["highly_variable"]].copy()
     fragment.columns = [prefix]
-    fragment.to_pickle(f"{file_prefix}.pkl")
+    if "__index__" in fragment.columns:
+        raise ValueError("Fragment column '__index__' is reserved for row identifiers")
+    fragment.insert(0, "__index__", fragment.index)
+    fragment.to_parquet(Path(f"{file_prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy")
 
     adata.X = raw_counts
     adata = adata[:, adata.var["highly_variable"]]
@@ -65,12 +77,17 @@ else:
     adata.var["highly_variable"] = True
     fragment = adata.var[["highly_variable"]].copy()
     fragment.columns = [prefix]
-    fragment.to_pickle(f"{file_prefix}.pkl")
+    if "__index__" in fragment.columns:
+        raise ValueError("Fragment column '__index__' is reserved for row identifiers")
+    fragment.insert(0, "__index__", fragment.index)
+    fragment.to_parquet(Path(f"{file_prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy")
     adata.X = raw_counts
 
 adata.write_h5ad(f"{file_prefix}.h5ad", compression="gzip")
 
-versions = {"${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}}
+versions = {
+    "${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__, "pyarrow": pyarrow.__version__}
+}
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)

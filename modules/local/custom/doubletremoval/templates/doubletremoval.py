@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 import base64
+import importlib.metadata
 import json
 import platform
+from pathlib import Path
 
 import anndata as ad
 import matplotlib
@@ -20,17 +22,26 @@ prediction_paths = r"""${predictions.join('\n')}""".splitlines()
 
 
 def load_predictions(path):
-    if path.endswith(".csv"):
-        table = pd.read_csv(path, index_col=0, converters={0: str})
-    elif path.endswith(".pkl"):
-        table = pd.read_pickle(path)
-    else:
-        raise ValueError(f"{path} must be CSV or pickle")
-    if len(table.columns) != 1:
+    source = Path(path)
+    if source.suffix != ".parquet":
+        raise ValueError(f"Unsupported prediction file extension: {source}")
+    frame = pd.read_parquet(source.resolve(), engine="pyarrow")
+    if not frame.columns.is_unique:
+        raise ValueError(f"Prediction table '{source.name}' contains duplicate column names")
+    if "__index__" not in frame.columns:
+        raise ValueError(f"Prediction table '{source.name}' is missing the '__index__' column")
+    frame = frame.set_index("__index__").rename_axis(None)
+    if frame.index.hasnans:
+        raise ValueError(f"Prediction table '{source.name}' contains null indices")
+    if not frame.index.is_unique:
+        raise ValueError(f"Prediction table '{source.name}' contains duplicate indices")
+    if any(not isinstance(value, str) for value in frame.index):
+        raise ValueError(f"Prediction table '{source.name}' contains non-string indices")
+    if len(frame.columns) != 1:
         raise ValueError(f"{path} must contain exactly one Boolean column")
-    if not table.index.is_unique or set(table.index) != set(adata.obs_names):
+    if set(frame.index) != set(adata.obs_names):
         raise ValueError(f"{path} must contain each input barcode exactly once")
-    calls = table.iloc[:, 0]
+    calls = frame.iloc[:, 0]
     if not pd.api.types.is_bool_dtype(calls) or calls.isna().any():
         raise ValueError(f"{path} must contain non-null Boolean predictions")
     return calls.reindex(adata.obs_names)
@@ -53,7 +64,8 @@ if remove_doublets:
     adata = adata[~(votes.sum(axis=1) >= threshold), :].copy()
 
 adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
-annotations.to_pickle(f"{prefix}.obs.pkl")
+annotations.insert(0, "__index__", annotations.index)
+annotations.to_parquet(Path(f"{prefix}.obs.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
 
 if len(votes.columns) > 1:
     contents = {column: votes.index[votes[column]].tolist() for column in votes}
@@ -95,6 +107,7 @@ versions = {
         "python": platform.python_version(),
         "anndata": ad.__version__,
         "pandas": pd.__version__,
+        "pyarrow": importlib.metadata.version("pyarrow"),
         "matplotlib": matplotlib.__version__,
         "upsetplot": upsetplot.__version__,
     }

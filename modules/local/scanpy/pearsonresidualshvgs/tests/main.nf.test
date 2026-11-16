@@ -35,10 +35,52 @@ nextflow_process {
             assert !process.out.h5ad[0][1].toString().tokenize('/').last().contains(':')
             assert !process.out.var[0].toString().tokenize('/').last().contains(':')
             assert "highly_variable" in adata.var.colnames
+            def fragment = parquet(process.out.var[0])
+            assert fragment.columnNames == ['__index__', 'highly_variable:pearson_residuals']
+            assert fragment.compressionCodecs == ['SNAPPY']
+            assert fragment.rows.every { it['highly_variable:pearson_residuals'] instanceof Boolean }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml
             ).match()
+        }
+
+    }
+
+    test("Should reject duplicate gene identifiers") {
+
+        setup {
+            run("ADATA_SETINDEX") {
+                script "modules/local/adata/setindex/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [id: 'duplicate_genes'],
+                        file(params.pipelines_testdata_base_path + '/anndata-variations/with_duplicates.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 'var'
+                    input[2] = 'symbols'
+                    """
+                }
+            }
+        }
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = ADATA_SETINDEX.out.h5ad
+                input[1] = 1000
+                input[2] = []
+                input[3] = ''
+                input[4] = 'X'
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains('Fragment axis identifiers must be unique, non-null strings.')
         }
 
     }

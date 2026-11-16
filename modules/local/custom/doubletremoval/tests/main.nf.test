@@ -12,15 +12,14 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                pdd = channel.of('cell,arbitrary_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i < 3) }.join('')).collectFile(name: 'dd calls.csv')
-                psc = channel.of('cell,arbitrary_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i in [1,3]) }.join('')).collectFile(name: 'sc.csv')
-                pscr = channel.of('cell,arbitrary_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i in [0,3]) }.join('')).collectFile(name: 'scr.csv')
-                psolo = channel.of('cell,arbitrary_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i == 4) }.join('')).collectFile(name: 'solo.csv')
-                input[0] = pdd.combine(psc).combine(pscr).combine(psolo).map { a,b,c,d -> [
+                input[0] = channel.of([
                     [id: 'votes', counts_layer: 'X'],
                     file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
-                    ['doubletdetection','scdblfinder','scrublet','solo'], [a,b,c,d]
-                ] }
+                    ['doubletdetection','scdblfinder','scrublet','solo'],
+                    ['doubletdetection','scdblfinder','scrublet','solo'].collect { method ->
+                        file(params.pipelines_testdata_base_path + "/intermediates/doublet_detection/regressions/\${method}.parquet", checkIfExists: true)
+                    }
+                ])
                 input[1] = 2
                 input[2] = true
                 """
@@ -47,7 +46,7 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                p = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,true\\n', i) }.join('')).collectFile(name: 'scrublet calls.csv')
+                p = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/all_true.parquet', checkIfExists: true))
                 input[0] = p.map { prediction -> [
                     [id: 'annotate'],
                     file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
@@ -77,8 +76,7 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                input[0] = channel.of('cell,solo_sample\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i == 1) }.join(''))
-                    .collectFile(name: 'solo.csv').map { p -> [
+                input[0] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/solo_single.parquet', checkIfExists: true)).map { p -> [
                         [id: 'solo'],
                         file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
                         ['solo'], [p]
@@ -121,7 +119,7 @@ nextflow_process {
         }
     }
 
-    test("Should accept existing Boolean prediction pickles") {
+    test("Should reject legacy Boolean prediction pickles") {
         when {
             params { outdir = "$outputDir" }
             process {
@@ -138,11 +136,51 @@ nextflow_process {
             }
         }
         then {
-            assert process.success
-            def adata = anndata(process.out.h5ad[0][1])
-            assert adata.n_obs == 384
-            assert !('solo_class' in adata.obs.colnames)
-            assert path(process.out.obs[0][1]).exists()
+            assert process.failed
+            assert process.errorReport.contains('Unsupported prediction file extension: predictions/test_solo.pkl')
+        }
+    }
+
+    test("Should reject legacy CSV prediction tables") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = channel.of('cell,doublet\\ncell_000,false\\n').collectFile(name: 'predictions.csv').map { table -> [
+                    [id: 'legacy'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
+                    ['solo'], [table]
+                ] }
+                input[1] = 1
+                input[2] = false
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains('Unsupported prediction file extension: predictions/predictions.csv')
+        }
+    }
+
+    test("Should reject prediction tables without an explicit index") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = [
+                    [id: 'missing_index'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
+                    ['solo'],
+                    [file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/missing_index.parquet', checkIfExists: true)]
+                ]
+                input[1] = 1
+                input[2] = false
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Prediction table 'missing_index.parquet' is missing the '__index__' column")
         }
     }
 }

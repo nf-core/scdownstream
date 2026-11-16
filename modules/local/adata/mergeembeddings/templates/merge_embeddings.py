@@ -1,11 +1,30 @@
 #!/usr/bin/env python3
 
 import platform
+from pathlib import Path
 
 import anndata as ad
 import numpy as np
 import pandas as pd
+import pyarrow as pa
 import yaml
+
+
+def write_fragment(frame, path):
+    fragment = frame.copy()
+    fragment.columns = fragment.columns.map(str)
+    if "__index__" in fragment.columns or not fragment.columns.is_unique:
+        raise ValueError("Fragment columns must be unique and must not contain reserved column '__index__'.")
+    if (
+        fragment.index.nlevels != 1
+        or not fragment.index.is_unique
+        or fragment.index.hasnans
+        or not all(isinstance(value, str) for value in fragment.index)
+    ):
+        raise ValueError("Fragment axis identifiers must be unique, non-null strings.")
+    fragment = fragment.reset_index(names="__index__")
+    fragment.to_parquet(str(Path(path).resolve()), engine="pyarrow", index=False, compression="snappy")
+
 
 adata_integrated = ad.read_h5ad("${integrated}", backed="r")
 adata_base = ad.read_h5ad("${base}", backed="r")
@@ -38,16 +57,18 @@ if integration == "scanvi":
 
     adata_combined.obs["label:scANVI"] = labels.loc[adata_combined.obs_names]
 
-    adata_combined.obs[["label:scANVI"]].to_pickle("${prefix}.pkl")
+    write_fragment(adata_combined.obs[["label:scANVI"]], "${prefix}.parquet")
 
 df = pd.DataFrame(adata_combined.obsm["X_emb"], index=adata_combined.obs_names)
-df.to_pickle("X_${prefix}.pkl")
+write_fragment(df, "X_${prefix}.parquet")
 
 adata_combined.write_h5ad("${prefix}.h5ad", compression="gzip")
 
 # Versions
 
-versions = {"${task.process}": {"python": platform.python_version(), "anndata": ad.__version__}}
+versions = {
+    "${task.process}": {"python": platform.python_version(), "anndata": ad.__version__, "pyarrow": pa.__version__}
+}
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)

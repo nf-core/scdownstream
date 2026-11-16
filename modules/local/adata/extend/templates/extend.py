@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import csv
 import importlib.metadata
 import pickle
 import platform
@@ -23,17 +22,23 @@ uns_paths = sorted(Path("uns/").glob("*"))
 layers_paths = sorted(Path("layers/").glob("*"))
 
 
-def load_dataframe(path):
-    if path.suffix == ".pkl":
-        return pd.read_pickle(path)
-    elif path.suffix == ".csv":
-        with path.open(newline="") as handle:
-            columns = next(csv.reader(handle))[1:]
-        if len(columns) != len(set(columns)):
-            raise ValueError(f"Fragment '{path.name}' contains duplicate column names")
-        return pd.read_csv(path, index_col=0, converters={0: str})
-    else:
+def load_indexed_parquet(path: Path, axis_index: bool = True) -> pd.DataFrame:
+    if path.suffix != ".parquet":
         raise ValueError(f"Unsupported file extension: {path}")
+    frame = pd.read_parquet(path.resolve(), engine="pyarrow")
+    if not frame.columns.is_unique:
+        raise ValueError(f"Fragment '{path.name}' contains duplicate column names")
+    if "__index__" not in frame.columns:
+        raise ValueError(f"Fragment '{path.name}' is missing the '__index__' column")
+    frame = frame.set_index("__index__").rename_axis(None)
+    if axis_index:
+        if frame.index.hasnans:
+            raise ValueError(f"Fragment '{path.name}' contains null indices")
+        if not frame.index.is_unique:
+            raise ValueError(f"Fragment '{path.name}' contains duplicate indices")
+        if any(not isinstance(value, str) for value in frame.index):
+            raise ValueError(f"Fragment '{path.name}' contains non-string indices")
+    return frame
 
 
 def load_layer(path):
@@ -55,10 +60,35 @@ def restore_dtype(values, dtypes):
         categories = categories.union(pd.Index(values.dropna().unique().tolist()), sort=False)
         return pd.Categorical(values, categories=categories, ordered=categoricals[0].ordered)
 
+    if all(pd.api.types.is_bool_dtype(dtype) for dtype in dtypes):
+        dtype = (
+            "boolean" if values.isna().any() or any(isinstance(dtype, pd.BooleanDtype) for dtype in dtypes) else bool
+        )
+        return values.astype(dtype)
+
+    if all(pd.api.types.is_numeric_dtype(dtype) for dtype in dtypes):
+        dtype = np.result_type(*(getattr(dtype, "numpy_dtype", dtype) for dtype in dtypes))
+        if all(pd.api.types.is_integer_dtype(source) for source in dtypes):
+            if dtype.kind == "f":
+                # Mixed signed and unsigned 64-bit integers have no exact NumPy common dtype.
+                dtype = np.dtype("uint64" if values.dropna().ge(0).all() else "int64")
+            nullable = values.isna().any() or any(
+                isinstance(source, pd.api.extensions.ExtensionDtype) for source in dtypes
+            )
+            if nullable:
+                dtype = f"{'UInt' if dtype.kind == 'u' else 'Int'}{dtype.itemsize * 8}"
+            return values.astype(dtype)
+        result = values.astype(dtype)
+        if dtype.kind == "f" and any(pd.api.types.is_integer_dtype(source) for source in dtypes):
+            for original, converted in zip(values, result, strict=True):
+                if isinstance(original, (int, np.integer)) and not isinstance(original, (bool, np.bool_)):
+                    if not np.isfinite(converted) or int(converted) != original:
+                        raise ValueError("Merging numeric fragment dtypes would lose integer precision")
+        return result
+
+    if values.notna().any() and all(isinstance(value, (bool, np.bool_)) for value in values.dropna()):
+        return values.astype("boolean")
     values = values.infer_objects(copy=False)
-    # AnnData cannot serialise object arrays containing booleans and missing values.
-    if values.dtype == object and all(isinstance(value, (bool, np.bool_)) for value in values.dropna()):
-        return pd.Categorical(values, categories=pd.Index([False, True], dtype=bool))
     return values
 
 
@@ -66,11 +96,7 @@ def merge_dataframe(base, paths):
     """Apply indexed updates while checking agreement between fragment sources."""
     fragments = []
     for path in paths:
-        fragment = load_dataframe(path)
-        if not fragment.index.is_unique:
-            raise ValueError(f"Fragment '{path.name}' contains duplicate indices")
-        if not fragment.columns.is_unique:
-            raise ValueError(f"Fragment '{path.name}' contains duplicate column names")
+        fragment = load_indexed_parquet(path)
         fragments.append((path, fragment.loc[fragment.index.isin(base.index)]))
 
     result = base.copy()
@@ -100,14 +126,23 @@ adata.obs = merge_dataframe(adata.obs, obs_paths)
 adata.var = merge_dataframe(adata.var, var_paths)
 
 for path in obsm_paths:
-    df = pd.read_pickle(path).reindex(adata.obs_names)
+    df = load_indexed_parquet(path).reindex(adata.obs_names)
     adata.obsm[path.stem] = np.float32(df.to_numpy())
 
 for path in obsp_paths:
     adata.obsp[path.stem] = np.load(path, allow_pickle=True).item()
 
 for path in uns_paths:
-    adata.uns[path.stem] = pickle.load(open(path, "rb"))
+    if path.suffix == ".parquet":
+        value = load_indexed_parquet(path, axis_index=False)
+    elif path.suffix == ".pkl":
+        with path.open("rb") as handle:
+            value = pickle.load(handle)
+        if isinstance(value, pd.DataFrame):
+            raise ValueError(f"Tabular uns fragment '{path.name}' must use Parquet")
+    else:
+        raise ValueError(f"Unsupported uns file extension: {path}")
+    adata.uns[path.stem] = value
 
 for path in layers_paths:
     layer = load_layer(path)
@@ -125,6 +160,7 @@ versions = {
         "python": platform.python_version(),
         "anndata": importlib.metadata.version("anndata"),
         "pandas": pd.__version__,
+        "pyarrow": importlib.metadata.version("pyarrow"),
         "numpy": np.__version__,
     }
 }

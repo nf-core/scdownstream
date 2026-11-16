@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 import platform
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import pyarrow
 import scanpy as sc
 import yaml
 from scipy.stats import entropy
@@ -60,10 +62,27 @@ obs_cols = {
 if summary_rows:
     pd.DataFrame(summary_rows).to_csv(f"{prefix}_aggregate_per_cell_annotations.csv", index=False)
 
-pd.DataFrame(obs_cols, index=adata.obs.index).to_pickle(f"{prefix}.pkl")
+obs_fragment = pd.DataFrame(obs_cols, index=adata.obs.index).copy()
+if "__index__" in obs_fragment.columns or not obs_fragment.columns.is_unique:
+    raise ValueError("Observation fragment columns must be unique and must not contain reserved '__index__'")
+if (
+    obs_fragment.index.hasnans
+    or not obs_fragment.index.is_unique
+    or not all(isinstance(value, str) for value in obs_fragment.index)
+):
+    raise ValueError("Observation fragment index must contain unique, non-null strings")
+obs_fragment.reset_index(names="__index__").to_parquet(
+    Path(f"{prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
-versions = {"${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}}
+versions = {
+    "${task.process}": {
+        "python": platform.python_version(),
+        "scanpy": sc.__version__,
+        "pyarrow": pyarrow.__version__,
+    }
+}
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)

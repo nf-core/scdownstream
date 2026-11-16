@@ -6,6 +6,7 @@ nextflow_process {
 
     tag "modules"
     tag "modules_local"
+    tag "fragment_embeddings"
 
     setup {
         run("SCANPY_HVGS") {
@@ -61,6 +62,22 @@ nextflow_process {
             with(adata) {
                 assert "X_emb" in obsm
             }
+            assert file(process.out.obsm[0]).name == 'X_test_scanvi.parquet'
+            assert file(process.out.obs[0]).name == 'test_scanvi.parquet'
+            def embedding = parquet(process.out.obsm[0])
+            assert embedding.rowCount == adata.n_obs
+            assert embedding.columnNames == ['__index__'] + (0..<30).collect { it.toString() }
+            assert embedding.schema.fields[0].logicalType.type == 'STRING'
+            assert embedding.schema.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.compressionCodecs == ['SNAPPY']
+            assert embedding.rows.collect { it.__index__ } == adata.obs.index.values
+            def labels = parquet(process.out.obs[0])
+            assert labels.columnNames == ['__index__', 'label:scANVI']
+            assert labels.rowCount == adata.n_obs
+            assert labels.schema.fields[0].logicalType.type == 'STRING'
+            assert labels.compressionCodecs == ['SNAPPY']
+            assert labels.rows.collect { it.__index__ } == adata.obs.index.values
+            assert labels.rows.collect { it['label:scANVI'] } == adata.obs.get('label:scANVI').data
             assert snapshot(
                 file(process.out.h5ad[0][1]).name,
                 file(process.out.model[0][1]).name,
@@ -145,6 +162,22 @@ nextflow_process {
                 assert obs.get("label:scANVI").unique().size() > 1
                 assert obs.get("label:scANVI").unique().every { it in obs.get('leiden').unique() }
             }
+            assert file(process.out.obsm[0]).name == 'X_test_scanvi.parquet'
+            assert file(process.out.obs[0]).name == 'test_scanvi.parquet'
+            def embedding = parquet(process.out.obsm[0])
+            assert embedding.rowCount == adata.n_obs
+            assert embedding.columnNames == ['__index__'] + (0..<30).collect { it.toString() }
+            assert embedding.schema.fields[0].logicalType.type == 'STRING'
+            assert embedding.schema.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.compressionCodecs == ['SNAPPY']
+            assert embedding.rows.collect { it.__index__ } == adata.obs.index.values
+            def labels = parquet(process.out.obs[0])
+            assert labels.columnNames == ['__index__', 'label:scANVI']
+            assert labels.rowCount == adata.n_obs
+            assert labels.schema.fields[0].logicalType.type == 'STRING'
+            assert labels.compressionCodecs == ['SNAPPY']
+            assert labels.rows.collect { it.__index__ } == adata.obs.index.values
+            assert labels.rows.collect { it['label:scANVI'] } == adata.obs.get('label:scANVI').data
             assert snapshot(
                 file(process.out.h5ad[0][1]).name,
                 file(process.out.model[0][1]).name,

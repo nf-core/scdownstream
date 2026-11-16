@@ -52,10 +52,10 @@ output:
           description: Optional AnnData with LIANA results stored in uns
           pattern: "*.h5ad"
   uns:
-    - "*.pkl":
+    - "*.parquet":
         type: file
-        description: Optional pickled uns contents including LIANA results
-        pattern: "*.pkl"
+        description: Optional LIANA results with the numeric index in a physical __index__ column
+        pattern: "*.parquet"
   plots:
     - "*.png":
         type: file
@@ -79,24 +79,24 @@ maintainers:
 containers:
   docker:
     linux/arm64:
-      name: community.wave.seqera.io/library/liana_pyyaml:8505a353f9fdc1f5
-      build_id: bd-8505a353f9fdc1f5_1
-      scan_id: sc-aee9098bc5971cf2_2
+      name: community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:3b91b5b591cd73fd
+      build_id: bd-3b91b5b591cd73fd_1
+      scan_id: sc-0f144f30e3daf162_1
     linux/amd64:
-      name: community.wave.seqera.io/library/liana_pyyaml:c2bc77d30223be1f
-      build_id: bd-c2bc77d30223be1f_1
-      scan_id: sc-ba6dd7b0578d9cd3_2
+      name: community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:8e83a619a49597d2
+      build_id: bd-8e83a619a49597d2_1
+      scan_id: sc-c0f55f916a468e46_1
   singularity:
-    linux/amd64:
-      name: oras://community.wave.seqera.io/library/liana_pyyaml:0bd9764a267aa0cb
-      build_id: bd-0bd9764a267aa0cb_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/00/00a0832cf7999e945fe1eea426fb5a59d4718af37c8e97b1768d7257904bfadb/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/liana_pyyaml:7e6acef60d8044bc
-      build_id: bd-7e6acef60d8044bc_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5e/5e5ac3750642933ecd34611b40f517bc5118351d734c8059a3ca29c29a50418d/data
+      name: oras://community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:f9d3671b88b7794b
+      build_id: bd-f9d3671b88b7794b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/96/96569ea1b285879f020081f4f4145f699b81692393d7d2b2b0914e78d41b0b5b/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:e05b0ca2497070da
+      build_id: bd-e05b0ca2497070da_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7d/7d75b8890e8519a27c0cb6769bc8ffb735e30887c18d2eca63239b5c7b9bbee8/data
   conda:
     linux/amd64:
-      lock_file: modules/local/liana/rankaggregate/.conda-lock/linux_amd64-bd-c2bc77d30223be1f_1.txt
+      lock_file: modules/local/liana/rankaggregate/.conda-lock/linux_amd64-bd-8e83a619a49597d2_1.txt
     linux/arm64:
-      lock_file: modules/local/liana/rankaggregate/.conda-lock/linux_arm64-bd-8505a353f9fdc1f5_1.txt
+      lock_file: modules/local/liana/rankaggregate/.conda-lock/linux_arm64-bd-3b91b5b591cd73fd_1.txt

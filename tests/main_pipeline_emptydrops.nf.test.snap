@@ -25,14 +25,16 @@
                 },
                 "CELLTYPES_CELLTYPIST": {
                     "celltypist": "1.6.3",
-                    "pandas": "3.0.6",
-                    "python": "3.13.16",
+                    "pandas": "3.1.1",
+                    "pyarrow": "21.0.0",
+                    "python": "3.13.18",
                     "scanpy": "1.10.4"
                 },
                 "CELLTYPES_SINGLER": {
                     "R": "R version 4.5.3 (2026-03-11)",
                     "SingleR": "2.12.0",
                     "anndataR": "1.0.2",
+                    "arrow": "21.0.0",
                     "ggplot2": "4.0.2"
                 },
                 "COLLECT_SIZES": {
@@ -43,6 +45,7 @@
                     "anndata": "0.12.10",
                     "matplotlib": "3.10.9",
                     "pandas": "2.3.3",
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12",
                     "upsetplot": "0.9.0"
                 },
@@ -55,6 +58,7 @@
                     "anndata": "0.13.2",
                     "numpy": "2.5.4",
                     "pandas": "3.0.5",
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12"
                 },
                 "QC_FILTERED": {
@@ -77,6 +81,7 @@
                     "scanpy": "1.12.3"
                 },
                 "SCANPY_SCRUBLET": {
+                    "pyarrow": "21.0.0",
                     "python": "3.12.11",
                     "scanpy": "1.11.2"
                 },
@@ -97,11 +102,11 @@
                 "02_quality_control/custom_thresholds/SRR28679759_filtered_qc_histograms.png",
                 "02_quality_control/doublet_detection",
                 "02_quality_control/doublet_detection/SRR28679759.h5ad",
-                "02_quality_control/doublet_detection/SRR28679759.obs.pkl",
+                "02_quality_control/doublet_detection/SRR28679759.obs.parquet",
                 "02_quality_control/doublet_detection/scrublet",
                 "02_quality_control/doublet_detection/scrublet/SRR28679759_scrublet.h5ad",
-                "02_quality_control/doublet_detection/scrublet/SRR28679759_scrublet.pkl",
-                "02_quality_control/doublet_detection/scrublet/SRR28679759_scrublet.scores.pkl",
+                "02_quality_control/doublet_detection/scrublet/SRR28679759_scrublet.parquet",
+                "02_quality_control/doublet_detection/scrublet/SRR28679759_scrublet.scores.parquet",
                 "02_quality_control/empty_droplet_removal",
                 "02_quality_control/empty_droplet_removal/SRR28679759_emptydrops_barcodes.csv",
                 "02_quality_control/empty_droplet_removal/SRR28679759_emptydrops_results.csv",
@@ -122,7 +127,7 @@
                 "04_celltypes",
                 "04_celltypes/celltypist",
                 "04_celltypes/celltypist/SRR28679759_celltypist.h5ad",
-                "04_celltypes/celltypist/SRR28679759_celltypist.pkl",
+                "04_celltypes/celltypist/SRR28679759_celltypist.parquet",
                 "04_celltypes/celltypist/SRR28679759_celltypist_annotation_columns.csv",
                 "04_celltypes/singler",
                 "04_celltypes/singler/SRR28679759_singler_annotation_columns.csv",
@@ -134,7 +139,7 @@
                 "04_celltypes/singler/SRR28679759_singler_immune_celldex_heatmap.pdf",
                 "04_celltypes/singler/SRR28679759_singler_immune_direct_distribution.pdf",
                 "04_celltypes/singler/SRR28679759_singler_immune_direct_heatmap.pdf",
-                "04_celltypes/singler/SRR28679759_singler_predictions.csv",
+                "04_celltypes/singler/SRR28679759_singler_predictions.parquet",
                 "10_reports",
                 "10_reports/_extensions",
                 "10_reports/_extensions/nf-core",
@@ -153,7 +158,7 @@
                 "pipeline_info/nf_core_scdownstream_software_mqc_versions.yml"
             ],
             [
-                "SRR28679759_scrublet.pkl:md5,5179d4ec4c5092b42189558c08bc01b7",
+                "SRR28679759_scrublet.parquet:md5,67c76e0882e4cda7232723e406775253",
                 "SRR28679759_emptydrops_barcodes.csv:md5,d8b8e32464ed1aee31d79df93efef5d4",
                 "SRR28679759_emptydrops_results.csv:md5,a3ed099c8628f8424fb507e41284c0b0",
                 "SRR28679759_celltypist_annotation_columns.csv:md5,a1b205901822b3df97b6aad8a640dfda",
@@ -166,7 +171,7 @@
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
             ]
         ],
-        "timestamp": "2026-11-14T12:55:15.930899367",
+        "timestamp": "2026-11-16T00:07:37.607464803",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

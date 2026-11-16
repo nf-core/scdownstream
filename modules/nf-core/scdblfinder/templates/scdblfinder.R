@@ -4,6 +4,7 @@ library(scDblFinder)
 library(SingleCellExperiment)
 library(BiocParallel)
 library(anndataR)
+library(arrow)
 
 set.seed(123)
 
@@ -50,14 +51,18 @@ print(table(sce\$scDblFinder.class))
 
 write_h5ad(sce, "${prefix}.h5ad", compression = "gzip")
 
-write.csv(as.data.frame(colData(sce))[, cols, drop = FALSE], "${prefix}.scores.csv")
+cell_ids <- colnames(sce)
+if (is.null(cell_ids) || anyNA(cell_ids) || anyDuplicated(cell_ids) || !is.character(cell_ids)) {
+    stop("Doublet predictions require unique, non-null string cell IDs")
+}
+scores <- as.data.frame(colData(sce))[, cols, drop = FALSE]
+scores <- cbind(data.frame(`__index__` = cell_ids, check.names = FALSE), scores)
+write_parquet(scores, "${prefix}.scores.parquet", compression = "snappy")
 
-# One boolean column (TRUE = doublet), named after the prefix and indexed by cell
-# barcode. This is the same layout the other doublet detection modules return, so
-# the calls from several methods can be combined without any conversion.
 calls <- data.frame(sce\$scDblFinder.class == "doublet", row.names = colnames(sce))
 colnames(calls) <- "${prefix}"
-write.csv(calls, "${prefix}.predictions.csv")
+calls <- cbind(data.frame(`__index__` = cell_ids, check.names = FALSE), calls)
+write_parquet(calls, "${prefix}.predictions.parquet", compression = "snappy")
 
 r.version <- strsplit(version[['version.string']], ' ')[[1]][3]
 writeLines(
@@ -68,7 +73,8 @@ writeLines(
         paste('    anndatar:', as.character(packageVersion('anndataR'))),
         paste('    singlecellexperiment:', as.character(packageVersion('SingleCellExperiment'))),
         paste('    biocparallel:', as.character(packageVersion('BiocParallel'))),
-        paste('    rhdf5:', as.character(packageVersion('rhdf5')))
+        paste('    rhdf5:', as.character(packageVersion('rhdf5'))),
+        paste('    arrow:', as.character(packageVersion('arrow')))
     ),
     'versions.yml'
 )

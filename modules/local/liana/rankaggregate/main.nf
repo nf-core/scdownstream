@@ -3,9 +3,9 @@ process LIANA_RANKAGGREGATE {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/00/00a0832cf7999e945fe1eea426fb5a59d4718af37c8e97b1768d7257904bfadb/data'
-:         'community.wave.seqera.io/library/liana_pyyaml:c2bc77d30223be1f' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7d/7d75b8890e8519a27c0cb6769bc8ffb735e30887c18d2eca63239b5c7b9bbee8/data'
+        : 'community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:8e83a619a49597d2'}"
 
     input:
     tuple val(meta), path(h5ad)
@@ -17,11 +17,11 @@ process LIANA_RANKAGGREGATE {
     val species
 
     output:
-    tuple val(meta), path("*.h5ad"), emit: h5ad         , optional: true
-    path("*.pkl")                  , emit: uns          , optional: true
-    path("*.png")                  , emit: plots        , optional: true
-    path("*_mqc.json")             , emit: multiqc_files, optional: true
-    path "versions.yml"            , emit: versions     , topic: versions
+    tuple val(meta), path("*.h5ad"), emit: h5ad, optional: true
+    path("*.parquet"), emit: uns, optional: true
+    path("*.png"), emit: plots, optional: true
+    path("*_mqc.json"), emit: multiqc_files, optional: true
+    path "versions.yml", emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -35,7 +35,7 @@ process LIANA_RANKAGGREGATE {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch "${prefix}.h5ad"
-    touch "${prefix}.pkl"
+    touch "${prefix}.parquet"
     touch "${prefix}_dotplot.png"
     touch "${prefix}_circle.png"
     touch "${prefix}_tileplot.png"

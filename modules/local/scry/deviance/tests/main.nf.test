@@ -174,8 +174,12 @@ nextflow_process {
                 assert "binomial_deviance" in var.colnames
                 assert n_vars == 100
             }
-            def var_fragment = path(process.out.var[0]).csv
-            def cols = var_fragment.columns.keySet()
+            def var_fragment = parquet(process.out.var[0])
+            assert var_fragment.columnNames[0] == '__index__'
+            assert var_fragment.compressionCodecs == ['SNAPPY']
+            assert var_fragment.rows.every { it['deviance:subset:CD4_T:highly_deviant'] instanceof Boolean }
+            assert var_fragment.rows.every { it['deviance:subset:CD4_T:binomial_deviance'] instanceof Number }
+            def cols = var_fragment.columnNames.findAll { it != '__index__' }
             assert cols.contains('deviance:subset:CD4_T:binomial_deviance')
             assert cols.contains('deviance:subset:CD4_T:highly_deviant')
             assert !cols.any { it == 'binomial_deviance' || it == 'highly_deviant' }
@@ -211,8 +215,11 @@ nextflow_process {
                 assert "binomial_deviance" in var.colnames
                 assert n_vars == 100
             }
-            def var_fragment = path(process.out.var[0]).csv
-            def cols = var_fragment.columns.keySet()
+            def var_fragment = parquet(process.out.var[0])
+            assert var_fragment.columnNames[0] == '__index__'
+            assert var_fragment.rows.every { it['deviance:highly_deviant'] instanceof Boolean }
+            assert var_fragment.rows.every { it['deviance:binomial_deviance'] instanceof Number }
+            def cols = var_fragment.columnNames.findAll { it != '__index__' }
             assert cols.contains('deviance:binomial_deviance')
             assert cols.contains('deviance:highly_deviant')
             assert !cols.any { it.contains(':subset:') }
@@ -248,8 +255,11 @@ nextflow_process {
                 assert "binomial_deviance" in var.colnames
                 assert n_vars == 100
             }
-            def var_fragment = path(process.out.var[0]).csv
-            def cols = var_fragment.columns.keySet()
+            def var_fragment = parquet(process.out.var[0])
+            assert var_fragment.columnNames[0] == '__index__'
+            assert var_fragment.rows.every { it['deviance:highly_deviant'] instanceof Boolean }
+            assert var_fragment.rows.every { it['deviance:binomial_deviance'] instanceof Number }
+            def cols = var_fragment.columnNames.findAll { it != '__index__' }
             assert cols.contains('deviance:binomial_deviance')
             assert cols.contains('deviance:highly_deviant')
             assert !cols.any { it.contains(':subset:') }

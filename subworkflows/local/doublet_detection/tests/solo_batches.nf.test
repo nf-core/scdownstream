@@ -43,7 +43,7 @@ nextflow_workflow {
             assert result.obs.get('sample').data.toList() == batches
             assert workflow.out.obs.size() == 1
             assert workflow.out.obs[0][0] == workflow.out.h5ad[0][0]
-            assert path(workflow.out.obs[0][1]).fileName.toString() == 'multibatch.obs.pkl'
+            assert path(workflow.out.obs[0][1]).fileName.toString() == 'multibatch.obs.parquet'
             assert path(workflow.out.obs[0][1]).exists()
             assert !('solo_score' in result.obs.colnames)
             assert !('multibatch_solo' in result.obs.colnames)

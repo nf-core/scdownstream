@@ -4,9 +4,11 @@
 import os
 import platform
 from importlib.metadata import version
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import pyarrow
 import scanpy as sc
 import yaml
 from cytetype import CyteType
@@ -75,7 +77,18 @@ if missing_cols:
     raise RuntimeError(f"CyteType did not add expected obs columns: {missing_cols}. Check logs and study_context.")
 
 df_out = adata_work.obs[library_cols].rename(columns=dict(zip(library_cols, output_cols))).reindex(adata.obs.index)
-df_out.to_pickle(f"{prefix}.pkl")
+obs_fragment = df_out.copy()
+if "__index__" in obs_fragment.columns or not obs_fragment.columns.is_unique:
+    raise ValueError("Observation fragment columns must be unique and must not contain reserved '__index__'")
+if (
+    obs_fragment.index.hasnans
+    or not obs_fragment.index.is_unique
+    or not all(isinstance(value, str) for value in obs_fragment.index)
+):
+    raise ValueError("Observation fragment index must contain unique, non-null strings")
+obs_fragment.reset_index(names="__index__").to_parquet(
+    Path(f"{prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 adata.obs = pd.concat([adata.obs, df_out], axis=1)
 adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
@@ -85,6 +98,7 @@ versions = {
         "python": platform.python_version(),
         "numpy": np.__version__,
         "pandas": pd.__version__,
+        "pyarrow": pyarrow.__version__,
         "scanpy": sc.__version__,
         "cytetype": version("cytetype"),
     }

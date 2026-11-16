@@ -11,7 +11,7 @@
                     ]
                 ],
                 "1": [
-                    "highly_variable_pearson_residuals.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable_pearson_residuals.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "2": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -25,25 +25,26 @@
                     ]
                 ],
                 "var": [
-                    "highly_variable_pearson_residuals.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable_pearson_residuals.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-10-23T09:15:54.552742197",
+        "timestamp": "2026-11-15T16:03:32.284638782",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures": {
         "content": [
             {
                 "SCANPY_PEARSONRESIDUALS_HVGS": {
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12",
-                    "scanpy": "1.12.2"
+                    "scanpy": "1.12.5"
                 }
             },
             {
@@ -79,20 +80,30 @@
                         "highly_variable_rank"
                     ]
                 },
-                "layers": [],
-                "obsm": [],
-                "varm": [],
-                "obsp": [],
-                "varp": [],
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
                 "uns": [
                     "hvg"
                 ]
             }
         ],
-        "timestamp": "2026-10-24T13:32:12.610624378",
+        "timestamp": "2026-11-15T16:03:11.046902281",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

@@ -3,8 +3,9 @@
         "content": [
             {
                 "SCANPY_HVGS": {
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12",
-                    "scanpy": "1.12.3"
+                    "scanpy": "1.12.5"
                 }
             },
             3000,
@@ -37,26 +38,39 @@
                         "highly_variable"
                     ]
                 },
-                "layers": [],
-                "obsm": [],
-                "varm": [],
-                "obsp": [],
-                "varp": [],
-                "uns": []
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
             }
         ],
-        "timestamp": "2026-10-24T15:32:46.281938888",
+        "timestamp": "2026-11-15T15:51:36.98852206",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "Should run with a specified number of HVGs": {
         "content": [
             {
                 "SCANPY_HVGS": {
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12",
-                    "scanpy": "1.12.3"
+                    "scanpy": "1.12.5"
                 }
             },
             {
@@ -94,28 +108,37 @@
                 "layers": [
                     "hvgs_log1p"
                 ],
-                "obsm": [],
-                "varm": [],
-                "obsp": [],
-                "varp": [],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
                 "uns": [
                     "hvg",
                     "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-10-24T15:33:11.92697996",
+        "timestamp": "2026-11-15T15:49:03.329193686",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "Should run when n_hvgs equals n_vars": {
         "content": [
             {
                 "SCANPY_HVGS": {
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12",
-                    "scanpy": "1.12.3"
+                    "scanpy": "1.12.5"
                 }
             },
             3000,
@@ -148,26 +171,39 @@
                         "highly_variable"
                     ]
                 },
-                "layers": [],
-                "obsm": [],
-                "varm": [],
-                "obsp": [],
-                "varp": [],
-                "uns": []
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
             }
         ],
-        "timestamp": "2026-10-24T15:32:22.758331501",
+        "timestamp": "2026-11-15T15:50:45.445314322",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "Should run without a specified number of HVGs": {
         "content": [
             {
                 "SCANPY_HVGS": {
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12",
-                    "scanpy": "1.12.3"
+                    "scanpy": "1.12.5"
                 }
             },
             {
@@ -205,28 +241,37 @@
                 "layers": [
                     "hvgs_log1p"
                 ],
-                "obsm": [],
-                "varm": [],
-                "obsp": [],
-                "varp": [],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
                 "uns": [
                     "hvg",
                     "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-10-24T15:32:22.883566697",
+        "timestamp": "2026-11-15T15:47:16.813153985",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "Should run when n_hvgs exceeds n_vars after exclusions": {
         "content": [
             {
                 "SCANPY_HVGS": {
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12",
-                    "scanpy": "1.12.3"
+                    "scanpy": "1.12.5"
                 }
             },
             2995,
@@ -259,18 +304,30 @@
                         "highly_variable"
                     ]
                 },
-                "layers": [],
-                "obsm": [],
-                "varm": [],
-                "obsp": [],
-                "varp": [],
-                "uns": []
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
             }
         ],
-        "timestamp": "2026-10-24T15:32:36.508416841",
+        "timestamp": "2026-11-15T15:52:28.547147527",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures - stub": {
@@ -285,7 +342,7 @@
                     ]
                 ],
                 "1": [
-                    "highly_variable.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "2": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -299,25 +356,26 @@
                     ]
                 ],
                 "var": [
-                    "highly_variable.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-10-22T21:48:31.723255661",
+        "timestamp": "2026-11-15T15:52:50.494076426",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "Should run with a list of genes excluded from integration": {
         "content": [
             {
                 "SCANPY_HVGS": {
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12",
-                    "scanpy": "1.12.3"
+                    "scanpy": "1.12.5"
                 }
             },
             {
@@ -355,20 +413,28 @@
                 "layers": [
                     "hvgs_log1p"
                 ],
-                "obsm": [],
-                "varm": [],
-                "obsp": [],
-                "varp": [],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
                 "uns": [
                     "hvg",
                     "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-10-24T13:32:13.985791847",
+        "timestamp": "2026-11-15T15:49:54.505608466",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

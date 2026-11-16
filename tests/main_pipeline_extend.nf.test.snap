@@ -6,6 +6,7 @@
                     "anndata": "0.13.2",
                     "numpy": "2.5.4",
                     "pandas": "3.0.5",
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12"
                 },
                 "ADATA_MERGE": {
@@ -15,7 +16,8 @@
                     "scipy": "1.18.0"
                 },
                 "ADATA_MERGEEMBEDDINGS": {
-                    "anndata": "0.13.2",
+                    "anndata": "0.13.4",
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12"
                 },
                 "ADATA_UNIFY": {
@@ -41,14 +43,16 @@
                 },
                 "CELLTYPES_CELLTYPIST": {
                     "celltypist": "1.6.3",
-                    "pandas": "3.0.6",
-                    "python": "3.13.16",
+                    "pandas": "3.1.1",
+                    "pyarrow": "21.0.0",
+                    "python": "3.13.18",
                     "scanpy": "1.10.4"
                 },
                 "CELLTYPES_SINGLER": {
                     "R": "R version 4.5.3 (2026-03-11)",
                     "SingleR": "2.12.0",
                     "anndataR": "1.0.2",
+                    "arrow": "21.0.0",
                     "ggplot2": "4.0.2"
                 },
                 "COLLECT_SIZES": {
@@ -66,28 +70,33 @@
                     "anndata": "0.12.10",
                     "matplotlib": "3.10.9",
                     "pandas": "2.3.3",
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12",
                     "upsetplot": "0.9.0"
                 },
                 "ENTROPY": {
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12",
-                    "scanpy": "1.12.3",
-                    "scipy": "1.18.0"
+                    "scanpy": "1.12.5",
+                    "scipy": "1.18.1"
                 },
                 "FINALIZE_QC_ANNDATAS": {
                     "anndata": "0.13.2",
                     "numpy": "2.5.4",
                     "pandas": "3.0.5",
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12"
                 },
                 "LEIDEN": {
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12",
-                    "scanpy": "1.12.3"
+                    "scanpy": "1.12.5"
                 },
                 "LIANA_RANKAGGREGATE": {
                     "liana": "1.6.1",
-                    "python": "3.12.13",
-                    "scanpy": "1.12.3"
+                    "pyarrow": "21.0.0",
+                    "python": "3.12.16",
+                    "scanpy": "1.12.5"
                 },
                 "NEIGHBORS": {
                     "python": "3.13.12",
@@ -122,11 +131,13 @@
                     "scanpy": "1.12.3"
                 },
                 "SCANPY_SCRUBLET": {
+                    "pyarrow": "21.0.0",
                     "python": "3.12.11",
                     "scanpy": "1.11.2"
                 },
                 "SCDBLFINDER": {
                     "anndatar": "1.2.3",
+                    "arrow": "21.0.0",
                     "biocparallel": "1.44.0",
                     "r-base": "4.5.3",
                     "rhdf5": "2.54.1",
@@ -142,7 +153,10 @@
                     "scran": "1.38.0"
                 },
                 "SCVITOOLS_SCVI": {
-                    "scvi": "1.4.3"
+                    "cuda": "no CUDA available",
+                    "pyarrow": "21.0.0",
+                    "scvi": "1.4.3",
+                    "torch": "2.14.1"
                 },
                 "SUBSETVAR_INNER": {
                     "anndata": "0.12.10",
@@ -155,15 +169,17 @@
                     "python": "3.13.12"
                 },
                 "SYMPHONY_MAPEMBEDDING": {
-                    "pandas": "3.0.5",
+                    "pandas": "3.1.1",
+                    "pyarrow": "21.0.0",
                     "python": "3.13.13",
                     "scanpy": "1.12.1",
                     "symphonypy": "0.2.4"
                 },
                 "UMAP": {
-                    "pandas": "3.0.5",
+                    "pandas": "3.1.1",
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12",
-                    "scanpy": "1.12.3"
+                    "scanpy": "1.12.5"
                 },
                 "UPSET_GENES": {
                     "anndata": "0.12.10",
@@ -207,7 +223,7 @@
                 "04_celltypes/singler/SRR28679759_singler_immune_celldex_heatmap.pdf",
                 "04_celltypes/singler/SRR28679759_singler_immune_direct_distribution.pdf",
                 "04_celltypes/singler/SRR28679759_singler_immune_direct_heatmap.pdf",
-                "04_celltypes/singler/SRR28679759_singler_predictions.csv",
+                "04_celltypes/singler/SRR28679759_singler_predictions.parquet",
                 "05_cluster_dimred",
                 "05_cluster_dimred/scvi",
                 "05_cluster_dimred/scvi/entropy",
@@ -243,7 +259,7 @@
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
             ]
         ],
-        "timestamp": "2026-11-13T21:18:20.547671548",
+        "timestamp": "2026-11-16T00:59:13.263106694",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

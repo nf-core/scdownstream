@@ -13,7 +13,7 @@ nextflow_process {
                 script "../../../adata/extend/main.nf"
                 process {
                     """
-                    input[0] = channel.of('cell,solo_class\\ncell_000,singlet\\n').collectFile(name: 'existing.csv').map { obs -> [
+                    input[0] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/existing.parquet', checkIfExists: true)).map { obs -> [
                         [id: 'existing'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), [obs], [], [], [], [], []
                     ] }
                     """
@@ -24,7 +24,7 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                p = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
+                p = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/zero.parquet', checkIfExists: true))
                 input[0] = ADATA_EXTEND.out.h5ad.combine(p).map { meta, base, prediction -> [meta + [id: 'existing_calls'], base, ['solo'], [prediction]] }
                 input[1] = 1
                 input[2] = false
@@ -65,7 +65,7 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                input[0] = channel.of('cell,call\\ncell_000,true\\ncell_000,false\\n').collectFile(name: 'duplicate.csv').map { p -> [
+                input[0] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/duplicate.parquet', checkIfExists: true)).map { p -> [
                     [id: 'duplicate'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
                 ] }
                 input[1] = 1
@@ -75,7 +75,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains('predictions/duplicate.csv must contain each input barcode exactly once')
+            assert process.errorReport.contains("Prediction table 'duplicate.parquet' contains duplicate indices")
         }
     }
 
@@ -84,8 +84,8 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                p = channel.of('cell,call\\n' + (1..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'missing.csv')
-                solo = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'complete.csv')
+                p = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/missing.parquet', checkIfExists: true))
+                solo = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/zero.parquet', checkIfExists: true))
                 input[0] = p.combine(solo).map { a,b -> [
                     [id: 'missing'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['scrublet','solo'], [a,b]
                 ] }
@@ -96,7 +96,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains('predictions/missing.csv must contain each input barcode exactly once')
+            assert process.errorReport.contains('predictions/missing.parquet must contain each input barcode exactly once')
         }
     }
 
@@ -105,7 +105,7 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                input[0] = channel.of('cell,call\\n' + (0..128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'extra.csv').map { p -> [
+                input[0] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/extra.parquet', checkIfExists: true)).map { p -> [
                     [id: 'extra'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
                 ] }
                 input[1] = 1
@@ -115,7 +115,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains('predictions/extra.csv must contain each input barcode exactly once')
+            assert process.errorReport.contains('predictions/extra.parquet must contain each input barcode exactly once')
         }
     }
 
@@ -124,7 +124,7 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                input[0] = channel.of('cell,call,score\\n' + (0..<128).collect { i -> String.format('cell_%03d,false,9999\\n', i) }.join('')).collectFile(name: 'columns.csv').map { p -> [
+                input[0] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/columns.parquet', checkIfExists: true)).map { p -> [
                     [id: 'columns'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
                 ] }
                 input[1] = 1
@@ -134,7 +134,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains('predictions/columns.csv must contain exactly one Boolean column')
+            assert process.errorReport.contains('predictions/columns.parquet must contain exactly one Boolean column')
         }
     }
 
@@ -143,7 +143,7 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                input[0] = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s\\n', i, i == 5 ? '' : 'false') }.join('')).collectFile(name: 'null.csv').map { p -> [
+                input[0] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/null.parquet', checkIfExists: true)).map { p -> [
                     [id: 'null'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
                 ] }
                 input[1] = 1
@@ -153,7 +153,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains('predictions/null.csv must contain non-null Boolean predictions')
+            assert process.errorReport.contains('predictions/null.parquet must contain non-null Boolean predictions')
         }
     }
 
@@ -162,7 +162,7 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                input[0] = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s\\n', i, i == 5 ? 'singlet' : 'false') }.join('')).collectFile(name: 'invalid.csv').map { p -> [
+                input[0] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/invalid.parquet', checkIfExists: true)).map { p -> [
                     [id: 'invalid'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
                 ] }
                 input[1] = 1
@@ -172,7 +172,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains('predictions/invalid.csv must contain non-null Boolean predictions')
+            assert process.errorReport.contains('predictions/invalid.parquet must contain non-null Boolean predictions')
         }
     }
 
@@ -181,7 +181,7 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                input[0] = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s\\n', i, i % 2) }.join('')).collectFile(name: 'numeric.csv').map { p -> [
+                input[0] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/numeric.parquet', checkIfExists: true)).map { p -> [
                     [id: 'numeric'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo'], [p]
                 ] }
                 input[1] = 1
@@ -191,7 +191,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains('predictions/numeric.csv must contain non-null Boolean predictions')
+            assert process.errorReport.contains('predictions/numeric.parquet must contain non-null Boolean predictions')
         }
     }
 
@@ -200,7 +200,7 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                input[0] = channel.of('cell,call\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv').map { p -> [
+                input[0] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/zero.parquet', checkIfExists: true)).map { p -> [
                     [id: 'count'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), ['solo', 'scrublet'], [p]
                 ] }
                 input[1] = 1

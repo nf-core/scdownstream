@@ -12,8 +12,8 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                p = channel.of('cell,any_prefix\\n' + (0..<128).collect { i -> String.format('cell_%03d,false\\n', i) }.join('')).collectFile(name: 'p.csv')
-                solo = channel.of('cell,any_prefix\\n' + (0..<128).collect { i -> String.format('cell_%03d,FALSE\\n', i) }.join('')).collectFile(name: 'solo.csv')
+                p = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/zero.parquet', checkIfExists: true))
+                solo = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/zero_solo.parquet', checkIfExists: true))
                 input[0] = p.combine(solo).map { a,b -> [
                     [id: 'zero'],
                     file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
@@ -37,8 +37,8 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                p = channel.of('cell,any_prefix\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s\\n', i, i == 0) }.join('')).collectFile(name: 'p.csv')
-                solo = channel.of('cell,any_prefix\\n' + (0..<128).collect { i -> String.format('cell_%03d,%s\\n', i, i == 0) }.join('')).collectFile(name: 'solo.csv')
+                p = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/small.parquet', checkIfExists: true))
+                solo = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/small_solo.parquet', checkIfExists: true))
                 input[0] = p.combine(solo).map { a,b -> [
                     [id: 'small'],
                     file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),

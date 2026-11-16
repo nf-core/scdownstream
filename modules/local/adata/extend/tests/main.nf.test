@@ -15,20 +15,14 @@ nextflow_process {
             }
             process {
                 """
-                obs_a = channel.of('cell,label,n_counts,score,flag,version.1\\nSRR28679756::CCTTTCTTCTGCTGCT,T_cell,100,1.0,True,first\\nSRR28679756::ATCATCTTCTGCTGTC,,,2.0,,\\nnot_a_cell,ignored,999,9,True,ignored\\n')
-                    .collectFile(name: 'a_obs.csv')
-                obs_b = channel.of('cell,label,n_counts,score,flag,version.1\\nSRR28679756::CCTTTCTTCTGCTGCT,T_cell,100.0,1,True,first\\nSRR28679756::ATCATCTTCTGCTGTC,B_cell,,2,False,second\\n')
-                    .collectFile(name: 'b_obs.csv')
-                var_a = channel.of('gene,selected,score\\nFAM177A1P1,True,1.0\\n')
-                    .collectFile(name: 'a_var.csv')
-                var_b = channel.of('gene,selected,score\\nFAM177A1P1,True,1\\nPOMP,False,2.5\\n')
-                    .collectFile(name: 'b_var.csv')
-                input[0] = obs_a.combine(obs_b).combine(var_a).combine(var_b)
-                    .map { a, b, c, d -> [
-                        [id: 'compatible'],
-                        file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
-                        [a, b], [c, d], [], [], [], []
-                    ] }
+                def fixtures = params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/'
+                input[0] = [
+                    [id: 'compatible'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                    ['a_obs', 'b_obs'].collect { file(fixtures + it + '.parquet', checkIfExists: true) },
+                    ['a_var', 'b_var'].collect { file(fixtures + it + '.parquet', checkIfExists: true) },
+                    [], [], [], []
+                ]
                 """
             }
         }
@@ -63,13 +57,13 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                a = channel.of('cell,label\\nSRR28679756::CCTTTCTTCTGCTGCT,T_cell\\n').collectFile(name: 'a_conflict.csv')
-                b = channel.of('cell,label\\nSRR28679756::CCTTTCTTCTGCTGCT,B_cell\\n').collectFile(name: 'b_conflict.csv')
-                input[0] = a.combine(b).map { first, second -> [
+                def fixtures = params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/'
+                input[0] = [
                     [id: 'conflict'],
                     file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
-                    [first, second], [], [], [], [], []
-                ] }
+                    ['a_conflict', 'b_conflict'].collect { file(fixtures + it + '.parquet', checkIfExists: true) },
+                    [], [], [], [], []
+                ]
                 """
             }
         }
@@ -77,8 +71,8 @@ nextflow_process {
         then {
             assert process.failed
             assert process.errorReport.contains("ValueError: Conflicting non-null values in column 'label'")
-            assert process.errorReport.contains('a_conflict.csv')
-            assert process.errorReport.contains('b_conflict.csv')
+            assert process.errorReport.contains('a_conflict.parquet')
+            assert process.errorReport.contains('b_conflict.parquet')
         }
 
     }
@@ -89,13 +83,13 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                a = channel.of('gene,score\\nFAM177A1P1,1\\n').collectFile(name: 'a_score.csv')
-                b = channel.of('gene,score\\nFAM177A1P1,2\\n').collectFile(name: 'b_score.csv')
-                input[0] = a.combine(b).map { first, second -> [
+                def fixtures = params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/'
+                input[0] = [
                     [id: 'conflict'],
                     file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
-                    [], [first, second], [], [], [], []
-                ] }
+                    [], ['a_score', 'b_score'].collect { file(fixtures + it + '.parquet', checkIfExists: true) },
+                    [], [], [], []
+                ]
                 """
             }
         }
@@ -103,8 +97,8 @@ nextflow_process {
         then {
             assert process.failed
             assert process.errorReport.contains("ValueError: Conflicting non-null values in column 'score'")
-            assert process.errorReport.contains('a_score.csv')
-            assert process.errorReport.contains('b_score.csv')
+            assert process.errorReport.contains('a_score.parquet')
+            assert process.errorReport.contains('b_score.parquet')
         }
 
     }
@@ -115,25 +109,24 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                input[0] = channel.of('cell,label\\nSRR28679756::CCTTTCTTCTGCTGCT,T_cell\\nSRR28679756::CCTTTCTTCTGCTGCT,T_cell\\n')
-                    .collectFile(name: 'duplicate_index.csv')
-                    .map { obs -> [
-                        [id: 'duplicate'],
-                        file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
-                        [obs], [], [], [], [], []
-                    ] }
+                input[0] = [
+                    [id: 'duplicate'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                    [file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/duplicate_index.parquet', checkIfExists: true)],
+                    [], [], [], [], []
+                ]
                 """
             }
         }
 
         then {
             assert process.failed
-            assert process.errorReport.contains("ValueError: Fragment 'duplicate_index.csv' contains duplicate indices")
+            assert process.errorReport.contains("ValueError: Fragment 'duplicate_index.parquet' contains duplicate indices")
         }
 
     }
 
-    test("Should reject duplicate CSV headers before pandas renames them") {
+    test("Should reject legacy CSV table fragments") {
 
         when {
             params { outdir = "$outputDir" }
@@ -152,9 +145,89 @@ nextflow_process {
 
         then {
             assert process.failed
-            assert process.errorReport.contains("ValueError: Fragment 'duplicate_columns.csv' contains duplicate column names")
+            assert process.errorReport.contains('ValueError: Unsupported file extension: obs/duplicate_columns.csv')
         }
 
+    }
+
+    test("Should reject Parquet fragments without an explicit index") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = [
+                    [id: 'missing_index'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                    [file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/missing_index.parquet', checkIfExists: true)],
+                    [], [], [], [], []
+                ]
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Fragment 'missing_index.parquet' is missing the '__index__' column")
+        }
+    }
+
+    test("Should reject null fragment identifiers") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = [
+                    [id: 'null_index'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                    [file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/null_index.parquet', checkIfExists: true)],
+                    [], [], [], [], []
+                ]
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Fragment 'null_index.parquet' contains null indices")
+        }
+    }
+
+    test("Should reject legacy pickled embedding tables") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = [
+                    [id: 'legacy'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                    [], [], [file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi.pkl', checkIfExists: true)],
+                    [], [], []
+                ]
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains('ValueError: Unsupported file extension: obsm/X_scvi.pkl')
+        }
+    }
+
+    test("Should reject pickled DataFrames in uns") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = [
+                    [id: 'legacy_uns'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                    [], [], [], [],
+                    [file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi.pkl', checkIfExists: true)], []
+                ]
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Tabular uns fragment 'X_scvi.pkl' must use Parquet")
+        }
     }
 
     test("Should extend with obs data") {
@@ -168,7 +241,7 @@ nextflow_process {
                 input[0] = channel.of([
                         [id: 'test'],
                         file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
-                        [file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_leiden.pkl', checkIfExists: true)],
+                         [file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_leiden.parquet', checkIfExists: true)],
                         [],
                         [],
                         [],
@@ -208,7 +281,7 @@ nextflow_process {
                         file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
                         [],
                         [],
-                        [file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi.pkl', checkIfExists: true)],
+                         [file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi.parquet', checkIfExists: true)],
                         [],
                         [],
                         []
@@ -245,13 +318,13 @@ nextflow_process {
                         [id: 'test'],
                         file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
                         [
-                            file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_leiden.pkl', checkIfExists: true),
-                            file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_entropy.pkl', checkIfExists: true)
+                             file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_leiden.parquet', checkIfExists: true),
+                             file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_entropy.parquet', checkIfExists: true)
                         ],
                         [],
                         [
-                            file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi.pkl', checkIfExists: true),
-                            file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi-global_umap.pkl', checkIfExists: true)
+                             file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi.parquet', checkIfExists: true),
+                             file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi-global_umap.parquet', checkIfExists: true)
                         ],
                         [],
                         [],
@@ -316,6 +389,29 @@ nextflow_process {
             ).match()
         }
 
+    }
+
+    test("Should extend with a tabular uns fragment") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = [
+                    [id: 'tabular_uns'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
+                    [], [], [], [],
+                    [file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/uns_table.parquet', checkIfExists: true)], []
+                ]
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert 'uns_table' in adata.uns
+            assert !('__index__' in adata.obs.colnames)
+            assert !('__index__' in adata.var.colnames)
+        }
     }
 
     test("Should run with no extensions") {

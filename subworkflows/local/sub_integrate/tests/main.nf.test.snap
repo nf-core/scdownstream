@@ -45,18 +45,18 @@
                     ]
                 ],
                 "2": [
-                    "scanvi-A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "scanvi-B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "scanvi-A.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "scanvi-B.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "3": [
-                    "highly_variable_subset_A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "highly_variable_subset_B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable_subset_A.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "highly_variable_subset_B.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "4": [
-                    "X_scanvi-A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "X_scanvi-B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "X_scvi-A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "X_scvi-B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "X_scanvi-A.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_scanvi-B.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_scvi-A.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_scvi-B.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "h5ad": [
                     [
@@ -101,25 +101,25 @@
                     ]
                 ],
                 "obs": [
-                    "scanvi-A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "scanvi-B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "scanvi-A.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "scanvi-B.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "obsm": [
-                    "X_scanvi-A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "X_scanvi-B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "X_scvi-A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "X_scvi-B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "X_scanvi-A.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_scanvi-B.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_scvi-A.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_scvi-B.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "var": [
-                    "highly_variable_subset_A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "highly_variable_subset_B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable_subset_A.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "highly_variable_subset_B.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-10-24T15:33:54.99282346",
+        "timestamp": "2026-11-16T08:19:38.042229159",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures - stub": {
@@ -151,14 +151,16 @@
                         "pca-B_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "2": [],
+                "2": [
+                    
+                ],
                 "3": [
-                    "highly_variable_subset_A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "highly_variable_subset_B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable_subset_A.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "highly_variable_subset_B.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "4": [
-                    "X_pca-A_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "X_pca-B_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "X_pca-A_pca.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_pca-B_pca.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "h5ad": [
                     [
@@ -186,21 +188,23 @@
                         "pca-B_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "obs": [],
+                "obs": [
+                    
+                ],
                 "obsm": [
-                    "X_pca-A_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "X_pca-B_pca.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "X_pca-A_pca.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "X_pca-B_pca.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "var": [
-                    "highly_variable_subset_A.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "highly_variable_subset_B.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "highly_variable_subset_A.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "highly_variable_subset_B.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-10-24T15:33:39.762419924",
+        "timestamp": "2026-11-16T08:11:14.308580566",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

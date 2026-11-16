@@ -67,17 +67,11 @@ nextflow_process {
                 script "modules/local/adata/extend/main.nf"
                 process {
                     """
-                    rows = ['sample_id,unpaired_donor']
-                    ['D01', 'D02', 'D03'].each { donor ->
-                        ['TypeA', 'TypeB'].each { label ->
-                            ['Healthy', 'Disease'].each { condition ->
-                                rows.add(donor + '__' + label + '__' + condition + ',' + donor + '_' + condition)
-                            }
-                        }
-                    }
-                    obs = channel.of(rows.join('\\n') + '\\n').collectFile(name: 'unpaired_obs.csv')
-                    input[0] = DECOUPLER_PSEUDOBULK.out.h5ad.combine(obs)
-                        .map { meta, h5ad, csv -> [meta + [id: 'unpaired'], h5ad, [csv], [], [], [], [], []] }
+                    input[0] = DECOUPLER_PSEUDOBULK.out.h5ad.map { meta, h5ad -> [
+                        meta + [id: 'unpaired'], h5ad,
+                        [file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/unpaired_obs.parquet', checkIfExists: true)],
+                        [], [], [], [], []
+                    ] }
                     """
                 }
             }

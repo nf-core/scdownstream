@@ -26,24 +26,24 @@ input:
           - edam: "http://edamontology.org/format_3590"
     - obs:
         type: file
-        description: Optional indexed obs tables as pickle or CSV files
-        pattern: "*.{pkl,csv}"
+        description: Optional Parquet obs tables with an explicit __index__ column
+        pattern: "*.parquet"
     - var:
         type: file
-        description: Optional indexed var tables as pickle or CSV files
-        pattern: "*.{pkl,csv}"
+        description: Optional Parquet var tables with an explicit __index__ column
+        pattern: "*.parquet"
     - obsm:
         type: file
-        description: Optional obsm matrices as pickle or numpy files
-        pattern: "*.{pkl,npy,npz}"
+        description: Optional Parquet embedding tables indexed by cell identifiers in __index__
+        pattern: "*.parquet"
     - obsp:
         type: file
-        description: Optional obsp matrices as pickle or numpy files
-        pattern: "*.{pkl,npy,npz}"
+        description: Optional sparse obsp matrices stored as NumPy objects
+        pattern: "*.npy"
     - uns:
         type: file
-        description: Optional uns objects as pickle files
-        pattern: "*.pkl"
+        description: Optional indexed Parquet DataFrames or pickled non-tabular uns objects
+        pattern: "*.{parquet,pkl}"
     - layers:
         type: file
         description: Optional layer matrices as numpy, Matrix Market or sparse files
