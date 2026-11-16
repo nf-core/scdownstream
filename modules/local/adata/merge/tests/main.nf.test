@@ -78,6 +78,9 @@ nextflow_process {
             }
             assert adata_integrate.n_obs == adata_outer.n_obs
             assert adata_integrate.n_vars == adata_outer.n_vars
+            // nft-anndata exposes HDF5 Boolean enum values as uppercase strings.
+            assert adata_outer.obs.get('is_selected_filtered_cell').data.every { it == 'TRUE' }
+            assert adata_integrate.obs.get('is_selected_filtered_cell').data.every { it == 'TRUE' }
             assert 'raw_counts' in adata_outer.layers
             assert 'ambient_corrected_decontx' in adata_outer.layers
             assert adata_outer.obs.get('ambient_correction_method').unique() == ['decontx', 'none'].toSet()
@@ -147,6 +150,8 @@ nextflow_process {
             }
             assert adata_integrate.n_vars == adata_outer.n_vars
             assert adata_integrate.n_obs < adata_outer.n_obs
+            assert adata_outer.obs.get('is_selected_filtered_cell').data.every { it == 'TRUE' }
+            assert adata_integrate.obs.get('is_selected_filtered_cell').data.every { it == 'TRUE' }
             with(adata_integrate) {
                 assert "label" in obs.colnames
                 assert obs.get("label").unique().every { it == "Unknown" }
@@ -239,7 +244,7 @@ nextflow_process {
         }
         then {
             assert !process.success
-            assert process.trace.failed().size() == 1
+            assert process.errorReport.contains("has no raw_counts layer.")
         }
     }
 }
