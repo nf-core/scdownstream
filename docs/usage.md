@@ -261,7 +261,7 @@ nextflow run nf-core/scdownstream \
 CyteType calls the remote `https://cytetype.nygen.io` API and therefore **requires internet access** from the compute node running the `CYTETYPE` task.
 :::
 
-If your CyteType deployment requires authentication, set the Nextflow secret `CYTETYPE_API_KEY` before the run (for example `nextflow secrets set CYTETYPE_API_KEY '<token>'`).
+CyteType requires the Nextflow secret `CYTETYPE_API_KEY` whenever `cytetype_study_context` is set. Store the token before launching the pipeline (for example `nextflow secrets set CYTETYPE_API_KEY '<token>'`, or as a workspace secret on Seqera Platform).
 
 ### Cell cycle scoring
 

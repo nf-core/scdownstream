@@ -2,12 +2,12 @@ process CYTETYPE {
     tag "${meta.id}"
     label 'process_medium'
 
-    secret secrets.CYTETYPE_API_KEY ? ['CYTETYPE_API_KEY'] : ''
+    // CYTETYPE_API_KEY is attached via conf/modules.config only when params.cytetype_study_context is set.
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/4d/4db5f29d0da08e2bdce05993ae80dc04b7d5e0a032d426ca0cfffb495a8a8841/data'
-:         'community.wave.seqera.io/library/anndata_pandas_python_pyyaml_pruned:74d512b309c5b8b5' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/4d/4db5f29d0da08e2bdce05993ae80dc04b7d5e0a032d426ca0cfffb495a8a8841/data'
+        : 'community.wave.seqera.io/library/anndata_pandas_python_pyyaml_pruned:74d512b309c5b8b5'}"
 
     input:
     tuple val(meta), path(h5ad, stageAs: 'input.h5ad')
@@ -20,8 +20,8 @@ process CYTETYPE {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path "${prefix}.pkl"                   , emit: obs
-    path "versions.yml"                    , emit: versions, topic: versions
+    path "${prefix}.pkl", emit: obs
+    path "versions.yml", emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
