@@ -8,6 +8,20 @@ nextflow_process {
     tag "modules_local"
     tag "adata/geneannotation"
 
+    def geneTableTsv = [
+        'gene_id\tchromosome\tgene_name\tgene_biotype',
+        'ENSG00000161016\t8\tRPL8\tprotein_coding',
+        'ENSG00000211899\t14\tIGHM\tIG_C_gene',
+        'ENSG00000282657\tCHR_HSCHR14_3_CTG1\tIGHM\tIG_C_gene',
+        'ENSG00000239374\t12\tRPL21P105\tprocessed_pseudogene',
+        'ENSG00000242258\t7\tLINC00996\tlncRNA',
+        'ENSG00000234745\t6\tHLA-B\tprotein_coding',
+        'ENSG00000232126\tCHR_HSCHR6_MHC_MCF_CTG1\tHLA-B\tprotein_coding',
+        'ENSG00000172965\t2\tMIR4435-2HG\tlncRNA',
+        'ENSG00000240671\t2\tIGKV1-8\tIG_V_gene',
+        '\t1\tNO_ID_GENE\tprotein_coding',
+    ].join('\n') + '\n'
+
     test("Should annotate genes from a GTF-derived gene table") {
 
         when {
@@ -17,7 +31,7 @@ nextflow_process {
                     [id: 'test'],
                     file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
                 ])
-                input[1] = file("${projectDir}/modules/local/adata/geneannotation/tests/gene_table.tsv", checkIfExists: true)
+                input[1] = channel.of('''${geneTableTsv}''').collectFile(name: 'gene_table.tsv')
                 input[2] = 'human'
                 """
             }
@@ -38,7 +52,10 @@ nextflow_process {
                 { assert rows['HLA-B'] == 'HLA-B,protein_coding,6,protein_coding,False' },
                 // Genes missing from the table are kept with empty annotations
                 { assert rows['CD33'] == 'CD33,,,,False' },
-                { assert path(process.out.versions[0]).yaml.ADATA_GENEANNOTATION.containsKey('pandas') }
+                { assert snapshot(
+                    process.out.csv,
+                    path(process.out.versions[0]).yaml
+                ).match() }
             )
         }
 
@@ -99,7 +116,7 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert path(process.out.csv[0][1]).readLines()[0] == ',gene_biotype,chromosome,biotype_group,gene_annotation_ambiguous' },
-                { assert process.out.var.size() == 1 }
+                { assert snapshot(process.out).match() }
             )
         }
 

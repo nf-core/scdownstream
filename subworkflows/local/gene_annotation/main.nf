@@ -11,8 +11,9 @@ workflow GENE_ANNOTATION {
     ch_gene_table = channel.value([])
 
     if (gtf) {
+        def gtf_id = gtf.name.replaceFirst(/\.gtf(\.gz)?$/, '')
         GTF2FEATUREANNOTATION(
-            channel.value([[id: gtf.baseName], gtf]),
+            channel.value([[id: gtf_id], gtf]),
             channel.value([[], []]),
         )
         ch_gene_table = GTF2FEATUREANNOTATION.out.feature_annotation

@@ -87,7 +87,7 @@ def candidates_from_table(path, genes):
 
     records = pd.DataFrame(
         {
-            "gene_id": table["gene_id"].map(strip_version),
+            "gene_id": table["gene_id"].map(strip_version, na_action="ignore"),
             "gene_name": table["gene_name"] if "gene_name" in table.columns else np.nan,
             "gene_biotype": table[biotype_col],
             "chromosome": table["chromosome"],
@@ -111,8 +111,12 @@ def as_list(value):
 def candidates_from_mygene(genes, species):
     import mygene
 
+    stripped_to_genes = {}
+    for gene in genes:
+        stripped_to_genes.setdefault(strip_version(gene), []).append(gene)
+
     hits = mygene.MyGeneInfo().querymany(
-        list(genes),
+        list(stripped_to_genes),
         scopes=["symbol", "ensembl.gene"],
         fields="symbol,ensembl.type_of_gene,genomic_pos.chr",
         species=species,
@@ -126,16 +130,17 @@ def candidates_from_mygene(genes, species):
     hits = [
         hit
         for hit in hits
-        if hit["query"] not in exact or str(hit.get("symbol", "")).casefold() == hit["query"].casefold()
+        if hit["query"] not in exact or str(hit.get("symbol", "")).casefold() == str(hit["query"]).casefold()
     ]
 
     rows = []
     for hit in hits:
         biotypes = [entry.get("type_of_gene") for entry in as_list(hit.get("ensembl")) if isinstance(entry, dict)]
         chromosomes = [entry.get("chr") for entry in as_list(hit.get("genomic_pos")) if isinstance(entry, dict)]
-        for biotype in biotypes or [None]:
-            for chromosome in chromosomes or [None]:
-                rows.append({"query": hit["query"], "gene_biotype": biotype, "chromosome": chromosome})
+        for original_gene in stripped_to_genes.get(hit["query"], [hit["query"]]):
+            for biotype in biotypes or [None]:
+                for chromosome in chromosomes or [None]:
+                    rows.append({"query": original_gene, "gene_biotype": biotype, "chromosome": chromosome})
     return pd.DataFrame(rows, columns=["query"] + COLUMNS)
 
 
@@ -168,6 +173,7 @@ def summarise(candidates, genes):
 
 adata = ad.read_h5ad("${h5ad}", backed="r")
 genes = adata.var_names.astype(str).tolist()
+adata.file.close()
 if len(set(genes)) != len(genes):
     raise ValueError("The var index contains duplicate gene names")
 
