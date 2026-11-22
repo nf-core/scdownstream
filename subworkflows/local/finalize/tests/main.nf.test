@@ -285,4 +285,66 @@ nextflow_workflow {
 
     }
 
+    test("Should run without failures - with gene annotation var fragment") {
+
+        setup {
+            run("ADATA_GENEANNOTATION") {
+                script "modules/local/adata/geneannotation/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'test'],
+                        file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = channel.of(
+                        'gene_id\\tchromosome\\tgene_name\\tgene_biotype\\n' +
+                        'ENSG00000132963\\t13\\tPOMP\\tprotein_coding\\n' +
+                        'ENSG00000150672\\t11\\tDLG2\\tprotein_coding\\n' +
+                        'ENSG00000254656\\t11\\tFAM177A1P1\\tprocessed_pseudogene\\n'
+                    ).collectFile(name: 'gene_table.tsv')
+                    input[2] = 'human'
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'test'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
+                ])
+                input[1] = channel.empty()
+                input[2] = ADATA_GENEANNOTATION.out.var.map { _meta, parquet -> parquet }
+                input[3] = channel.empty()
+                input[4] = channel.empty()
+                input[5] = channel.empty()
+                input[6] = false
+                input[7] = false
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(workflow.out.h5ad[0][1])
+            assert workflow.success
+            with(adata) {
+                assert "gene_biotype" in var.colnames
+                assert "chromosome" in var.colnames
+                assert "biotype_group" in var.colnames
+                assert "gene_annotation_ambiguous" in var.colnames
+            }
+            assert snapshot(
+                workflow.out.h5ad,
+                workflow.out.versions.collect { path(it).yaml },
+                adata.yaml
+            ).match()
+        }
+
+    }
+
 }

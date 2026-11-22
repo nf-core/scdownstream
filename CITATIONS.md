@@ -31,6 +31,10 @@
 
   > Cannoodt R, Zappia L, Morgan M, Deconinck L (2025). anndataR: AnnData interoperability in R. R package version 0.99.0
 
+- [atlas-gene-annotation-manipulation](https://github.com/ebi-gene-expression-group/atlas-gene-annotation-manipulation)
+
+  > EMBL-EBI Gene Expression Team. atlas-gene-annotation-manipulation: scripts for manipulating gene annotation. https://github.com/ebi-gene-expression-group/atlas-gene-annotation-manipulation
+
 - [BBKNN](https://pubmed.ncbi.nlm.nih.gov/31400197/)
 
   > Polański K, Young MD, Miao Z, Meyer KB, Teichmann SA, Park JE. BBKNN: fast batch alignment of single cell transcriptomes. Bioinformatics. 2020 Feb 1;36(3):964-965. doi: 10.1093/bioinformatics/btz625. PubMed PMID: 31400197.

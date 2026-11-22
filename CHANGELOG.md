@@ -57,6 +57,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Added`
 
+- Add optional `--gene_annotation` to annotate final genes with `gene_biotype`, `chromosome`, a broad `biotype_group` and a `gene_annotation_ambiguous` flag in `adata.var`, from a GTF via `--gene_annotation_gtf` (nf-core module `atlasgeneannotationmanipulation/gtf2featureannotation`) or from MyGene.info ([#173](https://github.com/nf-core/scdownstream/issues/173)) by @kroy3 [[#394](https://github.com/nf-core/scdownstream/pull/394)].
 - Add optional global `--scdblfinder_dbr_sd` with inclusive 0-1 validation, default-preserving argument handling and regression tests, by @nictru and GPT-6.1 Sol [[#388](https://github.com/nf-core/scdownstream/pull/388)].
 - Accept custom CellTypist model files (local paths or URLs ending in `.pkl`) in `--celltypist_model`, alongside model names ([#213](https://github.com/nf-core/scdownstream/issues/213)) by @kroy3 [[#384](https://github.com/nf-core/scdownstream/pull/384)].
 - Add opt-in pathway and transcription factor activity analysis with decoupler (`--decoupler`), scoring pseudobulk profiles and pseudobulk DE contrasts with PROGENy, CollecTRI, MSigDB Hallmark or a custom network (`decoupler/network`, `decoupler/activity`, `decoupler/enrichment`, `decoupler` subworkflow), by @nictru and Cursor [[#321](https://github.com/nf-core/scdownstream/pull/321)].
@@ -76,6 +77,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Upgrade edgePython to 0.5.1 and select and group single-cell counts before creating one float64 matrix, avoiding full-atlas loading and duplicate dense matrices, by @nictru and GPT-6.1 Sol ([#398](https://github.com/nf-core/scdownstream/issues/398)) [[#399](https://github.com/nf-core/scdownstream/pull/399)].
 - Send empty CyteType visualisation arrays for inputs without embeddings, preserving existing coordinates and group labels, by @nictru and GPT-6.1 Sol [[#396](https://github.com/nf-core/scdownstream/pull/396)].
 - Skip HUGO-unifier for non-human species and warn when gene symbol unification is requested, by GPT-6.1 Sol ([#389](https://github.com/nf-core/scdownstream/issues/389)) [[#390](https://github.com/nf-core/scdownstream/pull/390)].
 

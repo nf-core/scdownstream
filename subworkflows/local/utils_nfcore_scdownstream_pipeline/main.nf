@@ -407,6 +407,10 @@ def validateInputParameters() {
         throw new Exception("integrate_per_label_whitelist requires integrate_per_label to be true")
     }
 
+    if (params.gene_annotation_gtf && !params.gene_annotation) {
+        log.warn("`--gene_annotation_gtf` was provided, but `--gene_annotation` is disabled; skipping gene annotation.")
+    }
+
     def integration_methods = params.integration_methods.split(',').collect { it -> it.trim().toLowerCase() }
     def is_extension = params.input && params.base_adata
     def is_per_label_base_integration = !params.input && params.base_adata && params.integrate_per_label
