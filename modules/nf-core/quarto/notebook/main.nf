@@ -13,8 +13,8 @@ process QUARTO_NOTEBOOK {
     label 'process_low'
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data'
-        : 'community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/47/47f951be9734d1f22933d769f387e33818ebf60dfafc525bd90a78ea8ace0d8b/data'
+        : 'community.wave.seqera.io/library/anndata_ipykernel_jupyter_matplotlib-base_pruned:7ef08c422681407e'}"
 
     input:
     tuple val(meta), path(notebook)
@@ -63,6 +63,15 @@ process QUARTO_NOTEBOOK {
     # Set environment variables needed for Quarto rendering
     export XDG_CACHE_HOME="./.xdg_cache_home"
     export XDG_DATA_HOME="./.xdg_data_home"
+
+    # Wave pixi images ship CA certificates in the environment prefix rather than /etc/ssl/certs
+    if [ -z "\${SYSTEM_CERTIFICATE_PATH:-}" ]; then
+        if [ -n "\${CONDA_PREFIX:-}" ] && [ -f "\${CONDA_PREFIX}/ssl/cacert.pem" ]; then
+            export SYSTEM_CERTIFICATE_PATH="\${CONDA_PREFIX}/ssl/cacert.pem"
+        elif [ -f /opt/wave/.pixi/envs/default/ssl/cacert.pem ]; then
+            export SYSTEM_CERTIFICATE_PATH=/opt/wave/.pixi/envs/default/ssl/cacert.pem
+        fi
+    fi
 
     # Fix Quarto for Apptainer (see https://community.seqera.io/t/confusion-over-why-a-tool-works-in-docker-but-fails-in-singularity-when-the-installation-doesnt-differ-i-e-using-wave-micromamba/1244)
     ENV_QUARTO=/opt/conda/etc/conda/activate.d/quarto.sh
