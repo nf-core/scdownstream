@@ -78,6 +78,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Skip single-cell edgePython strata without enough cells, donors or conditions for the requested reference contrast, by @nictru and Codex [[#406](https://github.com/nf-core/scdownstream/pull/406)].
 - Pin PyNNDescent to `0.6.0` for Scanpy Scrublet to fix approximate nearest-neighbour searches, by @nictru and Codex [[#403](https://github.com/nf-core/scdownstream/pull/403)].
 - Upgrade edgePython to 0.5.1 and select and group single-cell counts before creating one float64 matrix, avoiding full-atlas loading and duplicate dense matrices, by @nictru and GPT-6.1 Sol ([#398](https://github.com/nf-core/scdownstream/issues/398)) [[#399](https://github.com/nf-core/scdownstream/pull/399)].
 - Send empty CyteType visualisation arrays for inputs without embeddings, preserving existing coordinates and group labels, by @nictru and GPT-6.1 Sol [[#396](https://github.com/nf-core/scdownstream/pull/396)].
