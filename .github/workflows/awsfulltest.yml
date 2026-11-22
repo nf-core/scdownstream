@@ -45,7 +45,7 @@ jobs:
               id 'nf-schema@2.7.3'
             }
             slack {
-              enabled = true
+              enabled = false
               bot {
                 token = '${{ secrets.NFSLACK_BOT_TOKEN }}'
                 channel = 'scdownstream'
