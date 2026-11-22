@@ -4,11 +4,15 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  # renovate: datasource=conda depName=conda-forge/quarto
+  - conda-forge::anndata=0.12.10
+  - conda-forge::ipykernel=7.2.0
   - conda-forge::jupyter=1.1.1
-  - conda-forge::matplotlib=3.10.3
-  - conda-forge::papermill=2.6.0
-  - conda-forge::python=3.12.11
-  - conda-forge::quarto=1.7.31
-  - conda-forge::r-base=4.4.3
-  - conda-forge::r-rmarkdown=2.29
+  - conda-forge::matplotlib-base=3.10.8
+  - conda-forge::numpy=2.4.3
+  - conda-forge::pandas=2.3.3
+  - conda-forge::papermill=2.7.0
+  - conda-forge::pip=26.2.2
+  - conda-forge::python=3.14.3
+  - conda-forge::scanpy=1.12
+  - pip:
+      - quarto-cli==1.8.27
