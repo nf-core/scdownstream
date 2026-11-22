@@ -15,23 +15,6 @@ import pyarrow as pa
 import tensorflow as tf
 import yaml
 
-
-def write_fragment(frame, path):
-    fragment = frame.copy()
-    fragment.columns = fragment.columns.map(str)
-    if "__index__" in fragment.columns or not fragment.columns.is_unique:
-        raise ValueError("Fragment columns must be unique and must not contain reserved column '__index__'.")
-    if (
-        fragment.index.nlevels != 1
-        or not fragment.index.is_unique
-        or fragment.index.hasnans
-        or not all(isinstance(value, str) for value in fragment.index)
-    ):
-        raise ValueError("Fragment axis identifiers must be unique, non-null strings.")
-    fragment = fragment.reset_index(names="__index__")
-    fragment.to_parquet(str(Path(path).resolve()), engine="pyarrow", index=False, compression="snappy")
-
-
 tf.config.threading.set_intra_op_parallelism_threads(int("${task.cpus}"))
 tf.config.threading.set_inter_op_parallelism_threads(int("${task.cpus}"))
 
@@ -76,14 +59,19 @@ for dst, aggregatable in columns.values():
     if aggregatable == "true":
         df_azimuth[dst] = df_azimuth[dst].astype(str).replace("False", "Unassigned")
 
-write_fragment(df_azimuth, f"{prefix}.parquet")
+df_azimuth.reset_index(names="__index__").to_parquet(
+    Path(f"{prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 pd.DataFrame([{"obs_column": dst, "aggregatable": aggregatable} for dst, aggregatable in columns.values()]).to_csv(
     f"{prefix}_annotation_columns.csv", index=False
 )
 
 df_embedding = pd.DataFrame(embedding, index=adata.obs_names)
-write_fragment(df_embedding, "X_azimuth.parquet")
+df_embedding.columns = df_embedding.columns.astype(str)
+df_embedding.reset_index(names="__index__").to_parquet(
+    "X_azimuth.parquet", engine="pyarrow", index=False, compression="snappy"
+)
 
 adata.obs = pd.concat([adata.obs, df_azimuth], axis=1)
 adata.obsm["X_azimuth"] = embedding

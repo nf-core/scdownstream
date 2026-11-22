@@ -265,45 +265,6 @@ nextflow_process {
 
     }
 
-    test("Should reject duplicate gene identifiers") {
-
-        setup {
-            run("ADATA_SETINDEX") {
-                script "modules/local/adata/setindex/main.nf"
-                process {
-                    """
-                    input[0] = [
-                        [id: 'duplicate_genes'],
-                        file(params.pipelines_testdata_base_path + '/anndata-variations/with_duplicates.h5ad', checkIfExists: true)
-                    ]
-                    input[1] = 'var'
-                    input[2] = 'symbols'
-                    """
-                }
-            }
-        }
-
-        when {
-            params { outdir = "$outputDir" }
-            process {
-                """
-                input[0] = ADATA_SETINDEX.out.h5ad
-                input[1] = -1
-                input[2] = []
-                input[3] = 'X'
-                input[4] = false
-                input[5] = ''
-                """
-            }
-        }
-
-        then {
-            assert process.failed
-            assert process.errorReport.contains('Fragment axis identifiers must be unique, non-null strings.')
-        }
-
-    }
-
     test("Should run without failures - stub") {
 
         options '-stub'

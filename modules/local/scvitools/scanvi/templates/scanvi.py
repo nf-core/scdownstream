@@ -16,23 +16,6 @@ import yaml
 from scvi.model import SCANVI, SCVI
 from threadpoolctl import threadpool_limits
 
-
-def write_fragment(frame, path):
-    fragment = frame.copy()
-    fragment.columns = fragment.columns.map(str)
-    if "__index__" in fragment.columns or not fragment.columns.is_unique:
-        raise ValueError("Fragment columns must be unique and must not contain reserved column '__index__'.")
-    if (
-        fragment.index.nlevels != 1
-        or not fragment.index.is_unique
-        or fragment.index.hasnans
-        or not all(isinstance(value, str) for value in fragment.index)
-    ):
-        raise ValueError("Fragment axis identifiers must be unique, non-null strings.")
-    fragment = fragment.reset_index(names="__index__")
-    fragment.to_parquet(str(Path(path).resolve()), engine="pyarrow", index=False, compression="snappy")
-
-
 torch.use_deterministic_algorithms(True)
 torch.set_float32_matmul_precision("medium")
 
@@ -125,11 +108,16 @@ adata.obsm["X_emb"] = model.get_latent_representation()
 adata.obs["label:scANVI"] = model.predict()
 
 adata.write_h5ad("${prefix}.h5ad", compression="gzip")
-write_fragment(adata.obs[["label:scANVI"]], "${prefix}.parquet")
+adata.obs[["label:scANVI"]].reset_index(names="__index__").to_parquet(
+    Path("${prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 model.save("${prefix}_model")
 
 df = pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names)
-write_fragment(df, "X_${prefix}.parquet")
+df.columns = df.columns.astype(str)
+df.reset_index(names="__index__").to_parquet(
+    Path("X_${prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 # Versions
 

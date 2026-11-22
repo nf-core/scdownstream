@@ -75,7 +75,7 @@ nextflow_process {
 
         then {
             assert process.failed
-            assert process.errorReport.contains("must not contain reserved '__index__'")
+            assert process.errorReport.contains("cannot insert __index__, already exists")
         }
     }
 

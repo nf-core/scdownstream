@@ -22,19 +22,8 @@ uns_paths = sorted(Path("uns/").glob("*"))
 layers_paths = sorted(Path("layers/").glob("*"))
 
 
-def load_indexed_parquet(path: Path, axis_index: bool = True) -> pd.DataFrame:
-    if path.suffix != ".parquet":
-        raise ValueError(f"Unsupported file extension: {path}")
-    frame = pd.read_parquet(path.resolve(), engine="pyarrow")
-    if not frame.columns.is_unique:
-        raise ValueError(f"Fragment '{path.name}' contains duplicate column names")
-    if "__index__" not in frame.columns:
-        raise ValueError(f"Fragment '{path.name}' is missing the '__index__' column")
-    frame = frame.set_index("__index__").rename_axis(None)
-    index = frame.index
-    if axis_index and (not index.is_unique or not all(isinstance(value, str) for value in index)):
-        raise ValueError(f"Fragment '{path.name}' requires unique, non-null string indices")
-    return frame
+def load_parquet(path: Path) -> pd.DataFrame:
+    return pd.read_parquet(path, engine="pyarrow").set_index("__index__").rename_axis(None)
 
 
 def load_layer(path):
@@ -92,7 +81,7 @@ def merge_dataframe(base, paths):
     """Apply indexed updates while checking agreement between fragment sources."""
     fragments = []
     for path in paths:
-        fragment = load_indexed_parquet(path)
+        fragment = load_parquet(path)
         fragments.append((path, fragment.loc[fragment.index.isin(base.index)]))
 
     result = base.copy()
@@ -122,7 +111,7 @@ adata.obs = merge_dataframe(adata.obs, obs_paths)
 adata.var = merge_dataframe(adata.var, var_paths)
 
 for path in obsm_paths:
-    df = load_indexed_parquet(path).reindex(adata.obs_names)
+    df = load_parquet(path).reindex(adata.obs_names)
     adata.obsm[path.stem] = np.float32(df.to_numpy())
 
 for path in obsp_paths:
@@ -130,15 +119,12 @@ for path in obsp_paths:
 
 for path in uns_paths:
     if path.suffix == ".parquet":
-        value = load_indexed_parquet(path, axis_index=False)
+        adata.uns[path.stem] = load_parquet(path)
     elif path.suffix == ".pkl":
         with path.open("rb") as handle:
-            value = pickle.load(handle)
-        if isinstance(value, pd.DataFrame):
-            raise ValueError(f"Tabular uns fragment '{path.name}' must use Parquet")
+            adata.uns[path.stem] = pickle.load(handle)
     else:
         raise ValueError(f"Unsupported uns file extension: {path}")
-    adata.uns[path.stem] = value
 
 for path in layers_paths:
     layer = load_layer(path)

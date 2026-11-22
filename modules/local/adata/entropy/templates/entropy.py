@@ -42,16 +42,7 @@ else:
     entropies = adata.obs.groupby(group_col)[entropy_col].apply(entropy_of_group)
     adata.obs[colname] = adata.obs[group_col].map(entropies).astype(float) / np.log2(n_observed_labels)
 
-obs_fragment = adata.obs[[colname]].copy()
-if "__index__" in obs_fragment.columns or not obs_fragment.columns.is_unique:
-    raise ValueError("Observation fragment columns must be unique and must not contain reserved '__index__'")
-if (
-    obs_fragment.index.hasnans
-    or not obs_fragment.index.is_unique
-    or not all(isinstance(value, str) for value in obs_fragment.index)
-):
-    raise ValueError("Observation fragment index must contain unique, non-null strings")
-obs_fragment.reset_index(names="__index__").to_parquet(
+adata.obs[[colname]].reset_index(names="__index__").to_parquet(
     Path(f"{prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
 )
 adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")

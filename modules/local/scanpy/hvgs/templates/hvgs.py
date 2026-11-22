@@ -26,21 +26,13 @@ if "${excluded_genes}":
     mask = ~adata.var_names.isin(excluded_genes)
     adata = adata[:, mask].copy()
 
-if (
-    not adata.var_names.is_unique
-    or adata.var_names.hasnans
-    or not all(isinstance(value, str) for value in adata.var_names)
-):
-    raise ValueError("Fragment axis identifiers must be unique, non-null strings.")
-
 if n_hvgs < 0 or (n_hvgs > 0 and adata.n_vars <= n_hvgs):
     adata.var["highly_variable"] = True
     fragment = adata.var[["highly_variable"]].copy()
     fragment.columns = [prefix]
-    if "__index__" in fragment.columns:
-        raise ValueError("Fragment column '__index__' is reserved for row identifiers")
-    fragment.insert(0, "__index__", fragment.index)
-    fragment.to_parquet(Path(f"{file_prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy")
+    fragment.reset_index(names="__index__").to_parquet(
+        Path(f"{file_prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+    )
 elif adata.n_vars > n_hvgs:
     kwargs = {}
 
@@ -72,10 +64,9 @@ elif adata.n_vars > n_hvgs:
 
     fragment = adata.var[["highly_variable"]].copy()
     fragment.columns = [prefix]
-    if "__index__" in fragment.columns:
-        raise ValueError("Fragment column '__index__' is reserved for row identifiers")
-    fragment.insert(0, "__index__", fragment.index)
-    fragment.to_parquet(Path(f"{file_prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy")
+    fragment.reset_index(names="__index__").to_parquet(
+        Path(f"{file_prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+    )
 
     adata = adata[:, adata.var["highly_variable"]]
 

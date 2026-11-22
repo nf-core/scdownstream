@@ -22,21 +22,10 @@ prediction_paths = r"""${predictions.join('\n')}""".splitlines()
 
 
 def load_predictions(path):
-    source = Path(path)
-    if source.suffix != ".parquet":
-        raise ValueError(f"Unsupported prediction file extension: {source}")
-    frame = pd.read_parquet(source.resolve(), engine="pyarrow")
-    if not frame.columns.is_unique:
-        raise ValueError(f"Prediction table '{source.name}' contains duplicate column names")
-    if "__index__" not in frame.columns:
-        raise ValueError(f"Prediction table '{source.name}' is missing the '__index__' column")
-    frame = frame.set_index("__index__").rename_axis(None)
-    index = frame.index
-    if not index.is_unique or not all(isinstance(value, str) for value in index):
-        raise ValueError(f"Prediction table '{source.name}' requires unique, non-null string indices")
+    frame = pd.read_parquet(path, engine="pyarrow").set_index("__index__").rename_axis(None)
     if len(frame.columns) != 1:
         raise ValueError(f"{path} must contain exactly one Boolean column")
-    if set(index) != set(adata.obs_names):
+    if not frame.index.is_unique or set(frame.index) != set(adata.obs_names):
         raise ValueError(f"{path} must contain each input barcode exactly once")
     calls = frame.iloc[:, 0]
     if not pd.api.types.is_bool_dtype(calls) or calls.isna().any():
@@ -61,8 +50,9 @@ if remove_doublets:
     adata = adata[~(votes.sum(axis=1) >= threshold), :].copy()
 
 adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
-annotations.insert(0, "__index__", annotations.index)
-annotations.to_parquet(Path(f"{prefix}.obs.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
+annotations.reset_index(names="__index__").to_parquet(
+    Path(f"{prefix}.obs.parquet").resolve(), index=False, engine="pyarrow", compression="snappy"
+)
 
 if len(votes.columns) > 1:
     contents = {column: votes.index[votes[column]].tolist() for column in votes}

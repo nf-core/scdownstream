@@ -12,23 +12,6 @@ import scanpy.external as sce
 import yaml
 from threadpoolctl import threadpool_limits
 
-
-def write_fragment(frame, path):
-    fragment = frame.copy()
-    fragment.columns = fragment.columns.map(str)
-    if "__index__" in fragment.columns or not fragment.columns.is_unique:
-        raise ValueError("Fragment columns must be unique and must not contain reserved column '__index__'.")
-    if (
-        fragment.index.nlevels != 1
-        or not fragment.index.is_unique
-        or fragment.index.hasnans
-        or not all(isinstance(value, str) for value in fragment.index)
-    ):
-        raise ValueError("Fragment axis identifiers must be unique, non-null strings.")
-    fragment = fragment.reset_index(names="__index__")
-    fragment.to_parquet(str(Path(path).resolve()), engine="pyarrow", index=False, compression="snappy")
-
-
 threadpool_limits(int("${task.cpus}"))
 
 adata = sc.read_h5ad("${h5ad}")
@@ -82,7 +65,11 @@ adata.obsm["X_scanorama"] = embedding
 adata.obsm["X_emb"] = embedding
 adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
-write_fragment(pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names), f"X_{prefix}.parquet")
+df = pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names)
+df.columns = df.columns.astype(str)
+df.reset_index(names="__index__").to_parquet(
+    Path(f"X_{prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 versions = {
     "${task.process}": {

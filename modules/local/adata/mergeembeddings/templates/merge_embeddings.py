@@ -9,23 +9,6 @@ import pandas as pd
 import pyarrow as pa
 import yaml
 
-
-def write_fragment(frame, path):
-    fragment = frame.copy()
-    fragment.columns = fragment.columns.map(str)
-    if "__index__" in fragment.columns or not fragment.columns.is_unique:
-        raise ValueError("Fragment columns must be unique and must not contain reserved column '__index__'.")
-    if (
-        fragment.index.nlevels != 1
-        or not fragment.index.is_unique
-        or fragment.index.hasnans
-        or not all(isinstance(value, str) for value in fragment.index)
-    ):
-        raise ValueError("Fragment axis identifiers must be unique, non-null strings.")
-    fragment = fragment.reset_index(names="__index__")
-    fragment.to_parquet(str(Path(path).resolve()), engine="pyarrow", index=False, compression="snappy")
-
-
 adata_integrated = ad.read_h5ad("${integrated}", backed="r")
 adata_base = ad.read_h5ad("${base}", backed="r")
 adata_combined = ad.read_h5ad("${combined}")
@@ -57,10 +40,15 @@ if integration == "scanvi":
 
     adata_combined.obs["label:scANVI"] = labels.loc[adata_combined.obs_names]
 
-    write_fragment(adata_combined.obs[["label:scANVI"]], "${prefix}.parquet")
+    adata_combined.obs[["label:scANVI"]].reset_index(names="__index__").to_parquet(
+        Path("${prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+    )
 
 df = pd.DataFrame(adata_combined.obsm["X_emb"], index=adata_combined.obs_names)
-write_fragment(df, "X_${prefix}.parquet")
+df.columns = df.columns.astype(str)
+df.reset_index(names="__index__").to_parquet(
+    Path("X_${prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 adata_combined.write_h5ad("${prefix}.h5ad", compression="gzip")
 

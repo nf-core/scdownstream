@@ -77,16 +77,7 @@ if missing_cols:
     raise RuntimeError(f"CyteType did not add expected obs columns: {missing_cols}. Check logs and study_context.")
 
 df_out = adata_work.obs[library_cols].rename(columns=dict(zip(library_cols, output_cols))).reindex(adata.obs.index)
-obs_fragment = df_out.copy()
-if "__index__" in obs_fragment.columns or not obs_fragment.columns.is_unique:
-    raise ValueError("Observation fragment columns must be unique and must not contain reserved '__index__'")
-if (
-    obs_fragment.index.hasnans
-    or not obs_fragment.index.is_unique
-    or not all(isinstance(value, str) for value in obs_fragment.index)
-):
-    raise ValueError("Observation fragment index must contain unique, non-null strings")
-obs_fragment.reset_index(names="__index__").to_parquet(
+df_out.reset_index(names="__index__").to_parquet(
     Path(f"{prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
 )
 

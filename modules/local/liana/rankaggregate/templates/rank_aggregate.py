@@ -282,9 +282,9 @@ if adata.obs[obs_key].nunique() > 1:
         )
         df: pd.DataFrame = adata.uns["liana_res"]
 
-        fragment = df.copy()
-        fragment.insert(0, "__index__", df.index)
-        fragment.to_parquet(Path(f"{prefix}.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
+        df.reset_index(names="__index__").to_parquet(
+            Path(f"{prefix}.parquet").resolve(), index=False, engine="pyarrow", compression="snappy"
+        )
         adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
         _write_liana_plots(adata, df, obs_key)
 

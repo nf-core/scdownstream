@@ -154,21 +154,8 @@ write.csv(
   row.names = FALSE
 )
 
-if ("__index__" %in% colnames(predictions) || anyDuplicated(colnames(predictions))) {
-  stop("Fragment columns must be unique and must not contain the reserved '__index__' column")
-}
 # Expand matrix columns without coercing numeric scores to character alongside labels.
-if (any(vapply(predictions, is.list, logical(1)))) {
-  stop("Prediction columns must be scalar vectors or matrices, not nested lists")
-}
 predictions <- do.call(data.frame, c(as.list(predictions), list(check.names = FALSE)))
-if ("__index__" %in% colnames(predictions) || anyDuplicated(colnames(predictions))) {
-  stop("Flattened fragment columns must be unique and must not contain the reserved '__index__' column")
-}
-unsupported <- vapply(predictions, function(column) is.list(column) || !is.null(dim(column)), logical(1))
-if (any(unsupported)) {
-  stop("Unsupported nested prediction columns: ", paste(names(predictions)[unsupported], collapse = ", "))
-}
 predictions <- data.frame(
   "__index__" = prediction_rownames[[1]],
   predictions,

@@ -62,9 +62,6 @@ features_df <- data.frame(
 
 colnames(features_df) <- paste0("${prefix}:", colnames(features_df))
 
-if ("__index__" %in% colnames(features_df) || anyDuplicated(colnames(features_df))) {
-    stop("Fragment columns must be unique and must not contain the reserved '__index__' column")
-}
 features_df <- data.frame(
     "__index__" = rownames(features_df),
     features_df,

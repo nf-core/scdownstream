@@ -14,23 +14,6 @@ import yaml
 from scimilarity import CellQuery
 from scimilarity.utils import align_dataset
 
-
-def write_fragment(frame, path):
-    fragment = frame.copy()
-    fragment.columns = fragment.columns.map(str)
-    if "__index__" in fragment.columns or not fragment.columns.is_unique:
-        raise ValueError("Fragment columns must be unique and must not contain reserved column '__index__'.")
-    if (
-        fragment.index.nlevels != 1
-        or not fragment.index.is_unique
-        or fragment.index.hasnans
-        or not all(isinstance(value, str) for value in fragment.index)
-    ):
-        raise ValueError("Fragment axis identifiers must be unique, non-null strings.")
-    fragment = fragment.reset_index(names="__index__")
-    fragment.to_parquet(str(Path(path).resolve()), engine="pyarrow", index=False, compression="snappy")
-
-
 adata = sc.read_h5ad("${h5ad}")
 
 use_gpu = "${task.accelerator ? 'true' : 'false'}" == "true"
@@ -55,7 +38,10 @@ adata.obsm["X_emb"] = embeddings
 # Write the output
 adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 df = pd.DataFrame(embeddings, index=adata.obs_names)
-write_fragment(df, "X_${prefix}.parquet")
+df.columns = df.columns.astype(str)
+df.reset_index(names="__index__").to_parquet(
+    Path("X_${prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 versions = {
     "${task.process}": {
