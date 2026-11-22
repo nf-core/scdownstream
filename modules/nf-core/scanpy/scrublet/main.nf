@@ -4,8 +4,8 @@ process SCANPY_SCRUBLET {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/43/43dcd1c3ddc54ccb49c4100926138f4abb8e257f36cebd1ce9f43861788351f2/data'
-        : 'community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:511ffe8348319831'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f0/f03b12f59d8a38e44e4c10d3b7a1010041803e52a203d5c3286bce12b33ffe28/data'
+        : 'community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:61fca9c6cc777dbd'}"
 
     input:
     tuple val(meta), path(h5ad)
