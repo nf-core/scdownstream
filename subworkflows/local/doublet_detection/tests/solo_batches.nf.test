@@ -8,25 +8,14 @@ nextflow_workflow {
     tag "subworkflows_local"
 
     test("Should retain full-cell Boolean SOLO predictions across actual batches") {
-        setup {
-            run("ADATA_EXTEND") {
-                script "../../../../modules/local/adata/extend/main.nf"
-                process {
-                    """
-                    input[0] = [
-                        [id: 'source', batch_col: 'sample'],
-                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true),
-                        [], [], [], [], [], []
-                    ]
-                    """
-                }
-            }
-        }
         when {
             params { outdir = "$outputDir" }
             workflow {
                 """
-                input[0] = ADATA_EXTEND.out.h5ad.map { meta, h5ad -> [meta + [id: 'multibatch'], h5ad] }
+                input[0] = channel.of([
+                    [id: 'multibatch', batch_col: 'sample'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                ])
                 input[1] = ['solo']
                 input[2] = 1
                 input[3] = false
@@ -37,21 +26,28 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            def original = anndata("$outputDir/adata/source.h5ad")
-            def result = anndata(workflow.out.h5ad[0][1])
+            assert workflow.trace.succeeded().size() == 2
+            assert workflow.trace.succeeded().any { it.name.contains(':SCVITOOLS_SOLO') }
+            assert workflow.trace.succeeded().any { it.name.contains(':DOUBLETREMOVAL') }
+            assert workflow.out.h5ad.size() == 1
+            def h5ad = workflow.out.h5ad[0][1]
+            def original = anndata(path(h5ad).parent.resolve('combined_filtered_matrix.h5ad'))
+            def result = anndata(h5ad)
             def batches = original.obs.get('sample').data.toList()
             assert batches.toSet().size() >= 2
             assert result.n_obs == original.n_obs
             assert result.obs.index.values == original.obs.index.values
+            assert result.obs.colnames == original.obs.colnames
+            assert result.var.index.values == original.var.index.values
+            assert result.layers == original.layers
             assert result.obs.get('sample').data.toList() == batches
-            def predictions = result.obs.get('multibatch_solo').data.toList()
-            assert predictions.size() == original.n_obs
-            assert predictions.every { it.toString().toLowerCase() in ['true', 'false'] }
-            assert batches.toSet().every { batch ->
-                (0..<original.n_obs).findAll { batches[it] == batch }.every {
-                    predictions[it].toString().toLowerCase() in ['true', 'false']
-                }
-            }
+            assert workflow.out.obs.size() == 1
+            assert workflow.out.obs[0][0] == workflow.out.h5ad[0][0]
+            assert path(workflow.out.obs[0][1]).fileName.toString() == 'multibatch.obs.pkl'
+            assert path(workflow.out.obs[0][1]).exists()
+            assert !('solo_score' in result.obs.colnames)
+            assert !('multibatch_solo' in result.obs.colnames)
+            assert !('solo_predicted_doublet' in result.obs.colnames)
             assert snapshot(result.yaml).match()
         }
     }

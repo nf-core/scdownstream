@@ -1,0 +1,112 @@
+name: "scdblfinder"
+description: Detect doublets in single-cell RNA-seq data with scDblFinder
+keywords:
+- doublet detection
+- single-cell
+- scrnaseq
+- quality control
+tools:
+- "scdblfinder":
+    description: "Identifies doublets in single-cell RNA-seq data by comparing each cell with artificial doublets made from the data"
+    homepage: "https://bioconductor.org/packages/scDblFinder"
+    documentation: "https://bioconductor.org/packages/release/bioc/vignettes/scDblFinder/inst/doc/scDblFinder.html"
+    tool_dev_url: "https://github.com/plger/scDblFinder"
+    doi: "10.12688/f1000research.73600.2"
+    licence: ["GPL-3.0-only"]
+    identifier: biotools:scdblfinder
+
+input:
+- - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'sample1' ]`
+  - h5ad:
+      type: file
+      description: AnnData object in h5ad format with raw counts in `X`
+      pattern: "*.h5ad"
+      ontologies:
+      - edam: http://edamontology.org/format_3590     # HDF5
+
+output:
+  h5ad:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - "${prefix}.h5ad":
+        type: file
+        description: Input AnnData object with the scDblFinder columns added to `obs`, stored with gzip compression
+        pattern: "*.h5ad"
+        ontologies:
+        - edam: http://edamontology.org/format_3590     # HDF5
+  predictions:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - "${prefix}.predictions.csv":
+        type: file
+        description: One boolean column per cell (TRUE = doublet), named after the prefix
+        pattern: "*.predictions.csv"
+        ontologies:
+        - edam: http://edamontology.org/format_3752     # CSV
+  scores:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - "${prefix}.scores.csv":
+        type: file
+        description: Per-cell scDblFinder results (class, score and related columns)
+        pattern: "*.scores.csv"
+        ontologies:
+        - edam: http://edamontology.org/format_3752     # CSV
+  versions_scdblfinder:
+  - versions.yml:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+      ontologies:
+      - edam: http://edamontology.org/format_3750     # YAML
+
+topics:
+  versions:
+  - versions.yml:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+      ontologies:
+      - edam: http://edamontology.org/format_3750     # YAML
+
+authors:
+- "@iraajgangavaram"
+maintainers:
+- "@iraajgangavaram"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-biocparallel_bioconductor-rhdf5_bioconductor-scdblfinder_pruned:001c6f54aa1537f4
+      build_id: bd-001c6f54aa1537f4_1
+      scan_id: sc-e50f4b61bd2770e7_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-biocparallel_bioconductor-rhdf5_bioconductor-scdblfinder_pruned:1333530a030a9c23
+      build_id: bd-1333530a030a9c23_1
+      scan_id: sc-4d750879bb3fc05c_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-biocparallel_bioconductor-rhdf5_bioconductor-scdblfinder_pruned:bf59f701ec9b43f4
+      build_id: bd-bf59f701ec9b43f4_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/e5/e5d9a592a67fc9c6efcdf10e17567b4ab02ec08bdb02f3aa765be053492bef98/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-biocparallel_bioconductor-rhdf5_bioconductor-scdblfinder_pruned:dec645b698fef5e6
+      build_id: bd-dec645b698fef5e6_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/54/5405dc93ca1fa3d273679d29f92341949b4053a197a195663227ed5db5c44fa2/data
+  conda:
+    linux/amd64:
+      lock_file: modules/nf-core/scdblfinder/.conda-lock/linux_amd64-bd-1333530a030a9c23_1.txt
+    linux/arm64:
+      lock_file: modules/nf-core/scdblfinder/.conda-lock/linux_arm64-bd-001c6f54aa1537f4_1.txt

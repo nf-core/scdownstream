@@ -1,0 +1,308 @@
+{
+    "Should retain common detector columns through the native obs intersection without removing cells": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_outer.h5ad:md5,df2e207581893cbabcc53fd68a259d2f"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_integrate.h5ad:md5,df2e207581893cbabcc53fd68a259d2f"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,fd78b51c7048b98ae1baf46368dc0843"
+                ],
+                "integrate": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_integrate.h5ad:md5,df2e207581893cbabcc53fd68a259d2f"
+                    ]
+                ],
+                "outer": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_outer.h5ad:md5,df2e207581893cbabcc53fd68a259d2f"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,fd78b51c7048b98ae1baf46368dc0843"
+                ]
+            },
+            {
+                "ADATA_MERGE": {
+                    "anndata": "0.13.2",
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3",
+                    "scipy": "1.18.0"
+                }
+            },
+            {
+                "n_obs": 256,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "condition",
+                        "donor",
+                        "label",
+                        "sample",
+                        "sample_original",
+                        "scDblFinder.class",
+                        "scDblFinder.score",
+                        "scdblfinder_class",
+                        "scdblfinder_predicted_doublet",
+                        "scrublet_class",
+                        "scrublet_predicted_doublet",
+                        "scrublet_score"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "intersection"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            },
+            {
+                "n_obs": 256,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "condition",
+                        "donor",
+                        "label",
+                        "sample",
+                        "sample_original",
+                        "scDblFinder.class",
+                        "scDblFinder.score",
+                        "scdblfinder_class",
+                        "scdblfinder_predicted_doublet",
+                        "scrublet_class",
+                        "scrublet_predicted_doublet",
+                        "scrublet_score"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "intersection"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-14T14:06:21.498646185",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should merge threshold-vote survivors with exact scores and original within-sample order": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_outer.h5ad:md5,76ce7fffead08ed949ae51b6eb4ee301"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_integrate.h5ad:md5,76ce7fffead08ed949ae51b6eb4ee301"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,fd78b51c7048b98ae1baf46368dc0843"
+                ],
+                "integrate": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_integrate.h5ad:md5,76ce7fffead08ed949ae51b6eb4ee301"
+                    ]
+                ],
+                "outer": [
+                    [
+                        {
+                            "id": "combined"
+                        },
+                        "combined_outer.h5ad:md5,76ce7fffead08ed949ae51b6eb4ee301"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,fd78b51c7048b98ae1baf46368dc0843"
+                ]
+            },
+            {
+                "ADATA_MERGE": {
+                    "anndata": "0.13.2",
+                    "python": "3.13.12",
+                    "scanpy": "1.12.3",
+                    "scipy": "1.18.0"
+                }
+            },
+            {
+                "n_obs": 252,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "condition",
+                        "donor",
+                        "label",
+                        "sample",
+                        "sample_original",
+                        "scDblFinder.class",
+                        "scDblFinder.score",
+                        "scdblfinder_class",
+                        "scdblfinder_predicted_doublet",
+                        "scrublet_class",
+                        "scrublet_predicted_doublet",
+                        "scrublet_score"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "intersection"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            },
+            {
+                "n_obs": 252,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "condition",
+                        "donor",
+                        "label",
+                        "sample",
+                        "sample_original",
+                        "scDblFinder.class",
+                        "scDblFinder.score",
+                        "scdblfinder_class",
+                        "scdblfinder_predicted_doublet",
+                        "scrublet_class",
+                        "scrublet_predicted_doublet",
+                        "scrublet_score"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "intersection"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-14T14:08:18.826220929",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

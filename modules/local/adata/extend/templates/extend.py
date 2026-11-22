@@ -23,7 +23,7 @@ uns_paths = sorted(Path("uns/").glob("*"))
 layers_paths = sorted(Path("layers/").glob("*"))
 
 
-def load_pickle_or_csv(path):
+def load_dataframe(path):
     if path.suffix == ".pkl":
         return pd.read_pickle(path)
     elif path.suffix == ".csv":
@@ -31,7 +31,7 @@ def load_pickle_or_csv(path):
             columns = next(csv.reader(handle))[1:]
         if len(columns) != len(set(columns)):
             raise ValueError(f"Fragment '{path.name}' contains duplicate column names")
-        return pd.read_csv(path, index_col=0)
+        return pd.read_csv(path, index_col=0, converters={0: str})
     else:
         raise ValueError(f"Unsupported file extension: {path}")
 
@@ -66,7 +66,7 @@ def merge_dataframe(base, paths):
     """Apply indexed updates while checking agreement between fragment sources."""
     fragments = []
     for path in paths:
-        fragment = load_pickle_or_csv(path)
+        fragment = load_dataframe(path)
         if not fragment.index.is_unique:
             raise ValueError(f"Fragment '{path.name}' contains duplicate indices")
         if not fragment.columns.is_unique:

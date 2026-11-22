@@ -72,11 +72,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - `ambient_rna_removal/`: Results of ambient RNA removal.
   - `custom_thresholds/`: Results of applying user-defined QC thresholds.
   - `doublet_detection/`: Directories related to doublet detection.
-    - `input_rds/`: RDS version of the H5AD file that is used as input to the doublet detection tools.
     - `(doubletdetection|scdblfinder|scrublet|solo)/`: Results of doublet detection.
-      Each directory contains a filtered `h5ad`/`rds` and a `csv`/`pkl` file
-      with the doublet annotations.
-    - `${sample_id}.h5ad`: The H5AD without doublets.
+      Each directory contains a detector H5AD and Boolean predictions covering all input cells, as CSV for scDblFinder or pickle for other methods. Scrublet and SOLO H5ADs contain singlets only; scDblFinder and DoubletDetection H5ADs retain all cells.
+      scDblFinder scores and classes are in `<prefix>.scores.csv`. Scrublet and DoubletDetection scores are in `<prefix>.scores.pkl`. SOLO exports no continuous scores.
+    - `${sample_id}.h5ad`: The QC object after optional doublet removal, based on agreement between Boolean predictions rather than numeric scores.
+    - `${sample_id}.obs.pkl`: Per-cell Boolean calls and classifications for each selected detector.
   - `qc_filtered/`: QC plots for the preprocessed data.
   - `cell_cycle/`: Cell cycle scoring results.
     - `${sample_id}_cellcycle.pkl`: `S_score`, `G2M_score`, and `phase` columns
@@ -84,11 +84,13 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
     - `${sample_id}_cellcycle.h5ad`: Intermediate H5AD with cell cycle scores added, available for inspection.
   - `sizes/`: Cell counts at each QC stage (MultiQC table input).
   - `finalized/`: Per-sample QC AnnData objects when `--save_intermediates` is enabled.
+    - `${sample_id}_qc.h5ad` and `${sample_id}_qc_metadata.csv`: QC object and observation metadata, including `<method>_predicted_doublet` and `<method>_class` (`singlet` or `doublet`) for selected detectors. Scores use `scrublet_score`, `doubletdetection_score` and native `scDblFinder.*` fields. Removed cells are absent from both outputs.
 
 </details>
 
 The output of each step is stored under numbered stage directories in the results folder.
 Per-sample QC outputs live under `02_quality_control/`.
+Doublet annotations are included in final outputs without `--save_intermediates`. Merged objects retain only observation columns shared by all datasets.
 
 ### Sample aggregation
 

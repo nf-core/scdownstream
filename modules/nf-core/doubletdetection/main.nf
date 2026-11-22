@@ -4,16 +4,17 @@ process DOUBLETDETECTION {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/96/96f52092a8472acb59ded59ab5ec4a29a56627f0c78e3cc8a0b916c6bedd67d6/data'
-        : 'community.wave.seqera.io/library/pyyaml_pip_doubletdetection:5af145ffec01d7da'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ce/ce3f7d8de7d80f778378c205ce0cf65822e6e02a06e6c819644da98e02cca779/data'
+        : 'community.wave.seqera.io/library/pyarrow_anndata_pip_python_pruned:3f0caa6e8b12d282'}"
 
     input:
     tuple val(meta), path(h5ad)
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    tuple val(meta), path("*.pkl") , emit: predictions
-    path "versions.yml"            , emit: versions, topic: versions
+    tuple val(meta), path("${prefix}.pkl"), emit: predictions
+    tuple val(meta), path("${prefix}.scores.pkl"), emit: scores
+    path "versions.yml", emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -27,6 +28,7 @@ process DOUBLETDETECTION {
     """
     touch ${prefix}.h5ad
     touch ${prefix}.pkl
+    touch ${prefix}.scores.pkl
 
     cat <<-END_VERSIONS > versions.yml
     ${task.process}:

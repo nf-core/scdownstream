@@ -4,8 +4,8 @@ process SCANPY_SCRUBLET {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cc/cc499354bb89be6429cfc8d8416a340c2327a72732fb6ae33c346feef17b5ffb/data'
-        : 'community.wave.seqera.io/library/python_pyyaml_scanpy_scikit-image:750e7b74b6d036e4'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/32/32201f72155a28ab2e8e2e93a293068652cdabbc944e17da4f5d369d38453b57/data'
+        : 'community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy_scikit-image:cb2d30a43fce52a9'}"
 
     input:
     tuple val(meta), path(h5ad)
@@ -13,8 +13,9 @@ process SCANPY_SCRUBLET {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    tuple val(meta), path("*.pkl") , emit: predictions
-    path "versions.yml"            , emit: versions, topic: versions
+    tuple val(meta), path("${prefix}.pkl"), emit: predictions
+    tuple val(meta), path("${prefix}.scores.pkl"), emit: scores
+    path "versions.yml", emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -39,6 +40,7 @@ process SCANPY_SCRUBLET {
 
     touch ${prefix}.h5ad
     touch ${prefix}.pkl
+    touch ${prefix}.scores.pkl
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

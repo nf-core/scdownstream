@@ -1,67 +1,102 @@
 name: "doubletdetection"
 description: Doublet detection in single-cell RNA-seq data
 keywords:
-  - single-cell
-  - doublets
-  - doublet_detection
+- single-cell
+- doublets
+- doublet_detection
 tools:
-  - "doubletdetection":
-      description: "Doublet detection in single-cell RNA-seq data"
-      tool_dev_url: "https://github.com/JonathanShor/DoubletDetection"
-      doi: "10.5281/zenodo.6349517"
-      licence:
-        - "MIT"
-      identifier: biotools:DoubletDetection
+- "doubletdetection":
+    description: "Doublet detection in single-cell RNA-seq data"
+    tool_dev_url: "https://github.com/JonathanShor/DoubletDetection"
+    doi: "10.5281/zenodo.6349517"
+    licence:
+    - "MIT"
+    identifier: biotools:DoubletDetection
 input:
+- - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'sample1', single_end:false ]`
+  - h5ad:
+      type: file
+      description: H5AD anndata object
+      pattern: "*.h5ad"
+      ontologies: []
+output:
+  h5ad:
   - - meta:
         type: map
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1', single_end:false ]`
-    - h5ad:
+    - "*.h5ad":
         type: file
         description: H5AD anndata object
         pattern: "*.h5ad"
         ontologies: []
-output:
-  h5ad:
-    - - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1', single_end:false ]`
-      - "*.h5ad":
-          type: file
-          description: H5AD anndata object
-          pattern: "*.h5ad"
-          ontologies: []
   predictions:
-    - - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1', single_end:false ]`
-      - "*.pkl":
-          type: file
-          description: pandas dataframe containing the doublet classification
-          pattern: "*.pkl"
-          ontologies: []
-  versions:
-    - versions.yml:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - "${prefix}.pkl":
         type: file
-        description: File containing software versions
-        pattern: "versions.yml"
-        ontologies:
-          - edam: http://edamontology.org/format_3750 # YAML
+        description: pandas dataframe containing the doublet classification
+        pattern: "${prefix}.pkl"
+        ontologies: []
+  scores:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - "${prefix}.scores.pkl":
+        type: file
+        description: Full-cell doubletdetection_score values indexed by input cell identifiers
+        pattern: "*.scores.pkl"
+        ontologies: []
+  versions:
+  - versions.yml:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+      ontologies:
+      - edam: http://edamontology.org/format_3750     # YAML
 topics:
   versions:
-    - versions.yml:
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
-        ontologies:
-          - edam: http://edamontology.org/format_3750 # YAML
+  - versions.yml:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+      ontologies:
+      - edam: http://edamontology.org/format_3750     # YAML
 authors:
-  - "@LeonHafner"
+- "@LeonHafner"
 maintainers:
-  - "@LeonHafner"
+- "@LeonHafner"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/pyarrow_anndata_pip_python_pruned:00cefe86fd22d0fa
+      build_id: bd-00cefe86fd22d0fa_1
+      scan_id: sc-ac90f5527bf01fa0_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/pyarrow_anndata_pip_python_pruned:3f0caa6e8b12d282
+      build_id: bd-3f0caa6e8b12d282_1
+      scan_id: sc-c413c835743c3038_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/pyarrow_anndata_pip_python_pruned:aa375361f0bade4a
+      build_id: bd-aa375361f0bade4a_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/55/5588303ef3e19e42b47afbf6360f9704d26c34c59727b054e3a7f403ec263983/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/pyarrow_anndata_pip_python_pruned:3f5bc6b9769f247c
+      build_id: bd-3f5bc6b9769f247c_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ce/ce3f7d8de7d80f778378c205ce0cf65822e6e02a06e6c819644da98e02cca779/data
+  conda:
+    linux/amd64:
+      lock_file: modules/nf-core/doubletdetection/.conda-lock/linux_amd64-bd-3f0caa6e8b12d282_1.txt
+    linux/arm64:
+      lock_file: modules/nf-core/doubletdetection/.conda-lock/linux_arm64-bd-00cefe86fd22d0fa_1.txt
