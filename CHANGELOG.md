@@ -9,6 +9,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
+- Replace the compact `test_full` setup with five full-size AWS test profiles (`test_full`, `test_full_raw`, `test_full_mapping`, `test_full_extend`, `test_full_sub`) backed by public Hetzner S3 datasets and a matrix workflow in `.github/workflows/awsfulltest.yml`, by @nictru and Gemini 4 Neon [[#400](https://github.com/nf-core/scdownstream/pull/400)].
 - Preserve Boolean doublet calls through merging, by @nictru and GPT-6.1 Sol [[#395](https://github.com/nf-core/scdownstream/pull/395)].
 - Preserve doublet scores and classifications in QC and merged AnnData outputs, including runs without cell removal, by @nictru and GPT-6.1 Sol [[#393](https://github.com/nf-core/scdownstream/pull/393)].
 - Annotate SCimilarity predictions directly on the input AnnData without copying unrelated data, by @nictru and GPT-6.1 Sol [[#376](https://github.com/nf-core/scdownstream/pull/376)].
