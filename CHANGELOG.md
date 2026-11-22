@@ -10,6 +10,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 ### `Changed`
 
 - Write tabular AnnData fragments and doublet predictions as Parquet with explicit cell or gene identifiers, retain nested-object and matrix formats, and reject legacy pickle/CSV table inputs, by @nictru and GPT-6.1 Sol [[#397](https://github.com/nf-core/scdownstream/pull/397)].
+- Migrate `.github/workflows/awsfulltest.yml` and `.github/workflows/awstest.yml` to `seqeralabs/action-seqera-launch@v1` with `syntax-parser: v2` and `wait: running`, by @nictru and Gemini 4 Neon [[#401](https://github.com/nf-core/scdownstream/pull/401)].
 - Replace the compact `test_full` setup with five full-size AWS test profiles (`test_full`, `test_full_raw`, `test_full_mapping`, `test_full_extend`, `test_full_sub`) backed by public Hetzner S3 datasets and a matrix workflow in `.github/workflows/awsfulltest.yml`, by @nictru and Gemini 4 Neon [[#400](https://github.com/nf-core/scdownstream/pull/400)].
 - Preserve Boolean doublet calls through merging, by @nictru and GPT-6.1 Sol [[#395](https://github.com/nf-core/scdownstream/pull/395)].
 - Preserve doublet scores and classifications in QC and merged AnnData outputs, including runs without cell removal, by @nictru and GPT-6.1 Sol [[#393](https://github.com/nf-core/scdownstream/pull/393)].
