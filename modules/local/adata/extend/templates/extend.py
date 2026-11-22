@@ -46,35 +46,31 @@ def restore_dtype(values, dtypes):
         return pd.Categorical(values, categories=categories, ordered=categoricals[0].ordered)
 
     if all(pd.api.types.is_bool_dtype(dtype) for dtype in dtypes):
-        dtype = (
-            "boolean" if values.isna().any() or any(isinstance(dtype, pd.BooleanDtype) for dtype in dtypes) else bool
-        )
-        return values.astype(dtype)
+        nullable = values.hasnans or any(isinstance(dtype, pd.BooleanDtype) for dtype in dtypes)
+        return values.astype("boolean" if nullable else bool)
 
     if all(pd.api.types.is_numeric_dtype(dtype) for dtype in dtypes):
         dtype = np.result_type(*(getattr(dtype, "numpy_dtype", dtype) for dtype in dtypes))
-        if all(pd.api.types.is_integer_dtype(source) for source in dtypes):
+        integer_sources = [pd.api.types.is_integer_dtype(source) for source in dtypes]
+        if all(integer_sources):
             if dtype.kind == "f":
                 # Mixed signed and unsigned 64-bit integers have no exact NumPy common dtype.
                 dtype = np.dtype("uint64" if values.dropna().ge(0).all() else "int64")
-            nullable = values.isna().any() or any(
-                isinstance(source, pd.api.extensions.ExtensionDtype) for source in dtypes
-            )
+            nullable = values.hasnans or any(isinstance(source, pd.api.extensions.ExtensionDtype) for source in dtypes)
             if nullable:
                 dtype = f"{'UInt' if dtype.kind == 'u' else 'Int'}{dtype.itemsize * 8}"
             return values.astype(dtype)
+
         result = values.astype(dtype)
-        if dtype.kind == "f" and any(pd.api.types.is_integer_dtype(source) for source in dtypes):
+        if dtype.kind == "f" and any(integer_sources):
             for original, converted in zip(values, result, strict=True):
-                if isinstance(original, (int, np.integer)) and not isinstance(original, (bool, np.bool_)):
-                    if not np.isfinite(converted) or int(converted) != original:
-                        raise ValueError("Merging numeric fragment dtypes would lose integer precision")
+                if isinstance(original, (int, np.integer)) and int(converted) != int(original):
+                    raise ValueError("Merging numeric fragment dtypes would lose integer precision")
         return result
 
     if values.notna().any() and all(isinstance(value, (bool, np.bool_)) for value in values.dropna()):
         return values.astype("boolean")
-    values = values.infer_objects(copy=False)
-    return values
+    return values.infer_objects(copy=False)
 
 
 def merge_dataframe(base, paths):
