@@ -78,6 +78,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Skip single-cell edgePython strata without enough cells, donors or conditions for the requested reference contrast, by @nictru and Codex [[#406](https://github.com/nf-core/scdownstream/pull/406)].
 - Patch `quarto/notebook` with multi-architecture Wave containers and Conda lock files for `QC_REPORT` instead of overriding the container in `conf/modules.config`, by @nictru, Codex and Gemini 4 Neon [[#405](https://github.com/nf-core/scdownstream/pull/405)].
 - Set the QC report temporary directory when the task script starts so Fusion can initialise on AWS Batch, by @nictru and Codex [[#405](https://github.com/nf-core/scdownstream/pull/405)].
 - Pin PyNNDescent to `0.6.0` for Scanpy Scrublet to fix approximate nearest-neighbour searches, by @nictru and Codex [[#403](https://github.com/nf-core/scdownstream/pull/403)].
