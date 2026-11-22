@@ -121,7 +121,7 @@ nextflow_process {
 
         then {
             assert process.failed
-            assert process.errorReport.contains("ValueError: Fragment 'duplicate_index.parquet' contains duplicate indices")
+            assert process.errorReport.contains("ValueError: Fragment 'duplicate_index.parquet' requires unique, non-null string indices")
         }
 
     }
@@ -186,7 +186,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains("Fragment 'null_index.parquet' contains null indices")
+            assert process.errorReport.contains("Fragment 'null_index.parquet' requires unique, non-null string indices")
         }
     }
 

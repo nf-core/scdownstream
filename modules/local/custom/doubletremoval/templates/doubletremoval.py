@@ -31,15 +31,12 @@ def load_predictions(path):
     if "__index__" not in frame.columns:
         raise ValueError(f"Prediction table '{source.name}' is missing the '__index__' column")
     frame = frame.set_index("__index__").rename_axis(None)
-    if frame.index.hasnans:
-        raise ValueError(f"Prediction table '{source.name}' contains null indices")
-    if not frame.index.is_unique:
-        raise ValueError(f"Prediction table '{source.name}' contains duplicate indices")
-    if any(not isinstance(value, str) for value in frame.index):
-        raise ValueError(f"Prediction table '{source.name}' contains non-string indices")
+    index = frame.index
+    if not index.is_unique or not all(isinstance(value, str) for value in index):
+        raise ValueError(f"Prediction table '{source.name}' requires unique, non-null string indices")
     if len(frame.columns) != 1:
         raise ValueError(f"{path} must contain exactly one Boolean column")
-    if set(frame.index) != set(adata.obs_names):
+    if set(index) != set(adata.obs_names):
         raise ValueError(f"{path} must contain each input barcode exactly once")
     calls = frame.iloc[:, 0]
     if not pd.api.types.is_bool_dtype(calls) or calls.isna().any():

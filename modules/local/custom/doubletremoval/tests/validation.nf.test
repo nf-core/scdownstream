@@ -75,7 +75,7 @@ nextflow_process {
         }
         then {
             assert process.failed
-            assert process.errorReport.contains("Prediction table 'duplicate.parquet' contains duplicate indices")
+            assert process.errorReport.contains("Prediction table 'duplicate.parquet' requires unique, non-null string indices")
         }
     }
 

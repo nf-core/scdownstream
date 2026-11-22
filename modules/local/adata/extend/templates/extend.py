@@ -31,13 +31,9 @@ def load_indexed_parquet(path: Path, axis_index: bool = True) -> pd.DataFrame:
     if "__index__" not in frame.columns:
         raise ValueError(f"Fragment '{path.name}' is missing the '__index__' column")
     frame = frame.set_index("__index__").rename_axis(None)
-    if axis_index:
-        if frame.index.hasnans:
-            raise ValueError(f"Fragment '{path.name}' contains null indices")
-        if not frame.index.is_unique:
-            raise ValueError(f"Fragment '{path.name}' contains duplicate indices")
-        if any(not isinstance(value, str) for value in frame.index):
-            raise ValueError(f"Fragment '{path.name}' contains non-string indices")
+    index = frame.index
+    if axis_index and (not index.is_unique or not all(isinstance(value, str) for value in index)):
+        raise ValueError(f"Fragment '{path.name}' requires unique, non-null string indices")
     return frame
 
 
