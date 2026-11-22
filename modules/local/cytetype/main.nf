@@ -2,7 +2,7 @@ process CYTETYPE {
     tag "${meta.id}"
     label 'process_medium'
 
-    secret secrets.CYTETYPE_API_KEY ? ['CYTETYPE_API_KEY'] : ''
+    // CYTETYPE_API_KEY is attached via conf/modules.config only when params.cytetype_study_context is set.
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
