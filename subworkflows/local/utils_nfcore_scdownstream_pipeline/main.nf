@@ -408,7 +408,7 @@ def validateInputParameters() {
     }
 
     if (params.gene_annotation_gtf && !params.gene_annotation) {
-        throw new Exception("gene_annotation_gtf requires gene_annotation to be true")
+        log.warn("`--gene_annotation_gtf` was provided, but `--gene_annotation` is disabled; skipping gene annotation.")
     }
 
     def integration_methods = params.integration_methods.split(',').collect { it -> it.trim().toLowerCase() }
