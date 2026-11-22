@@ -311,6 +311,29 @@ nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
     --scvi_continuous_covariates S_score,G2M_score
 ```
 
+### Gene annotation
+
+`--gene_annotation` adds four columns to `adata.var` of the final `merged.h5ad`:
+
+| Column                      | Meaning                                                                                                              |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `gene_biotype`              | Ensembl/GENCODE gene biotype, e.g. `protein_coding`, `lncRNA`, `processed_pseudogene`.                               |
+| `chromosome`                | Chromosome, without a `chr` prefix; `chrM` and `M` become `MT`.                                                      |
+| `biotype_group`             | Broad group: `protein_coding`, `lncRNA`, `small_ncRNA`, `pseudogene`, `IG_TR_gene`, `mitochondrial` or `other`.      |
+| `gene_annotation_ambiguous` | `true` when a gene matched entries that disagree on biotype or chromosome; the disagreeing value is then left empty. |
+
+Annotations come from a GTF file when `--gene_annotation_gtf` is given, otherwise from MyGene.info for `--species`:
+
+```bash
+nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results --gene_annotation --gene_annotation_gtf Homo_sapiens.GRCh38.115.gtf.gz
+```
+
+Genes are matched by symbol (the index of the final object), and genes without a symbol match fall back to the gene ID with any version suffix removed.
+Entries on patches, alternate haplotypes and unplaced scaffolds are ignored when the gene also has a primary chromosome entry.
+Genes on both X and Y (pseudoautosomal genes) keep their biotype but have an empty `chromosome` and are flagged as ambiguous.
+Genes that cannot be matched are kept with empty annotations.
+`mitochondrial` is assigned from the chromosome (`MT`) or an `Mt_` biotype and takes precedence over the biotype.
+
 ### Reference mapping and extension
 
 **Reference mapping** means **mapping new cells into a latent space using a pre-trained model** instead of training that integration step only on the query data.

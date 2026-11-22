@@ -14,6 +14,7 @@ include { ADATA_SPLITEMBEDDINGS                } from '../modules/local/adata/sp
 include { SUB_INTEGRATE                        } from '../subworkflows/local/sub_integrate'
 include { CLUSTER                              } from '../subworkflows/local/cluster'
 include { PER_GROUP                            } from '../subworkflows/local/per_group'
+include { GENE_ANNOTATION                      } from '../subworkflows/local/gene_annotation'
 include { FINALIZE                             } from '../subworkflows/local/finalize'
 include { MULTIQC                              } from '../modules/nf-core/multiqc'
 include { paramsSummaryMap                     } from 'plugin/nf-schema'
@@ -113,6 +114,8 @@ workflow SCDOWNSTREAM {
     decoupler_min_targets         //   value: integer
     prep_cellxgene                //   value: boolean
     tords                         //   value: boolean
+    gene_annotation               //   value: boolean
+    gene_annotation_gtf           //    path: file or []
     outdir                        //   value: string
     multiqc_config                //   value: string
     multiqc_logo                  //   value: string
@@ -398,6 +401,15 @@ workflow SCDOWNSTREAM {
         ch_uns = ch_uns.mix(PER_GROUP.out.uns)
         ch_multiqc_files = ch_multiqc_files.mix(PER_GROUP.out.multiqc_files)
         ch_obs = ch_obs.mix(PER_GROUP.out.obs)
+
+        if (gene_annotation) {
+            GENE_ANNOTATION (
+                ch_finalization_base,
+                gene_annotation_gtf,
+                species
+            )
+            ch_var = ch_var.mix(GENE_ANNOTATION.out.var)
+        }
 
         FINALIZE (
             ch_finalization_base,

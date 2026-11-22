@@ -337,5 +337,77 @@
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
         }
+    },
+    "Should run without failures - with gene annotation var fragment": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test.h5ad:md5,da2b3252854ea877c8bca99586d8481d"
+                ]
+            ],
+            [
+                
+            ],
+            {
+                "n_obs": 16,
+                "n_vars": 32,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable",
+                        "gene_biotype",
+                        "chromosome",
+                        "biotype_group",
+                        "gene_annotation_ambiguous"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-22T12:45:42.754375995",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
     }
 }

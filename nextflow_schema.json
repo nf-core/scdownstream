@@ -86,7 +86,7 @@
                 "species": {
                     "type": "string",
                     "default": "human",
-                    "description": "Species of the input data. Used to auto-select bundled cell cycle gene lists (assets/cell_cycle_genes/<species>_s_genes.txt and _g2m_genes.txt), as the MyGene.info taxonomy when converting gene identifiers (samplesheet symbol_col: none), and for PROGENy pathway enrichment in Tensor-cell2cell. Bundled cell cycle lists are provided for 'human' and 'mouse'. Ignored when --s_genes and --g2m_genes are set explicitly."
+                    "description": "Species of the input data. Used to auto-select bundled cell cycle gene lists (assets/cell_cycle_genes/<species>_s_genes.txt and _g2m_genes.txt), as the MyGene.info taxonomy when converting gene identifiers (samplesheet symbol_col: none), for PROGENy pathway enrichment in Tensor-cell2cell, and for --gene_annotation when no --gene_annotation_gtf is given. Bundled cell cycle lists are provided for 'human' and 'mouse'. Ignored when --s_genes and --g2m_genes are set explicitly."
                 },
                 "cell_cycle_scoring": {
                     "type": "boolean",
@@ -502,6 +502,19 @@
                     "type": "boolean",
                     "description": "Convert the final AnnData object to an RDS SingleCellExperiment file",
                     "fa_icon": "fas fa-file-export"
+                },
+                "gene_annotation": {
+                    "type": "boolean",
+                    "description": "Annotate the genes of the final AnnData object with biotype, chromosome and a broad biotype group (adata.var columns gene_biotype, chromosome, biotype_group and gene_annotation_ambiguous). Uses --gene_annotation_gtf when given, otherwise queries MyGene.info for --species.",
+                    "fa_icon": "fas fa-dna"
+                },
+                "gene_annotation_gtf": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "pattern": "^\\S+\\.gtf(\\.gz)?$",
+                    "description": "Optional GTF file used by --gene_annotation. Genes are matched on gene_name, then on gene_id (version suffixes ignored). Ensembl (gene_biotype) and GENCODE (gene_type) attributes are supported.",
+                    "fa_icon": "fas fa-file"
                 }
             }
         },

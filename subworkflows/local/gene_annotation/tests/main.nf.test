@@ -1,0 +1,85 @@
+nextflow_workflow {
+
+    name "Test Workflow GENE_ANNOTATION"
+    script "subworkflows/local/gene_annotation/main.nf"
+    workflow "GENE_ANNOTATION"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "gene_annotation"
+
+    def testGtf = [
+        '13\tensembl\tgene\t28657566\t28677814\t.\t+\t.\tgene_id "ENSG00000132963"; gene_name "POMP"; gene_biotype "protein_coding";',
+        '11\tensembl\tgene\t83455012\t85628095\t.\t-\t.\tgene_id "ENSG00000150672"; gene_name "DLG2"; gene_biotype "protein_coding";',
+        '11\tensembl\tgene\t65152000\t65153000\t.\t+\t.\tgene_id "ENSG00000254656"; gene_name "FAM177A1P1"; gene_biotype "processed_pseudogene";',
+        '2\tensembl\tgene\t197486579\t197512677\t.\t-\t.\tgene_id "ENSG00000144381"; gene_name "HSPD1"; gene_biotype "protein_coding";',
+    ].join('\n') + '\n'
+
+    test("Should annotate genes from a GTF") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                def gtfFile = file("${outputDir}/test.gtf")
+                gtfFile.parent.mkdirs()
+                gtfFile.text = '''${testGtf}'''
+                input[0] = channel.of([
+                    [id: 'merged'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
+                ])
+                input[1] = gtfFile
+                input[2] = 'human'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def lines = path(workflow.out.csv[0]).readLines()
+            def rows = lines.drop(1).collectEntries { line -> [(line.tokenize(',')[0]): line] }
+            assertAll(
+                { assert lines[0] == ',gene_biotype,chromosome,biotype_group,gene_annotation_ambiguous' },
+                { assert rows['POMP'] == 'POMP,protein_coding,13,protein_coding,False' },
+                { assert rows['DLG2'] == 'DLG2,protein_coding,11,protein_coding,False' },
+                { assert rows['FAM177A1P1'] == 'FAM177A1P1,processed_pseudogene,11,pseudogene,False' },
+                { assert rows['HSPD1'] == 'HSPD1,protein_coding,2,protein_coding,False' },
+                { assert workflow.out.var.size() == 1 },
+                { assert snapshot(workflow.out.csv).match() }
+            )
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [id: 'merged'],
+                    file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
+                ])
+                input[1] = []
+                input[2] = 'human'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+    }
+
+}
