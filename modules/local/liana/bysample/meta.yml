@@ -95,24 +95,24 @@ maintainers:
 containers:
   docker:
     linux/amd64:
-      name: community.wave.seqera.io/library/liana_pyyaml:c2bc77d30223be1f
-      build_id: bd-c2bc77d30223be1f_1
-      scan_id: sc-ba6dd7b0578d9cd3_1
+      name: community.wave.seqera.io/library/liana_cell2cell_pyyaml:50d977636ad3e43e
+      build_id: bd-50d977636ad3e43e_1
+      scan_id: sc-2973b11a32f8b3c4_1
     linux/arm64:
-      name: community.wave.seqera.io/library/liana_pyyaml:8505a353f9fdc1f5
-      build_id: bd-8505a353f9fdc1f5_1
-      scan_id: sc-aee9098bc5971cf2_1
+      name: community.wave.seqera.io/library/liana_cell2cell_pyyaml:e1c79b6f5219622d
+      build_id: bd-e1c79b6f5219622d_1
+      scan_id: sc-09d609e6be51282f_1
   singularity:
-    linux/amd64:
-      name: oras://community.wave.seqera.io/library/liana_pyyaml:0bd9764a267aa0cb
-      build_id: bd-0bd9764a267aa0cb_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/00/00a0832cf7999e945fe1eea426fb5a59d4718af37c8e97b1768d7257904bfadb/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/liana_pyyaml:7e6acef60d8044bc
-      build_id: bd-7e6acef60d8044bc_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5e/5e5ac3750642933ecd34611b40f517bc5118351d734c8059a3ca29c29a50418d/data
+      name: oras://community.wave.seqera.io/library/liana_cell2cell_pyyaml:a49db141391430fc
+      build_id: bd-a49db141391430fc_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ef/efdbfc407c90653e8754fdece7cd06498feccae7098260c5e57dfbfca693234b/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/liana_cell2cell_pyyaml:4aa21e57bc12ba82
+      build_id: bd-4aa21e57bc12ba82_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/10/10d2843fde28026d17f6faffc136aaa352f85d91fec25d658f793e062f14f349/data
   conda:
     linux/amd64:
-      lock_file: modules/local/liana/bysample/.conda-lock/linux_amd64-bd-c2bc77d30223be1f_1.txt
+      lock_file: modules/local/liana/bysample/.conda-lock/linux_amd64-bd-50d977636ad3e43e_1.txt
     linux/arm64:
-      lock_file: modules/local/liana/bysample/.conda-lock/linux_arm64-bd-8505a353f9fdc1f5_1.txt
+      lock_file: modules/local/liana/bysample/.conda-lock/linux_arm64-bd-e1c79b6f5219622d_1.txt

@@ -49,24 +49,24 @@ maintainers:
 containers:
   docker:
     linux/amd64:
-      name: community.wave.seqera.io/library/custom_collectsizes:ddf7b396f2bfaa5d
-      build_id: bd-ddf7b396f2bfaa5d_1
-      scan_id: sc-b6514041380fa98d_2
+      name: community.wave.seqera.io/library/anndata_python_pyyaml:5ac0fd4d280528a5
+      build_id: bd-5ac0fd4d280528a5_1
+      scan_id: sc-15371a7932310801_2
     linux/arm64:
-      name: community.wave.seqera.io/library/custom_collectsizes:9a9f757c45c9247d
-      build_id: bd-9a9f757c45c9247d_1
-      scan_id: sc-9d57a77b223e1d2b_2
+      name: community.wave.seqera.io/library/anndata_python_pyyaml:6059343947c64b2b
+      build_id: bd-6059343947c64b2b_1
+      scan_id: sc-6c978256fc1b9bc8_2
   singularity:
-    linux/amd64:
-      name: oras://community.wave.seqera.io/library/custom_collectsizes:d7f8aacabc8954e3
-      build_id: bd-d7f8aacabc8954e3_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/68/68c5022a4fc1d7a52acf4d7ce0201540ff4f72b4eea2c5598ab31326b98a1206/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/custom_collectsizes:44c5a50729347cb5
-      build_id: bd-44c5a50729347cb5_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/07/0719bb0bb9930b7d4dc21d543caaef2a93bdaca922a54bc11b9239caf17c58da/data
+      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:72ec1c0689f619a5
+      build_id: bd-72ec1c0689f619a5_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/56/56a42f6f5e1d7d9aec93ae546b21b3af0c424dfbda6385b018bab9c51ff95f0f/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:d4fa1bed84690377
+      build_id: bd-d4fa1bed84690377_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a0/a0d347e0d943cb8d0624a8c73247db0c8e96e7c130fe0fb3125aeb7d1b140e79/data
   conda:
     linux/amd64:
-      lock_file: modules/local/custom/collectsizes/.conda-lock/linux_amd64-bd-ddf7b396f2bfaa5d_1.txt
+      lock_file: modules/local/custom/collectsizes/.conda-lock/linux_amd64-bd-5ac0fd4d280528a5_1.txt
     linux/arm64:
-      lock_file: modules/local/custom/collectsizes/.conda-lock/linux_arm64-bd-9a9f757c45c9247d_1.txt
+      lock_file: modules/local/custom/collectsizes/.conda-lock/linux_arm64-bd-6059343947c64b2b_1.txt

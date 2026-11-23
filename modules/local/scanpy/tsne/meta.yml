@@ -51,25 +51,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy:5ee2c5596f10840c
-      build_id: bd-5ee2c5596f10840c_1
-      scan_id: sc-24d05ea958500c30_1
     linux/amd64:
-      name: community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy:bf28df5a8172ceca
-      build_id: bd-bf28df5a8172ceca_1
-      scan_id: sc-c9873cd1ff92b52c_1
+      name: community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:085892d5c5a30e57
+      build_id: bd-085892d5c5a30e57_1
+      scan_id: sc-011cb60add0031c2_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:58bafa6e3d6796d2
+      build_id: bd-58bafa6e3d6796d2_1
+      scan_id: sc-c166630796b0a9b8_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy:a9ac9a759207e751
-      build_id: bd-a9ac9a759207e751_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0f/0fcad28c1a4f695002836139b6c7c2a65e60794545b7929bc491dbe64b6373e0/data
+      name: oras://community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:2f9816b892520cdc
+      build_id: bd-2f9816b892520cdc_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/04/04307b777a83d13f004023a046a677adc1c444edcae99a1232cc5b82e88968df/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy:693f21fb8e895f50
-      build_id: bd-693f21fb8e895f50_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5d/5d37be3386c988946478103f5ad32e3422e5851794946cb2b92e3fb768eab9aa/data
+      name: oras://community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:e8e1c729f0a0eb27
+      build_id: bd-e8e1c729f0a0eb27_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/14/14fe67fb2719321f142025e25959940fb5ab88735eea3738ab08327fbbe5bffb/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/tsne/.conda-lock/linux_amd64-bd-bf28df5a8172ceca_1.txt
+      lock_file: modules/local/scanpy/tsne/.conda-lock/linux_amd64-bd-085892d5c5a30e57_1.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/tsne/.conda-lock/linux_arm64-bd-5ee2c5596f10840c_1.txt
+      lock_file: modules/local/scanpy/tsne/.conda-lock/linux_arm64-bd-58bafa6e3d6796d2_1.txt

@@ -4,8 +4,8 @@ process DECOUPLER_NETWORK {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1f/1f600306cb960886d6afe6b911dc74cf521e0521d0cfc16f8a1d4f35711ee2c3/data'
-        : 'community.wave.seqera.io/library/decoupler_network:f7895b41fb5156f8'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5c/5ca309507e02db5a619c02a9d8bb1d5b969ef6a815cceca6693784ee7fd061ec/data'
+        : 'community.wave.seqera.io/library/decoupler_activity:8d8ed42929b0d74b'}"
 
     input:
     tuple val(meta), path(custom_network, stageAs: 'custom/*')
