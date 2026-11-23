@@ -1,4 +1,5 @@
 Changes in component 'nf-core/cellbender/removebackground'
+'modules/nf-core/cellbender/removebackground/environment.gpu.yml' was created
 Changes in 'cellbender/removebackground/main.nf':
 --- modules/nf-core/cellbender/removebackground/main.nf
 +++ modules/nf-core/cellbender/removebackground/main.nf
@@ -15,7 +16,7 @@ Changes in 'cellbender/removebackground/main.nf':
 -        workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
 -        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/eb/ebcf140f995f79fcad5c17783622e000550ff6f171771f9fc4233484ee6f63cf/data':
 -        'community.wave.seqera.io/library/cellbender_webcolors:156d413fdfc16cdb' }"
-+    conda { task.accelerator ? "${moduleDir}/../../../../conf/cellbender_gpu_environment.yml" : "${moduleDir}/environment.yml" }
++    conda "${moduleDir}/${task.accelerator ? 'environment.gpu.yml' : 'environment.yml'}"
 +    container "${task.accelerator
 +        ? 'community.wave.seqera.io/library/cellbender_python_pytorch_cuda-version_webcolors:c8b51e8dfdbcd308'
 +        : workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container

@@ -4,7 +4,7 @@ process CELLBENDER_REMOVEBACKGROUND {
     label 'process_long'
     label 'process_gpu'
 
-    conda { task.accelerator ? "${moduleDir}/../../../../conf/cellbender_gpu_environment.yml" : "${moduleDir}/environment.yml" }
+    conda "${moduleDir}/${task.accelerator ? 'environment.gpu.yml' : 'environment.yml'}"
     container "${task.accelerator
         ? 'community.wave.seqera.io/library/cellbender_python_pytorch_cuda-version_webcolors:c8b51e8dfdbcd308'
         : workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
