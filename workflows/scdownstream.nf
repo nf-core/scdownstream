@@ -72,6 +72,7 @@ workflow SCDOWNSTREAM {
     scvi_gene_likelihood          //   value: string
     scvi_use_observed_lib_size    //   value: boolean
     scimilarity_model             //   value: string
+    scconcept_model               //   value: string
     symphony_reference             //   value: string
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
@@ -249,6 +250,7 @@ workflow SCDOWNSTREAM {
                 scib_subsample_seed,
                 scib_metric_profile,
                 force_obs_cols,
+                scconcept_model,
             )
             ch_obs = ch_obs.mix(COMBINE.out.obs)
             ch_var = ch_var.mix(COMBINE.out.var)
@@ -315,7 +317,8 @@ workflow SCDOWNSTREAM {
                 symphony_reference,
                 expimap_gmt,
                 condition_col,
-                integrate_per_label_whitelist
+                integrate_per_label_whitelist,
+                scconcept_model,
             )
             ch_integrations = ch_integrations.mix(SUB_INTEGRATE.out.integrations)
             ch_obs = ch_obs.mix(SUB_INTEGRATE.out.obs)

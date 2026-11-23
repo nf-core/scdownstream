@@ -136,6 +136,7 @@ Before integration, the merged outer union of genes is normalised once via [`nor
 | `seurat`                        | No (counts via SCTransform)             |
 | `expimap`                       | No (selected analysis counts)           |
 | `scimilarity`                   | No (internal log-normalisation)         |
+| `scconcept`                     | No (selected analysis counts)           |
 | `symphony` (reference mapping)  | No (reference normalisation target)     |
 
 Count-model integrations (`scvi`, `scanvi`) and differential expression use the selected analysis counts or their method-specific normalisation.
@@ -337,16 +338,15 @@ Genes that cannot be matched are kept with empty annotations.
 ### Reference mapping and extension
 
 **Reference mapping** means **mapping new cells into a latent space using a pre-trained model** instead of training that integration step only on the query data.
-In this pipeline this can be done using **scVI**, **scANVI**, **scimilarity**, and **Symphony**.
-To enable it, add the corresponding method to [`integration_methods`](https://nf-co.re/scdownstream/parameters#integration_methods) (`scvi`, `scanvi`, `scimilarity`, and/or `symphony`) and set the matching model parameters for each method you use: [`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model), and [`symphony_reference`](https://nf-co.re/scdownstream/parameters#symphony_reference) (see the [parameter reference](https://nf-co.re/scdownstream/parameters) for file types, defaults, and help text).
+In this pipeline this can be done using **scVI**, **scANVI**, **scimilarity**, **scConcept**, and **Symphony**.
+To enable it, add the corresponding method to [`integration_methods`](https://nf-co.re/scdownstream/parameters#integration_methods) (`scvi`, `scanvi`, `scimilarity`, `scconcept`, and/or `symphony`) and set the matching model parameters for each method you use: [`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model), [`scconcept_model`](https://nf-co.re/scdownstream/parameters#scconcept_model), and [`symphony_reference`](https://nf-co.re/scdownstream/parameters#symphony_reference) (see the [parameter reference](https://nf-co.re/scdownstream/parameters) for file types, defaults, and help text).
 
 For Symphony reference mapping, provide the compact Symphony reference AnnData from a prior de novo run (`{outdir}/03_combine/integrate/symphony/symphony_reference.h5ad`). It contains the gene statistics, PCA loadings, Harmony centroids, and normalization metadata required for query mapping.
 
 **Extension** is for users that have outputs of a previous run of `nf-core/scdownstream` and want to extend it with new data, without re-running the integration from scratch.
-It only works if `scvi`, `scanvi`, `scimilarity`, and/or `symphony` have been enabled in `integration_methods` in the original pipeline run.
-Other integration methods than the four mentioned before are not supported for this.
+It only works if `scvi`, `scanvi`, `scimilarity`, `scconcept`, and/or `symphony` have been enabled in `integration_methods` in the original pipeline run.
 In simple terms, in this setup the workflow is: (1) project new data into the latent space learned from the data in the original run, and then (2) combine the datasets.
-For (1), provide the same checkpoints as for reference mapping ([`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model), [`symphony_reference`](https://nf-co.re/scdownstream/parameters#symphony_reference)).
+For (1), provide the same checkpoints as for reference mapping ([`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model), [`scconcept_model`](https://nf-co.re/scdownstream/parameters#scconcept_model), [`symphony_reference`](https://nf-co.re/scdownstream/parameters#symphony_reference)).
 For (2), pass the integrated `.h5ad` from the original run as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata).
 
 Pre-trained scVI models are also shared on [scvi-hub](https://huggingface.co/scvi-tools).

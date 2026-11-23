@@ -11,7 +11,18 @@ from scipy.sparse import csc_matrix
 
 adata = ad.read_h5ad("${h5ad}")
 
-integration_methods = ["scanvi", "scvi", "symphony", "scimilarity", "seurat", "bbknn", "combat", "pca", "expimap"]
+integration_methods = [
+    "scanvi",
+    "scvi",
+    "symphony",
+    "scimilarity",
+    "scconcept",
+    "seurat",
+    "bbknn",
+    "combat",
+    "pca",
+    "expimap",
+]
 dimred_methods = ["umap", "tsne"]
 
 for key in list(adata.obsm.keys()):
