@@ -1,13 +1,84 @@
 Changes in component 'nf-core/cellbender/merge'
-'modules/nf-core/cellbender/merge/environment.yml' is unchanged
+Changes in 'cellbender/merge/main.nf':
+--- modules/nf-core/cellbender/merge/main.nf
++++ modules/nf-core/cellbender/merge/main.nf
+@@ -1,19 +1,19 @@
+ process CELLBENDER_MERGE {
+-    tag "$meta.id"
++    tag "${meta.id}"
+     label 'process_single'
+ 
+     conda "${moduleDir}/environment.yml"
+-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c4/c472f392e7bbfc26dca0088c3bd2349aad10f41b002d1288f6b5958c0951d8df/data':
+-        'community.wave.seqera.io/library/cellbender_python_webcolors:286b10a91af05a58' }"
++    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
++        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5b/5b5c128de14d5f9ae914eeab43aea7aee2a0994f3a57fd98e1a1b6656df34d34/data'
++        : 'community.wave.seqera.io/library/cellbender_python_pytorch_webcolors:4643692df2dc7df0'}"
+ 
+     input:
+     tuple val(meta), path(filtered), path(unfiltered), path(cellbender_h5)
+-    val(output_layer_name)
++    val output_layer_name
+ 
+     output:
+     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
+-    path "versions.yml"                    , emit: versions_cellbender, topic: versions
++    path "versions.yml", emit: versions_cellbender, topic: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+@@ -26,7 +26,7 @@
+     echo ${output_layer}
+     """
+ 
+-    template 'merge.py'
++    template('merge.py')
+ 
+     stub:
+     prefix = task.ext.prefix ?: "${meta.id}"
+@@ -36,7 +36,7 @@
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+         python: \$(python3 -c 'import platform; print(platform.python_version())')
+-        cellbender: \$(cellbender --version)
++        cellbender: \$(python3 -c 'from importlib.metadata import version; from pathlib import Path; import sys; print(next((record.stem.split("-")[1] for record in Path(sys.prefix, "conda-meta").glob("cellbender-*.json")), version("cellbender")))')
+     END_VERSIONS
+     """
+ }
+
+Changes in 'cellbender/merge/environment.yml':
+--- modules/nf-core/cellbender/merge/environment.yml
++++ modules/nf-core/cellbender/merge/environment.yml
+@@ -4,6 +4,7 @@
+   - conda-forge
+   - bioconda
+ dependencies:
+-  - bioconda::cellbender=0.3.2
+-  - conda-forge::python=3.7.12
++  - bioconda::cellbender=0.4.0
++  - conda-forge::python=3.12
++  - conda-forge::pytorch=2.10.0=cpu*
+   - conda-forge::webcolors=1.13
+
 'modules/nf-core/cellbender/merge/meta.yml' is unchanged
-'modules/nf-core/cellbender/merge/main.nf' is unchanged
-'modules/nf-core/cellbender/merge/tests/main.nf.test.snap' is unchanged
-'modules/nf-core/cellbender/merge/tests/main.nf.test' is unchanged
 Changes in 'cellbender/merge/templates/merge.py':
 --- modules/nf-core/cellbender/merge/templates/merge.py
 +++ modules/nf-core/cellbender/merge/templates/merge.py
-@@ -29,14 +29,23 @@
+@@ -1,9 +1,11 @@
+ #!/usr/bin/env python3
+ 
+ import platform
++import sys
++from importlib.metadata import version
++from pathlib import Path
+ 
+ import anndata as ad
+-import cellbender
+ from cellbender.remove_background.downstream import load_anndata_from_input_and_output
+ 
+ 
+@@ -29,18 +31,30 @@
  
  adata_cellbender = load_anndata_from_input_and_output("${unfiltered}", "${cellbender_h5}", analyzed_barcodes_only=False)
  
@@ -33,5 +104,104 @@ Changes in 'cellbender/merge/templates/merge.py':
  
  # Versions
  
+-versions = {"${task.process}": {"python": platform.python_version(), "cellbender": cellbender.__version__}}
++# The Bioconda 0.4.0 build retains the 0.3.2 Python distribution metadata.
++record = next(Path(sys.prefix, "conda-meta").glob("cellbender-*.json"), None)
++cellbender_version = record.stem.split("-")[1] if record else version("cellbender")
++versions = {"${task.process}": {"python": platform.python_version(), "cellbender": cellbender_version}}
+ 
+ with open("versions.yml", "w") as f:
+     f.write(format_yaml_like(versions))
+
+Changes in 'cellbender/merge/tests/main.nf.test':
+--- modules/nf-core/cellbender/merge/tests/main.nf.test
++++ modules/nf-core/cellbender/merge/tests/main.nf.test
+@@ -16,7 +16,7 @@
+                     [ id:'test' ], // meta map
+                     file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                     file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true),
+-                    file("https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/intermediates/SRR28679759_cellbender.h5", checkIfExists: true)
++                    file("https://raw.githubusercontent.com/nf-core/test-datasets/74a61c8600fdc593cd51c845eba5b80f2c57baf1/intermediates/SRR28679759_cellbender.h5", checkIfExists: true)
+                 ]
+                 input[1] = ''
+                 """
+@@ -39,7 +39,7 @@
+                     [ id:'test' ], // meta map
+                     file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true),
+                     file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_raw_matrix.h5ad', checkIfExists: true),
+-                    file("https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/intermediates/SRR28679759_cellbender.h5", checkIfExists: true)
++                    file("https://raw.githubusercontent.com/nf-core/test-datasets/74a61c8600fdc593cd51c845eba5b80f2c57baf1/intermediates/SRR28679759_cellbender.h5", checkIfExists: true)
+                 ]
+                 input[1] = ''
+                 """
+
+Changes in 'cellbender/merge/tests/main.nf.test.snap':
+--- modules/nf-core/cellbender/merge/tests/main.nf.test.snap
++++ modules/nf-core/cellbender/merge/tests/main.nf.test.snap
+@@ -7,29 +7,29 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test.h5ad:md5,d76d209cda94917cc4faf430d288480c"
++                        "test.h5ad:md5,a739fa03d2f3b67e6b906f85e85b9040"
+                     ]
+                 ],
+                 "1": [
+-                    "versions.yml:md5,52469695a4396996323548dcd4f659ec"
++                    "versions.yml:md5,702a23d790c87a0331c0e5ac23a682c0"
+                 ],
+                 "h5ad": [
+                     [
+                         {
+                             "id": "test"
+                         },
+-                        "test.h5ad:md5,d76d209cda94917cc4faf430d288480c"
++                        "test.h5ad:md5,a739fa03d2f3b67e6b906f85e85b9040"
+                     ]
+                 ],
+                 "versions_cellbender": [
+-                    "versions.yml:md5,52469695a4396996323548dcd4f659ec"
++                    "versions.yml:md5,702a23d790c87a0331c0e5ac23a682c0"
+                 ]
+             }
+         ],
+-        "timestamp": "2026-03-13T12:59:16.360615406",
++        "timestamp": "2026-11-23T15:54:42.549138072",
+         "meta": {
+             "nf-test": "0.9.4",
+-            "nextflow": "25.10.4"
++            "nextflow": "26.04.6"
+         }
+     },
+     "test_cellbender_merge - stub": {
+@@ -44,7 +44,7 @@
+                     ]
+                 ],
+                 "1": [
+-                    "versions.yml:md5,b5c0e4b30e6148c29e758b0600ac3c7b"
++                    "versions.yml:md5,e10ab47e4ed3042852196f13a2c280ff"
+                 ],
+                 "h5ad": [
+                     [
+@@ -55,14 +55,14 @@
+                     ]
+                 ],
+                 "versions_cellbender": [
+-                    "versions.yml:md5,b5c0e4b30e6148c29e758b0600ac3c7b"
++                    "versions.yml:md5,e10ab47e4ed3042852196f13a2c280ff"
+                 ]
+             }
+         ],
+-        "timestamp": "2026-03-13T12:59:28.800015588",
++        "timestamp": "2026-11-23T15:55:04.737697933",
+         "meta": {
+             "nf-test": "0.9.4",
+-            "nextflow": "25.10.4"
++            "nextflow": "26.04.6"
+         }
+     }
+-}
+\ No newline at end of file
++}
 
 ************************************************************
