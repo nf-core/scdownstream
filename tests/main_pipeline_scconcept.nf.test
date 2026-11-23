@@ -42,6 +42,13 @@ nextflow_pipeline {
             assert 'X_scconcept' in adata.obsm
             assert 'X_scconcept-global_umap' in adata.obsm
             assert 'scconcept-global-0.5_leiden' in adata.obs.colnames
+
+            def versions = path("$outputDir/pipeline_info/nf_core_scdownstream_software_mqc_versions.yml").yaml
+            def scconcept = versions.SCCONCEPT_EMBED
+            assert snapshot([
+                'sc-concept': scconcept['sc-concept'],
+                torch: scconcept.torch.replaceFirst(/\+cpu$/, ''),
+            ]).match()
         }
     }
 }
