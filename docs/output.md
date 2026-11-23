@@ -45,7 +45,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
       - [scVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scvi.html)
       - [scANVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scanvi.html)
       - [Symphony](https://github.com/immunogenomics/symphony) / Harmony (via [symphonypy](https://pypi.org/project/symphonypy/))
-      - [BBKNN](https://github.com/Teichlab/bbknn)
+      - [BBKNN](https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.bbknn.html)
       - [Combat](https://scanpy.readthedocs.io/en/latest/api/generated/scanpy.pp.combat.html)
       - [Seurat](https://satijalab.org/seurat/articles/integration_introduction)
       - [PCA](https://scanpy.readthedocs.io/en/stable/generated/scanpy.pp.pca.html)

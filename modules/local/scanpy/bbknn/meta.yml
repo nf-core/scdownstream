@@ -1,17 +1,11 @@
 name: "scanpy_bbknn"
-description: Integrate single-cell batches with BBKNN neighbour graph construction
+description: Construct a batch-balanced neighbour graph with Scanpy
 keywords:
   - batch-correction
   - bbknn
   - scanpy
   - single-cell
 tools:
-  - "bbknn":
-      description: "Batch balanced KNN for single-cell data"
-      homepage: "https://bbknn.readthedocs.io"
-      documentation: "https://bbknn.readthedocs.io"
-      tool_dev_url: "https://github.com/Teichlab/bbknn"
-      licence: ["MIT"]
   - "scanpy":
       description: "Single-cell analysis in Python"
       homepage: "https://scanpy.readthedocs.io"
@@ -59,24 +53,24 @@ maintainers:
 containers:
   docker:
     linux/amd64:
-      name: community.wave.seqera.io/library/bbknn_python_pyyaml_scanpy:a0553ec6ac27f462
-      build_id: bd-a0553ec6ac27f462_1
-      scan_id: sc-89902720c519ae86_2
+      name: community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:1ea7adbfe9ea8cad
+      build_id: bd-1ea7adbfe9ea8cad_1
+      scan_id: sc-d7bb1446e828dfb6_1
     linux/arm64:
-      name: community.wave.seqera.io/library/bbknn_python_pyyaml_scanpy:bbf75a6be9350368
-      build_id: bd-bbf75a6be9350368_1
-      scan_id: sc-c7f7929f2e81d586_2
+      name: community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:d617ddd4281a9506
+      build_id: bd-d617ddd4281a9506_1
+      scan_id: sc-4f85a1bc5a91ad19_1
   singularity:
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/bbknn_python_pyyaml_scanpy:5bb44164ae30431a
-      build_id: bd-5bb44164ae30431a_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/70/70d04458c3efda6ff4c0b21f1b238e87acab81553344f12c7f0401bdbc60d403/data
+      name: oras://community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:4f27eb642f71a1e0
+      build_id: bd-4f27eb642f71a1e0_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5a/5a01d847cbde9acc7fac037c87664ef9b17e3d78323ffc75d1ccf8b0ab71f4c4/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/bbknn_python_pyyaml_scanpy:73e640fb2394bccd
-      build_id: bd-73e640fb2394bccd_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/62/621bef06a28747bbbcb674392625dfee9b04b51e54293357d3f12fe55ffb689f/data
+      name: oras://community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:3ba90f90ba814125
+      build_id: bd-3ba90f90ba814125_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8e/8e2e626f2e43e75b0f218a91d16c13ac7efd15c6e0618dbc8ce06cd84218ca99/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/bbknn/.conda-lock/linux_amd64-bd-a0553ec6ac27f462_1.txt
+      lock_file: modules/local/scanpy/bbknn/.conda-lock/linux_amd64-bd-1ea7adbfe9ea8cad_1.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/bbknn/.conda-lock/linux_arm64-bd-bbf75a6be9350368_1.txt
+      lock_file: modules/local/scanpy/bbknn/.conda-lock/linux_arm64-bd-d617ddd4281a9506_1.txt

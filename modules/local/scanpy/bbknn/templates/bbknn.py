@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 import platform
+from importlib.metadata import version
 
-import bbknn
-import pandas as pd
 import scanpy as sc
 import yaml
+from anndata.acc import A
 from threadpoolctl import threadpool_limits
 
 threadpool_limits(int("${task.cpus}"))
@@ -33,24 +33,22 @@ if log_normalize:
 
 sc.tl.pca(adata, layer=analysis_layer)
 
-kwargs = {
-    "batch_key": "${batch_col}",
-    "copy": False,
-}
-
-if adata.n_obs >= 1e5:
-    kwargs["neighbors_within_batch"] = 25
-
-bbknn.bbknn(adata, **kwargs)
+sc.pp.bbknn(
+    adata,
+    neighbors_within_batch=25 if adata.n_obs >= 100_000 else 3,
+    batch=A.obs["${batch_col}"],
+    use=A.obsm["X_pca"],
+    rng=0,
+)
 
 adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
 versions = {
     "${task.process}": {
+        "anndata": version("anndata"),
+        "pandas": version("pandas"),
         "python": platform.python_version(),
-        "scanpy": sc.__version__,
-        "bbknn": bbknn.__version__,
-        "pandas": pd.__version__,
+        "scanpy": version("scanpy"),
     }
 }
 
