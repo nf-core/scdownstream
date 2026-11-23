@@ -79,6 +79,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Pin `nf-anndata` 0.5.4 to prevent concurrent reads of partially downloaded H5AD files on S3 and update `nft-anndata` to 0.5.4, by @nictru and Codex [[#408](https://github.com/nf-core/scdownstream/pull/408)].
 - Render the QC report on local scratch with Fusion so Quarto can write its project cache, by @nictru and Codex [[#407](https://github.com/nf-core/scdownstream/pull/407)].
 - Skip single-cell edgePython strata without enough cells, donors or conditions for the requested reference contrast, by @nictru and Codex [[#406](https://github.com/nf-core/scdownstream/pull/406)].
 - Patch `quarto/notebook` with multi-architecture Wave containers and Conda lock files for `QC_REPORT` instead of overriding the container in `conf/modules.config`, by @nictru, Codex and Gemini 4 Neon [[#405](https://github.com/nf-core/scdownstream/pull/405)].
