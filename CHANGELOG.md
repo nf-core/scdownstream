@@ -9,6 +9,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
+- Disable the QC report in the AWS `test_full` profile, by @nictru and Codex [[#417](https://github.com/nf-core/scdownstream/pull/417)].
 - Share container images across compatible Scanpy, AnnData, LIANA, Cell2Cell, edgePython and decoupler modules, and use a smaller CPU image for SCimilarity, by @nictru and Codex.
 - Write tabular AnnData fragments and doublet predictions as Parquet with explicit cell or gene identifiers, retain nested-object and matrix formats, and reject legacy pickle/CSV table inputs, by @nictru and GPT-6.1 Sol [[#397](https://github.com/nf-core/scdownstream/pull/397)].
 - Migrate `.github/workflows/awsfulltest.yml` and `.github/workflows/awstest.yml` to `seqeralabs/action-seqera-launch@v1` with `syntax-parser: v2` and `wait: running`, by @nictru and Gemini 4 Neon [[#401](https://github.com/nf-core/scdownstream/pull/401)].
