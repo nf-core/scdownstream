@@ -19,10 +19,10 @@
                     ]
                 ],
                 "2": [
-                    "test_scanvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "test_scanvi.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "3": [
-                    "X_test_scanvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "X_test_scanvi.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "4": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -44,30 +44,33 @@
                     ]
                 ],
                 "obs": [
-                    "test_scanvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "test_scanvi.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "obsm": [
-                    "X_test_scanvi.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "X_test_scanvi.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-01-25T17:12:07.460137485",
+        "timestamp": "2026-11-15T15:36:02.815263562",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.10.2"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should write label predictions to obs": {
         "content": [
             "test_scanvi.h5ad",
             "model.pt",
-            "X_test_scanvi.pkl",
+            "X_test_scanvi.parquet",
             {
                 "SCVITOOLS_SCANVI": {
-                    "scvi": "1.4.3"
+                    "cuda": "no CUDA available",
+                    "pyarrow": "21.0.0",
+                    "scvi": "1.4.3",
+                    "torch": "2.14.1"
                 }
             },
             {
@@ -112,12 +115,16 @@
                     "X_emb",
                     "X_pca"
                 ],
-                "varm": [],
+                "varm": [
+                    
+                ],
                 "obsp": [
                     "connectivities",
                     "distances"
                 ],
-                "varp": [],
+                "varp": [
+                    
+                ],
                 "uns": [
                     "X_pca",
                     "hvg",
@@ -127,20 +134,23 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-24T15:34:23.407109702",
+        "timestamp": "2026-11-15T15:46:50.716828176",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures": {
         "content": [
             "test_scanvi.h5ad",
             "model.pt",
-            "X_test_scanvi.pkl",
+            "X_test_scanvi.parquet",
             {
                 "SCVITOOLS_SCANVI": {
-                    "scvi": "1.4.3"
+                    "cuda": "no CUDA available",
+                    "pyarrow": "21.0.0",
+                    "scvi": "1.4.3",
+                    "torch": "2.14.1"
                 }
             },
             {
@@ -185,12 +195,16 @@
                     "X_emb",
                     "X_pca"
                 ],
-                "varm": [],
+                "varm": [
+                    
+                ],
                 "obsp": [
                     "connectivities",
                     "distances"
                 ],
-                "varp": [],
+                "varp": [
+                    
+                ],
                 "uns": [
                     "X_pca",
                     "hvg",
@@ -200,10 +214,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-24T13:33:18.287182656",
+        "timestamp": "2026-11-15T15:44:17.963643069",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

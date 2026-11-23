@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import csv
 import importlib.metadata
 import pickle
 import platform
@@ -23,17 +22,8 @@ uns_paths = sorted(Path("uns/").glob("*"))
 layers_paths = sorted(Path("layers/").glob("*"))
 
 
-def load_dataframe(path):
-    if path.suffix == ".pkl":
-        return pd.read_pickle(path)
-    elif path.suffix == ".csv":
-        with path.open(newline="") as handle:
-            columns = next(csv.reader(handle))[1:]
-        if len(columns) != len(set(columns)):
-            raise ValueError(f"Fragment '{path.name}' contains duplicate column names")
-        return pd.read_csv(path, index_col=0, converters={0: str})
-    else:
-        raise ValueError(f"Unsupported file extension: {path}")
+def load_parquet(path: Path) -> pd.DataFrame:
+    return pd.read_parquet(path, engine="pyarrow").set_index("__index__").rename_axis(None)
 
 
 def load_layer(path):
@@ -55,22 +45,39 @@ def restore_dtype(values, dtypes):
         categories = categories.union(pd.Index(values.dropna().unique().tolist()), sort=False)
         return pd.Categorical(values, categories=categories, ordered=categoricals[0].ordered)
 
-    values = values.infer_objects(copy=False)
-    # AnnData cannot serialise object arrays containing booleans and missing values.
-    if values.dtype == object and all(isinstance(value, (bool, np.bool_)) for value in values.dropna()):
-        return pd.Categorical(values, categories=pd.Index([False, True], dtype=bool))
-    return values
+    if all(pd.api.types.is_bool_dtype(dtype) for dtype in dtypes):
+        nullable = values.hasnans or any(isinstance(dtype, pd.BooleanDtype) for dtype in dtypes)
+        return values.astype("boolean" if nullable else bool)
+
+    if all(pd.api.types.is_numeric_dtype(dtype) for dtype in dtypes):
+        dtype = np.result_type(*(getattr(dtype, "numpy_dtype", dtype) for dtype in dtypes))
+        integer_sources = [pd.api.types.is_integer_dtype(source) for source in dtypes]
+        if all(integer_sources):
+            if dtype.kind == "f":
+                # Mixed signed and unsigned 64-bit integers have no exact NumPy common dtype.
+                dtype = np.dtype("uint64" if values.dropna().ge(0).all() else "int64")
+            nullable = values.hasnans or any(isinstance(source, pd.api.extensions.ExtensionDtype) for source in dtypes)
+            if nullable:
+                dtype = f"{'UInt' if dtype.kind == 'u' else 'Int'}{dtype.itemsize * 8}"
+            return values.astype(dtype)
+
+        result = values.astype(dtype)
+        if dtype.kind == "f" and any(integer_sources):
+            for original, converted in zip(values, result, strict=True):
+                if isinstance(original, (int, np.integer)) and int(converted) != int(original):
+                    raise ValueError("Merging numeric fragment dtypes would lose integer precision")
+        return result
+
+    if values.notna().any() and all(isinstance(value, (bool, np.bool_)) for value in values.dropna()):
+        return values.astype("boolean")
+    return values.infer_objects(copy=False)
 
 
 def merge_dataframe(base, paths):
     """Apply indexed updates while checking agreement between fragment sources."""
     fragments = []
     for path in paths:
-        fragment = load_dataframe(path)
-        if not fragment.index.is_unique:
-            raise ValueError(f"Fragment '{path.name}' contains duplicate indices")
-        if not fragment.columns.is_unique:
-            raise ValueError(f"Fragment '{path.name}' contains duplicate column names")
+        fragment = load_parquet(path)
         fragments.append((path, fragment.loc[fragment.index.isin(base.index)]))
 
     result = base.copy()
@@ -100,14 +107,20 @@ adata.obs = merge_dataframe(adata.obs, obs_paths)
 adata.var = merge_dataframe(adata.var, var_paths)
 
 for path in obsm_paths:
-    df = pd.read_pickle(path).reindex(adata.obs_names)
+    df = load_parquet(path).reindex(adata.obs_names)
     adata.obsm[path.stem] = np.float32(df.to_numpy())
 
 for path in obsp_paths:
     adata.obsp[path.stem] = np.load(path, allow_pickle=True).item()
 
 for path in uns_paths:
-    adata.uns[path.stem] = pickle.load(open(path, "rb"))
+    if path.suffix == ".parquet":
+        adata.uns[path.stem] = load_parquet(path)
+    elif path.suffix == ".pkl":
+        with path.open("rb") as handle:
+            adata.uns[path.stem] = pickle.load(handle)
+    else:
+        raise ValueError(f"Unsupported uns file extension: {path}")
 
 for path in layers_paths:
     layer = load_layer(path)
@@ -125,6 +138,7 @@ versions = {
         "python": platform.python_version(),
         "anndata": importlib.metadata.version("anndata"),
         "pandas": pd.__version__,
+        "pyarrow": importlib.metadata.version("pyarrow"),
         "numpy": np.__version__,
     }
 }

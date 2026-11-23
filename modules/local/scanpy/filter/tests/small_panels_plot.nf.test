@@ -25,13 +25,11 @@ nextflow_process {
             script "modules/local/adata/extend/main.nf"
             process {
                 """
-                rows = (0..<32).collect { i ->
-                    String.format('GENE%03d', i) + ',' + [1, 10, 19, 20, 32].collect { n -> i < n ? 'True' : 'False' }.join(',')
-                }
-                fragment = channel.of('gene,panel_1,panel_10,panel_19,panel_20,panel_32\\n' + rows.join('\\n') + '\\n')
-                    .collectFile(name: 'panels.csv')
-                input[0] = ADATA_READCSV.out.h5ad.combine(fragment)
-                    .map { meta, h5ad, var -> [[id: 'panels'], h5ad, [], [var], [], [], [], []] }
+                input[0] = ADATA_READCSV.out.h5ad.map { meta, h5ad -> [
+                    [id: 'panels'], h5ad, [],
+                    [file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/panels.parquet', checkIfExists: true)],
+                    [], [], [], []
+                ] }
                 """
             }
         }

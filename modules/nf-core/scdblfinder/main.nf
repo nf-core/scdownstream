@@ -6,18 +6,18 @@ process SCDBLFINDER {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/e5/e5d9a592a67fc9c6efcdf10e17567b4ab02ec08bdb02f3aa765be053492bef98/data'
-:         'community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-biocparallel_bioconductor-rhdf5_bioconductor-scdblfinder_pruned:1333530a030a9c23' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/70/709d3cc1733b4f3ddb44a51d7e52dafba6837b495886864bebc53690d95b5f6e/data'
+        : 'community.wave.seqera.io/library/scdblfinder:03c14e340018af5c'}"
 
     input:
     tuple val(meta), path(h5ad)
 
     output:
-    tuple val(meta), path("${prefix}.h5ad")            , emit: h5ad
-    tuple val(meta), path("${prefix}.predictions.csv") , emit: predictions
-    tuple val(meta), path("${prefix}.scores.csv")      , emit: scores
-    path "versions.yml"                                , emit: versions_scdblfinder, topic: versions
+    tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
+    tuple val(meta), path("${prefix}.predictions.parquet"), emit: predictions
+    tuple val(meta), path("${prefix}.scores.parquet"), emit: scores
+    path "versions.yml", emit: versions_scdblfinder, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -28,7 +28,7 @@ process SCDBLFINDER {
     if ("${h5ad}" == "${prefix}.h5ad") {
         error("Input and output names are the same, use \"task.ext.prefix\" to disambiguate!")
     }
-    template 'scdblfinder.R'
+    template('scdblfinder.R')
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}_scdblfinder"
@@ -37,8 +37,8 @@ process SCDBLFINDER {
     }
     """
     touch ${prefix}.h5ad
-    touch ${prefix}.predictions.csv
-    touch ${prefix}.scores.csv
+    touch ${prefix}.predictions.parquet
+    touch ${prefix}.scores.parquet
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -48,6 +48,7 @@ process SCDBLFINDER {
         singlecellexperiment: \$(Rscript -e "suppressMessages(library(SingleCellExperiment)); cat(as.character(packageVersion('SingleCellExperiment')))")
         biocparallel: \$(Rscript -e "suppressMessages(library(BiocParallel)); cat(as.character(packageVersion('BiocParallel')))")
         rhdf5: \$(Rscript -e "cat(as.character(packageVersion('rhdf5')))")
+        arrow: \$(Rscript -e "cat(as.character(packageVersion('arrow')))")
     END_VERSIONS
     """
 }

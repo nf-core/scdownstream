@@ -154,11 +154,14 @@ write.csv(
   row.names = FALSE
 )
 
-write.csv(
+# Expand matrix columns without coercing numeric scores to character alongside labels.
+predictions <- do.call(data.frame, c(as.list(predictions), list(check.names = FALSE)))
+predictions <- data.frame(
+  "__index__" = prediction_rownames[[1]],
   predictions,
-  file = paste0(prefix, "_predictions.csv"),
-  row.names = TRUE
+  check.names = FALSE
 )
+arrow::write_parquet(predictions, file.path(getwd(), paste0(prefix, "_predictions.parquet")), compression = "snappy")
 
 # Capturing version information, as before
 versions <- list(
@@ -166,7 +169,8 @@ versions <- list(
     R        = R.version.string,
     SingleR  = as.character(packageVersion("SingleR")),
     anndataR = as.character(packageVersion("anndataR")),
-    ggplot2  = as.character(packageVersion("ggplot2"))
+    ggplot2  = as.character(packageVersion("ggplot2")),
+    arrow    = as.character(packageVersion("arrow"))
   )
 )
 

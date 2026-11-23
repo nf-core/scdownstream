@@ -11,7 +11,7 @@
                     ]
                 ],
                 "1": [
-                    "X_test_tsne.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "X_test_tsne.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "2": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -25,26 +25,27 @@
                     ]
                 ],
                 "obsm": [
-                    "X_test_tsne.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "X_test_tsne.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-07-10T19:03:02.538167",
+        "timestamp": "2026-11-15T16:04:49.809224432",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     },
     "Should run without failures": {
         "content": [
             {
                 "SCANPY_TSNE": {
-                    "pandas": "3.0.5",
+                    "pandas": "3.1.1",
+                    "pyarrow": "21.0.0",
                     "python": "3.13.12",
-                    "scanpy": "1.12.3"
+                    "scanpy": "1.12.5"
                 }
             },
             {
@@ -83,12 +84,16 @@
                     "X_pca",
                     "X_tsne"
                 ],
-                "varm": [],
+                "varm": [
+                    
+                ],
                 "obsp": [
                     "connectivities",
                     "distances"
                 ],
-                "varp": [],
+                "varp": [
+                    
+                ],
                 "uns": [
                     "X_pca",
                     "leiden",
@@ -97,10 +102,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-24T13:32:12.50877009",
+        "timestamp": "2026-11-15T16:04:28.393673976",
         "meta": {
             "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

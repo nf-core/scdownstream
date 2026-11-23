@@ -35,12 +35,12 @@ nextflow_workflow {
         }
 
         then {
-            def predictions = path(workflow.out.obs[0][1]).csv
             assert workflow.success
             assert workflow.out.obs.size() == 1
+            def predictions = parquet(workflow.out.obs[0][1])
             with(predictions) {
                 assert rowCount > 0
-                // one label column per reference, keyed by the reference meta.id
+                assert '__index__' in columnNames
                 assert columnNames.any { it == "annotation:singler:hpca_direct:per_cell" }
                 assert columnNames.any { it == "annotation:singler:hpca_direct:per_cell:pruned" }
                 assert columnNames.any { it == "annotation:singler:immune_celldex:per_cell" }

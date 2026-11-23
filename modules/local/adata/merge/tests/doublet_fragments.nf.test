@@ -32,20 +32,12 @@ nextflow_process {
             script "modules/local/custom/doubletremoval/main.nf"
             process {
                 """
-                scdblfinder_predictions = channel.of('sample_a', 'sample_b').map { id ->
-                    def calls = id == 'sample_a' ? [1, 2, 7] : [4, 5, 10]
-                    [id + '.scdblfinder.predictions.csv', 'cell,scdblfinder_predicted_doublet\\n' +
-                        (0..<128).reverse().collect { i -> String.format('%s_cell_%03d,%s\\n', id, i, i in calls) }.join('')]
-                }.collectFile { name, contents -> [name, contents] }
-                    .map { table -> [[id: table.name.tokenize('.')[0]], table] }
-                scrublet_predictions = channel.of('sample_a', 'sample_b').map { id ->
-                    def calls = id == 'sample_a' ? [0, 2, 7] : [3, 5, 10]
-                    [id + '.scrublet.predictions.csv', 'cell,scrublet_predicted_doublet\\n' +
-                        ((1..<128).step(2) + (0..<128).step(2)).collect { i ->
-                            String.format('%s_cell_%03d,%s\\n', id, i, i in calls)
-                        }.join('')]
-                }.collectFile { name, contents -> [name, contents] }
-                    .map { table -> [[id: table.name.tokenize('.')[0]], table] }
+                scdblfinder_predictions = channel.of('sample_a', 'sample_b').map { id -> [
+                    [id: id], file(params.pipelines_testdata_base_path + "/intermediates/doublet_detection/regressions/\${id}.scdblfinder.parquet", checkIfExists: true)
+                ] }
+                scrublet_predictions = channel.of('sample_a', 'sample_b').map { id -> [
+                    [id: id], file(params.pipelines_testdata_base_path + "/intermediates/doublet_detection/regressions/\${id}.scrublet.parquet", checkIfExists: true)
+                ] }
                 input[0] = ADATA_UNIFY.out.h5ad
                     .join(scdblfinder_predictions).join(scrublet_predictions)
                     .map { meta, h5ad, scdblfinder_prediction, scrublet_prediction -> [
@@ -61,13 +53,9 @@ nextflow_process {
             script "modules/local/adata/extend/main.nf"
             process {
                 """
-                scores = channel.of('sample_a', 'sample_b').map { id ->
-                    def offset = id == 'sample_a' ? 1000 : 2000
-                    def calls = id == 'sample_a' ? [1, 2, 7] : [4, 5, 10]
-                    [id + '.scores.csv', 'cell,scDblFinder.score,scDblFinder.class,scrublet_score\\n' +
-                        (127..0).collect { i -> String.format('%s_cell_%03d,%s,%s,%s\\n', id, i, offset+i+0.5, i in calls ? 'doublet' : 'singlet', offset+i+0.25) }.join('')]
-                }.collectFile { name, contents -> [name, contents] }
-                    .map { table -> [[id: table.name.tokenize('.')[0]], table] }
+                scores = channel.of('sample_a', 'sample_b').map { id -> [
+                    [id: id], file(params.pipelines_testdata_base_path + "/intermediates/doublet_detection/regressions/\${id}.scores.parquet", checkIfExists: true)
+                ] }
                 input[0] = CUSTOM_DOUBLETREMOVAL.out.h5ad.join(CUSTOM_DOUBLETREMOVAL.out.obs).join(scores)
                     .map { meta, h5ad, obs, score -> [meta + [id: meta.id + '_qc'], h5ad, [obs, score], [], [], [], [], []] }
                 """

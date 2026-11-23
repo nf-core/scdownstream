@@ -3,9 +3,11 @@
 import base64
 import json
 import platform
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pyarrow
 import scanpy as sc
 import scipy
 import yaml
@@ -40,7 +42,9 @@ else:
     entropies = adata.obs.groupby(group_col)[entropy_col].apply(entropy_of_group)
     adata.obs[colname] = adata.obs[group_col].map(entropies).astype(float) / np.log2(n_observed_labels)
 
-adata.obs[[colname]].to_pickle(f"{prefix}.pkl")
+adata.obs[[colname]].reset_index(names="__index__").to_parquet(
+    Path(f"{prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
 if "${plot_basis ? 'true' : 'false'}" == "true":
@@ -68,7 +72,12 @@ if "${plot_basis ? 'true' : 'false'}" == "true":
 # Versions
 
 versions = {
-    "${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__, "scipy": scipy.__version__}
+    "${task.process}": {
+        "python": platform.python_version(),
+        "scanpy": sc.__version__,
+        "scipy": scipy.__version__,
+        "pyarrow": pyarrow.__version__,
+    }
 }
 
 with open("versions.yml", "w") as f:

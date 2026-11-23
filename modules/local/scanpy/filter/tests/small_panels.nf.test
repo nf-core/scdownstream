@@ -12,20 +12,13 @@ nextflow_process {
             script "modules/local/adata/extend/main.nf"
             process {
                 """
-                rows = (0..<128).collect { i ->
-                    String.format('GENE%03d', i) + ',' + [1, 10, 19, 20, 32].collect { n -> i < n ? 'True' : 'False' }.join(',')
-                }
-                var_fragment = channel.of('gene,panel_1,panel_10,panel_19,panel_20,panel_32\\n' + rows.join('\\n') + '\\n')
-                    .collectFile(name: 'panels.csv')
-                obs_rows = (0..<128).collect { String.format('cell_%03d,17.0', it) }
-                obs_fragment = channel.of('cell,pct_counts_in_top_20_genes\\n' + obs_rows.join('\\n') + '\\n')
-                    .collectFile(name: 'previous_qc.csv')
-                input[0] = var_fragment.combine(obs_fragment)
-                    .map { var, obs -> [
-                        [id: 'panels'],
-                        file(params.pipelines_testdata_base_path + '/anndata-variations/counts_in_X.h5ad', checkIfExists: true),
-                        [obs], [var], [], [], [], []
-                    ] }
+                input[0] = channel.of([
+                    [id: 'panels'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/counts_in_X.h5ad', checkIfExists: true),
+                    [file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/previous_qc.parquet', checkIfExists: true)],
+                    [file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/panels.parquet', checkIfExists: true)],
+                    [], [], [], []
+                ])
                 """
             }
         }

@@ -186,10 +186,11 @@ else:
 result = summarise(candidates, genes)
 result.to_csv("${prefix}.csv")
 
-# The pickle keeps dtypes for ADATA_EXTEND; a CSV would let pandas re-infer e.g. chromosome as numeric
 for column in ["gene_biotype", "chromosome", "biotype_group"]:
     result[column] = result[column].astype("category")
-result.to_pickle("${prefix}.pkl")
+result.reset_index(names="__index__").to_parquet(
+    "${prefix}.parquet", engine="pyarrow", index=False, compression="snappy"
+)
 
 n_annotated = int(result["gene_biotype"].notna().sum())
 print(f"Annotated {n_annotated} of {len(genes)} genes; {int(result['gene_annotation_ambiguous'].sum())} ambiguous")
@@ -202,6 +203,7 @@ versions = {
         "python": platform.python_version(),
         "anndata": importlib.metadata.version("anndata"),
         "pandas": importlib.metadata.version("pandas"),
+        "pyarrow": importlib.metadata.version("pyarrow"),
     }
 }
 if not gene_table:

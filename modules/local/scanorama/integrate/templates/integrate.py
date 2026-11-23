@@ -2,9 +2,11 @@
 
 import importlib.metadata
 import platform
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import pyarrow as pa
 import scanpy as sc
 import scanpy.external as sce
 import yaml
@@ -63,7 +65,11 @@ adata.obsm["X_scanorama"] = embedding
 adata.obsm["X_emb"] = embedding
 adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
-pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names).to_pickle(f"X_{prefix}.pkl")
+df = pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names)
+df.columns = df.columns.astype(str)
+df.reset_index(names="__index__").to_parquet(
+    Path(f"X_{prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 versions = {
     "${task.process}": {
@@ -71,6 +77,7 @@ versions = {
         "scanpy": importlib.metadata.version("scanpy"),
         "scanorama": importlib.metadata.version("scanorama"),
         "pandas": pd.__version__,
+        "pyarrow": pa.__version__,
     }
 }
 

@@ -3,25 +3,25 @@ process SYMPHONY_MAPEMBEDDING {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f8/f801c41ede6dcf6eaadb994993323e9a775676245acadcf25970e963b2549f05/data'
-:         'community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:30c480bf2aefe534' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/25/255c9f7d816a54dbcb34dfa7cb2b3c16d7dcb391cb1d62a11557314f809f6f53/data'
+        : 'community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy_pruned:72d2e71f5f34cb15'}"
 
     input:
     tuple val(meta), path(h5ad)
     tuple val(meta2), path(reference_h5ad, stageAs: 'reference/reference.h5ad')
-    val(batch_col)
-    val(counts_layer)
+    val batch_col
+    val counts_layer
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path "X_${prefix}.pkl"                 , emit: obsm
-    path "versions.yml"                    , emit: versions, topic: versions
+    path "X_${prefix}.parquet", emit: obsm
+    path "versions.yml", emit: versions, topic: versions
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
     if ("${prefix}.h5ad" == "${h5ad}") {
-        error "Input and output names are the same, use \"task.ext.prefix\" to disambiguate!"
+        error("Input and output names are the same, use \"task.ext.prefix\" to disambiguate!")
     }
     template('map_embedding.py')
 
@@ -29,7 +29,7 @@ process SYMPHONY_MAPEMBEDDING {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
-    touch X_${prefix}.pkl
+    touch X_${prefix}.parquet
     touch versions.yml
     """
 }

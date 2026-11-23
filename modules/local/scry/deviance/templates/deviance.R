@@ -62,7 +62,12 @@ features_df <- data.frame(
 
 colnames(features_df) <- paste0("${prefix}:", colnames(features_df))
 
-write.csv(features_df, paste0(file_prefix, "_features.csv"))
+features_df <- data.frame(
+    "__index__" = rownames(features_df),
+    features_df,
+    check.names = FALSE
+)
+arrow::write_parquet(features_df, paste0(file_prefix, "_features.parquet"), compression = "snappy")
 
 top_idx <- ord[seq_len(n_keep)]
 
@@ -105,6 +110,7 @@ writeLines(
     c(
         '"${task.process}":',
         paste('    R:', r.version),
-        paste('    scry:', scry.version)
+        paste('    scry:', scry.version),
+        paste('    arrow:', as.character(packageVersion('arrow')))
     ),
 'versions.yml')

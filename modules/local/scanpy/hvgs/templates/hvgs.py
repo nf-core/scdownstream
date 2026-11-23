@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 import platform
+from pathlib import Path
 
+import pyarrow
 import scanpy as sc
 import yaml
 from threadpoolctl import threadpool_limits
@@ -28,7 +30,9 @@ if n_hvgs < 0 or (n_hvgs > 0 and adata.n_vars <= n_hvgs):
     adata.var["highly_variable"] = True
     fragment = adata.var[["highly_variable"]].copy()
     fragment.columns = [prefix]
-    fragment.to_pickle(f"{file_prefix}.pkl")
+    fragment.reset_index(names="__index__").to_parquet(
+        Path(f"{file_prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+    )
 elif adata.n_vars > n_hvgs:
     kwargs = {}
 
@@ -60,7 +64,9 @@ elif adata.n_vars > n_hvgs:
 
     fragment = adata.var[["highly_variable"]].copy()
     fragment.columns = [prefix]
-    fragment.to_pickle(f"{file_prefix}.pkl")
+    fragment.reset_index(names="__index__").to_parquet(
+        Path(f"{file_prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+    )
 
     adata = adata[:, adata.var["highly_variable"]]
 
@@ -68,7 +74,9 @@ adata.write_h5ad(f"{file_prefix}.h5ad", compression="gzip")
 
 # Versions
 
-versions = {"${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}}
+versions = {
+    "${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__, "pyarrow": pyarrow.__version__}
+}
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)

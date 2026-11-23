@@ -6,6 +6,7 @@ nextflow_process {
 
     tag "modules"
     tag "modules_local"
+    tag "fragment_embeddings"
 
     test("Should run without failures") {
 
@@ -38,6 +39,15 @@ nextflow_process {
             assert "highly_variable" in reference.var.colnames
             assert "PCs" in reference.varm
             assert reference.n_obs == 0
+            assert file(process.out.obsm[0]).name == 'X_test.parquet'
+            def embedding = parquet(process.out.obsm[0])
+            assert embedding.rowCount == adata.n_obs
+            assert embedding.columnNames[0] == '__index__'
+            assert embedding.columnNames.drop(1) == (0..<(embedding.columnNames.size() - 1)).collect { it.toString() }
+            assert embedding.schema.fields[0].logicalType.type == 'STRING'
+            assert embedding.schema.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.compressionCodecs == ['SNAPPY']
+            assert embedding.rows.collect { it.__index__ } == adata.obs.index.values
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml,

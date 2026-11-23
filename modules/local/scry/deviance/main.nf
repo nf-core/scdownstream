@@ -4,8 +4,8 @@ process SCRY_DEVIANCE {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c4/c430d984a431d374c285a7a577f0496d8a514c1ad484feaaa86655259b594eb8/data'
-        : 'community.wave.seqera.io/library/scry_deviance:42e91d77e88fcfe6'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/fa/fa26049356fd90f487d0dc0bb8f2491a83e4925696ab6152b3b4c9a87e99c8aa/data'
+        : 'community.wave.seqera.io/library/bioconductor-scry_bioconductor-anndatar_bioconductor-singlecellexperiment_bioconductor-rhdf5_r-arrow:2ef29b12964503c9'}"
 
     input:
     tuple val(meta), path(h5ad)
@@ -15,7 +15,7 @@ process SCRY_DEVIANCE {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    path "*_features.csv", emit: var
+    path "*_features.parquet", emit: var
     path "versions.yml", emit: versions, topic: versions
 
     when:
@@ -28,7 +28,7 @@ process SCRY_DEVIANCE {
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
-    Rscript -e 'prefix <- gsub(":", "_", "${prefix}", fixed = TRUE); file.create(paste0(prefix, c(".h5ad", "_features.csv")))'
+    Rscript -e 'prefix <- gsub(":", "_", "${prefix}", fixed = TRUE); file.create(paste0(prefix, c(".h5ad", "_features.parquet")))'
     touch versions.yml
     """
 }

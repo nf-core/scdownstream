@@ -13,15 +13,14 @@ nextflow_process {
                 script "../../../custom/doubletremoval/main.nf"
                 process {
                     """
-                    pdd = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i < 3) }.join('')).collectFile(name: 'dd.csv')
-                    psc = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i in [1,3]) }.join('')).collectFile(name: 'sc.csv')
-                    pscr = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i in [0,3]) }.join('')).collectFile(name: 'scr.csv')
-                    psolo = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i == 4) }.join('')).collectFile(name: 'solo.csv')
-                    input[0] = pdd.combine(psc).combine(pscr).combine(psolo).map { a,b,c,d -> [
+                    input[0] = channel.of([
                         [id: 'all'],
                         file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
-                        ['doubletdetection','scdblfinder','scrublet','solo'], [a,b,c,d]
-                    ] }
+                        ['doubletdetection','scdblfinder','scrublet','solo'],
+                        ['doubletdetection','scdblfinder','scrublet','solo'].collect { method ->
+                            file(params.pipelines_testdata_base_path + "/intermediates/doublet_detection/regressions/\${method}.parquet", checkIfExists: true)
+                        }
+                    ])
                     input[1] = 2
                     input[2] = false
                     """
@@ -32,9 +31,9 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                sdd = channel.of('cell,doubletdetection_score\\n' + ((64..<128)+(0..<64)).collect { i -> String.format('cell_%03d,%s\\n', i, 1000+i) }.join('')).collectFile(name: 'dd.csv')
-                ssc = channel.of('cell,scDblFinder.score,scDblFinder.class,scDblFinder.cxds_score,scDblFinder.mostLikelyOrigin\\n' + ((64..<128)+(0..<64)).collect { i -> String.format('cell_%03d,%s,%s,%s,A+B\\n', i, 2000+i, i in [1,3] ? 'doublet' : 'singlet', i/2.0) }.join('')).collectFile(name: 'sc.csv')
-                sscr = channel.of('cell,scrublet_score\\n' + ((64..<128)+(0..<64)).collect { i -> String.format('cell_%03d,%s\\n', i, i == 2 ? '' : 3000+i) }.join('')).collectFile(name: 'scr.csv')
+                sdd = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/doubletdetection_scores.parquet', checkIfExists: true))
+                ssc = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/scdblfinder_scores.parquet', checkIfExists: true))
+                sscr = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/scrublet_scores.parquet', checkIfExists: true))
                 input[0] = CUSTOM_DOUBLETREMOVAL.out.h5ad.join(CUSTOM_DOUBLETREMOVAL.out.obs)
                     .combine(sdd).combine(ssc).combine(sscr)
                     .map { meta, base, obs, dd, sc, scr -> [meta + [id: meta.id + '_finalized'], base, [obs, dd, sc, scr], [], [], [], [], []] }
@@ -73,7 +72,7 @@ nextflow_process {
                 script "../../../custom/doubletremoval/main.nf"
                 process {
                     """
-                    p = channel.of('cell,any_prefix\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, i in [0,3]) }.join('')).collectFile(name: 'p.csv')
+                    p = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/scrublet.parquet', checkIfExists: true))
                     input[0] = p.map { a -> [
                         [id: 'retained'],
                         file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
@@ -89,7 +88,7 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                scores = channel.of('cell,scrublet_score\\n' + (127..0).collect { i -> String.format('cell_%03d,%s\\n', i, 3000+i) }.join('')).collectFile(name: 's.csv')
+                scores = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/scrublet_scores_full.parquet', checkIfExists: true))
                 input[0] = CUSTOM_DOUBLETREMOVAL.out.h5ad.join(CUSTOM_DOUBLETREMOVAL.out.obs).combine(scores).flatMap { meta, base, obs, score -> [
                     [meta + [id: 'retained_finalized'], base, [obs, score], [], [], [], [], []],
                     [meta + [id: 'full_fragment'], file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true), [obs, score], [], [], [], [], []]

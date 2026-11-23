@@ -1,0 +1,70 @@
+nextflow_process {
+
+    name "Test Parquet fragment categories and nullable values"
+    script "modules/local/adata/extend/main.nf"
+    process "ADATA_EXTEND"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should retain nullable integers above the exact floating-point range") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                def fragments = params.pipelines_testdata_base_path + '/intermediates/fragments/'
+                input[0] = [
+                    [id: 'large_integer'],
+                    file(fragments + 'merged_outer.h5ad', checkIfExists: true),
+                    [file(fragments + 'regressions/large_integer.parquet', checkIfExists: true)],
+                    [], [], [], [], []
+                ]
+                """
+            }
+        }
+        then {
+            assert process.success
+            def values = anndata(process.out.h5ad[0][1]).obs.get('large_integer').data
+            assert values[0] == 9007199254740993L
+            assert values[1] == null
+        }
+    }
+
+    test("Should preserve categorical labels and nullable scalar values across both axes") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                def fragments = params.pipelines_testdata_base_path + '/intermediates/fragments/'
+                input[0] = [
+                    [id: 'categories'],
+                    file(fragments + 'merged_outer.h5ad', checkIfExists: true),
+                    [file(fragments + 'regressions/categorical_obs.parquet', checkIfExists: true)],
+                    [file(fragments + 'regressions/categorical_var.parquet', checkIfExists: true)],
+                    [], [], [], []
+                ]
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.n_obs == 16
+            assert adata.n_vars == 32
+            [adata.obs, adata.var].each { frame ->
+                assert !('__index__' in frame.colnames)
+                assert frame.get('ordered_label').data[0] == 'high'
+                assert frame.get('unordered_label').data.take(2) == ['B', 'A']
+                assert frame.get('nullable_integer').data[0] == 1
+                assert frame.get('nullable_boolean').data[0].toString().equalsIgnoreCase('true')
+                assert frame.get('nullable_string').data[0] == '001'
+                assert frame.get('nullable_float').data[0] == 1.5
+                assert !frame.get('nullable_string').unique().contains('NA')
+                def missing = frame.get('nullable_integer').data[1]
+                assert missing == null || (missing instanceof Number && Double.isNaN(missing.doubleValue()))
+            }
+            assert !adata.obs.index.contains('not_a_cell')
+            assert !adata.var.index.contains('not_a_gene')
+        }
+    }
+}

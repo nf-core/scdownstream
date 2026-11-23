@@ -9,7 +9,7 @@ nextflow_pipeline {
         when {
             params {
                 cell_cycle_scoring           = false
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/scdownstream/'
                 input                        = params.pipelines_testdata_base_path + 'samplesheet_single.csv'
                 integration_methods          = 'scvi,symphony'
                 ambient_correction           = 'decontx'
@@ -51,7 +51,7 @@ nextflow_pipeline {
 
         when {
             params {
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/scdownstream/'
                 input                        = params.pipelines_testdata_base_path + 'samplesheet_single.csv'
                 base_adata                   = params.pipelines_testdata_base_path + 'anndata-variations/counts_in_X.h5ad'
                 integration_methods          = 'scvi'

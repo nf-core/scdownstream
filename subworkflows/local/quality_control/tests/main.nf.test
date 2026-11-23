@@ -202,7 +202,7 @@ nextflow_workflow {
             assert adata.n_vars == adata.var.rownames.size()
             assert workflow.out.obs.size() == 2
             assert workflow.out.obs.every { it[0] == meta }
-            assert workflow.out.obs.collect { path(it[1]).fileName.toString() }.sort() == ['test.obs.pkl', 'test_scrublet.scores.pkl']
+            assert workflow.out.obs.collect { path(it[1]).fileName.toString() }.sort() == ['test.obs.parquet', 'test_scrublet.scores.parquet']
             assert !adata.obs.colnames.any { it in ['test_scrublet', 'scrublet_score', 'scrublet_class', 'scrublet_predicted_doublet'] }
             with(adata) {
                 assert "pct_counts_mt" in obs.colnames
@@ -541,9 +541,9 @@ nextflow_workflow {
             assert meta.ambient_correction_method == 'none'
             assert meta.analysis_counts_source == 'raw_counts'
             assert 'raw_counts' in adata.layers
-            def cellcycleFragments = workflow.out.obs.findAll { entry -> file(entry[1]).name == 'test_cellcycle.pkl' }
+            def cellcycleFragments = workflow.out.obs.findAll { entry -> file(entry[1]).name == 'test_cellcycle.parquet' }
             assert cellcycleFragments.size() == 1
-            def doubletFragments = workflow.out.obs.findAll { entry -> file(entry[1]).name == 'test.obs.pkl' }
+            def doubletFragments = workflow.out.obs.findAll { entry -> file(entry[1]).name == 'test.obs.parquet' }
             assert doubletFragments.size() == 1
             assert workflow.out.obs.size() == 3
             assert workflow.out.obs.every { entry -> entry[0] == meta }

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+from pathlib import Path
 
 os.environ.setdefault("TORCHINDUCTOR_CACHE_DIR", os.path.join(os.getcwd(), "torch_cache"))
 
@@ -8,6 +9,7 @@ os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
 
 import anndata as ad
 import pandas as pd
+import pyarrow as pa
 import scvi
 import torch
 import yaml
@@ -84,11 +86,21 @@ adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 model.save("${prefix}_model")
 
 df = pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names)
-df.to_pickle("X_${prefix}.pkl")
+df.columns = df.columns.astype(str)
+df.reset_index(names="__index__").to_parquet(
+    Path("X_${prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 # Versions
 
-versions = {"${task.process}": {"scvi": scvi.__version__}}
+versions = {
+    "${task.process}": {
+        "scvi": scvi.__version__,
+        "pyarrow": pa.__version__,
+        "torch": str(torch.__version__),
+        "cuda": torch.version.cuda or "no CUDA available",
+    }
+}
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)

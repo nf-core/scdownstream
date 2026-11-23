@@ -13,8 +13,8 @@ process SCANPY_SCRUBLET {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    tuple val(meta), path("${prefix}.pkl"), emit: predictions
-    tuple val(meta), path("${prefix}.scores.pkl"), emit: scores
+    tuple val(meta), path("${prefix}.parquet"), emit: predictions
+    tuple val(meta), path("${prefix}.scores.parquet"), emit: scores
     path "versions.yml", emit: versions, topic: versions
 
     when:
@@ -39,13 +39,14 @@ process SCANPY_SCRUBLET {
     export NUMBA_CACHE_DIR=./tmp/numba
 
     touch ${prefix}.h5ad
-    touch ${prefix}.pkl
-    touch ${prefix}.scores.pkl
+    touch ${prefix}.parquet
+    touch ${prefix}.scores.parquet
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(python3 -c 'import platform; print(platform.python_version())')
         scanpy: \$(python3 -c 'import scanpy; print(scanpy.__version__)')
+        pyarrow: \$(python3 -c 'import pyarrow; print(pyarrow.__version__)')
     END_VERSIONS
     """
 }

@@ -2,9 +2,11 @@
 
 import importlib.metadata
 import platform
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import pyarrow as pa
 import scanpy as sc
 import symphonypy as sp
 import yaml
@@ -68,7 +70,11 @@ adata.obsm["X_symphony"] = adata_proc.obsm["X_symphony"]
 adata.obsm["X_emb"] = adata_proc.obsm["X_symphony"]
 adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 
-pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names).to_pickle(f"X_{prefix}.pkl")
+df = pd.DataFrame(adata.obsm["X_emb"], index=adata.obs_names)
+df.columns = df.columns.astype(str)
+df.reset_index(names="__index__").to_parquet(
+    Path(f"X_{prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 versions = {
     "${task.process}": {
@@ -76,6 +82,7 @@ versions = {
         "scanpy": importlib.metadata.version("scanpy"),
         "symphonypy": importlib.metadata.version("symphonypy"),
         "pandas": pd.__version__,
+        "pyarrow": pa.__version__,
     }
 }
 

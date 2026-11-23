@@ -57,10 +57,10 @@ output:
           ontologies:
             - edam: "http://edamontology.org/format_3590"
   obsm:
-    - "X_*.pkl":
+    - "X_*.parquet":
         type: file
-        description: Mapped embedding stored as a pickle
-        pattern: "X_*.pkl"
+        description: Parquet mapped embedding with explicit __index__ cell identifiers
+        pattern: "X_*.parquet"
   versions:
     - versions.yml:
         type: file
@@ -76,24 +76,24 @@ maintainers:
 containers:
   docker:
     linux/arm64:
-      name: community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:edfcd7f9245f7d8f
-      build_id: bd-edfcd7f9245f7d8f_1
-      scan_id: sc-e8cb90a4a34fd533_2
+      name: community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy_pruned:111c676f536c5274
+      build_id: bd-111c676f536c5274_1
+      scan_id: sc-80c5264d91c257ba_1
     linux/amd64:
-      name: community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:30c480bf2aefe534
-      build_id: bd-30c480bf2aefe534_1
-      scan_id: sc-beb0ec47a5017b93_2
+      name: community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy_pruned:72d2e71f5f34cb15
+      build_id: bd-72d2e71f5f34cb15_1
+      scan_id: sc-788abd99c425dc5e_1
   singularity:
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:60d39a50152de9da
-      build_id: bd-60d39a50152de9da_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/74/7494087445ee66b0aa35c45bf591f6d80b46d0009359cbc5e726773f39cde82f/data
+      name: oras://community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy_pruned:d94c3a3da0c3a702
+      build_id: bd-d94c3a3da0c3a702_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0f/0fb7c3dc807b8e55674a2fb5eadb1a18333cd0479715b9f328a3b7c73f80ad7d/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_scanpy_pip_symphonypy:83e49f490ae658ee
-      build_id: bd-83e49f490ae658ee_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f8/f801c41ede6dcf6eaadb994993323e9a775676245acadcf25970e963b2549f05/data
+      name: oras://community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy_pruned:b37d2dfbc528f486
+      build_id: bd-b37d2dfbc528f486_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/25/255c9f7d816a54dbcb34dfa7cb2b3c16d7dcb391cb1d62a11557314f809f6f53/data
   conda:
     linux/amd64:
-      lock_file: modules/local/symphony/mapembedding/.conda-lock/linux_amd64-bd-30c480bf2aefe534_1.txt
+      lock_file: modules/local/symphony/mapembedding/.conda-lock/linux_amd64-bd-72d2e71f5f34cb15_1.txt
     linux/arm64:
-      lock_file: modules/local/symphony/mapembedding/.conda-lock/linux_arm64-bd-edfcd7f9245f7d8f_1.txt
+      lock_file: modules/local/symphony/mapembedding/.conda-lock/linux_arm64-bd-111c676f536c5274_1.txt

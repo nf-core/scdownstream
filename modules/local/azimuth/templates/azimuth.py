@@ -3,6 +3,7 @@
 import os
 import platform
 from importlib.metadata import version
+from pathlib import Path
 
 # panhumanpy caches the model weights in Path.home(), which is resolved at import time
 os.environ["HOME"] = os.path.abspath("./tmp")
@@ -10,6 +11,7 @@ os.environ["HOME"] = os.path.abspath("./tmp")
 import anndata as ad
 import pandas as pd
 import panhumanpy as ph
+import pyarrow as pa
 import tensorflow as tf
 import yaml
 
@@ -57,14 +59,19 @@ for dst, aggregatable in columns.values():
     if aggregatable == "true":
         df_azimuth[dst] = df_azimuth[dst].astype(str).replace("False", "Unassigned")
 
-df_azimuth.to_pickle(f"{prefix}.pkl")
+df_azimuth.reset_index(names="__index__").to_parquet(
+    Path(f"{prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 pd.DataFrame([{"obs_column": dst, "aggregatable": aggregatable} for dst, aggregatable in columns.values()]).to_csv(
     f"{prefix}_annotation_columns.csv", index=False
 )
 
 df_embedding = pd.DataFrame(embedding, index=adata.obs_names)
-df_embedding.to_pickle("X_azimuth.pkl")
+df_embedding.columns = df_embedding.columns.astype(str)
+df_embedding.reset_index(names="__index__").to_parquet(
+    "X_azimuth.parquet", engine="pyarrow", index=False, compression="snappy"
+)
 
 adata.obs = pd.concat([adata.obs, df_azimuth], axis=1)
 adata.obsm["X_azimuth"] = embedding
@@ -76,6 +83,7 @@ versions = {
     "${task.process}": {
         "python": platform.python_version(),
         "pandas": pd.__version__,
+        "pyarrow": pa.__version__,
         "anndata": version("anndata"),
         "tensorflow": tf.__version__,
         "panhumanpy": ph.__version__,

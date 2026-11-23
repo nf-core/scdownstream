@@ -37,12 +37,46 @@ nextflow_process {
                 def n_clusters = obs.get("leiden").n_unique()
                 assert n_clusters >= 5 && n_clusters <= 30 : "Expected 5-30 Leiden clusters, got ${n_clusters}"
             }
+            def fragment = parquet(process.out.obs[0])
+            assert file(process.out.obs[0]).name == 'test_leiden.parquet'
+            assert fragment.columnNames == ['__index__', 'leiden']
+            assert fragment.compressionCodecs == ['SNAPPY']
+            assert fragment.rowCount == adata.n_obs
+            assert fragment.schema.fields.every { it.logicalType.type == 'STRING' }
+            def rows = fragment.rows
+            assert rows.every { it.__index__ instanceof String }
+            assert rows.collect { it.__index__ }.toSet().size() == fragment.rowCount
+            assert rows.collect { it.__index__ } == adata.obs.index.values.toList()
+            assert rows.collect { it.leiden } == adata.obs.get('leiden').data.toList()
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml
             ).match()
         }
 
+    }
+
+    test("Should reject the reserved index column") {
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'reserved'],
+                    file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true)
+                ])
+                input[1] = 1.0
+                input[2] = '__index__'
+                input[3] = false
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+            assert process.errorReport.contains("cannot insert __index__, already exists")
+        }
     }
 
     test("Should run without failures - stub") {

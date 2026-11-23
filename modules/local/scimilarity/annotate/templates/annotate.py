@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 import platform
+from pathlib import Path
 
+import pyarrow
 import scanpy as sc
 import scimilarity
 import yaml
@@ -18,13 +20,16 @@ adata.obs["annotation:scimilarity"] = predictions.values
 
 # Write the output
 adata.write_h5ad("${prefix}.h5ad", compression="gzip")
-adata.obs[["annotation:scimilarity"]].to_pickle("${prefix}.pkl")
+adata.obs[["annotation:scimilarity"]].reset_index(names="__index__").to_parquet(
+    Path("${prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 versions = {
     "${task.process}": {
         "python": platform.python_version(),
         "scimilarity": scimilarity.__version__,
         "scanpy": sc.__version__,
+        "pyarrow": pyarrow.__version__,
     }
 }
 

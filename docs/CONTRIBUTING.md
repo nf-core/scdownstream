@@ -267,16 +267,22 @@ A fragment contains only the data that a module adds to an AnnData object.
 `ADATA_EXTEND` merges them into the H5AD files, once per sample after quality control (`FINALIZE_QC_ANNDATAS`) and once at the end of the pipeline (`FINALIZE`).
 Emit each fragment on a channel named after its AnnData slot and use a format that `modules/local/adata/extend` can read:
 
-| Slot     | Format                                               | Index                                 |
-| -------- | ---------------------------------------------------- | ------------------------------------- |
-| `obs`    | Pickled or CSV `pandas.DataFrame`                    | `obs_names`                           |
-| `var`    | Pickled or CSV `pandas.DataFrame`                    | `var_names`                           |
-| `obsm`   | Pickled `pandas.DataFrame`, file name `X_<name>.pkl` | `obs_names`                           |
-| `obsp`   | NumPy `.npy` file containing a sparse matrix         | None                                  |
-| `uns`    | Pickled Python object                                | None                                  |
-| `layers` | `.npz`, `.mtx`, or `.npy` matrix                     | Same cell and gene order as the input |
+| Slot     | Format                                      | Index                                      |
+| -------- | ------------------------------------------- | ------------------------------------------ |
+| `obs`    | Parquet table (`.parquet`)                  | `obs_names` in `__index__`                 |
+| `var`    | Parquet table (`.parquet`)                  | `var_names` in `__index__`                 |
+| `obsm`   | Parquet table, file name `X_<name>.parquet` | `obs_names` in `__index__`                 |
+| `obsp`   | NumPy `.npy` containing a sparse matrix     | None                                       |
+| `uns`    | Parquet table or nested object `.pkl`       | Table `__index__`, none for nested objects |
+| `layers` | `.npz`, `.mtx`, or `.npy` matrix            | Same cell and gene order as the input      |
 
 The file stem becomes the key in `obsm`, `obsp`, `uns`, and `layers`.
+
+Write table indices as an ordinary physical column named `__index__`, not as a pandas or Arrow metadata-only index. Cell and gene indices must contain unique, non-null strings. Tabular `uns` fragments retain their original row indices. Reserve `__index__` for the index and use unique string column names. Python producers use PyArrow with `index=False` after materialising the index column. R producers write the same column with Arrow. Doublet predictions from SOLO, Scrublet, DoubletDetection, and scDblFinder follow this contract.
+
+The pipeline exchanges table fragments as Parquet files. LIANA writes its tabular `uns` fragment as Parquet. Nested PAGA, rank-genes-groups, and decoupler `uns` objects remain pickled because they contain mappings, arrays, or matrices rather than a single table. `obsp` and layer matrix formats are unchanged. CellTypist model pickles and Tensor-cell2cell tensor pickles are not table fragments. Reports, annotation-column manifests, barcode lists, and other CSV/TSV interfaces retain their existing formats. Expression matrices read by `ADATA_READCSV` remain CSV inputs.
+
+Keep fragment stems and prefixes unchanged when changing formats. Publication rules must distinguish report tables from intermediate fragments, since both can use `.parquet`. Gate intermediate fragments with `params.save_intermediates` and preserve existing module-specific publication rules.
 
 ### MultiQC custom content
 

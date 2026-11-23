@@ -151,8 +151,7 @@ nextflow_process {
                 script "../../../../modules/local/adata/extend/main.nf"
                 process {
                     """
-                    input[0] = channel.of('cell,incomplete_batch\\nSRR28679756::CCTTTCTTCTGCTGCT,batch_a\\n')
-                        .collectFile(name: 'batch.csv')
+                    input[0] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/missing_batch.parquet', checkIfExists: true))
                         .map { obs -> [
                             [id: 'source'],
                             file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true),
@@ -167,14 +166,14 @@ nextflow_process {
             params { outdir = "$outputDir" }
             process {
                 """
-                input[0] = ADATA_EXTEND.out.h5ad.map { meta, h5ad -> [meta + [batch_col: 'incomplete_batch'], h5ad] }
+                input[0] = ADATA_EXTEND.out.h5ad.map { meta, h5ad -> [meta + [batch_col: 'regression_batch'], h5ad] }
                 """
             }
         }
 
         then {
             assert process.failed
-            assert process.errorReport.contains("Column 'incomplete_batch' contains NA values")
+            assert process.errorReport.contains("Column 'regression_batch' contains NA values")
         }
     }
 

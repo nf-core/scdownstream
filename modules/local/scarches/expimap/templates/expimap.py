@@ -2,6 +2,7 @@
 
 import argparse
 import shlex
+from pathlib import Path
 
 import anndata as ad
 import yaml
@@ -10,6 +11,7 @@ import yaml
 ad.read = ad.read_h5ad
 
 import pandas as pd
+import pyarrow as pa
 import scanpy as sc
 import scarches as sca
 import torch
@@ -103,11 +105,15 @@ adata.obsm["X_emb"] = emb
 
 adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 df = pd.DataFrame(emb, index=adata.obs_names)
-df.to_pickle(f"X_{prefix}.pkl")
+df.columns = df.columns.astype(str)
+df.reset_index(names="__index__").to_parquet(
+    Path(f"X_{prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 versions = {
     "${task.process}": {
         "scarches": sca.__version__,
+        "pyarrow": pa.__version__,
     }
 }
 

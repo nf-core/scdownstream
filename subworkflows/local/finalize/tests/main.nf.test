@@ -21,9 +21,9 @@ nextflow_workflow {
                     [id: 'test'],
                     file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
                 ])
-                input[1] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_leiden.pkl', checkIfExists: true))
+                input[1] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_leiden.parquet', checkIfExists: true))
                 input[2] = channel.empty()
-                input[3] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi.pkl', checkIfExists: true))
+                input[3] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi.parquet', checkIfExists: true))
                 input[4] = channel.empty()
                 input[5] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_paga.pkl', checkIfExists: true))
                 input[6] = false
@@ -51,9 +51,9 @@ nextflow_workflow {
                     [id: 'test'],
                     file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
                 ])
-                input[1] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_leiden.pkl', checkIfExists: true))
+                input[1] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_leiden.parquet', checkIfExists: true))
                 input[2] = channel.empty()
-                input[3] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi.pkl', checkIfExists: true))
+                input[3] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/X_scvi.parquet', checkIfExists: true))
                 input[4] = channel.empty()
                 input[5] = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/fragments/scvi-global-1.0_paga.pkl', checkIfExists: true))
                 input[6] = false
@@ -319,7 +319,7 @@ nextflow_workflow {
                     file(params.pipelines_testdata_base_path + '/intermediates/fragments/merged_outer.h5ad', checkIfExists: true)
                 ])
                 input[1] = channel.empty()
-                input[2] = ADATA_GENEANNOTATION.out.var.map { _meta, pkl -> pkl }
+                input[2] = ADATA_GENEANNOTATION.out.var.map { _meta, parquet -> parquet }
                 input[3] = channel.empty()
                 input[4] = channel.empty()
                 input[5] = channel.empty()

@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
 import platform
+from pathlib import Path
 
 import anndata as ad
 import numpy as np
 import pandas as pd
+import pyarrow as pa
 import yaml
 
 adata_integrated = ad.read_h5ad("${integrated}", backed="r")
@@ -38,16 +40,23 @@ if integration == "scanvi":
 
     adata_combined.obs["label:scANVI"] = labels.loc[adata_combined.obs_names]
 
-    adata_combined.obs[["label:scANVI"]].to_pickle("${prefix}.pkl")
+    adata_combined.obs[["label:scANVI"]].reset_index(names="__index__").to_parquet(
+        Path("${prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+    )
 
 df = pd.DataFrame(adata_combined.obsm["X_emb"], index=adata_combined.obs_names)
-df.to_pickle("X_${prefix}.pkl")
+df.columns = df.columns.astype(str)
+df.reset_index(names="__index__").to_parquet(
+    Path("X_${prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 adata_combined.write_h5ad("${prefix}.h5ad", compression="gzip")
 
 # Versions
 
-versions = {"${task.process}": {"python": platform.python_version(), "anndata": ad.__version__}}
+versions = {
+    "${task.process}": {"python": platform.python_version(), "anndata": ad.__version__, "pyarrow": pa.__version__}
+}
 
 with open("versions.yml", "w") as f:
     yaml.dump(versions, f)

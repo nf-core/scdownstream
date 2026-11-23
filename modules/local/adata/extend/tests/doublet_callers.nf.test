@@ -72,7 +72,7 @@ nextflow_process {
             }
             assert result.obs.get('scDblFinder.class').data == result.obs.get('scdblfinder_class').data
             ['scrublet', 'doubletdetection'].each { method ->
-                def table = path(outputs.finalised).parent.resolve("obs/test_${method}.scores.pkl")
+                def table = path(outputs.finalised).parent.resolve("obs/test_${method}.scores.parquet")
                 def caller = anndata(table.toRealPath().parent.resolve("test_${method}.h5ad"))
                 def rows = caller.obs.index.values.collect { result.obs.index.values.toList().indexOf(it) }
                 def scores = result.obs.get(method + '_score').data.toList()

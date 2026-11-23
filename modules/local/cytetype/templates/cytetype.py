@@ -4,9 +4,11 @@
 import os
 import platform
 from importlib.metadata import version
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import pyarrow
 import scanpy as sc
 import yaml
 from cytetype import CyteType
@@ -75,7 +77,9 @@ if missing_cols:
     raise RuntimeError(f"CyteType did not add expected obs columns: {missing_cols}. Check logs and study_context.")
 
 df_out = adata_work.obs[library_cols].rename(columns=dict(zip(library_cols, output_cols))).reindex(adata.obs.index)
-df_out.to_pickle(f"{prefix}.pkl")
+df_out.reset_index(names="__index__").to_parquet(
+    Path(f"{prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 adata.obs = pd.concat([adata.obs, df_out], axis=1)
 adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
@@ -85,6 +89,7 @@ versions = {
         "python": platform.python_version(),
         "numpy": np.__version__,
         "pandas": pd.__version__,
+        "pyarrow": pyarrow.__version__,
         "scanpy": sc.__version__,
         "cytetype": version("cytetype"),
     }

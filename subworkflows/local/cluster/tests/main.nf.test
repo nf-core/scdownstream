@@ -48,7 +48,7 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            assert workflow.out.obsm.any { path(it).fileName.toString().endsWith('_tsne.pkl') }
+            assert workflow.out.obsm.any { path(it).fileName.toString().endsWith('_tsne.parquet') }
             def graph = anndata(workflow.out.h5ad_neighbors[0][1])
             assert 'X_pca' in graph.obsm
             assert !('X_missing' in graph.obsm)
@@ -121,7 +121,7 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.h5ad_neighbors.size() > 0
-            assert workflow.out.obsm.count { path(it).fileName.toString().endsWith('_umap.pkl') } == workflow.out.h5ad_neighbors.size()
+            assert workflow.out.obsm.count { path(it).fileName.toString().endsWith('_umap.parquet') } == workflow.out.h5ad_neighbors.size()
             workflow.out.h5ad_neighbors.each { meta, h5ad ->
                 def adata = anndata(h5ad)
                 with(adata) {
@@ -202,7 +202,7 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.h5ad_neighbors.size() > 0
-            assert workflow.out.obsm.count { path(it).fileName.toString().endsWith('_umap.pkl') } == workflow.out.h5ad_neighbors.size()
+            assert workflow.out.obsm.count { path(it).fileName.toString().endsWith('_umap.parquet') } == workflow.out.h5ad_neighbors.size()
             workflow.out.h5ad_neighbors.each { meta, h5ad ->
                 def adata = anndata(h5ad)
                 with(adata) {
@@ -283,7 +283,7 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.h5ad_neighbors.size() > 0
-            assert workflow.out.obsm.count { path(it).fileName.toString().endsWith('_umap.pkl') } == workflow.out.h5ad_neighbors.size()
+            assert workflow.out.obsm.count { path(it).fileName.toString().endsWith('_umap.parquet') } == workflow.out.h5ad_neighbors.size()
             workflow.out.h5ad_neighbors.each { meta, h5ad ->
                 def adata = anndata(h5ad)
                 with(adata) {
@@ -463,7 +463,7 @@ nextflow_workflow {
             workflow.out.obsm.each { obsm ->
                 def name = path(obsm).getFileName().toString()
                 assert !name.contains('-umap_umap')
-                assert name ==~ /X_pca-[AB]_umap\.pkl/
+                assert name ==~ /X_pca-[AB]_umap\.parquet/
             }
         }
 

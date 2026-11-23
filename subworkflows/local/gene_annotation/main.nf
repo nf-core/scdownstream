@@ -1,10 +1,10 @@
 include { ATLASGENEANNOTATIONMANIPULATION_GTF2FEATUREANNOTATION as GTF2FEATUREANNOTATION } from '../../../modules/nf-core/atlasgeneannotationmanipulation/gtf2featureannotation'
-include { ADATA_GENEANNOTATION                                                          } from '../../../modules/local/adata/geneannotation'
+include { ADATA_GENEANNOTATION                                                           } from '../../../modules/local/adata/geneannotation'
 
 workflow GENE_ANNOTATION {
     take:
     ch_h5ad // channel: [ meta, h5ad ]
-    gtf     //    path: file or []
+    gtf //    path: file or []
     species //   value: string
 
     main:
@@ -28,6 +28,6 @@ workflow GENE_ANNOTATION {
     )
 
     emit:
-    var = ADATA_GENEANNOTATION.out.var.map { _meta, pkl -> pkl } // channel: [ pkl ]
+    var = ADATA_GENEANNOTATION.out.var.map { _meta, parquet -> parquet } // channel: [ parquet ]
     csv = ADATA_GENEANNOTATION.out.csv.map { _meta, csv -> csv } // channel: [ csv ]
 }

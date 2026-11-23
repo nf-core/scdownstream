@@ -2,10 +2,12 @@
 
 import platform
 import warnings
+from pathlib import Path
 
 import anndata as ad
 import numpy as np
 import pandas as pd
+import pyarrow as pa
 import scanpy as sc
 import scimilarity
 import yaml
@@ -36,13 +38,17 @@ adata.obsm["X_emb"] = embeddings
 # Write the output
 adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 df = pd.DataFrame(embeddings, index=adata.obs_names)
-df.to_pickle("X_${prefix}.pkl")
+df.columns = df.columns.astype(str)
+df.reset_index(names="__index__").to_parquet(
+    Path("X_${prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 versions = {
     "${task.process}": {
         "python": platform.python_version(),
         "scimilarity": scimilarity.__version__,
         "scanpy": sc.__version__,
+        "pyarrow": pa.__version__,
     }
 }
 

@@ -9,7 +9,7 @@ nextflow_pipeline {
         when {
             params {
                 cell_cycle_scoring           = false
-                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nf-core/test-datasets/scdownstream/'
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/scdownstream/'
                 input                        = params.pipelines_testdata_base_path + 'samplesheet_single.csv'
                 integration_methods          = 'scvi,symphony'
                 ambient_correction           = 'decontx'

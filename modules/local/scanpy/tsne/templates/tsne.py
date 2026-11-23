@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 import platform
+from pathlib import Path
 
 import pandas as pd
+import pyarrow as pa
 import scanpy as sc
 import yaml
 from threadpoolctl import threadpool_limits
@@ -24,12 +26,20 @@ sc.tl.tsne(adata, use_rep=representation, random_state=0)
 
 adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
 df = pd.DataFrame(adata.obsm["X_tsne"], index=adata.obs_names)
-df.to_pickle(f"X_{prefix}.pkl")
+df.columns = df.columns.astype(str)
+df.reset_index(names="__index__").to_parquet(
+    Path(f"X_{prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
 
 # Versions
 
 versions = {
-    "${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__, "pandas": pd.__version__}
+    "${task.process}": {
+        "python": platform.python_version(),
+        "scanpy": sc.__version__,
+        "pandas": pd.__version__,
+        "pyarrow": pa.__version__,
+    }
 }
 
 with open("versions.yml", "w") as f:

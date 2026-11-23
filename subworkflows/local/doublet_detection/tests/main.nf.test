@@ -45,6 +45,7 @@ nextflow_workflow {
         when {
             params {
                 outdir = "$outputDir"
+                save_intermediates = true
                 scvi_max_epochs = 2
             }
             workflow {
@@ -70,11 +71,28 @@ nextflow_workflow {
             assert workflow.out.obs.size() == 4
             assert workflow.out.obs.every { it[0] == workflow.out.h5ad[0][0] }
             assert workflow.out.obs.collect { path(it[1]).fileName.toString() }.sort() ==
-                ['test.obs.pkl', 'test_doubletdetection.scores.pkl', 'test_scdblfinder.scores.csv', 'test_scrublet.scores.pkl']
+                ['test.obs.parquet', 'test_doubletdetection.scores.parquet', 'test_scdblfinder.scores.parquet', 'test_scrublet.scores.parquet']
             ['scrublet', 'doubletdetection'].each { method ->
-                def table = workflow.out.obs.find { path(it[1]).fileName.toString() == "test_${method}.scores.pkl" }[1]
+                def table = workflow.out.obs.find { path(it[1]).fileName.toString() == "test_${method}.scores.parquet" }[1]
                 assert path(table).size() > 0
             }
+            def annotations = parquet(workflow.out.obs.find { path(it[1]).fileName.toString() == 'test.obs.parquet' }[1])
+            def inputCells = anndata("$outputDir/02_quality_control/doublet_detection/scdblfinder/test_scdblfinder.h5ad").obs.index.values
+            ['solo', 'scrublet', 'scdblfinder', 'doubletdetection'].each { detector ->
+                def column = "test_${detector}".toString()
+                def suffix = detector == 'scdblfinder' ? '.predictions.parquet' : '.parquet'
+                def table = parquet("$outputDir/02_quality_control/doublet_detection/${detector}/${column}${suffix}")
+                assert table.columnNames == ['__index__', column]
+                assert table.schema.fields.find { it.name == column }.physicalType == 'BOOLEAN'
+                assert table.schema.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
+                assert table.compressionCodecs == ['SNAPPY']
+                def rows = table.rows
+                assert rows.size() == 384
+                assert rows.every { it.__index__ instanceof String && it[column] instanceof Boolean }
+                assert rows.collect { it.__index__ } == inputCells
+                assert rows.collect { it[column] } == annotations.rows.collect { it["${detector}_predicted_doublet".toString()] }
+            }
+            assert annotations.rows.findAll { row -> ['solo', 'scrublet', 'scdblfinder', 'doubletdetection'].count { row["${it}_predicted_doublet".toString()] } < 2 }.collect { it.__index__ } == adata.obs.index.values
             assert !adata.obs.colnames.any { it.startsWith('test_') || it.endsWith('_predicted_doublet') }
             assert !adata.obs.colnames.any { it in ['solo_class', 'scrublet_score', 'scdblfinder_score', 'doubletdetection_score'] }
             assert workflow.out.multiqc_files.size() == 1
@@ -88,6 +106,7 @@ nextflow_workflow {
         when {
             params {
                 outdir = "$outputDir"
+                save_intermediates = true
             }
             workflow {
                 """
@@ -110,6 +129,12 @@ nextflow_workflow {
             assert adata.n_obs == 384
             assert workflow.out.obs.size() == 2
             assert !adata.obs.colnames.any { it.startsWith('scdblfinder_') || it.startsWith('scDblFinder.') || it == 'test_scdblfinder' }
+            def table = parquet("$outputDir/02_quality_control/doublet_detection/scdblfinder/test_scdblfinder.predictions.parquet")
+            def annotations = parquet(workflow.out.obs.find { path(it[1]).fileName.toString() == 'test.obs.parquet' }[1])
+            assert table.columnNames == ['__index__', 'test_scdblfinder']
+            assert table.rows.collect { it.__index__ } == adata.obs.index.values
+            assert table.rows.every { it.test_scdblfinder instanceof Boolean }
+            assert table.rows.collect { it.test_scdblfinder } == annotations.rows.collect { it.scdblfinder_predicted_doublet }
             assert snapshot(adata.yaml).match()
         }
 

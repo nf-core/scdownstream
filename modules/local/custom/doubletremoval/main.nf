@@ -4,8 +4,8 @@ process CUSTOM_DOUBLETREMOVAL {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/56/56e5b2e0a7deae4516efa83ada0d514260d70199270fdd7d66e0ed7841bc3f27/data'
-        : 'community.wave.seqera.io/library/doublet_removal:3e0acc996063ca2e'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a2/a21cf60bcbd677ce80713d63416986d615a3774d790a2136c848102b707b438f/data'
+        : 'community.wave.seqera.io/library/doublet_removal:63f2fac2263c1509'}"
 
     input:
     tuple val(meta), path(h5ad), val(methods), path(predictions, stageAs: 'predictions/*', arity: '1..*')
@@ -14,7 +14,7 @@ process CUSTOM_DOUBLETREMOVAL {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad
-    tuple val(meta), path("*.obs.pkl"), emit: obs
+    tuple val(meta), path("*.obs.parquet"), emit: obs
     path ("*_mqc.json"), emit: multiqc_files, optional: true
     path "versions.yml", emit: versions, topic: versions
 
@@ -29,7 +29,7 @@ process CUSTOM_DOUBLETREMOVAL {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
-    touch ${prefix}.obs.pkl
+    touch ${prefix}.obs.parquet
     touch ${prefix}_mqc.json
     touch versions.yml
     """
