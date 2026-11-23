@@ -14,26 +14,20 @@ process SCCONCEPT_EMBED {
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
     path ("X_${prefix}.parquet"), emit: obsm
-    tuple val("${task.process}"), val('sc-concept'), eval("python -c \"from importlib.metadata import version; print(version('sc-concept'))\""), emit: versions_scconcept, topic: versions
-    tuple val("${task.process}"), val('torch'), eval("python -c \"from importlib.metadata import version; print(version('torch'))\""), emit: versions_torch, topic: versions
+    path "versions.yml", emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    """
-    CUDA_VISIBLE_DEVICES='' scconcept_embed.py \
-        --input "${h5ad}" \
-        --model model \
-        --prefix "${prefix}" \
-        --threads "${task.cpus}"
-    """
+    template('embed.py')
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch "${prefix}.h5ad"
     touch "X_${prefix}.parquet"
+    touch "versions.yml"
     """
 }

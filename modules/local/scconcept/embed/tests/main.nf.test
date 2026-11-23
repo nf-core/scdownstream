@@ -39,7 +39,8 @@ nextflow_process {
             assert embedding.columnNames == ['__index__'] + (0..<512).collect { it.toString() }
             assert embedding.schema.fields.drop(1).every { it.physicalType == 'FLOAT' }
             assert file(process.out.obsm[0]).name == 'X_pbmc.parquet'
-            assert snapshot(output.n_obs, output.n_vars, process.out.versions_scconcept).match()
+            def versions = path(process.out.versions[0]).yaml.SCCONCEPT_EMBED
+            assert snapshot(output.n_obs, output.n_vars, versions['sc-concept']).match()
         }
     }
 
@@ -60,7 +61,8 @@ nextflow_process {
             assert process.success
             assert file(process.out.h5ad[0][1]).name == 'pbmc.h5ad'
             assert file(process.out.obsm[0]).name == 'X_pbmc.parquet'
-            assert snapshot(process.out.h5ad[0][0], process.out.versions_scconcept).match()
+            assert file(process.out.versions[0]).name == 'versions.yml'
+            assert snapshot(process.out.h5ad[0][0]).match()
         }
     }
 }

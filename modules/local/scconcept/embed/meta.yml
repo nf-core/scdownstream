@@ -49,46 +49,11 @@ output:
         type: file
         description: Cell embeddings indexed by cell barcode.
         pattern: "X_*.parquet"
-  versions_scconcept:
-    - - ${task.process}:
-          type: string
-          description: Process name.
-      - sc-concept:
-          type: string
-          description: Package name.
-      - 'python -c "from importlib.metadata import version; print(version(''sc-concept''))"':
-          type: eval
-          description: Installed scConcept version.
-  versions_torch:
-    - - ${task.process}:
-          type: string
-          description: Process name.
-      - torch:
-          type: string
-          description: Package name.
-      - 'python -c "from importlib.metadata import version; print(version(''torch''))"':
-          type: eval
-          description: Installed PyTorch version.
-topics:
   versions:
-    - - ${task.process}:
-          type: string
-          description: Process name.
-      - sc-concept:
-          type: string
-          description: Package name.
-      - 'python -c "from importlib.metadata import version; print(version(''sc-concept''))"':
-          type: eval
-          description: Installed scConcept version.
-    - - ${task.process}:
-          type: string
-          description: Process name.
-      - torch:
-          type: string
-          description: Package name.
-      - 'python -c "from importlib.metadata import version; print(version(''torch''))"':
-          type: eval
-          description: Installed PyTorch version.
+    - versions.yml:
+        type: file
+        description: Software versions for scConcept and PyTorch.
+        pattern: "versions.yml"
 authors:
   - "@nictru"
 maintainers:

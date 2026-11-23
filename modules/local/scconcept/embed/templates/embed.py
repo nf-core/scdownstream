@@ -1,25 +1,20 @@
 #!/usr/bin/env python3
 
-import argparse
 import hashlib
+import os
 import re
+from importlib.metadata import version
 from pathlib import Path
 
 import anndata as ad
 import numpy as np
 import pandas as pd
 import torch
+import yaml
 from concept import scConcept
 from scipy.sparse import issparse
 
-parser = argparse.ArgumentParser(description="Embed human cells with the pinned scConcept checkpoint.")
-parser.add_argument("--input", type=Path, required=True)
-parser.add_argument("--model", type=Path, required=True)
-parser.add_argument("--prefix", required=True)
-parser.add_argument("--threads", type=int, required=True)
-args = parser.parse_args()
-
-bundle = args.model
+bundle = Path("model")
 hashes = {
     "config.yaml": "fafabeccbd5693e7dcc48097e3ad8175aecab849d440f805be71b669ac86497f",
     "model.ckpt": "ed4a51d77b3205029ca7253d225768761780ef620aad98ed496c62ba59f3fe29",
@@ -32,7 +27,7 @@ for relative_path, expected in hashes.items():
                 f"scConcept model file {relative_path} does not match the pinned corpus40M-model30M release."
             )
 
-adata = ad.read_h5ad(args.input)
+adata = ad.read_h5ad("${h5ad}")
 if adata.n_obs == 0:
     raise ValueError("scConcept requires at least one cell.")
 
@@ -64,7 +59,8 @@ if empty.any():
     raise ValueError(f"{empty.sum()} cells have no expression among genes in the scConcept vocabulary.")
 
 model_input = ad.AnnData(X=counts, obs=pd.DataFrame(index=adata.obs_names), var=pd.DataFrame(index=gene_ids[matched]))
-torch.set_num_threads(args.threads)
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
+torch.set_num_threads(int("${task.cpus}"))
 concept = scConcept()
 concept.load_config_and_model(
     config=bundle / "config.yaml",
@@ -83,6 +79,10 @@ if embedding.shape != (adata.n_obs, 512) or not np.isfinite(embedding).all():
     raise ValueError("scConcept did not produce a finite 512-dimensional embedding for each input cell.")
 
 adata.obsm["X_emb"] = embedding
-adata.write_h5ad(f"{args.prefix}.h5ad", compression="gzip")
+adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 table = pd.DataFrame(embedding, index=adata.obs_names, columns=[str(i) for i in range(embedding.shape[1])])
-table.reset_index(names="__index__").to_parquet(f"X_{args.prefix}.parquet", engine="pyarrow", index=False)
+table.reset_index(names="__index__").to_parquet("X_${prefix}.parquet", engine="pyarrow", index=False)
+
+versions = {"${task.process}": {"sc-concept": version("sc-concept"), "torch": version("torch")}}
+with open("versions.yml", "w") as handle:
+    yaml.safe_dump(versions, handle)
