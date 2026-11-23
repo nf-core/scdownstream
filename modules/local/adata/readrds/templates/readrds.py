@@ -27,7 +27,8 @@ if not is_sce:
 else:
     sce = rds_obj
 
-adata = anndata2ri.rpy2py(sce)
+with anndata2ri.converter.context() as converter:
+    adata = converter.rpy2py(sce)
 
 # Convert indices to string
 adata.obs.index = adata.obs.index.astype(str)
@@ -38,7 +39,7 @@ adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 versions = {
     "${task.process}": {
         "anndata": ad.__version__,
-        "anndata2ri": anndata2ri.__version__,
+        "anndata2ri": version("anndata2ri"),
         "rpy2": version("rpy2"),
         "pandas": pd.__version__,
         "seurat": seurat.__version__,

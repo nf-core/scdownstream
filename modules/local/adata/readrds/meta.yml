@@ -60,24 +60,24 @@ maintainers:
 containers:
   docker:
     linux/arm64:
-      name: community.wave.seqera.io/library/adata_readrds:037fe0db7bb7ea31
-      build_id: bd-037fe0db7bb7ea31_6
-      scan_id: sc-8e0779f01a90da69_1
+      name: community.wave.seqera.io/library/adata_readrds:6a8825a47645df3d
+      build_id: bd-6a8825a47645df3d_1
+      scan_id: sc-db18a5c6feb02acf_1
     linux/amd64:
-      name: community.wave.seqera.io/library/adata_readrds:a4ce240ec6f50fd9
-      build_id: bd-a4ce240ec6f50fd9_6
-      scan_id: sc-c05d0bb4435c39f2_1
+      name: community.wave.seqera.io/library/adata_readrds:6b7d4b50f153a954
+      build_id: bd-6b7d4b50f153a954_1
+      scan_id: sc-ab8181d19c667746_1
   singularity:
-    linux/arm64:
-      name: oras://community.wave.seqera.io/library/adata_readrds:de87cc463369476a
-      build_id: bd-de87cc463369476a_6
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ba/ba2bae970fffbe5a2e36774899aca2fb4858f05f88f7b75dc40a1d43e7bff511/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/adata_readrds:772534f5abb8f8f1
-      build_id: bd-772534f5abb8f8f1_6
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/96/96bb395431d12e1db60ae56a0788543a29343cea42657c79d548d015ab69e960/data
+      name: oras://community.wave.seqera.io/library/adata_readrds:a7b57b98665b50b8
+      build_id: bd-a7b57b98665b50b8_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/58/588733704c4eeb860ce326d92a1e82412d2706f0e13e2c9bc74be2e653a6de2b/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/adata_readrds:9b895e9ba62d6ec7
+      build_id: bd-9b895e9ba62d6ec7_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/44/44674d07016f488467307cdd7be2ffcddb01966a8e7ec88d82a7ec3696c2bc1f/data
   conda:
     linux/amd64:
-      lock_file: modules/local/adata/readrds/.conda-lock/linux_amd64-bd-a4ce240ec6f50fd9_6.txt
+      lock_file: modules/local/adata/readrds/.conda-lock/linux_amd64-bd-6b7d4b50f153a954_1.txt
     linux/arm64:
-      lock_file: modules/local/adata/readrds/.conda-lock/linux_arm64-bd-037fe0db7bb7ea31_6.txt
+      lock_file: modules/local/adata/readrds/.conda-lock/linux_arm64-bd-6a8825a47645df3d_1.txt

@@ -4,8 +4,8 @@ process ADATA_EXTEND {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/68/68042761ce4b44cb86292bc2f733dfc0699a67fc3d4531761ddc1c921ad3b485/data'
-        : 'community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pyyaml:684cdfb0284a3431'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c3/c3e587c368ddbd12ae2d148dae771516202dfb72f7d27fda5eea419b484537e3/data'
+        : 'community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pyyaml:59f86c32e1cca7a2'}"
 
     input:
     tuple val(meta), path(base), path(obs, stageAs: 'obs/'), path(var, stageAs: 'var/'), path(obsm, stageAs: 'obsm/'), path(obsp, stageAs: 'obsp/'), path(uns, stageAs: 'uns/'), path(layers, stageAs: 'layers/')

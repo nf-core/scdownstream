@@ -1,9 +1,75 @@
 Changes in component 'nf-core/anndata/barcodes'
-'modules/nf-core/anndata/barcodes/environment.yml' is unchanged
-'modules/nf-core/anndata/barcodes/meta.yml' is unchanged
-'modules/nf-core/anndata/barcodes/main.nf' is unchanged
-'modules/nf-core/anndata/barcodes/tests/main.nf.test.snap' is unchanged
-'modules/nf-core/anndata/barcodes/tests/main.nf.test' is unchanged
+Changes in 'anndata/barcodes/main.nf':
+--- modules/nf-core/anndata/barcodes/main.nf
++++ modules/nf-core/anndata/barcodes/main.nf
+@@ -3,9 +3,9 @@
+     label 'process_single'
+ 
+     conda "${moduleDir}/environment.yml"
+-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/fa/fa01776f530c0a0fe2b7d8d41009884040f75d175ff194641f846b215a1da8d6/data':
+-        'community.wave.seqera.io/library/anndata_pandas_python_pyyaml:3f88bccf1cdade40' }"
++    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
++        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b9/b96b65e01abfc4d601ccf14c496c574a5a84dff839d5573cafcea7faa7beb6f6/data'
++        : 'community.wave.seqera.io/library/anndata_pandas_python_pyyaml:9b9e216971a5f2f8'}"
+ 
+     input:
+     tuple val(meta), path(h5ad), path(barcodes)
+
+Changes in 'anndata/barcodes/environment.yml':
+--- modules/nf-core/anndata/barcodes/environment.yml
++++ modules/nf-core/anndata/barcodes/environment.yml
+@@ -4,7 +4,7 @@
+   - conda-forge
+   - bioconda
+ dependencies:
+-  - conda-forge::anndata=0.11.4
++  - conda-forge::anndata=0.13.4
+   - conda-forge::pandas=2.3.0
+-  - conda-forge::python=3.12.11
++  - conda-forge::python=3.13.12
+   - conda-forge::pyyaml=6.0.2
+
+Changes in 'anndata/barcodes/meta.yml':
+--- modules/nf-core/anndata/barcodes/meta.yml
++++ modules/nf-core/anndata/barcodes/meta.yml
+@@ -1,6 +1,5 @@
+ name: anndata_barcodes
+-description: Module to subset AnnData object to cells with matching barcodes
+-  from the csv file
++description: Module to subset AnnData object to cells with matching barcodes from the csv file
+ keywords:
+   - single-cell
+   - barcodes
+@@ -73,3 +72,27 @@
+ maintainers:
+   - "@nictru"
+   - "@LeonHafner"
++containers:
++  singularity:
++    linux/arm64:
++      name: oras://community.wave.seqera.io/library/anndata_pandas_python_pyyaml:93d618c1024b5277
++      build_id: bd-93d618c1024b5277_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/4b/4b0f6f9c90d50393dcd95d4e81bbea5589f955451d85cd1de039efcc4ac20bdf/data
++    linux/amd64:
++      name: oras://community.wave.seqera.io/library/anndata_pandas_python_pyyaml:422ad17310d54a68
++      build_id: bd-422ad17310d54a68_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b9/b96b65e01abfc4d601ccf14c496c574a5a84dff839d5573cafcea7faa7beb6f6/data
++  docker:
++    linux/amd64:
++      name: community.wave.seqera.io/library/anndata_pandas_python_pyyaml:9b9e216971a5f2f8
++      build_id: bd-9b9e216971a5f2f8_1
++      scan_id: sc-cbf8221a0fecddf3_1
++    linux/arm64:
++      name: community.wave.seqera.io/library/anndata_pandas_python_pyyaml:02ea787e122713f6
++      build_id: bd-02ea787e122713f6_1
++      scan_id: sc-f1c17e3a39991260_1
++  conda:
++    linux/amd64:
++      lock_file: modules/nf-core/anndata/barcodes/.conda-lock/linux_amd64-bd-9b9e216971a5f2f8_1.txt
++    linux/arm64:
++      lock_file: modules/nf-core/anndata/barcodes/.conda-lock/linux_arm64-bd-02ea787e122713f6_1.txt
+
 Changes in 'anndata/barcodes/templates/barcodes.py':
 --- modules/nf-core/anndata/barcodes/templates/barcodes.py
 +++ modules/nf-core/anndata/barcodes/templates/barcodes.py
@@ -16,5 +82,55 @@ Changes in 'anndata/barcodes/templates/barcodes.py':
  
  # Versions
  
+
+'modules/nf-core/anndata/barcodes/.conda-lock/linux_arm64-bd-02ea787e122713f6_1.txt' was created
+'modules/nf-core/anndata/barcodes/.conda-lock/linux_amd64-bd-9b9e216971a5f2f8_1.txt' was created
+'modules/nf-core/anndata/barcodes/tests/main.nf.test' is unchanged
+Changes in 'anndata/barcodes/tests/main.nf.test.snap':
+--- modules/nf-core/anndata/barcodes/tests/main.nf.test.snap
++++ modules/nf-core/anndata/barcodes/tests/main.nf.test.snap
+@@ -11,14 +11,14 @@
+                     ]
+                 ],
+                 "versions_anndata": [
+-                    "versions.yml:md5,a67b616625325797d4ae6f996b2cfb1d"
++                    "versions.yml:md5,7d1a9b0dcf1fab8c708e8293251be942"
+                 ]
+             }
+         ],
+-        "timestamp": "2026-03-15T19:12:06.598082087",
++        "timestamp": "2026-11-23T12:23:15.134685681",
+         "meta": {
+             "nf-test": "0.9.4",
+-            "nextflow": "25.10.4"
++            "nextflow": "26.04.6"
+         }
+     },
+     "scdownstream - h5ad - csv": {
+@@ -29,18 +29,18 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test.h5ad:md5,d07d45f8d8d46411bf049f3ccff475f3"
++                        "test.h5ad:md5,e1ecdc0b9e70814c99211c83951c45af"
+                     ]
+                 ],
+                 "versions_anndata": [
+-                    "versions.yml:md5,c101fba36a629db79bf582b25fa301dd"
++                    "versions.yml:md5,9476b352d1cbee77a9b9b86de8a4dca1"
+                 ]
+             }
+         ],
+-        "timestamp": "2026-03-15T19:11:57.14168146",
++        "timestamp": "2026-11-23T12:22:30.302070537",
+         "meta": {
+             "nf-test": "0.9.4",
+-            "nextflow": "25.10.4"
++            "nextflow": "26.04.6"
+         }
+     }
+-}
+\ No newline at end of file
++}
 
 ************************************************************

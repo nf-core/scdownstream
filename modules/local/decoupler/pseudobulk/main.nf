@@ -4,8 +4,8 @@ process DECOUPLER_PSEUDOBULK {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5c/5ca309507e02db5a619c02a9d8bb1d5b969ef6a815cceca6693784ee7fd061ec/data'
-        : 'community.wave.seqera.io/library/decoupler_activity:8d8ed42929b0d74b'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d2/d2821b036063d6024ae937e9f6cbc1b777333ac3bdcca793f68e1fbe868ae976/data'
+        : 'community.wave.seqera.io/library/decoupler_activity:374661b94d4383e8'}"
 
     input:
     tuple val(meta), path(h5ad)

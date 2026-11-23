@@ -4,8 +4,8 @@ process ADATA_UPSETGENES {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a2/a21cf60bcbd677ce80713d63416986d615a3774d790a2136c848102b707b438f/data'
-        : 'community.wave.seqera.io/library/doublet_removal:63f2fac2263c1509'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/92/92979dc390984c7c638eadfba310ea85a821e56bb39fffb7833c872688eb1532/data'
+        : 'community.wave.seqera.io/library/doublet_removal:d3212f3a1d58d039'}"
 
     input:
     tuple val(meta), val(names), path(h5ads)

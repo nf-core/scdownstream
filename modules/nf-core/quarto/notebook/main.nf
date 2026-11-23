@@ -1,3 +1,6 @@
+// Copyright (c) the nf-core community under an open-source MIT license.
+// See https://github.com/nf-core/modules for full license, file patching instructions and upstream contributing.
+
 // NB 1: You'll likely want to override this with a container containing all
 // required dependencies for your analyses. Or use wave to build the container
 // for you from the environment.yml You'll at least need Quarto itself,
@@ -13,8 +16,8 @@ process QUARTO_NOTEBOOK {
     label 'process_low'
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/47/47f951be9734d1f22933d769f387e33818ebf60dfafc525bd90a78ea8ace0d8b/data'
-        : 'community.wave.seqera.io/library/anndata_ipykernel_jupyter_matplotlib-base_pruned:7ef08c422681407e'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/87/871b6b57493beb206e167a7cca185c849f0123262f080081587eff002f6e73ba/data'
+        : 'community.wave.seqera.io/library/anndata_ipykernel_jupyter_matplotlib-base_pruned:42a89a823d1d3e9d'}"
 
     input:
     tuple val(meta), path(notebook)
@@ -64,6 +67,12 @@ process QUARTO_NOTEBOOK {
     export XDG_CACHE_HOME="./.xdg_cache_home"
     export XDG_DATA_HOME="./.xdg_data_home"
 
+    # Keep Quarto session directories out of project discovery when using task-local scratch.
+    if [ "\${TMPDIR:-}" = . ]; then
+        mkdir -p .quarto-tmp
+        export TMPDIR="\$PWD/.quarto-tmp" TMP="\$PWD/.quarto-tmp"
+    fi
+
     # Wave pixi images ship CA certificates in the environment prefix rather than /etc/ssl/certs
     if [ -z "\${SYSTEM_CERTIFICATE_PATH:-}" ]; then
         if [ -n "\${CONDA_PREFIX:-}" ] && [ -f "\${CONDA_PREFIX}/ssl/cacert.pem" ]; then
@@ -72,6 +81,10 @@ process QUARTO_NOTEBOOK {
             export SYSTEM_CERTIFICATE_PATH=/opt/wave/.pixi/envs/default/ssl/cacert.pem
         fi
     fi
+
+    # Without a _quarto.yml here, Quarto searches parent directories for a project and can
+    # pick one outside the task (https://github.com/quarto-dev/quarto-cli/issues/14980)
+    [ -e _quarto.yml ] || printf 'project:\\n  type: default\\n' > _quarto.yml
 
     # Fix Quarto for Apptainer (see https://community.seqera.io/t/confusion-over-why-a-tool-works-in-docker-but-fails-in-singularity-when-the-installation-doesnt-differ-i-e-using-wave-micromamba/1244)
     ENV_QUARTO=/opt/conda/etc/conda/activate.d/quarto.sh
@@ -127,6 +140,8 @@ process QUARTO_NOTEBOOK {
 
     touch ${prefix}.html
     touch params.yml
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

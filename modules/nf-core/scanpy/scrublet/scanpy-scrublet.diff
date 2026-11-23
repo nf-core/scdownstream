@@ -1,16 +1,62 @@
 Changes in component 'nf-core/scanpy/scrublet'
+Changes in 'scanpy/scrublet/main.nf':
+--- modules/nf-core/scanpy/scrublet/main.nf
++++ modules/nf-core/scanpy/scrublet/main.nf
+@@ -4,8 +4,8 @@
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cc/cc499354bb89be6429cfc8d8416a340c2327a72732fb6ae33c346feef17b5ffb/data'
+-        : 'community.wave.seqera.io/library/python_pyyaml_scanpy_scikit-image:750e7b74b6d036e4'}"
++        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/2f/2f553feb2c9ac1149defe1f6307fd8921872957e8b0f4b31751920d803da2471/data'
++        : 'community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:c3db4c55d39c6c42'}"
+ 
+     input:
+     tuple val(meta), path(h5ad)
+@@ -13,8 +13,9 @@
+ 
+     output:
+     tuple val(meta), path("*.h5ad"), emit: h5ad
+-    tuple val(meta), path("*.pkl") , emit: predictions
+-    path "versions.yml"            , emit: versions, topic: versions
++    tuple val(meta), path("${prefix}.parquet"), emit: predictions
++    tuple val(meta), path("${prefix}.scores.parquet"), emit: scores
++    path "versions.yml", emit: versions, topic: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+@@ -38,12 +39,14 @@
+     export NUMBA_CACHE_DIR=./tmp/numba
+ 
+     touch ${prefix}.h5ad
+-    touch ${prefix}.pkl
++    touch ${prefix}.parquet
++    touch ${prefix}.scores.parquet
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+         python: \$(python3 -c 'import platform; print(platform.python_version())')
+         scanpy: \$(python3 -c 'import scanpy; print(scanpy.__version__)')
++        pyarrow: \$(python3 -c 'import pyarrow; print(pyarrow.__version__)')
+     END_VERSIONS
+     """
+ }
+
 Changes in 'scanpy/scrublet/environment.yml':
 --- modules/nf-core/scanpy/scrublet/environment.yml
 +++ modules/nf-core/scanpy/scrublet/environment.yml
-@@ -4,6 +4,8 @@
+@@ -4,7 +4,9 @@
    - conda-forge
    - bioconda
  dependencies:
+-  - conda-forge::python=3.12.11
 +  - conda-forge::pyarrow=21.0.0
 +  - conda-forge::pynndescent=0.6.0
-   - conda-forge::python=3.12.11
++  - conda-forge::python=3.13.12
    - conda-forge::pyyaml=6.0.2
-   - conda-forge::scanpy=1.11.2
+-  - conda-forge::scanpy=1.11.2
++  - conda-forge::scanpy=1.13.0
+   - conda-forge::scikit-image=0.25.2
 
 Changes in 'scanpy/scrublet/meta.yml':
 --- modules/nf-core/scanpy/scrublet/meta.yml
@@ -49,241 +95,79 @@ Changes in 'scanpy/scrublet/meta.yml':
    - "@nictru"
 +containers:
 +  docker:
-+    linux/amd64:
-+      name: community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:61fca9c6cc777dbd
-+      build_id: bd-61fca9c6cc777dbd_1
-+      scan_id: sc-2e6860b02cb617d4_1
 +    linux/arm64:
-+      name: community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:4584616d15667118
-+      build_id: bd-4584616d15667118_1
-+      scan_id: sc-24cbfcd63153b452_1
++      name: community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:8deec9eceac0d7e4
++      build_id: bd-8deec9eceac0d7e4_1
++      scan_id: sc-0c7dfdfb278c8c3d_1
++    linux/amd64:
++      name: community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:c3db4c55d39c6c42
++      build_id: bd-c3db4c55d39c6c42_1
++      scan_id: sc-36f7c838f859ca41_1
 +  singularity:
 +    linux/amd64:
-+      name: oras://community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:7a3ebfb126b662b4
-+      build_id: bd-7a3ebfb126b662b4_1
-+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f0/f03b12f59d8a38e44e4c10d3b7a1010041803e52a203d5c3286bce12b33ffe28/data
++      name: oras://community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:0a61763ccc06bd65
++      build_id: bd-0a61763ccc06bd65_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/2f/2f553feb2c9ac1149defe1f6307fd8921872957e8b0f4b31751920d803da2471/data
 +    linux/arm64:
-+      name: oras://community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:c32cf499acc2a9e1
-+      build_id: bd-c32cf499acc2a9e1_1
-+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/55/55793d59d44561220c30d452be72676fef81e5f6fd2960a6d8c01be42a1c7fb1/data
++      name: oras://community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:6004f0e31aad583c
++      build_id: bd-6004f0e31aad583c_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/4d/4dbef80fcffbe66c36735d47a9d39d57c4f2b77ae204d60947c2ca11e2972541/data
 +  conda:
 +    linux/amd64:
-+      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_amd64-bd-61fca9c6cc777dbd_1.txt
++      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_amd64-bd-c3db4c55d39c6c42_1.txt
 +    linux/arm64:
-+      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_arm64-bd-4584616d15667118_1.txt
++      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_arm64-bd-8deec9eceac0d7e4_1.txt
 
-Changes in 'scanpy/scrublet/main.nf':
---- modules/nf-core/scanpy/scrublet/main.nf
-+++ modules/nf-core/scanpy/scrublet/main.nf
-@@ -4,8 +4,8 @@
+Changes in 'scanpy/scrublet/templates/scrublet.py':
+--- modules/nf-core/scanpy/scrublet/templates/scrublet.py
++++ modules/nf-core/scanpy/scrublet/templates/scrublet.py
+@@ -8,7 +8,9 @@
+ os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
  
-     conda "${moduleDir}/environment.yml"
-     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
--        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cc/cc499354bb89be6429cfc8d8416a340c2327a72732fb6ae33c346feef17b5ffb/data'
--        : 'community.wave.seqera.io/library/python_pyyaml_scanpy_scikit-image:750e7b74b6d036e4'}"
-+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f0/f03b12f59d8a38e44e4c10d3b7a1010041803e52a203d5c3286bce12b33ffe28/data'
-+        : 'community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:61fca9c6cc777dbd'}"
+ import platform
++from pathlib import Path
  
-     input:
-     tuple val(meta), path(h5ad)
-@@ -13,8 +13,9 @@
++import pyarrow
+ import scanpy as sc
+ import yaml
+ from threadpoolctl import threadpool_limits
+@@ -27,17 +29,29 @@
+ sc.pp.scrublet(adata, **kwargs)
  
-     output:
-     tuple val(meta), path("*.h5ad"), emit: h5ad
--    tuple val(meta), path("*.pkl") , emit: predictions
--    path "versions.yml"            , emit: versions, topic: versions
-+    tuple val(meta), path("${prefix}.parquet"), emit: predictions
-+    tuple val(meta), path("${prefix}.scores.parquet"), emit: scores
-+    path "versions.yml", emit: versions, topic: versions
+ adata.obs["predicted_doublet"] = adata.obs["predicted_doublet"].astype(bool)
+-df = adata.obs[["predicted_doublet"]]
++df = adata.obs[["predicted_doublet"]].copy()
+ df.columns = ["${prefix}"]
+-df.to_pickle("${prefix}.pkl")
++if df.index.hasnans or not df.index.is_unique or not all(isinstance(cell, str) for cell in df.index):
++    raise ValueError("Doublet predictions require unique, non-null string cell IDs")
++df.insert(0, "__index__", df.index)
++df.to_parquet(Path("${prefix}.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
++scores = adata.obs[["doublet_score"]].rename(columns={"doublet_score": "scrublet_score"})
++scores.insert(0, "__index__", scores.index)
++scores.to_parquet(Path("${prefix}.scores.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
  
-     when:
-     task.ext.when == null || task.ext.when
-@@ -38,12 +39,14 @@
-     export NUMBA_CACHE_DIR=./tmp/numba
+ adata = adata[~adata.obs["predicted_doublet"]].copy()
  
-     touch ${prefix}.h5ad
--    touch ${prefix}.pkl
-+    touch ${prefix}.parquet
-+    touch ${prefix}.scores.parquet
+-adata.write_h5ad(f"{prefix}.h5ad")
++adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
  
-     cat <<-END_VERSIONS > versions.yml
-     "${task.process}":
-         python: \$(python3 -c 'import platform; print(platform.python_version())')
-         scanpy: \$(python3 -c 'import scanpy; print(scanpy.__version__)')
-+        pyarrow: \$(python3 -c 'import pyarrow; print(pyarrow.__version__)')
-     END_VERSIONS
-     """
- }
-
-Changes in 'scanpy/scrublet/tests/main.nf.test.snap':
---- modules/nf-core/scanpy/scrublet/tests/main.nf.test.snap
-+++ modules/nf-core/scanpy/scrublet/tests/main.nf.test.snap
-@@ -15,26 +15,35 @@
-                         {
-                             "id": "test"
-                         },
--                        "test_scrublet.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
-+                        "test_scrublet.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
-+                    ]
-+                ],
-+                "scores": [
-+                    [
-+                        {
-+                            "id": "test"
-+                        },
-+                        "test_scrublet.scores.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
-                     ]
-                 ],
-                 "versions": [
--                    "versions.yml:md5,0062f21e6708c6615291d3107896c6fa"
-+                    "versions.yml:md5,bdfe848707463f2ae33d60bfa1298570"
-                 ]
-             },
-             [
-                 {
-                     "SCANPY_SCRUBLET": {
-                         "python": "3.12.11",
--                        "scanpy": "1.11.2"
-+                        "scanpy": "1.11.2",
-+                        "pyarrow": "21.0.0"
-                     }
-                 }
-             ]
-         ],
--        "timestamp": "2026-08-16T15:06:16.505801",
-+        "timestamp": "2026-11-15T23:00:22.175276929",
-         "meta": {
--            "nf-test": "0.9.5",
--            "nextflow": "26.04.0"
-+            "nf-test": "0.9.4",
-+            "nextflow": "26.04.6"
-         }
-     },
-     "Should run without failures": {
-@@ -53,26 +62,35 @@
-                         {
-                             "id": "test"
-                         },
--                        "test_scrublet.pkl"
-+                        "test_scrublet.parquet"
-+                    ]
-+                ],
-+                "scores": [
-+                    [
-+                        {
-+                            "id": "test"
-+                        },
-+                        "test_scrublet.scores.parquet"
-                     ]
-                 ],
-                 "versions": [
--                    "versions.yml:md5,7b82a4b5cf47958c4d0cb9bba81cce40"
-+                    "versions.yml:md5,199d82214040d35353ee6c8d9acf1f86"
-                 ]
-             },
-             [
-                 {
-                     "SCANPY_SCRUBLET": {
-+                        "pyarrow": "21.0.0",
-                         "python": "3.12.11",
-                         "scanpy": "1.11.2"
-                     }
-                 }
-             ]
-         ],
--        "timestamp": "2026-08-16T15:04:52.727938",
-+        "timestamp": "2026-11-15T22:53:14.128675231",
-         "meta": {
--            "nf-test": "0.9.5",
--            "nextflow": "26.04.0"
-+            "nf-test": "0.9.4",
-+            "nextflow": "26.04.6"
-         }
-     },
-     "Should run with empty string for batch_col": {
-@@ -91,26 +109,35 @@
-                         {
-                             "id": "test"
-                         },
--                        "test_scrublet.pkl"
-+                        "test_scrublet.parquet"
-+                    ]
-+                ],
-+                "scores": [
-+                    [
-+                        {
-+                            "id": "test"
-+                        },
-+                        "test_scrublet.scores.parquet"
-                     ]
-                 ],
-                 "versions": [
--                    "versions.yml:md5,7b82a4b5cf47958c4d0cb9bba81cce40"
-+                    "versions.yml:md5,199d82214040d35353ee6c8d9acf1f86"
-                 ]
-             },
-             [
-                 {
-                     "SCANPY_SCRUBLET": {
-+                        "pyarrow": "21.0.0",
-                         "python": "3.12.11",
-                         "scanpy": "1.11.2"
-                     }
-                 }
-             ]
-         ],
--        "timestamp": "2026-08-16T15:05:27.44104",
-+        "timestamp": "2026-11-15T22:55:35.563850768",
-         "meta": {
--            "nf-test": "0.9.5",
--            "nextflow": "26.04.0"
-+            "nf-test": "0.9.4",
-+            "nextflow": "26.04.6"
-         }
-     },
-     "Should run with empty array for batch_col": {
-@@ -129,26 +156,35 @@
-                         {
-                             "id": "test"
-                         },
--                        "test_scrublet.pkl"
-+                        "test_scrublet.parquet"
-+                    ]
-+                ],
-+                "scores": [
-+                    [
-+                        {
-+                            "id": "test"
-+                        },
-+                        "test_scrublet.scores.parquet"
-                     ]
-                 ],
-                 "versions": [
--                    "versions.yml:md5,7b82a4b5cf47958c4d0cb9bba81cce40"
-+                    "versions.yml:md5,199d82214040d35353ee6c8d9acf1f86"
-                 ]
-             },
-             [
-                 {
-                     "SCANPY_SCRUBLET": {
-+                        "pyarrow": "21.0.0",
-                         "python": "3.12.11",
-                         "scanpy": "1.11.2"
-                     }
-                 }
-             ]
-         ],
--        "timestamp": "2026-08-16T15:06:01.974464",
-+        "timestamp": "2026-11-15T22:58:12.221994017",
-         "meta": {
--            "nf-test": "0.9.5",
--            "nextflow": "26.04.0"
-+            "nf-test": "0.9.4",
-+            "nextflow": "26.04.6"
-         }
-     }
--}
+ # Versions
+ 
+-versions = {"${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}}
++versions = {
++    "${task.process}": {
++        "python": platform.python_version(),
++        "scanpy": sc.__version__,
++        "pyarrow": pyarrow.__version__,
++    }
 +}
+ 
+ with open("versions.yml", "w") as f:
+     yaml.dump(versions, f)
+
+'modules/nf-core/scanpy/scrublet/.conda-lock/linux_amd64-bd-c3db4c55d39c6c42_1.txt' was created
+'modules/nf-core/scanpy/scrublet/.conda-lock/linux_arm64-bd-8deec9eceac0d7e4_1.txt' was created
 Changes in 'scanpy/scrublet/tests/main.nf.test':
 --- modules/nf-core/scanpy/scrublet/tests/main.nf.test
 +++ modules/nf-core/scanpy/scrublet/tests/main.nf.test
@@ -343,54 +227,180 @@ Changes in 'scanpy/scrublet/tests/main.nf.test':
              ).match() }
              )
 
-'modules/nf-core/scanpy/scrublet/.conda-lock/linux_arm64-bd-4584616d15667118_1.txt' was created
-'modules/nf-core/scanpy/scrublet/.conda-lock/linux_amd64-bd-61fca9c6cc777dbd_1.txt' was created
-Changes in 'scanpy/scrublet/templates/scrublet.py':
---- modules/nf-core/scanpy/scrublet/templates/scrublet.py
-+++ modules/nf-core/scanpy/scrublet/templates/scrublet.py
-@@ -8,7 +8,9 @@
- os.environ["NUMBA_CACHE_DIR"] = "./tmp/numba"
- 
- import platform
-+from pathlib import Path
- 
-+import pyarrow
- import scanpy as sc
- import yaml
- from threadpoolctl import threadpool_limits
-@@ -27,17 +29,29 @@
- sc.pp.scrublet(adata, **kwargs)
- 
- adata.obs["predicted_doublet"] = adata.obs["predicted_doublet"].astype(bool)
--df = adata.obs[["predicted_doublet"]]
-+df = adata.obs[["predicted_doublet"]].copy()
- df.columns = ["${prefix}"]
--df.to_pickle("${prefix}.pkl")
-+if df.index.hasnans or not df.index.is_unique or not all(isinstance(cell, str) for cell in df.index):
-+    raise ValueError("Doublet predictions require unique, non-null string cell IDs")
-+df.insert(0, "__index__", df.index)
-+df.to_parquet(Path("${prefix}.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
-+scores = adata.obs[["doublet_score"]].rename(columns={"doublet_score": "scrublet_score"})
-+scores.insert(0, "__index__", scores.index)
-+scores.to_parquet(Path("${prefix}.scores.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
- 
- adata = adata[~adata.obs["predicted_doublet"]].copy()
- 
--adata.write_h5ad(f"{prefix}.h5ad")
-+adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
- 
- # Versions
- 
--versions = {"${task.process}": {"python": platform.python_version(), "scanpy": sc.__version__}}
-+versions = {
-+    "${task.process}": {
-+        "python": platform.python_version(),
-+        "scanpy": sc.__version__,
-+        "pyarrow": pyarrow.__version__,
-+    }
-+}
- 
- with open("versions.yml", "w") as f:
-     yaml.dump(versions, f)
+Changes in 'scanpy/scrublet/tests/main.nf.test.snap':
+--- modules/nf-core/scanpy/scrublet/tests/main.nf.test.snap
++++ modules/nf-core/scanpy/scrublet/tests/main.nf.test.snap
+@@ -15,26 +15,35 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_scrublet.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
++                    ]
++                ],
++                "scores": [
++                    [
++                        {
++                            "id": "test"
++                        },
++                        "test_scrublet.scores.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "versions": [
+-                    "versions.yml:md5,0062f21e6708c6615291d3107896c6fa"
++                    "versions.yml:md5,c77534cbd38cc0649435c96aedc63424"
+                 ]
+             },
+             [
+                 {
+                     "SCANPY_SCRUBLET": {
+-                        "python": "3.12.11",
+-                        "scanpy": "1.11.2"
++                        "python": "3.13.12",
++                        "scanpy": "1.13.0",
++                        "pyarrow": "21.0.0"
+                     }
+                 }
+             ]
+         ],
+-        "timestamp": "2026-08-16T15:06:16.505801",
++        "timestamp": "2026-11-23T12:07:11.259906421",
+         "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.04.0"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
+         }
+     },
+     "Should run without failures": {
+@@ -53,26 +62,35 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl"
++                        "test_scrublet.parquet"
++                    ]
++                ],
++                "scores": [
++                    [
++                        {
++                            "id": "test"
++                        },
++                        "test_scrublet.scores.parquet"
+                     ]
+                 ],
+                 "versions": [
+-                    "versions.yml:md5,7b82a4b5cf47958c4d0cb9bba81cce40"
++                    "versions.yml:md5,52eeff30aec6afb93bc1e88736694ef8"
+                 ]
+             },
+             [
+                 {
+                     "SCANPY_SCRUBLET": {
+-                        "python": "3.12.11",
+-                        "scanpy": "1.11.2"
++                        "pyarrow": "21.0.0",
++                        "python": "3.13.12",
++                        "scanpy": "1.13.0"
+                     }
+                 }
+             ]
+         ],
+-        "timestamp": "2026-08-16T15:04:52.727938",
++        "timestamp": "2026-11-23T12:02:49.300616459",
+         "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.04.0"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
+         }
+     },
+     "Should run with empty string for batch_col": {
+@@ -91,26 +109,35 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl"
++                        "test_scrublet.parquet"
++                    ]
++                ],
++                "scores": [
++                    [
++                        {
++                            "id": "test"
++                        },
++                        "test_scrublet.scores.parquet"
+                     ]
+                 ],
+                 "versions": [
+-                    "versions.yml:md5,7b82a4b5cf47958c4d0cb9bba81cce40"
++                    "versions.yml:md5,52eeff30aec6afb93bc1e88736694ef8"
+                 ]
+             },
+             [
+                 {
+                     "SCANPY_SCRUBLET": {
+-                        "python": "3.12.11",
+-                        "scanpy": "1.11.2"
++                        "pyarrow": "21.0.0",
++                        "python": "3.13.12",
++                        "scanpy": "1.13.0"
+                     }
+                 }
+             ]
+         ],
+-        "timestamp": "2026-08-16T15:05:27.44104",
++        "timestamp": "2026-11-23T12:04:11.167334617",
+         "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.04.0"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
+         }
+     },
+     "Should run with empty array for batch_col": {
+@@ -129,26 +156,35 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scrublet.pkl"
++                        "test_scrublet.parquet"
++                    ]
++                ],
++                "scores": [
++                    [
++                        {
++                            "id": "test"
++                        },
++                        "test_scrublet.scores.parquet"
+                     ]
+                 ],
+                 "versions": [
+-                    "versions.yml:md5,7b82a4b5cf47958c4d0cb9bba81cce40"
++                    "versions.yml:md5,52eeff30aec6afb93bc1e88736694ef8"
+                 ]
+             },
+             [
+                 {
+                     "SCANPY_SCRUBLET": {
+-                        "python": "3.12.11",
+-                        "scanpy": "1.11.2"
++                        "pyarrow": "21.0.0",
++                        "python": "3.13.12",
++                        "scanpy": "1.13.0"
+                     }
+                 }
+             ]
+         ],
+-        "timestamp": "2026-08-16T15:06:01.974464",
++        "timestamp": "2026-11-23T12:05:33.127967041",
+         "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.04.0"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
+         }
+     }
+ }
 
 ************************************************************

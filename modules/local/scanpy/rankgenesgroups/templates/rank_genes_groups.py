@@ -169,7 +169,7 @@ if len(valid_groups) >= 2:
 
         # Plotting uses the DE feature space, without nullable flags from joined references.
         if "X_pca" not in adata.obsm and adata.n_vars > sc.settings.N_PCS:
-            sc.pp.pca(adata, mask_var=None)
+            sc.pp.pca(adata, mask=None)
         sc.pl.rank_genes_groups_dotplot(adata, key=rank_key, use_raw=False, show=False)
         adata.uns[rank_key] = rgg_dict
         dotplot_path = f"{prefix}_dotplot.png"

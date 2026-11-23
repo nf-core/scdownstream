@@ -55,25 +55,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/anndata_python_pyyaml:6059343947c64b2b
-      build_id: bd-6059343947c64b2b_1
-      scan_id: sc-6c978256fc1b9bc8_2
     linux/amd64:
-      name: community.wave.seqera.io/library/anndata_python_pyyaml:5ac0fd4d280528a5
-      build_id: bd-5ac0fd4d280528a5_1
-      scan_id: sc-15371a7932310801_2
+      name: community.wave.seqera.io/library/anndata_python_pyyaml:f7811e63d92e9821
+      build_id: bd-f7811e63d92e9821_1
+      scan_id: sc-58c148f5e99983f2_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/anndata_python_pyyaml:e99ad8067a9bb519
+      build_id: bd-e99ad8067a9bb519_1
+      scan_id: sc-9e105295f299d6c5_1
   singularity:
-    linux/amd64:
-      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:d4fa1bed84690377
-      build_id: bd-d4fa1bed84690377_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a0/a0d347e0d943cb8d0624a8c73247db0c8e96e7c130fe0fb3125aeb7d1b140e79/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:72ec1c0689f619a5
-      build_id: bd-72ec1c0689f619a5_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/56/56a42f6f5e1d7d9aec93ae546b21b3af0c424dfbda6385b018bab9c51ff95f0f/data
+      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:1b3b19f6a2cbeeaf
+      build_id: bd-1b3b19f6a2cbeeaf_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/63/63cf3d298f9a63dc7886b269db6abfbc3745f43eee578a669f0410b1974f5369/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:a86700fb76469b6e
+      build_id: bd-a86700fb76469b6e_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/37/378d6d9781b5231390b501a6c1c89576dd3ca8c19f6634a0325793c05ded8901/data
   conda:
     linux/amd64:
-      lock_file: modules/local/adata/subsetvar/.conda-lock/linux_amd64-bd-5ac0fd4d280528a5_1.txt
+      lock_file: modules/local/adata/subsetvar/.conda-lock/linux_amd64-bd-f7811e63d92e9821_1.txt
     linux/arm64:
-      lock_file: modules/local/adata/subsetvar/.conda-lock/linux_arm64-bd-6059343947c64b2b_1.txt
+      lock_file: modules/local/adata/subsetvar/.conda-lock/linux_arm64-bd-e99ad8067a9bb519_1.txt

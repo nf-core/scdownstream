@@ -75,22 +75,24 @@ maintainers:
 containers:
   docker:
     linux/arm64:
-      name: community.wave.seqera.io/library/python_pyyaml_pip_scib-metrics:726e693dce154d5e
-      build_id: bd-726e693dce154d5e_1
-      scan_id: sc-9b33e17d4671b9e5_2
+      name: community.wave.seqera.io/library/python_pyyaml_pip_scib-metrics_umap-learn:0ec6d9148d50a392
+      build_id: bd-0ec6d9148d50a392_1
+      scan_id: sc-8f8d7057ba54d259_2
     linux/amd64:
-      name: community.wave.seqera.io/library/python_pyyaml_pip_scib-metrics:9752793e315dcbf9
-      build_id: bd-9752793e315dcbf9_1
-      scan_id: sc-085696d72eecbf34_2
+      name: community.wave.seqera.io/library/python_pyyaml_pip_scib-metrics_umap-learn:a00d5755d869faef
+      build_id: bd-a00d5755d869faef_1
+      scan_id: sc-b1aacdca4e34fc2e_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_pip_scib-metrics:2b4edaf51774369b
-      build_id: bd-2b4edaf51774369b_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8b/8b13ed39eb063858c9b23aee83fa0fd7e27cbc0cb7820db0d94de42f6725f83a/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_pip_scib-metrics_umap-learn:d1849e8fea76330d
+      build_id: bd-d1849e8fea76330d_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/94/94a6bbf6b7f2c1bd7c17a6f6d9c7f195422c6cb160c352d6f08519fc1a4f1f3f/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/python_pyyaml_pip_scib-metrics:0ba3da6e3ab8bd67
-      build_id: bd-0ba3da6e3ab8bd67_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/25/259f7c888137ae8f271a81c834d08483626028c765ab652802894d4a918ffee2/data
+      name: oras://community.wave.seqera.io/library/python_pyyaml_pip_scib-metrics_umap-learn:7a00fdce75a8153f
+      build_id: bd-7a00fdce75a8153f_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/45/45810c6a66ff1b5e47de9d9cec918d26dc809dad0b73cbdb93964ace67e5b32c/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scibmetrics/benchmark/.conda-lock/linux_amd64-bd-9752793e315dcbf9_1.txt
+      lock_file: modules/local/scibmetrics/benchmark/.conda-lock/linux_amd64-bd-a00d5755d869faef_1.txt
+    linux/arm64:
+      lock_file: modules/local/scibmetrics/benchmark/.conda-lock/linux_arm64-bd-0ec6d9148d50a392_1.txt

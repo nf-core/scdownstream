@@ -2,8 +2,9 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - conda-forge::python=3.11.10
+  - conda-forge::python=3.12.14
   - conda-forge::pyyaml=6.0.3
-  - pip
+  - conda-forge::pip=26.2.2
   - pip:
-      - scib-metrics==0.5.9
+      - scib-metrics==0.6.2
+      - umap-learn==0.5.12

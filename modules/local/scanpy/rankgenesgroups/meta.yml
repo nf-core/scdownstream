@@ -88,25 +88,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/amd64:
-      name: community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:f7393f16a921c030
-      build_id: bd-f7393f16a921c030_1
-      scan_id: sc-943129a9dd847743_1
     linux/arm64:
-      name: community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:945304f1772e9924
-      build_id: bd-945304f1772e9924_1
-      scan_id: sc-ae10e4db1a131d54_1
+      name: community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:66d7cc0d4db50e0c
+      build_id: bd-66d7cc0d4db50e0c_2
+      scan_id: sc-1f05acfedd750e33_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:c38efc9f3be39e99
+      build_id: bd-c38efc9f3be39e99_2
+      scan_id: sc-d7d1fbd6738a775a_1
   singularity:
-    linux/amd64:
-      name: oras://community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:5a5b5680dc3b1ecf
-      build_id: bd-5a5b5680dc3b1ecf_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a1/a194f12854e4f73b2b4aab27102b3178bfd4dd50fb1332db413205ef3cbfca90/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:c397ed9eb14afbe0
-      build_id: bd-c397ed9eb14afbe0_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/76/762b5f0003ccd8b1346ad24a880c1af803023f420f5c7a41acfe123fc71e346c/data
+      name: oras://community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:060e1bce4a40de68
+      build_id: bd-060e1bce4a40de68_2
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/2c/2c9cf8744e8efce7fd9de7a37603e7e5ab0eb4b55f0114ec3482e222f8e438fb/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:58a858f6927a21bd
+      build_id: bd-58a858f6927a21bd_2
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/95/95c75e8f622e621c4de571eb70f474eb4ea1e409723e2cc4488e308d2f32fb36/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_amd64-bd-f7393f16a921c030_1.txt
+      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_amd64-bd-c38efc9f3be39e99_2.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_arm64-bd-945304f1772e9924_1.txt
+      lock_file: modules/local/scanpy/rankgenesgroups/.conda-lock/linux_arm64-bd-66d7cc0d4db50e0c_2.txt

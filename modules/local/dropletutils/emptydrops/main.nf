@@ -4,8 +4,8 @@ process DROPLETUTILS_EMPTYDROPS {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/24/24bb1be29bfea3307665b3f1f1d294e3a35f871ee55f1728d4ec63c585fa755a/data'
-        : 'community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-dropletutils_bioconductor-rhdf5_bioconductor-singlecellexperiment:1a7241b7686e28be'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a7/a793e5c432cc0bc8e7a739507b666e9e1739b74af56d04637200bd5aab343428/data'
+        : 'community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-dropletutils_bioconductor-rhdf5_bioconductor-singlecellexperiment:2b198d4d68c1a6e0'}"
 
     input:
     tuple val(meta), path(h5ad)

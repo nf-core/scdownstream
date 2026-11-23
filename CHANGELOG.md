@@ -9,6 +9,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
+- Refresh local module Conda environments and update patched AnnData Barcodes, Quarto, Scrublet and GNU tar containers and locks, by @nictru and Codex.
 - Disable the QC report in the AWS `test_full` profile, by @nictru and Codex [[#417](https://github.com/nf-core/scdownstream/pull/417)].
 - Share container images across compatible Scanpy, AnnData, LIANA, Cell2Cell, edgePython and decoupler modules, and use a smaller CPU image for SCimilarity, by @nictru and Codex.
 - Write tabular AnnData fragments and doublet predictions as Parquet with explicit cell or gene identifiers, retain nested-object and matrix formats, and reject legacy pickle/CSV table inputs, by @nictru and GPT-6.1 Sol [[#397](https://github.com/nf-core/scdownstream/pull/397)].

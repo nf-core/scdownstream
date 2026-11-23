@@ -1,6 +1,5 @@
 name: anndata_barcodes
-description: Module to subset AnnData object to cells with matching barcodes
-  from the csv file
+description: Module to subset AnnData object to cells with matching barcodes from the csv file
 keywords:
   - single-cell
   - barcodes
@@ -73,3 +72,27 @@ authors:
 maintainers:
   - "@nictru"
   - "@LeonHafner"
+containers:
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/anndata_pandas_python_pyyaml:93d618c1024b5277
+      build_id: bd-93d618c1024b5277_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/4b/4b0f6f9c90d50393dcd95d4e81bbea5589f955451d85cd1de039efcc4ac20bdf/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_pandas_python_pyyaml:422ad17310d54a68
+      build_id: bd-422ad17310d54a68_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b9/b96b65e01abfc4d601ccf14c496c574a5a84dff839d5573cafcea7faa7beb6f6/data
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/anndata_pandas_python_pyyaml:9b9e216971a5f2f8
+      build_id: bd-9b9e216971a5f2f8_1
+      scan_id: sc-cbf8221a0fecddf3_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/anndata_pandas_python_pyyaml:02ea787e122713f6
+      build_id: bd-02ea787e122713f6_1
+      scan_id: sc-f1c17e3a39991260_1
+  conda:
+    linux/amd64:
+      lock_file: modules/nf-core/anndata/barcodes/.conda-lock/linux_amd64-bd-9b9e216971a5f2f8_1.txt
+    linux/arm64:
+      lock_file: modules/nf-core/anndata/barcodes/.conda-lock/linux_arm64-bd-02ea787e122713f6_1.txt

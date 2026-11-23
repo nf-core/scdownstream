@@ -3,9 +3,9 @@ process SCIBMETRICS_BENCHMARK {
     label 'process_high'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8b/8b13ed39eb063858c9b23aee83fa0fd7e27cbc0cb7820db0d94de42f6725f83a/data'
-:         'community.wave.seqera.io/library/python_pyyaml_pip_scib-metrics:9752793e315dcbf9' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/94/94a6bbf6b7f2c1bd7c17a6f6d9c7f195422c6cb160c352d6f08519fc1a4f1f3f/data'
+        : 'community.wave.seqera.io/library/python_pyyaml_pip_scib-metrics_umap-learn:a00d5755d869faef'}"
 
     input:
     tuple val(meta), path(h5ad, arity: 1)

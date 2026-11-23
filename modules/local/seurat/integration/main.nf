@@ -3,9 +3,9 @@ process SEURAT_INTEGRATION {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8b/8b3c0fee2536654dbfc05b399643856f6b1eda44acf9eca8800f727706c883b2/data'
-:         'community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-glmgampoi_bioconductor-rhdf5_r-seurat:f5ee10891a499019' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/fb/fb647de7ff8cc5faaf583245b76669275027c7d995411de017954be7dd0730f5/data'
+        : 'community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-glmgampoi_bioconductor-rhdf5_r-seurat:aee70380bfaeed8a'}"
 
     input:
     tuple val(meta), path(h5ad)
