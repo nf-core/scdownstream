@@ -33,7 +33,8 @@ nextflow_process {
                         process.out.metrics.collect{file(it[1]).name},
                         process.out.report.collect{file(it[1]).name},
                         process.out.pdf.collect{file(it[1]).name},
-                        process.out.log.collect{file(it[1]).name}
+                        process.out.log.collect{file(it[1]).name},
+                        process.out.checkpoint.collect{file(it[1]).name}
                     ).match()
                 }
             )

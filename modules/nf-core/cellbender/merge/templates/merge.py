@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 import platform
+import sys
+from importlib.metadata import version
+from pathlib import Path
 
 import anndata as ad
-import cellbender
 from cellbender.remove_background.downstream import load_anndata_from_input_and_output
 
 
@@ -49,7 +51,10 @@ adata.write_h5ad("${prefix}.h5ad", compression="gzip")
 
 # Versions
 
-versions = {"${task.process}": {"python": platform.python_version(), "cellbender": cellbender.__version__}}
+# The Bioconda 0.4.0 build retains the 0.3.2 Python distribution metadata.
+record = next(Path(sys.prefix, "conda-meta").glob("cellbender-*.json"), None)
+cellbender_version = record.stem.split("-")[1] if record else version("cellbender")
+versions = {"${task.process}": {"python": platform.python_version(), "cellbender": cellbender_version}}
 
 with open("versions.yml", "w") as f:
     f.write(format_yaml_like(versions))

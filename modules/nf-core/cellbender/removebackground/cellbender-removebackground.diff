@@ -1,0 +1,274 @@
+Changes in component 'nf-core/cellbender/removebackground'
+'modules/nf-core/cellbender/removebackground/environment.gpu.yml' was created
+Changes in 'cellbender/removebackground/main.nf':
+--- modules/nf-core/cellbender/removebackground/main.nf
++++ modules/nf-core/cellbender/removebackground/main.nf
+@@ -1,37 +1,40 @@
+ process CELLBENDER_REMOVEBACKGROUND {
+-    tag "$meta.id"
++    tag "${meta.id}"
+     label 'process_medium'
+     label 'process_long'
+     label 'process_gpu'
+ 
+-    conda "${moduleDir}/environment.yml"
+-    container "${ task.accelerator ? 'us.gcr.io/broad-dsde-methods/cellbender:0.3.2' :
+-        workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/eb/ebcf140f995f79fcad5c17783622e000550ff6f171771f9fc4233484ee6f63cf/data':
+-        'community.wave.seqera.io/library/cellbender_webcolors:156d413fdfc16cdb' }"
++    conda "${moduleDir}/${task.accelerator ? 'environment.gpu.yml' : 'environment.yml'}"
++    container "${task.accelerator
++        ? 'community.wave.seqera.io/library/cellbender_python_pytorch_cuda-version_webcolors:c8b51e8dfdbcd308'
++        : workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
++            ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5b/5b5c128de14d5f9ae914eeab43aea7aee2a0994f3a57fd98e1a1b6656df34d34/data'
++            : 'community.wave.seqera.io/library/cellbender_python_pytorch_webcolors:4643692df2dc7df0'}"
+ 
+     input:
+     tuple val(meta), path(h5ad)
+ 
+     output:
+-    tuple val(meta), path("${prefix}.h5")               , emit: h5
+-    tuple val(meta), path("${prefix}_filtered.h5")      , emit: filtered_h5
+-    tuple val(meta), path("${prefix}_posterior.h5")     , emit: posterior_h5
++    tuple val(meta), path("${prefix}.h5"), emit: h5
++    tuple val(meta), path("${prefix}_filtered.h5"), emit: filtered_h5
++    tuple val(meta), path("${prefix}_posterior.h5"), emit: posterior_h5
+     tuple val(meta), path("${prefix}_cell_barcodes.csv"), emit: barcodes
+-    tuple val(meta), path("${prefix}_metrics.csv")      , emit: metrics
+-    tuple val(meta), path("${prefix}_report.html")      , emit: report, optional: true
+-    tuple val(meta), path("${prefix}.pdf")              , emit: pdf
+-    tuple val(meta), path("${prefix}.log")              , emit: log
+-    tuple val(meta), path("ckpt.tar.gz")                , emit: checkpoint
+-    tuple val("${task.process}"), val('cellbender'), eval('cellbender --version'), emit: versions_cellbender, topic: versions
++    tuple val(meta), path("${prefix}_metrics.csv"), emit: metrics
++    tuple val(meta), path("${prefix}_report.html"), emit: report, optional: true
++    tuple val(meta), path("${prefix}.pdf"), emit: pdf
++    tuple val(meta), path("${prefix}.log"), emit: log
++    tuple val(meta), path("ckpt.tar.gz"), emit: checkpoint
++    // The Bioconda 0.4.0 build retains the 0.3.2 Python distribution metadata.
++    tuple val("${task.process}"), val('cellbender'), eval('python3 -c \'from importlib.metadata import version; from pathlib import Path; import sys; print(next((record.stem.split("-")[1] for record in Path(sys.prefix, "conda-meta").glob("cellbender-*.json")), version("cellbender")))\''), emit: versions_cellbender, topic: versions
+ 
+     when:
+-        task.ext.when == null || task.ext.when
++    task.ext.when == null || task.ext.when
++
+     script:
+-        prefix = task.ext.prefix ?: "${meta.id}"
+-        args = task.ext.args ?: ""
+-        use_gpu = task.accelerator ? "--cuda" : ""
+-        """
++    prefix = task.ext.prefix ?: "${meta.id}"
++    args = task.ext.args ?: ""
++    use_gpu = task.accelerator ? "--cuda" : ""
++    """
+         TMPDIR=. cellbender remove-background \
+             ${args} \
+             --cpu-threads ${task.cpus} \
+@@ -41,8 +44,8 @@
+         """
+ 
+     stub:
+-        prefix = task.ext.prefix ?: "${meta.id}"
+-        """
++    prefix = task.ext.prefix ?: "${meta.id}"
++    """
+         touch "${prefix}.h5"
+         touch "${prefix}_filtered.h5"
+         touch "${prefix}_posterior.h5"
+
+Changes in 'cellbender/removebackground/environment.yml':
+--- modules/nf-core/cellbender/removebackground/environment.yml
++++ modules/nf-core/cellbender/removebackground/environment.yml
+@@ -4,5 +4,7 @@
+   - conda-forge
+   - bioconda
+ dependencies:
+-  - bioconda::cellbender=0.3.2
++  - bioconda::cellbender=0.4.0
++  - conda-forge::python=3.12
++  - conda-forge::pytorch=2.10.0=cpu*
+   - conda-forge::webcolors=1.13
+
+Changes in 'cellbender/removebackground/meta.yml':
+--- modules/nf-core/cellbender/removebackground/meta.yml
++++ modules/nf-core/cellbender/removebackground/meta.yml
+@@ -119,7 +119,7 @@
+           type: file
+           description: Checkpoint file which contains the trained model and the
+             full posterior.
+-          pattern: "*.ckpt"
++          pattern: "ckpt.tar.gz"
+           ontologies: []
+   versions_cellbender:
+     - - ${task.process}:
+@@ -128,7 +128,7 @@
+       - cellbender:
+           type: string
+           description: The name of the tool
+-      - cellbender --version:
++      - "python3 -c 'from importlib.metadata import version; from pathlib import Path; import sys; print(next((record.stem.split(\"-\")[1] for record in Path(sys.prefix, \"conda-meta\").glob(\"cellbender-*.json\")), version(\"cellbender\")))'":
+           type: eval
+           description: The expression to obtain the version of the tool
+ topics:
+@@ -139,7 +139,7 @@
+       - cellbender:
+           type: string
+           description: The name of the tool
+-      - cellbender --version:
++      - "python3 -c 'from importlib.metadata import version; from pathlib import Path; import sys; print(next((record.stem.split(\"-\")[1] for record in Path(sys.prefix, \"conda-meta\").glob(\"cellbender-*.json\")), version(\"cellbender\")))'":
+           type: eval
+           description: The expression to obtain the version of the tool
+ authors:
+
+Changes in 'cellbender/removebackground/tests/gpu.nf.test':
+--- modules/nf-core/cellbender/removebackground/tests/gpu.nf.test
++++ modules/nf-core/cellbender/removebackground/tests/gpu.nf.test
+@@ -33,7 +33,8 @@
+                         process.out.metrics.collect{file(it[1]).name},
+                         process.out.report.collect{file(it[1]).name},
+                         process.out.pdf.collect{file(it[1]).name},
+-                        process.out.log.collect{file(it[1]).name}
++                        process.out.log.collect{file(it[1]).name},
++                        process.out.checkpoint.collect{file(it[1]).name}
+                     ).match()
+                 }
+             )
+
+Changes in 'cellbender/removebackground/tests/gpu.nf.test.snap':
+--- modules/nf-core/cellbender/removebackground/tests/gpu.nf.test.snap
++++ modules/nf-core/cellbender/removebackground/tests/gpu.nf.test.snap
+@@ -6,7 +6,7 @@
+                     [
+                         "CELLBENDER_REMOVEBACKGROUND",
+                         "cellbender",
+-                        "0.3.2"
++                        "0.4.0"
+                     ]
+                 ]
+             },
+@@ -33,12 +33,15 @@
+             ],
+             [
+                 "test.log"
++            ],
++            [
++                "ckpt.tar.gz"
+             ]
+         ],
+-        "timestamp": "2026-03-13T15:28:36.521030974",
++        "timestamp": "2026-11-23T16:22:40.744431993",
+         "meta": {
+             "nf-test": "0.9.4",
+-            "nextflow": "25.10.4"
++            "nextflow": "26.04.6"
+         }
+     },
+     "test_cellbender_removebackground - stub": {
+@@ -120,7 +123,7 @@
+                     [
+                         "CELLBENDER_REMOVEBACKGROUND",
+                         "cellbender",
+-                        "0.3.2"
++                        "0.4.0"
+                     ]
+                 ],
+                 "barcodes": [
+@@ -199,15 +202,15 @@
+                     [
+                         "CELLBENDER_REMOVEBACKGROUND",
+                         "cellbender",
+-                        "0.3.2"
++                        "0.4.0"
+                     ]
+                 ]
+             }
+         ],
+-        "timestamp": "2026-03-12T14:54:31.232109215",
++        "timestamp": "2026-11-23T16:23:03.106107659",
+         "meta": {
+             "nf-test": "0.9.4",
+-            "nextflow": "25.10.4"
++            "nextflow": "26.04.6"
+         }
+     }
+-}
+\ No newline at end of file
++}
+
+Changes in 'cellbender/removebackground/tests/main.nf.test':
+--- modules/nf-core/cellbender/removebackground/tests/main.nf.test
++++ modules/nf-core/cellbender/removebackground/tests/main.nf.test
+@@ -32,7 +32,8 @@
+                         process.out.metrics.collect{file(it[1]).name},
+                         process.out.report.collect{file(it[1]).name},
+                         process.out.pdf.collect{file(it[1]).name},
+-                        process.out.log.collect{file(it[1]).name}
++                        process.out.log.collect{file(it[1]).name},
++                        process.out.checkpoint.collect{file(it[1]).name}
+                     ).match()
+                 }
+             )
+
+'modules/nf-core/cellbender/removebackground/tests/epochs.config' is unchanged
+Changes in 'cellbender/removebackground/tests/main.nf.test.snap':
+--- modules/nf-core/cellbender/removebackground/tests/main.nf.test.snap
++++ modules/nf-core/cellbender/removebackground/tests/main.nf.test.snap
+@@ -6,7 +6,7 @@
+                     [
+                         "CELLBENDER_REMOVEBACKGROUND",
+                         "cellbender",
+-                        "0.3.2"
++                        "0.4.0"
+                     ]
+                 ]
+             },
+@@ -33,12 +33,15 @@
+             ],
+             [
+                 "test.log"
++            ],
++            [
++                "ckpt.tar.gz"
+             ]
+         ],
+-        "timestamp": "2026-03-13T15:30:56.645899744",
++        "timestamp": "2026-11-23T15:59:01.36256805",
+         "meta": {
+             "nf-test": "0.9.4",
+-            "nextflow": "25.10.4"
++            "nextflow": "26.04.6"
+         }
+     },
+     "test_cellbender_removebackground - stub": {
+@@ -120,7 +123,7 @@
+                     [
+                         "CELLBENDER_REMOVEBACKGROUND",
+                         "cellbender",
+-                        "0.3.2"
++                        "0.4.0"
+                     ]
+                 ],
+                 "barcodes": [
+@@ -199,15 +202,15 @@
+                     [
+                         "CELLBENDER_REMOVEBACKGROUND",
+                         "cellbender",
+-                        "0.3.2"
++                        "0.4.0"
+                     ]
+                 ]
+             }
+         ],
+-        "timestamp": "2026-03-12T14:56:46.093356987",
++        "timestamp": "2026-11-23T15:51:15.22024215",
+         "meta": {
+             "nf-test": "0.9.4",
+-            "nextflow": "25.10.4"
++            "nextflow": "26.04.6"
+         }
+     }
+-}
+\ No newline at end of file
++}
+
+************************************************************

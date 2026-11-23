@@ -119,7 +119,7 @@ output:
           type: file
           description: Checkpoint file which contains the trained model and the
             full posterior.
-          pattern: "*.ckpt"
+          pattern: "ckpt.tar.gz"
           ontologies: []
   versions_cellbender:
     - - ${task.process}:
@@ -128,7 +128,7 @@ output:
       - cellbender:
           type: string
           description: The name of the tool
-      - cellbender --version:
+      - "python3 -c 'from importlib.metadata import version; from pathlib import Path; import sys; print(next((record.stem.split(\"-\")[1] for record in Path(sys.prefix, \"conda-meta\").glob(\"cellbender-*.json\")), version(\"cellbender\")))'":
           type: eval
           description: The expression to obtain the version of the tool
 topics:
@@ -139,7 +139,7 @@ topics:
       - cellbender:
           type: string
           description: The name of the tool
-      - cellbender --version:
+      - "python3 -c 'from importlib.metadata import version; from pathlib import Path; import sys; print(next((record.stem.split(\"-\")[1] for record in Path(sys.prefix, \"conda-meta\").glob(\"cellbender-*.json\")), version(\"cellbender\")))'":
           type: eval
           description: The expression to obtain the version of the tool
 authors:
