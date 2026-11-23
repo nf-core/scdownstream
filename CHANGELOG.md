@@ -9,6 +9,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
+- Use Scanpy 1.13's native BBKNN for batch integration, by @nictru and Codex. The neighbour search can produce different graph edges and Leiden clusters. [#415](https://github.com/nf-core/scdownstream/issues/415)
 - Refresh local module Conda environments and update patched AnnData Barcodes, Quarto, Scrublet and GNU tar containers and locks, by @nictru and Codex.
 - Disable the QC report in the AWS `test_full` profile, by @nictru and Codex [[#417](https://github.com/nf-core/scdownstream/pull/417)].
 - Share container images across compatible Scanpy, AnnData, LIANA, Cell2Cell, edgePython and decoupler modules, and use a smaller CPU image for SCimilarity, by @nictru and Codex.
