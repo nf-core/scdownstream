@@ -42,9 +42,9 @@ The pipeline-wide test-data base URL points to `nictru/test-datasets`, branch `s
 
 Doublet call, score and merge regressions use the additive tables in `intermediates/doublet_detection/regressions/`. Their generator retains the original synthetic call values, reordered indices, missing scores and malformed inputs. The installed scDblFinder module emits indexed Parquet predictions and native score/class tables; QC finalisation attaches the selected cells without changing vote semantics.
 
-scVI, scANVI, scAR and SOLO share environments with scvi-tools 1.5.2 and Python 3.12. The CPU environment uses CPU-only PyTorch and PyArrow 21. The GPU environment uses PyTorch 2.7.1 and CUDA 12.6. PyArrow 20 shares the native-library ABI required by this PyTorch build. GPU hosts require a CUDA 12.6-compatible NVIDIA driver.
+scVI, scANVI, scAR and SOLO share environments with scvi-tools 1.5.2, Python 3.12 and PyArrow 21. The CPU environment uses CPU-only PyTorch. The GPU environment uses PyTorch 2.14.1 and the CUDA 13.5 runtime. PyTorch was compiled with CUDA 13.4, which is the version reported by `torch.version.cuda` in the tasks' software version files.
 
-Run `nf-core modules containers create scvitools/scvi --force` to build the CPU images from `environment.yml`. Reuse the images and Conda locks across all four modules. Build `environment.gpu.yml` separately with Wave's `conda/micromamba:v2` template. The amd64 GPU Docker build is `bd-51340fc6196e0b48_1` and the SIF build is `bd-aacdb2207b03a217_1`. Each GPU image records its resolved packages in `/opt/conda/conda-meta`.
+Run `nf-core modules containers create scvitools/scvi --force` to build the CPU images from `environment.yml`. Reuse the images and Conda locks across all four modules. Build `environment.gpu.yml` separately in Wave. The amd64 GPU Docker build is `bd-464699c5a58f81e5_1` with `conda/micromamba:v2-fast`. The SIF build is `bd-250ccf1c17e84546_1` with `conda/micromamba:v2`. Each GPU image records its resolved packages in `/opt/conda/conda-meta`.
 
 The nf-core builder rewrites the whole `container` directive. Restore the `task.accelerator` branches after a rebuild so the modules select the GPU image and Conda environment when an accelerator is requested. The architecture-specific container configuration files describe CPU images. SCimilarity images support amd64 only.
 

@@ -512,8 +512,8 @@ If you encounter any issues, please report them on the [nf-core/scdownstream Git
 - GPU acceleration has only been tested with Docker, Singularity and Apptainer.
   - Other container technologies might work, but have not been tested.
   - Conda is not supported.
-- CUDA 12.0 or later is required.
-- The NVIDIA GPUs must have a [Compute Capability](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#compute-capabilities) of 7.0 or higher.
+- scVI, scANVI, scAR and SOLO use the CUDA 13.5 runtime. Use a Turing or newer NVIDIA GPU with compute capability 7.5 or higher. NVIDIA drivers from the R620 branch onwards provide full CUDA 13.5 support. Earlier CUDA 13 drivers can run compatible workloads. [NVIDIA architecture matrix](https://docs.nvidia.com/datacenter/tesla/drivers/latest/cuda-toolkit-driver-and-architecture-matrix.html) and [minor version compatibility](https://docs.nvidia.com/deploy/cuda-compatibility/latest/minor-version-compatibility.html).
+- CellBender requires CUDA 12.0 or later and an NVIDIA GPU with compute capability 7.0 or higher.
 - ROCM is currently unsupported
 
 :::

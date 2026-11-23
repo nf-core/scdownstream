@@ -6,10 +6,10 @@ process SCVITOOLS_SCVI {
     conda "${moduleDir}/${task.accelerator ? 'environment.gpu.yml' : 'environment.yml'}"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? (task.accelerator
-            ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/07/0703860e978cf8a1f420cd6f39a5d32a3e3bb255fbf547ae47f673ebc5b76fbe/data'
+            ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/e5/e540b6f973a9c9df3be718e7c44ffcf3f99adda72f590fc81b9e1ab97391bd86/data'
             : 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/48/4867a52f4a6f4a5216a3c21e2aead3f7eee65495b517c7b332e3bdf8cea13b30/data')
         : (task.accelerator
-            ? 'community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-gpu_cuda-version@sha256:069836e30ad5879e2ca3d2fc1c0904fdbff649add0cd19ac3c31afddc55aee4e'
+            ? 'community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-gpu_cuda-version@sha256:97f5d24fd2caa16ca7ac5b8aa1f65ac5a47f31a1e23bf6dec3a8531564eee305'
             : 'community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-cpu:f0c65d8a2e3eacb6')}"
 
     input:
