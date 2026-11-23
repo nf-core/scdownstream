@@ -10,6 +10,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 ### `Changed`
 
 - Upgrade CellBender to 0.4.0 on Python 3.12 and rebuild the CPU and CUDA images, by @nictru and Codex [[#413](https://github.com/nf-core/scdownstream/issues/413)].
+- Update the shared CPU and CUDA environments for scVI, scANVI, scAR and SOLO to scvi-tools 1.5.2 and move the GPU runtime to CUDA 13.5, by @nictru and Codex [[#412](https://github.com/nf-core/scdownstream/issues/412)].
 - Refresh local module Conda environments and update patched AnnData Barcodes, Quarto, Scrublet and GNU tar containers and locks, by @nictru and Codex.
 - Disable the QC report in the AWS `test_full` profile, by @nictru and Codex [[#417](https://github.com/nf-core/scdownstream/pull/417)].
 - Share container images across compatible Scanpy, AnnData, LIANA, Cell2Cell, edgePython and decoupler modules, and use a smaller CPU image for SCimilarity, by @nictru and Codex.

@@ -42,9 +42,11 @@ The pipeline-wide test-data base URL points to `nictru/test-datasets`, branch `s
 
 Doublet call, score and merge regressions use the additive tables in `intermediates/doublet_detection/regressions/`. Their generator retains the original synthetic call values, reordered indices, missing scores and malformed inputs. The installed scDblFinder module emits indexed Parquet predictions and native score/class tables; QC finalisation attaches the selected cells without changing vote semantics.
 
-The scVI, scANVI, and SOLO GPU environments pin scvi-tools 1.4.3, PyTorch 2.7.1, CUDA 12.6, and PyArrow 20.0.0. PyArrow 20 shares the native-library ABI required by this PyTorch build. Build these environments with Wave's `conda/micromamba:v2` template. GPU hosts require a CUDA 12.6-compatible NVIDIA driver. Versions files record the PyTorch and CUDA runtime versions.
+scVI, scANVI, scAR and SOLO share environments with scvi-tools 1.5.2, Python 3.12 and PyArrow 21. The CPU environment uses CPU-only PyTorch. The GPU environment uses PyTorch 2.14.1 and the CUDA 13.5 runtime. PyTorch was compiled with CUDA 13.4, which is the version reported by `torch.version.cuda` in the tasks' software version files.
 
-The GPU Docker build is `bd-584fe751b01e29a0_1`; its [generated Conda lock](https://wave.seqera.io/v1alpha1/builds/bd-584fe751b01e29a0_1/condalock) records the complete environment. The SIF build is `bd-acaeb49b208c5044_1`. Module directives select immutable GPU image references when an accelerator is requested. The architecture-specific container configuration files describe CPU images. SCimilarity images support amd64 only.
+Run `nf-core modules containers create scvitools/scvi --force` to build the CPU images from `environment.yml`. Reuse the images and Conda locks across all four modules. Build `environment.gpu.yml` separately in Wave. The amd64 GPU Docker build is `bd-464699c5a58f81e5_1` with `conda/micromamba:v2-fast`. The SIF build is `bd-250ccf1c17e84546_1` with `conda/micromamba:v2`. Each GPU image records its resolved packages in `/opt/conda/conda-meta`.
+
+The nf-core builder rewrites the whole `container` directive. Restore the `task.accelerator` branches after a rebuild so the modules select the GPU image and Conda environment when an accelerator is requested. The architecture-specific container configuration files describe CPU images. SCimilarity images support amd64 only.
 
 Scrublet pins PyNNDescent 0.5.13. Scanpy 1.11.2 requires sparse matrices and cannot read the sparse arrays returned by PyNNDescent 0.7.
 
