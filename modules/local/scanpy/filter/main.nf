@@ -3,9 +3,9 @@ process SCANPY_FILTER {
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/38/386e532a346d91ce6e59118da064b9367024f807fb7a52d1e13457a0d01107f2/data'
-:         'community.wave.seqera.io/library/python_pyyaml_scanpy:ab265932a4ff2ebf' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c4/c43892b5ea2991c98bd69e6da333b902a1e54635e24ca2cf3fd4c5972efb4384/data'
+        : 'community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:e5a54bd2b6c9720d'}"
 
     input:
     tuple val(meta), path(h5ad)
@@ -26,9 +26,9 @@ process SCANPY_FILTER {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path "${prefix}_qc_histograms.png"     , emit: plots, optional: true
+    path "${prefix}_qc_histograms.png", emit: plots, optional: true
     path "${prefix}_qc_histograms_mqc.json", emit: multiqc_files, optional: true
-    path "versions.yml"                    , emit: versions, topic: versions
+    path "versions.yml", emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
