@@ -73,23 +73,23 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-dropletutils_bioconductor-rhdf5_bioconductor-singlecellexperiment:9ed65c113a8ecbc7
-      build_id: bd-9ed65c113a8ecbc7_1
-      scan_id: sc-b348183a781b0fb1_1
     linux/amd64:
-      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-dropletutils_bioconductor-rhdf5_bioconductor-singlecellexperiment:1a7241b7686e28be
-      build_id: bd-1a7241b7686e28be_1
-      scan_id: sc-37968ab855ebc6b8_1
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-dropletutils_bioconductor-rhdf5_bioconductor-singlecellexperiment:2b198d4d68c1a6e0
+      build_id: bd-2b198d4d68c1a6e0_1
+      scan_id: sc-044bdf970726ee8f_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-dropletutils_bioconductor-rhdf5_bioconductor-singlecellexperiment:5675e860623fe5a3
+      build_id: bd-5675e860623fe5a3_1
+      scan_id: sc-300e928b58f4559c_1
   singularity:
-    linux/arm64:
-      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-dropletutils_bioconductor-rhdf5_bioconductor-singlecellexperiment:9fd2d4eba761df03
-      build_id: bd-9fd2d4eba761df03_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/43/43402e8bd9bf2e07a9b07abda0bd7810b5f91afbd5c865809c4917dbe0c9dbee/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-dropletutils_bioconductor-rhdf5_bioconductor-singlecellexperiment:309d86bb8ef57fd6
-      build_id: bd-309d86bb8ef57fd6_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/24/24bb1be29bfea3307665b3f1f1d294e3a35f871ee55f1728d4ec63c585fa755a/data
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-dropletutils_bioconductor-rhdf5_bioconductor-singlecellexperiment:ecefe38694fd9cec
+      build_id: bd-ecefe38694fd9cec_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a7/a793e5c432cc0bc8e7a739507b666e9e1739b74af56d04637200bd5aab343428/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-dropletutils_bioconductor-rhdf5_bioconductor-singlecellexperiment:a532133a11196b18
+      build_id: bd-a532133a11196b18_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/e6/e673ea29922a06ad01fb336f02019b679b037bae278c23bc173bf4a4d1fcd747/data
   conda:
     linux/amd64:
-      lock_file: modules/local/dropletutils/emptydrops/.conda-lock/linux_amd64-bd-1a7241b7686e28be_1.txt
+      lock_file: modules/local/dropletutils/emptydrops/.conda-lock/linux_amd64-bd-2b198d4d68c1a6e0_1.txt

@@ -52,25 +52,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/amd64:
-      name: community.wave.seqera.io/library/custom_volcanoplot:2e9b936eb387e94b
-      build_id: bd-2e9b936eb387e94b_1
-      scan_id: sc-b8e50c9ee01374be_1
     linux/arm64:
-      name: community.wave.seqera.io/library/custom_volcanoplot:95530ba1bf8246ab
-      build_id: bd-95530ba1bf8246ab_1
-      scan_id: sc-0bc0a0fe83302d10_1
+      name: community.wave.seqera.io/library/custom_volcanoplot:097471666c14b596
+      build_id: bd-097471666c14b596_1
+      scan_id: sc-1fae1338ca2a681b_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/custom_volcanoplot:e48a150a600cf34e
+      build_id: bd-e48a150a600cf34e_1
+      scan_id: sc-277be47a5ccf8e2f_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/custom_volcanoplot:d0d5d79072571390
-      build_id: bd-d0d5d79072571390_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/23/2367404f0aa4c23d7e0c15e24ccc53444bb650fbae12282a680db6c6ad3bdfbb/data
+      name: oras://community.wave.seqera.io/library/custom_volcanoplot:fe889d557341939b
+      build_id: bd-fe889d557341939b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cc/cc2d6cdfb068de5519b9618e66fb77b3efc5866af2fb129d19d769e25b4572d3/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/custom_volcanoplot:785fffb0d3b9ba23
-      build_id: bd-785fffb0d3b9ba23_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ff/ff14c36004d385f3759c9ca56d5c8fff6109217f01bd38e71a03c2366ffd73b2/data
+      name: oras://community.wave.seqera.io/library/custom_volcanoplot:ec924e18fe85e157
+      build_id: bd-ec924e18fe85e157_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/71/71dbbe851be8d2182ac34037f10b9c653b2de08e5bed350e787aedd40b29f483/data
   conda:
     linux/amd64:
-      lock_file: modules/local/custom/volcanoplot/.conda-lock/linux_amd64-bd-2e9b936eb387e94b_1.txt
+      lock_file: modules/local/custom/volcanoplot/.conda-lock/linux_amd64-bd-e48a150a600cf34e_1.txt
     linux/arm64:
-      lock_file: modules/local/custom/volcanoplot/.conda-lock/linux_arm64-bd-95530ba1bf8246ab_1.txt
+      lock_file: modules/local/custom/volcanoplot/.conda-lock/linux_arm64-bd-097471666c14b596_1.txt

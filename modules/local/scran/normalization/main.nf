@@ -3,9 +3,9 @@ process SCRAN_NORMALIZATION {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0b/0b2b49fe343301d4aa2eb471d77a86b7d20be65804b6dca5294b212594abd6b5/data'
-        : 'community.wave.seqera.io/library/bioconductor-scran_bioconductor-scater_bioconductor-anndatar_bioconductor-singlecellexperiment_bioconductor-rhdf5:88502e87f79b51e8' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/67/671219a6661beb49512cf4183cf8e342435e85bfa37d70aa94fde6017c5b4988/data'
+        : 'community.wave.seqera.io/library/bioconductor-scran_bioconductor-scuttle_bioconductor-scater_bioconductor-anndatar_pruned:d1de453471200309'}"
 
     input:
     tuple val(meta), path(h5ad)

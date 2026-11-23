@@ -76,25 +76,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:12a05c1431d0cdbf
-      build_id: bd-12a05c1431d0cdbf_1
-      scan_id: sc-6b73cd48d5ed222a_1
     linux/amd64:
-      name: community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:8ae6d8fe5bbb7f27
-      build_id: bd-8ae6d8fe5bbb7f27_1
-      scan_id: sc-c0b57746c0d79bd1_1
+      name: community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:fde96b9090e78ef3
+      build_id: bd-fde96b9090e78ef3_1
+      scan_id: sc-6be3d12013aea486_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:3fa062003ea9a5ea
+      build_id: bd-3fa062003ea9a5ea_1
+      scan_id: sc-e512e6ccc352d866_1
   singularity:
-    linux/amd64:
-      name: oras://community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:37b6442200af9720
-      build_id: bd-37b6442200af9720_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a1/a1a4314410c6873256e1d8ea48599a0e328dcee9b0317897bae4b38c426bf686/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:285d1364c22e0605
-      build_id: bd-285d1364c22e0605_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/be/be3b9fbac55baeb78ceba26db53b2cfb2d75ad4c777a4da388f57865f6af5fad/data
+      name: oras://community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:13ec92fc9cd849db
+      build_id: bd-13ec92fc9cd849db_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d4/d44cedcdb790203b6a3b831d82acf68afa0a9982a74919c3a162bc988e8ce024/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:27d46ed5f6efaaa2
+      build_id: bd-27d46ed5f6efaaa2_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/60/60317d7f1b9e254e4d77eed992c87f833e6ae562ced9b20ad7678805783e6688/data
   conda:
     linux/amd64:
-      lock_file: modules/local/cytetype/.conda-lock/linux_amd64-bd-8ae6d8fe5bbb7f27_1.txt
+      lock_file: modules/local/cytetype/.conda-lock/linux_amd64-bd-fde96b9090e78ef3_1.txt
     linux/arm64:
-      lock_file: modules/local/cytetype/.conda-lock/linux_arm64-bd-12a05c1431d0cdbf_1.txt
+      lock_file: modules/local/cytetype/.conda-lock/linux_arm64-bd-3fa062003ea9a5ea_1.txt

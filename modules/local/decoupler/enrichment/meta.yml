@@ -74,25 +74,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/amd64:
-      name: community.wave.seqera.io/library/decoupler_activity:8d8ed42929b0d74b
-      build_id: bd-8d8ed42929b0d74b_1
-      scan_id: sc-294379e7523fe283_1
     linux/arm64:
-      name: community.wave.seqera.io/library/decoupler_activity:abd74ab6556bda11
-      build_id: bd-abd74ab6556bda11_1
-      scan_id: sc-baf09d6d40128a95_1
+      name: community.wave.seqera.io/library/decoupler_activity:fda7b9a6e6c0db56
+      build_id: bd-fda7b9a6e6c0db56_1
+      scan_id: sc-2603ea55a5a719a2_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/decoupler_activity:374661b94d4383e8
+      build_id: bd-374661b94d4383e8_1
+      scan_id: sc-ad54c01537f3fe61_1
   singularity:
-    linux/arm64:
-      name: oras://community.wave.seqera.io/library/decoupler_activity:73184d342e03c6e0
-      build_id: bd-73184d342e03c6e0_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/3e/3e84eb2fae9159846aa779beb88d658d1bb0fb12ac2abb21cd9705cf46ed82bd/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/decoupler_activity:3f239e06651226ff
-      build_id: bd-3f239e06651226ff_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5c/5ca309507e02db5a619c02a9d8bb1d5b969ef6a815cceca6693784ee7fd061ec/data
+      name: oras://community.wave.seqera.io/library/decoupler_activity:ec512499390e5b9e
+      build_id: bd-ec512499390e5b9e_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d2/d2821b036063d6024ae937e9f6cbc1b777333ac3bdcca793f68e1fbe868ae976/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/decoupler_activity:08e24ca914449df6
+      build_id: bd-08e24ca914449df6_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/60/60c36450acec567b276051feff928ae59919992c656ac09728ab8433b7f9d56d/data
   conda:
     linux/amd64:
-      lock_file: modules/local/decoupler/enrichment/.conda-lock/linux_amd64-bd-8d8ed42929b0d74b_1.txt
+      lock_file: modules/local/decoupler/enrichment/.conda-lock/linux_amd64-bd-374661b94d4383e8_1.txt
     linux/arm64:
-      lock_file: modules/local/decoupler/enrichment/.conda-lock/linux_arm64-bd-abd74ab6556bda11_1.txt
+      lock_file: modules/local/decoupler/enrichment/.conda-lock/linux_arm64-bd-fda7b9a6e6c0db56_1.txt

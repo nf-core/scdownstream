@@ -3,9 +3,9 @@ process ADATA_SETINDEX {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/de/de2455bdcbc53723a8d942ffb0dec7559690ef4bea6b380fea2edba7c5d637b9/data'
-:         'community.wave.seqera.io/library/anndata_python_pyyaml:e77bb4f393d60a08' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/37/378d6d9781b5231390b501a6c1c89576dd3ca8c19f6634a0325793c05ded8901/data'
+        : 'community.wave.seqera.io/library/anndata_python_pyyaml:f7811e63d92e9821'}"
 
     input:
     tuple val(meta), path(h5ad)
@@ -14,7 +14,7 @@ process ADATA_SETINDEX {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
-    path "versions.yml"                    , emit: versions, topic: versions
+    path "versions.yml", emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when

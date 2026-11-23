@@ -3,9 +3,9 @@ process CUSTOM_VOLCANOPLOT {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/23/2367404f0aa4c23d7e0c15e24ccc53444bb650fbae12282a680db6c6ad3bdfbb/data':
-        'community.wave.seqera.io/library/custom_volcanoplot:2e9b936eb387e94b' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cc/cc2d6cdfb068de5519b9618e66fb77b3efc5866af2fb129d19d769e25b4572d3/data'
+        : 'community.wave.seqera.io/library/custom_volcanoplot:e48a150a600cf34e'}"
 
     input:
     tuple val(meta), path(parquet)

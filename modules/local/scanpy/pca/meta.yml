@@ -57,25 +57,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/amd64:
-      name: community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:085892d5c5a30e57
-      build_id: bd-085892d5c5a30e57_1
-      scan_id: sc-011cb60add0031c2_1
     linux/arm64:
-      name: community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:58bafa6e3d6796d2
-      build_id: bd-58bafa6e3d6796d2_1
-      scan_id: sc-c166630796b0a9b8_1
+      name: community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:cb1e83352ea4f54d
+      build_id: bd-cb1e83352ea4f54d_1
+      scan_id: sc-285088e7ce92a519_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:8631c4d5e6493952
+      build_id: bd-8631c4d5e6493952_1
+      scan_id: sc-beb736d6d7bf19bc_1
   singularity:
-    linux/amd64:
-      name: oras://community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:2f9816b892520cdc
-      build_id: bd-2f9816b892520cdc_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/04/04307b777a83d13f004023a046a677adc1c444edcae99a1232cc5b82e88968df/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:e8e1c729f0a0eb27
-      build_id: bd-e8e1c729f0a0eb27_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/14/14fe67fb2719321f142025e25959940fb5ab88735eea3738ab08327fbbe5bffb/data
+      name: oras://community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:8c31549912a97f29
+      build_id: bd-8c31549912a97f29_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/27/27ae12964eb6a32fa4d6d740b571834c665bc71114977c1bfb019da3bf15e83e/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:88268f259d494ca3
+      build_id: bd-88268f259d494ca3_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8f/8f8e43bfea40f384db72a635038d6dfa776155850b820ae063a3ab458957b561/data
   conda:
     linux/amd64:
-      lock_file: modules/local/scanpy/pca/.conda-lock/linux_amd64-bd-085892d5c5a30e57_1.txt
+      lock_file: modules/local/scanpy/pca/.conda-lock/linux_amd64-bd-8631c4d5e6493952_1.txt
     linux/arm64:
-      lock_file: modules/local/scanpy/pca/.conda-lock/linux_arm64-bd-58bafa6e3d6796d2_1.txt
+      lock_file: modules/local/scanpy/pca/.conda-lock/linux_arm64-bd-cb1e83352ea4f54d_1.txt

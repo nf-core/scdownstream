@@ -53,24 +53,24 @@ maintainers:
 containers:
   docker:
     linux/amd64:
-      name: community.wave.seqera.io/library/pip_hugo-unifier:559c1bb3b4aa3398
-      build_id: bd-559c1bb3b4aa3398_1
-      scan_id: sc-6038eac8f5682ec0_2
+      name: community.wave.seqera.io/library/hugo_unifier:2a5a3fafb4d2834f
+      build_id: bd-2a5a3fafb4d2834f_1
+      scan_id: sc-df8143489372ca92_1
     linux/arm64:
-      name: community.wave.seqera.io/library/pip_hugo-unifier:7f38d07e2bd2533f
-      build_id: bd-7f38d07e2bd2533f_1
-      scan_id: sc-1a31fe62ed42ffcc_2
+      name: community.wave.seqera.io/library/hugo_unifier:d340c5ce3cf0da0a
+      build_id: bd-d340c5ce3cf0da0a_1
+      scan_id: sc-f471da45a476bd03_1
   singularity:
-    linux/amd64:
-      name: oras://community.wave.seqera.io/library/pip_hugo-unifier:ed3394b1215b5018
-      build_id: bd-ed3394b1215b5018_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1f/1fea37c351cbec51dc375e5778be550a5378f842ebdc816c69ff8d7d15c4b8ee/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/pip_hugo-unifier:a8600ca75fe2638f
-      build_id: bd-a8600ca75fe2638f_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/85/8582151f42fb1e528aa81b41124085363160b8f58b4c6d23fa51de2c4ac2f231/data
+      name: oras://community.wave.seqera.io/library/hugo_unifier:b88c307cc56377b7
+      build_id: bd-b88c307cc56377b7_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/10/10a350aa11c3f740df1a2f2db46dd348257f81b1efabf0c46399d029e63f85db/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/hugo_unifier:0f7c9a694ac9a856
+      build_id: bd-0f7c9a694ac9a856_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7d/7d0d8604f4681d37b46850871efd733be8206df7088100a4020f1860a9cea1c1/data
   conda:
     linux/amd64:
-      lock_file: modules/local/hugounifier/apply/.conda-lock/linux_amd64-bd-559c1bb3b4aa3398_1.txt
+      lock_file: modules/local/hugounifier/apply/.conda-lock/linux_amd64-bd-2a5a3fafb4d2834f_1.txt
     linux/arm64:
-      lock_file: modules/local/hugounifier/apply/.conda-lock/linux_arm64-bd-7f38d07e2bd2533f_1.txt
+      lock_file: modules/local/hugounifier/apply/.conda-lock/linux_arm64-bd-d340c5ce3cf0da0a_1.txt

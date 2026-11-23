@@ -6,8 +6,8 @@ process CYTETYPE {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a1/a1a4314410c6873256e1d8ea48599a0e328dcee9b0317897bae4b38c426bf686/data'
-        : 'community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:8ae6d8fe5bbb7f27'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/60/60317d7f1b9e254e4d77eed992c87f833e6ae562ced9b20ad7678805783e6688/data'
+        : 'community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:fde96b9090e78ef3'}"
 
     input:
     tuple val(meta), path(h5ad, stageAs: 'input.h5ad')

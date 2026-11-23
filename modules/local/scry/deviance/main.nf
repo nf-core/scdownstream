@@ -4,8 +4,8 @@ process SCRY_DEVIANCE {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/fa/fa26049356fd90f487d0dc0bb8f2491a83e4925696ab6152b3b4c9a87e99c8aa/data'
-        : 'community.wave.seqera.io/library/bioconductor-scry_bioconductor-anndatar_bioconductor-singlecellexperiment_bioconductor-rhdf5_r-arrow:2ef29b12964503c9'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/45/45901e03bd44949ad5b11dea802579c7e1d18638086281fcc26202d9db7537f4/data'
+        : 'community.wave.seqera.io/library/scry_deviance:6d5e52d3e9cc908f'}"
 
     input:
     tuple val(meta), path(h5ad)

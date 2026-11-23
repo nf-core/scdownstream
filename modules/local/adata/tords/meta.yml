@@ -56,25 +56,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-rhdf5_bioconductor-singlecellexperiment:4536d1d3eeed2542
-      build_id: bd-4536d1d3eeed2542_1
-      scan_id: sc-88ff6f257712cf15_2
     linux/amd64:
-      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-rhdf5_bioconductor-singlecellexperiment:7f4fd121bcbeb705
-      build_id: bd-7f4fd121bcbeb705_1
-      scan_id: sc-f89a3464c851718b_2
+      name: community.wave.seqera.io/library/adata_tords:221549603ba837e4
+      build_id: bd-221549603ba837e4_1
+      scan_id: sc-c68468b3d22ef524_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/adata_tords:295ac9110561519d
+      build_id: bd-295ac9110561519d_1
+      scan_id: sc-a3380a238eed5bfa_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-rhdf5_bioconductor-singlecellexperiment:1a865f9d6b840c65
-      build_id: bd-1a865f9d6b840c65_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/63/63ce18f987c08fe48ed9a5ec7fee64561a63297771bda7bcb6d9f591162be4c3/data
+      name: oras://community.wave.seqera.io/library/adata_tords:6f17165477507c25
+      build_id: bd-6f17165477507c25_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c0/c002326219227ab9a82df4eb816e1883417716ec2c51193c77ecf4ecb8e967f2/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-rhdf5_bioconductor-singlecellexperiment:ce2194e4f5c6255b
-      build_id: bd-ce2194e4f5c6255b_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/2d/2d4d29d7ed9cf3cc735c979edd8f16ba7b8ea3b7daae545e431d187c34cb1e31/data
+      name: oras://community.wave.seqera.io/library/adata_tords:85427364a47b0dc9
+      build_id: bd-85427364a47b0dc9_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/83/831fa87bb1225fb759aee8ccdbf8de6533dfe79e786ac6b76d937d9921ea0ce0/data
   conda:
     linux/amd64:
-      lock_file: modules/local/adata/tords/.conda-lock/linux_amd64-bd-7f4fd121bcbeb705_1.txt
+      lock_file: modules/local/adata/tords/.conda-lock/linux_amd64-bd-221549603ba837e4_1.txt
     linux/arm64:
-      lock_file: modules/local/adata/tords/.conda-lock/linux_arm64-bd-4536d1d3eeed2542_1.txt
+      lock_file: modules/local/adata/tords/.conda-lock/linux_arm64-bd-295ac9110561519d_1.txt

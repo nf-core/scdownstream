@@ -89,25 +89,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/amd64:
-      name: community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:61fca9c6cc777dbd
-      build_id: bd-61fca9c6cc777dbd_1
-      scan_id: sc-2e6860b02cb617d4_1
     linux/arm64:
-      name: community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:4584616d15667118
-      build_id: bd-4584616d15667118_1
-      scan_id: sc-24cbfcd63153b452_1
+      name: community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:8deec9eceac0d7e4
+      build_id: bd-8deec9eceac0d7e4_1
+      scan_id: sc-0c7dfdfb278c8c3d_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:c3db4c55d39c6c42
+      build_id: bd-c3db4c55d39c6c42_1
+      scan_id: sc-36f7c838f859ca41_1
   singularity:
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:7a3ebfb126b662b4
-      build_id: bd-7a3ebfb126b662b4_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f0/f03b12f59d8a38e44e4c10d3b7a1010041803e52a203d5c3286bce12b33ffe28/data
+      name: oras://community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:0a61763ccc06bd65
+      build_id: bd-0a61763ccc06bd65_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/2f/2f553feb2c9ac1149defe1f6307fd8921872957e8b0f4b31751920d803da2471/data
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:c32cf499acc2a9e1
-      build_id: bd-c32cf499acc2a9e1_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/55/55793d59d44561220c30d452be72676fef81e5f6fd2960a6d8c01be42a1c7fb1/data
+      name: oras://community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:6004f0e31aad583c
+      build_id: bd-6004f0e31aad583c_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/4d/4dbef80fcffbe66c36735d47a9d39d57c4f2b77ae204d60947c2ca11e2972541/data
   conda:
     linux/amd64:
-      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_amd64-bd-61fca9c6cc777dbd_1.txt
+      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_amd64-bd-c3db4c55d39c6c42_1.txt
     linux/arm64:
-      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_arm64-bd-4584616d15667118_1.txt
+      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_arm64-bd-8deec9eceac0d7e4_1.txt

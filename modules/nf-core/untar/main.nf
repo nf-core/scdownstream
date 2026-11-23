@@ -4,8 +4,8 @@ process UNTAR {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/52/52ccce28d2ab928ab862e25aae26314d69c8e38bd41ca9431c67ef05221348aa/data'
-        : 'community.wave.seqera.io/library/coreutils_grep_gzip_lbzip2_pruned:838ba80435a629f8'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b3/b3e95bd734db6862fb2c320f2cdfcf6bc79550ad82326144ff3b2f7fec3dc6a2/data'
+        : 'community.wave.seqera.io/library/coreutils_grep_gzip_lbzip2_pruned:75de417642c556ca'}"
 
     input:
     tuple val(meta), path(archive)
