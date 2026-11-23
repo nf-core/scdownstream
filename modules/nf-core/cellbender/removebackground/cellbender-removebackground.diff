@@ -17,7 +17,7 @@ Changes in 'cellbender/removebackground/main.nf':
 -        'community.wave.seqera.io/library/cellbender_webcolors:156d413fdfc16cdb' }"
 +    conda { task.accelerator ? "${moduleDir}/../../../../conf/cellbender_gpu_environment.yml" : "${moduleDir}/environment.yml" }
 +    container "${task.accelerator
-+        ? 'community.wave.seqera.io/library/cellbender_python_pytorch_webcolors:5cff66ffa79f5d4f'
++        ? 'community.wave.seqera.io/library/cellbender_python_pytorch_cuda-version_webcolors:c8b51e8dfdbcd308'
 +        : workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
 +            ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5b/5b5c128de14d5f9ae914eeab43aea7aee2a0994f3a57fd98e1a1b6656df34d34/data'
 +            : 'community.wave.seqera.io/library/cellbender_python_pytorch_webcolors:4643692df2dc7df0'}"
