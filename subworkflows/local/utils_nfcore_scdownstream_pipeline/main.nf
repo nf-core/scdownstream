@@ -419,16 +419,14 @@ def validateInputParameters() {
         if (!params.scconcept_model?.trim()) {
             throw new Exception("scConcept requires --scconcept_model to point to the pinned model files.")
         }
-        if (is_extension) {
-            throw new Exception("scConcept does not support extending an existing atlas with --base_adata.")
-        }
         if (params.species != 'human') {
             throw new Exception("The scConcept checkpoint requires --species human.")
         }
     }
 
-    if (is_extension && (integration_methods - ['scvi', 'scanvi', 'scimilarity', 'symphony']).size() > 0) {
-        throw new Exception("Only scvi, scanvi, scimilarity and symphony integration methods are supported if base_adata is provided")
+    def extension_methods = ['scvi', 'scanvi', 'scimilarity', 'scconcept', 'symphony']
+    if (is_extension && (integration_methods - extension_methods).size() > 0) {
+        throw new Exception("Only ${extension_methods.join(', ')} integration methods are supported if base_adata is provided")
     }
 
     if (is_extension && 'scvi' in integration_methods && !params.scvi_model) {
@@ -470,12 +468,16 @@ def validateInputParameters() {
         def ad = anndata(file(params.base_adata, checkIfExists: true))
         def layers = ad.layers.toList()
         def obs_columns = pseudobulkingRequired() ? ad.obs.colnames.toList() : []
+        def missing_scconcept = is_extension && 'scconcept' in integration_methods && !params.qc_only && !('X_scconcept' in ad.obsm)
         ad.close()
         if (!('raw_counts' in layers)) {
             throw new Exception(
                 "base_adata must contain a raw_counts layer with genuine pre-correction counts. " +
                 "Available layers: ${layers.join(', ')}."
             )
+        }
+        if (missing_scconcept) {
+            throw new Exception("scConcept extension requires base_adata with an X_scconcept embedding from the same checkpoint.")
         }
         if (pseudobulkingRequired()) {
             def donor_col = params.input ? 'donor' : (params.base_donor_col ?: 'donor')
