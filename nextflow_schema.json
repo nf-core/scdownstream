@@ -185,8 +185,8 @@
                     "type": "string",
                     "default": "scvi",
                     "description": "Specify the tool to use for integration",
-                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, symphony, bbknn, combat, seurat, scimilarity, pca, expimap, scanorama",
-                    "pattern": "^((scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap|scanorama)(,(scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|pca|expimap|scanorama))*)?$"
+                    "help_text": "If you want to use multiple tools, separate them with a comma. Available methods are: scvi, scanvi, symphony, bbknn, combat, seurat, scimilarity, scconcept, pca, expimap, scanorama",
+                    "pattern": "^((scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|scconcept|pca|expimap|scanorama)(,(scvi|scanvi|symphony|bbknn|combat|seurat|scimilarity|scconcept|pca|expimap|scanorama))*)?$"
                 },
                 "feature_selection": {
                     "type": "string",
@@ -243,6 +243,12 @@
                     "default": "https://zenodo.org/records/10685499/files/model_v1.1.tar.gz",
                     "description": "Path to a pre-trained scimilarity model, only relevant if scimilarity is selected in `integration_methods`. If provided, the model will be used for integration. Otherwise, a new model will be trained.",
                     "help_text": "The file can be a .tar.gz file or the corresponding unzipped directory. The official models are shared via [Zenodo](https://zenodo.org/record/10685499)."
+                },
+                "scconcept_model": {
+                    "type": "string",
+                    "default": "https://huggingface.co/theislab/scConcept/resolve/0dacfeaa2ac19cbd2308806ab75a2b171f92dd76/corpus40M-model30M",
+                    "description": "Location of the pinned human scConcept model files. Use a local directory for offline runs.",
+                    "help_text": "Keep config.yaml, model.ckpt and gene_mappings/hsapiens.csv from the pinned corpus40M-model30M revision in their original layout. Only used with scconcept in integration_methods."
                 },
                 "expimap_gmt": {
                     "type": "string",

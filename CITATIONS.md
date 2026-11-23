@@ -137,6 +137,10 @@
 
   > Luecken MD, Büttner M, Chaichoompu K, et al. Benchmarking atlas-level data integration in single-cell genomics. Nat Methods. 2022 Jan;19(1):41-50. doi: 10.1038/s41592-021-01336-8. PubMed PMID: 34949812.
 
+- [scConcept](https://doi.org/10.1101/2025.10.14.682419)
+
+  > Bahrami M, Tejada-Lapuerta A, Becker S, Hashemi G FS, Theis FJ. scConcept: Contrastive pretraining for technology-agnostic single-cell representations beyond reconstruction. bioRxiv. 2025. doi: 10.1101/2025.10.14.682419.
+
 - [SCimilarity](https://pubmed.ncbi.nlm.nih.gov/39566551/)
 
   > Heimberg G, Kuo T, DePianto DJ, et al. A cell atlas foundation model for scalable search of similar human cells. Nature. 2025 Feb;638(8052):1085-1094. doi: 10.1038/s41586-024-08411-y. PubMed PMID: 39566551.

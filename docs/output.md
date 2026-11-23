@@ -50,6 +50,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
       - [Seurat](https://satijalab.org/seurat/articles/integration_introduction)
       - [PCA](https://scanpy.readthedocs.io/en/stable/generated/scanpy.pp.pca.html)
       - [scimilarity](https://github.com/Genentech/scimilarity)
+      - [scConcept](https://github.com/theislab/scConcept)
+        With `--save_intermediates`, `03_combine/integrate/scconcept/` contains the embedded H5AD and Parquet fragment. The final H5AD stores the embedding in `obsm['X_scconcept']` for global integration.
       - [Expimap](https://docs.scarches.org/en/latest/api/models.html#scarches.models.EXPIMAP)
 3. Cell type annotation
    - [CellTypist](https://www.celltypist.org/)

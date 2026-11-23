@@ -129,6 +129,7 @@ workflow NFCORE_SCDOWNSTREAM {
     scvi_gene_likelihood          //   value: string
     scvi_use_observed_lib_size    //   value: boolean
     scimilarity_model             //   value: string
+    scconcept_model               //   value: string
     symphony_reference            //   value: string
     expimap_gmt                   //   value: string
     skip_liana                    //   value: boolean
@@ -226,6 +227,7 @@ workflow NFCORE_SCDOWNSTREAM {
         scvi_gene_likelihood,
         scvi_use_observed_lib_size,
         scimilarity_model,
+        scconcept_model,
         symphony_reference,
         expimap_gmt,
         skip_liana,
@@ -390,6 +392,7 @@ workflow {
         params.scvi_gene_likelihood,
         params.scvi_use_observed_lib_size,
         params.scimilarity_model,
+        params.scconcept_model,
         symphony_reference,
         params.expimap_gmt,
         params.skip_liana,

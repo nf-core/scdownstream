@@ -136,9 +136,14 @@ Before integration, the merged outer union of genes is normalised once via [`nor
 | `seurat`                        | No (counts via SCTransform)             |
 | `expimap`                       | No (selected analysis counts)           |
 | `scimilarity`                   | No (internal log-normalisation)         |
+| `scconcept`                     | No (selected analysis counts)           |
 | `symphony` (reference mapping)  | No (reference normalisation target)     |
 
 Count-model integrations (`scvi`, `scanvi`) and differential expression use the selected analysis counts or their method-specific normalisation.
+
+Use `--integration_methods scconcept` to embed human scRNA-seq cells with the pretrained `corpus40M-model30M` checkpoint. scConcept uses the shared genes before feature selection and reads counts from `X`. It accepts human gene symbols and Ensembl gene IDs, including versioned IDs. The task reports vocabulary overlap and fails if any cell has no expression among the matched genes.
+
+scConcept runs on CPU. Nextflow stages the model files from the pinned Hugging Face revision by default. For offline runs, download the [pinned model files](https://huggingface.co/theislab/scConcept/tree/0dacfeaa2ac19cbd2308806ab75a2b171f92dd76/corpus40M-model30M) ahead of time and set `--scconcept_model` to the directory containing `config.yaml`, `model.ckpt` and `gene_mappings/hsapiens.csv`. Atlas extension with `--input` and `--base_adata` is unsupported for this method.
 
 To disable individual filters for a sample, set the corresponding samplesheet column to `0` (for MAD metrics or `min_cells`) or a permissive value (e.g. `max_mito_percentage=100` for no absolute mitochondrial cutoff):
 

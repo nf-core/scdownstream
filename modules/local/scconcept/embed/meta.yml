@@ -1,0 +1,119 @@
+name: scconcept_embed
+description: Embed human single cells using a pretrained scConcept checkpoint.
+keywords:
+  - single-cell
+  - embeddings
+  - transcriptomics
+tools:
+  - scconcept:
+      description: Contrastive pretraining for single-cell transcriptomic representations.
+      homepage: https://github.com/theislab/scConcept
+      documentation: https://scconcept.readthedocs.io/
+      tool_dev_url: https://github.com/theislab/scConcept
+      doi: "10.1101/2025.10.14.682419"
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: Metadata containing the input identifier.
+    - h5ad:
+        type: file
+        description: AnnData with human gene symbols or Ensembl IDs and counts in X.
+        pattern: "*.h5ad"
+  - - model_meta:
+        type: map
+        description: Metadata containing the model identifier.
+    - config:
+        type: file
+        description: Pinned scConcept model configuration.
+        pattern: "config.yaml"
+    - checkpoint:
+        type: file
+        description: Pinned scConcept model checkpoint.
+        pattern: "model.ckpt"
+    - vocabulary:
+        type: file
+        description: Pinned human gene vocabulary.
+        pattern: "hsapiens.csv"
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: Metadata containing the input identifier.
+      - "${prefix}.h5ad":
+          type: file
+          description: AnnData with cell embeddings in obsm["X_emb"].
+          pattern: "*.h5ad"
+  obsm:
+    - "X_${prefix}.parquet":
+        type: file
+        description: Cell embeddings indexed by cell barcode.
+        pattern: "X_*.parquet"
+  versions_scconcept:
+    - - ${task.process}:
+          type: string
+          description: Process name.
+      - sc-concept:
+          type: string
+          description: Package name.
+      - 'python -c "from importlib.metadata import version; print(version(''sc-concept''))"':
+          type: eval
+          description: Installed scConcept version.
+  versions_torch:
+    - - ${task.process}:
+          type: string
+          description: Process name.
+      - torch:
+          type: string
+          description: Package name.
+      - 'python -c "from importlib.metadata import version; print(version(''torch''))"':
+          type: eval
+          description: Installed PyTorch version.
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: Process name.
+      - sc-concept:
+          type: string
+          description: Package name.
+      - 'python -c "from importlib.metadata import version; print(version(''sc-concept''))"':
+          type: eval
+          description: Installed scConcept version.
+    - - ${task.process}:
+          type: string
+          description: Process name.
+      - torch:
+          type: string
+          description: Package name.
+      - 'python -c "from importlib.metadata import version; print(version(''torch''))"':
+          type: eval
+          description: Installed PyTorch version.
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/build:e729d83ba1a372cc
+      build_id: bd-e729d83ba1a372cc_1
+      scan_id: sc-048801c253a8efd8_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/build:b36ca665b4da8d71
+      build_id: bd-b36ca665b4da8d71_1
+      scan_id: sc-a93ec5536f59e76e_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/build:2ff34214ff1821b5
+      build_id: bd-2ff34214ff1821b5_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/df/df9b7efc3a73c88126236e4a53c8dd805cda2a733db3e813cffeeca5ce55feb7/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/build:7840f55c29b5b0bc
+      build_id: bd-7840f55c29b5b0bc_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a4/a4f94db23f6a201f102b984db66975479051c43f493086cb2ad29bc487a335eb/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scconcept/embed/.conda-lock/linux_amd64-bd-b36ca665b4da8d71_1.txt
+    linux/arm64:
+      lock_file: modules/local/scconcept/embed/.conda-lock/linux_arm64-bd-e729d83ba1a372cc_1.txt

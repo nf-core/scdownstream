@@ -39,6 +39,7 @@ workflow COMBINE {
     scib_subsample_seed         //   value: integer
     scib_metric_profile         //   value: string
     force_obs_cols              //   value: string
+    scconcept_model             //   value: string
 
     main:
 
@@ -117,7 +118,8 @@ workflow COMBINE {
         scimilarity_model,
         symphony_reference,
         expimap_gmt,
-        condition_col
+        condition_col,
+        scconcept_model,
     )
     ch_var = INTEGRATE.out.var
 

@@ -28,6 +28,7 @@ workflow SUB_INTEGRATE {
     expimap_gmt                 //   value: string
     condition_col               //   value: string
     label_whitelist             //   value: string or null
+    scconcept_model             //   value: string
 
     main:
     def normalized_methods = methods*.trim()*.toLowerCase()
@@ -123,7 +124,8 @@ workflow SUB_INTEGRATE {
         scimilarity_model,
         symphony_reference,
         expimap_gmt,
-        condition_col
+        condition_col,
+        scconcept_model,
     )
 
     ch_integrations = INTEGRATE.out.integrations

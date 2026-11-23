@@ -68,6 +68,7 @@ The pipeline uses the following tools:
       - [Seurat](https://satijalab.org/seurat/articles/integration_introduction)
       - [PCA](https://scanpy.readthedocs.io/en/stable/generated/scanpy.pp.pca.html)
       - [scimilarity](https://github.com/Genentech/scimilarity)
+      - [scConcept](https://github.com/theislab/scConcept)
       - [Expimap](https://docs.scarches.org/en/latest/api/models.html#scarches.models.EXPIMAP)
    4. Integration benchmarking with [scib-metrics](https://scib-metrics.readthedocs.io/) (optional via `--scib`)
 3. Cell type annotation

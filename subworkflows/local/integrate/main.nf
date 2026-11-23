@@ -11,6 +11,7 @@ include { SCARCHES_EXPIMAP          } from '../../../modules/local/scarches/expi
 include { SEURAT_INTEGRATION        } from '../../../modules/local/seurat/integration'
 include { ADATA_READRDS             } from '../../../modules/local/adata/readrds'
 include { SCIMILARITY               } from '../scimilarity'
+include { SCCONCEPT_EMBED           } from '../../../modules/local/scconcept/embed'
 
 workflow INTEGRATE {
     take:
@@ -36,6 +37,7 @@ workflow INTEGRATE {
     symphony_reference          // path
     expimap_gmt                 // path
     condition_col               // string
+    scconcept_model             // string
 
     main:
     ch_obs = channel.empty()
@@ -249,6 +251,21 @@ workflow INTEGRATE {
         ch_integrations = ch_integrations.mix(SCIMILARITY.out.integrations)
         ch_obs = ch_obs.mix(SCIMILARITY.out.obs)
         ch_obsm = ch_obsm.mix(SCIMILARITY.out.obsm)
+    }
+
+    if (methods.contains('scconcept')) {
+        def model_dir = scconcept_model.replaceAll('/+$', '')
+        SCCONCEPT_EMBED(
+            ch_h5ad.map { meta, h5ad -> [meta + [integration: 'scconcept'], h5ad] },
+            channel.value([
+                [id: 'corpus40M-model30M'],
+                file("${model_dir}/config.yaml", checkIfExists: true),
+                file("${model_dir}/model.ckpt", checkIfExists: true),
+                file("${model_dir}/gene_mappings/hsapiens.csv", checkIfExists: true),
+            ]),
+        )
+        ch_integrations = ch_integrations.mix(SCCONCEPT_EMBED.out.h5ad)
+        ch_obsm = ch_obsm.mix(SCCONCEPT_EMBED.out.obsm)
     }
 
     emit:
