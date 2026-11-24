@@ -9,6 +9,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Changed`
 
+- Load AWS full-test samplesheets and analysis plans from a pinned test-datasets commit and use the root Hetzner path for the ISG gene list, by @nictru and Codex.
 - Use Scanpy 1.13's native BBKNN for batch integration, by @nictru and Codex. The neighbour search can produce different graph edges and Leiden clusters. [[#420](https://github.com/nf-core/scdownstream/pull/420)].
 - Upgrade CellBender to 0.4.0 on Python 3.12, rebuild the CPU image and use CUDA 13.5 in the GPU image, by @nictru and Codex [[#413](https://github.com/nf-core/scdownstream/issues/413)].
 - Update the shared CPU and CUDA environments for scVI, scANVI, scAR and SOLO to scvi-tools 1.5.2 and move the GPU runtime to CUDA 13.5, by @nictru and Codex [[#412](https://github.com/nf-core/scdownstream/issues/412)].
