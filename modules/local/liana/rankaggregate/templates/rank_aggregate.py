@@ -151,20 +151,20 @@ def _top_cell_types(df, n=6):
     return _sort_cell_labels(counts.head(n).index)
 
 
-def _write_liana_plots(adata, df, obs_key):
+def _write_liana_plots(adata, df, obs_key, n_perms):
     if df.empty:
         print("Skipping LIANA plots: liana_res is empty.")
         return
 
     section_name = f"LIANA (grouped by: {obs_key})"
     description = f"LIANA rank aggregate results, grouped by <code>{obs_key}</code>."
-    has_specificity = "specificity_rank" in df.columns
+    use_specificity = n_perms is not None and "specificity_rank" in df.columns
 
     plot_df = df.copy()
     plot_df["source"] = plot_df["source"].astype(str)
     plot_df["target"] = plot_df["target"].astype(str)
 
-    if has_specificity:
+    if use_specificity:
         filtered_df = plot_df.loc[plot_df["specificity_rank"] <= 0.05]
         if filtered_df.empty:
             filtered_df = plot_df
@@ -191,10 +191,10 @@ def _write_liana_plots(adata, df, obs_key):
             "figure_size": (max(8.0, n_types * 1.8), max(6.0, 15 * 0.35 + 2)),
             "return_fig": True,
         }
-        if has_specificity:
+        if use_specificity:
             dotplot_kwargs["size"] = "specificity_rank"
             dotplot_kwargs["inverse_size"] = True
-            dotplot_kwargs["filter_fun"] = lambda x: x["specificity_rank"] <= 0.05
+            dotplot_kwargs["filter_fn"] = lambda x: x["specificity_rank"] <= 0.05
         else:
             dotplot_kwargs["size"] = "magnitude_rank"
             dotplot_kwargs["inverse_size"] = True
@@ -224,10 +224,10 @@ def _write_liana_plots(adata, df, obs_key):
             "node_label_offset": (0.0, 0.0),
             "node_label_size": 10,
         }
-        if has_specificity:
-            circle_kwargs["filter_fun"] = lambda x: x["specificity_rank"] <= 0.05
+        if use_specificity:
+            circle_kwargs["filter_fn"] = lambda x: x["specificity_rank"] <= 0.05
 
-        ax = li.pl.circle_plot(**circle_kwargs)
+        ax = li.pl.circle(**circle_kwargs)
         circle_path = f"{prefix}_circle.png"
         ax.figure.savefig(circle_path, dpi=150, bbox_inches="tight", pad_inches=0.3)
         plt.close(ax.figure)
@@ -241,7 +241,7 @@ def _write_liana_plots(adata, df, obs_key):
             adata=adata,
             fill="means",
             label="props",
-            label_fun=lambda x: f"{x:.2f}",
+            label_fn=lambda x: f"{x:.2f}",
             top_n=10,
             orderby="magnitude_rank",
             orderby_ascending=True,
@@ -274,6 +274,7 @@ if adata.obs[obs_key].nunique() > 1:
             adata,
             obs_key,
             resource_name={"human": "consensus", "mouse": "mouseconsensus"}["${species}"],
+            expr_prop=0.10,
             use_raw=False,
             verbose=True,
             n_jobs=int("${task.cpus}"),
@@ -286,7 +287,7 @@ if adata.obs[obs_key].nunique() > 1:
             Path(f"{prefix}.parquet").resolve(), index=False, engine="pyarrow", compression="snappy"
         )
         adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
-        _write_liana_plots(adata, df, obs_key)
+        _write_liana_plots(adata, df, obs_key, n_perms)
 
     except ValueError as e:
         if "cannot set a frame with no defined index and a scalar" in str(e):

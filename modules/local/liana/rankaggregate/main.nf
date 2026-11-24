@@ -1,11 +1,11 @@
 process LIANA_RANKAGGREGATE {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7d/7d75b8890e8519a27c0cb6769bc8ffb735e30887c18d2eca63239b5c7b9bbee8/data'
-        : 'community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:8e83a619a49597d2'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/72/728f3e7e2298f7fd0a0cb0b07bb99b22e96c19d3895db0b1f9a7563fb2c7080a/data'
+        : 'community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:3ed78ef79b4347a7'}"
 
     input:
     tuple val(meta), path(h5ad)
@@ -18,9 +18,9 @@ process LIANA_RANKAGGREGATE {
 
     output:
     tuple val(meta), path("*.h5ad"), emit: h5ad, optional: true
-    path("*.parquet"), emit: uns, optional: true
-    path("*.png"), emit: plots, optional: true
-    path("*_mqc.json"), emit: multiqc_files, optional: true
+    path ("*.parquet"), emit: uns, optional: true
+    path ("*.png"), emit: plots, optional: true
+    path ("*_mqc.json"), emit: multiqc_files, optional: true
     path "versions.yml", emit: versions, topic: versions
 
     when:
@@ -28,8 +28,8 @@ process LIANA_RANKAGGREGATE {
 
     script:
     obs_key = meta.obs_key ?: "leiden"
-    prefix  = task.ext.prefix ?: "${meta.id}"
-    template 'rank_aggregate.py'
+    prefix = task.ext.prefix ?: "${meta.id}"
+    template('rank_aggregate.py')
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"

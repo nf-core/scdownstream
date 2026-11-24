@@ -107,25 +107,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/amd64:
-      name: community.wave.seqera.io/library/liana_cell2cell_pyyaml:50d977636ad3e43e
-      build_id: bd-50d977636ad3e43e_1
-      scan_id: sc-2973b11a32f8b3c4_1
     linux/arm64:
-      name: community.wave.seqera.io/library/liana_cell2cell_pyyaml:e1c79b6f5219622d
-      build_id: bd-e1c79b6f5219622d_1
-      scan_id: sc-09d609e6be51282f_1
+      name: community.wave.seqera.io/library/liana_cell2cell_pyyaml:89ecd90e26d1b08e
+      build_id: bd-89ecd90e26d1b08e_1
+      scan_id: sc-0e5313ddd5bb97ca_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/liana_cell2cell_pyyaml:aa697e53adec6c81
+      build_id: bd-aa697e53adec6c81_1
+      scan_id: sc-66a5a127f2696a36_1
   singularity:
     linux/arm64:
-      name: oras://community.wave.seqera.io/library/liana_cell2cell_pyyaml:a49db141391430fc
-      build_id: bd-a49db141391430fc_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ef/efdbfc407c90653e8754fdece7cd06498feccae7098260c5e57dfbfca693234b/data
+      name: oras://community.wave.seqera.io/library/liana_cell2cell_pyyaml:ff774d18497c30f3
+      build_id: bd-ff774d18497c30f3_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/55/556aec8107bccdc83395206bdd04d7b37bd81b997f6d8211d808d3e214aadabb/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/liana_cell2cell_pyyaml:4aa21e57bc12ba82
-      build_id: bd-4aa21e57bc12ba82_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/10/10d2843fde28026d17f6faffc136aaa352f85d91fec25d658f793e062f14f349/data
+      name: oras://community.wave.seqera.io/library/liana_cell2cell_pyyaml:e16f16eb879611af
+      build_id: bd-e16f16eb879611af_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ad/ad8518dd244c72164892172c5daf1bfe20d0b4e5c443b1d25801bba8347d86d6/data
   conda:
     linux/amd64:
-      lock_file: modules/local/cell2cell/tensor/.conda-lock/linux_amd64-bd-50d977636ad3e43e_1.txt
+      lock_file: modules/local/cell2cell/tensor/.conda-lock/linux_amd64-bd-aa697e53adec6c81_1.txt
     linux/arm64:
-      lock_file: modules/local/cell2cell/tensor/.conda-lock/linux_arm64-bd-e1c79b6f5219622d_1.txt
+      lock_file: modules/local/cell2cell/tensor/.conda-lock/linux_arm64-bd-89ecd90e26d1b08e_1.txt

@@ -91,7 +91,7 @@ if "condition" in contexts.columns:
     else:
         context_dict = {str(row[context_key]): str(row["condition"]) for _, row in contexts.iterrows()}
 
-tensor = li.multi.to_tensor_c2c(
+tensor = li.ms.to_tensor_c2c(
     liana_res=liana_res,
     sample_key=context_key,
     score_key="magnitude_rank",
@@ -216,8 +216,8 @@ try:
         organism_key = "mouse"
 
     net = dc.op.progeny(organism=organism_key, top=5000)
-    resource = li.resource.select_resource("consensus")
-    lr_progeny = li.resource.generate_lr_geneset(resource, net, lr_sep=lr_sep)
+    resource = li.rs.select_resource("consensus")
+    lr_progeny = li.rs.generate_lr_geneset(resource, net, lr_sep=lr_sep)
     if "interaction" in lr_progeny.columns and "target" not in lr_progeny.columns:
         lr_progeny = lr_progeny.rename(columns={"interaction": "target"})
 
