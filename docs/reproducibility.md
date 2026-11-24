@@ -50,9 +50,9 @@ The nf-core builder rewrites the whole `container` directive. Restore the `task.
 
 Scrublet pins PyNNDescent 0.5.13. Scanpy 1.11.2 requires sparse matrices and cannot read the sparse arrays returned by PyNNDescent 0.7.
 
-LIANA 2.0.0 defaults to a 5% within-group expression threshold. The aggregate and by-sample modules explicitly retain 10%. When permutations are disabled, LIANA 2.0.0 still reports `specificity_rank` from methods that compute specificity without permutations.
+Both LIANA modules use a 10% within-group expression threshold. With permutations disabled, `specificity_rank` uses methods that score specificity without permutations.
 
-The LIANA aggregate environment explicitly includes `pydantic-settings` because MuData 0.4.1's Conda package omits the settings dependencies required during import.
+The LIANA aggregate environment includes `pydantic-settings` for MuData imports.
 
 DoubletDetection uses stochastic PhenoGraph clustering. Its tests snapshot the AnnData structure and software versions, then check that Parquet predictions match the H5AD doublet calls. Compressed H5AD byte sizes vary with the scores and are not snapshotted.
 
