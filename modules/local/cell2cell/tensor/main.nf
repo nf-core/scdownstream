@@ -1,11 +1,11 @@
 process CELL2CELL_TENSOR {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_high'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/10/10d2843fde28026d17f6faffc136aaa352f85d91fec25d658f793e062f14f349/data' :
-        'community.wave.seqera.io/library/liana_cell2cell_pyyaml:50d977636ad3e43e' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ad/ad8518dd244c72164892172c5daf1bfe20d0b4e5c443b1d25801bba8347d86d6/data'
+        : 'community.wave.seqera.io/library/liana_cell2cell_pyyaml:aa697e53adec6c81'}"
 
     input:
     tuple val(meta), path(liana_bysample, stageAs: 'liana_bysample.csv.gz'), path(contexts, stageAs: 'contexts.tsv')
@@ -15,20 +15,20 @@ process CELL2CELL_TENSOR {
     val species
 
     output:
-    tuple val(meta), path("*.png")  , emit: plots, optional: true
-    path("*_loadings_*.csv")        , emit: loadings, optional: true
-    path("*_pathway_enrichment.csv"), emit: enrichment, optional: true
-    path("*_tensor.pkl")            , emit: tensor, optional: true
-    path "*_mqc.json"               , emit: multiqc_files, optional: true
-    path "versions.yml"             , emit: versions, topic: versions
+    tuple val(meta), path("*.png"), emit: plots, optional: true
+    path ("*_loadings_*.csv"), emit: loadings, optional: true
+    path ("*_pathway_enrichment.csv"), emit: enrichment, optional: true
+    path ("*_tensor.pkl"), emit: tensor, optional: true
+    path "*_mqc.json", emit: multiqc_files, optional: true
+    path "versions.yml", emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    prefix      = task.ext.prefix ?: "${meta.id}"
+    prefix = task.ext.prefix ?: "${meta.id}"
     integration = meta.integration ?: 'integration'
-    template 'tensor_c2c.py'
+    template('tensor_c2c.py')
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"

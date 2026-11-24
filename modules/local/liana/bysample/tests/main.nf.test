@@ -40,6 +40,18 @@ nextflow_process {
             def contexts = file(process.out.contexts[0][1])
             assert results.exists()
             assert contexts.exists()
+            def contextNames = contexts.readLines().drop(1).collect { it.split('\t')[0] }.toSet()
+            assert contextNames == ['Disease', 'Healthy'].toSet()
+            def rows = new java.util.zip.GZIPInputStream(new FileInputStream(results)).withCloseable { stream ->
+                stream.getText('UTF-8').readLines()
+            }
+            def columns = rows[0].split(',').toList()
+            assert columns.containsAll(['condition', 'magnitude_rank', 'ligand_means', 'receptor_means'])
+            def contextIndex = columns.indexOf('condition')
+            def rankIndex = columns.indexOf('magnitude_rank')
+            def interactions = rows.drop(1).collect { it.split(',') }
+            assert interactions.collect { it[contextIndex] }.toSet() == contextNames
+            assert interactions.every { it[rankIndex].toDouble() >= 0 && it[rankIndex].toDouble() <= 1 }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 results.name,

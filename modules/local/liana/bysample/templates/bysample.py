@@ -199,9 +199,12 @@ else:
             if "${apply_log1p}" == "true":
                 sc.pp.log1p(adata)
 
+            resource_name = {"human": "consensus", "mouse": "mouseconsensus"}["${species}"]
+            print(f"Using LIANA resource {resource_name}.", flush=True)
             li.mt.rank_aggregate.by_sample(
                 adata,
-                resource_name={"human": "consensus", "mouse": "mouseconsensus"}["${species}"],
+                resource_name=resource_name,
+                expr_prop=0.10,
                 groupby=obs_key,
                 sample_key=context_key,
                 use_raw=False,

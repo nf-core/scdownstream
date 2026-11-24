@@ -4,8 +4,8 @@ process LIANA_BYSAMPLE {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/10/10d2843fde28026d17f6faffc136aaa352f85d91fec25d658f793e062f14f349/data'
-        : 'community.wave.seqera.io/library/liana_cell2cell_pyyaml:50d977636ad3e43e'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ad/ad8518dd244c72164892172c5daf1bfe20d0b4e5c443b1d25801bba8347d86d6/data'
+        : 'community.wave.seqera.io/library/liana_cell2cell_pyyaml:aa697e53adec6c81'}"
 
     input:
     tuple val(meta), path(h5ad)

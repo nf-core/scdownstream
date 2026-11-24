@@ -78,25 +78,25 @@ maintainers:
   - "@nictru"
 containers:
   docker:
-    linux/arm64:
-      name: community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:3b91b5b591cd73fd
-      build_id: bd-3b91b5b591cd73fd_1
-      scan_id: sc-0f144f30e3daf162_1
     linux/amd64:
-      name: community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:8e83a619a49597d2
-      build_id: bd-8e83a619a49597d2_1
-      scan_id: sc-c0f55f916a468e46_1
+      name: community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:3ed78ef79b4347a7
+      build_id: bd-3ed78ef79b4347a7_1
+      scan_id: sc-435bd579969d3835_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:90359e7c1755b5ea
+      build_id: bd-90359e7c1755b5ea_1
+      scan_id: sc-8c97a778212f94aa_1
   singularity:
-    linux/arm64:
-      name: oras://community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:f9d3671b88b7794b
-      build_id: bd-f9d3671b88b7794b_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/96/96569ea1b285879f020081f4f4145f699b81692393d7d2b2b0914e78d41b0b5b/data
     linux/amd64:
-      name: oras://community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:e05b0ca2497070da
-      build_id: bd-e05b0ca2497070da_1
-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7d/7d75b8890e8519a27c0cb6769bc8ffb735e30887c18d2eca63239b5c7b9bbee8/data
+      name: oras://community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:d8144d2361689735
+      build_id: bd-d8144d2361689735_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/72/728f3e7e2298f7fd0a0cb0b07bb99b22e96c19d3895db0b1f9a7563fb2c7080a/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:e1753a145f78971c
+      build_id: bd-e1753a145f78971c_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/6f/6f8136d75ea5746160ae47c5827c15ba41b12013d027623b8c4d1d52aaa4c8f0/data
   conda:
     linux/amd64:
-      lock_file: modules/local/liana/rankaggregate/.conda-lock/linux_amd64-bd-8e83a619a49597d2_1.txt
+      lock_file: modules/local/liana/rankaggregate/.conda-lock/linux_amd64-bd-3ed78ef79b4347a7_1.txt
     linux/arm64:
-      lock_file: modules/local/liana/rankaggregate/.conda-lock/linux_arm64-bd-3b91b5b591cd73fd_1.txt
+      lock_file: modules/local/liana/rankaggregate/.conda-lock/linux_arm64-bd-90359e7c1755b5ea_1.txt
