@@ -38,6 +38,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
       - [DoubletDetection](https://doubletdetection.readthedocs.io/en/v2.5.2/doubletdetection.doubletdetection.html)
       - [scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html)
    7. Cell cycle scoring ([Tirosh et al. 2016](https://doi.org/10.1126/science.aad0501))
+   8. Sex prediction from Y chromosome genes and XIST (optional)
 2. Sample aggregation
    1. Merge into a single H5AD file
    2. Present QC for merged counts ([`MultiQC`](http://multiqc.info/))
@@ -91,6 +92,10 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
     - `${sample_id}_cellcycle.parquet`: `S_score`, `G2M_score`, and `phase` columns
       for each cell. Merged into the final H5AD via `FINALIZE_QC_ANNDATAS`.
     - `${sample_id}_cellcycle.h5ad`: Intermediate H5AD with cell cycle scores added, available for inspection.
+  - `sex_prediction/`: Sex prediction results, when `--sex_prediction` is enabled.
+    - `${sample_id}_sex.tsv`: One-row summary with the number of `male`, `female`, `both` and `unknown` cells, the pooled Y gene and XIST count fractions and the sample-level `predicted_sex`.
+    - `${sample_id}_sex.parquet`: `sex_y_fraction`, `sex_xist_fraction`, `sex_cell_call` and `predicted_sex` columns for each cell. Merged into the final H5AD via `FINALIZE_QC_ANNDATAS`. Published with `--save_intermediates`.
+    - `${sample_id}_sex.h5ad`: Intermediate H5AD with sex prediction columns added. Published with `--save_intermediates`.
   - `sizes/`: Cell counts at each QC stage (MultiQC table input).
   - `finalized/`: Per-sample QC AnnData objects when `--save_intermediates` is enabled.
     - `${sample_id}_qc.h5ad` and `${sample_id}_qc_metadata.csv`: QC object and observation metadata, including `<method>_predicted_doublet` and `<method>_class` (`singlet` or `doublet`) for selected detectors. Scores use `scrublet_score`, `doubletdetection_score` and native `scDblFinder.*` fields. Removed cells are absent from both outputs.

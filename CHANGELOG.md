@@ -67,6 +67,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Added`
 
+- Add optional `--sex_prediction` to call the sex of each sample from Y chromosome genes and XIST during QC, with per-cell fractions and calls in `adata.obs`, a per-sample summary table and bundled human and mouse gene lists ([#171](https://github.com/nf-core/scdownstream/issues/171)) by @kroy3.
 - Add pretrained human scConcept embeddings via `--integration_methods scconcept`, by @nictru and Codex.
 - Add optional `--gene_annotation` to annotate final genes with `gene_biotype`, `chromosome`, a broad `biotype_group` and a `gene_annotation_ambiguous` flag in `adata.var`, from a GTF via `--gene_annotation_gtf` (nf-core module `atlasgeneannotationmanipulation/gtf2featureannotation`) or from MyGene.info ([#173](https://github.com/nf-core/scdownstream/issues/173)) by @kroy3 [[#394](https://github.com/nf-core/scdownstream/pull/394)].
 - Add optional global `--scdblfinder_dbr_sd` with inclusive 0-1 validation, default-preserving argument handling and regression tests, by @nictru and GPT-6.1 Sol [[#388](https://github.com/nf-core/scdownstream/pull/388)].

@@ -1,0 +1,93 @@
+nextflow_process {
+
+    name "Test Process SCANPY_SEXPREDICTION"
+    script "modules/local/scanpy/sexprediction/main.nf"
+    process "SCANPY_SEXPREDICTION"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without failures - human") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = file("${projectDir}/assets/sex_genes/human_y_genes.txt")
+                input[2] = file("${projectDir}/assets/sex_genes/human_x_genes.txt")
+                input[3] = 'symbols'
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            def fragment = parquet(process.out.obs[0][1])
+            assert file(process.out.obs[0][1]).name == 'test_sex.parquet'
+            assert fragment.columnNames == ['__index__', 'sex_y_fraction', 'sex_xist_fraction', 'sex_cell_call', 'predicted_sex']
+            assert fragment.compressionCodecs == ['SNAPPY']
+            assert fragment.rowCount == adata.n_obs
+            assert fragment.schema.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
+            assert fragment.schema.fields.find { it.name == 'sex_cell_call' }.logicalType.type == 'STRING'
+            assert fragment.schema.fields.find { it.name == 'predicted_sex' }.logicalType.type == 'STRING'
+            assert fragment.schema.fields.find { it.name == 'sex_y_fraction' }.physicalType == 'DOUBLE'
+            assert fragment.schema.fields.find { it.name == 'sex_xist_fraction' }.physicalType == 'DOUBLE'
+            def rows = fragment.rows
+            assert rows.collect { it.__index__ } == adata.obs.index.values.toList()
+            assert rows.every { it.sex_cell_call in ['male', 'female', 'both', 'unknown'] }
+            assert rows.collect { it.predicted_sex }.toSet().size() == 1
+            assert rows[0].predicted_sex in ['male', 'female', 'mixed', 'unknown']
+            def summary = path(process.out.tsv[0][1]).csv(sep: '\t').rows
+            assert summary.size() == 1
+            assert summary[0].sample == 'test'
+            assert summary[0].predicted_sex == rows[0].predicted_sex
+            // Parquet and H5AD bytes depend on the build of the libraries writing them,
+            // so their content is checked above and only stable outputs are snapshotted.
+            assert snapshot(
+                summary,
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = file("${projectDir}/assets/sex_genes/human_y_genes.txt")
+                input[2] = file("${projectDir}/assets/sex_genes/human_x_genes.txt")
+                input[3] = 'index'
+                """
+            }
+        }
+
+        then {
+            assert process.success
+
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}
