@@ -113,6 +113,12 @@ workflow SCDOWNSTREAM {
     decoupler_network             //    path: file or []
     decoupler_method              //   value: string
     decoupler_min_targets         //   value: integer
+    grn                           //   value: boolean
+    grn_tfs                       //    path: file or []
+    grn_n_top_genes               //   value: integer
+    grn_min_cells                 //   value: integer
+    grn_max_links                 //   value: integer
+    grn_seed                      //   value: integer
     prep_cellxgene                //   value: boolean
     tords                         //   value: boolean
     gene_annotation               //   value: boolean
@@ -399,6 +405,12 @@ workflow SCDOWNSTREAM {
             decoupler_network,
             decoupler_method,
             decoupler_min_targets,
+            grn,
+            grn_tfs,
+            grn_n_top_genes,
+            grn_min_cells,
+            grn_max_links,
+            grn_seed,
         )
 
         ch_uns = ch_uns.mix(PER_GROUP.out.uns)

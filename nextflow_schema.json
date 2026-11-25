@@ -661,6 +661,49 @@
                 }
             }
         },
+        "gene_regulatory_network_options": {
+            "title": "Gene regulatory network options",
+            "type": "object",
+            "fa_icon": "fas fa-network-wired",
+            "description": "Infer gene regulatory networks per group with GRNBoost2.",
+            "properties": {
+                "grn": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Infer a gene regulatory network for each group of each clustering with GRNBoost2 (arboreto). Runs for groupings whose analysis plan entry includes grn, or for all groupings when analyses is empty.",
+                    "help_text": "One network is inferred per group with at least --grn_min_cells cells, from the counts in X. Targets are the --grn_n_top_genes most variable genes across all cells. Without --grn_tfs, every target gene is also a candidate regulator."
+                },
+                "grn_tfs": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Optional plain-text file of transcription factor gene symbols (one per line, # lines ignored) used as candidate regulators. Without it, all selected target genes are candidate regulators."
+                },
+                "grn_n_top_genes": {
+                    "type": "integer",
+                    "default": 2000,
+                    "minimum": 1,
+                    "description": "Number of highly variable genes used as GRN targets."
+                },
+                "grn_min_cells": {
+                    "type": "integer",
+                    "default": 50,
+                    "minimum": 1,
+                    "description": "Minimum number of cells a group needs for a network to be inferred."
+                },
+                "grn_max_links": {
+                    "type": "integer",
+                    "default": 10000,
+                    "minimum": 0,
+                    "description": "Maximum number of regulator to target links kept per group, ranked by importance. Use 0 to keep all links."
+                },
+                "grn_seed": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "Random seed for GRNBoost2."
+                }
+            }
+        },
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
@@ -851,6 +894,9 @@
         },
         {
             "$ref": "#/$defs/pathway_analysis_options"
+        },
+        {
+            "$ref": "#/$defs/gene_regulatory_network_options"
         },
         {
             "$ref": "#/$defs/institutional_config_options"

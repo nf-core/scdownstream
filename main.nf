@@ -55,6 +55,11 @@ params {
     pseudobulk_min_total_counts: Integer
     decoupler: Boolean
     decoupler_min_targets: Integer
+    grn: Boolean
+    grn_n_top_genes: Integer
+    grn_min_cells: Integer
+    grn_max_links: Integer
+    grn_seed: Integer
     memory_scale: Integer
     azimuth: Boolean
     plaintext_email: Boolean
@@ -170,6 +175,12 @@ workflow NFCORE_SCDOWNSTREAM {
     decoupler_network             //    path: file or []
     decoupler_method              //   value: string
     decoupler_min_targets         //   value: integer
+    grn                           //   value: boolean
+    grn_tfs                       //    path: file or []
+    grn_n_top_genes               //   value: integer
+    grn_min_cells                 //   value: integer
+    grn_max_links                 //   value: integer
+    grn_seed                      //   value: integer
     prep_cellxgene                //   value: boolean
     tords                         //   value: boolean
     gene_annotation               //   value: boolean
@@ -268,6 +279,12 @@ workflow NFCORE_SCDOWNSTREAM {
         decoupler_network,
         decoupler_method,
         decoupler_min_targets,
+        grn,
+        grn_tfs,
+        grn_n_top_genes,
+        grn_min_cells,
+        grn_max_links,
+        grn_seed,
         prep_cellxgene,
         tords,
         gene_annotation,
@@ -339,6 +356,10 @@ workflow {
 
     def interesting_genes_file = params.interesting_genes
         ? file(params.interesting_genes, checkIfExists: true)
+        : []
+
+    def grn_tfs_file = params.grn && params.grn_tfs
+        ? file(params.grn_tfs, checkIfExists: true)
         : []
 
     def decoupler_network_file = params.decoupler_network
@@ -433,6 +454,12 @@ workflow {
         decoupler_network_file,
         params.decoupler_method,
         params.decoupler_min_targets,
+        params.grn,
+        grn_tfs_file,
+        params.grn_n_top_genes,
+        params.grn_min_cells,
+        params.grn_max_links,
+        params.grn_seed,
         params.prep_cellxgene,
         params.tords,
         params.gene_annotation,

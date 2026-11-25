@@ -1,0 +1,89 @@
+name: "arboreto_grnboost2"
+description: Infer one gene regulatory network per group with GRNBoost2
+keywords:
+  - gene-regulatory-network
+  - grnboost2
+  - transcription-factor
+  - single-cell
+tools:
+  - "arboreto":
+      description: "Scalable gene regulatory network inference with tree-based regression, including GRNBoost2 and GENIE3"
+      homepage: "https://github.com/aertslab/arboreto"
+      documentation: "https://arboreto.readthedocs.io"
+      tool_dev_url: "https://github.com/aertslab/arboreto"
+      doi: "10.1093/bioinformatics/bty916"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, including `obs_key` with the obs column that defines the groups
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format with counts in X
+        pattern: "*.{h5ad}"
+  - tfs:
+      type: file
+      description: Optional text file listing candidate regulator gene symbols, one per line
+      pattern: "*.{txt,tsv,csv}"
+  - n_top_genes:
+      type: integer
+      description: Number of highly variable genes used as targets
+  - min_cells:
+      type: integer
+      description: Minimum number of cells a group needs for a network to be inferred
+  - max_links:
+      type: integer
+      description: Maximum number of links kept per group, ranked by importance, or 0 to keep all
+  - seed:
+      type: integer
+      description: Random seed for GRNBoost2
+
+output:
+  tsv:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.tsv":
+          type: file
+          description: Table with group, TF, target and importance columns
+          pattern: "*.tsv"
+  uns:
+    - "*.parquet":
+        type: file
+        description: The same table as a Parquet uns fragment with an explicit __index__ column
+        pattern: "*.parquet"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@kroy3"
+maintainers:
+  - "@kroy3"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/arboreto_anndata_pyarrow_python_pruned:510ee2bdf9050798
+      build_id: bd-510ee2bdf9050798_1
+      scan_id: sc-b85a0638a7abf9db_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/arboreto_anndata_pyarrow_python_pruned:b1b1c656e2792807
+      build_id: bd-b1b1c656e2792807_1
+      scan_id: sc-e5e160e560c2931f_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/arboreto_anndata_pyarrow_python_pruned:76763490d3e50e3c
+      build_id: bd-76763490d3e50e3c_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/56/564bd4a67dcccbcdfcb0fb332aefc73d8dc27a6bdb62a3ba63274e986628b3ed/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/arboreto_anndata_pyarrow_python_pruned:e2de6f10ad0cecd3
+      build_id: bd-e2de6f10ad0cecd3_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1e/1e04242b1d2b87f2232fa0e7edd211a2c466fac1f6fc4cdcae47d613e7ea35d4/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/arboreto/grnboost2/.conda-lock/linux_amd64-bd-b1b1c656e2792807_1.txt
+    linux/arm64:
+      lock_file: modules/local/arboreto/grnboost2/.conda-lock/linux_arm64-bd-510ee2bdf9050798_1.txt

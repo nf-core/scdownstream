@@ -5,12 +5,14 @@ include { CELL2CELL_TENSOR                  } from '../../../modules/local/cell2
 include { DIFFERENTIAL_EXPRESSION           } from '../differential_expression'
 include { CLUSTER_ANNOTATION                } from '../cluster_annotation'
 include { DECOUPLER                         } from '../decoupler'
+include { ARBORETO_GRNBOOST2                } from '../../../modules/local/arboreto/grnboost2'
 include { resolveDeMethodsWithPrerequisites } from '../utils_nfcore_scdownstream_pipeline'
 include { cellLevelDeMethods                } from '../utils_nfcore_scdownstream_pipeline'
 include { pseudobulkingEnabled              } from '../utils_nfcore_scdownstream_pipeline'
 include { rankGenesGroupsAnalysisEnabled    } from '../utils_nfcore_scdownstream_pipeline'
 include { hasMultipleObsGroups              } from '../utils_nfcore_scdownstream_pipeline'
 include { decouplerEnabled                  } from '../utils_nfcore_scdownstream_pipeline'
+include { grnEnabled                        } from '../utils_nfcore_scdownstream_pipeline'
 
 workflow PER_GROUP {
     take:
@@ -38,6 +40,12 @@ workflow PER_GROUP {
     decoupler_network              //    path: file or []
     decoupler_method               //   value: string
     decoupler_min_targets          //   value: integer
+    grn                            //   value: boolean
+    grn_tfs                        //    path: file or []
+    grn_n_top_genes                //   value: integer
+    grn_min_cells                  //   value: integer
+    grn_max_links                  //   value: integer
+    grn_seed                       //   value: integer
 
     main:
     ch_uns           = channel.empty()
@@ -143,6 +151,19 @@ workflow PER_GROUP {
         )
         ch_uns           = ch_uns.mix(DECOUPLER.out.uns)
         ch_multiqc_files = ch_multiqc_files.mix(DECOUPLER.out.multiqc_files)
+    }
+
+    if (grn) {
+        ARBORETO_GRNBOOST2(
+            ch_h5ad_no_neighbors
+                .filter { meta, _h5ad -> grnEnabled(meta, grn) },
+            grn_tfs,
+            grn_n_top_genes,
+            grn_min_cells,
+            grn_max_links,
+            grn_seed,
+        )
+        ch_uns = ch_uns.mix(ARBORETO_GRNBOOST2.out.uns)
     }
 
     CLUSTER_ANNOTATION(

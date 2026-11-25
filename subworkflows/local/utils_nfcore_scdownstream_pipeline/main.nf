@@ -366,6 +366,10 @@ def pseudobulkingRequired() {
     params.pseudobulk || pseudobulkDeMethodsRequested() || decouplerRequested()
 }
 
+def grnEnabled(meta, grn_flag) {
+    grn_flag && analysisEnabled(meta, 'grn')
+}
+
 def decouplerEnabled(meta, decoupler_flag) {
     decoupler_flag && analysisEnabled(meta, 'decoupler')
 }
