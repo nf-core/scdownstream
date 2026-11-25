@@ -320,7 +320,7 @@ def referenceConditionRequired() {
     return analysisPlanToList().any { row ->
         def analyses = row.analyses
             ? row.analyses.split(',').collect { token -> token.trim() }
-            : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype', 'decoupler']
+            : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype', 'decoupler', 'grn']
         ('de' in analyses || !row.analyses) &&
             resolvedDeMethodsForPlanRow(row).intersect(referenceConditionDeMethods() as List)
     }
@@ -344,7 +344,7 @@ def pseudobulkDeMethodsRequested() {
     return analysisPlanToList().any { row ->
         def analyses = row.analyses
             ? row.analyses.split(',').collect { token -> token.trim() }
-            : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype', 'decoupler']
+            : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype', 'decoupler', 'grn']
         ('de' in analyses || !row.analyses) &&
             resolvedDeMethodsForPlanRow(row).intersect(pseudobulkDeMethods() as List)
     }

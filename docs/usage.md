@@ -460,6 +460,12 @@ GRNBoost2 returns a link for most regulator and target pairs, so only the [`grn_
 Use the `grn` token in the [analysis plan](#analysis-plan) to restrict the analysis to selected clusterings.
 
 :::note
+Leiden clusterings are analysed on the integration objects, which keep only the genes chosen by [`feature_selection`](https://nf-co.re/scdownstream/parameters#feature_selection).
+Transcription factors outside that gene set are not candidate regulators for those clusterings.
+Label groupings keep the full shared gene set.
+:::
+
+:::note
 Runtime grows with the number of target genes, candidate regulators and groups.
 Start with a transcription factor list and a small analysis plan on large datasets.
 :::
