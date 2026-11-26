@@ -270,7 +270,7 @@
                     "type": "string",
                     "format": "file-path",
                     "description": "If you want to project new data onto an already integrated object, specify the path to the base AnnData object here",
-                    "help_text": "The file should be in the .h5ad format.",
+                    "help_text": "Provide an .h5ad file. Atlas extension with --input requires the per-sample gene presence table (varm['gene_presence']) from a previous pipeline run.",
                     "pattern": "^\\S+\\.h5ad$",
                     "exists": true
                 },

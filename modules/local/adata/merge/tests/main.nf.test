@@ -47,11 +47,21 @@ nextflow_process {
                 """
             }
         }
+        run("ADATA_MERGE", alias: "MERGE_REFERENCE") {
+            script "modules/local/adata/merge/main.nf"
+            process {
+                """
+                input[0] = ADATA_UNIFY.out.h5ad.filter { meta, _h5ad -> meta.id == 'SRR28679759' }
+                input[1] = [[], []]
+                input[2] = ''
+                """
+            }
+        }
         run("SCANPY_LOG1PNORM") {
             script "modules/local/scanpy/log1pnorm/main.nf"
             process {
                 """
-                input[0] = ADATA_UNIFY.out.h5ad.filter { meta, _h5ad -> meta.id == 'SRR28679759' }
+                input[0] = MERGE_REFERENCE.out.outer
                 """
             }
         }
@@ -134,12 +144,8 @@ nextflow_process {
             }
             process {
                 """
-                ch_h5ad = ADATA_UNIFY.out.h5ad.branch{ meta, h5ad ->
-                    sample1: meta.id == 'SRR28679756'
-                    sample2: meta.id == 'SRR28679759'
-                }
-                input[0] = ch_h5ad.sample1
-                input[1] = ch_h5ad.sample2
+                input[0] = ADATA_UNIFY.out.h5ad.filter { meta, _h5ad -> meta.id == 'SRR28679756' }
+                input[1] = MERGE_REFERENCE.out.outer
                 input[2] = ''
                 """
             }
@@ -309,12 +315,8 @@ nextflow_process {
             }
             process {
                 """
-                ch_h5ad = ADATA_UNIFY.out.h5ad.branch{ meta, h5ad ->
-                    sample1: meta.id == 'SRR28679756'
-                    sample2: meta.id == 'SRR28679759'
-                }
-                input[0] = ch_h5ad.sample1
-                input[1] = ch_h5ad.sample2
+                input[0] = ADATA_UNIFY.out.h5ad.filter { meta, _h5ad -> meta.id == 'SRR28679756' }
+                input[1] = MERGE_REFERENCE.out.outer
                 input[2] = ''
                 """
             }

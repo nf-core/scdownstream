@@ -96,30 +96,19 @@ presence = pd.DataFrame(
     index=genes,
     columns=sample_ids,
 )
-presence_complete = not base_path
-if base_path and gene_presence_key in adata_base.varm:
+if base_path:
     base_presence = adata_base.varm[gene_presence_key].reindex(genes, fill_value=False)
     presence = pd.concat([base_presence, presence], axis=1)
-    presence_complete = bool(adata_base.uns.get("gene_presence_complete", False))
 
 if not presence.columns.is_unique:
     duplicates = presence.columns[presence.columns.duplicated()].unique().tolist()
     raise ValueError(f"Sample IDs must be unique across merge inputs. Repeated IDs: {duplicates}")
 
-intersection = presence.all(axis=1).to_numpy()
-if base_path:
-    # Older atlases may preserve only the aggregate intersection.
-    base_genes = adata_base.var_names
-    if "intersection" in adata_base.var:
-        base_genes = base_genes[adata_base.var["intersection"].eq(True).fillna(False)]
-    intersection = intersection & genes.isin(base_genes)
-
 if genes.name in presence.columns:
     # H5AD stores the feature index and sample columns under sibling keys.
     adata_outer.var_names = genes.rename(None)
 adata_outer.varm[gene_presence_key] = presence
-adata_outer.uns["gene_presence_complete"] = presence_complete
-adata_outer.var["intersection"] = intersection
+adata_outer.var["intersection"] = presence.all(axis=1).to_numpy()
 adata_outer.obs_names_make_unique()
 adata_outer.X = csr_matrix(adata_outer.X)
 

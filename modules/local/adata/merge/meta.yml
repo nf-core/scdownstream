@@ -31,7 +31,7 @@ input:
           e.g. `[ id:'base' ]`
     - base:
         type: file
-        description: Optional base AnnData used when merging onto an existing object
+        description: Optional merged AnnData with `varm["gene_presence"]` for all base samples
         pattern: "*.{h5ad}"
         ontologies:
           - edam: "http://edamontology.org/format_3590"

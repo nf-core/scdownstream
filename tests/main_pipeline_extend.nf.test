@@ -8,6 +8,7 @@ nextflow_pipeline {
 
         when {
             params {
+                def extension_fixture = 'https://raw.githubusercontent.com/nictru/test-datasets/80a11d44b1f0f224e3663a3e5bf3e743643098ab/extension_base_gene_presence/'
                 cell_cycle_scoring           = false
                 pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/scdownstream/'
                 input                        = params.pipelines_testdata_base_path + 'samplesheet_single.csv'
@@ -17,9 +18,9 @@ nextflow_pipeline {
                 celltypist_model             = 'Adult_COVID19_PBMC'
                 integration_n_features       = 500
                 outdir                       = "$outputDir"
-                scvi_model                   = params.pipelines_testdata_base_path + 'extension_base/model.pt'
-                symphony_reference           = params.pipelines_testdata_base_path + 'extension_base/symphony_reference.h5ad'
-                base_adata                   = params.pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                scvi_model                   = extension_fixture + 'model.pt'
+                symphony_reference           = extension_fixture + 'symphony_reference.h5ad'
+                base_adata                   = extension_fixture + 'merged.h5ad'
             }
         }
 
@@ -28,11 +29,10 @@ nextflow_pipeline {
             def adata = anndata("$outputDir/09_finalized/merged.h5ad")
             assert adata.n_obs > 0
             assert adata.n_vars > 0
-            assert adata.layers.containsAll(['raw_counts', 'ambient_corrected_decontx', 'log1p'])
+            assert 'gene_presence' in adata.varm
+            assert adata.layers.containsAll(['raw_counts', 'ambient_corrected_decontx', 'scran'])
             assert adata.obs.get('sample').unique().toSet() == ['SRR28679756', 'SRR28679757', 'SRR28679758', 'SRR28679759'].toSet()
-            def samples = adata.obs.get('sample').data.toList()
-            def methods = adata.obs.get('ambient_correction_method').data.toList()
-            assert samples.indices.every { methods[it] == (samples[it] == 'SRR28679759' ? 'decontx' : 'none') }
+            assert adata.obs.get('ambient_correction_method').unique() == ['decontx'].toSet()
             assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
             assert file("$outputDir/10_reports/qc-report.html").text.contains("Each integration method run by the pipeline")
             // stable_name: All files + folders in ${params.outdir}/ with a stable name
@@ -63,6 +63,25 @@ nextflow_pipeline {
         then {
             assert workflow.failed
             assert path("$metaDir/nextflow.log").text.contains('base_adata must contain a raw_counts layer with genuine pre-correction counts')
+        }
+    }
+
+    test("Should reject an extension base without per-sample gene presence") {
+
+        when {
+            params {
+                pipelines_testdata_base_path = 'https://raw.githubusercontent.com/nictru/test-datasets/scdownstream/'
+                input                        = params.pipelines_testdata_base_path + 'samplesheet_single.csv'
+                base_adata                   = params.pipelines_testdata_base_path + 'extension_base/merged.h5ad'
+                integration_methods          = 'scvi'
+                scvi_model                   = params.pipelines_testdata_base_path + 'extension_base/model.pt'
+                outdir                       = "$outputDir"
+            }
+        }
+
+        then {
+            assert workflow.failed
+            assert path("$metaDir/nextflow.log").text.contains("Atlas extension requires base_adata with varm['gene_presence']")
         }
     }
 }
