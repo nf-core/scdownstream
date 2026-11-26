@@ -46,10 +46,9 @@ for source, adata in zip(input_paths, adatas, strict=True):
 gene_presence_key = "gene_presence"
 sample_ids = []
 for adata in query_adatas:
-    samples = adata.obs["sample"].unique() if "sample" in adata.obs else []
-    if len(samples) != 1 or pd.isna(samples[0]):
-        raise ValueError("Each AnnData input to merge must contain one sample ID in obs['sample'].")
-    sample_ids.append(str(samples[0]))
+    if adata.n_obs == 0:
+        raise ValueError("Cannot merge an incoming AnnData with no cells.")
+    sample_ids.append(str(adata.obs["sample"].iat[0]))
 
 obs_col_intersection = set(adatas[0].obs.columns).intersection(*[adata.obs.columns for adata in adatas[1:]])
 force_obs_cols = "${force_obs_cols}"
