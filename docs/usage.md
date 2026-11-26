@@ -347,7 +347,7 @@ For Symphony reference mapping, provide the compact Symphony reference AnnData f
 It only works if `scvi`, `scanvi`, `scimilarity`, `scconcept`, and/or `symphony` have been enabled in `integration_methods` in the original pipeline run.
 In simple terms, in this setup the workflow is: (1) project new data into the latent space learned from the data in the original run, and then (2) combine the datasets.
 For (1), provide the same checkpoints as for reference mapping ([`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model), [`scconcept_model`](https://nf-co.re/scdownstream/parameters#scconcept_model), [`symphony_reference`](https://nf-co.re/scdownstream/parameters#symphony_reference)).
-For (2), pass the integrated `.h5ad` from the original run as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata).
+For (2), pass the final `09_finalized/merged.h5ad` from a run that records per-sample gene presence in `varm["gene_presence"]` as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata).
 
 Pre-trained scVI models are also shared on [scvi-hub](https://huggingface.co/scvi-tools).
 

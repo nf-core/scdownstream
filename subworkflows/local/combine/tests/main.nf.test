@@ -84,11 +84,21 @@ nextflow_workflow {
                     """
                 }
             }
+            run("ADATA_MERGE", alias: "SETUP_MERGE_BASE") {
+                script "modules/local/adata/merge/main.nf"
+                process {
+                    """
+                    input[0] = ADATA_UNIFY.out.h5ad.filter { meta, _h5ad -> meta.id == 'reference' }
+                    input[1] = [[], []]
+                    input[2] = ''
+                    """
+                }
+            }
             run("SCANPY_LOG1PNORM", alias: "SETUP_SCANPY_LOG1PNORM") {
                 script "modules/local/scanpy/log1pnorm/main.nf"
                 process {
                     """
-                    input[0] = ADATA_UNIFY.out.h5ad.filter { meta, _h5ad -> meta.id == 'reference' }
+                    input[0] = SETUP_MERGE_BASE.out.outer
                     """
                 }
             }

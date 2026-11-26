@@ -125,6 +125,11 @@ Doublet annotations are included in final outputs without `--save_intermediates`
 
 The `03_combine` directory contains the results of the sample aggregation step.
 The `merge` directory contains the merged H5AD files, which are used as input to the integration tools.
+
+`varm["gene_presence"]` records which genes each sample supplied to the merge after quality control and gene unification. Rows follow `var_names`, and columns use the sample IDs from the samplesheet. A gene can be present with zero counts in every cell. `var["intersection"]` marks the genes shared by all inputs and determines which genes enter integration.
+
+Atlas extension requires the presence table from the base atlas. scdownstream adds a column for each new sample and recomputes `var["intersection"]` across all samples. New sample IDs must differ from the IDs recorded in the base.
+
 The `integrate` directory contains the results of the integration step.
 The integrated H5AD files are stored in subdirectories named after the integration tool used.
 
