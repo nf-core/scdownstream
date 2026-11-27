@@ -133,9 +133,9 @@ DoubletDetection uses stochastic PhenoGraph clustering. Its tests snapshot the A
 
 ### `scry/`
 
-| Module          | Description                                                                                                                                                 | Reproducibility                                                                                                              | Test strategy (this branch) |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
-| `scry/deviance` | Ranks genes by binomial deviance on raw counts (`set.seed(123)`), subsets to the top _N_ genes, and writes `highly_deviant` / `binomial_deviance` in `var`. | Seeded / quasi-deterministic: deviance is deterministic on fixed counts; R floating-point may vary slightly across versions. | hash                        |
+| Module          | Description                                                                                                                                                 | Reproducibility                                                                                                              | Test strategy (this branch)                                |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `scry/deviance` | Ranks genes by binomial deviance on raw counts (`set.seed(123)`), subsets to the top _N_ genes, and writes `highly_deviant` / `binomial_deviance` in `var`. | Seeded / quasi-deterministic: deviance is deterministic on fixed counts; R floating-point may vary slightly across versions. | Parquet schema and decoded row digest, H5AD, and versions. |
 
 ### `singler/`
 

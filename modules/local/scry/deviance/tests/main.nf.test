@@ -1,3 +1,13 @@
+import groovy.json.JsonOutput
+import java.security.MessageDigest
+
+def devianceSnapshot = { fragment, table ->
+    def columns = table.columnNames
+    def rows = table.rows.collect { row -> columns.collect { column -> row[column] } }
+    def digest = MessageDigest.getInstance('SHA-256').digest(JsonOutput.toJson(rows).getBytes('UTF-8')).encodeHex().toString()
+    [file: new File(fragment).name, schema: table.schema, codecs: table.compressionCodecs, rows_sha256: digest]
+}
+
 nextflow_process {
 
     name "Test Process SCRY_DEVIANCE"
@@ -36,7 +46,8 @@ nextflow_process {
                 assert n_vars <= 4000
             }
             assert snapshot(
-                process.out,
+                process.out.h5ad,
+                devianceSnapshot(process.out.var[0], parquet(process.out.var[0])),
                 path(process.out.versions[0]).yaml,
                 adata.yaml
             ).match()
@@ -72,7 +83,8 @@ nextflow_process {
                 assert n_vars == 100
             }
             assert snapshot(
-                process.out,
+                process.out.h5ad,
+                devianceSnapshot(process.out.var[0], parquet(process.out.var[0])),
                 path(process.out.versions[0]).yaml,
                 adata.yaml
             ).match()
@@ -109,7 +121,8 @@ nextflow_process {
                 assert !var_names.contains('ANXA1')
             }
             assert snapshot(
-                process.out,
+                process.out.h5ad,
+                devianceSnapshot(process.out.var[0], parquet(process.out.var[0])),
                 path(process.out.versions[0]).yaml,
                 adata.yaml
             ).match()
