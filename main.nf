@@ -326,15 +326,12 @@ workflow {
         ? file(params.g2m_genes ?: "${projectDir}/assets/cell_cycle_genes/${params.species}_g2m_genes.txt", checkIfExists: true)
         : []
 
-    def sex_y_genes_path = params.sex_y_genes ?: "${projectDir}/assets/sex_genes/${params.species}_y_genes.txt"
-    def sex_x_genes_path = params.sex_x_genes ?: "${projectDir}/assets/sex_genes/${params.species}_x_genes.txt"
-    def run_sex_prediction = params.sex_prediction
-    if (run_sex_prediction && !(file(sex_y_genes_path).exists() && file(sex_x_genes_path).exists())) {
-        log.warn "No sex marker gene lists are bundled for species '${params.species}'. Provide --sex_y_genes and --sex_x_genes to run sex prediction. Skipping sex prediction."
-        run_sex_prediction = false
-    }
-    def sex_y_genes_file = run_sex_prediction ? file(sex_y_genes_path, checkIfExists: true) : []
-    def sex_x_genes_file = run_sex_prediction ? file(sex_x_genes_path, checkIfExists: true) : []
+    def sex_y_genes_file = params.sex_prediction
+        ? file(params.sex_y_genes ?: "${projectDir}/assets/sex_genes/${params.species}_y_genes.txt", checkIfExists: true)
+        : []
+    def sex_x_genes_file = params.sex_prediction
+        ? file(params.sex_x_genes ?: "${projectDir}/assets/sex_genes/${params.species}_x_genes.txt", checkIfExists: true)
+        : []
 
     def analysis_plan = analysisPlanToList()
 
@@ -385,7 +382,7 @@ workflow {
         s_genes_file,
         g2m_genes_file,
         params.species,
-        run_sex_prediction,
+        params.sex_prediction,
         sex_y_genes_file,
         sex_x_genes_file,
         params.qc_only,

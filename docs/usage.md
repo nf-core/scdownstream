@@ -338,7 +338,6 @@ A one-row summary per sample is written to `02_quality_control/sex_prediction/`.
 Pseudoautosomal genes are excluded from the bundled Y gene lists, because they are also expressed from chromosome X.
 Bundled lists are provided for human and mouse in [`assets/sex_genes/`](../assets/sex_genes/).
 For other organisms, provide your own lists via `--sex_y_genes` and `--sex_x_genes`.
-Without bundled lists or custom lists, sex prediction is skipped with a warning.
 
 :::note
 Sex prediction needs raw counts in `X` and gene symbols that match the bundled lists.
