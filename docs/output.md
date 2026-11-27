@@ -261,6 +261,9 @@ The results are stored in subdirectories named after the integration tool used.
         - `*_enrichment.parquet`: Long table of enrichment scores per network, source, cell type stratum and contrast.
         - `*_{network}_enrichment.png`: Dot plot of the top enriched sources per stratum.
         - `*_decoupler_enrichment.pkl`: Enrichment results keyed by network, merged into the final AnnData `uns` slot (when `--save_intermediates`).
+    - `grn/` (when `--grn true`)
+      - `*_grn.tsv`: GRNBoost2 links with `group`, `TF`, `target` and `importance` columns, sorted by importance within each group.
+      - `*_grn.parquet`: The same table as an `uns` fragment, merged into the final AnnData `uns` slot under `<prefix>_grn` (when `--save_intermediates`).
   - `decoupler/networks/` (when `--decoupler true` and `--save_intermediates`)
     - `{network}.tsv`: Prior-knowledge networks with `source`, `target` and `weight` columns, as used for scoring.
 

@@ -17,6 +17,71 @@ nextflow_workflow {
         'SMALL\tCD44\t1\nSMALL\tVIM\t1\nSMALL\tNOTAGENE\t1',
     ].join('\n') + '\n'
 
+    test("Should infer one GRNBoost2 network per group") {
+
+        tag "grn"
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.empty()
+                input[1] = channel.of([
+                    [id: 'test', obs_key: 'leiden', condition_col: 'condition', integration: 'scvi', resolution: '0.5', analyses: ['grn'] as Set],
+                    file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                ])
+                input[2] = true
+                input[3] = 1000
+                input[4] = 0
+                input[5] = 'stratified_obs'
+                input[6] = 42
+                input[7] = false
+                input[8] = ''
+                input[9] = 42
+                input[10] = ''
+                input[11] = 'wilcoxon'
+                input[12] = false
+                input[13] = 10
+                input[14] = 1000
+                input[15] = channel.empty()
+                input[16] = ''
+                input[17] = []
+                input[18] = 'human'
+                input[19] = false
+                input[20] = ''
+                input[21] = []
+                input[22] = 'ulm'
+                input[23] = 5
+                input[24] = true
+                input[25] = []
+                input[26] = 100
+                input[27] = 50
+                input[28] = 200
+                input[29] = 0
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            def grnFragments = workflow.out.uns.findAll { entry -> file(entry).name == 'test_grn.parquet' }
+            assert grnFragments.size() == 1
+            def fragment = parquet(grnFragments[0])
+            assert fragment.columnNames == ['__index__', 'group', 'TF', 'target', 'importance']
+            assert fragment.schema.fields.find { it.name == 'importance' }.physicalType == 'DOUBLE'
+            def rows = fragment.rows
+            // Cluster 5 has 3 cells and falls below grn_min_cells
+            assert rows.collect { it.group }.toSet() == ['0', '1', '2', '3', '4'].toSet()
+            rows.groupBy { it.group }.each { _group, links -> assert links.size() <= 200 }
+            assert rows.every { it.TF != it.target && it.importance > 0 }
+            assert rows.collect { it.__index__ }.toSet().size() == rows.size()
+            assert snapshot(workflow.out.uns.collect { file(it).name }.sort()).match()
+        }
+
+    }
+
     test("Should run without failures - PAGA only - stub") {
 
         tag "stub"
@@ -57,6 +122,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -106,6 +177,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -170,6 +247,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -232,6 +315,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -293,6 +382,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -350,6 +445,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -419,6 +520,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -482,6 +589,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -546,6 +659,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -607,6 +726,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -667,6 +792,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -730,6 +861,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -793,6 +930,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -854,6 +997,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -912,6 +1061,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -974,6 +1129,12 @@ nextflow_workflow {
                 input[21].text = '''${networkTsv}'''
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -1027,6 +1188,12 @@ nextflow_workflow {
                 input[21] = []
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -1078,6 +1245,12 @@ nextflow_workflow {
                 input[21].text = '''${networkTsv}'''
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }
@@ -1141,6 +1314,12 @@ nextflow_workflow {
                 input[21].text = '''${networkTsv}'''
                 input[22] = 'ulm'
                 input[23] = 5
+                input[24] = false
+                input[25] = []
+                input[26] = 2000
+                input[27] = 50
+                input[28] = 10000
+                input[29] = 0
                 """
             }
         }

@@ -31,6 +31,10 @@
 
   > Cannoodt R, Zappia L, Morgan M, Deconinck L (2025). anndataR: AnnData interoperability in R. R package version 0.99.0
 
+- [arboreto / GRNBoost2](https://pubmed.ncbi.nlm.nih.gov/30445495/)
+
+  > Moerman T, Aibar Santos S, Bravo González-Blas C, Simm J, Moreau Y, Aerts J, Aerts S. GRNBoost2 and Arboreto: efficient and scalable inference of gene regulatory networks. Bioinformatics. 2019 Jun 1;35(12):2159-2161. doi: 10.1093/bioinformatics/bty916. PubMed PMID: 30445495.
+
 - [atlas-gene-annotation-manipulation](https://github.com/ebi-gene-expression-group/atlas-gene-annotation-manipulation)
 
   > EMBL-EBI Gene Expression Team. atlas-gene-annotation-manipulation: scripts for manipulating gene annotation. https://github.com/ebi-gene-expression-group/atlas-gene-annotation-manipulation

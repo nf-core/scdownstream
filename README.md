@@ -91,6 +91,7 @@ The pipeline uses the following tools:
    3. Cell-cell communication
       - [LIANA+](https://liana-py.readthedocs.io/)
       - [Tensor-cell2cell](https://github.com/earmingol/cell2cell) (optional via `--cell2cell`)
+   4. Gene regulatory networks per group with [GRNBoost2](https://github.com/aertslab/arboreto) (optional via `--grn`)
 6. Export the final H5AD file
    - Gene biotype and chromosome annotation from a GTF or [MyGene.info](https://mygene.info/) (optional via `--gene_annotation`)
    - SingleCellExperiment RDS file (optional via `--tords`)

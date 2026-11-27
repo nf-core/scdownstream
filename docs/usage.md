@@ -421,8 +421,9 @@ For each Leiden clustering result the pipeline runs a configurable set of downst
 | **Aggregate per-cell annotation** | Majority vote of per-cell SingleR/CellTypist/Azimuth labels per cluster (columns derived from annotator manifests) | omit `aggregate_per_cell_annotation` from the analysis plan and/or do not run per-cell annotators                                                                                                                                                                                                                                                                                                                                |
 | **CyteType**                      | LLM-based cluster cell type annotation                                                                             | omit `cytetype` from the analysis plan and/or leave [`cytetype_study_context`](https://nf-co.re/scdownstream/parameters#cytetype_study_context) empty                                                                                                                                                                                                                                                                            |
 | **Pathway activity**              | decoupler pathway and transcription factor activity on pseudobulk profiles and pseudobulk DE results               | opt-in: set [`decoupler`](https://nf-co.re/scdownstream/parameters#decoupler) to `true`; analysis-plan token `decoupler`                                                                                                                                                                                                                                                                                                         |
+| **Gene regulatory networks**      | GRNBoost2 regulator to target networks, one per group                                                              | opt-in: set [`grn`](https://nf-co.re/scdownstream/parameters#grn) to `true`; analysis-plan token `grn`                                                                                                                                                                                                                                                                                                                           |
 
-By default (no `--analysis_plan`), `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, and `cytetype` run for every clustering result, subject to `skip_liana`, `de_methods`, and `cytetype_study_context` above. Tensor-cell2cell and pathway activity are opt-in (`cell2cell` and `decoupler` default to `false`). Sample-level pseudobulk DE runs automatically when `pydeseq2` or `edgepython` are included in the resolved `de_methods` for a clustering.
+By default (no `--analysis_plan`), `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, and `cytetype` run for every clustering result, subject to `skip_liana`, `de_methods`, and `cytetype_study_context` above. Tensor-cell2cell, pathway activity and gene regulatory networks are opt-in (`cell2cell`, `decoupler` and `grn` default to `false`). Sample-level pseudobulk DE runs automatically when `pydeseq2` or `edgepython` are included in the resolved `de_methods` for a clustering.
 
 For large objects, set [`liana_max_cells`](https://nf-co.re/scdownstream/parameters#liana_max_cells) to cap cells before LIANA. Global LIANA subsampling is stratified by the LIANA grouping column (`leiden` or `label`); use [`liana_subsample_strategy`](https://nf-co.re/scdownstream/parameters#liana_subsample_strategy) `stratified_obs_batch` to stratify additionally by `batch`. By-sample LIANA (Tensor-cell2cell) always stratifies by the context/donor column as well, and drops contexts that do not have at least two cell groups with at least five cells each (LIANA's default `min_cells`). Set [`liana_n_perms`](https://nf-co.re/scdownstream/parameters#liana_n_perms) to `0` to skip permutation testing and speed up runs (specificity ranks are then not permutation-based). The same LIANA inference settings are reused for the by-sample LIANA step that feeds Tensor-cell2cell. Rank-aggregate also writes a dotplot and tileplot of the top interactions and a circle plot of significant cell-group interactions, all included in MultiQC.
 
@@ -475,19 +476,45 @@ Its file name without extension becomes the network name in the outputs, so it m
 Sources with fewer than [`decoupler_min_targets`](https://nf-co.re/scdownstream/parameters#decoupler_min_targets) targets in the data (default `5`) are not scored.
 Use the `decoupler` token in the [analysis plan](#analysis-plan) to restrict the analysis to selected clusterings.
 
+#### Gene regulatory networks
+
+Set [`grn`](https://nf-co.re/scdownstream/parameters#grn) to `true` to infer gene regulatory networks with [GRNBoost2](https://github.com/aertslab/arboreto).
+One network is inferred for each group (for example each Leiden cluster) with at least [`grn_min_cells`](https://nf-co.re/scdownstream/parameters#grn_min_cells) cells (default `50`).
+Each network is a table of regulator, target and importance, where a higher importance means the regulator predicts more of the target's expression.
+
+Targets are the [`grn_n_top_genes`](https://nf-co.re/scdownstream/parameters#grn_n_top_genes) most variable genes across all cells (default `2000`), selected on log-normalised data.
+The networks are inferred from the counts in `X`, as in pySCENIC.
+Provide a list of transcription factors with [`grn_tfs`](https://nf-co.re/scdownstream/parameters#grn_tfs), one gene symbol per line, to restrict the candidate regulators.
+Without it, every target gene is also a candidate regulator, which is slower and also returns links between genes that are not transcription factors.
+
+GRNBoost2 returns a link for most regulator and target pairs, so only the [`grn_max_links`](https://nf-co.re/scdownstream/parameters#grn_max_links) strongest links per group are kept (default `10000`, `0` keeps all).
+[`grn_seed`](https://nf-co.re/scdownstream/parameters#grn_seed) fixes the random seed.
+Use the `grn` token in the [analysis plan](#analysis-plan) to restrict the analysis to selected clusterings.
+
+:::note
+Leiden clusterings are analysed on the integration objects, which keep only the genes chosen by [`feature_selection`](https://nf-co.re/scdownstream/parameters#feature_selection).
+Transcription factors outside that gene set are not candidate regulators for those clusterings.
+Label groupings keep the full shared gene set.
+:::
+
+:::note
+Runtime grows with the number of target genes, candidate regulators and groups.
+Start with a transcription factor list and a small analysis plan on large datasets.
+:::
+
 ### Analysis plan
 
 With many integration methods and resolutions the full downstream suite can generate a large number of tasks. The optional [`analysis_plan`](https://nf-co.re/scdownstream/parameters#analysis_plan) parameter accepts a CSV that controls exactly which Leiden resolutions are computed and which analyses run for each clustering result.
 
 Each row in the CSV selects a subset of clusterings. **All columns are optional**. An empty cell acts as a wildcard that matches everything:
 
-| Column        | Empty means                                                                                                                                                                    |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `integration` | match all integration methods                                                                                                                                                  |
-| `subset`      | match all subsets (`global` and per-label)                                                                                                                                     |
-| `resolution`  | match all resolutions (still bounded by `--clustering_resolutions`)                                                                                                            |
-| `analyses`    | run `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, `cytetype`, and `decoupler` (`cell2cell` and `decoupler` are opt-in via `--cell2cell true` and `--decoupler true`) |
-| `de_methods`  | use the global [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) default                                                                                     |
+| Column        | Empty means                                                                                                                                                                                                |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `integration` | match all integration methods                                                                                                                                                                              |
+| `subset`      | match all subsets (`global` and per-label)                                                                                                                                                                 |
+| `resolution`  | match all resolutions (still bounded by `--clustering_resolutions`)                                                                                                                                        |
+| `analyses`    | run `paga`, `liana`, `de`, `aggregate_per_cell_annotation`, `cytetype`, `decoupler`, and `grn` (`cell2cell`, `decoupler` and `grn` are opt-in via `--cell2cell true`, `--decoupler true` and `--grn true`) |
+| `de_methods`  | use the global [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods) default                                                                                                                 |
 
 When multiple rows match a clustering result, their `analyses` lists are **combined** (duplicates removed). If any matching row leaves `analyses` empty, all analyses run for that clustering. Clusterings that match **no** row are excluded from Leiden and all downstream analyses, but their UMAP and neighbour graph are still computed.
 
