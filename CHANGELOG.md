@@ -88,6 +88,7 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Match pretrained scANVI checkpoints to the query label column, unlabeled category, and counts layer, by @nictru and Codex.
 - Record per-sample gene presence in the merged H5AD and require it to derive the gene intersection during atlas extension, by @nictru and Codex [[#425](https://github.com/nf-core/scdownstream/issues/425)].
 - Pin `nf-anndata` 0.5.4 to prevent concurrent reads of partially downloaded H5AD files on S3 and update `nft-anndata` to 0.5.4, by @nictru and Codex [[#408](https://github.com/nf-core/scdownstream/pull/408)].
 - Render the QC report on local scratch with Fusion so Quarto can write its project cache, by @nictru and Codex [[#407](https://github.com/nf-core/scdownstream/pull/407)].
