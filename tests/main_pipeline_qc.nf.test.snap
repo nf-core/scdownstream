@@ -235,9 +235,108 @@
                 "pipeline_info/nf_core_scdownstream_software_mqc_versions.yml"
             ],
             [
-                "SRR28679756_scdblfinder.predictions.parquet:md5,39174ae0d6baf5643bed1afddeb225d3",
-                "SRR28679757_scdblfinder.predictions.parquet:md5,22da821f6295fb9e7fbbe9d2c81a7131",
-                "SRR28679758_scdblfinder.predictions.parquet:md5,b7b88efd078195330f63465f4b5e8b5a",
+                {
+                    "file": "SRR28679756_scdblfinder.predictions.parquet",
+                    "schema": {
+                        "name": "schema",
+                        "fields": [
+                            {
+                                "name": "__index__",
+                                "repetition": "OPTIONAL",
+                                "nullable": true,
+                                "physicalType": "BINARY",
+                                "logicalType": {
+                                    "type": "STRING"
+                                },
+                                "fields": [
+                                    
+                                ]
+                            },
+                            {
+                                "name": "SRR28679756_scdblfinder",
+                                "repetition": "OPTIONAL",
+                                "nullable": true,
+                                "physicalType": "BOOLEAN",
+                                "logicalType": null,
+                                "fields": [
+                                    
+                                ]
+                            }
+                        ]
+                    },
+                    "codecs": [
+                        "SNAPPY"
+                    ],
+                    "rows_sha256": "63c705332e69ac68bf95f2d0b362903e899cad385345a41443d067c4104a729e"
+                },
+                {
+                    "file": "SRR28679757_scdblfinder.predictions.parquet",
+                    "schema": {
+                        "name": "schema",
+                        "fields": [
+                            {
+                                "name": "__index__",
+                                "repetition": "OPTIONAL",
+                                "nullable": true,
+                                "physicalType": "BINARY",
+                                "logicalType": {
+                                    "type": "STRING"
+                                },
+                                "fields": [
+                                    
+                                ]
+                            },
+                            {
+                                "name": "SRR28679757_scdblfinder",
+                                "repetition": "OPTIONAL",
+                                "nullable": true,
+                                "physicalType": "BOOLEAN",
+                                "logicalType": null,
+                                "fields": [
+                                    
+                                ]
+                            }
+                        ]
+                    },
+                    "codecs": [
+                        "SNAPPY"
+                    ],
+                    "rows_sha256": "73fcea79012d612651d5ce5285e22eb3ad2abf803af5b07088fb7e3901c386a8"
+                },
+                {
+                    "file": "SRR28679758_scdblfinder.predictions.parquet",
+                    "schema": {
+                        "name": "schema",
+                        "fields": [
+                            {
+                                "name": "__index__",
+                                "repetition": "OPTIONAL",
+                                "nullable": true,
+                                "physicalType": "BINARY",
+                                "logicalType": {
+                                    "type": "STRING"
+                                },
+                                "fields": [
+                                    
+                                ]
+                            },
+                            {
+                                "name": "SRR28679758_scdblfinder",
+                                "repetition": "OPTIONAL",
+                                "nullable": true,
+                                "physicalType": "BOOLEAN",
+                                "logicalType": null,
+                                "fields": [
+                                    
+                                ]
+                            }
+                        ]
+                    },
+                    "codecs": [
+                        "SNAPPY"
+                    ],
+                    "rows_sha256": "14997a35a85902477928f45e0945396638e0f5c158d520f7972279149e8604b5"
+                },
                 "SRR28679756_scrublet.parquet:md5,5d934783b9fd48c0420be0b9ca822601",
                 "SRR28679757_scrublet.parquet:md5,95c08614a4f2ebe8fab5c2636ab75c0e",
                 "SRR28679758_scrublet.parquet:md5,4bad9b22784c7c665021d4d39dc81975",
@@ -253,7 +352,7 @@
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
             ]
         ],
-        "timestamp": "2026-11-27T14:11:45.48740791",
+        "timestamp": "2026-11-27T16:29:35.948522624",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

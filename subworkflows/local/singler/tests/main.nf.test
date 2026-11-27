@@ -37,7 +37,8 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.out.obs.size() == 1
-            def predictions = parquet(workflow.out.obs[0][1])
+            def (predictionsMeta, predictionsFile) = workflow.out.obs[0]
+            def predictions = parquet(predictionsFile)
             with(predictions) {
                 assert rowCount > 0
                 assert '__index__' in columnNames
@@ -47,7 +48,7 @@ nextflow_workflow {
                 assert columnNames.any { it == "annotation:singler:immune_celldex:per_cell:pruned" }
             }
             assert snapshot(
-                workflow.out.obs,
+                [[predictionsMeta, ParquetSnapshot.compactContent(predictionsFile, predictions)]],
                 workflow.out.versions.collect { path(it).yaml }
             ).match()
         }
