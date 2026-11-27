@@ -309,6 +309,10 @@ def referenceConditionDeMethods() {
     (pseudobulkDeMethods() + ['edgepython_sc']) as Set
 }
 
+def analysisRequestedForPlanRow(row, token) {
+    !row.analyses || token in row.analyses.split(',').collect { analysis -> analysis.trim() }
+}
+
 def referenceConditionRequired() {
     def global_methods = params.de_methods.split(',').collect { token -> token.trim() }.findAll { token -> token }
     if (global_methods.intersect(referenceConditionDeMethods() as List)) {
@@ -318,10 +322,7 @@ def referenceConditionRequired() {
         return false
     }
     return analysisPlanToList().any { row ->
-        def analyses = row.analyses
-            ? row.analyses.split(',').collect { token -> token.trim() }
-            : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype', 'decoupler', 'grn']
-        ('de' in analyses || !row.analyses) &&
+        analysisRequestedForPlanRow(row, 'de') &&
             resolvedDeMethodsForPlanRow(row).intersect(referenceConditionDeMethods() as List)
     }
 }
@@ -342,10 +343,7 @@ def pseudobulkDeMethodsRequested() {
         return false
     }
     return analysisPlanToList().any { row ->
-        def analyses = row.analyses
-            ? row.analyses.split(',').collect { token -> token.trim() }
-            : ['paga', 'liana', 'de', 'aggregate_per_cell_annotation', 'cytetype', 'decoupler', 'grn']
-        ('de' in analyses || !row.analyses) &&
+        analysisRequestedForPlanRow(row, 'de') &&
             resolvedDeMethodsForPlanRow(row).intersect(pseudobulkDeMethods() as List)
     }
 }
@@ -358,7 +356,7 @@ def decouplerRequested() {
         return true
     }
     return analysisPlanToList().any { row ->
-        !row.analyses || 'decoupler' in row.analyses.split(',').collect { token -> token.trim() }
+        analysisRequestedForPlanRow(row, 'decoupler')
     }
 }
 

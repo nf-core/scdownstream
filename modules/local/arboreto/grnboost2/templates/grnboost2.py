@@ -60,7 +60,8 @@ else:
     print("No regulator list given; using all selected target genes as candidate regulators.")
 
 genes = target_genes.union(regulators, sort=False)
-print(f"Inferring networks over {len(genes)} genes with {len(regulators)} candidate regulators.")
+target_indices = genes.get_indexer(target_genes)
+print(f"Inferring networks for {len(target_genes)} target genes with {len(regulators)} candidate regulators.")
 
 # State shared with worker processes through fork
 _tf_matrix = None
@@ -100,7 +101,7 @@ for group in sorted(groups.unique()):
     _tf_matrix, _tf_names = core.to_tf_matrix(_expression, list(genes), list(regulators))
 
     with multiprocessing.get_context("fork").Pool(cpus) as pool:
-        results = [result for result in pool.map(infer_target, range(len(genes))) if result is not None]
+        results = [result for result in pool.map(infer_target, target_indices) if result is not None]
 
     if not results:
         print(f"No links inferred for group {group}.")
@@ -133,6 +134,8 @@ versions = {
     "${task.process}": {
         "python": platform.python_version(),
         "arboreto": version("arboreto"),
+        "pandas": pd.__version__,
+        "scikit-learn": version("scikit-learn"),
         "scanpy": version("scanpy"),
         "pyarrow": pyarrow.__version__,
     }

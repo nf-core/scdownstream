@@ -49,9 +49,11 @@ nextflow_process {
             def table = path(process.out.tsv[0][1]).csv(sep: '\t')
             assert table.columnNames == ['group', 'TF', 'target', 'importance']
             assert table.rowCount == fragment.rowCount
-            // Importances depend on the scikit-learn build, so only stable outputs are snapshotted
+            def versions = path(process.out.versions[0]).yaml.ARBORETO_GRNBOOST2
+            assert versions.pandas
+            assert versions['scikit-learn']
             assert snapshot(
-                path(process.out.versions[0]).yaml,
+                [ARBORETO_GRNBOOST2: versions.findAll { name, _version -> name in ['arboreto', 'pyarrow', 'python', 'scanpy'] }],
                 rows.collect { it.group }.toSet().sort()
             ).match()
         }
@@ -74,7 +76,7 @@ nextflow_process {
                     ]
                 )
                 input[1] = tfs
-                input[2] = 100
+                input[2] = 1
                 input[3] = 50
                 input[4] = 0
                 input[5] = 0
@@ -87,6 +89,7 @@ nextflow_process {
             def rows = parquet(process.out.uns[0]).rows
             assert rows.size() > 0
             assert rows.collect { it.TF }.toSet().every { it in ['CD74', 'S100A8'] }
+            assert rows.collect { it.target }.toSet().size() == 1
         }
 
     }
