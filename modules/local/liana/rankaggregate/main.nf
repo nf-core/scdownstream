@@ -4,8 +4,8 @@ process LIANA_RANKAGGREGATE {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/72/728f3e7e2298f7fd0a0cb0b07bb99b22e96c19d3895db0b1f9a7563fb2c7080a/data'
-        : 'community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:3ed78ef79b4347a7'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/30/30b4d4b7d3c947f024726a6a686778c6675654d145ad19c06782b2a375f06098/data'
+        : 'community.wave.seqera.io/library/liana_pyarrow_pydantic-settings_pyyaml:0a457a37c69d1794'}"
 
     input:
     tuple val(meta), path(h5ad)
