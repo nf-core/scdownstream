@@ -49,11 +49,8 @@ nextflow_process {
             def table = path(process.out.tsv[0][1]).csv(sep: '\t')
             assert table.columnNames == ['group', 'TF', 'target', 'importance']
             assert table.rowCount == fragment.rowCount
-            def versions = path(process.out.versions[0]).yaml.ARBORETO_GRNBOOST2
-            assert versions.pandas
-            assert versions['scikit-learn']
             assert snapshot(
-                [ARBORETO_GRNBOOST2: versions.findAll { name, _version -> name in ['arboreto', 'pyarrow', 'python', 'scanpy'] }],
+                path(process.out.versions[0]).yaml,
                 rows.collect { it.group }.toSet().sort()
             ).match()
         }
