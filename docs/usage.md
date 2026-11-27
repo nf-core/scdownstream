@@ -312,6 +312,38 @@ nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
     --scvi_continuous_covariates S_score,G2M_score
 ```
 
+### Sex prediction
+
+Sex prediction estimates the sex of each sample from the expression of genes in the male-specific region of chromosome Y and of the X-inactivation transcript XIST, following the approach of the [NBIS single-cell RNA-seq course](https://nbisweden.github.io/workshop-scRNAseq/).
+It is useful to spot sample swaps and to confirm donor metadata.
+
+Sex prediction is disabled by default.
+To enable it:
+
+```bash
+nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results --sex_prediction true
+```
+
+Each cell is labelled `male` when it has counts for any Y gene but none for XIST, `female` for the reverse, `both` when it has both and `unknown` when it has neither.
+A sample is called `male` or `female` when at least 80% of its `male` and `female` cells agree, `mixed` otherwise (for example pooled donors), and `unknown` when fewer than 20 cells are informative.
+The following columns are added to `adata.obs`:
+
+- `sex_y_fraction`: fraction of the counts of a cell that come from the Y genes
+- `sex_xist_fraction`: fraction of the counts of a cell that come from XIST
+- `sex_cell_call`: per-cell label
+- `predicted_sex`: sample-level call, identical for all cells of a sample
+
+A one-row summary per sample is written to `02_quality_control/sex_prediction/`.
+
+Pseudoautosomal genes are excluded from the bundled Y gene lists, because they are also expressed from chromosome X.
+Bundled lists are provided for human and mouse in [`assets/sex_genes/`](../assets/sex_genes/).
+For other organisms, provide your own lists via `--sex_y_genes` and `--sex_x_genes`.
+
+:::note
+Sex prediction needs raw counts in `X` and gene symbols that match the bundled lists.
+Inputs that keep only a subset of genes, such as highly variable genes, often lack XIST and the Y genes, and then every cell is `unknown`.
+:::
+
 ### Gene annotation
 
 `--gene_annotation` adds four columns to `adata.var` of the final `merged.h5ad`:
