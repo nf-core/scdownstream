@@ -6,13 +6,15 @@ from collections import defaultdict
 
 import anndata as ad
 import numpy as np
+import pandas as pd
 import scanpy as sc
 import scipy
 import yaml
 from scipy.sparse import csr_matrix
 
 input_paths = sorted("${h5ads}".split())
-adatas = [sc.read_h5ad(f) for f in input_paths]
+query_adatas = [sc.read_h5ad(f) for f in input_paths]
+adatas = query_adatas
 
 base_path = "${base}"
 if base_path:
@@ -41,7 +43,13 @@ for source, adata in zip(input_paths, adatas, strict=True):
         if column not in adata.obs:
             adata.obs[column] = "unknown"
 
-genes = [adata.var_names for adata in adatas]
+gene_presence_key = "gene_presence"
+sample_ids = []
+for adata in query_adatas:
+    if adata.n_obs == 0:
+        raise ValueError("Cannot merge an incoming AnnData with no cells.")
+    sample_ids.append(str(adata.obs["sample"].iat[0]))
+
 obs_col_intersection = set(adatas[0].obs.columns).intersection(*[adata.obs.columns for adata in adatas[1:]])
 force_obs_cols = "${force_obs_cols}"
 obs_col_intersection = sorted(obs_col_intersection.union(force_obs_cols.split(",") if force_obs_cols else []))
@@ -81,10 +89,26 @@ for adata in adatas:
             continue
         adata.obs[col] = adata.obs[col].astype(str).astype("category")
 
-gene_intersection = set(genes[0]).intersection(*genes[1:])
-
 adata_outer = ad.concat(adatas, join="outer")
-adata_outer.var["intersection"] = adata_outer.var_names.isin(gene_intersection).astype(bool)
+genes = adata_outer.var_names
+presence = pd.DataFrame(
+    np.column_stack([genes.isin(adata.var_names) for adata in query_adatas]),
+    index=genes,
+    columns=sample_ids,
+)
+if base_path:
+    base_presence = adata_base.varm[gene_presence_key].reindex(genes, fill_value=False)
+    presence = pd.concat([base_presence, presence], axis=1)
+
+if not presence.columns.is_unique:
+    duplicates = presence.columns[presence.columns.duplicated()].unique().tolist()
+    raise ValueError(f"Sample IDs must be unique across merge inputs. Repeated IDs: {duplicates}")
+
+if genes.name in presence.columns:
+    # H5AD stores the feature index and sample columns under sibling keys.
+    adata_outer.var_names = genes.rename(None)
+adata_outer.varm[gene_presence_key] = presence
+adata_outer.var["intersection"] = presence.all(axis=1).to_numpy()
 adata_outer.obs_names_make_unique()
 adata_outer.X = csr_matrix(adata_outer.X)
 

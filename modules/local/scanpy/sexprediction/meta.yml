@@ -1,0 +1,94 @@
+name: "scanpy_sexprediction"
+description: Predict the sex of each sample from Y chromosome and X-inactivation gene counts
+keywords:
+  - sex
+  - xist
+  - quality-control
+  - single-cell
+tools:
+  - "scanpy":
+      description: "Single-cell analysis in Python"
+      homepage: "https://scanpy.readthedocs.io"
+      documentation: "https://scanpy.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/scanpy"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format with raw counts in X
+        pattern: "*.{h5ad}"
+  - y_genes:
+      type: file
+      description: Text file listing genes from the male-specific region of chromosome Y
+      pattern: "*.{txt,tsv,csv}"
+  - x_genes:
+      type: file
+      description: Text file listing X-inactivation genes such as XIST
+      pattern: "*.{txt,tsv,csv}"
+  - symbol_col:
+      type: string
+      description: var column containing gene symbols
+
+output:
+  obs:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.parquet":
+          type: file
+          description: Parquet obs with per-cell sex marker fractions, per-cell calls, the sample call and an explicit __index__ column
+          pattern: "*.parquet"
+  h5ad:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.h5ad":
+          type: file
+          description: AnnData with sex prediction annotations
+          pattern: "*.h5ad"
+  tsv:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.tsv":
+          type: file
+          description: One-row summary of the sample-level sex prediction
+          pattern: "*.tsv"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@kroy3"
+maintainers:
+  - "@kroy3"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:cb1e83352ea4f54d
+      build_id: bd-cb1e83352ea4f54d_1
+      scan_id: sc-285088e7ce92a519_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:8631c4d5e6493952
+      build_id: bd-8631c4d5e6493952_1
+      scan_id: sc-beb736d6d7bf19bc_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:88268f259d494ca3
+      build_id: bd-88268f259d494ca3_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8f/8f8e43bfea40f384db72a635038d6dfa776155850b820ae063a3ab458957b561/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/leidenalg_pyarrow_python-igraph_python_pruned:8c31549912a97f29
+      build_id: bd-8c31549912a97f29_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/27/27ae12964eb6a32fa4d6d740b571834c665bc71114977c1bfb019da3bf15e83e/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scanpy/sexprediction/.conda-lock/linux_amd64-bd-8631c4d5e6493952_1.txt
+    linux/arm64:
+      lock_file: modules/local/scanpy/sexprediction/.conda-lock/linux_arm64-bd-cb1e83352ea4f54d_1.txt

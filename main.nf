@@ -16,6 +16,7 @@ params {
     unify_gene_symbols: Boolean
     aggregate_isoforms: Boolean
     cell_cycle_scoring: Boolean
+    sex_prediction: Boolean
     use_ambient_corrected_counts: Boolean
     doublet_detection_threshold: Integer
     doublet_removal: Boolean
@@ -110,6 +111,9 @@ workflow NFCORE_SCDOWNSTREAM {
     s_genes                       //    path: file or []
     g2m_genes                     //    path: file or []
     species                       //   value: string
+    sex_prediction                //   value: boolean
+    sex_y_genes                   //    path: file or []
+    sex_x_genes                   //    path: file or []
     qc_only                       //   value: boolean
     celldex_reference             //   value: string
     celltypist_model              //   value: string
@@ -214,6 +218,9 @@ workflow NFCORE_SCDOWNSTREAM {
         s_genes,
         g2m_genes,
         species,
+        sex_prediction,
+        sex_y_genes,
+        sex_x_genes,
         qc_only,
         celldex_reference,
         celltypist_model,
@@ -336,6 +343,13 @@ workflow {
         ? file(params.g2m_genes ?: "${projectDir}/assets/cell_cycle_genes/${params.species}_g2m_genes.txt", checkIfExists: true)
         : []
 
+    def sex_y_genes_file = params.sex_prediction
+        ? file(params.sex_y_genes ?: "${projectDir}/assets/sex_genes/${params.species}_y_genes.txt", checkIfExists: true)
+        : []
+    def sex_x_genes_file = params.sex_prediction
+        ? file(params.sex_x_genes ?: "${projectDir}/assets/sex_genes/${params.species}_x_genes.txt", checkIfExists: true)
+        : []
+
     def analysis_plan = analysisPlanToList()
 
     def symphony_reference = params.symphony_reference
@@ -389,6 +403,9 @@ workflow {
         s_genes_file,
         g2m_genes_file,
         params.species,
+        params.sex_prediction,
+        sex_y_genes_file,
+        sex_x_genes_file,
         params.qc_only,
         params.celldex_reference,
         params.celltypist_model,

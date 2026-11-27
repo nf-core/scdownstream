@@ -48,6 +48,9 @@ workflow SCDOWNSTREAM {
     s_genes                       //    path: file or []
     g2m_genes                     //    path: file or []
     species                       //   value: string
+    sex_prediction                //   value: boolean
+    sex_y_genes                   //    path: file or []
+    sex_x_genes                   //    path: file or []
     qc_only                       //   value: boolean
     celldex_reference              //   value: string
     celltypist_model               //   value: string
@@ -180,6 +183,9 @@ workflow SCDOWNSTREAM {
             s_genes,
             g2m_genes,
             species,
+            sex_prediction,
+            sex_y_genes,
+            sex_x_genes,
         )
         ch_multiqc_files = ch_multiqc_files.mix(QUALITY_CONTROL.out.multiqc_files)
         ch_h5ad = QUALITY_CONTROL.out.h5ad

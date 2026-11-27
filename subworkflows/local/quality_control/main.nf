@@ -1,4 +1,5 @@
 include { SCANPY_CELLCYCLE                     } from '../../../modules/local/scanpy/cellcycle'
+include { SCANPY_SEXPREDICTION                 } from '../../../modules/local/scanpy/sexprediction'
 include { EMPTY_DROPLET_REMOVAL                } from '../empty_droplet_removal'
 include { SCANPY_PLOTQC as QC_RAW              } from '../../../modules/local/scanpy/plotqc'
 include { AMBIENT_CORRECTION                   } from '../ambient_correction'
@@ -34,6 +35,9 @@ workflow QUALITY_CONTROL {
     s_genes //    path: file or []
     g2m_genes //    path: file or []
     species //   value: string
+    sex_prediction //   value: boolean
+    sex_y_genes //    path: file or []
+    sex_x_genes //    path: file or []
 
     main:
     ch_multiqc_files = channel.empty()
@@ -221,6 +225,20 @@ workflow QUALITY_CONTROL {
         )
         ch_obs_per_sample = ch_obs_per_sample.mix(SCANPY_CELLCYCLE.out.obs)
         ch_multiqc_files = ch_multiqc_files.mix(SCANPY_CELLCYCLE.out.multiqc_files)
+    }
+
+    if (sex_prediction) {
+        ch_sexprediction = ch_h5ad.multiMap { meta, h5ad ->
+            h5ad: [meta, h5ad]
+            symbol_col: meta.symbol_col ?: "index"
+        }
+        SCANPY_SEXPREDICTION(
+            ch_sexprediction.h5ad,
+            sex_y_genes,
+            sex_x_genes,
+            ch_sexprediction.symbol_col,
+        )
+        ch_obs_per_sample = ch_obs_per_sample.mix(SCANPY_SEXPREDICTION.out.obs)
     }
 
     ch_sizes = ch_sizes

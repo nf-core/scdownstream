@@ -48,6 +48,9 @@ nextflow_workflow {
                 input[15] = []
                 input[16] = []
                 input[17] = 'human'
+                input[18] = false
+                input[19] = []
+                input[20] = []
                 """
             }
         }
@@ -114,6 +117,9 @@ nextflow_workflow {
                 input[15] = []
                 input[16] = []
                 input[17] = 'human'
+                input[18] = false
+                input[19] = []
+                input[20] = []
                 """
             }
         }
@@ -180,6 +186,9 @@ nextflow_workflow {
                 input[15] = []
                 input[16] = []
                 input[17] = 'human'
+                input[18] = false
+                input[19] = []
+                input[20] = []
                 """
             }
         }
@@ -254,6 +263,9 @@ nextflow_workflow {
                 input[15] = []
                 input[16] = []
                 input[17] = 'human'
+                input[18] = false
+                input[19] = []
+                input[20] = []
                 """
             }
         }
@@ -305,6 +317,9 @@ nextflow_workflow {
                 input[15] = []
                 input[16] = []
                 input[17] = 'human'
+                input[18] = false
+                input[19] = []
+                input[20] = []
                 """
             }
         }
@@ -380,6 +395,9 @@ nextflow_workflow {
                 input[15] = []
                 input[16] = []
                 input[17] = 'human'
+                input[18] = false
+                input[19] = []
+                input[20] = []
                 """
             }
         }
@@ -452,6 +470,9 @@ nextflow_workflow {
                 input[15] = []
                 input[16] = []
                 input[17] = 'human'
+                input[18] = false
+                input[19] = []
+                input[20] = []
                 """
             }
         }
@@ -526,6 +547,9 @@ nextflow_workflow {
                 input[15] = file("${projectDir}/assets/cell_cycle_genes/human_s_genes.txt")
                 input[16] = file("${projectDir}/assets/cell_cycle_genes/human_g2m_genes.txt")
                 input[17] = 'human'
+                input[18] = false
+                input[19] = []
+                input[20] = []
                 """
             }
         }
@@ -557,6 +581,75 @@ nextflow_workflow {
             assert adata.obs.get('ambient_correction_method').unique().toSet() == ['none'].toSet()
             assert adata.obs.get('analysis_counts_source').unique().toSet() == ['raw_counts'].toSet()
             assert snapshot(workflow.out.multiqc_files, workflow.out.obs.collect { path(it[1]).fileName.toString() }.sort()).match()
+        }
+
+    }
+
+    test("Should emit a sex prediction fragment") {
+
+        tag "sex_prediction"
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                        [
+                            id: 'test',
+                            batch_col: 'sample',
+                            counts_layer: 'X',
+                            min_cells: 0,
+                            max_mito_percentage: 100,
+                            log1p_total_counts_nmads: 0,
+                            log1p_n_genes_by_counts_nmads: 0,
+                            pct_counts_in_top_20_genes_nmads: 0,
+                            pct_counts_mt_nmads: 0
+                        ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_raw_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'cellbender'
+                input[2] = 'none'
+                input[3] = false
+                input[4] = false
+                input[5] = 'sum'
+                input[6] = false
+                input[7] = []
+                input[8] = 1
+                input[9] = false
+                input[10] = null
+                input[11] = null
+                input[12] = null
+                input[13] = null
+                input[14] = false
+                input[15] = []
+                input[16] = []
+                input[17] = 'human'
+                input[18] = true
+                input[19] = file("${projectDir}/assets/sex_genes/human_y_genes.txt")
+                input[20] = file("${projectDir}/assets/sex_genes/human_x_genes.txt")
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.h5ad.size() == 1
+            def meta = workflow.out.h5ad[0][0]
+            def adata = anndata(workflow.out.h5ad[0][1])
+            def sexFragments = workflow.out.obs.findAll { entry -> file(entry[1]).name == 'test_sex.parquet' }
+            assert sexFragments.size() == 1
+            assert workflow.out.obs.size() == 1
+            assert workflow.out.obs.every { entry -> entry[0] == meta }
+            assert !adata.obs.colnames.any { it in ['sex_y_fraction', 'sex_xist_fraction', 'sex_cell_call', 'predicted_sex'] }
+            def fragment = parquet(sexFragments[0][1])
+            assert fragment.columnNames == ['__index__', 'sex_y_fraction', 'sex_xist_fraction', 'sex_cell_call', 'predicted_sex']
+            assert fragment.rowCount == adata.n_obs
+            assert fragment.rows.collect { it.__index__ } == adata.obs.index.values.toList()
+            assert snapshot(workflow.out.obs.collect { path(it[1]).fileName.toString() }.sort()).match()
         }
 
     }
@@ -623,6 +716,9 @@ nextflow_workflow {
                 input[15] = []
                 input[16] = []
                 input[17] = 'human'
+                input[18] = false
+                input[19] = []
+                input[20] = []
                 """
             }
         }

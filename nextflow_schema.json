@@ -86,7 +86,7 @@
                 "species": {
                     "type": "string",
                     "default": "human",
-                    "description": "Species of the input data. Used to auto-select bundled cell cycle gene lists (assets/cell_cycle_genes/<species>_s_genes.txt and _g2m_genes.txt), as the MyGene.info taxonomy when converting gene identifiers (samplesheet symbol_col: none), for PROGENy pathway enrichment in Tensor-cell2cell, and for --gene_annotation when no --gene_annotation_gtf is given. Bundled cell cycle lists are provided for 'human' and 'mouse'. Ignored when --s_genes and --g2m_genes are set explicitly."
+                    "description": "Species of the input data. Used to auto-select bundled cell cycle gene lists (assets/cell_cycle_genes/<species>_s_genes.txt and _g2m_genes.txt), as the MyGene.info taxonomy when converting gene identifiers (samplesheet symbol_col: none), for PROGENy pathway enrichment in Tensor-cell2cell, and for --gene_annotation when no --gene_annotation_gtf is given. Also selects the bundled sex marker gene lists (assets/sex_genes/<species>_y_genes.txt and _x_genes.txt). Bundled cell cycle and sex marker lists are provided for 'human' and 'mouse'. Ignored when --s_genes and --g2m_genes are set explicitly."
                 },
                 "cell_cycle_scoring": {
                     "type": "boolean",
@@ -103,6 +103,24 @@
                     "type": "string",
                     "format": "file-path",
                     "description": "Optional path to a plain-text file of G2M phase gene symbols (one per line, # lines ignored). Overrides the species-derived default from assets/cell_cycle_genes/. Only used when cell_cycle_scoring is true.",
+                    "exists": true
+                },
+                "sex_prediction": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to predict the sex of each sample. If true, per-cell Y gene and XIST count fractions, a per-cell call and the sample-level call are added to adata.obs, and a per-sample summary is written to 02_quality_control/sex_prediction/.",
+                    "help_text": "Cells expressing Y genes but not XIST count as male, cells expressing XIST but no Y genes count as female. A sample is called male or female when at least 80% of these informative cells agree, mixed otherwise, and unknown when fewer than 20 cells are informative. Requires raw counts in X and gene symbols matching the selected species."
+                },
+                "sex_y_genes": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Optional path to a plain-text file of genes from the male-specific region of chromosome Y (one per line, # lines ignored). Overrides the species-derived default from assets/sex_genes/. Only used when sex_prediction is true.",
+                    "exists": true
+                },
+                "sex_x_genes": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Optional path to a plain-text file of X-inactivation genes such as XIST (one per line, # lines ignored). Overrides the species-derived default from assets/sex_genes/. Only used when sex_prediction is true.",
                     "exists": true
                 },
                 "mito_genes": {
@@ -270,7 +288,7 @@
                     "type": "string",
                     "format": "file-path",
                     "description": "If you want to project new data onto an already integrated object, specify the path to the base AnnData object here",
-                    "help_text": "The file should be in the .h5ad format.",
+                    "help_text": "Provide an .h5ad file. Atlas extension with --input requires the per-sample gene presence table (varm['gene_presence']) from a previous pipeline run.",
                     "pattern": "^\\S+\\.h5ad$",
                     "exists": true
                 },

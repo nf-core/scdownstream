@@ -472,6 +472,7 @@ def validateInputParameters() {
         def ad = anndata(file(params.base_adata, checkIfExists: true))
         def layers = ad.layers.toList()
         def obs_columns = pseudobulkingRequired() ? ad.obs.colnames.toList() : []
+        def missing_gene_presence = is_extension && !params.qc_only && !('gene_presence' in ad.varm)
         def missing_scconcept = is_extension && 'scconcept' in integration_methods && !params.qc_only && !('X_scconcept' in ad.obsm)
         ad.close()
         if (!('raw_counts' in layers)) {
@@ -479,6 +480,9 @@ def validateInputParameters() {
                 "base_adata must contain a raw_counts layer with genuine pre-correction counts. " +
                 "Available layers: ${layers.join(', ')}."
             )
+        }
+        if (missing_gene_presence) {
+            throw new Exception("Atlas extension requires base_adata with varm['gene_presence']. Build the base atlas with the current pipeline.")
         }
         if (missing_scconcept) {
             throw new Exception("scConcept extension requires base_adata with an X_scconcept embedding from the same checkpoint.")

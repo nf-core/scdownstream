@@ -312,6 +312,38 @@ nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results \
     --scvi_continuous_covariates S_score,G2M_score
 ```
 
+### Sex prediction
+
+Sex prediction estimates the sex of each sample from the expression of genes in the male-specific region of chromosome Y and of the X-inactivation transcript XIST, following the approach of the [NBIS single-cell RNA-seq course](https://nbisweden.github.io/workshop-scRNAseq/).
+It is useful to spot sample swaps and to confirm donor metadata.
+
+Sex prediction is disabled by default.
+To enable it:
+
+```bash
+nextflow run nf-core/scdownstream --input samplesheet.csv --outdir results --sex_prediction true
+```
+
+Each cell is labelled `male` when it has counts for any Y gene but none for XIST, `female` for the reverse, `both` when it has both and `unknown` when it has neither.
+A sample is called `male` or `female` when at least 80% of its `male` and `female` cells agree, `mixed` otherwise (for example pooled donors), and `unknown` when fewer than 20 cells are informative.
+The following columns are added to `adata.obs`:
+
+- `sex_y_fraction`: fraction of the counts of a cell that come from the Y genes
+- `sex_xist_fraction`: fraction of the counts of a cell that come from XIST
+- `sex_cell_call`: per-cell label
+- `predicted_sex`: sample-level call, identical for all cells of a sample
+
+A one-row summary per sample is written to `02_quality_control/sex_prediction/`.
+
+Pseudoautosomal genes are excluded from the bundled Y gene lists, because they are also expressed from chromosome X.
+Bundled lists are provided for human and mouse in [`assets/sex_genes/`](../assets/sex_genes/).
+For other organisms, provide your own lists via `--sex_y_genes` and `--sex_x_genes`.
+
+:::note
+Sex prediction needs raw counts in `X` and gene symbols that match the bundled lists.
+Inputs that keep only a subset of genes, such as highly variable genes, often lack XIST and the Y genes, and then every cell is `unknown`.
+:::
+
 ### Gene annotation
 
 `--gene_annotation` adds four columns to `adata.var` of the final `merged.h5ad`:
@@ -347,7 +379,7 @@ For Symphony reference mapping, provide the compact Symphony reference AnnData f
 It only works if `scvi`, `scanvi`, `scimilarity`, `scconcept`, and/or `symphony` have been enabled in `integration_methods` in the original pipeline run.
 In simple terms, in this setup the workflow is: (1) project new data into the latent space learned from the data in the original run, and then (2) combine the datasets.
 For (1), provide the same checkpoints as for reference mapping ([`scvi_model`](https://nf-co.re/scdownstream/parameters#scvi_model), [`scanvi_model`](https://nf-co.re/scdownstream/parameters#scanvi_model), [`scimilarity_model`](https://nf-co.re/scdownstream/parameters#scimilarity_model), [`scconcept_model`](https://nf-co.re/scdownstream/parameters#scconcept_model), [`symphony_reference`](https://nf-co.re/scdownstream/parameters#symphony_reference)).
-For (2), pass the integrated `.h5ad` from the original run as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata).
+For (2), pass the final `09_finalized/merged.h5ad` from a run that records per-sample gene presence in `varm["gene_presence"]` as [`base_adata`](https://nf-co.re/scdownstream/parameters#base_adata).
 
 Pre-trained scVI models are also shared on [scvi-hub](https://huggingface.co/scvi-tools).
 
