@@ -40,16 +40,18 @@ if reference_model_type == "scanvi":
     setup = state["attr_dict"]["registry_"]["setup_args"]
 
     batch_key = setup["batch_key"]
-    if batch_key != "batch":
-        adata_work.obs[batch_key] = adata_work.obs["batch"]
+    if batch_key is not None and batch_key != "${batch_col}":
+        adata_work.obs[batch_key] = adata_work.obs["${batch_col}"]
 
-    labels_key = setup["labels_key"]
-    if labels_key != "label":
-        adata_work.obs[labels_key] = adata_work.obs["label"]
+    labels = adata_work.obs["${label_col}"]
+    reference_unlabeled = setup["unlabeled_category"]
+    if reference_unlabeled != "${unlabeled_category}":
+        labels = labels.astype(object).replace("${unlabeled_category}", reference_unlabeled)
+    adata_work.obs[setup["labels_key"]] = labels
 
-    unknwon_label = setup["unlabeled_category"]
-    if unknwon_label != "Unknown":
-        adata_work.obs[labels_key].replace("Unknown", unknwon_label, inplace=True)
+    counts_layer = setup["layer"]
+    if counts_layer is not None and counts_layer not in adata_work.layers:
+        adata_work.layers[counts_layer] = adata_work.X
 
     SCANVI.prepare_query_anndata(adata_work, reference_model_dir)
     model = SCANVI.load_query_data(adata_work, reference_model_dir)
