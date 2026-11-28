@@ -1,0 +1,80 @@
+name: "adata_tords"
+description: Convert an AnnData h5ad object to a SingleCellExperiment RDS file
+keywords:
+  - anndata
+  - singlecellexperiment
+  - rds
+  - single-cell
+tools:
+  - "anndataR":
+      description: "Interop between AnnData and Bioconductor SingleCellExperiment"
+      homepage: "https://bioconductor.org/packages/anndataR/"
+      documentation: "https://bioconductor.org/packages/release/bioc/html/anndataR.html"
+      tool_dev_url: "https://github.com/scverse/anndataR"
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - counts_layer:
+      type: string
+      description: Layer or `X` used as the counts assay in the RDS object
+
+output:
+  rds:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.rds":
+          type: file
+          description: SingleCellExperiment object in RDS format
+          pattern: "*.rds"
+          ontologies:
+            - edam: "http://edamontology.org/format_8910"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/adata_tords:221549603ba837e4
+      build_id: bd-221549603ba837e4_1
+      scan_id: sc-c68468b3d22ef524_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/adata_tords:295ac9110561519d
+      build_id: bd-295ac9110561519d_1
+      scan_id: sc-a3380a238eed5bfa_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/adata_tords:6f17165477507c25
+      build_id: bd-6f17165477507c25_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c0/c002326219227ab9a82df4eb816e1883417716ec2c51193c77ecf4ecb8e967f2/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/adata_tords:85427364a47b0dc9
+      build_id: bd-85427364a47b0dc9_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/83/831fa87bb1225fb759aee8ccdbf8de6533dfe79e786ac6b76d937d9921ea0ce0/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/adata/tords/.conda-lock/linux_amd64-bd-221549603ba837e4_1.txt
+    linux/arm64:
+      lock_file: modules/local/adata/tords/.conda-lock/linux_arm64-bd-295ac9110561519d_1.txt

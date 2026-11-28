@@ -1,0 +1,372 @@
+{
+    "scDblFinder predictions": {
+        "content": [
+            [
+                {
+                    "file": "SRR28679756_scdblfinder.predictions.parquet",
+                    "schema": {
+                        "name": "schema",
+                        "fields": [
+                            {
+                                "name": "__index__",
+                                "repetition": "OPTIONAL",
+                                "nullable": true,
+                                "physicalType": "BINARY",
+                                "logicalType": {
+                                    "type": "STRING"
+                                },
+                                "fields": [
+                                    
+                                ]
+                            },
+                            {
+                                "name": "SRR28679756_scdblfinder",
+                                "repetition": "OPTIONAL",
+                                "nullable": true,
+                                "physicalType": "BOOLEAN",
+                                "logicalType": null,
+                                "fields": [
+                                    
+                                ]
+                            }
+                        ]
+                    },
+                    "codecs": [
+                        "SNAPPY"
+                    ],
+                    "rows_sha256": "63c705332e69ac68bf95f2d0b362903e899cad385345a41443d067c4104a729e"
+                },
+                {
+                    "file": "SRR28679757_scdblfinder.predictions.parquet",
+                    "schema": {
+                        "name": "schema",
+                        "fields": [
+                            {
+                                "name": "__index__",
+                                "repetition": "OPTIONAL",
+                                "nullable": true,
+                                "physicalType": "BINARY",
+                                "logicalType": {
+                                    "type": "STRING"
+                                },
+                                "fields": [
+                                    
+                                ]
+                            },
+                            {
+                                "name": "SRR28679757_scdblfinder",
+                                "repetition": "OPTIONAL",
+                                "nullable": true,
+                                "physicalType": "BOOLEAN",
+                                "logicalType": null,
+                                "fields": [
+                                    
+                                ]
+                            }
+                        ]
+                    },
+                    "codecs": [
+                        "SNAPPY"
+                    ],
+                    "rows_sha256": "73fcea79012d612651d5ce5285e22eb3ad2abf803af5b07088fb7e3901c386a8"
+                },
+                {
+                    "file": "SRR28679758_scdblfinder.predictions.parquet",
+                    "schema": {
+                        "name": "schema",
+                        "fields": [
+                            {
+                                "name": "__index__",
+                                "repetition": "OPTIONAL",
+                                "nullable": true,
+                                "physicalType": "BINARY",
+                                "logicalType": {
+                                    "type": "STRING"
+                                },
+                                "fields": [
+                                    
+                                ]
+                            },
+                            {
+                                "name": "SRR28679758_scdblfinder",
+                                "repetition": "OPTIONAL",
+                                "nullable": true,
+                                "physicalType": "BOOLEAN",
+                                "logicalType": null,
+                                "fields": [
+                                    
+                                ]
+                            }
+                        ]
+                    },
+                    "codecs": [
+                        "SNAPPY"
+                    ],
+                    "rows_sha256": "14997a35a85902477928f45e0945396638e0f5c158d520f7972279149e8604b5"
+                }
+            ]
+        ],
+        "timestamp": "2026-11-28T11:08:00.732503146",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should process data from scratch": {
+        "content": [
+            {
+                "ADATA_READRDS": {
+                    "anndata": "0.11.1",
+                    "anndata2ri": "2.0.1",
+                    "pandas": "2.3.3",
+                    "rpy2": "3.6.9",
+                    "seurat": "5.5.1"
+                },
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                },
+                "CELDA_DECONTX": {
+                    "anndataR": "1.2.3",
+                    "celda": "1.26.0",
+                    "r": "4.5.3"
+                },
+                "CELLDEX_FETCHREFERENCE": {
+                    "HDF5Array": "1.38.0",
+                    "R": "R version 4.5.3 (2026-03-11)",
+                    "SingleCellExperiment": "1.32.0",
+                    "alabaster.base": "1.10.0",
+                    "alabaster.se": "1.10.0",
+                    "gypsum": "1.6.0",
+                    "yaml": "2.3.12"
+                },
+                "CELLTYPES_CELLTYPIST": {
+                    "celltypist": "1.7.1",
+                    "pandas": "3.1.1",
+                    "pyarrow": "21.0.0",
+                    "python": "3.13.18",
+                    "scanpy": "1.10.4"
+                },
+                "CELLTYPES_SINGLER": {
+                    "R": "R version 4.5.3 (2026-03-11)",
+                    "SingleR": "2.12.0",
+                    "anndataR": "1.2.3",
+                    "arrow": "21.0.0",
+                    "ggplot2": "4.0.2"
+                },
+                "COLLECT_SIZES": {
+                    "pandas": "3.1.1",
+                    "python": "3.13.12"
+                },
+                "DOUBLETREMOVAL": {
+                    "anndata": "0.13.4",
+                    "matplotlib": "3.10.9",
+                    "pandas": "2.3.3",
+                    "pyarrow": "21.0.0",
+                    "python": "3.13.12",
+                    "upsetplot": "0.9.0"
+                },
+                "FINALIZE_QC_ANNDATAS": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.0.5",
+                    "pyarrow": "21.0.0",
+                    "python": "3.13.12"
+                },
+                "QC_FILTERED": {
+                    "matplotlib": "3.10.9",
+                    "python": "3.13.12",
+                    "scanpy": "1.13.0"
+                },
+                "QC_RAW": {
+                    "matplotlib": "3.10.9",
+                    "python": "3.13.12",
+                    "scanpy": "1.13.0"
+                },
+                "QC_REPORT": {
+                    "papermill": "2.7.0",
+                    "quarto": "1.11.9"
+                },
+                "SCANPY_FILTER": {
+                    "matplotlib": "3.10.9",
+                    "python": "3.13.12",
+                    "scanpy": "1.13.0"
+                },
+                "SCANPY_SCRUBLET": {
+                    "pyarrow": "21.0.0",
+                    "python": "3.13.12",
+                    "scanpy": "1.13.0"
+                },
+                "SCDBLFINDER": {
+                    "anndatar": "1.2.3",
+                    "arrow": "21.0.0",
+                    "biocparallel": "1.44.0",
+                    "r-base": "4.5.3",
+                    "rhdf5": "2.54.1",
+                    "scdblfinder": "1.24.10",
+                    "singlecellexperiment": "1.32.0"
+                },
+                "UPSET_GENES": {
+                    "anndata": "0.13.4",
+                    "matplotlib": "3.10.9",
+                    "python": "3.13.12",
+                    "upsetplot": "0.9.0"
+                },
+                "Workflow": {
+                    "nf-core/scdownstream": "v1.0.0"
+                }
+            },
+            [
+                "01_load_h5ad",
+                "01_load_h5ad/SRR28679757_converted_filtered.h5ad",
+                "01_load_h5ad/SRR28679757_converted_unfiltered.h5ad",
+                "01_load_h5ad/SRR28679758_converted_filtered.h5ad",
+                "01_load_h5ad/SRR28679758_converted_unfiltered.h5ad",
+                "02_quality_control",
+                "02_quality_control/ambient_rna_removal",
+                "02_quality_control/ambient_rna_removal/SRR28679756_decontx.h5ad",
+                "02_quality_control/ambient_rna_removal/SRR28679757_decontx.h5ad",
+                "02_quality_control/ambient_rna_removal/SRR28679758_decontx.h5ad",
+                "02_quality_control/custom_thresholds",
+                "02_quality_control/custom_thresholds/SRR28679756_filtered.h5ad",
+                "02_quality_control/custom_thresholds/SRR28679756_filtered_qc_histograms.png",
+                "02_quality_control/custom_thresholds/SRR28679757_filtered.h5ad",
+                "02_quality_control/custom_thresholds/SRR28679757_filtered_qc_histograms.png",
+                "02_quality_control/custom_thresholds/SRR28679758_filtered.h5ad",
+                "02_quality_control/custom_thresholds/SRR28679758_filtered_qc_histograms.png",
+                "02_quality_control/doublet_detection",
+                "02_quality_control/doublet_detection/SRR28679756.h5ad",
+                "02_quality_control/doublet_detection/SRR28679756.obs.parquet",
+                "02_quality_control/doublet_detection/SRR28679757.h5ad",
+                "02_quality_control/doublet_detection/SRR28679757.obs.parquet",
+                "02_quality_control/doublet_detection/SRR28679758.h5ad",
+                "02_quality_control/doublet_detection/SRR28679758.obs.parquet",
+                "02_quality_control/doublet_detection/scdblfinder",
+                "02_quality_control/doublet_detection/scdblfinder/SRR28679756_scdblfinder.h5ad",
+                "02_quality_control/doublet_detection/scdblfinder/SRR28679756_scdblfinder.predictions.parquet",
+                "02_quality_control/doublet_detection/scdblfinder/SRR28679756_scdblfinder.scores.parquet",
+                "02_quality_control/doublet_detection/scdblfinder/SRR28679757_scdblfinder.h5ad",
+                "02_quality_control/doublet_detection/scdblfinder/SRR28679757_scdblfinder.predictions.parquet",
+                "02_quality_control/doublet_detection/scdblfinder/SRR28679757_scdblfinder.scores.parquet",
+                "02_quality_control/doublet_detection/scdblfinder/SRR28679758_scdblfinder.h5ad",
+                "02_quality_control/doublet_detection/scdblfinder/SRR28679758_scdblfinder.predictions.parquet",
+                "02_quality_control/doublet_detection/scdblfinder/SRR28679758_scdblfinder.scores.parquet",
+                "02_quality_control/doublet_detection/scrublet",
+                "02_quality_control/doublet_detection/scrublet/SRR28679756_scrublet.h5ad",
+                "02_quality_control/doublet_detection/scrublet/SRR28679756_scrublet.parquet",
+                "02_quality_control/doublet_detection/scrublet/SRR28679756_scrublet.scores.parquet",
+                "02_quality_control/doublet_detection/scrublet/SRR28679757_scrublet.h5ad",
+                "02_quality_control/doublet_detection/scrublet/SRR28679757_scrublet.parquet",
+                "02_quality_control/doublet_detection/scrublet/SRR28679757_scrublet.scores.parquet",
+                "02_quality_control/doublet_detection/scrublet/SRR28679758_scrublet.h5ad",
+                "02_quality_control/doublet_detection/scrublet/SRR28679758_scrublet.parquet",
+                "02_quality_control/doublet_detection/scrublet/SRR28679758_scrublet.scores.parquet",
+                "02_quality_control/finalized",
+                "02_quality_control/finalized/SRR28679756_qc.h5ad",
+                "02_quality_control/finalized/SRR28679756_qc_metadata.csv",
+                "02_quality_control/finalized/SRR28679757_qc.h5ad",
+                "02_quality_control/finalized/SRR28679757_qc_metadata.csv",
+                "02_quality_control/finalized/SRR28679758_qc.h5ad",
+                "02_quality_control/finalized/SRR28679758_qc_metadata.csv",
+                "02_quality_control/qc_filtered",
+                "02_quality_control/qc_filtered/SRR28679756_preprocessed_total_counts_vs_n_genes_by_counts.png",
+                "02_quality_control/qc_filtered/SRR28679757_preprocessed_total_counts_vs_n_genes_by_counts.png",
+                "02_quality_control/qc_filtered/SRR28679758_preprocessed_total_counts_vs_n_genes_by_counts.png",
+                "02_quality_control/qc_raw",
+                "02_quality_control/qc_raw/SRR28679756_raw_total_counts_vs_n_genes_by_counts.png",
+                "02_quality_control/qc_raw/SRR28679757_raw_total_counts_vs_n_genes_by_counts.png",
+                "02_quality_control/qc_raw/SRR28679758_raw_total_counts_vs_n_genes_by_counts.png",
+                "02_quality_control/sizes",
+                "02_quality_control/sizes/sizes.tsv",
+                "02_quality_control/unify",
+                "02_quality_control/unify/SRR28679756_unified.h5ad",
+                "02_quality_control/unify/SRR28679757_unified.h5ad",
+                "02_quality_control/unify/SRR28679758_unified.h5ad",
+                "03_combine",
+                "03_combine/merge",
+                "03_combine/merge/unified_genes.png",
+                "04_celltypes",
+                "04_celltypes/celltypist",
+                "04_celltypes/celltypist/SRR28679756_celltypist.h5ad",
+                "04_celltypes/celltypist/SRR28679756_celltypist.parquet",
+                "04_celltypes/celltypist/SRR28679756_celltypist_annotation_columns.csv",
+                "04_celltypes/celltypist/SRR28679757_celltypist.h5ad",
+                "04_celltypes/celltypist/SRR28679757_celltypist.parquet",
+                "04_celltypes/celltypist/SRR28679757_celltypist_annotation_columns.csv",
+                "04_celltypes/celltypist/SRR28679758_celltypist.h5ad",
+                "04_celltypes/celltypist/SRR28679758_celltypist.parquet",
+                "04_celltypes/celltypist/SRR28679758_celltypist_annotation_columns.csv",
+                "04_celltypes/singler",
+                "04_celltypes/singler/SRR28679756_singler_annotation_columns.csv",
+                "04_celltypes/singler/SRR28679756_singler_hpca_celldex_distribution.pdf",
+                "04_celltypes/singler/SRR28679756_singler_hpca_celldex_heatmap.pdf",
+                "04_celltypes/singler/SRR28679756_singler_hpca_direct_distribution.pdf",
+                "04_celltypes/singler/SRR28679756_singler_hpca_direct_heatmap.pdf",
+                "04_celltypes/singler/SRR28679756_singler_immune_celldex_distribution.pdf",
+                "04_celltypes/singler/SRR28679756_singler_immune_celldex_heatmap.pdf",
+                "04_celltypes/singler/SRR28679756_singler_immune_direct_distribution.pdf",
+                "04_celltypes/singler/SRR28679756_singler_immune_direct_heatmap.pdf",
+                "04_celltypes/singler/SRR28679756_singler_predictions.parquet",
+                "04_celltypes/singler/SRR28679757_singler_annotation_columns.csv",
+                "04_celltypes/singler/SRR28679757_singler_hpca_celldex_distribution.pdf",
+                "04_celltypes/singler/SRR28679757_singler_hpca_celldex_heatmap.pdf",
+                "04_celltypes/singler/SRR28679757_singler_hpca_direct_distribution.pdf",
+                "04_celltypes/singler/SRR28679757_singler_hpca_direct_heatmap.pdf",
+                "04_celltypes/singler/SRR28679757_singler_immune_celldex_distribution.pdf",
+                "04_celltypes/singler/SRR28679757_singler_immune_celldex_heatmap.pdf",
+                "04_celltypes/singler/SRR28679757_singler_immune_direct_distribution.pdf",
+                "04_celltypes/singler/SRR28679757_singler_immune_direct_heatmap.pdf",
+                "04_celltypes/singler/SRR28679757_singler_predictions.parquet",
+                "04_celltypes/singler/SRR28679758_singler_annotation_columns.csv",
+                "04_celltypes/singler/SRR28679758_singler_hpca_celldex_distribution.pdf",
+                "04_celltypes/singler/SRR28679758_singler_hpca_celldex_heatmap.pdf",
+                "04_celltypes/singler/SRR28679758_singler_hpca_direct_distribution.pdf",
+                "04_celltypes/singler/SRR28679758_singler_hpca_direct_heatmap.pdf",
+                "04_celltypes/singler/SRR28679758_singler_immune_celldex_distribution.pdf",
+                "04_celltypes/singler/SRR28679758_singler_immune_celldex_heatmap.pdf",
+                "04_celltypes/singler/SRR28679758_singler_immune_direct_distribution.pdf",
+                "04_celltypes/singler/SRR28679758_singler_immune_direct_heatmap.pdf",
+                "04_celltypes/singler/SRR28679758_singler_predictions.parquet",
+                "10_reports",
+                "10_reports/_extensions",
+                "10_reports/_extensions/nf-core",
+                "10_reports/_extensions/nf-core/_extension.yml",
+                "10_reports/_extensions/nf-core/nf-core-scdownstream_logo_light.png",
+                "10_reports/_extensions/nf-core/nf-core.scss",
+                "10_reports/_extensions/nf-core/nf-core.theme",
+                "10_reports/_extensions/nf-core/toc.html",
+                "10_reports/artifacts",
+                "10_reports/artifacts/concatenated.h5ad",
+                "10_reports/params.yml",
+                "10_reports/qc-report.html",
+                "10_reports/qc-report.qmd",
+                "11_multiqc",
+                "pipeline_info",
+                "pipeline_info/nf_core_scdownstream_software_mqc_versions.yml"
+            ],
+            [
+                "SRR28679756_scrublet.parquet:md5,5d934783b9fd48c0420be0b9ca822601",
+                "SRR28679757_scrublet.parquet:md5,95c08614a4f2ebe8fab5c2636ab75c0e",
+                "SRR28679758_scrublet.parquet:md5,4bad9b22784c7c665021d4d39dc81975",
+                "SRR28679756_celltypist_annotation_columns.csv:md5,a1b205901822b3df97b6aad8a640dfda",
+                "SRR28679757_celltypist_annotation_columns.csv:md5,a1b205901822b3df97b6aad8a640dfda",
+                "SRR28679758_celltypist_annotation_columns.csv:md5,a1b205901822b3df97b6aad8a640dfda",
+                "_extension.yml:md5,1771443b5d44c88feb54a56c5a9a2319",
+                "nf-core.scss:md5,b9826d146ce24fe3d3c51bfd4e450baa",
+                "nf-core.theme:md5,ac9559ae18b3f513cf7a5419e4a69c24",
+                "toc.html:md5,fe6831ffaecfb53058310943d42942ca",
+                "params.yml:md5,cd7fb3f941b1b5ad10a8e413ad70623c",
+                "qc-report.qmd:md5,8f1a41a1faa8dc1a9ad3a64d011155da",
+                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
+            ]
+        ],
+        "timestamp": "2026-11-28T11:07:59.921321358",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

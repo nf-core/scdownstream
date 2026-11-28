@@ -1,0 +1,76 @@
+name: "custom_volcanoplot"
+description: Draw volcano plots and MultiQC image sections from standardised differential expression parquet tables
+keywords:
+  - differential-expression
+  - volcano
+  - multiqc
+tools:
+  - "matplotlib":
+      description: "Comprehensive library for creating static, animated, and interactive visualisations in Python"
+      homepage: "https://matplotlib.org"
+      documentation: "https://matplotlib.org/stable/users/index.html"
+      tool_dev_url: "https://github.com/matplotlib/matplotlib"
+      licence: ["PSF-2.0"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information.
+          Expected keys: id, integration, de_method.
+    - parquet:
+        type: file
+        description: |
+          Standardised DE results parquet with columns gene, log2fc, pvalue, padj,
+          group, contrast, and stratum
+        pattern: "*.{parquet}"
+  - interesting_genes:
+      type: file
+      description: Optional CSV of gene symbols to highlight on volcano plots
+      pattern: "*.{csv,tsv,txt}"
+
+output:
+  plots:
+    - "*.png":
+        type: file
+        description: Volcano plot PNG derived from the parquet stem
+        pattern: "*.png"
+  multiqc_files:
+    - "*_mqc.json":
+        type: file
+        description: MultiQC custom-content JSON embedding the volcano image
+        pattern: "*_mqc.json"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/custom_volcanoplot:097471666c14b596
+      build_id: bd-097471666c14b596_1
+      scan_id: sc-1fae1338ca2a681b_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/custom_volcanoplot:e48a150a600cf34e
+      build_id: bd-e48a150a600cf34e_1
+      scan_id: sc-277be47a5ccf8e2f_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/custom_volcanoplot:fe889d557341939b
+      build_id: bd-fe889d557341939b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/cc/cc2d6cdfb068de5519b9618e66fb77b3efc5866af2fb129d19d769e25b4572d3/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/custom_volcanoplot:ec924e18fe85e157
+      build_id: bd-ec924e18fe85e157_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/71/71dbbe851be8d2182ac34037f10b9c653b2de08e5bed350e787aedd40b29f483/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/custom/volcanoplot/.conda-lock/linux_amd64-bd-e48a150a600cf34e_1.txt
+    linux/arm64:
+      lock_file: modules/local/custom/volcanoplot/.conda-lock/linux_arm64-bd-097471666c14b596_1.txt

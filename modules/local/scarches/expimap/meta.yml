@@ -1,0 +1,97 @@
+name: "scarches_expimap"
+description: Project query AnnData onto an expiMap reference model with scArches
+keywords:
+  - integration
+  - query-mapping
+  - single-cell
+  - scarches
+tools:
+  - "scarches":
+      description: "Single-cell architecture surgery for transfer learning and reference mapping"
+      homepage: "https://scarches.readthedocs.io"
+      documentation: "https://scarches.readthedocs.io"
+      tool_dev_url: "https://github.com/theislab/scarches"
+      licence: ["BSD-3-Clause"]
+      identifier: biotools:scarches
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: Query AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing reference model information
+          e.g. `[ id:'reference' ]`
+    - reference_model:
+        type: file
+        description: Directory or file containing the trained expiMap reference model
+  - condition_col:
+      type: string
+      description: obs column used as the condition or batch covariate
+  - counts_layer:
+      type: string
+      description: AnnData layer containing counts for model training or projection
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: Query AnnData with expiMap latent embedding
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  obsm:
+    - "X_*.parquet":
+        type: file
+        description: Parquet latent embedding with explicit __index__ cell identifiers
+        pattern: "X_*.parquet"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/python_anndata_numpy_pyarrow_pruned:2f8183123f17170d
+      build_id: bd-2f8183123f17170d_1
+      scan_id: sc-62491cb09bb0776f_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/python_anndata_numpy_pyarrow_pruned:dc0044667af8e722
+      build_id: bd-dc0044667af8e722_1
+      scan_id: sc-e1fcfe3a5be2bfde_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python_anndata_numpy_pyarrow_pruned:50a2f4acd305ea88
+      build_id: bd-50a2f4acd305ea88_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d0/d0723e7530e1702dcd214e3e98883b249e449d669914384c04100452e4f83827/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python_anndata_numpy_pyarrow_pruned:4ef40d7b669d4770
+      build_id: bd-4ef40d7b669d4770_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/45/45bf2f5e22691b96fdbe62f3216cac20e0a78d2cfb4c3e054d5f81aa399f1725/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scarches/expimap/.conda-lock/linux_amd64-bd-dc0044667af8e722_1.txt
+    linux/arm64:
+      lock_file: modules/local/scarches/expimap/.conda-lock/linux_arm64-bd-2f8183123f17170d_1.txt

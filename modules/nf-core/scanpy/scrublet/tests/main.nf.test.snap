@@ -1,0 +1,190 @@
+{
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scrublet.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "predictions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scrublet.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "scores": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scrublet.scores.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,c77534cbd38cc0649435c96aedc63424"
+                ]
+            },
+            [
+                {
+                    "SCANPY_SCRUBLET": {
+                        "python": "3.13.12",
+                        "scanpy": "1.13.0",
+                        "pyarrow": "21.0.0"
+                    }
+                }
+            ]
+        ],
+        "timestamp": "2026-11-23T12:07:11.259906421",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures": {
+        "content": [
+            {
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scrublet.h5ad"
+                    ]
+                ],
+                "predictions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scrublet.parquet"
+                    ]
+                ],
+                "scores": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scrublet.scores.parquet"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,52eeff30aec6afb93bc1e88736694ef8"
+                ]
+            },
+            [
+                {
+                    "SCANPY_SCRUBLET": {
+                        "pyarrow": "21.0.0",
+                        "python": "3.13.12",
+                        "scanpy": "1.13.0"
+                    }
+                }
+            ]
+        ],
+        "timestamp": "2026-11-23T12:02:49.300616459",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run with empty string for batch_col": {
+        "content": [
+            {
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scrublet.h5ad"
+                    ]
+                ],
+                "predictions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scrublet.parquet"
+                    ]
+                ],
+                "scores": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scrublet.scores.parquet"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,52eeff30aec6afb93bc1e88736694ef8"
+                ]
+            },
+            [
+                {
+                    "SCANPY_SCRUBLET": {
+                        "pyarrow": "21.0.0",
+                        "python": "3.13.12",
+                        "scanpy": "1.13.0"
+                    }
+                }
+            ]
+        ],
+        "timestamp": "2026-11-23T12:04:11.167334617",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run with empty array for batch_col": {
+        "content": [
+            {
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scrublet.h5ad"
+                    ]
+                ],
+                "predictions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scrublet.parquet"
+                    ]
+                ],
+                "scores": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_scrublet.scores.parquet"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,52eeff30aec6afb93bc1e88736694ef8"
+                ]
+            },
+            [
+                {
+                    "SCANPY_SCRUBLET": {
+                        "pyarrow": "21.0.0",
+                        "python": "3.13.12",
+                        "scanpy": "1.13.0"
+                    }
+                }
+            ]
+        ],
+        "timestamp": "2026-11-23T12:05:33.127967041",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

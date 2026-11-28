@@ -1,0 +1,326 @@
+Changes in component 'nf-core/doubletdetection'
+Changes in 'doubletdetection/environment.yml':
+--- modules/nf-core/doubletdetection/environment.yml
++++ modules/nf-core/doubletdetection/environment.yml
+@@ -3,8 +3,10 @@
+   - bioconda
+ 
+ dependencies:
++  - conda-forge::pyarrow=21.0.0
+   - conda-forge::anndata=0.11.4
+   - conda-forge::pip=25.0.1
++  - conda-forge::pyarrow=21.0.0
+   - conda-forge::python=3.13.3
+   - conda-forge::pyyaml=6.0.2
+   - pip:
+
+Changes in 'doubletdetection/meta.yml':
+--- modules/nf-core/doubletdetection/meta.yml
++++ modules/nf-core/doubletdetection/meta.yml
+@@ -41,10 +41,21 @@
+           description: |
+             Groovy Map containing sample information
+             e.g. `[ id:'sample1', single_end:false ]`
+-      - "*.pkl":
++      - "${prefix}.parquet":
+           type: file
+-          description: pandas dataframe containing the doublet classification
+-          pattern: "*.pkl"
++          description: Boolean doublet classifications with unique cell IDs in a physical __index__ column
++          pattern: "${prefix}.parquet"
++          ontologies: []
++  scores:
++    - - meta:
++          type: map
++          description: |
++            Groovy Map containing sample information
++            e.g. `[ id:'sample1', single_end:false ]`
++      - "${prefix}.scores.parquet":
++          type: file
++          description: Full-cell doubletdetection_score values with explicit __index__ cell identifiers
++          pattern: "*.scores.parquet"
+           ontologies: []
+   versions:
+     - versions.yml:
+@@ -65,3 +76,27 @@
+   - "@LeonHafner"
+ maintainers:
+   - "@LeonHafner"
++containers:
++  docker:
++    linux/arm64:
++      name: community.wave.seqera.io/library/anndata_pip_pyarrow_python_pruned:e9ad45d8373454f2
++      build_id: bd-e9ad45d8373454f2_1
++      scan_id: sc-75b25fab849d2724_1
++    linux/amd64:
++      name: community.wave.seqera.io/library/anndata_pip_pyarrow_python_pruned:af9720f5b3743d63
++      build_id: bd-af9720f5b3743d63_1
++      scan_id: sc-78186c9bec5235a7_1
++  singularity:
++    linux/amd64:
++      name: oras://community.wave.seqera.io/library/anndata_pip_pyarrow_python_pruned:951eb8761dc8fd6d
++      build_id: bd-951eb8761dc8fd6d_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/dd/ddc1a22c6b4d0e7fdf1f855d1638f3952b6b88cebe2fde6dd59b97d300c4ae56/data
++    linux/arm64:
++      name: oras://community.wave.seqera.io/library/anndata_pip_pyarrow_python_pruned:ae9e20508d2972ee
++      build_id: bd-ae9e20508d2972ee_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/50/50b767149402a6eb0bedacf75f94109a731880e0f4f9e90e31bcfab82f6d0883/data
++  conda:
++    linux/amd64:
++      lock_file: modules/nf-core/doubletdetection/.conda-lock/linux_amd64-bd-af9720f5b3743d63_1.txt
++    linux/arm64:
++      lock_file: modules/nf-core/doubletdetection/.conda-lock/linux_arm64-bd-e9ad45d8373454f2_1.txt
+
+Changes in 'doubletdetection/main.nf':
+--- modules/nf-core/doubletdetection/main.nf
++++ modules/nf-core/doubletdetection/main.nf
+@@ -4,16 +4,17 @@
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/96/96f52092a8472acb59ded59ab5ec4a29a56627f0c78e3cc8a0b916c6bedd67d6/data'
+-        : 'community.wave.seqera.io/library/pyyaml_pip_doubletdetection:5af145ffec01d7da'}"
++        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/dd/ddc1a22c6b4d0e7fdf1f855d1638f3952b6b88cebe2fde6dd59b97d300c4ae56/data'
++        : 'community.wave.seqera.io/library/anndata_pip_pyarrow_python_pruned:af9720f5b3743d63'}"
+ 
+     input:
+     tuple val(meta), path(h5ad)
+ 
+     output:
+     tuple val(meta), path("*.h5ad"), emit: h5ad
+-    tuple val(meta), path("*.pkl") , emit: predictions
+-    path "versions.yml"            , emit: versions, topic: versions
++    tuple val(meta), path("${prefix}.parquet"), emit: predictions
++    tuple val(meta), path("${prefix}.scores.parquet"), emit: scores
++    path "versions.yml", emit: versions, topic: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+@@ -26,13 +27,15 @@
+     prefix = task.ext.prefix ?: "${meta.id}"
+     """
+     touch ${prefix}.h5ad
+-    touch ${prefix}.pkl
++    touch ${prefix}.parquet
++    touch ${prefix}.scores.parquet
+ 
+     cat <<-END_VERSIONS > versions.yml
+     ${task.process}:
+         python: \$(python3 -c 'import platform as pf; print(pf.python_version())')
+         anndata: \$(python3 -c 'import anndata as ad; print(ad.__version__)')
+         doubletdetection: \$(python3 -c 'import doubletdetection as dt; print(dt.__version__)')
++        pyarrow: \$(python3 -c 'import pyarrow; print(pyarrow.__version__)')
+     END_VERSIONS
+     """
+ }
+
+Changes in 'doubletdetection/tests/main.nf.test.snap':
+--- modules/nf-core/doubletdetection/tests/main.nf.test.snap
++++ modules/nf-core/doubletdetection/tests/main.nf.test.snap
+@@ -1,20 +1,55 @@
+ {
+     "scdownsteam - h5ad": {
+         "content": [
+-            3262106,
+-            148146,
++            {
++                "n_obs": 7373,
++                "n_vars": 9887,
++                "obs": {
++                    "index": "_index",
++                    "columns": [
++                        "sample",
++                        "doublet",
++                        "doublet_score"
++                    ]
++                },
++                "var": {
++                    "index": "_index",
++                    "columns": [
++                        
++                    ]
++                },
++                "layers": [
++                    
++                ],
++                "obsm": [
++                    
++                ],
++                "varm": [
++                    
++                ],
++                "obsp": [
++                    
++                ],
++                "varp": [
++                    
++                ],
++                "uns": [
++                    
++                ]
++            },
+             {
+                 "DOUBLETDETECTION": {
+                     "anndata": "0.11.4",
+                     "doubletdetection": "4.3.0.post1",
++                    "pyarrow": "21.0.0",
+                     "python": "3.13.3"
+                 }
+             }
+         ],
+-        "timestamp": "2026-04-23T17:14:06.033746024",
++        "timestamp": "2026-11-15T15:47:50.155894301",
+         "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.03.2"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
+         }
+     },
+     "scdownstream - h5ad - stub": {
+@@ -25,7 +60,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_doubletdetection.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "predictions": [
+@@ -33,25 +68,34 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_doubletdetection.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
++                    ]
++                ],
++                "scores": [
++                    [
++                        {
++                            "id": "test"
++                        },
++                        "test_doubletdetection.scores.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "versions": [
+-                    "versions.yml:md5,3ed20fc4bca7372f427cb84f3e689992"
++                    "versions.yml:md5,119ce850e469029acb5cf3be436db92e"
+                 ]
+             },
+             {
+                 "DOUBLETDETECTION": {
+                     "python": "3.13.3",
+                     "anndata": "0.11.4",
+-                    "doubletdetection": null
++                    "doubletdetection": "4.3.0.post1",
++                    "pyarrow": "21.0.0"
+                 }
+             }
+         ],
+-        "timestamp": "2026-04-23T17:14:23.856426678",
++        "timestamp": "2026-11-15T22:50:41.43575713",
+         "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.03.2"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
+         }
+     }
+ }
+Changes in 'doubletdetection/tests/main.nf.test':
+--- modules/nf-core/doubletdetection/tests/main.nf.test
++++ modules/nf-core/doubletdetection/tests/main.nf.test
+@@ -24,15 +24,36 @@
+             assertAll(
+                 { assert process.success },
+ 
+-                // Only check if output exists and has constant size,
+-                // as phenotype supports no random seeding:
++                // PhenoGraph does not support random seeding:
+                 // https://github.com/jacoblevine/PhenoGraph/issues/16
+                 { assert path(process.out.h5ad.get(0).get(1)).exists() },
+                 { assert path(process.out.predictions.get(0).get(1)).exists() },
++                {
++                    assert file(process.out.predictions[0][1]).name == 'test_doubletdetection.parquet'
++                    def predictions = path(process.out.predictions[0][1]).parquet
++                    assert predictions.columnNames == ['__index__', 'test_doubletdetection']
++                    assert predictions.schemaDetails.fields.find { it.name == 'test_doubletdetection' }.physicalType == 'BOOLEAN'
++                    assert predictions.compressionCodecs == ['SNAPPY']
++                    def rows = predictions.rowMaps
++                    def adata = anndata(process.out.h5ad[0][1])
++                    assert rows.size() == adata.n_obs
++                    assert rows.every { it.__index__ instanceof String && it.test_doubletdetection instanceof Boolean }
++                    assert rows.collect { it.__index__ }.toSet().size() == rows.size()
++                    assert rows.collect { it.__index__ } == adata.obs.index.values
++                    def calls = adata.obs.get('doublet').data.collect {
++                        it instanceof Boolean ? it : it.toString().equalsIgnoreCase('true')
++                    }
++                    assert rows.collect { it.test_doubletdetection } == calls
++                    assert adata.obs.get('doublet_score').data.every { it instanceof Number }
++                    def scores = path(process.out.scores[0][1]).parquet
++                    assert scores.columnNames == ['__index__', 'doubletdetection_score']
++                    assert scores.compressionCodecs == ['SNAPPY']
++                    assert scores.rowMaps.collect { it.__index__ } == rows.collect { it.__index__ }
++                    assert scores.rowMaps.collect { it.doubletdetection_score } == adata.obs.get('doublet_score').data
++                },
+ 
+                 { assert snapshot(
+-                    path(process.out.h5ad.get(0).get(1)).size(),
+-                    path(process.out.predictions.get(0).get(1)).size(),
++                    anndata(process.out.h5ad[0][1]).yaml,
+                     path(process.out.versions[0]).yaml
+                 ).match() }
+             )
+
+'modules/nf-core/doubletdetection/.conda-lock/linux_arm64-bd-e9ad45d8373454f2_1.txt' was created
+'modules/nf-core/doubletdetection/.conda-lock/linux_amd64-bd-af9720f5b3743d63_1.txt' was created
+Changes in 'doubletdetection/templates/doubletdetection.py':
+--- modules/nf-core/doubletdetection/templates/doubletdetection.py
++++ modules/nf-core/doubletdetection/templates/doubletdetection.py
+@@ -2,12 +2,14 @@
+ 
+ import os
+ import platform
++from pathlib import Path
+ 
+ os.environ["MPLCONFIGDIR"] = "./tmp"
+ os.environ["NUMBA_CACHE_DIR"] = "./tmp"
+ 
+ import anndata as ad
+ import doubletdetection
++import pyarrow
+ import yaml
+ 
+ adata = ad.read_h5ad("${h5ad}")
+@@ -19,11 +21,17 @@
+ adata.obs["doublet"] = [label == 1 for label in doublets]
+ adata.obs["doublet_score"] = scores
+ 
+-adata.write_h5ad("${prefix}.h5ad")
++adata.write_h5ad("${prefix}.h5ad", compression="gzip")
+ 
+-df = adata.obs[["doublet"]]
++df = adata.obs[["doublet"]].copy()
+ df.columns = ["${prefix}"]
+-df.to_pickle("${prefix}.pkl")
++if df.index.hasnans or not df.index.is_unique or not all(isinstance(cell, str) for cell in df.index):
++    raise ValueError("Doublet predictions require unique, non-null string cell IDs")
++df.insert(0, "__index__", df.index)
++df.to_parquet(Path("${prefix}.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
++scores = adata.obs[["doublet_score"]].rename(columns={"doublet_score": "doubletdetection_score"})
++scores.insert(0, "__index__", scores.index)
++scores.to_parquet(Path("${prefix}.scores.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
+ 
+ # Versions
+ versions = {
+@@ -31,6 +39,7 @@
+         "python": platform.python_version(),
+         "anndata": ad.__version__,
+         "doubletdetection": doubletdetection.__version__,
++        "pyarrow": pyarrow.__version__,
+     }
+ }
+ 
+
+************************************************************

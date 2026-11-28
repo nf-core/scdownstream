@@ -1,0 +1,395 @@
+{
+    "Should run without a specified number of deviant genes": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "deviance.h5ad:md5,9dc36881cfeffaedbd6f660b0522ed47"
+                ]
+            ],
+            {
+                "file": "deviance_features.parquet",
+                "schema": {
+                    "name": "schema",
+                    "fields": [
+                        {
+                            "name": "__index__",
+                            "repetition": "OPTIONAL",
+                            "nullable": true,
+                            "physicalType": "BINARY",
+                            "logicalType": {
+                                "type": "STRING"
+                            },
+                            "fields": [
+                                
+                            ]
+                        },
+                        {
+                            "name": "deviance:binomial_deviance",
+                            "repetition": "OPTIONAL",
+                            "nullable": true,
+                            "physicalType": "DOUBLE",
+                            "logicalType": null,
+                            "fields": [
+                                
+                            ]
+                        },
+                        {
+                            "name": "deviance:highly_deviant",
+                            "repetition": "OPTIONAL",
+                            "nullable": true,
+                            "physicalType": "BOOLEAN",
+                            "logicalType": null,
+                            "fields": [
+                                
+                            ]
+                        }
+                    ]
+                },
+                "codecs": [
+                    "SNAPPY"
+                ],
+                "rows_sha256": "b9041280e9d2e9f51fb98f8cad30da5c790601025a190127f3f4f5b9608fdcf8"
+            },
+            {
+                "SCRY_DEVIANCE": {
+                    "R": "4.5.3",
+                    "scry": "1.22.0",
+                    "arrow": "21.0.0"
+                }
+            },
+            {
+                "n_obs": 768,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable",
+                        "binomial_deviance",
+                        "highly_deviant"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-27T16:09:21.387004847",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "deviance.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "deviance_features.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "deviance.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "var": [
+                    "deviance_features.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-15T15:22:45.069670392",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run with a specified number of deviant genes": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "deviance.h5ad:md5,fc8774091f078d15ba1994b4dafc7421"
+                ]
+            ],
+            {
+                "file": "deviance_features.parquet",
+                "schema": {
+                    "name": "schema",
+                    "fields": [
+                        {
+                            "name": "__index__",
+                            "repetition": "OPTIONAL",
+                            "nullable": true,
+                            "physicalType": "BINARY",
+                            "logicalType": {
+                                "type": "STRING"
+                            },
+                            "fields": [
+                                
+                            ]
+                        },
+                        {
+                            "name": "deviance:binomial_deviance",
+                            "repetition": "OPTIONAL",
+                            "nullable": true,
+                            "physicalType": "DOUBLE",
+                            "logicalType": null,
+                            "fields": [
+                                
+                            ]
+                        },
+                        {
+                            "name": "deviance:highly_deviant",
+                            "repetition": "OPTIONAL",
+                            "nullable": true,
+                            "physicalType": "BOOLEAN",
+                            "logicalType": null,
+                            "fields": [
+                                
+                            ]
+                        }
+                    ]
+                },
+                "codecs": [
+                    "SNAPPY"
+                ],
+                "rows_sha256": "688dd71e8cd3c7fbac907b13c2e509c95059d741fb20c9a3f8fbc229bb913355"
+            },
+            {
+                "SCRY_DEVIANCE": {
+                    "R": "4.5.3",
+                    "scry": "1.22.0",
+                    "arrow": "21.0.0"
+                }
+            },
+            {
+                "n_obs": 768,
+                "n_vars": 100,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable",
+                        "binomial_deviance",
+                        "highly_deviant"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-27T16:10:12.788543097",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run with a list of genes excluded from integration": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "deviance.h5ad:md5,a339525219f25424cd6cd4ce18da4c5e"
+                ]
+            ],
+            {
+                "file": "deviance_features.parquet",
+                "schema": {
+                    "name": "schema",
+                    "fields": [
+                        {
+                            "name": "__index__",
+                            "repetition": "OPTIONAL",
+                            "nullable": true,
+                            "physicalType": "BINARY",
+                            "logicalType": {
+                                "type": "STRING"
+                            },
+                            "fields": [
+                                
+                            ]
+                        },
+                        {
+                            "name": "deviance:binomial_deviance",
+                            "repetition": "OPTIONAL",
+                            "nullable": true,
+                            "physicalType": "DOUBLE",
+                            "logicalType": null,
+                            "fields": [
+                                
+                            ]
+                        },
+                        {
+                            "name": "deviance:highly_deviant",
+                            "repetition": "OPTIONAL",
+                            "nullable": true,
+                            "physicalType": "BOOLEAN",
+                            "logicalType": null,
+                            "fields": [
+                                
+                            ]
+                        }
+                    ]
+                },
+                "codecs": [
+                    "SNAPPY"
+                ],
+                "rows_sha256": "963542018037d11fe9052c0acb9b39b51004fbff4c37c9ff50a5f5f98c23e006"
+            },
+            {
+                "SCRY_DEVIANCE": {
+                    "R": "4.5.3",
+                    "scry": "1.22.0",
+                    "arrow": "21.0.0"
+                }
+            },
+            {
+                "n_obs": 768,
+                "n_vars": 100,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable",
+                        "binomial_deviance",
+                        "highly_deviant"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-27T16:11:04.473691485",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

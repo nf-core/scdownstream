@@ -1,0 +1,250 @@
+name: Run nf-test
+on:
+  push:
+    branches:
+      - dev
+      - master
+      - main
+    paths-ignore:
+      - "docs/**"
+      - "**/meta.yml"
+      - "**/*.md"
+      - "**/*.png"
+      - "**/*.svg"
+  pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "**/meta.yml"
+      - "**/*.md"
+      - "**/*.png"
+      - "**/*.svg"
+  release:
+    types: [published]
+  workflow_dispatch:
+
+# Cancel if a newer run is started
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  NFT_VER: "0.9.5"
+  NFT_WORKDIR: "~"
+  NXF_ANSI_LOG: false
+  NXF_SINGULARITY_CACHEDIR: ${{ github.workspace }}/.singularity
+  NXF_SINGULARITY_LIBRARYDIR: ${{ github.workspace }}/.singularity
+
+jobs:
+  nf-test-changes:
+    name: nf-test-changes
+    runs-on: # use self-hosted runners
+      - runs-on=${{ github.run_id }}-nf-test-changes
+      - runner=4cpu-linux-x64
+    outputs:
+      targets: ${{ steps.set-targets.outputs.targets }}
+      total_targets: ${{ steps.set-targets.outputs.total_targets }}
+    steps:
+      - name: Clean Workspace # Purge the workspace in case it's running on a self-hosted runner
+        run: |
+          ls -la ./
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+          ls -la ./
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      # The matrix is limited to 256 jobs. Main PRs run 6 jobs per shard, so the max_shards sum must stay <= 42.
+      - name: get number of shards for module tests
+        id: set-modules-shards
+        uses: ./.github/actions/get-shards
+        env:
+          NFT_VER: ${{ env.NFT_VER }}
+        with:
+          max_shards: 20
+          tags: modules_local
+
+      - name: get number of shards for subworkflow tests
+        id: set-subworkflows-shards
+        uses: ./.github/actions/get-shards
+        env:
+          NFT_VER: ${{ env.NFT_VER }}
+        with:
+          max_shards: 12
+          tags: subworkflows_local
+
+      # max_shards exceeds the number of pipeline tests, so each test gets its own runner
+      - name: get number of shards for pipeline tests
+        id: set-pipeline-shards
+        uses: ./.github/actions/get-shards
+        env:
+          NFT_VER: ${{ env.NFT_VER }}
+        with:
+          max_shards: 10
+          tags: pipeline
+
+      - name: build test matrix
+        id: set-targets
+        env:
+          MODULES_SHARDS: ${{ steps.set-modules-shards.outputs.total_shards }}
+          SUBWORKFLOWS_SHARDS: ${{ steps.set-subworkflows-shards.outputs.total_shards }}
+          PIPELINE_SHARDS: ${{ steps.set-pipeline-shards.outputs.total_shards }}
+        run: |
+          targets=$(jq -nc \
+            --argjson modules "$MODULES_SHARDS" \
+            --argjson subworkflows "$SUBWORKFLOWS_SHARDS" \
+            --argjson pipeline "$PIPELINE_SHARDS" '
+            def entries($category; $tags; $runner; $total):
+              [range(1; $total + 1) | {category: $category, tags: $tags, runner: $runner, shard: ., total_shards: $total}];
+            entries("modules"; "modules_local"; "4cpu-linux-x64"; $modules)
+            + entries("subworkflows"; "subworkflows_local"; "4cpu-linux-x64"; $subworkflows)
+            + entries("pipeline"; "pipeline"; "16cpu-linux-x64"; $pipeline)')
+          echo "targets=$targets" >> $GITHUB_OUTPUT
+          echo "total_targets=$(jq length <<< "$targets")" >> $GITHUB_OUTPUT
+          echo "$targets" | jq .
+
+  nf-test:
+    name: "${{ matrix.target.category }} | ${{ matrix.profile }} | ${{ matrix.NXF_VER }} | ${{ matrix.target.shard }}/${{ matrix.target.total_shards }}"
+    needs: [nf-test-changes]
+    if: ${{ needs.nf-test-changes.outputs.total_targets != '0' }}
+    runs-on: # use self-hosted runners
+      - runs-on=${{ github.run_id }}-nf-test-${{ matrix.target.category }}
+      - runner=${{ matrix.target.runner }}
+      - volume=100gb
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJson(needs.nf-test-changes.outputs.targets) }}
+        profile: [conda, docker, singularity]
+        isMain:
+          - ${{ github.base_ref == 'master' || github.base_ref == 'main' }}
+        # Exclude conda and singularity on dev
+        exclude:
+          - isMain: false
+            profile: "conda"
+          - isMain: false
+            profile: "singularity"
+        NXF_VER:
+          - "26.04.6"
+          - "latest-everything"
+    env:
+      NXF_ANSI_LOG: false
+      TEST_LABEL: "${{ matrix.target.category }} | ${{ matrix.profile }} | ${{ matrix.NXF_VER }} | Shard ${{ matrix.target.shard }}/${{ matrix.target.total_shards }}"
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Run nf-test
+        id: run_nf_test
+        uses: ./.github/actions/nf-test
+        continue-on-error: ${{ matrix.NXF_VER == 'latest-everything' }}
+        env:
+          NFT_WORKDIR: ${{ env.NFT_WORKDIR }}
+          NXF_VERSION: ${{ matrix.NXF_VER }}
+        with:
+          profile: ${{ matrix.profile }}
+          shard: ${{ matrix.target.shard }}
+          total_shards: ${{ matrix.target.total_shards }}
+          tags: ${{ matrix.target.tags }}
+
+      - name: Report test status
+        if: ${{ always() }}
+        run: |
+          if [[ "${{ steps.run_nf_test.outcome }}" == "failure" ]]; then
+            echo "::error::Test with ${{ matrix.NXF_VER }} failed"
+            # Add to workflow summary
+            echo "## ❌ Test failed: ${TEST_LABEL}" >> $GITHUB_STEP_SUMMARY
+            if [[ "${{ matrix.NXF_VER }}" == "latest-everything" ]]; then
+              echo "::warning::Test with latest-everything failed but will not cause workflow failure. Please check if the error is expected or if it needs fixing."
+            fi
+            if [[ "${{ matrix.NXF_VER }}" != "latest-everything" ]]; then
+              exit 1
+            fi
+          fi
+
+      # continue-on-error keeps latest-everything from failing the job, so it never shows up in
+      # `needs.nf-test.result` downstream and CI stays green. Surface it via a PR comment instead;
+      # other NXF_VER failures already fail the job/CI directly, so no comment is needed for those.
+      - name: Prepare PR comment fragment
+        if: ${{ always() && steps.run_nf_test.outcome == 'failure' && matrix.NXF_VER == 'latest-everything' }}
+        run: |
+          mkdir -p pr-comment-fragment
+          echo "* ❌ ${TEST_LABEL}" > pr-comment-fragment/fragment-${{ strategy.job-index }}.md
+
+      - name: Upload PR comment fragment
+        if: ${{ always() && steps.run_nf_test.outcome == 'failure' && matrix.NXF_VER == 'latest-everything' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: pr-comment-fragment-${{ strategy.job-index }}
+          path: pr-comment-fragment/
+
+  confirm-pass:
+    needs: [nf-test]
+    if: always()
+    runs-on: # use self-hosted runners
+      - runs-on=${{ github.run_id }}-confirm-pass
+      - runner=2cpu-linux-x64
+    steps:
+      - name: One or more tests failed (excluding latest-everything)
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: exit 1
+
+      - name: One or more tests cancelled
+        if: ${{ contains(needs.*.result, 'cancelled') }}
+        run: exit 1
+
+      - name: All tests ok
+        if: ${{ contains(needs.*.result, 'success') }}
+        run: exit 0
+
+      - name: debug-print
+        if: always()
+        run: |
+          echo "::group::DEBUG: `needs` Contents"
+          echo "DEBUG: toJSON(needs) = ${{ toJSON(needs) }}"
+          echo "DEBUG: toJSON(needs.*.result) = ${{ toJSON(needs.*.result) }}"
+          echo "::endgroup::"
+
+      - name: Download PR comment fragments
+        if: ${{ always() }}
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        continue-on-error: true
+        with:
+          pattern: pr-comment-fragment-*
+          path: pr-comment-fragments
+          merge-multiple: true
+
+      # Build a comment for the shared pr-comment.yml poster to publish on the PR.
+      # Based on the fragments above (not needs.*.result) so non-blocking failures are still reported.
+      - name: Prepare PR comment
+        if: ${{ always() }}
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          mkdir -p pr-comment
+          echo "$PR_NUMBER" > pr-comment/pr_number.txt
+          echo "nf-test" > pr-comment/header.txt
+          if [ -d pr-comment-fragments ] && [ -n "$(ls -A pr-comment-fragments)" ]; then
+            {
+              echo "## ❌ nf-test failed with latest Nextflow version"
+              echo ""
+              echo "> [!NOTE]"
+              echo "> Tests with Nextflow's latest version failed but it will not cause a CI workflow failure."
+              echo "> Please check if the failure is expected with newer (edge-)releases of Nextflow or if it needs fixing."
+              echo ""
+              cat pr-comment-fragments/*.md
+              echo ""
+              echo "See the [full run](${RUN_URL}) for details."
+            } > pr-comment/comment.md
+          fi
+
+      - name: Upload PR comment artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: pr-comment
+          path: pr-comment/

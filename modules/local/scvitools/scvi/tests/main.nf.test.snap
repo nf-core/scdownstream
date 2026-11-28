@@ -1,0 +1,122 @@
+{
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "model.pt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    "X_test.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "model": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "model.pt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obsm": [
+                    "X_test.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-15T15:41:46.898329099",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures": {
+        "content": [
+            {
+                "SCVITOOLS_SCVI": {
+                    "cuda": "no CUDA available",
+                    "pyarrow": "21.0.0",
+                    "scvi": "1.5.2",
+                    "torch": "2.14.1"
+                }
+            },
+            {
+                "n_obs": 768,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T15:51:56.133639235",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

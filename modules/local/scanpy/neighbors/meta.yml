@@ -1,0 +1,72 @@
+name: "scanpy_neighbors"
+description: Compute a neighbour graph on a chosen representation with Scanpy
+keywords:
+  - neighbours
+  - scanpy
+  - single-cell
+tools:
+  - "scanpy":
+      description: "Single-cell analysis in Python"
+      homepage: "https://scanpy.readthedocs.io"
+      documentation: "https://scanpy.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/scanpy"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+  - rep:
+      type: string
+      description: obsm key used as the neighbour graph representation
+  - n_pcs:
+      type: integer
+      description: Number of principal components to use when applicable
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.h5ad":
+          type: file
+          description: AnnData with neighbour graph
+          pattern: "*.h5ad"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:1ea7adbfe9ea8cad
+      build_id: bd-1ea7adbfe9ea8cad_1
+      scan_id: sc-d7bb1446e828dfb6_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:d617ddd4281a9506
+      build_id: bd-d617ddd4281a9506_1
+      scan_id: sc-4f85a1bc5a91ad19_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:4f27eb642f71a1e0
+      build_id: bd-4f27eb642f71a1e0_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5a/5a01d847cbde9acc7fac037c87664ef9b17e3d78323ffc75d1ccf8b0ab71f4c4/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:3ba90f90ba814125
+      build_id: bd-3ba90f90ba814125_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8e/8e2e626f2e43e75b0f218a91d16c13ac7efd15c6e0618dbc8ce06cd84218ca99/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scanpy/neighbors/.conda-lock/linux_amd64-bd-1ea7adbfe9ea8cad_1.txt
+    linux/arm64:
+      lock_file: modules/local/scanpy/neighbors/.conda-lock/linux_arm64-bd-d617ddd4281a9506_1.txt

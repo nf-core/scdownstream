@@ -1,0 +1,37 @@
+nextflow_process {
+
+    name "Test reference marker plotting"
+    script "modules/local/scanpy/rankgenesgroups/main.nf"
+    process "SCANPY_RANKGENESGROUPS"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should plot reference markers with a partially defined HVG mask") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = channel.of([
+                    [id: 'reference', integration: 'merged'],
+                    file(params.pipelines_testdata_base_path + '/extension_base/merged.h5ad', checkIfExists: true)
+                ])
+                input[1] = 'sample'
+                input[2] = [[], []]
+                input[3] = 'wilcoxon'
+                input[4] = 'rank_genes_groups'
+                input[5] = true
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert process.out.results.size() == 1
+            assert process.out.h5ad.size() == 1
+            assert process.out.markers.size() == 1
+            assert process.out.plots.flatten().size() == 2
+            assert process.out.multiqc_files.flatten().size() == 2
+            assert anndata(process.out.h5ad[0][1]).uns.contains('rank_genes_groups')
+        }
+    }
+}

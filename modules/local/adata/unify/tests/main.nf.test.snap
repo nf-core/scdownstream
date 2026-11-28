@@ -1,0 +1,2998 @@
+{
+    "Should handle label column already named label": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,f47d84fedd38c59c590eb99f7b70bc81"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,f47d84fedd38c59c590eb99f7b70bc81"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "label",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:34:30.067311868",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle sample column with different value": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,fd73ef734f281f4ae3dbae4ab4967308"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,fd73ef734f281f4ae3dbae4ab4967308"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:50:17.94116717",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle symbols in column": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,c3a408c644a9f6a02175402e07307cdc"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,c3a408c644a9f6a02175402e07307cdc"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id",
+                        "original_index"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:24:59.211696907",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle label column with different name": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,7438d63aaa826b27afc911b9628ecc0f"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,7438d63aaa826b27afc911b9628ecc0f"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:33:41.948594358",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should create condition column when missing": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,1e1988b9083f52ef274fb8e36db0c729"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,1e1988b9083f52ef274fb8e36db0c729"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:41:03.805766127",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle label column with unknown values": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,6c96aad09f2be8bbede68d93ec929189"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,6c96aad09f2be8bbede68d93ec929189"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:36:14.193668105",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle duplicates with sum aggregation": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
+                        },
+                        "test_unified.h5ad:md5,6b94e38a07a0723a97331d10be694fe3"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
+                        },
+                        "test_unified.h5ad:md5,6b94e38a07a0723a97331d10be694fe3"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 120,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id",
+                        "original_index"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_soupx",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:25:46.555251228",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should create batch column when missing": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,052110bb8464133ffe7e60ba0139a799"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,052110bb8464133ffe7e60ba0139a799"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:31:56.378203979",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should retain named correction independently of raw analysis selection": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "counts",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,32398d559216f06212ee10b4da941cf1"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "counts",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx",
+                            "analysis_counts_source": "raw_counts"
+                        },
+                        "test_unified.h5ad:md5,32398d559216f06212ee10b4da941cf1"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_soupx",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:19:52.918086845",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-01-11T21:38:13.01844773",
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        }
+    },
+    "Should handle duplicates with make_unique": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
+                        },
+                        "test_unified.h5ad:md5,b063c0f6cfa91553be4a210332484705"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
+                        },
+                        "test_unified.h5ad:md5,b063c0f6cfa91553be4a210332484705"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id",
+                        "original_index"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_soupx",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:28:21.099402992",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle condition column with different name": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,e29bac9d7349ebadaffe67a052f93c77"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,e29bac9d7349ebadaffe67a052f93c77"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:39:20.819732102",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle duplicates with mean aggregation": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
+                        },
+                        "test_unified.h5ad:md5,5ee6bfcf1cde78070caa99b2ec4bfaf5"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
+                        },
+                        "test_unified.h5ad:md5,5ee6bfcf1cde78070caa99b2ec4bfaf5"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 120,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id",
+                        "original_index"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_soupx",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:26:37.730709146",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should aggregate isoforms": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
+                        },
+                        "test_unified.h5ad:md5,8f2f254fabee40b38b3b65f868bfce39"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
+                        },
+                        "test_unified.h5ad:md5,8f2f254fabee40b38b3b65f868bfce39"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 120,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_soupx",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:29:12.67725422",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle condition column already named condition": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,5bf14884c814f9292b4218bc276d7f07"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,5bf14884c814f9292b4218bc276d7f07"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "condition",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:40:11.964470067",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should remove obsm, varm, uns, and unrelated layers": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,9cd7481086e17b876838f0fd9feaa20a"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,9cd7481086e17b876838f0fd9feaa20a"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    "connectivities"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:52:00.55946469",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should normalize label column with special characters": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,eb6c8469b05a2aa156ca4e072345f29a"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,eb6c8469b05a2aa156ca4e072345f29a"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:37:40.881693191",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should create label column when missing": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,6edb00b7de9e5c1cb7430b054a59cb58"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,6edb00b7de9e5c1cb7430b054a59cb58"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:35:22.093548259",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle CSR sparse matrix": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,37f5642f21b15608f2b40456a2e6cfa4"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,37f5642f21b15608f2b40456a2e6cfa4"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:47:42.464711418",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should replace reserved layers after copying aliased sources": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "ambient_corrected_scar",
+                            "ambient_correction_layer": "raw_counts",
+                            "ambient_correction_method": "scar",
+                            "analysis_counts_source": "ambient_corrected_scar"
+                        },
+                        "test_unified.h5ad:md5,9b84634b10ba70f85643f6a45904752d"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "ambient_corrected_scar",
+                            "ambient_correction_layer": "raw_counts",
+                            "ambient_correction_method": "scar",
+                            "analysis_counts_source": "ambient_corrected_scar"
+                        },
+                        "test_unified.h5ad:md5,9b84634b10ba70f85643f6a45904752d"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_scar",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:22:11.565845125",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle CSC sparse matrix": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,a5e86b60a2d9df85dc10918bd28c2027"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,a5e86b60a2d9df85dc10918bd28c2027"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:48:34.215279342",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle batch column with different name": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,4fb8e8fa2eb5f5edac9e673bf2e5032a"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,4fb8e8fa2eb5f5edac9e673bf2e5032a"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:30:03.977899628",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle label column with NaN values": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,6e9b48a24f27ee4db1ec16506d70d896"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,6e9b48a24f27ee4db1ec16506d70d896"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:37:06.653991738",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should remove obsm, varm, uns, and layers": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,0aa71b88ee89ff827071e318785f3b1f"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,0aa71b88ee89ff827071e318785f3b1f"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,38f68a59242c8455c63c13e9eae99a4e"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.2",
+                    "numpy": "2.5.3",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-09-26T10:31:06.094654236",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle duplicates with max aggregation": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
+                        },
+                        "test_unified.h5ad:md5,b546ddddd957299aa4d03474b65fac21"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "X",
+                            "ambient_correction_method": "soupx"
+                        },
+                        "test_unified.h5ad:md5,b546ddddd957299aa4d03474b65fac21"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 120,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id",
+                        "original_index"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_soupx",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:27:28.940952171",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should create donor column when missing": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,8d8995118150ed9dfd8b745b345fed7d"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,8d8995118150ed9dfd8b745b345fed7d"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:46:03.751848434",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should create sample column when missing": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,bc98ead94539f04bceba99c1aa729765"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,bc98ead94539f04bceba99c1aa729765"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "sample",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:51:09.168528227",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle batch column already named batch": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,967738b592a92d238d58a210c15bd765"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,967738b592a92d238d58a210c15bd765"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "batch",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:30:57.37971676",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle complex structure": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,e947720b8b91591d79bbf784f2cc5904"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,e947720b8b91591d79bbf784f2cc5904"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id",
+                        "feature_type",
+                        "original_index"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    "connectivities"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:53:43.449365784",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle counts in layer": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,1347ded6b2b4887c0494820f59f3b1f5"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,1347ded6b2b4887c0494820f59f3b1f5"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:18:09.846075148",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle counts in X matrix": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,684fa1e11486dfee8cf65daeeba8264e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,684fa1e11486dfee8cf65daeeba8264e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:17:17.721729102",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle symbols as index": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,b4a28209ff52215f14d13b288c75b785"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,b4a28209ff52215f14d13b288c75b785"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:24:07.850998022",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should select a named correction while retaining raw X": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "counts",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "ambient_corrected_decontx"
+                        },
+                        "test_unified.h5ad:md5,7753f18c93777fe1535f365197723865"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test",
+                            "raw_counts_layer": "X",
+                            "ambient_correction_layer": "counts",
+                            "ambient_correction_method": "decontx",
+                            "analysis_counts_source": "ambient_corrected_decontx"
+                        },
+                        "test_unified.h5ad:md5,7753f18c93777fe1535f365197723865"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "ambient_corrected_decontx",
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:20:44.58929534",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle minimal structure": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,8d8995118150ed9dfd8b745b345fed7d"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,8d8995118150ed9dfd8b745b345fed7d"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:52:52.205669715",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should discard unrelated layers": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,da18ff66df24eade8ff000f347149b90"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,da18ff66df24eade8ff000f347149b90"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:19:01.668477171",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should handle duplicate cell names": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,af56a77954578add9f16bcccb240441e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unified.h5ad:md5,af56a77954578add9f16bcccb240441e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,62c9ed38535468f703c1e45838f4a46b"
+                ]
+            },
+            {
+                "ADATA_UNIFY": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.1.1",
+                    "python": "3.13.12",
+                    "scipy": "1.18.1"
+                }
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "ambient_correction_method",
+                        "analysis_counts_source",
+                        "batch",
+                        "label",
+                        "condition",
+                        "donor",
+                        "sample_original"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "raw_counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:49:26.167217269",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

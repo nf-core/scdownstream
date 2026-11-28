@@ -1,0 +1,89 @@
+name: "decoupler_pseudobulk"
+description: Aggregate single-cell counts into pseudobulk profiles with decoupler
+keywords:
+  - pseudobulk
+  - differential-expression
+  - single-cell
+tools:
+  - "decoupler":
+      description: "Python package to perform enrichment and pseudobulk analysis from omics data"
+      homepage: "https://decoupler.readthedocs.io/"
+      documentation: "https://decoupler.readthedocs.io/"
+      tool_dev_url: "https://github.com/saezlab/decoupler-py"
+      licence: ["GPL-3.0"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+    - counts_layer:
+        type: string
+        description: Layer containing raw counts, or X
+    - donor_col:
+        type: string
+        description: obs column with biological replicate identifiers
+    - celltype_col:
+        type: string
+        description: obs column with cell type or cluster labels
+    - condition_col:
+        type: string
+        description: obs column with condition labels
+    - min_num_cells:
+        type: integer
+        description: Minimum cells per pseudobulk sample
+    - min_total_counts:
+        type: integer
+        description: Minimum total counts per pseudobulk sample
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.h5ad":
+          type: file
+          description: Pseudobulk AnnData with counts in X
+          pattern: "*.h5ad"
+  samples:
+    - "*_samples.tsv":
+        type: file
+        description: Pseudobulk sample metadata table
+        pattern: "*_samples.tsv"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/decoupler_activity:374661b94d4383e8
+      build_id: bd-374661b94d4383e8_1
+      scan_id: sc-ad54c01537f3fe61_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/decoupler_activity:fda7b9a6e6c0db56
+      build_id: bd-fda7b9a6e6c0db56_1
+      scan_id: sc-2603ea55a5a719a2_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/decoupler_activity:ec512499390e5b9e
+      build_id: bd-ec512499390e5b9e_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d2/d2821b036063d6024ae937e9f6cbc1b777333ac3bdcca793f68e1fbe868ae976/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/decoupler_activity:08e24ca914449df6
+      build_id: bd-08e24ca914449df6_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/60/60c36450acec567b276051feff928ae59919992c656ac09728ab8433b7f9d56d/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/decoupler/pseudobulk/.conda-lock/linux_amd64-bd-374661b94d4383e8_1.txt
+    linux/arm64:
+      lock_file: modules/local/decoupler/pseudobulk/.conda-lock/linux_arm64-bd-fda7b9a6e6c0db56_1.txt

@@ -1,0 +1,151 @@
+{
+    "Should attach full-cell fragments only to retained cells in their original order": {
+        "content": [
+            {
+                "n_obs": 126,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "scrublet_class",
+                        "scrublet_predicted_doublet",
+                        "scrublet_score"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "counts",
+                    "spliced",
+                    "unspliced"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            },
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "scrublet_class",
+                        "scrublet_predicted_doublet",
+                        "scrublet_score"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "counts",
+                    "spliced",
+                    "unspliced"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-13T17:27:46.14880598",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should attach reordered native scores and classes for every method without inventing SOLO scores": {
+        "content": [
+            {
+                "n_obs": 128,
+                "n_vars": 128,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "doubletdetection_class",
+                        "doubletdetection_predicted_doublet",
+                        "scdblfinder_class",
+                        "scdblfinder_predicted_doublet",
+                        "scrublet_class",
+                        "scrublet_predicted_doublet",
+                        "solo_class",
+                        "solo_predicted_doublet",
+                        "doubletdetection_score",
+                        "scDblFinder.score",
+                        "scDblFinder.class",
+                        "scDblFinder.cxds_score",
+                        "scDblFinder.mostLikelyOrigin",
+                        "scrublet_score"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "gene_id"
+                    ]
+                },
+                "layers": [
+                    "counts",
+                    "spliced",
+                    "unspliced"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-13T18:52:13.063296488",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

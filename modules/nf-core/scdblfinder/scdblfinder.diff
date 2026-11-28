@@ -1,0 +1,532 @@
+Changes in component 'nf-core/scdblfinder'
+Changes in 'scdblfinder/environment.yml':
+--- modules/nf-core/scdblfinder/environment.yml
++++ modules/nf-core/scdblfinder/environment.yml
+@@ -4,8 +4,11 @@
+   - conda-forge
+   - bioconda
+ dependencies:
+-  - bioconda::bioconductor-anndatar=1.0.2
++  - bioconda::bioconductor-anndatar=1.2.3
+   - bioconda::bioconductor-biocparallel=1.44.0
+   - bioconda::bioconductor-rhdf5=2.54.1
+-  - bioconda::bioconductor-scdblfinder=1.24.0
++  - bioconda::bioconductor-scdblfinder=1.24.10
+   - bioconda::bioconductor-singlecellexperiment=1.32.0
++  - conda-forge::r-arrow=21.0.0
++  - conda-forge::r-tidyverse=2.0.0
++  - conda-forge::r-xgboost=3.4.2
+
+Changes in 'scdblfinder/meta.yml':
+--- modules/nf-core/scdblfinder/meta.yml
++++ modules/nf-core/scdblfinder/meta.yml
+@@ -1,112 +1,110 @@
+ name: "scdblfinder"
+ description: Detect doublets in single-cell RNA-seq data with scDblFinder
+ keywords:
+-  - doublet detection
+-  - single-cell
+-  - scrnaseq
+-  - quality control
++- doublet detection
++- single-cell
++- scrnaseq
++- quality control
+ tools:
+-  - "scdblfinder":
+-      description: "Identifies doublets in single-cell RNA-seq data by comparing each cell with artificial doublets made from the data"
+-      homepage: "https://bioconductor.org/packages/scDblFinder"
+-      documentation: "https://bioconductor.org/packages/release/bioc/vignettes/scDblFinder/inst/doc/scDblFinder.html"
+-      tool_dev_url: "https://github.com/plger/scDblFinder"
+-      doi: "10.12688/f1000research.73600.2"
+-      licence: ["GPL-3.0-only"]
+-      identifier: biotools:scdblfinder
++- "scdblfinder":
++    description: "Identifies doublets in single-cell RNA-seq data by comparing each cell with artificial doublets made from the data"
++    homepage: "https://bioconductor.org/packages/scDblFinder"
++    documentation: "https://bioconductor.org/packages/release/bioc/vignettes/scDblFinder/inst/doc/scDblFinder.html"
++    tool_dev_url: "https://github.com/plger/scDblFinder"
++    doi: "10.12688/f1000research.73600.2"
++    licence: ["GPL-3.0-only"]
++    identifier: biotools:scdblfinder
+ 
+ input:
++- - meta:
++      type: map
++      description: |
++        Groovy Map containing sample information
++        e.g. `[ id:'sample1' ]`
++  - h5ad:
++      type: file
++      description: AnnData object in h5ad format with raw counts in `X`
++      pattern: "*.h5ad"
++      ontologies:
++      - edam: http://edamontology.org/format_3590     # HDF5
++
++output:
++  h5ad:
+   - - meta:
+         type: map
+         description: |
+           Groovy Map containing sample information
+           e.g. `[ id:'sample1' ]`
+-    - h5ad:
++    - "${prefix}.h5ad":
+         type: file
+-        description: AnnData object in h5ad format with raw counts in `X`
++        description: Input AnnData object with the scDblFinder columns added to `obs`, stored with gzip compression
+         pattern: "*.h5ad"
+         ontologies:
+-          - edam: http://edamontology.org/format_3590 # HDF5
+-
+-output:
+-  h5ad:
+-    - - meta:
+-          type: map
+-          description: |
+-            Groovy Map containing sample information
+-            e.g. `[ id:'sample1' ]`
+-      - "${prefix}.h5ad":
+-          type: file
+-          description: Input AnnData object with the scDblFinder columns added to `obs`, stored with gzip compression
+-          pattern: "*.h5ad"
+-          ontologies:
+-            - edam: http://edamontology.org/format_3590 # HDF5
++        - edam: http://edamontology.org/format_3590     # HDF5
+   predictions:
+-    - - meta:
+-          type: map
+-          description: |
+-            Groovy Map containing sample information
+-            e.g. `[ id:'sample1' ]`
+-      - "${prefix}.predictions.csv":
+-          type: file
+-          description: One boolean column per cell (TRUE = doublet), named after the prefix
+-          pattern: "*.predictions.csv"
+-          ontologies:
+-            - edam: http://edamontology.org/format_3752 # CSV
++  - - meta:
++        type: map
++        description: |
++          Groovy Map containing sample information
++          e.g. `[ id:'sample1' ]`
++    - "${prefix}.predictions.parquet":
++        type: file
++        description: One Boolean column per cell (TRUE = doublet), with explicit __index__ cell identifiers
++        pattern: "*.predictions.parquet"
++        ontologies: []
+   scores:
+-    - - meta:
+-          type: map
+-          description: |
+-            Groovy Map containing sample information
+-            e.g. `[ id:'sample1' ]`
+-      - "${prefix}.scores.csv":
+-          type: file
+-          description: Per-cell scDblFinder results (class, score and related columns)
+-          pattern: "*.scores.csv"
+-          ontologies:
+-            - edam: http://edamontology.org/format_3752 # CSV
++  - - meta:
++        type: map
++        description: |
++          Groovy Map containing sample information
++          e.g. `[ id:'sample1' ]`
++    - "${prefix}.scores.parquet":
++        type: file
++        description: Per-cell scDblFinder results (class, score and related columns)
++        pattern: "*.scores.parquet"
++        ontologies: []
+   versions_scdblfinder:
+-    - versions.yml:
+-        type: file
+-        description: File containing software versions
+-        pattern: "versions.yml"
+-        ontologies:
+-          - edam: http://edamontology.org/format_3750 # YAML
++  - versions.yml:
++      type: file
++      description: File containing software versions
++      pattern: "versions.yml"
++      ontologies:
++      - edam: http://edamontology.org/format_3750     # YAML
+ 
+ topics:
+   versions:
+-    - versions.yml:
+-        type: file
+-        description: File containing software versions
+-        pattern: "versions.yml"
+-        ontologies:
+-          - edam: http://edamontology.org/format_3750 # YAML
++  - versions.yml:
++      type: file
++      description: File containing software versions
++      pattern: "versions.yml"
++      ontologies:
++      - edam: http://edamontology.org/format_3750     # YAML
+ 
+ authors:
+-  - "@iraajgangavaram"
++- "@iraajgangavaram"
+ maintainers:
+-  - "@iraajgangavaram"
++- "@iraajgangavaram"
+ containers:
+   docker:
+     linux/arm64:
+-      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-biocparallel_bioconductor-rhdf5_bioconductor-scdblfinder_bioconductor-singlecellexperiment:0e6bd131698855ce
+-      build_id: bd-0e6bd131698855ce_1
+-      scan_id: sc-9c1f3d5cfe40ecb0_1
++      name: community.wave.seqera.io/library/scdblfinder:4c152d0049648618
++      build_id: bd-4c152d0049648618_1
++      scan_id: sc-fea2b7801bc9828a_1
+     linux/amd64:
+-      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-biocparallel_bioconductor-rhdf5_bioconductor-scdblfinder_bioconductor-singlecellexperiment:b97c9b42c2a89cba
+-      build_id: bd-b97c9b42c2a89cba_1
+-      scan_id: sc-6a352442ef2b8297_1
++      name: community.wave.seqera.io/library/scdblfinder:03c14e340018af5c
++      build_id: bd-03c14e340018af5c_1
++      scan_id: sc-ad0c44f493c0290b_1
+   singularity:
+     linux/amd64:
+-      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-biocparallel_bioconductor-rhdf5_bioconductor-scdblfinder_bioconductor-singlecellexperiment:d467a3b6af9e4d7c
+-      build_id: bd-d467a3b6af9e4d7c_1
+-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0b/0b7da7136d1cb87691c20da1e7b64b2b9bbd102baee2fbc803aedb7c5f634e7f/data
++      name: oras://community.wave.seqera.io/library/scdblfinder:7c313eb3cc7f5d6f
++      build_id: bd-7c313eb3cc7f5d6f_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/70/709d3cc1733b4f3ddb44a51d7e52dafba6837b495886864bebc53690d95b5f6e/data
+     linux/arm64:
+-      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-biocparallel_bioconductor-rhdf5_bioconductor-scdblfinder_bioconductor-singlecellexperiment:d88863dbcee9a94d
+-      build_id: bd-d88863dbcee9a94d_1
+-      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/e6/e6e9f553f74e33b3bfa50f72ecbbee1e79e2633a5b8b59d3554f54bc8d3fde8f/data
++      name: oras://community.wave.seqera.io/library/scdblfinder:1ef1780dbfce3d0e
++      build_id: bd-1ef1780dbfce3d0e_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c3/c31e1c2bbe5d13ba455c88e40ab95427fc459d5acb7224a012ea1b4e64a8a564/data
+   conda:
+     linux/amd64:
+-      lock_file: modules/nf-core/scdblfinder/.conda-lock/linux_amd64-bd-b97c9b42c2a89cba_1.txt
++      lock_file: modules/nf-core/scdblfinder/.conda-lock/linux_amd64-bd-03c14e340018af5c_1.txt
+     linux/arm64:
+-      lock_file: modules/nf-core/scdblfinder/.conda-lock/linux_arm64-bd-0e6bd131698855ce_1.txt
++      lock_file: modules/nf-core/scdblfinder/.conda-lock/linux_arm64-bd-4c152d0049648618_1.txt
+
+Changes in 'scdblfinder/main.nf':
+--- modules/nf-core/scdblfinder/main.nf
++++ modules/nf-core/scdblfinder/main.nf
+@@ -7,17 +7,17 @@
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0b/0b7da7136d1cb87691c20da1e7b64b2b9bbd102baee2fbc803aedb7c5f634e7f/data'
+-        : 'community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-biocparallel_bioconductor-rhdf5_bioconductor-scdblfinder_bioconductor-singlecellexperiment:b97c9b42c2a89cba'}"
++        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/70/709d3cc1733b4f3ddb44a51d7e52dafba6837b495886864bebc53690d95b5f6e/data'
++        : 'community.wave.seqera.io/library/scdblfinder:03c14e340018af5c'}"
+ 
+     input:
+     tuple val(meta), path(h5ad)
+ 
+     output:
+-    tuple val(meta), path("${prefix}.h5ad")            , emit: h5ad
+-    tuple val(meta), path("${prefix}.predictions.csv") , emit: predictions
+-    tuple val(meta), path("${prefix}.scores.csv")      , emit: scores
+-    path "versions.yml"                                , emit: versions_scdblfinder, topic: versions
++    tuple val(meta), path("${prefix}.h5ad"), emit: h5ad
++    tuple val(meta), path("${prefix}.predictions.parquet"), emit: predictions
++    tuple val(meta), path("${prefix}.scores.parquet"), emit: scores
++    path "versions.yml", emit: versions_scdblfinder, topic: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+@@ -28,7 +28,7 @@
+     if ("${h5ad}" == "${prefix}.h5ad") {
+         error("Input and output names are the same, use \"task.ext.prefix\" to disambiguate!")
+     }
+-    template 'scdblfinder.R'
++    template('scdblfinder.R')
+ 
+     stub:
+     prefix = task.ext.prefix ?: "${meta.id}_scdblfinder"
+@@ -37,8 +37,8 @@
+     }
+     """
+     touch ${prefix}.h5ad
+-    touch ${prefix}.predictions.csv
+-    touch ${prefix}.scores.csv
++    touch ${prefix}.predictions.parquet
++    touch ${prefix}.scores.parquet
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+@@ -48,6 +48,7 @@
+         singlecellexperiment: \$(Rscript -e "suppressMessages(library(SingleCellExperiment)); cat(as.character(packageVersion('SingleCellExperiment')))")
+         biocparallel: \$(Rscript -e "suppressMessages(library(BiocParallel)); cat(as.character(packageVersion('BiocParallel')))")
+         rhdf5: \$(Rscript -e "cat(as.character(packageVersion('rhdf5')))")
++        arrow: \$(Rscript -e "cat(as.character(packageVersion('arrow')))")
+     END_VERSIONS
+     """
+ }
+
+Changes in 'scdblfinder/tests/main.nf.test.snap':
+--- modules/nf-core/scdblfinder/tests/main.nf.test.snap
++++ modules/nf-core/scdblfinder/tests/main.nf.test.snap
+@@ -15,7 +15,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scdblfinder.predictions.csv:md5,4015b6b1c2cf994fb88e8ac53ed99093"
++                        "test_scdblfinder.predictions.parquet:md5,6f0221228ab81850b63e7be9a3e7d3b6"
+                     ]
+                 ],
+                 "scores": [
+@@ -23,14 +23,14 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scdblfinder.scores.csv"
++                        "test_scdblfinder.scores.parquet"
+                     ]
+                 ],
+                 "versions_scdblfinder": [
+-                    "versions.yml:md5,4fa9f9786f46e72fcfd25afd8e817498"
++                    "versions.yml:md5,484ded6f4b1ea8e14ff1eaab5149b344"
+                 ]
+             },
+-            1001,
++            1000,
+             {
+                 "n_obs": 1000,
+                 "n_vars": 1000,
+@@ -39,9 +39,9 @@
+                     "columns": [
+                         "batch",
+                         "scDblFinder.class",
+-                        "scDblFinder.cxds_score",
+                         "scDblFinder.score",
+-                        "scDblFinder.weighted"
++                        "scDblFinder.weighted",
++                        "scDblFinder.cxds_score"
+                     ]
+                 },
+                 "var": {
+@@ -70,10 +70,10 @@
+                 ]
+             }
+         ],
+-        "timestamp": "2026-10-28T21:37:27.926096",
++        "timestamp": "2026-11-15T23:01:14.20329107",
+         "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.10.3"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
+         }
+     },
+     "homo sapiens - pbmc1k - h5ad - doublet rate and batch column": {
+@@ -92,7 +92,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scdblfinder.predictions.csv:md5,96798a2c871f8048fa8bcdc252ba21d8"
++                        "test_scdblfinder.predictions.parquet:md5,a831527395957734f196d29f4b813c1d"
+                     ]
+                 ],
+                 "scores": [
+@@ -100,14 +100,14 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scdblfinder.scores.csv"
++                        "test_scdblfinder.scores.parquet"
+                     ]
+                 ],
+                 "versions_scdblfinder": [
+-                    "versions.yml:md5,4fa9f9786f46e72fcfd25afd8e817498"
++                    "versions.yml:md5,484ded6f4b1ea8e14ff1eaab5149b344"
+                 ]
+             },
+-            1001,
++            1000,
+             {
+                 "n_obs": 1000,
+                 "n_vars": 1000,
+@@ -115,11 +115,11 @@
+                     "index": "_index",
+                     "columns": [
+                         "batch",
++                        "scDblFinder.sample",
+                         "scDblFinder.class",
+-                        "scDblFinder.cxds_score",
+-                        "scDblFinder.sample",
+                         "scDblFinder.score",
+-                        "scDblFinder.weighted"
++                        "scDblFinder.weighted",
++                        "scDblFinder.cxds_score"
+                     ]
+                 },
+                 "var": {
+@@ -148,10 +148,10 @@
+                 ]
+             }
+         ],
+-        "timestamp": "2026-10-28T21:38:26.516781",
++        "timestamp": "2026-11-15T23:03:36.320008964",
+         "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.10.3"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
+         }
+     },
+     "homo sapiens - pbmc1k - h5ad - stub": {
+@@ -170,7 +170,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scdblfinder.predictions.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_scdblfinder.predictions.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "scores": [
+@@ -178,18 +178,18 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test_scdblfinder.scores.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_scdblfinder.scores.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "versions_scdblfinder": [
+-                    "versions.yml:md5,4fa9f9786f46e72fcfd25afd8e817498"
++                    "versions.yml:md5,484ded6f4b1ea8e14ff1eaab5149b344"
+                 ]
+             }
+         ],
+-        "timestamp": "2026-10-28T21:39:12.383946",
++        "timestamp": "2026-11-15T23:04:57.825226292",
+         "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.10.3"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
+         }
+     }
+ }
+Changes in 'scdblfinder/tests/main.nf.test':
+--- modules/nf-core/scdblfinder/tests/main.nf.test
++++ modules/nf-core/scdblfinder/tests/main.nf.test
+@@ -24,20 +24,23 @@
+ 
+         then {
+             assert process.success
+-            def calls = new File(process.out.predictions[0][1].toString()).readLines()
+-            assert calls.size() == 1001
+-            assert calls[0] == '"","test_scdblfinder"'
+-            assert calls.drop(1).every { line -> line.endsWith(",TRUE") || line.endsWith(",FALSE") }
+-            def scores = new File(process.out.scores[0][1].toString()).readLines()
+-            assert scores.size() == 1001
++            def calls = path(process.out.predictions[0][1]).parquet
++            assert calls.columnNames == ['__index__', 'test_scdblfinder']
++            assert calls.rowMaps.size() == 1000
++            assert calls.rowMaps.every { it.__index__ instanceof String && it.test_scdblfinder instanceof Boolean }
++            def scores = path(process.out.scores[0][1]).parquet
++            assert scores.rowMaps.size() == 1000
+             def adata = anndata(process.out.h5ad[0][1])
+             with(adata) {
+                 assert "scDblFinder.class" in obs.colnames
+                 assert "scDblFinder.score" in obs.colnames
+             }
++            assert calls.rowMaps.collect { it.__index__ } == adata.obs.index.values
++            assert calls.rowMaps.collect { it.test_scdblfinder } == adata.obs.get('scDblFinder.class').data.collect { it == 'doublet' }
++            assert scores.rowMaps.collect { it['scDblFinder.score'] } == adata.obs.get('scDblFinder.score').data
+             assert snapshot(
+                 sanitizeOutput(process.out, unstableKeys: ['h5ad', 'scores']),
+-                scores.size(),
++                scores.rowMaps.size(),
+                 adata.yaml
+             ).match()
+         }
+@@ -62,20 +65,23 @@
+ 
+         then {
+             assert process.success
+-            def calls = new File(process.out.predictions[0][1].toString()).readLines()
+-            assert calls.size() == 1001
+-            assert calls[0] == '"","test_scdblfinder"'
+-            assert calls.drop(1).every { line -> line.endsWith(",TRUE") || line.endsWith(",FALSE") }
+-            def scores = new File(process.out.scores[0][1].toString()).readLines()
+-            assert scores.size() == 1001
++            def batchCalls = path(process.out.predictions[0][1]).parquet
++            assert batchCalls.columnNames == ['__index__', 'test_scdblfinder']
++            assert batchCalls.rowMaps.size() == 1000
++            assert batchCalls.rowMaps.every { it.__index__ instanceof String && it.test_scdblfinder instanceof Boolean }
++            def batchScores = path(process.out.scores[0][1]).parquet
++            assert batchScores.rowMaps.size() == 1000
+             def adata = anndata(process.out.h5ad[0][1])
+             with(adata) {
+                 assert "scDblFinder.class" in obs.colnames
+                 assert "scDblFinder.score" in obs.colnames
+             }
++            assert batchCalls.rowMaps.collect { it.__index__ } == adata.obs.index.values
++            assert batchCalls.rowMaps.collect { it.test_scdblfinder } == adata.obs.get('scDblFinder.class').data.collect { it == 'doublet' }
++            assert batchScores.rowMaps.collect { it['scDblFinder.score'] } == adata.obs.get('scDblFinder.score').data
+             assert snapshot(
+                 sanitizeOutput(process.out, unstableKeys: ['h5ad', 'scores']),
+-                scores.size(),
++                batchScores.rowMaps.size(),
+                 adata.yaml
+             ).match()
+         }
+
+'modules/nf-core/scdblfinder/tests/nextflow.config' is unchanged
+'modules/nf-core/scdblfinder/.conda-lock/linux_amd64-bd-03c14e340018af5c_1.txt' was created
+'modules/nf-core/scdblfinder/.conda-lock/linux_arm64-bd-4c152d0049648618_1.txt' was created
+Changes in 'scdblfinder/templates/scdblfinder.R':
+--- modules/nf-core/scdblfinder/templates/scdblfinder.R
++++ modules/nf-core/scdblfinder/templates/scdblfinder.R
+@@ -4,6 +4,7 @@
+ library(SingleCellExperiment)
+ library(BiocParallel)
+ library(anndataR)
++library(arrow)
+ 
+ set.seed(123)
+ 
+@@ -50,14 +51,18 @@
+ 
+ write_h5ad(sce, "${prefix}.h5ad", compression = "gzip")
+ 
+-write.csv(as.data.frame(colData(sce))[, cols, drop = FALSE], "${prefix}.scores.csv")
++cell_ids <- colnames(sce)
++if (is.null(cell_ids) || anyNA(cell_ids) || anyDuplicated(cell_ids) || !is.character(cell_ids)) {
++    stop("Doublet predictions require unique, non-null string cell IDs")
++}
++scores <- as.data.frame(colData(sce))[, cols, drop = FALSE]
++scores <- cbind(data.frame(`__index__` = cell_ids, check.names = FALSE), scores)
++write_parquet(scores, "${prefix}.scores.parquet", compression = "snappy")
+ 
+-# One boolean column (TRUE = doublet), named after the prefix and indexed by cell
+-# barcode. This is the same layout the other doublet detection modules return, so
+-# the calls from several methods can be combined without any conversion.
+ calls <- data.frame(sce\$scDblFinder.class == "doublet", row.names = colnames(sce))
+ colnames(calls) <- "${prefix}"
+-write.csv(calls, "${prefix}.predictions.csv")
++calls <- cbind(data.frame(`__index__` = cell_ids, check.names = FALSE), calls)
++write_parquet(calls, "${prefix}.predictions.parquet", compression = "snappy")
+ 
+ r.version <- strsplit(version[['version.string']], ' ')[[1]][3]
+ writeLines(
+@@ -68,7 +73,8 @@
+         paste('    anndatar:', as.character(packageVersion('anndataR'))),
+         paste('    singlecellexperiment:', as.character(packageVersion('SingleCellExperiment'))),
+         paste('    biocparallel:', as.character(packageVersion('BiocParallel'))),
+-        paste('    rhdf5:', as.character(packageVersion('rhdf5')))
++        paste('    rhdf5:', as.character(packageVersion('rhdf5'))),
++        paste('    arrow:', as.character(packageVersion('arrow')))
+     ),
+     'versions.yml'
+ )
+
+'modules/nf-core/scdblfinder/.conda-lock/linux_arm64-bd-0e6bd131698855ce_1.txt' was removed
+'modules/nf-core/scdblfinder/.conda-lock/linux_amd64-bd-b97c9b42c2a89cba_1.txt' was removed
+************************************************************

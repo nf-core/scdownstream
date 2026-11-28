@@ -1,0 +1,304 @@
+nextflow_process {
+
+    name "Test Process CELLTYPES_SINGLER"
+    script "modules/local/singler/main.nf"
+    process "CELLTYPES_SINGLER"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run after celldex reference is fetched") {
+
+        setup {
+            run ("CELLDEX_FETCHREFERENCE") {
+                script "modules/local/celldex/fetchreference/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [id: "test", label: "label.fine"],
+                        "hpca",
+                        "2024-02-26"
+                    ]
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                input[1] = CELLDEX_FETCHREFERENCE.out.tar.map { meta, ref -> [[id: "test"], [meta.id], [meta.label], [ref]] }
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.obs.size() == 1
+            def (predictionsMeta, predictionsFile) = process.out.obs[0]
+            def predictions = path(predictionsFile).parquet
+            assert predictions.columnNames[0] == '__index__'
+            assert predictions.compressionCodecs == ['SNAPPY']
+            assert predictions.rowMaps.every { it.__index__ instanceof String }
+            def dataColumns = predictions.columnNames.findAll { it != '__index__' }
+            assert dataColumns.findAll { it.startsWith('annotation:') }.every { column -> predictions.rowMaps.every { it[column] == null || it[column] instanceof String } }
+            assert dataColumns.any { it.startsWith('scores') }
+            assert dataColumns.findAll { !it.startsWith('annotation:') }.every { column -> predictions.rowMaps.every { it[column] == null || it[column] instanceof Number } }
+            with(predictions) {
+                assert rowCount > 0
+                assert columnNames.any { it == "annotation:singler:test:per_cell" }
+                assert columnNames.any { it == "annotation:singler:test:per_cell:pruned" }
+            }
+            assert process.out.distribution.size() == 1
+            assert process.out.heatmap.size() == 1
+            assert snapshot(
+                [[predictionsMeta, predictions.compactFingerprint]],
+                file(process.out.distribution[0][1]).name,
+                file(process.out.heatmap[0][1]).name,
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with a single reference") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                input[1] = [
+                    [id: "test"],
+                    ["hpca"],
+                    ["label.fine"],
+                    [
+                        file(params.pipelines_testdata_base_path + '/singleR/celldex_hpca__2024-02-26_h5_se.tar', checkIfExists: true)
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.obs.size() == 1
+            def (predictionsMeta, predictionsFile) = process.out.obs[0]
+            def predictions = path(predictionsFile).parquet
+            assert predictions.columnNames[0] == '__index__'
+            assert predictions.compressionCodecs == ['SNAPPY']
+            def dataColumns = predictions.columnNames.findAll { it != '__index__' }
+            assert dataColumns.findAll { it.startsWith('annotation:') }.every { column -> predictions.rowMaps.every { it[column] == null || it[column] instanceof String } }
+            assert dataColumns.any { it.startsWith('scores') }
+            assert dataColumns.findAll { !it.startsWith('annotation:') }.every { column -> predictions.rowMaps.every { it[column] == null || it[column] instanceof Number } }
+            with(predictions) {
+                assert rowCount > 0
+                assert columnNames.any { it == "annotation:singler:hpca:per_cell" }
+                assert columnNames.any { it == "annotation:singler:hpca:per_cell:pruned" }
+            }
+            assert process.out.distribution.size() == 1
+            assert process.out.heatmap.size() == 1
+            assert snapshot(
+                [[predictionsMeta, predictions.compactFingerprint]],
+                file(process.out.distribution[0][1]).name,
+                file(process.out.heatmap[0][1]).name,
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with a symbol column other than index") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "symbols",
+                        "X"
+                    ]
+                )
+                input[1] = [
+                    [id: "test"],
+                    ["hpca"],
+                    ["label.fine"],
+                    [
+                        file(params.pipelines_testdata_base_path + '/singleR/celldex_hpca__2024-02-26_h5_se.tar', checkIfExists: true)
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.obs.size() == 1
+            def (predictionsMeta, predictionsFile) = process.out.obs[0]
+            def predictions = path(predictionsFile).parquet
+            with(predictions) {
+                assert rowCount > 0
+                assert columnNames.any { it == "annotation:singler:hpca:per_cell" }
+                assert columnNames.any { it == "annotation:singler:hpca:per_cell:pruned" }
+            }
+            assert process.out.distribution.size() == 1
+            assert process.out.heatmap.size() == 1
+            assert snapshot(
+                [[predictionsMeta, predictions.compactFingerprint]],
+                file(process.out.distribution[0][1]).name,
+                file(process.out.heatmap[0][1]).name,
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should fail with a symbol column that does not exist") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "not_a_column",
+                        "X"
+                    ]
+                )
+                input[1] = [
+                    [id: "test"],
+                    ["hpca"],
+                    ["label.fine"],
+                    [
+                        file(params.pipelines_testdata_base_path + '/singleR/celldex_hpca__2024-02-26_h5_se.tar', checkIfExists: true)
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+        }
+
+    }
+
+    test("Should run with two references") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                input[1] = [
+                    [id: "test"],
+                    ["hpca", "monaco_immune"],
+                    ["label.fine", "label.main"],
+                    [
+                        file(params.pipelines_testdata_base_path + '/singleR/celldex_hpca__2024-02-26_h5_se.tar', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + '/singleR/celldex_monaco_immune__2024-02-26_h5_se.tar', checkIfExists: true)
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.obs.size() == 1
+            def (predictionsMeta, predictionsFile) = process.out.obs[0]
+            def predictions = path(predictionsFile).parquet
+            assert predictions.columnNames[0] == '__index__'
+            def dataColumns = predictions.columnNames.findAll { it != '__index__' }
+            assert dataColumns.any { it.startsWith('scores') && it.contains('hpca') }
+            assert dataColumns.any { it.startsWith('scores') && it.contains('monaco_immune') }
+            assert dataColumns.findAll { !it.startsWith('annotation:') }.every { column -> predictions.rowMaps.every { it[column] == null || it[column] instanceof Number } }
+            with(predictions) {
+                assert rowCount > 0
+                // one set of label columns per reference
+                assert columnNames.any { it == "annotation:singler:hpca:per_cell" }
+                assert columnNames.any { it == "annotation:singler:hpca:per_cell:pruned" }
+                assert columnNames.any { it == "annotation:singler:monaco_immune:per_cell" }
+                assert columnNames.any { it == "annotation:singler:monaco_immune:per_cell:pruned" }
+            }
+            // one distribution and heatmap pdf per reference
+            assert process.out.distribution[0][1].size() == 2
+            assert process.out.heatmap[0][1].size() == 2
+            assert snapshot(
+                [[predictionsMeta, predictions.compactFingerprint]],
+                path(process.out.versions[0]).yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run with a single reference - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                input[1] = [
+                    [id: "test"],
+                    ["hpca"],
+                    ["label.fine"],
+                    [
+                        file(params.pipelines_testdata_base_path + '/singleR/celldex_hpca__2024-02-26_h5_se.tar', checkIfExists: true)
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

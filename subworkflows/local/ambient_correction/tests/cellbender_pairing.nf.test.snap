@@ -1,0 +1,118 @@
+{
+    "Should pair each CellBender result with its resolved physical layer": {
+        "content": [
+            [
+                {
+                    "id": "collision",
+                    "counts_layer": "ambient_corrected_cellbender_internal",
+                    "raw_counts_layer": "ambient_corrected_cellbender",
+                    "ambient_correction_layer": "ambient_corrected_cellbender_internal",
+                    "ambient_correction_method": "cellbender",
+                    "analysis_counts_source": "ambient_corrected_cellbender"
+                },
+                {
+                    "id": "ordinary",
+                    "counts_layer": "ambient_corrected_cellbender",
+                    "raw_counts_layer": "X",
+                    "ambient_correction_layer": "ambient_corrected_cellbender",
+                    "ambient_correction_method": "cellbender",
+                    "analysis_counts_source": "ambient_corrected_cellbender"
+                }
+            ],
+            [
+                {
+                    "n_obs": 384,
+                    "n_vars": 3000,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample",
+                            "source_sample",
+                            "source_barcode",
+                            "is_selected_filtered_cell",
+                            "source_role",
+                            "synthetic_donor",
+                            "synthetic_condition",
+                            "synthetic_label",
+                            "original_total_counts",
+                            "original_n_genes_by_counts"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "symbols"
+                        ]
+                    },
+                    "layers": [
+                        "ambient_corrected_cellbender",
+                        "ambient_corrected_cellbender_internal"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                },
+                {
+                    "n_obs": 384,
+                    "n_vars": 3000,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "sample",
+                            "source_sample",
+                            "source_barcode",
+                            "is_selected_filtered_cell",
+                            "source_role",
+                            "synthetic_donor",
+                            "synthetic_condition",
+                            "synthetic_label",
+                            "original_total_counts",
+                            "original_n_genes_by_counts"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "symbols"
+                        ]
+                    },
+                    "layers": [
+                        "ambient_corrected_cellbender"
+                    ],
+                    "obsm": [
+                        
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        
+                    ]
+                }
+            ]
+        ],
+        "timestamp": "2026-10-25T10:55:40.124988808",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

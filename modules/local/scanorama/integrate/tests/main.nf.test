@@ -1,0 +1,158 @@
+nextflow_process {
+
+    name "Test Process SCANORAMA_INTEGRATE"
+    script "modules/local/scanorama/integrate/main.nf"
+    process "SCANORAMA_INTEGRATE"
+
+    tag "modules"
+    tag "modules_local"
+    tag "fragment_embeddings"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'batch'
+                input[2] = 'X'
+                input[3] = true
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.h5ad.size() == 1
+            assert process.out.obsm.size() == 1
+            assert file(process.out.obsm[0]).name == 'X_test.parquet'
+            def adata = anndata(process.out.h5ad[0][1])
+            def embedding = path(process.out.obsm[0]).parquet
+            assert embedding.rowCount == adata.n_obs
+            assert embedding.columnNames[0] == '__index__'
+            assert embedding.columnNames.drop(1) == (0..<(embedding.columnNames.size() - 1)).collect { it.toString() }
+            assert embedding.schemaDetails.fields[0].logicalType.type == 'STRING'
+            assert embedding.schemaDetails.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.compressionCodecs == ['SNAPPY']
+            assert embedding.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            assert snapshot(path(process.out.versions[0]).yaml).match()
+        }
+
+    }
+
+    test("Should preserve cell order with interleaved and contiguous batches") {
+
+        setup {
+            run("ADATA_READCSV") {
+                script "../../../adata/readcsv/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'dense'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.csv', checkIfExists: true)
+                    ])
+                    """
+                }
+            }
+            run("ADATA_EXTEND") {
+                script "../../../adata/extend/main.nf"
+                process {
+                    """
+                    obs = channel.of('interleaved', 'contiguous').map { mode ->
+                        file(params.pipelines_testdata_base_path + '/intermediates/fragments/regressions/' + mode + '.parquet', checkIfExists: true)
+                    }
+                    input[0] = ADATA_READCSV.out.h5ad.combine(obs).map { meta, h5ad, fragment ->
+                        [[id: fragment.baseName], h5ad, [fragment], [], [], [], [], []]
+                    }
+                    """
+                }
+            }
+        }
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = ADATA_EXTEND.out.h5ad.map { meta, h5ad ->
+                    [meta + [id: meta.id + '_integrated'], h5ad]
+                }
+                input[1] = 'regression_batch'
+                input[2] = 'X'
+                input[3] = true
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.h5ad.size() == 2
+            assert process.out.obsm.size() == 2
+            process.out.h5ad.each { meta, output ->
+                def adata = anndata(output)
+                def base = anndata(new File(file(output).parent, meta.id.replace('_integrated', '') + '.h5ad').toString())
+                assert adata.n_obs == 64
+                assert adata.n_vars == 128
+                assert 'X_scanorama' in adata.obsm
+                assert 'X_emb' in adata.obsm
+                def expected = (0..<64).collect { i ->
+                    (meta.id.startsWith('interleaved') ? i % 2 == 0 : i < 32) ? 'z_batch' : 'a_batch'
+                }
+                assert adata.obs.get('regression_batch').data == expected
+                assert adata.obs.index.values == base.obs.index.values
+                assert adata.var.index.values == base.var.index.values
+                assert adata.obs.colnames == base.obs.colnames
+                assert adata.layers == base.layers
+                assert adata.var.colnames == base.var.colnames
+                assert adata.uns == base.uns
+                assert '_scanorama_work' !in adata.layers
+                def fragment = process.out.obsm.find { file(it).name == 'X_' + meta.id + '.parquet' }
+                assert fragment != null
+                def embedding = path(fragment).parquet
+                assert embedding.rowCount == adata.n_obs
+                assert embedding.columnNames[0] == '__index__'
+                assert embedding.columnNames.drop(1) == (0..<(embedding.columnNames.size() - 1)).collect { it.toString() }
+                assert embedding.schemaDetails.fields[0].logicalType.type == 'STRING'
+                assert embedding.schemaDetails.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+                assert embedding.compressionCodecs == ['SNAPPY']
+                assert embedding.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            }
+        }
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                input[1] = 'batch'
+                input[2] = 'X'
+                input[3] = true
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

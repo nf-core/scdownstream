@@ -1,0 +1,219 @@
+nextflow_process {
+
+    name "Test Process CELLTYPES_CELLTYPIST"
+    script "modules/local/celltypist/main.nf"
+    process "CELLTYPES_CELLTYPIST"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index"
+                    ]
+                )
+                input[1] = ["Adult_COVID19_PBMC"]
+                input[2] = []
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell" in obs.colnames
+                assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell:confidence" in obs.colnames
+            }
+            def label = 'annotation:celltypist:Adult_COVID19_PBMC:per_cell'
+            def confidence = "${label}:confidence".toString()
+            def fragment = path(process.out.obs[0][1]).parquet
+            assert file(process.out.obs[0][1]).name == 'test_celltypist.parquet'
+            assert fragment.columnNames == ['__index__', label, confidence]
+            assert fragment.compressionCodecs == ['SNAPPY']
+            assert fragment.rowCount == adata.n_obs
+            assert fragment.schemaDetails.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
+            assert fragment.schemaDetails.fields.find { it.name == label }.logicalType.type == 'STRING'
+            assert fragment.schemaDetails.fields.find { it.name == confidence }.physicalType in ['FLOAT', 'DOUBLE']
+            def rows = fragment.rowMaps
+            assert rows.every { it.__index__ instanceof String }
+            assert rows.collect { it.__index__ }.toSet().size() == fragment.rowCount
+            assert rows.collect { it.__index__ } == adata.obs.index.values.toList()
+            assert rows.collect { it[label] } == adata.obs.get(label).data.toList()
+            assert rows.collect { it[confidence] } == adata.obs.get(confidence).data.toList()
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.obs.colnames
+            ).match()
+        }
+
+    }
+
+    test("Should run with a symbol column other than index") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "symbols"
+                    ]
+                )
+                input[1] = ["Adult_COVID19_PBMC"]
+                input[2] = []
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell" in obs.colnames
+                assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell:confidence" in obs.colnames
+            }
+            assert path(process.out.obs[0][1]).parquet.rowCount == adata.n_obs
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.obs.colnames
+            ).match()
+        }
+
+    }
+
+    test("Should fail with a symbol column that does not exist") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "not_a_column"
+                    ]
+                )
+                input[1] = ["Adult_COVID19_PBMC"]
+                input[2] = []
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+        }
+
+    }
+
+    test("Should run with a custom model file") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index"
+                    ]
+                )
+                input[1] = []
+                input[2] = [file('https://celltypist.cog.sanger.ac.uk/models/Pan_Immune_CellTypist/v2/Immune_All_Low.pkl', checkIfExists: true)]
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "annotation:celltypist:Immune_All_Low:per_cell" in obs.colnames
+                assert "annotation:celltypist:Immune_All_Low:per_cell:confidence" in obs.colnames
+            }
+            assert path(process.out.obs[0][1]).parquet.columnNames == [
+                '__index__',
+                'annotation:celltypist:Immune_All_Low:per_cell',
+                'annotation:celltypist:Immune_All_Low:per_cell:confidence'
+            ]
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.obs.colnames
+            ).match()
+        }
+
+    }
+
+    test("Should fail with duplicate model names") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index"
+                    ]
+                )
+                input[1] = ["Immune_All_Low"]
+                input[2] = [file('https://celltypist.cog.sanger.ac.uk/models/Pan_Immune_CellTypist/v2/Immune_All_Low.pkl', checkIfExists: true)]
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index"
+                    ]
+                )
+                input[1] = ["Adult_COVID19_PBMC"]
+                input[2] = []
+                """
+            }
+        }
+
+        then {
+            assert process.success
+
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

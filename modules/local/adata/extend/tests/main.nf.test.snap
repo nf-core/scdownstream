@@ -1,0 +1,657 @@
+{
+    "Should extend with multiple obs and obsm data": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,a1bae1c27dfa8f4441ac459a0e32ddb5"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,1b37fbeab2c797c96317a075c56fa5a7"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,0aa6ecf90d3424fe98cc860f937f5cea"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,a1bae1c27dfa8f4441ac459a0e32ddb5"
+                    ]
+                ],
+                "metadata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,1b37fbeab2c797c96317a075c56fa5a7"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,0aa6ecf90d3424fe98cc860f937f5cea"
+                ]
+            },
+            {
+                "ADATA_EXTEND": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.0.5",
+                    "pyarrow": "21.0.0",
+                    "python": "3.13.12"
+                }
+            },
+            {
+                "n_obs": 16,
+                "n_vars": 32,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label",
+                        "scvi-global-1.0:entropy",
+                        "scvi-global-1.0_leiden"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_scvi",
+                    "X_scvi-global_umap"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:35:21.423601209",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should merge compatible obs and var updates without losing base rows": {
+        "content": [
+            {
+                "ADATA_EXTEND": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.0.5",
+                    "pyarrow": "21.0.0",
+                    "python": "3.13.12"
+                }
+            },
+            {
+                "n_obs": 16,
+                "n_vars": 32,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label",
+                        "n_counts",
+                        "score",
+                        "flag",
+                        "version.1"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable",
+                        "selected",
+                        "score"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:31:08.858333646",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should extend with obsm data": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,b82320642d9abbfc127788b4efc000cb"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,272a4e74f311c0bbcce0f14fc1d307f1"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,0aa6ecf90d3424fe98cc860f937f5cea"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,b82320642d9abbfc127788b4efc000cb"
+                    ]
+                ],
+                "metadata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,272a4e74f311c0bbcce0f14fc1d307f1"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,0aa6ecf90d3424fe98cc860f937f5cea"
+                ]
+            },
+            {
+                "ADATA_EXTEND": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.0.5",
+                    "pyarrow": "21.0.0",
+                    "python": "3.13.12"
+                }
+            },
+            {
+                "n_obs": 16,
+                "n_vars": 32,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_scvi"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:34:29.606705856",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should extend with uns data": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,01fe693f70d2339b484273a9feace4f3"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,272a4e74f311c0bbcce0f14fc1d307f1"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,0aa6ecf90d3424fe98cc860f937f5cea"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,01fe693f70d2339b484273a9feace4f3"
+                    ]
+                ],
+                "metadata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,272a4e74f311c0bbcce0f14fc1d307f1"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,0aa6ecf90d3424fe98cc860f937f5cea"
+                ]
+            },
+            {
+                "ADATA_EXTEND": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.0.5",
+                    "pyarrow": "21.0.0",
+                    "python": "3.13.12"
+                }
+            },
+            {
+                "n_obs": 16,
+                "n_vars": 32,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "scvi-global-1.0_paga"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:36:13.377340589",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should extend with obs data": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,90f0c3c1ddcf4ff7aa2b33ae7ee0fa15"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,749f0293b3e62b77ddf42724ed6821a6"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,0aa6ecf90d3424fe98cc860f937f5cea"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,90f0c3c1ddcf4ff7aa2b33ae7ee0fa15"
+                    ]
+                ],
+                "metadata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,749f0293b3e62b77ddf42724ed6821a6"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,0aa6ecf90d3424fe98cc860f937f5cea"
+                ]
+            },
+            {
+                "ADATA_EXTEND": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.0.5",
+                    "pyarrow": "21.0.0",
+                    "python": "3.13.12"
+                }
+            },
+            {
+                "n_obs": 16,
+                "n_vars": 32,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label",
+                        "scvi-global-1.0_leiden"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:33:41.849091606",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "metadata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-01-16T22:01:11.948835963",
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        }
+    },
+    "Should run with no extensions": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,0773bf3f6749d548e3cc867d540ff03a"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,272a4e74f311c0bbcce0f14fc1d307f1"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,0aa6ecf90d3424fe98cc860f937f5cea"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,0773bf3f6749d548e3cc867d540ff03a"
+                    ]
+                ],
+                "metadata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_metadata.csv:md5,272a4e74f311c0bbcce0f14fc1d307f1"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,0aa6ecf90d3424fe98cc860f937f5cea"
+                ]
+            },
+            {
+                "ADATA_EXTEND": {
+                    "anndata": "0.13.4",
+                    "numpy": "2.5.5",
+                    "pandas": "3.0.5",
+                    "pyarrow": "21.0.0",
+                    "python": "3.13.12"
+                }
+            },
+            {
+                "n_obs": 16,
+                "n_vars": 32,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T11:37:43.324351529",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

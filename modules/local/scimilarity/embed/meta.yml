@@ -1,0 +1,68 @@
+name: "scimilarity_embed"
+description: Embed cells into the SCimilarity latent space using a pretrained model
+keywords:
+  - embedding
+  - reference-mapping
+  - scimilarity
+  - single-cell
+tools:
+  - "scimilarity":
+      description: "A unifying representation of single cell expression profiles for cell search and annotation"
+      homepage: "https://genentech.github.io/scimilarity"
+      documentation: "https://genentech.github.io/scimilarity"
+      tool_dev_url: "https://github.com/Genentech/scimilarity"
+      licence: ["Apache-2.0"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format with raw counts in X
+        pattern: "*.{h5ad}"
+  - - meta2:
+        type: map
+        description: Groovy Map containing model information
+    - model:
+        type: directory
+        description: Directory containing the pretrained SCimilarity model
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.h5ad":
+          type: file
+          description: AnnData with SCimilarity embedding in obsm
+          pattern: "*.h5ad"
+  obsm:
+    - "X_*.parquet":
+        type: file
+        description: Parquet SCimilarity embedding matrix with explicit __index__ cell identifiers
+        pattern: "X_*.parquet"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/python_anndata_pyarrow_pyyaml_pruned:bb1a128a5af6fc5c
+      build_id: bd-bb1a128a5af6fc5c_1
+      scan_id: sc-2982f43a9c3b9051_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python_anndata_pyarrow_pyyaml_pruned:31b74e31213994db
+      build_id: bd-31b74e31213994db_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/06/0648cc3712e639ff28425b32ce23ce9426fbb05c3bf0b6980a1cfe7e7ba2c23d/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scimilarity/embed/.conda-lock/linux_amd64-bd-bb1a128a5af6fc5c_1.txt

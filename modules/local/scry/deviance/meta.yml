@@ -1,0 +1,95 @@
+name: "scry_deviance"
+description: Select highly deviant genes for integration using scry binomial deviance
+keywords:
+  - feature-selection
+  - single-cell
+  - scrnaseq
+  - integration
+tools:
+  - "scry":
+      description: "scry: Single-Cell RNA-Seq Analysis Utilities"
+      homepage: "https://bioconductor.org/packages/scry"
+      documentation: "https://bioconductor.org/packages/release/bioc/html/scry.html"
+      tool_dev_url: "https://github.com/cole-trapnell-lab/scry"
+      licence: ["GPL-3.0"]
+      identifier: biotools:bioconductor-scry
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+    - n_genes:
+        type: integer
+        description: |
+          Number of highly deviant genes to retain. If 0, defaults to 4000.
+    - excluded_genes:
+        type: file
+        description: |
+          Optional file with one gene symbol per line to exclude before feature selection.
+    - batch_col:
+        type: string
+        description: |
+          Optional column in obs / colData for batch-aware deviance feature selection.
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object subset to highly deviant genes
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  var:
+    - "*_features.parquet":
+        type: file
+        description: Snappy-compressed Parquet with explicit __index__ gene identifiers and <prefix>:binomial_deviance and <prefix>:highly_deviant columns, using ext.prefix or meta.id when unset
+        pattern: "*_features.parquet"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/bioconductor-scry_bioconductor-anndatar_bioconductor-singlecellexperiment_bioconductor-rhdf5_r-arrow:1287af791292d58c
+      build_id: bd-1287af791292d58c_2
+      scan_id: sc-76ec63b8127d8776_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/scry_deviance:6d5e52d3e9cc908f
+      build_id: bd-6d5e52d3e9cc908f_1
+      scan_id: sc-63f52fac7ab4503b_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/scry_deviance:6198b710354ce5e7
+      build_id: bd-6198b710354ce5e7_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/45/45901e03bd44949ad5b11dea802579c7e1d18638086281fcc26202d9db7537f4/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/bioconductor-scry_bioconductor-anndatar_bioconductor-singlecellexperiment_bioconductor-rhdf5_r-arrow:a26a2d460583972f
+      build_id: bd-a26a2d460583972f_2
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1c/1c2b80899917c0f01edde23c9fc831a854a77e5c8e482d66f74409a3f59a3f04/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scry/deviance/.conda-lock/linux_amd64-bd-6d5e52d3e9cc908f_1.txt
+    linux/arm64:
+      lock_file: modules/local/scry/deviance/.conda-lock/linux_arm64-bd-1287af791292d58c_2.txt

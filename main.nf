@@ -9,7 +9,67 @@
 ----------------------------------------------------------------------------------------
 */
 
-nextflow.enable.dsl = 2
+// Defaults remain in nextflow.config for config-time consumers and profile overrides.
+// help remains untyped because it accepts either a boolean or a section name.
+params {
+    save_intermediates: Boolean
+    unify_gene_symbols: Boolean
+    aggregate_isoforms: Boolean
+    cell_cycle_scoring: Boolean
+    sex_prediction: Boolean
+    use_ambient_corrected_counts: Boolean
+    doublet_detection_threshold: Integer
+    doublet_removal: Boolean
+    emptydrops_lower: Integer
+    emptydrops_fdr: Float
+    cellbender_epochs: Integer
+    sample_n: Integer?
+    sample_fraction: Float?
+    integration_n_features: Integer
+    integrate_per_label: Boolean
+    neighbors_n_pcs: Integer?
+    tsne: Boolean
+    cluster_per_label: Boolean
+    cluster_global: Boolean
+    qc_only: Boolean
+    skip_liana: Boolean
+    liana_n_perms: Integer
+    liana_max_cells: Integer?
+    liana_subsample_seed: Integer
+    cell2cell: Boolean
+    cell2cell_rank: Integer?
+    cell2cell_seed: Integer
+    skip_qc_report: Boolean
+    scib: Boolean
+    scib_max_cells: Integer?
+    scib_subsample_seed: Integer
+    pseudobulk: Boolean
+    prep_cellxgene: Boolean
+    tords: Boolean
+    gene_annotation: Boolean
+    scvi_n_latent: Integer
+    scvi_n_hidden: Integer
+    scvi_n_layers: Integer
+    scvi_max_epochs: Integer?
+    scvi_use_observed_lib_size: Boolean
+    pseudobulk_min_num_cells: Integer
+    pseudobulk_min_total_counts: Integer
+    decoupler: Boolean
+    decoupler_min_targets: Integer
+    grn: Boolean
+    grn_n_top_genes: Integer
+    grn_min_cells: Integer
+    grn_max_links: Integer
+    grn_seed: Integer
+    memory_scale: Integer
+    azimuth: Boolean
+    plaintext_email: Boolean
+    monochrome_logs: Boolean
+    help_full: Boolean
+    show_hidden: Boolean
+    version: Boolean
+    validate_params: Boolean
+}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,23 +77,10 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { SCDOWNSTREAM  } from './workflows/scdownstream'
+include { SCDOWNSTREAM            } from './workflows/scdownstream'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_scdownstream_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_scdownstream_pipeline'
-
-include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_scdownstream_pipeline'
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    GENOME PARAMETER VALUES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-// TODO nf-core: Remove this line if you don't need a FASTA file
-//   This is an example of how to use getGenomeAttribute() to fetch parameters
-//   from igenomes.config using `--genome`
-params.fasta = getGenomeAttribute('fasta')
-
+include { analysisPlanToList      } from './subworkflows/local/utils_nfcore_scdownstream_pipeline'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
@@ -46,7 +93,106 @@ params.fasta = getGenomeAttribute('fasta')
 workflow NFCORE_SCDOWNSTREAM {
 
     take:
-    samplesheet // channel: samplesheet read in from --input
+    samplesheet                   // channel: samplesheet read in from --input
+    ch_base                       // channel: [ val(meta), path(h5ad) ]
+    is_extension                  //   value: boolean
+    ch_input                      //    file: samplesheet.csv
+    empty_droplet_removal         //   value: string
+    ambient_correction            //   value: string
+    use_ambient_corrected_counts  //   value: boolean
+    doublet_detection             //   value: string
+    doublet_detection_threshold   //   value: integer
+    doublet_removal               //   value: boolean
+    scvi_max_epochs               //   value: integer
+    mito_genes                    //    path: file or null
+    sample_n                      //   value: string
+    sample_fraction               //   value: string
+    cell_cycle_scoring            //   value: boolean
+    s_genes                       //    path: file or []
+    g2m_genes                     //    path: file or []
+    species                       //   value: string
+    sex_prediction                //   value: boolean
+    sex_y_genes                   //    path: file or []
+    sex_x_genes                   //    path: file or []
+    qc_only                       //   value: boolean
+    celldex_reference             //   value: string
+    celltypist_model              //   value: string
+    azimuth                       //   value: boolean
+    cytetype_study_context        //   value: string
+    unify_gene_symbols            //   value: boolean
+    duplicate_var_resolution      //   value: string
+    aggregate_isoforms            //   value: boolean
+    feature_selection             //   value: string
+    integration_n_features        //   value: integer
+    integration_methods           //   value: string
+    integration_excluded_genes    //   value: string
+    normalization_method          //   value: string
+    scvi_model                    //    path: file or null
+    scanvi_model                  //    path: file or null
+    scvi_categorical_covariates   //   value: string
+    scvi_continuous_covariates    //   value: string
+    scvi_n_hidden                 //   value: integer
+    scvi_n_layers                 //   value: integer
+    scvi_n_latent                 //   value: integer
+    scvi_dispersion               //   value: string
+    scvi_gene_likelihood          //   value: string
+    scvi_use_observed_lib_size    //   value: boolean
+    scimilarity_model             //   value: string
+    scconcept_model               //   value: string
+    symphony_reference            //   value: string
+    expimap_gmt                   //   value: string
+    skip_liana                    //   value: boolean
+    liana_n_perms                 //   value: integer
+    liana_max_cells               //   value: integer or null
+    liana_subsample_strategy      //   value: string
+    liana_subsample_seed          //   value: integer
+    cell2cell                     //   value: boolean
+    cell2cell_rank                //   value: integer or null
+    cell2cell_seed                //   value: integer
+    skip_qc_report                //   value: boolean
+    scib                          //   value: boolean
+    scib_max_cells                //   value: integer or null
+    scib_subsample_strategy       //   value: string
+    scib_subsample_seed           //   value: integer
+    scib_metric_profile           //   value: string
+    force_obs_cols                //   value: string
+    base_embeddings               //   value: string
+    base_label_col                //   value: string
+    base_condition_col            //   value: string
+    base_donor_col                //   value: string
+    integrate_per_label           //   value: boolean
+    integrate_per_label_whitelist //   value: string
+    cluster_per_label             //   value: boolean
+    cluster_global                //   value: boolean
+    clustering_resolutions        //   value: string
+    neighbors_n_pcs               //   value: integer or null
+    tsne                          //   value: boolean
+    analysis_plan                 //   value: list of plan rows parsed in main.nf
+    de_methods                    //   value: string
+    interesting_genes             //    path: file or []
+    pseudobulk                    //   value: boolean
+    pseudobulk_min_num_cells      //   value: integer
+    pseudobulk_min_total_counts   //   value: integer
+    reference_condition           //   value: string
+    decoupler                     //   value: boolean
+    decoupler_resources           //   value: string
+    decoupler_network             //    path: file or []
+    decoupler_method              //   value: string
+    decoupler_min_targets         //   value: integer
+    grn                           //   value: boolean
+    grn_tfs                       //    path: file or []
+    grn_n_top_genes               //   value: integer
+    grn_min_cells                 //   value: integer
+    grn_max_links                 //   value: integer
+    grn_seed                      //   value: integer
+    prep_cellxgene                //   value: boolean
+    tords                         //   value: boolean
+    gene_annotation               //   value: boolean
+    gene_annotation_gtf           //    path: file or []
+    outdir                        //   value: string
+    multiqc_config                //   value: string
+    multiqc_logo                  //   value: string
+    multiqc_methods_description   //   value: string
 
     main:
 
@@ -54,13 +200,112 @@ workflow NFCORE_SCDOWNSTREAM {
     // WORKFLOW: Run pipeline
     //
     SCDOWNSTREAM (
-        samplesheet
+        samplesheet,
+        ch_base,
+        is_extension,
+        ch_input,
+        empty_droplet_removal,
+        ambient_correction,
+        use_ambient_corrected_counts,
+        doublet_detection,
+        doublet_detection_threshold,
+        doublet_removal,
+        scvi_max_epochs,
+        mito_genes,
+        sample_n,
+        sample_fraction,
+        cell_cycle_scoring,
+        s_genes,
+        g2m_genes,
+        species,
+        sex_prediction,
+        sex_y_genes,
+        sex_x_genes,
+        qc_only,
+        celldex_reference,
+        celltypist_model,
+        azimuth,
+        cytetype_study_context,
+        unify_gene_symbols,
+        duplicate_var_resolution,
+        aggregate_isoforms,
+        feature_selection,
+        integration_n_features,
+        integration_methods,
+        integration_excluded_genes,
+        normalization_method,
+        scvi_model,
+        scanvi_model,
+        scvi_categorical_covariates,
+        scvi_continuous_covariates,
+        scvi_n_hidden,
+        scvi_n_layers,
+        scvi_n_latent,
+        scvi_dispersion,
+        scvi_gene_likelihood,
+        scvi_use_observed_lib_size,
+        scimilarity_model,
+        scconcept_model,
+        symphony_reference,
+        expimap_gmt,
+        skip_liana,
+        liana_n_perms,
+        liana_max_cells,
+        liana_subsample_strategy,
+        liana_subsample_seed,
+        cell2cell,
+        cell2cell_rank,
+        cell2cell_seed,
+        skip_qc_report,
+        scib,
+        scib_max_cells,
+        scib_subsample_strategy,
+        scib_subsample_seed,
+        scib_metric_profile,
+        force_obs_cols,
+        base_embeddings,
+        base_label_col,
+        base_condition_col,
+        base_donor_col,
+        integrate_per_label,
+        integrate_per_label_whitelist,
+        cluster_per_label,
+        cluster_global,
+        clustering_resolutions,
+        neighbors_n_pcs,
+        tsne,
+        analysis_plan,
+        de_methods,
+        interesting_genes,
+        pseudobulk,
+        pseudobulk_min_num_cells,
+        pseudobulk_min_total_counts,
+        reference_condition,
+        decoupler,
+        decoupler_resources,
+        decoupler_network,
+        decoupler_method,
+        decoupler_min_targets,
+        grn,
+        grn_tfs,
+        grn_n_top_genes,
+        grn_min_cells,
+        grn_max_links,
+        grn_seed,
+        prep_cellxgene,
+        tords,
+        gene_annotation,
+        gene_annotation_gtf,
+        outdir,
+        multiqc_config,
+        multiqc_logo,
+        multiqc_methods_description,
     )
 
     emit:
     multiqc_report = SCDOWNSTREAM.out.multiqc_report // channel: /path/to/multiqc_report.html
-
 }
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -70,25 +315,176 @@ workflow NFCORE_SCDOWNSTREAM {
 workflow {
 
     main:
-
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
     PIPELINE_INITIALISATION (
         params.version,
-        params.help,
         params.validate_params,
         params.monochrome_logs,
         args,
         params.outdir,
-        params.input
+        params.help,
+        params.help_full,
+        params.show_hidden
     )
 
     //
     // WORKFLOW: Run main workflow
     //
+    ch_base_adata = params.base_adata
+        ? channel.value([[id: "base"], file(params.base_adata, checkIfExists: true)])
+        : channel.value([[], []])
+
+    def s_genes_file = params.cell_cycle_scoring
+        ? file(params.s_genes ?: "${projectDir}/assets/cell_cycle_genes/${params.species}_s_genes.txt", checkIfExists: true)
+        : []
+    def g2m_genes_file = params.cell_cycle_scoring
+        ? file(params.g2m_genes ?: "${projectDir}/assets/cell_cycle_genes/${params.species}_g2m_genes.txt", checkIfExists: true)
+        : []
+
+    def sex_y_genes_file = params.sex_prediction
+        ? file(params.sex_y_genes ?: "${projectDir}/assets/sex_genes/${params.species}_y_genes.txt", checkIfExists: true)
+        : []
+    def sex_x_genes_file = params.sex_prediction
+        ? file(params.sex_x_genes ?: "${projectDir}/assets/sex_genes/${params.species}_x_genes.txt", checkIfExists: true)
+        : []
+
+    def analysis_plan = analysisPlanToList()
+
+    def symphony_reference = params.symphony_reference
+        ? file(params.symphony_reference, checkIfExists: true)
+        : null
+
+    def mito_genes_file = params.mito_genes
+        ? file(params.mito_genes, checkIfExists: true)
+        : null
+
+    def scvi_model = params.scvi_model
+        ? file(params.scvi_model, checkIfExists: true)
+        : null
+
+    def scanvi_model = params.scanvi_model
+        ? file(params.scanvi_model, checkIfExists: true)
+        : null
+
+    def interesting_genes_file = params.interesting_genes
+        ? file(params.interesting_genes, checkIfExists: true)
+        : []
+
+    def grn_tfs_file = params.grn && params.grn_tfs
+        ? file(params.grn_tfs, checkIfExists: true)
+        : []
+
+    def decoupler_network_file = params.decoupler_network
+        ? file(params.decoupler_network, checkIfExists: true)
+        : []
+
+    def gene_annotation_gtf_file = params.gene_annotation_gtf
+        ? file(params.gene_annotation_gtf, checkIfExists: true)
+        : []
+
     NFCORE_SCDOWNSTREAM (
-        PIPELINE_INITIALISATION.out.samplesheet
+        PIPELINE_INITIALISATION.out.samplesheet,
+        ch_base_adata,
+        params.base_adata != null,
+        params.input,
+        params.empty_droplet_removal,
+        params.ambient_correction,
+        params.use_ambient_corrected_counts,
+        params.doublet_detection,
+        params.doublet_detection_threshold,
+        params.doublet_removal,
+        params.scvi_max_epochs,
+        mito_genes_file,
+        params.sample_n,
+        params.sample_fraction,
+        params.cell_cycle_scoring,
+        s_genes_file,
+        g2m_genes_file,
+        params.species,
+        params.sex_prediction,
+        sex_y_genes_file,
+        sex_x_genes_file,
+        params.qc_only,
+        params.celldex_reference,
+        params.celltypist_model,
+        params.azimuth,
+        params.cytetype_study_context,
+        params.unify_gene_symbols,
+        params.duplicate_var_resolution,
+        params.aggregate_isoforms,
+        params.feature_selection,
+        params.integration_n_features,
+        params.integration_methods,
+        params.integration_excluded_genes,
+        params.normalization_method,
+        scvi_model,
+        scanvi_model,
+        params.scvi_categorical_covariates,
+        params.scvi_continuous_covariates,
+        params.scvi_n_hidden,
+        params.scvi_n_layers,
+        params.scvi_n_latent,
+        params.scvi_dispersion,
+        params.scvi_gene_likelihood,
+        params.scvi_use_observed_lib_size,
+        params.scimilarity_model,
+        params.scconcept_model,
+        symphony_reference,
+        params.expimap_gmt,
+        params.skip_liana,
+        params.liana_n_perms,
+        params.liana_max_cells,
+        params.liana_subsample_strategy,
+        params.liana_subsample_seed,
+        params.cell2cell,
+        params.cell2cell_rank,
+        params.cell2cell_seed,
+        params.skip_qc_report,
+        params.scib,
+        params.scib_max_cells,
+        params.scib_subsample_strategy,
+        params.scib_subsample_seed,
+        params.scib_metric_profile,
+        params.force_obs_cols,
+        params.base_embeddings,
+        params.base_label_col,
+        params.base_condition_col,
+        params.base_donor_col,
+        params.integrate_per_label,
+        params.integrate_per_label_whitelist,
+        params.cluster_per_label,
+        params.cluster_global,
+        params.clustering_resolutions,
+        params.neighbors_n_pcs ?: '',
+        params.tsne,
+        analysis_plan,
+        params.de_methods,
+        interesting_genes_file,
+        params.pseudobulk,
+        params.pseudobulk_min_num_cells,
+        params.pseudobulk_min_total_counts,
+        params.reference_condition,
+        params.decoupler,
+        params.decoupler_resources ?: '',
+        decoupler_network_file,
+        params.decoupler_method,
+        params.decoupler_min_targets,
+        params.grn,
+        grn_tfs_file,
+        params.grn_n_top_genes,
+        params.grn_min_cells,
+        params.grn_max_links,
+        params.grn_seed,
+        params.prep_cellxgene,
+        params.tords,
+        params.gene_annotation,
+        gene_annotation_gtf_file,
+        params.outdir,
+        params.multiqc_config,
+        params.multiqc_logo,
+        params.multiqc_methods_description
     )
 
     //
@@ -100,7 +496,6 @@ workflow {
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
-        params.hook_url,
         NFCORE_SCDOWNSTREAM.out.multiqc_report
     )
 }

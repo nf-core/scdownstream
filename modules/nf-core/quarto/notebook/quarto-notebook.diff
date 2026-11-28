@@ -1,0 +1,611 @@
+Changes in component 'nf-core/quarto/notebook'
+Changes in 'quarto/notebook/main.nf':
+--- modules/nf-core/quarto/notebook/main.nf
++++ modules/nf-core/quarto/notebook/main.nf
+@@ -16,8 +16,8 @@
+     label 'process_low'
+     conda "${moduleDir}/environment.yml"
+     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data'
+-        : 'community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665'}"
++        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/87/871b6b57493beb206e167a7cca185c849f0123262f080081587eff002f6e73ba/data'
++        : 'community.wave.seqera.io/library/anndata_ipykernel_jupyter_matplotlib-base_pruned:42a89a823d1d3e9d'}"
+ 
+     input:
+     tuple val(meta), path(notebook)
+@@ -66,6 +66,21 @@
+     # Set environment variables needed for Quarto rendering
+     export XDG_CACHE_HOME="./.xdg_cache_home"
+     export XDG_DATA_HOME="./.xdg_data_home"
++
++    # Keep Quarto session directories out of project discovery when using task-local scratch.
++    if [ "\${TMPDIR:-}" = . ]; then
++        mkdir -p .quarto-tmp
++        export TMPDIR="\$PWD/.quarto-tmp" TMP="\$PWD/.quarto-tmp"
++    fi
++
++    # Wave pixi images ship CA certificates in the environment prefix rather than /etc/ssl/certs
++    if [ -z "\${SYSTEM_CERTIFICATE_PATH:-}" ]; then
++        if [ -n "\${CONDA_PREFIX:-}" ] && [ -f "\${CONDA_PREFIX}/ssl/cacert.pem" ]; then
++            export SYSTEM_CERTIFICATE_PATH="\${CONDA_PREFIX}/ssl/cacert.pem"
++        elif [ -f /opt/wave/.pixi/envs/default/ssl/cacert.pem ]; then
++            export SYSTEM_CERTIFICATE_PATH=/opt/wave/.pixi/envs/default/ssl/cacert.pem
++        fi
++    fi
+ 
+     # Without a _quarto.yml here, Quarto searches parent directories for a project and can
+     # pick one outside the task (https://github.com/quarto-dev/quarto-cli/issues/14980)
+
+Changes in 'quarto/notebook/environment.yml':
+--- modules/nf-core/quarto/notebook/environment.yml
++++ modules/nf-core/quarto/notebook/environment.yml
+@@ -4,11 +4,15 @@
+   - conda-forge
+   - bioconda
+ dependencies:
+-  # renovate: datasource=conda depName=conda-forge/quarto
++  - conda-forge::anndata=0.12.10
++  - conda-forge::ipykernel=7.2.0
+   - conda-forge::jupyter=1.1.1
+-  - conda-forge::matplotlib=3.10.3
+-  - conda-forge::papermill=2.6.0
+-  - conda-forge::python=3.12.11
+-  - conda-forge::quarto=1.7.31
+-  - conda-forge::r-base=4.4.3
+-  - conda-forge::r-rmarkdown=2.29
++  - conda-forge::matplotlib-base=3.10.8
++  - conda-forge::numpy=2.4.3
++  - conda-forge::pandas=2.3.3
++  - conda-forge::papermill=2.7.0
++  - conda-forge::pip=26.2.2
++  - conda-forge::python=3.14.3
++  - conda-forge::scanpy=1.12
++  - pip:
++      - quarto-cli==1.11.9
+
+Changes in 'quarto/notebook/meta.yml':
+--- modules/nf-core/quarto/notebook/meta.yml
++++ modules/nf-core/quarto/notebook/meta.yml
+@@ -164,3 +164,27 @@
+   - "@fasterius"
+ maintainers:
+   - "@fasterius"
++containers:
++  docker:
++    linux/amd64:
++      name: community.wave.seqera.io/library/anndata_ipykernel_jupyter_matplotlib-base_pruned:42a89a823d1d3e9d
++      build_id: bd-42a89a823d1d3e9d_1
++      scan_id: sc-5af9b6df8aa90266_1
++    linux/arm64:
++      name: community.wave.seqera.io/library/anndata_ipykernel_jupyter_matplotlib-base_pruned:6da6b00bd59b9be8
++      build_id: bd-6da6b00bd59b9be8_1
++      scan_id: sc-5b189214ecc5ec90_1
++  singularity:
++    linux/arm64:
++      name: oras://community.wave.seqera.io/library/anndata_ipykernel_jupyter_matplotlib-base_pruned:1c0bf0f1032edd41
++      build_id: bd-1c0bf0f1032edd41_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f4/f4bbf0f8396755df1ad20c61ce8564baed7834fbe8d279db1a437a379e959150/data
++    linux/amd64:
++      name: oras://community.wave.seqera.io/library/anndata_ipykernel_jupyter_matplotlib-base_pruned:cabf5fc2b626d7bc
++      build_id: bd-cabf5fc2b626d7bc_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/87/871b6b57493beb206e167a7cca185c849f0123262f080081587eff002f6e73ba/data
++  conda:
++    linux/amd64:
++      lock_file: modules/nf-core/quarto/notebook/.conda-lock/linux_amd64-bd-42a89a823d1d3e9d_1.txt
++    linux/arm64:
++      lock_file: modules/nf-core/quarto/notebook/.conda-lock/linux_arm64-bd-6da6b00bd59b9be8_1.txt
+
+'modules/nf-core/quarto/notebook/.conda-lock/linux_arm64-bd-6da6b00bd59b9be8_1.txt' was created
+'modules/nf-core/quarto/notebook/.conda-lock/linux_amd64-bd-42a89a823d1d3e9d_1.txt' was created
+'modules/nf-core/quarto/notebook/tests/nextflow.config' is unchanged
+'modules/nf-core/quarto/notebook/tests/main.nf.test' is unchanged
+Changes in 'quarto/notebook/tests/main.nf.test.snap':
+--- modules/nf-core/quarto/notebook/tests/main.nf.test.snap
++++ modules/nf-core/quarto/notebook/tests/main.nf.test.snap
+@@ -39,14 +39,14 @@
+                     [
+                         "QUARTO_NOTEBOOK",
+                         "quarto",
+-                        "1.7.31"
++                        "1.11.9"
+                     ]
+                 ],
+                 "7": [
+                     [
+                         "QUARTO_NOTEBOOK",
+                         "papermill",
+-                        "2.6.0"
++                        "2.7.0"
+                     ]
+                 ],
+                 "artifacts": [
+@@ -86,6 +86,34 @@
+                     [
+                         "QUARTO_NOTEBOOK",
+                         "papermill",
++                        "2.7.0"
++                    ]
++                ],
++                "versions_quarto": [
++                    [
++                        "QUARTO_NOTEBOOK",
++                        "quarto",
++                        "1.11.9"
++                    ]
++                ]
++            }
++        ],
++        "timestamp": "2026-11-23T12:23:16.546628578",
++        "meta": {
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
++        }
++    },
++    "test notebook - [qmd:r]": {
++        "content": [
++            {
++                "versions": [
++                    "versions.yml:md5,ffbc211e9dcc1252c411bdd2f072b92e"
++                ],
++                "versions_papermill": [
++                    [
++                        "QUARTO_NOTEBOOK",
++                        "papermill",
+                         "2.6.0"
+                     ]
+                 ],
+@@ -96,15 +124,75 @@
+                         "1.7.31"
+                     ]
+                 ]
+-            }
+-        ],
+-        "timestamp": "2026-11-12T18:29:51.897187",
++            },
++            [
++                [
++                    {
++                        "id": "test"
++                    },
++                    "artifact.txt:md5,b10a8db164e0754105b7a99be72e3fe5"
++                ]
++            ],
++            [
++                [
++                    {
++                        "id": "test"
++                    },
++                    "params.yml:md5,6d2ec3cf3e2f15958ab8ab440d651f8d"
++                ]
++            ]
++        ],
++        "timestamp": "2026-08-18T15:12:25.10271",
+         "meta": {
+             "nf-test": "0.9.5",
+-            "nextflow": "26.10.5"
+-        }
+-    },
+-    "test notebook - [qmd:r]": {
++            "nextflow": "26.04.6"
++        }
++    },
++    "test notebook - parametrized - [qmd:python]": {
++        "content": [
++            {
++                "versions": [
++                    "versions.yml:md5,dcca7ce1b8f2f0d6571e8ea45140b27e"
++                ],
++                "versions_papermill": [
++                    [
++                        "QUARTO_NOTEBOOK",
++                        "papermill",
++                        "2.7.0"
++                    ]
++                ],
++                "versions_quarto": [
++                    [
++                        "QUARTO_NOTEBOOK",
++                        "quarto",
++                        "1.11.9"
++                    ]
++                ]
++            },
++            [
++                [
++                    {
++                        "id": "test"
++                    },
++                    "artifact.txt:md5,8ddd8be4b179a529afa5f2ffae4b9858"
++                ]
++            ],
++            [
++                [
++                    {
++                        "id": "test"
++                    },
++                    "params.yml:md5,4fd353560b2c3366515af2cc4d49957d"
++                ]
++            ]
++        ],
++        "timestamp": "2026-11-23T12:22:26.357310838",
++        "meta": {
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
++        }
++    },
++    "test notebook - parametrized - [rmd]": {
+         "content": [
+             {
+                 "versions": [
+@@ -138,234 +226,146 @@
+                     {
+                         "id": "test"
+                     },
++                    "params.yml:md5,4fd353560b2c3366515af2cc4d49957d"
++                ]
++            ]
++        ],
++        "timestamp": "2026-08-18T15:13:53.297883",
++        "meta": {
++            "nf-test": "0.9.5",
++            "nextflow": "26.04.6"
++        }
++    },
++    "test notebook - parametrized - [ipynb]": {
++        "content": [
++            {
++                "versions": [
++                    "versions.yml:md5,dcca7ce1b8f2f0d6571e8ea45140b27e"
++                ],
++                "versions_papermill": [
++                    [
++                        "QUARTO_NOTEBOOK",
++                        "papermill",
++                        "2.7.0"
++                    ]
++                ],
++                "versions_quarto": [
++                    [
++                        "QUARTO_NOTEBOOK",
++                        "quarto",
++                        "1.11.9"
++                    ]
++                ]
++            },
++            [
++                [
++                    {
++                        "id": "test"
++                    },
++                    "artifact.txt:md5,8ddd8be4b179a529afa5f2ffae4b9858"
++                ]
++            ],
++            [
++                [
++                    {
++                        "id": "test"
++                    },
++                    "params.yml:md5,4fd353560b2c3366515af2cc4d49957d"
++                ]
++            ]
++        ],
++        "timestamp": "2026-11-23T12:23:41.942371031",
++        "meta": {
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
++        }
++    },
++    "test notebook - [qmd:python]": {
++        "content": [
++            {
++                "versions": [
++                    "versions.yml:md5,dcca7ce1b8f2f0d6571e8ea45140b27e"
++                ],
++                "versions_papermill": [
++                    [
++                        "QUARTO_NOTEBOOK",
++                        "papermill",
++                        "2.7.0"
++                    ]
++                ],
++                "versions_quarto": [
++                    [
++                        "QUARTO_NOTEBOOK",
++                        "quarto",
++                        "1.11.9"
++                    ]
++                ]
++            },
++            [
++                [
++                    {
++                        "id": "test"
++                    },
++                    "artifact.txt:md5,8ddd8be4b179a529afa5f2ffae4b9858"
++                ]
++            ],
++            [
++                [
++                    {
++                        "id": "test"
++                    },
+                     "params.yml:md5,6d2ec3cf3e2f15958ab8ab440d651f8d"
+                 ]
+             ]
+         ],
+-        "timestamp": "2026-08-18T15:12:25.10271",
++        "timestamp": "2026-11-23T12:22:25.975816106",
++        "meta": {
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
++        }
++    },
++    "test notebook - parametrized - [qmd:r]": {
++        "content": [
++            {
++                "versions": [
++                    "versions.yml:md5,ffbc211e9dcc1252c411bdd2f072b92e"
++                ],
++                "versions_papermill": [
++                    [
++                        "QUARTO_NOTEBOOK",
++                        "papermill",
++                        "2.6.0"
++                    ]
++                ],
++                "versions_quarto": [
++                    [
++                        "QUARTO_NOTEBOOK",
++                        "quarto",
++                        "1.7.31"
++                    ]
++                ]
++            },
++            [
++                [
++                    {
++                        "id": "test"
++                    },
++                    "artifact.txt:md5,b10a8db164e0754105b7a99be72e3fe5"
++                ]
++            ],
++            [
++                [
++                    {
++                        "id": "test"
++                    },
++                    "params.yml:md5,4fd353560b2c3366515af2cc4d49957d"
++                ]
++            ]
++        ],
++        "timestamp": "2026-08-18T15:13:18.571016",
+         "meta": {
+             "nf-test": "0.9.5",
+             "nextflow": "26.04.6"
+         }
+-    },
+-    "test notebook - parametrized - [qmd:python]": {
+-        "content": [
+-            {
+-                "versions": [
+-                    "versions.yml:md5,68fd39542815eb5537cdb4b234e2d30d"
+-                ],
+-                "versions_papermill": [
+-                    [
+-                        "QUARTO_NOTEBOOK",
+-                        "papermill",
+-                        "2.6.0"
+-                    ]
+-                ],
+-                "versions_quarto": [
+-                    [
+-                        "QUARTO_NOTEBOOK",
+-                        "quarto",
+-                        "1.7.31"
+-                    ]
+-                ]
+-            },
+-            [
+-                [
+-                    {
+-                        "id": "test"
+-                    },
+-                    "artifact.txt:md5,8ddd8be4b179a529afa5f2ffae4b9858"
+-                ]
+-            ],
+-            [
+-                [
+-                    {
+-                        "id": "test"
+-                    },
+-                    "params.yml:md5,4fd353560b2c3366515af2cc4d49957d"
+-                ]
+-            ]
+-        ],
+-        "timestamp": "2026-08-18T15:13:37.473159",
+-        "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.04.6"
+-        }
+-    },
+-    "test notebook - parametrized - [rmd]": {
+-        "content": [
+-            {
+-                "versions": [
+-                    "versions.yml:md5,ffbc211e9dcc1252c411bdd2f072b92e"
+-                ],
+-                "versions_papermill": [
+-                    [
+-                        "QUARTO_NOTEBOOK",
+-                        "papermill",
+-                        "2.6.0"
+-                    ]
+-                ],
+-                "versions_quarto": [
+-                    [
+-                        "QUARTO_NOTEBOOK",
+-                        "quarto",
+-                        "1.7.31"
+-                    ]
+-                ]
+-            },
+-            [
+-                [
+-                    {
+-                        "id": "test"
+-                    },
+-                    "artifact.txt:md5,b10a8db164e0754105b7a99be72e3fe5"
+-                ]
+-            ],
+-            [
+-                [
+-                    {
+-                        "id": "test"
+-                    },
+-                    "params.yml:md5,4fd353560b2c3366515af2cc4d49957d"
+-                ]
+-            ]
+-        ],
+-        "timestamp": "2026-08-18T15:13:53.297883",
+-        "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.04.6"
+-        }
+-    },
+-    "test notebook - parametrized - [ipynb]": {
+-        "content": [
+-            {
+-                "versions": [
+-                    "versions.yml:md5,68fd39542815eb5537cdb4b234e2d30d"
+-                ],
+-                "versions_papermill": [
+-                    [
+-                        "QUARTO_NOTEBOOK",
+-                        "papermill",
+-                        "2.6.0"
+-                    ]
+-                ],
+-                "versions_quarto": [
+-                    [
+-                        "QUARTO_NOTEBOOK",
+-                        "quarto",
+-                        "1.7.31"
+-                    ]
+-                ]
+-            },
+-            [
+-                [
+-                    {
+-                        "id": "test"
+-                    },
+-                    "artifact.txt:md5,8ddd8be4b179a529afa5f2ffae4b9858"
+-                ]
+-            ],
+-            [
+-                [
+-                    {
+-                        "id": "test"
+-                    },
+-                    "params.yml:md5,4fd353560b2c3366515af2cc4d49957d"
+-                ]
+-            ]
+-        ],
+-        "timestamp": "2026-08-18T15:14:10.605053",
+-        "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.04.6"
+-        }
+-    },
+-    "test notebook - [qmd:python]": {
+-        "content": [
+-            {
+-                "versions": [
+-                    "versions.yml:md5,68fd39542815eb5537cdb4b234e2d30d"
+-                ],
+-                "versions_papermill": [
+-                    [
+-                        "QUARTO_NOTEBOOK",
+-                        "papermill",
+-                        "2.6.0"
+-                    ]
+-                ],
+-                "versions_quarto": [
+-                    [
+-                        "QUARTO_NOTEBOOK",
+-                        "quarto",
+-                        "1.7.31"
+-                    ]
+-                ]
+-            },
+-            [
+-                [
+-                    {
+-                        "id": "test"
+-                    },
+-                    "artifact.txt:md5,8ddd8be4b179a529afa5f2ffae4b9858"
+-                ]
+-            ],
+-            [
+-                [
+-                    {
+-                        "id": "test"
+-                    },
+-                    "params.yml:md5,6d2ec3cf3e2f15958ab8ab440d651f8d"
+-                ]
+-            ]
+-        ],
+-        "timestamp": "2026-08-18T15:12:45.306028",
+-        "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.04.6"
+-        }
+-    },
+-    "test notebook - parametrized - [qmd:r]": {
+-        "content": [
+-            {
+-                "versions": [
+-                    "versions.yml:md5,ffbc211e9dcc1252c411bdd2f072b92e"
+-                ],
+-                "versions_papermill": [
+-                    [
+-                        "QUARTO_NOTEBOOK",
+-                        "papermill",
+-                        "2.6.0"
+-                    ]
+-                ],
+-                "versions_quarto": [
+-                    [
+-                        "QUARTO_NOTEBOOK",
+-                        "quarto",
+-                        "1.7.31"
+-                    ]
+-                ]
+-            },
+-            [
+-                [
+-                    {
+-                        "id": "test"
+-                    },
+-                    "artifact.txt:md5,b10a8db164e0754105b7a99be72e3fe5"
+-                ]
+-            ],
+-            [
+-                [
+-                    {
+-                        "id": "test"
+-                    },
+-                    "params.yml:md5,4fd353560b2c3366515af2cc4d49957d"
+-                ]
+-            ]
+-        ],
+-        "timestamp": "2026-08-18T15:13:18.571016",
+-        "meta": {
+-            "nf-test": "0.9.5",
+-            "nextflow": "26.04.6"
+-        }
+     }
+-}
+\ No newline at end of file
++}
+
+************************************************************

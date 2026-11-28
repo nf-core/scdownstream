@@ -1,0 +1,118 @@
+name: "liana_bysample"
+description: Run LIANA rank_aggregate by sample/context for tensor-cell2cell
+keywords:
+  - single-cell
+  - cell-cell-communication
+  - liana
+  - ligand-receptor
+tools:
+  - "liana":
+      description: "LIANA+: a one-stop-shop framework for cell-cell communication."
+      homepage: "https://liana-py.readthedocs.io"
+      documentation: "https://liana-py.readthedocs.io"
+      tool_dev_url: "https://github.com/saezlab/liana-py"
+      doi: "10.1038/s41556-024-01469-w"
+      licence: ["GPL-3.0-or-later"]
+      identifier: biotools:liana
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - obs_key:
+      type: string
+      description: obs column used to group cells for LIANA
+  - context_key:
+      type: string
+      description: obs column used as the LIANA by-sample context
+  - n_perms:
+      type: integer
+      description: Number of permutations for specificity testing; 0 disables permutations
+  - max_cells:
+      type: integer
+      description: Optional maximum cells before stratified subsampling; 0 disables subsampling
+  - subsample_strategy:
+      type: string
+      description: |
+        Stratified subsampling strategy when max_cells is set.
+        By-sample always includes the context column in the strata, then drops contexts
+        with fewer than two cell groups of at least five cells.
+  - subsample_seed:
+      type: integer
+      description: Random seed for subsampling and LIANA
+  - apply_log1p:
+      type: boolean
+      description: Apply log1p to X before LIANA; false when the caller supplies log-transformed expression
+  - species:
+      type: string
+      description: Species used to select the LIANA resource, human or mouse
+
+output:
+  results:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.csv.gz":
+          type: file
+          description: Compressed long-format LIANA by-sample results
+          pattern: "*.csv.gz"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752"
+  contexts:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_contexts.tsv":
+          type: file
+          description: Context metadata table with optional condition column
+          pattern: "*_contexts.tsv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3475"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/liana_cell2cell_pyyaml:89ecd90e26d1b08e
+      build_id: bd-89ecd90e26d1b08e_1
+      scan_id: sc-0e5313ddd5bb97ca_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/liana_cell2cell_pyyaml:aa697e53adec6c81
+      build_id: bd-aa697e53adec6c81_1
+      scan_id: sc-66a5a127f2696a36_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/liana_cell2cell_pyyaml:ff774d18497c30f3
+      build_id: bd-ff774d18497c30f3_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/55/556aec8107bccdc83395206bdd04d7b37bd81b997f6d8211d808d3e214aadabb/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/liana_cell2cell_pyyaml:e16f16eb879611af
+      build_id: bd-e16f16eb879611af_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ad/ad8518dd244c72164892172c5daf1bfe20d0b4e5c443b1d25801bba8347d86d6/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/liana/bysample/.conda-lock/linux_amd64-bd-aa697e53adec6c81_1.txt
+    linux/arm64:
+      lock_file: modules/local/liana/bysample/.conda-lock/linux_arm64-bd-89ecd90e26d1b08e_1.txt

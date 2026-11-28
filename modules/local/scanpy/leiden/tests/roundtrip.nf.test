@@ -1,0 +1,67 @@
+nextflow_process {
+
+    name "Test Leiden observation fragment round trip"
+    script "modules/local/adata/extend/main.nf"
+    process "ADATA_EXTEND"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should extend the original AnnData with a real Leiden Parquet fragment") {
+
+        setup {
+            run("SCANPY_LEIDEN") {
+                script "../main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'roundtrip:leiden'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true)
+                    ])
+                    input[1] = 1.0
+                    input[2] = 'roundtrip_cluster'
+                    input[3] = false
+                    """
+                }
+            }
+        }
+
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = SCANPY_LEIDEN.out.h5ad.combine(SCANPY_LEIDEN.out.obs)
+                    .map { meta, h5ad, fragment -> [
+                        meta + [fragment_path: fragment.toString(), producer_path: h5ad.toString()],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679759_filtered_pca.h5ad', checkIfExists: true),
+                        [fragment], [], [], [], [], []
+                    ] }
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def meta = process.out.h5ad[0][0]
+            def adata = anndata(process.out.h5ad[0][1])
+            def producer = anndata(meta.producer_path)
+            def fragment = path(meta.fragment_path).parquet
+            assert file(meta.fragment_path).name == 'roundtrip:leiden_leiden.parquet'
+            assert fragment.columnNames == ['__index__', 'roundtrip_cluster']
+            assert fragment.schemaDetails.fields.every { it.logicalType.type == 'STRING' }
+            assert fragment.compressionCodecs == ['SNAPPY']
+            assert adata.n_obs == producer.n_obs
+            assert adata.n_vars == producer.n_vars
+            assert adata.obs.index.values.toList() == producer.obs.index.values.toList()
+            assert adata.var.index.values.toList() == producer.var.index.values.toList()
+            assert !adata.obs.colnames.contains('__index__')
+            assert 'roundtrip_cluster' in adata.obs.colnames
+            def rows = fragment.rowMaps
+            assert rows.collect { it.__index__ } == adata.obs.index.values.toList()
+            assert rows.collect { it.roundtrip_cluster } == adata.obs.get('roundtrip_cluster').data.toList()
+            assert adata.obs.get('roundtrip_cluster').data.toList() == producer.obs.get('roundtrip_cluster').data.toList()
+            assert adata.obs.get('roundtrip_cluster').n_unique() >= 5
+            assert snapshot(adata.yaml).match()
+        }
+    }
+}

@@ -1,0 +1,144 @@
+{
+    "Should run without failures - human": {
+        "content": [
+            [
+                {
+                    "y_fraction": 0,
+                    "xist_fraction": 0,
+                    "male_share": "",
+                    "predicted_sex": "unknown",
+                    "n_both_cells": 0,
+                    "n_male_cells": 0,
+                    "n_female_cells": 0,
+                    "n_cells": 384,
+                    "sample": "test",
+                    "n_unknown_cells": 384
+                }
+            ],
+            {
+                "SCANPY_SEXPREDICTION": {
+                    "pyarrow": "21.0.0",
+                    "python": "3.13.12",
+                    "scanpy": "1.13.0"
+                }
+            },
+            {
+                "n_obs": 384,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "sex_y_fraction",
+                        "sex_xist_fraction",
+                        "sex_cell_call",
+                        "predicted_sex"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-24T21:41:17.985771454",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_sex.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_sex.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_sex.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_sex.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_sex.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "tsv": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_sex.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-24T21:41:25.502068208",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

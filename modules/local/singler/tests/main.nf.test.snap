@@ -1,0 +1,217 @@
+{
+    "Should run with a symbol column other than index": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    {
+                        "file": "test_singler_predictions.parquet",
+                        "codecs": [
+                            "SNAPPY"
+                        ],
+                        "schema_and_rows_sha256": "0ae71a74d9fde0aa8691d24f231830b84ddf06dcd896bf2199977ee99d0fca86"
+                    }
+                ]
+            ],
+            "test_singler_hpca_distribution.pdf",
+            "test_singler_hpca_heatmap.pdf",
+            {
+                "CELLTYPES_SINGLER": {
+                    "R": "R version 4.5.3 (2026-03-11)",
+                    "SingleR": "2.12.0",
+                    "anndataR": "1.2.3",
+                    "ggplot2": "4.0.2",
+                    "arrow": "21.0.0"
+                }
+            }
+        ],
+        "timestamp": "2026-11-27T16:29:56.545469363",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run after celldex reference is fetched": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    {
+                        "file": "test_singler_predictions.parquet",
+                        "codecs": [
+                            "SNAPPY"
+                        ],
+                        "schema_and_rows_sha256": "ed069cf767de64df775996170bca2c210c1296b32ec2d2cc3e810c9e3530a463"
+                    }
+                ]
+            ],
+            "test_singler_test_distribution.pdf",
+            "test_singler_test_heatmap.pdf",
+            {
+                "CELLTYPES_SINGLER": {
+                    "R": "R version 4.5.3 (2026-03-11)",
+                    "SingleR": "2.12.0",
+                    "anndataR": "1.2.3",
+                    "ggplot2": "4.0.2",
+                    "arrow": "21.0.0"
+                }
+            }
+        ],
+        "timestamp": "2026-11-27T16:28:10.002423375",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run with a single reference": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    {
+                        "file": "test_singler_predictions.parquet",
+                        "codecs": [
+                            "SNAPPY"
+                        ],
+                        "schema_and_rows_sha256": "0ae71a74d9fde0aa8691d24f231830b84ddf06dcd896bf2199977ee99d0fca86"
+                    }
+                ]
+            ],
+            "test_singler_hpca_distribution.pdf",
+            "test_singler_hpca_heatmap.pdf",
+            {
+                "CELLTYPES_SINGLER": {
+                    "R": "R version 4.5.3 (2026-03-11)",
+                    "SingleR": "2.12.0",
+                    "anndataR": "1.2.3",
+                    "ggplot2": "4.0.2",
+                    "arrow": "21.0.0"
+                }
+            }
+        ],
+        "timestamp": "2026-11-27T16:29:03.803117188",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run with a single reference - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_predictions.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_annotation_columns.csv:md5,844397d2b335534df33b2700210dd8d3"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_distribution.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_heatmap.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "annotation_columns": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_annotation_columns.csv:md5,844397d2b335534df33b2700210dd8d3"
+                    ]
+                ],
+                "distribution": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_distribution.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "heatmap": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_heatmap.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_singler_predictions.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-15T15:33:06.892529952",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run with two references": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    {
+                        "file": "test_singler_predictions.parquet",
+                        "codecs": [
+                            "SNAPPY"
+                        ],
+                        "schema_and_rows_sha256": "ff9ddb4ec6db664b1b5fccf1c28933d5f7f01e73004570eff02ee1f32f0ce676"
+                    }
+                ]
+            ],
+            {
+                "CELLTYPES_SINGLER": {
+                    "R": "R version 4.5.3 (2026-03-11)",
+                    "SingleR": "2.12.0",
+                    "anndataR": "1.2.3",
+                    "ggplot2": "4.0.2",
+                    "arrow": "21.0.0"
+                }
+            }
+        ],
+        "timestamp": "2026-11-27T16:31:36.316858867",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

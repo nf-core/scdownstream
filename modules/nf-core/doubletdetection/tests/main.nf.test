@@ -1,0 +1,91 @@
+nextflow_process {
+
+    name "Test Process DOUBLETDETECTION"
+    script "../main.nf"
+    process "DOUBLETDETECTION"
+
+    tag "modules"
+    tag "modules_nfcore"
+    tag "doubletdetection"
+
+    test("scdownsteam - h5ad") {
+        when {
+            process {
+                """
+                input[0] = [
+                    [id: 'test'],
+                    file(params.modules_testdata_base_path + "genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad", checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+
+                // PhenoGraph does not support random seeding:
+                // https://github.com/jacoblevine/PhenoGraph/issues/16
+                { assert path(process.out.h5ad.get(0).get(1)).exists() },
+                { assert path(process.out.predictions.get(0).get(1)).exists() },
+                {
+                    assert file(process.out.predictions[0][1]).name == 'test_doubletdetection.parquet'
+                    def predictions = path(process.out.predictions[0][1]).parquet
+                    assert predictions.columnNames == ['__index__', 'test_doubletdetection']
+                    assert predictions.schemaDetails.fields.find { it.name == 'test_doubletdetection' }.physicalType == 'BOOLEAN'
+                    assert predictions.compressionCodecs == ['SNAPPY']
+                    def rows = predictions.rowMaps
+                    def adata = anndata(process.out.h5ad[0][1])
+                    assert rows.size() == adata.n_obs
+                    assert rows.every { it.__index__ instanceof String && it.test_doubletdetection instanceof Boolean }
+                    assert rows.collect { it.__index__ }.toSet().size() == rows.size()
+                    assert rows.collect { it.__index__ } == adata.obs.index.values
+                    def calls = adata.obs.get('doublet').data.collect {
+                        it instanceof Boolean ? it : it.toString().equalsIgnoreCase('true')
+                    }
+                    assert rows.collect { it.test_doubletdetection } == calls
+                    assert adata.obs.get('doublet_score').data.every { it instanceof Number }
+                    def scores = path(process.out.scores[0][1]).parquet
+                    assert scores.columnNames == ['__index__', 'doubletdetection_score']
+                    assert scores.compressionCodecs == ['SNAPPY']
+                    assert scores.rowMaps.collect { it.__index__ } == rows.collect { it.__index__ }
+                    assert scores.rowMaps.collect { it.doubletdetection_score } == adata.obs.get('doublet_score').data
+                },
+
+                { assert snapshot(
+                    anndata(process.out.h5ad[0][1]).yaml,
+                    path(process.out.versions[0]).yaml
+                ).match() }
+            )
+        }
+
+    }
+
+    test("scdownstream - h5ad - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [id: 'test'],
+                    file(params.modules_testdata_base_path + "genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad", checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    sanitizeOutput(process.out),
+                    path(process.out.versions[0]).yaml
+                ).match() }
+            )
+        }
+
+    }
+
+}

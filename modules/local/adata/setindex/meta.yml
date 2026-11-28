@@ -1,0 +1,82 @@
+name: "adata_setindex"
+description: Set the AnnData obs or var index from an existing column
+keywords:
+  - anndata
+  - index
+  - single-cell
+tools:
+  - "anndata":
+      description: "Annotated data matrices in Python"
+      homepage: "https://anndata.readthedocs.io"
+      documentation: "https://anndata.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/anndata"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - axis:
+      type: string
+      description: Axis to reindex, either `obs` or `var`
+  - column:
+      type: string
+      description: Column name used as the new index
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData with the updated index on the chosen axis
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/anndata_python_pyyaml:e99ad8067a9bb519
+      build_id: bd-e99ad8067a9bb519_1
+      scan_id: sc-9e105295f299d6c5_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/anndata_python_pyyaml:f7811e63d92e9821
+      build_id: bd-f7811e63d92e9821_1
+      scan_id: sc-58c148f5e99983f2_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:1b3b19f6a2cbeeaf
+      build_id: bd-1b3b19f6a2cbeeaf_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/63/63cf3d298f9a63dc7886b269db6abfbc3745f43eee578a669f0410b1974f5369/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_python_pyyaml:a86700fb76469b6e
+      build_id: bd-a86700fb76469b6e_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/37/378d6d9781b5231390b501a6c1c89576dd3ca8c19f6634a0325793c05ded8901/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/adata/setindex/.conda-lock/linux_amd64-bd-f7811e63d92e9821_1.txt
+    linux/arm64:
+      lock_file: modules/local/adata/setindex/.conda-lock/linux_arm64-bd-e99ad8067a9bb519_1.txt

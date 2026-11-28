@@ -1,0 +1,100 @@
+name: "cytetype"
+description: Annotate cell types via the CyteType API using cluster marker genes
+keywords:
+  - cell-type
+  - annotation
+  - single-cell
+  - scrnaseq
+tools:
+  - "cytetype":
+      description: "LLM-assisted cell type annotation from marker genes"
+      homepage: "https://github.com/cytetype/cytetype"
+      documentation: "https://github.com/cytetype/cytetype"
+      tool_dev_url: "https://github.com/cytetype/cytetype"
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format with cluster labels and marker ranks
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - symbol_col:
+      type: string
+      description: Feature metadata column containing gene symbols
+  - study_context:
+      type: string
+      description: Free-text biological context passed to CyteType
+  - group_key:
+      type: string
+      description: obs column with cluster or group labels to annotate
+  - rank_key:
+      type: string
+      description: uns key containing ranked genes for each group
+  - integration:
+      type: string
+      description: Integration or embedding context used by CyteType
+  - resolution:
+      type: string
+      description: Clustering resolution or related CyteType parameter
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with CyteType annotations
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  obs:
+    - "*.parquet":
+        type: file
+        description: Parquet observation annotations from CyteType with an explicit __index__ column
+        pattern: "*.parquet"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:fde96b9090e78ef3
+      build_id: bd-fde96b9090e78ef3_1
+      scan_id: sc-6be3d12013aea486_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:3fa062003ea9a5ea
+      build_id: bd-3fa062003ea9a5ea_1
+      scan_id: sc-e512e6ccc352d866_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:13ec92fc9cd849db
+      build_id: bd-13ec92fc9cd849db_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d4/d44cedcdb790203b6a3b831d82acf68afa0a9982a74919c3a162bc988e8ce024/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_pandas_pyarrow_python_pruned:27d46ed5f6efaaa2
+      build_id: bd-27d46ed5f6efaaa2_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/60/60317d7f1b9e254e4d77eed992c87f833e6ae562ced9b20ad7678805783e6688/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/cytetype/.conda-lock/linux_amd64-bd-fde96b9090e78ef3_1.txt
+    linux/arm64:
+      lock_file: modules/local/cytetype/.conda-lock/linux_arm64-bd-3fa062003ea9a5ea_1.txt

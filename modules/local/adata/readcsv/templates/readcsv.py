@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+
+import importlib.metadata
+import platform
+
+import anndata as ad
+import pandas as pd
+import yaml
+
+df = pd.read_csv("${csv}", index_col=0)
+adata = ad.AnnData(df)
+adata.write_h5ad("${prefix}.h5ad", compression="gzip")
+
+# Versions
+
+versions = {
+    "${task.process}": {
+        "python": platform.python_version(),
+        "anndata": importlib.metadata.version("anndata"),
+        "pandas": pd.__version__,
+    }
+}
+
+with open("versions.yml", "w") as f:
+    yaml.dump(versions, f)

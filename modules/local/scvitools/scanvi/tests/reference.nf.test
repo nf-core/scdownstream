@@ -1,0 +1,90 @@
+nextflow_process {
+
+    name "Test SCVITOOLS_SCANVI reference mapping"
+    script "modules/local/scvitools/scanvi/main.nf"
+    process "SCVITOOLS_SCANVI"
+    config './nextflow.config'
+
+    tag "modules"
+    tag "modules_local"
+    tag "fragment_embeddings"
+    tag "adata/readcsv"
+    tag "adata/unify"
+
+    test("Map an unlabeled query to a reference with custom labels and a counts layer") {
+        setup {
+            run("ADATA_READCSV") {
+                script "modules/local/adata/readcsv/main.nf"
+                process {
+                    """
+                    def genes = ['ENSG00000001626', 'ENSG00000002834', 'ENSG00000003400', 'ENSG00000003436', 'ENSG00000004468']
+                    def rows = (1..64).collect { cell ->
+                        def counts = (0..<genes.size()).collect { gene -> 1 + (cell + gene) % 4 }
+                        ([ 'cell' + cell ] + counts).join(',')
+                    }
+                    input[0] = channel.fromList(['cell,' + genes.join(',')] + rows)
+                        .collectFile(name: 'query.csv', newLine: true, sort: false)
+                        .map { [[id: 'query_counts'], it] }
+                    """
+                }
+            }
+            run("ADATA_UNIFY") {
+                script "modules/local/adata/unify/main.nf"
+                process {
+                    """
+                    input[0] = ADATA_READCSV.out.h5ad
+                    input[1] = ''
+                    input[2] = ''
+                    input[3] = ''
+                    input[4] = 'unknown'
+                    input[5] = 'index'
+                    input[6] = 'X'
+                    input[7] = 'sum'
+                    input[8] = false
+                    input[9] = ''
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = ADATA_UNIFY.out.h5ad
+                input[1] = [[id: 'reference'], file(
+                    'https://huggingface.co/scvi-tools/tabula-sapiens-blood-scanvi/resolve/18f791a9e254a56d4b9e436355ac9d5b2c471288/model.pt',
+                    checkIfExists: true
+                )]
+                input[2] = 'scanvi'
+                input[3] = ['label', 'Unknown']
+                input[4] = 'batch'
+                input[5] = ''
+                input[6] = ''
+                input[7] = 16
+                input[8] = 1
+                input[9] = 3
+                input[10] = 'gene'
+                input[11] = 'zinb'
+                input[12] = 1
+                input[13] = true
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def mapped = anndata(process.out.h5ad[0][1])
+            def predictions = path(process.out.obs[0]).parquet
+            assertAll(
+                { assert mapped.obs.get('label').unique() == ['Unknown'].toSet() },
+                { assert !mapped.layers.contains('counts') },
+                { assert mapped.obs.get('label:scANVI').unique().every { it && it != 'unknown' } },
+                { assert predictions.rowCount == 64 },
+                { assert predictions.rowMaps.collect { it.__index__ } == mapped.obs.index.values },
+                { assert path(process.out.obsm[0]).parquet.columnNames == ['__index__'] + (0..<20).collect { it.toString() } },
+                { assert path(process.out.model[0][1]).exists() },
+                { assert path(process.out.versions[0]).exists() }
+            )
+        }
+    }
+}

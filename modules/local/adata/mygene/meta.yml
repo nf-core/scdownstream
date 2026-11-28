@@ -1,0 +1,89 @@
+name: "adata_mygene"
+description: Map gene identifiers to symbols with mygene and store them in var
+keywords:
+  - mygene
+  - gene-annotation
+  - anndata
+  - single-cell
+tools:
+  - "mygene":
+      description: "Python client for MyGene.info gene annotation services"
+      homepage: "https://docs.mygene.info"
+      documentation: "https://docs.mygene.info/en/latest/"
+      tool_dev_url: "https://github.com/biothings/mygene.py"
+      licence: ["BSD-3-Clause"]
+  - "anndata":
+      description: "Annotated data matrices in Python"
+      homepage: "https://anndata.readthedocs.io"
+      documentation: "https://anndata.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/anndata"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - species:
+      type: string
+      description: Species name or taxonomy identifier passed to mygene
+  - input_col:
+      type: string
+      description: var column holding the gene IDs to query. `index` uses the var index.
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData with gene symbols written to var
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/mygene_anndata_python_pyarrow_pyyaml:b6ebd593e7ed275c
+      build_id: bd-b6ebd593e7ed275c_1
+      scan_id: sc-cc667d64d3aaa3e4_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/mygene_anndata_python_pyarrow_pyyaml:00f473d9060bc114
+      build_id: bd-00f473d9060bc114_1
+      scan_id: sc-4e369e08d6d834d2_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/mygene_anndata_python_pyarrow_pyyaml:c7c7dd4e40ad2380
+      build_id: bd-c7c7dd4e40ad2380_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c3/c3e70b22d7099599a89e8ce6f837ebdf985e05844a25914b6e79d8a03fa54b3d/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/mygene_anndata_python_pyarrow_pyyaml:1369aba0341c0bd9
+      build_id: bd-1369aba0341c0bd9_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/da/dadc22a2e2add94e0cbcb29e01199de9f71594c4eaa1f6286e693a64139900d7/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/adata/mygene/.conda-lock/linux_amd64-bd-00f473d9060bc114_1.txt
+    linux/arm64:
+      lock_file: modules/local/adata/mygene/.conda-lock/linux_arm64-bd-b6ebd593e7ed275c_1.txt

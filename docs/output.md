@@ -2,58 +2,349 @@
 
 ## Introduction
 
-This document describes the output produced by the pipeline. Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.
+This document describes the output produced by the pipeline.
+Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.
 
-The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
+The directories listed below will be created in the results directory after the pipeline has finished.
+All paths are relative to the top-level results directory.
 
-<!-- TODO nf-core: Write this documentation describing your workflow's output -->
+### Fragment formats
+
+Tabular `obs`, `var`, and `obsm` fragments, including all four doublet callers' predictions, use `.parquet`. LIANA's tabular `uns` fragment also uses Parquet. Each table stores its index in an ordinary physical `__index__` column. Cell and gene indices are strings. Fragment stems and prefixes are unchanged.
+
+Nested PAGA, Scanpy rank-genes-groups, and decoupler `uns` objects remain `.pkl`. CellTypist model files and Tensor-cell2cell tensor objects also remain pickled. `obsp` and layer matrix formats are unchanged. CSV/TSV reports, metadata exports, annotation-column manifests, and expression CSV inputs retain their formats. Fragment readers reject legacy CSV and pickle tables.
+
+Intermediate fragments are published only under the existing module-specific `--save_intermediates` rules. The `.parquet` suffix does not make an intermediate fragment a published report table. LIANA result tables remain conditional on `--save_intermediates`.
 
 ## Pipeline overview
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
-- [FastQC](#fastqc) - Raw read QC
-- [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
-- [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
+1. Per-sample preprocessing
+   1. Convert all RDS files to H5AD format
+   2. Create filtered matrix (if not provided)
+      - [CellBender](https://cellbender.readthedocs.io/en/latest/)
+      - [EmptyDrops](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)
+   3. Present QC for raw counts ([`MultiQC`](http://multiqc.info/))
+   4. Remove ambient RNA
+      - [DecontX](https://bioconductor.org/packages/release/bioc/html/decontX.html)
+      - [SoupX](https://cran.r-project.org/web/packages/SoupX/readme/README.html)
+      - [CellBender](https://cellbender.readthedocs.io/en/latest/)
+      - [scAR](https://docs.scvi-tools.org/en/stable/user_guide/models/scar.html)
+   5. Apply user-defined QC filters (can be defined per sample in the samplesheet)
+   6. Doublet detection (Majority vote possible)
+      - [SOLO](https://docs.scvi-tools.org/en/stable/user_guide/models/solo.html)
+      - [Scrublet](https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html)
+      - [DoubletDetection](https://doubletdetection.readthedocs.io/en/v2.5.2/doubletdetection.doubletdetection.html)
+      - [scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html)
+   7. Cell cycle scoring ([Tirosh et al. 2016](https://doi.org/10.1126/science.aad0501))
+   8. Sex prediction from Y chromosome genes and XIST (optional)
+2. Sample aggregation
+   1. Merge into a single H5AD file
+   2. Present QC for merged counts ([`MultiQC`](http://multiqc.info/))
+   3. Integration
+      - [scVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scvi.html)
+      - [scANVI](https://docs.scvi-tools.org/en/stable/user_guide/models/scanvi.html)
+      - [Symphony](https://github.com/immunogenomics/symphony) / Harmony (via [symphonypy](https://pypi.org/project/symphonypy/))
+      - [BBKNN](https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.bbknn.html)
+      - [Combat](https://scanpy.readthedocs.io/en/latest/api/generated/scanpy.pp.combat.html)
+      - [Seurat](https://satijalab.org/seurat/articles/integration_introduction)
+      - [PCA](https://scanpy.readthedocs.io/en/stable/generated/scanpy.pp.pca.html)
+      - [scimilarity](https://github.com/Genentech/scimilarity)
+      - [scConcept](https://github.com/theislab/scConcept)
+      - [Expimap](https://docs.scarches.org/en/latest/api/models.html#scarches.models.EXPIMAP)
+3. Cell type annotation
+   - [CellTypist](https://www.celltypist.org/)
+   - [SingleR](https://www.bioconductor.org/packages/release/bioc/html/SingleR.html)
+   - [Pan-human Azimuth](https://github.com/satijalab/panhumanpy)
+   - [CyteType](https://github.com/NygenAnalytics/cytetype)
+4. Clustering and dimensionality reduction
+   1. [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html)
+   2. [UMAP](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.umap.html)
+5. Create [Quarto](https://quarto.org/) and [`MultiQC`](http://multiqc.info/) reports
 
-### FastQC
+### Per-sample preprocessing
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `fastqc/`
-  - `*_fastqc.html`: FastQC report containing quality metrics.
-  - `*_fastqc.zip`: Zip archive containing the FastQC report, tab-delimited data file and plot images.
+- `01_load_h5ad/` (when `--save_intermediates` is enabled)
+  - Converted H5AD files from RDS, 10x H5, or CSV inputs.
+- `02_quality_control/`
+  - `converted/`: legacy alias in docs; see `01_load_h5ad/` for format conversion outputs when intermediates are saved.
+  - `unify/`: Gene symbol unification and metadata standardisation (also `unify/hugounifier/` when HUGO-unifier runs).
+  - `empty_droplet_removal/`: Results of empty droplet removal. Only if no `filtered` matrix is provided in the samplesheet and `--save_intermediates` is enabled.
+    - `${sample_id}_subset.h5ad`: The unfiltered matrix subset to the barcodes called as cells.
+    - `${sample_id}_cellbender*`: CellBender outputs, when `--empty_droplet_removal cellbender` is used.
+    - `${sample_id}_emptydrops_barcodes.csv`: Barcodes called as cells by EmptyDrops, when `--empty_droplet_removal emptydrops` is used.
+    - `${sample_id}_emptydrops_results.csv`: Full EmptyDrops results table with total counts, log-probabilities, p-values and FDR per barcode.
+  - `qc_raw/`: QC plots for the raw input data.
+  - `ambient_rna_removal/`: Results of ambient RNA removal.
+  - `custom_thresholds/`: Results of applying user-defined QC thresholds.
+  - `doublet_detection/`: Directories related to doublet detection.
+    - `(doubletdetection|scdblfinder|scrublet|solo)/`: Results of doublet detection.
+      Each directory contains a detector H5AD and Boolean Parquet predictions covering all input cells. Scrublet and SOLO H5ADs contain singlets only; scDblFinder and DoubletDetection H5ADs retain all cells.
+      scDblFinder scores and classes, and Scrublet and DoubletDetection scores, are in `<prefix>.scores.parquet`. SOLO exports no continuous scores.
+    - `${sample_id}.h5ad`: The QC object after optional doublet removal, based on agreement between Boolean predictions rather than numeric scores.
+    - `${sample_id}.obs.parquet`: Per-cell Boolean calls and classifications for each selected detector.
+  - `qc_filtered/`: QC plots for the preprocessed data.
+  - `cell_cycle/`: Cell cycle scoring results.
+    - `${sample_id}_cellcycle.parquet`: `S_score`, `G2M_score`, and `phase` columns
+      for each cell. Merged into the final H5AD via `FINALIZE_QC_ANNDATAS`.
+    - `${sample_id}_cellcycle.h5ad`: Intermediate H5AD with cell cycle scores added, available for inspection.
+  - `sex_prediction/`: Sex prediction results, when `--sex_prediction` is enabled.
+    - `${sample_id}_sex.tsv`: One-row summary with the number of `male`, `female`, `both` and `unknown` cells, the pooled Y gene and XIST count fractions and the sample-level `predicted_sex`.
+    - `${sample_id}_sex.parquet`: `sex_y_fraction`, `sex_xist_fraction`, `sex_cell_call` and `predicted_sex` columns for each cell. Merged into the final H5AD via `FINALIZE_QC_ANNDATAS`. Published with `--save_intermediates`.
+    - `${sample_id}_sex.h5ad`: Intermediate H5AD with sex prediction columns added. Published with `--save_intermediates`.
+  - `sizes/`: Cell counts at each QC stage (MultiQC table input).
+  - `finalized/`: Per-sample QC AnnData objects when `--save_intermediates` is enabled.
+    - `${sample_id}_qc.h5ad` and `${sample_id}_qc_metadata.csv`: QC object and observation metadata, including `<method>_predicted_doublet` and `<method>_class` (`singlet` or `doublet`) for selected detectors. Scores use `scrublet_score`, `doubletdetection_score` and native `scDblFinder.*` fields. Removed cells are absent from both outputs.
 
 </details>
 
-[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences. For further reading and documentation see the [FastQC help pages](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
+The output of each step is stored under numbered stage directories in the results folder.
+Per-sample QC outputs live under `02_quality_control/`.
+Doublet annotations are included in final outputs without `--save_intermediates`. Merged objects retain only observation columns shared by all datasets.
 
-![MultiQC - FastQC sequence counts plot](images/mqc_fastqc_counts.png)
+### Sample aggregation
 
-![MultiQC - FastQC mean quality scores plot](images/mqc_fastqc_quality.png)
+<details markdown="1">
+<summary>Output files</summary>
 
-![MultiQC - FastQC adapter content plot](images/mqc_fastqc_adapter.png)
+- `03_combine/`
+  - `merge/`
+    - `merged_inner.h5ad`: The merged H5AD file with only the intersection of the genes. Will be used for integration.
+    - `merged_outer.h5ad`: The merged H5AD file with all genes. Will be used as
+      base for the final H5AD file.
+    - `merged_sample_genes.png`: UpSet plot showing the overlap of genes between samples.
+  - `integrate/`
+    - `input_hvg`
+      - `*.h5ad`: The H5AD file that is used as input to the integration tools.
+      - `*.rds`: RDS version of the H5AD file.
+    - `${tool}`
+      - `*.h5ad/*.rds`: The integrated H5AD or RDS file.
+      - `X_${tool}.parquet`: Low-dimensional representation of the integrated data.
+      - `symphony_reference.h5ad` (Symphony only): Compact Symphony reference AnnData for query mapping, published from de novo Symphony runs.
 
-:::note
-The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
-:::
+</details>
+
+The `03_combine` directory contains the results of the sample aggregation step.
+The `merge` directory contains the merged H5AD files, which are used as input to the integration tools.
+
+`varm["gene_presence"]` records which genes each sample supplied to the merge after quality control and gene unification. Rows follow `var_names`, and columns use the sample IDs from the samplesheet. A gene can be present with zero counts in every cell. `var["intersection"]` marks the genes shared by all inputs and determines which genes enter integration.
+
+Atlas extension requires the presence table from the base atlas. scdownstream adds a column for each new sample and recomputes `var["intersection"]` across all samples. New sample IDs must differ from the IDs recorded in the base.
+
+The `integrate` directory contains the results of the integration step.
+The integrated H5AD files are stored in subdirectories named after the integration tool used.
+
+### Cell type annotation
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `04_celltypes/`
+  - `celltypist/`
+    - `*.h5ad`: The H5AD file with cell type annotations.
+    - `*.parquet`: The cell type annotations as an indexed table.
+  - `azimuth/`
+    - `*.h5ad`: The H5AD file with Pan-human Azimuth annotations in `obs` and the Azimuth embedding in `obsm['X_azimuth']`.
+    - `*.parquet`: The Pan-human Azimuth annotations as an indexed table. The `X_azimuth.parquet` embedding fragment is not published.
+    - `*_annotation_columns.csv`: The added `obs` columns and whether they are used for per-cluster aggregation.
+  - `singleR`
+    - `*.h5ad`: The H5AD file with cell type annotations.
+    - `*_predictions.parquet`: The cell type annotations as an indexed table.
+    - `*_annotation_columns.csv`: The added `obs` columns and whether they are used for per-cluster aggregation.
+    - `*.pdf`: The cell type annotation plots in PDF format.
+  - `celldexreferenceprocessing`
+    - `dir`: A directory containing `h5` and `rds` files for the reference(s)
+
+</details>
+
+The `04_celltypes` directory contains the results of the per-sample cell type annotation step. Annotations from `celltypist`, `singleR` and `azimuth` are merged back into the final per-sample AnnData object via the `FINALIZE_QC_ANNDATAS` step.
+
+### CyteType
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `08_cytetype/`
+  - `*.h5ad`: The H5AD file with CyteType annotations merged into `adata.obs` (only if `--save_intermediates` is enabled).
+  - `*.parquet`: The CyteType-added `obs` columns (always emitted, published only with `--save_intermediates`, and merged into the final merged cohort H5AD by `FINALIZE`).
+
+</details>
+
+CyteType runs after integration, clustering, and global differential expression. Annotations are merged into the merged cohort AnnData object via the `FINALIZE` step.
+
+### Clustering and dimensionality reduction
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `05_cluster_dimred/`
+  - `${integration}/`
+    - `neighbors/`
+      - `*.h5ad`: The H5AD file with the neighbourhood graph.
+    - `leiden/`
+      - ${resolution}/`
+        - `*.h5ad`: The H5AD file with the Leiden clustering.
+        - `*.parquet`: The Leiden clustering as an indexed table.
+    - `umap/`
+      - `*.h5ad`: The H5AD file with the UMAP coordinates.
+      - `*.parquet`: The UMAP coordinates as an indexed table.
+    - `tsne/` (when `--tsne` is enabled)
+      - `*.h5ad`: The H5AD file with the t-SNE coordinates.
+      - `*.parquet`: The t-SNE coordinates as an indexed table.
+
+</details>
+
+The `05_cluster_dimred` directory contains the results of the clustering and dimensionality reduction step.
+The results are stored in subdirectories named after the integration tool used.
+
+### Per-group analyses
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `06_per_group/`
+  - `{integration}/{subset}/{grouping}/`
+    - Context path: `{integration}` (or `merged`), `{subset}` (or `global`), then either `leiden/{resolution}` or the grouping column (usually `label`).
+    - Example Leiden context: `scvi/global/leiden/1.0/`
+    - Example label context: `merged/global/label/`
+    - `paga/`
+      - `*.png`: PAGA graph plot (always published).
+      - `*.h5ad` / `*.pkl` / `*_connectivities.npy`: Intermediate PAGA artefacts (when `--save_intermediates`).
+    - `liana/`
+      - `*_dotplot.png`: Dotplot of top ligand-receptor interactions (always published).
+      - `*_circle.png`: Circle plot of interaction counts between cell groups (always published).
+      - `*_tileplot.png`: Tileplot of the top ligand-receptor interactions (always published).
+      - `*.h5ad` / `*.parquet`: Rank-aggregate AnnData and indexed results table (when `--save_intermediates`).
+      - `by_sample/` (when `--cell2cell` and `--save_intermediates`)
+        - `*.csv.gz`: Long-format LIANA results per context.
+        - `*_contexts.tsv`: Context metadata with optional condition labels.
+    - `cell2cell/` (when `--cell2cell true`)
+      - `*_tensor_factors.png`: Factor overview across contexts, LR pairs, senders and receivers.
+      - `*_loadings_lr_clustermap.png`: Ligand-receptor loadings heatmap across factors.
+      - `*_loadings_contexts_clustermap.png`: Context loadings heatmap across factors.
+      - `*_context_boxplots.png`: Context loadings by condition (only when each context maps to one condition).
+      - `*_pathway_enrichment_dotplot.png`: PROGENy pathway enrichment across factors (requires network access to Omnipath).
+      - `*_pathway_enrichment.csv`: Enrichment scores and p-values (when `--save_intermediates`).
+      - `*_factor_*_loadings_product.png`: Sender-receiver loadings-product heatmaps.
+      - `*_loadings_*.csv`: Factor loading tables (when `--save_intermediates`).
+      - `*_tensor.pkl`: Serialised Tensor-cell2cell object (when `--save_intermediates`).
+    - `differential_expression/`
+      All DE engines write `*_results.parquet` tables with columns `gene`, `log2fc`, `pvalue`, `padj`, `group`, `contrast`, and `stratum`. Extra method-native columns may be present. Statistics that a method does not provide, such as fold changes and p-values for Scanpy `logreg`, are stored as nulls. Volcano PNGs are produced from these tables by a shared plotting module, which skips comparisons without plottable statistics.
+      - `scanpy/{method}/{global|filtered}/`
+        - `*_markers.csv`: Filtered marker-gene tables from Scanpy `rank_genes_groups`.
+        - `*_results.parquet`: Standardised Scanpy rank-genes-groups results (all groups, unfiltered).
+        - `*.png`: Marker summary and dot plots.
+        - `*_volcano.png`: Multi-panel volcano figure (one panel per group, or a single `{A} vs {B}` panel when there are exactly two groups).
+        - `*.pkl`: Serialised `rank_genes_groups` results merged into the final AnnData `uns` slot (when `--save_intermediates`).
+      - `pseudobulk/aggregation/`
+        - `*.h5ad`: Pseudobulk count matrices per cell-type stratum. After sample filtering, the pipeline keeps genes marked as shared in the input's `var["intersection"]`. Inputs without this column retain their feature set. Pseudobulk differential expression uses the exported matrix.
+        - `*_samples.tsv`: Pseudobulk sample metadata (donor, cell type, condition, cell and count totals). In both the TSV and H5AD sample metadata, `total_counts` records the full library total used for sample filtering, before restriction to shared genes.
+      - `pseudobulk/pydeseq2/`
+        - `*_results.parquet`: PyDESeq2 result tables per contrast.
+        - `*_volcano.png`: Volcano plots for each PyDESeq2 contrast.
+      - `pseudobulk/edgepython/`
+        - `*_results.parquet`: edgePython pseudobulk result tables per contrast.
+        - `*_volcano.png`: Volcano plots for each edgePython contrast.
+      - `single_cell/edgepython/`
+        - `*_results.parquet`: edgePython single-cell DE result tables per contrast.
+        - `*_volcano.png`: Volcano plots for each edgepython_sc contrast.
+    - `decoupler/` (when `--decoupler true`)
+      - `pseudobulk/`
+        - `*_{network}_scores.parquet`: decoupler scores and adjusted p-values per pseudobulk sample and source, joined with the pseudobulk sample metadata.
+        - `*_{network}_activity.png`: Heatmap of mean scores per cell type and condition for the most variable sources.
+        - `*_decoupler_activity.pkl`: Scores keyed by network, merged into the final AnnData `uns` slot (when `--save_intermediates`).
+      - `enrichment/{pydeseq2|edgepython}/`
+        - `*_enrichment.parquet`: Long table of enrichment scores per network, source, cell type stratum and contrast.
+        - `*_{network}_enrichment.png`: Dot plot of the top enriched sources per stratum.
+        - `*_decoupler_enrichment.pkl`: Enrichment results keyed by network, merged into the final AnnData `uns` slot (when `--save_intermediates`).
+    - `grn/` (when `--grn true`)
+      - `*_grn.tsv`: GRNBoost2 links with `group`, `TF`, `target` and `importance` columns, sorted by importance within each group.
+      - `*_grn.parquet`: The same table as an `uns` fragment, merged into the final AnnData `uns` slot under `<prefix>_grn` (when `--save_intermediates`).
+  - `decoupler/networks/` (when `--decoupler true` and `--save_intermediates`)
+    - `{network}.tsv`: Prior-knowledge networks with `source`, `target` and `weight` columns, as used for scoring.
+
+</details>
+
+Per-group analyses are organised by integration context first, then by analysis type. Resuming into an existing outdir may leave directories from the previous flat `{integration}-{subset}-{resolution}` layout; use a clean outdir for a tidy tree.
+
+LIANA ranks dotplot and tileplot interactions by `magnitude_rank`. The circle plot counts interactions with `specificity_rank <= 0.05` when permutations are enabled and all scored interactions otherwise. Tensor-cell2cell is opt-in (`--cell2cell true`) and consumes by-sample LIANA results. All differential expression is requested through the `de` analysis token and [`de_methods`](https://nf-co.re/scdownstream/parameters#de_methods). Pseudobulk aggregation runs automatically when `pydeseq2` or `edgepython` are selected, or when [`pseudobulk`](https://nf-co.re/scdownstream/parameters#pseudobulk) is enabled. Pathway and transcription factor activity with decoupler is opt-in (`--decoupler true`) and scores the pseudobulk profiles and the pseudobulk DE contrasts. Summary plots are also embedded in MultiQC under the corresponding integration section.
+
+### Finalize
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `09_finalized/`
+  - `merged.h5ad`: The final H5AD file with all results.
+  - `merged.rds`: RDS version of the final H5AD file (only when `--tords` is enabled).
+  - `merged_metadata.csv`: Metadata of the final H5AD file.
+  - `gene_annotation/` (only with `--gene_annotation` and `--save_intermediates`)
+    - `merged_gene_annotation.csv`: Per-gene annotations added to `adata.var` of `merged.h5ad`.
+    - `<gtf>.anno.tsv`: Gene table derived from `--gene_annotation_gtf`.
+
+</details>
+
+The `09_finalized` directory contains the final results of the pipeline.
+The final H5AD file contains all results from the pipeline and is stored in the `merged.h5ad` file.
+The metadata of the final H5AD file is stored in the `merged_metadata.csv` file.
+
+#### Expression matrices and provenance
+
+The standard final H5AD retains the following matrices even with `--save_intermediates false`:
+
+| Slot                                   | Meaning                                                                                                                                                          |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `X`                                    | Selected analysis counts, raw by default or corrected when `use_ambient_corrected_counts` resolves to `true`.                                                    |
+| `layers['raw_counts']`                 | Selected input before this pipeline's ambient correction, on the current cell and gene axes. Upstream correction is not reversed.                                |
+| `layers['ambient_corrected_<method>']` | Method-specific correction result, retained in both selection modes. For samples without that result in a merged cohort, values fall back to their `raw_counts`. |
+| `layers['log1p']` or `layers['scran']` | Normalised expression derived from the selected analysis counts.                                                                                                 |
+
+The categorical `obs['ambient_correction_method']` records the applied method, or `none` for new uncorrected samples. `obs['analysis_counts_source']` records `raw_counts` or a selected method-specific correction layer.
+
+Optional RDS export retains raw, correction, and normalisation layers as uniquely named SingleCellExperiment assays. The requested analysis counts occupy the first assay, `counts`.
 
 ### MultiQC
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `multiqc/`
-  - `multiqc_report.html`: a standalone HTML file that can be viewed in your web browser.
+- `11_multiqc/`
+  - `multiqc_report.html`: a stand-alone HTML file that can be viewed in your web browser.
   - `multiqc_data/`: directory containing parsed statistics from the different tools used in the pipeline.
   - `multiqc_plots/`: directory containing static images from the report in various formats.
 
 </details>
 
-[MultiQC](http://multiqc.info) is a visualization tool that generates a single HTML report summarising all samples in your project. Most of the pipeline QC results are visualised in the report and further statistics are available in the report data directory.
+[MultiQC](http://multiqc.info) is a visualization tool that generates a single HTML report summarising all samples in your project.
+Most of the pipeline QC results are visualised in the report and further statistics are available in the report data directory.
+The report includes preprocessing QC plots, cell-cycle score summaries, doublet prediction overlap or score distributions, filtering retention tables, integration and clustering summaries, marker-gene plots, and pseudobulk aggregation summaries when those steps run.
 
-Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQC. The pipeline has special steps which also allow the software versions to be reported in the MultiQC output for future traceability. For more information about how to use MultiQC reports, see <http://multiqc.info>.
+Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQC.
+The pipeline has special steps which also allow the software versions to be reported in the MultiQC output for future traceability.
+For more information about how to use MultiQC reports, see <http://multiqc.info>.
+
+### Quarto
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `10_reports/`
+  - `qc-report.html`: a stand-alone HTML file that can be viewed in your web browser.
+  - `qc-report.qmd`: a Quarto document containing all code used to render the report.
+  - `_extensions/`: directory containing the Quarto extension used to render the report, which includes the nf-core visual identity.
+  - `params.yml`: YAML file containing the parameters used when rendering the report.
+  - `artifacts/`
+    - `concatenated.h5ad`: the final H5AD file all the results when running with
+      `--qc_only`, which does not include _e.g._ integration and clustering
+
+</details>
+
+[Quarto](https://quarto.org/) is an open source scientific and technical publishing system that generates a single HTML report that summarises all the samples in your project, including many plots and figures.
+Many of the pipeline results are visualised in the report, granting an overview of all of the data and analytical steps performed by the pipeline.
 
 ### Pipeline information
 
@@ -68,4 +359,4 @@ Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQ
 
 </details>
 
-[Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
+[Nextflow](https://docs.seqera.io/platform-cloud/reports/overview) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.

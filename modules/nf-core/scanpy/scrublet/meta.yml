@@ -1,0 +1,113 @@
+name: scanpy_scrublet
+description: Detect doublets in single-cell RNA-seq data using Scrublet via Scanpy
+keywords:
+  - scrublet
+  - doublet-detection
+  - scanpy
+  - single-cell
+tools:
+  - scanpy:
+      description: Single-Cell Analysis in Python
+      homepage: https://scanpy.readthedocs.io
+      documentation: https://scanpy.readthedocs.io/en/stable/api/generated/scanpy.pp.scrublet.html
+      tool_dev_url: https://github.com/scverse/scanpy
+      doi: 10.1186/s13059-017-1382-0
+      licence: ["BSD-3-Clause"]
+      identifier: biotools:scanpy
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test' ]
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590" # HDF5 format
+  - batch_col:
+      type: string
+      description: |
+        Optional column name in adata.obs containing batch information
+        If provided and contains multiple batches, will be used as batch_key parameter
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test' ]
+      - "*.h5ad":
+          type: file
+          description: AnnData object with doublets removed
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590" # HDF5 format
+  predictions:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test' ]
+      - "${prefix}.parquet":
+          type: file
+          description: Boolean doublet predictions with unique cell IDs in a physical __index__ column
+          pattern: "${prefix}.parquet"
+          ontologies: []
+  scores:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test' ]
+      - "${prefix}.scores.parquet":
+          type: file
+          description: Full-cell scrublet_score values with explicit __index__ cell identifiers
+          pattern: "*.scores.parquet"
+          ontologies: []
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:8deec9eceac0d7e4
+      build_id: bd-8deec9eceac0d7e4_1
+      scan_id: sc-0c7dfdfb278c8c3d_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:c3db4c55d39c6c42
+      build_id: bd-c3db4c55d39c6c42_1
+      scan_id: sc-36f7c838f859ca41_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:0a61763ccc06bd65
+      build_id: bd-0a61763ccc06bd65_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/2f/2f553feb2c9ac1149defe1f6307fd8921872957e8b0f4b31751920d803da2471/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/pyarrow_pynndescent_python_pyyaml_pruned:6004f0e31aad583c
+      build_id: bd-6004f0e31aad583c_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/4d/4dbef80fcffbe66c36735d47a9d39d57c4f2b77ae204d60947c2ca11e2972541/data
+  conda:
+    linux/amd64:
+      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_amd64-bd-c3db4c55d39c6c42_1.txt
+    linux/arm64:
+      lock_file: modules/nf-core/scanpy/scrublet/.conda-lock/linux_arm64-bd-8deec9eceac0d7e4_1.txt

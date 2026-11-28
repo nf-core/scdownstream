@@ -1,0 +1,69 @@
+name: "edgepython_differential"
+description: Run edgePython QL F-test on pseudobulk counts per cell-type stratum
+keywords:
+  - differential-expression
+  - pseudobulk
+  - edgepython
+tools:
+  - "edgepython":
+      description: "Python implementation of edgeR-style differential expression"
+      homepage: "https://github.com/pachterlab/edgePython"
+      documentation: "https://github.com/pachterlab/edgePython"
+      tool_dev_url: "https://github.com/pachterlab/edgePython"
+      licence: ["GPL-3.0"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - h5ad:
+        type: file
+        description: Pseudobulk AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+  - reference_condition:
+      type: string
+      description: Reference condition level for contrasts
+
+output:
+  results:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*_results.parquet":
+          type: file
+          description: Standardised edgePython results per cell-type stratum in parquet format
+          pattern: "*_results.parquet"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/edgepython_sc_differential:83628bf2485ba953
+      build_id: bd-83628bf2485ba953_1
+      scan_id: sc-5ddd50ace9957a4a_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/edgepython_sc_differential:14387958d5d9ce97
+      build_id: bd-14387958d5d9ce97_1
+      scan_id: sc-26b03998d9013f44_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/edgepython_sc_differential:57052d16673dc900
+      build_id: bd-57052d16673dc900_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/af/affdf4c3a8936ecb29ae8472c7ff0e56eef12ccaf37beb820a6ee6f769b1fb07/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/edgepython_sc_differential:0947ed28430e1dd0
+      build_id: bd-0947ed28430e1dd0_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/22/22143407da74d0fd259da2b8da2960a5d816e17a629c525f3e1d59e3c776084c/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/edgepython/differential/.conda-lock/linux_amd64-bd-83628bf2485ba953_1.txt
+    linux/arm64:
+      lock_file: modules/local/edgepython/differential/.conda-lock/linux_arm64-bd-14387958d5d9ce97_1.txt

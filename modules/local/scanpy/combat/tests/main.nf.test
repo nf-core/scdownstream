@@ -1,0 +1,93 @@
+nextflow_process {
+
+    name "Test Process SCANPY_COMBAT"
+    script "modules/local/scanpy/combat/main.nf"
+    process "SCANPY_COMBAT"
+
+    tag "modules"
+    tag "modules_local"
+    tag "fragment_embeddings"
+
+    setup {
+        run("SCANPY_LOG1PNORM") {
+            script "modules/local/scanpy/log1pnorm/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                )
+                """
+            }
+        }
+    }
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_LOG1PNORM.out.h5ad
+                input[1] = "batch"
+                input[2] = "log1p"
+                input[3] = false
+                """
+            }
+        }
+
+        then {
+            def adata = anndata(process.out.h5ad[0][1])
+            assert process.success
+            with(adata) {
+                assert "X_emb" in obsm
+                assert "combat" in layers
+            }
+            assert file(process.out.obsm[0]).name == 'X_test.parquet'
+            def embedding = path(process.out.obsm[0]).parquet
+            assert embedding.rowCount == adata.n_obs
+            assert embedding.columnNames[0] == '__index__'
+            assert embedding.columnNames.drop(1) == (0..<(embedding.columnNames.size() - 1)).collect { it.toString() }
+            assert embedding.schemaDetails.fields[0].logicalType.type == 'STRING'
+            assert embedding.schemaDetails.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.compressionCodecs == ['SNAPPY']
+            assert embedding.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = SCANPY_LOG1PNORM.out.h5ad
+                input[1] = "batch"
+                input[2] = "log1p"
+                input[3] = false
+                """
+            }
+        }
+
+        then {
+            assert process.success
+
+            assert file(process.out.obsm[0]).name == 'X_test.parquet'
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

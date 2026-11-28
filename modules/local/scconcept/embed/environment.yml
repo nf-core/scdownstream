@@ -1,0 +1,13 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - conda-forge::python=3.12
+  - conda-forge::pip=26.0.1
+  - pip:
+      - sc-concept==0.2.5
+      - 'torch @ https://download-r2.pytorch.org/whl/cpu/torch-2.9.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl ; platform_machine == "x86_64"'
+      - 'torchvision @ https://download-r2.pytorch.org/whl/cpu/torchvision-0.24.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl ; platform_machine == "x86_64"'
+      - lamin-dataloader==0.2.1
+      - anndata==0.13.2
+      - pyarrow==21.0.0

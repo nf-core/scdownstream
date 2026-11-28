@@ -1,0 +1,922 @@
+{
+    "Should run without failures - bbknn - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "bbknn"
+                        },
+                        "bbknn.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "highly_variable.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "bbknn"
+                        },
+                        "bbknn.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "var": [
+                    "highly_variable.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-16T08:17:19.726993201",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - combat": {
+        "content": [
+            {
+                "n_obs": 768,
+                "n_vars": 2000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label",
+                        "n_genes_by_counts",
+                        "log1p_n_genes_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "pct_counts_in_top_20_genes",
+                        "total_counts_mt",
+                        "log1p_total_counts_mt",
+                        "pct_counts_mt",
+                        "total_counts_ribo",
+                        "log1p_total_counts_ribo",
+                        "pct_counts_ribo",
+                        "total_counts_hb",
+                        "log1p_total_counts_hb",
+                        "pct_counts_hb",
+                        "n_counts",
+                        "n_genes"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable",
+                        "means",
+                        "dispersions",
+                        "dispersions_norm",
+                        "mt",
+                        "ribo",
+                        "hb",
+                        "n_cells_by_counts",
+                        "mean_counts",
+                        "log1p_mean_counts",
+                        "pct_dropout_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "n_counts",
+                        "n_cells"
+                    ]
+                },
+                "layers": [
+                    "combat",
+                    "log1p"
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T14:28:04.317473874",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - pca - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "highly_variable.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "X_pca_pca.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_pca_pca.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "highly_variable.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-16T08:15:57.66914937",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - scanorama - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "scanorama"
+                        },
+                        "scanorama.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "highly_variable.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "X_scanorama.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "scanorama"
+                        },
+                        "scanorama.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_scanorama.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "highly_variable.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-16T08:18:36.898243525",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - combat - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "combat"
+                        },
+                        "combat.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "highly_variable.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "X_combat.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "combat"
+                        },
+                        "combat.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_combat.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "highly_variable.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-16T08:12:56.614867267",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - bbknn": {
+        "content": [
+            {
+                "n_obs": 768,
+                "n_vars": 2000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label",
+                        "n_genes_by_counts",
+                        "log1p_n_genes_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "pct_counts_in_top_20_genes",
+                        "total_counts_mt",
+                        "log1p_total_counts_mt",
+                        "pct_counts_mt",
+                        "total_counts_ribo",
+                        "log1p_total_counts_ribo",
+                        "pct_counts_ribo",
+                        "total_counts_hb",
+                        "log1p_total_counts_hb",
+                        "pct_counts_hb",
+                        "n_counts",
+                        "n_genes"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable",
+                        "means",
+                        "dispersions",
+                        "dispersions_norm",
+                        "mt",
+                        "ribo",
+                        "hb",
+                        "n_cells_by_counts",
+                        "mean_counts",
+                        "log1p_mean_counts",
+                        "pct_dropout_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "n_counts",
+                        "n_cells"
+                    ]
+                },
+                "layers": [
+                    "log1p"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "neighbors",
+                    "pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T14:24:45.357483417",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - deviance - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "deviance_features.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "X_pca_pca.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_pca_pca.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "deviance_features.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-16T08:20:32.176082651",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - deviance": {
+        "content": [
+            {
+                "n_obs": 768,
+                "n_vars": 500,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label",
+                        "n_genes_by_counts",
+                        "log1p_n_genes_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "pct_counts_in_top_20_genes",
+                        "total_counts_mt",
+                        "log1p_total_counts_mt",
+                        "pct_counts_mt",
+                        "total_counts_ribo",
+                        "log1p_total_counts_ribo",
+                        "pct_counts_ribo",
+                        "total_counts_hb",
+                        "log1p_total_counts_hb",
+                        "pct_counts_hb",
+                        "n_counts",
+                        "n_genes"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable",
+                        "binomial_deviance",
+                        "highly_deviant",
+                        "mt",
+                        "ribo",
+                        "hb",
+                        "n_cells_by_counts",
+                        "mean_counts",
+                        "log1p_mean_counts",
+                        "pct_dropout_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "n_counts",
+                        "n_cells"
+                    ]
+                },
+                "layers": [
+                    "log1p"
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    "X_emb"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_emb"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T14:37:33.790826913",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - symphony - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "symphony"
+                        },
+                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "highly_variable.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "X_symphony.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "symphony"
+                        },
+                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_symphony.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "highly_variable.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-16T08:13:44.374902453",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - symphony": {
+        "content": [
+            {
+                "n_obs": 768,
+                "n_vars": 2000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label",
+                        "n_genes_by_counts",
+                        "log1p_n_genes_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "pct_counts_in_top_20_genes",
+                        "total_counts_mt",
+                        "log1p_total_counts_mt",
+                        "pct_counts_mt",
+                        "total_counts_ribo",
+                        "log1p_total_counts_ribo",
+                        "pct_counts_ribo",
+                        "total_counts_hb",
+                        "log1p_total_counts_hb",
+                        "pct_counts_hb",
+                        "n_counts",
+                        "n_genes"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable",
+                        "means",
+                        "dispersions",
+                        "dispersions_norm",
+                        "mt",
+                        "ribo",
+                        "hb",
+                        "n_cells_by_counts",
+                        "mean_counts",
+                        "log1p_mean_counts",
+                        "pct_dropout_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "n_counts",
+                        "n_cells"
+                    ]
+                },
+                "layers": [
+                    "log1p"
+                ],
+                "obsm": [
+                    "X_emb",
+                    "X_symphony"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T14:21:25.169981314",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - extension mode - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "symphony"
+                        },
+                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    "X_symphony.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "symphony"
+                        },
+                        "symphony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_symphony.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-16T08:15:07.177718755",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - pca": {
+        "content": [
+            {
+                "n_obs": 768,
+                "n_vars": 2000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label",
+                        "n_genes_by_counts",
+                        "log1p_n_genes_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "pct_counts_in_top_20_genes",
+                        "total_counts_mt",
+                        "log1p_total_counts_mt",
+                        "pct_counts_mt",
+                        "total_counts_ribo",
+                        "log1p_total_counts_ribo",
+                        "pct_counts_ribo",
+                        "total_counts_hb",
+                        "log1p_total_counts_hb",
+                        "pct_counts_hb",
+                        "n_counts",
+                        "n_genes"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable",
+                        "means",
+                        "dispersions",
+                        "dispersions_norm",
+                        "mt",
+                        "ribo",
+                        "hb",
+                        "n_cells_by_counts",
+                        "mean_counts",
+                        "log1p_mean_counts",
+                        "pct_dropout_by_counts",
+                        "total_counts",
+                        "log1p_total_counts",
+                        "n_counts",
+                        "n_cells"
+                    ]
+                },
+                "layers": [
+                    "log1p"
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    "X_emb"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_emb",
+                    "hvg"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-23T14:31:50.070953957",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - expimap": {
+        "content": [
+            {
+                "n_obs": 768,
+                "n_vars": 3000,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample",
+                        "source_sample",
+                        "source_barcode",
+                        "is_selected_filtered_cell",
+                        "source_role",
+                        "synthetic_donor",
+                        "synthetic_condition",
+                        "synthetic_label",
+                        "original_total_counts",
+                        "original_n_genes_by_counts",
+                        "batch",
+                        "donor",
+                        "condition",
+                        "label"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols",
+                        "highly_variable"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_emb"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-24T15:34:00.841645513",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Should run without failures - expimap - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "expimap"
+                        },
+                        "expimap.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    "X_expimap.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "expimap"
+                        },
+                        "expimap.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_expimap.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-11-16T08:10:02.875651325",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Should run without failures - pearson_residuals_hvgs - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "highly_variable_pearson_residuals.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "X_pca_pca.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "integrations": [
+                    [
+                        {
+                            "id": "test",
+                            "integration": "pca"
+                        },
+                        "pca_pca.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "obs": [
+                    
+                ],
+                "obsm": [
+                    "X_pca_pca.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "var": [
+                    "highly_variable_pearson_residuals.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-16T08:14:34.726825304",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

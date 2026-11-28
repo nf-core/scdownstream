@@ -1,0 +1,59 @@
+nextflow_process {
+
+    name "Test doublet overlap plotting on small inputs"
+    script "modules/local/custom/doubletremoval/main.nf"
+    process "CUSTOM_DOUBLETREMOVAL"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should report zero positive votes") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                p = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/zero.parquet', checkIfExists: true))
+                solo = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/zero_solo.parquet', checkIfExists: true))
+                input[0] = p.combine(solo).map { a,b -> [
+                    [id: 'zero'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
+                    ['scrublet','solo'], [a,b]
+                ] }
+                input[1] = 1
+                input[2] = true
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.obs.index.values == (0..<128).collect { String.format('cell_%03d', it) }
+            assert path(process.out.multiqc_files[0]).exists()
+        }
+    }
+
+    test("Should plot doublet intersections smaller than ten cells") {
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                p = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/small.parquet', checkIfExists: true))
+                solo = channel.of(file(params.pipelines_testdata_base_path + '/intermediates/doublet_detection/regressions/small_solo.parquet', checkIfExists: true))
+                input[0] = p.combine(solo).map { a,b -> [
+                    [id: 'small'],
+                    file(params.pipelines_testdata_base_path + '/anndata-variations/with_layers.h5ad', checkIfExists: true),
+                    ['scrublet','solo'], [a,b]
+                ] }
+                input[1] = 2
+                input[2] = true
+                """
+            }
+        }
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert adata.obs.index.values == (1..<128).collect { String.format('cell_%03d', it) }
+            assert path(process.out.multiqc_files[0]).exists()
+        }
+    }
+}

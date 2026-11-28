@@ -1,0 +1,33 @@
+nextflow_workflow {
+    name "Test Workflow EDGEPYTHON_SC_DE"
+    script "subworkflows/local/edgepython_sc_de/main.nf"
+    workflow "EDGEPYTHON_SC_DE"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+
+    test("Should schedule only strata with an eligible reference contrast") {
+        options '-stub'
+
+        when {
+            params { outdir = "$outputDir" }
+            workflow {
+                """
+                def h5ad = file(params.pipelines_testdata_base_path + '/pbmc/combined_filtered_pca.h5ad', checkIfExists: true)
+                input[0] = channel.of(
+                    [[id: 'eligible', obs_key: 'label', condition_col: 'condition', donor_col: 'donor'], h5ad],
+                    [[id: 'single_condition', obs_key: 'condition', condition_col: 'condition', donor_col: 'donor'], h5ad],
+                    [[id: 'missing_reference', obs_key: 'label', condition_col: 'donor', donor_col: 'donor'], h5ad],
+                )
+                input[1] = 'Healthy'
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.out.results.collect { meta, _parquet -> [meta.id, meta.celltype] }.sort() ==
+                [['eligible', 'TypeA'], ['eligible', 'TypeB']]
+        }
+    }
+}

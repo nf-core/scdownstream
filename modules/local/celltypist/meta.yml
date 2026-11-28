@@ -1,0 +1,110 @@
+name: "celltypist"
+description: Annotate cell types in an AnnData object using CellTypist models
+keywords:
+  - cell-type
+  - annotation
+  - single-cell
+  - scrnaseq
+tools:
+  - "celltypist":
+      description: "Automated cell type annotation for scRNA-seq datasets"
+      homepage: "https://www.celltypist.org"
+      documentation: "https://celltypist.readthedocs.io"
+      tool_dev_url: "https://github.com/Teichlab/celltypist"
+      licence: ["MIT"]
+      identifier: biotools:celltypist
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+    - symbol_col:
+        type: string
+        description: Feature metadata column containing gene symbols
+  - models:
+      type: list
+      description: Names of CellTypist models to download and use for annotation
+  - model_files:
+      type: file
+      description: Custom CellTypist model files to use for annotation. The file stem is used as the model name.
+      pattern: "*.pkl"
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object with CellTypist annotations
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  obs:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.parquet":
+          type: file
+          description: Parquet observation annotations from CellTypist with an explicit __index__ column
+          pattern: "*.parquet"
+  annotation_columns:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_annotation_columns.csv":
+          type: file
+          description: CSV listing annotation columns and whether they are aggregatable
+          pattern: "*_annotation_columns.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/celltypist:abd60355433789c7
+      build_id: bd-abd60355433789c7_1
+      scan_id: sc-3cacb09515c4c524_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/celltypist:cd5ca0ad5f3a8be9
+      build_id: bd-cd5ca0ad5f3a8be9_1
+      scan_id: sc-7d4493dfee7979ef_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/celltypist:1cd4d576d6dcaae7
+      build_id: bd-1cd4d576d6dcaae7_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/00/000b72be8e94b2ec177fac99d54f58fcd42a7db28d55219efba93503f48ac262/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/celltypist:0f6daabedcbf66c1
+      build_id: bd-0f6daabedcbf66c1_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/10/101bc2816a94db9de8adba14031cfd535f52317025b47dece4198d1da1ee1037/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/celltypist/.conda-lock/linux_amd64-bd-abd60355433789c7_1.txt
+    linux/arm64:
+      lock_file: modules/local/celltypist/.conda-lock/linux_arm64-bd-cd5ca0ad5f3a8be9_1.txt

@@ -1,0 +1,97 @@
+name: untar
+description: Extract files from tar, tar.gz, tar.bz2, tar.xz archives
+keywords:
+  - untar
+  - uncompress
+  - extract
+tools:
+  - untar:
+      description: |
+        Extract tar, tar.gz, tar.bz2, tar.xz files.
+      documentation: https://www.gnu.org/software/tar/manual/
+      licence: ["GPL-3.0-or-later"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - archive:
+        type: file
+        description: File to be untarred
+        pattern: "*.{tar,tar.gz,tar.bz2,tar.xz}"
+        ontologies:
+          - edam: http://edamontology.org/format_3981 # TAR format
+          - edam: http://edamontology.org/format_3989 # GZIP format
+output:
+  untar:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+          pattern: "*/"
+      - ${prefix}:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+          pattern: "*/"
+  versions_untar:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - untar:
+          type: string
+          description: The name of the tool
+      - tar --version 2>&1 | head -1 | sed "s/tar (GNU tar) //; s/ Copyright.*//":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - untar:
+          type: string
+          description: The name of the tool
+      - tar --version 2>&1 | head -1 | sed "s/tar (GNU tar) //; s/ Copyright.*//":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+authors:
+  - "@joseespinosa"
+  - "@drpatelh"
+  - "@matthdsm"
+  - "@jfy133"
+maintainers:
+  - "@joseespinosa"
+  - "@drpatelh"
+  - "@matthdsm"
+  - "@jfy133"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/coreutils_grep_gzip_lbzip2_pruned:75de417642c556ca
+      build_id: bd-75de417642c556ca_1
+      scan_id: sc-48cf01c536af337d_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/coreutils_grep_gzip_lbzip2_pruned:fcec4f7ab9e41e8d
+      build_id: bd-fcec4f7ab9e41e8d_1
+      scan_id: sc-8637131d68e457dd_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/coreutils_grep_gzip_lbzip2_pruned:991ba08adf987927
+      build_id: bd-991ba08adf987927_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f6/f61012d561116f68138325d21c63236d1f4b0646e5073eba1d8a7888282edbfb/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/coreutils_grep_gzip_lbzip2_pruned:ee1fe32bbba6383b
+      build_id: bd-ee1fe32bbba6383b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b3/b3e95bd734db6862fb2c320f2cdfcf6bc79550ad82326144ff3b2f7fec3dc6a2/data
+  conda:
+    linux/amd64:
+      lock_file: modules/nf-core/untar/.conda-lock/linux_amd64-bd-75de417642c556ca_1.txt
+    linux/arm64:
+      lock_file: modules/nf-core/untar/.conda-lock/linux_arm64-bd-fcec4f7ab9e41e8d_1.txt

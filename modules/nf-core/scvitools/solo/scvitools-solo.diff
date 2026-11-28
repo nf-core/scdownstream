@@ -1,0 +1,327 @@
+Changes in component 'nf-core/scvitools/solo'
+'modules/nf-core/scvitools/solo/environment.gpu.yml' was created
+Changes in 'scvitools/solo/main.nf':
+--- modules/nf-core/scvitools/solo/main.nf
++++ modules/nf-core/scvitools/solo/main.nf
+@@ -1,30 +1,33 @@
+ process SCVITOOLS_SOLO {
+-    tag "$meta.id"
++    tag "${meta.id}"
+     label 'process_medium'
+     label 'process_gpu'
+ 
+-    conda "${moduleDir}/environment.yml"
+-    container "${ task.accelerator ? 'ghcr.io/scverse/scvi-tools:py3.13-cu12-1.4.3-' :
+-        workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/df/dfb4b54fd5cb5c5624d947914f5ab8ac86eeaa5f762ebc52c034fbd36cf30250/data':
+-        'community.wave.seqera.io/library/scvi-tools:1.4.3--cce8c95b58ececa6' }"
++    conda "${moduleDir}/${task.accelerator ? 'environment.gpu.yml' : 'environment.yml'}"
++    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
++        ? (task.accelerator
++            ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/e5/e540b6f973a9c9df3be718e7c44ffcf3f99adda72f590fc81b9e1ab97391bd86/data'
++            : 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/48/4867a52f4a6f4a5216a3c21e2aead3f7eee65495b517c7b332e3bdf8cea13b30/data')
++        : (task.accelerator
++            ? 'community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-gpu_cuda-version@sha256:97f5d24fd2caa16ca7ac5b8aa1f65ac5a47f31a1e23bf6dec3a8531564eee305'
++            : 'community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-cpu:f0c65d8a2e3eacb6')}"
+ 
+     input:
+     tuple val(meta), path(h5ad)
+-    val(batch_key)
+-    val(max_epochs)
++    val batch_key
++    val max_epochs
+ 
+     output:
+     tuple val(meta), path("*.h5ad"), emit: h5ad
+-    tuple val(meta), path("*.pkl") , emit: predictions
+-    path "versions.yml"            , emit: versions, topic: versions
++    tuple val(meta), path("*.parquet"), emit: predictions
++    path "versions.yml", emit: versions, topic: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+ 
+     script:
+     prefix = task.ext.prefix ?: "${meta.id}"
+-    template 'solo.py'
++    template('solo.py')
+ 
+     stub:
+     prefix = task.ext.prefix ?: "${meta.id}"
+@@ -32,11 +35,12 @@
+     export MPLCONFIGDIR=./tmp
+ 
+     touch ${prefix}.h5ad
+-    touch ${prefix}.pkl
++    touch ${prefix}.parquet
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+         scvi: \$(python3 -c 'import scvi; print(scvi.__version__)')
++        pyarrow: \$(python3 -c 'import pyarrow; print(pyarrow.__version__)')
+     END_VERSIONS
+     """
+ }
+
+Changes in 'scvitools/solo/environment.yml':
+--- modules/nf-core/scvitools/solo/environment.yml
++++ modules/nf-core/scvitools/solo/environment.yml
+@@ -4,4 +4,7 @@
+   - conda-forge
+   - bioconda
+ dependencies:
+-  - conda-forge::scvi-tools=1.4.3
++  - conda-forge::python=3.12
++  - conda-forge::scvi-tools=1.5.2
++  - conda-forge::pyarrow=21.0.0
++  - conda-forge::pytorch-cpu
+
+Changes in 'scvitools/solo/meta.yml':
+--- modules/nf-core/scvitools/solo/meta.yml
++++ modules/nf-core/scvitools/solo/meta.yml
+@@ -51,10 +51,10 @@
+           description: |
+             Groovy Map containing sample information
+             e.g. `[ id:'sample1' ]`
+-      - "*.pkl":
++      - "*.parquet":
+           type: file
+-          description: pandas dataframe containing the doublet classification
+-          pattern: "*.pkl"
++          description: Boolean doublet classifications with unique cell IDs in a physical __index__ column
++          pattern: "*.parquet"
+           ontologies: []
+   versions:
+     - versions.yml:
+@@ -72,3 +72,27 @@
+   - "@LeonHafner"
+ maintainers:
+   - "@LeonHafner"
++containers:
++  docker:
++    linux/arm64:
++      name: community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-cpu:7d9dc066507a13b9
++      build_id: bd-7d9dc066507a13b9_1
++      scan_id: sc-70cd01ed290b3ef6_1
++    linux/amd64:
++      name: community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-cpu:f0c65d8a2e3eacb6
++      build_id: bd-f0c65d8a2e3eacb6_1
++      scan_id: sc-334695d2957138bf_1
++  singularity:
++    linux/arm64:
++      name: oras://community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-cpu:64763eddaba78159
++      build_id: bd-64763eddaba78159_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a9/a9c3d959a39e8340f3131712a900bc77a78e3a3b777e5887b8fe7f835f19136a/data
++    linux/amd64:
++      name: oras://community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-cpu:970bedcb57d41349
++      build_id: bd-970bedcb57d41349_1
++      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/48/4867a52f4a6f4a5216a3c21e2aead3f7eee65495b517c7b332e3bdf8cea13b30/data
++  conda:
++    linux/amd64:
++      lock_file: modules/nf-core/scvitools/solo/.conda-lock/linux_amd64-bd-f0c65d8a2e3eacb6_1.txt
++    linux/arm64:
++      lock_file: modules/nf-core/scvitools/solo/.conda-lock/linux_arm64-bd-7d9dc066507a13b9_1.txt
+
+Changes in 'scvitools/solo/templates/solo.py':
+--- modules/nf-core/scvitools/solo/templates/solo.py
++++ modules/nf-core/scvitools/solo/templates/solo.py
+@@ -1,11 +1,13 @@
+ #!/usr/bin/env python3
+ 
+ import os
++from pathlib import Path
+ 
+ os.environ["MPLCONFIGDIR"] = "./tmp"
+ os.environ.setdefault("TORCHINDUCTOR_CACHE_DIR", os.path.join(os.getcwd(), "torch_cache"))
+ 
+ import anndata as ad
++import pyarrow
+ import scvi
+ import torch
+ import yaml
+@@ -37,26 +39,29 @@
+ else:
+     SCVI.setup_anndata(adata)
+ 
+-model = SCVI(adata)
++scvi_model = SCVI(adata)
+ 
+-train_model(model)
++train_model(scvi_model)
+ 
+ adata.obs["doublet"] = False
+ 
+ batches = adata.obs[batch_key].unique() if batch_key else [0]
+ for batch in batches:
+-    model = SOLO.from_scvi_model(model, restrict_to_batch=batch if len(batches) > 1 else None)
++    solo_model = SOLO.from_scvi_model(scvi_model, restrict_to_batch=batch if len(batches) > 1 else None)
+ 
+-    train_model(model)
+-    result = model.predict(False)
++    train_model(solo_model)
++    result = solo_model.predict(False)
+ 
+     doublets = result[result == "doublet"].index.tolist()
+     adata.obs.loc[doublets, "doublet"] = True
+ 
+ 
+-df = adata.obs[["doublet"]]
++df = adata.obs[["doublet"]].copy()
+ df.columns = ["${prefix}"]
+-df.to_pickle("${prefix}.pkl")
++if df.index.hasnans or not df.index.is_unique or not all(isinstance(cell, str) for cell in df.index):
++    raise ValueError("Doublet predictions require unique, non-null string cell IDs")
++df.insert(0, "__index__", df.index)
++df.to_parquet(Path("${prefix}.parquet").resolve(), index=False, engine="pyarrow", compression="snappy")
+ 
+ adata = adata[~adata.obs["doublet"]].copy()
+ adata.obs.drop("doublet", axis=1, inplace=True)
+@@ -64,13 +69,16 @@
+ del adata.uns["_scvi_manager_uuid"]
+ del adata.uns["_scvi_uuid"]
+ 
+-adata.write_h5ad("${prefix}.h5ad")
++adata.write_h5ad("${prefix}.h5ad", compression="gzip")
+ 
+ # Versions
+ 
+ versions = {
+     "${task.process}": {
+         "scvi": scvi.__version__,
++        "pyarrow": pyarrow.__version__,
++        "torch": str(torch.__version__),
++        "cuda": torch.version.cuda or "no CUDA available",
+     }
+ }
+ 
+
+'modules/nf-core/scvitools/solo/.conda-lock/linux_arm64-bd-7d9dc066507a13b9_1.txt' was created
+'modules/nf-core/scvitools/solo/.conda-lock/linux_amd64-bd-f0c65d8a2e3eacb6_1.txt' was created
+Changes in 'scvitools/solo/tests/main.nf.test':
+--- modules/nf-core/scvitools/solo/tests/main.nf.test
++++ modules/nf-core/scvitools/solo/tests/main.nf.test
+@@ -26,6 +26,18 @@
+         then {
+             assertAll(
+                 { assert process.success },
++                {
++                    def predictions = path(process.out.predictions[0][1]).parquet
++                    assert file(process.out.predictions[0][1]).name == 'test_solo.parquet'
++                    assert predictions.columnNames == ['__index__', 'test_solo']
++                    assert predictions.schemaDetails.fields.find { it.name == 'test_solo' }.physicalType == 'BOOLEAN'
++                    assert predictions.compressionCodecs == ['SNAPPY']
++                    def rows = predictions.rowMaps
++                    assert rows.size() > 0
++                    assert rows.every { it.__index__ instanceof String && it.test_solo instanceof Boolean }
++                    assert rows.collect { it.__index__ }.toSet().size() == rows.size()
++                    assert rows.findAll { !it.test_solo }.collect { it.__index__ } == anndata(process.out.h5ad[0][1]).obs.index.values
++                },
+                 { assert snapshot(
+                     process.out.versions,
+                     file(process.out.h5ad[0][1]).name,
+
+Changes in 'scvitools/solo/tests/main.nf.test.snap':
+--- modules/nf-core/scvitools/solo/tests/main.nf.test.snap
++++ modules/nf-core/scvitools/solo/tests/main.nf.test.snap
+@@ -2,30 +2,30 @@
+     "Should run without batch column": {
+         "content": [
+             [
+-                "versions.yml:md5,bb88327d1a949a186e1a243a4ff14ce0"
++                "versions.yml:md5,d8f53cd97706903e7ad3188aea31597e"
+             ],
+-            "test.h5ad",
+-            "test.pkl"
++            "test_solo.h5ad",
++            "test_solo.parquet"
+         ],
++        "timestamp": "2026-11-23T15:56:50.979760045",
+         "meta": {
+-            "nf-test": "0.9.2",
+-            "nextflow": "25.04.3"
+-        },
+-        "timestamp": "2025-08-03T22:24:09.611388977"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
++        }
+     },
+     "Should run with batch column": {
+         "content": [
+             [
+-                "versions.yml:md5,bb88327d1a949a186e1a243a4ff14ce0"
++                "versions.yml:md5,d8f53cd97706903e7ad3188aea31597e"
+             ],
+-            "test.h5ad",
+-            "test.pkl"
++            "test_solo.h5ad",
++            "test_solo.parquet"
+         ],
++        "timestamp": "2026-11-23T15:58:18.737691176",
+         "meta": {
+-            "nf-test": "0.9.2",
+-            "nextflow": "25.04.3"
+-        },
+-        "timestamp": "2025-08-03T22:24:40.875872995"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
++        }
+     },
+     "Should run with batch column - stub": {
+         "content": [
+@@ -35,7 +35,7 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_solo.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "1": [
+@@ -43,18 +43,18 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_solo.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "2": [
+-                    "versions.yml:md5,c51a5910d7d7235de015822b272544b0"
++                    "versions.yml:md5,c295eaeba26b9befbb683e5210c8f45d"
+                 ],
+                 "h5ad": [
+                     [
+                         {
+                             "id": "test"
+                         },
+-                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_solo.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "predictions": [
+@@ -62,18 +62,18 @@
+                         {
+                             "id": "test"
+                         },
+-                        "test.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
++                        "test_solo.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+                 "versions": [
+-                    "versions.yml:md5,c51a5910d7d7235de015822b272544b0"
++                    "versions.yml:md5,c295eaeba26b9befbb683e5210c8f45d"
+                 ]
+             }
+         ],
++        "timestamp": "2026-11-23T15:59:57.544182802",
+         "meta": {
+-            "nf-test": "0.9.2",
+-            "nextflow": "25.04.3"
+-        },
+-        "timestamp": "2025-08-03T17:44:44.007844551"
++            "nf-test": "0.9.4",
++            "nextflow": "26.04.6"
++        }
+     }
+ }
+************************************************************

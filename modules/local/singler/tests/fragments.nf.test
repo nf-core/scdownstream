@@ -1,0 +1,71 @@
+nextflow_process {
+
+    name "Test SingleR predictions through ADATA_EXTEND"
+    script "modules/local/adata/extend/main.nf"
+    process "ADATA_EXTEND"
+
+    tag "modules"
+    tag "modules_local"
+
+    test("Should preserve all label and flattened numeric score columns") {
+        setup {
+            run("CELLTYPES_SINGLER") {
+                script "modules/local/singler/main.nf"
+                process {
+                    """
+                    input[0] = channel.of([
+                        [id: 'test'],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        'index', 'X'
+                    ])
+                    input[1] = [
+                        [id: 'reference'], ['hpca'], ['label.fine'],
+                        [file(params.pipelines_testdata_base_path + '/singleR/celldex_hpca__2024-02-26_h5_se.tar', checkIfExists: true)]
+                    ]
+                    """
+                }
+            }
+        }
+        when {
+            params { outdir = "$outputDir" }
+            process {
+                """
+                input[0] = CELLTYPES_SINGLER.out.obs.map { meta, fragment -> [
+                    meta,
+                    file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                    [fragment], [], [], [], [], []
+                ] }
+                """
+            }
+        }
+        then {
+            assert process.success
+            def output = path(process.out.h5ad[0][1])
+            def adata = anndata(output)
+            def fragment = output.parent.resolve('obs/test_singler_predictions.parquet').parquet
+            def columns = fragment.columnNames.findAll { it != '__index__' }
+            assert fragment.rowMaps.collect { it.__index__ } == adata.obs.rownames.toList()
+            assert !adata.obs.colnames.contains('__index__')
+            assert columns.every { it in adata.obs.colnames }
+            def annotations = columns.findAll { it.startsWith('annotation:') }
+            assert annotations.toSet() == ['annotation:singler:hpca:per_cell', 'annotation:singler:hpca:per_cell:pruned'].toSet()
+            annotations.each { column ->
+                def values = adata.obs.get(column).data
+                fragment.rowMaps.eachWithIndex { row, index ->
+                    if (row[column] != null) {
+                        assert row[column] instanceof String
+                        assert values[index] == row[column]
+                    }
+                }
+            }
+            def numeric = columns.findAll { !it.startsWith('annotation:') }
+            assert numeric.any { it.startsWith('scores') }
+            assert numeric.any { it.startsWith('delta.next') }
+            numeric.each { column ->
+                assert fragment.rowMaps.every { it[column] == null || it[column] instanceof Number }
+                assert adata.obs.get(column).data.every { it instanceof Number }
+                assert adata.obs.get(column).data.toList() == fragment.rowMaps.collect { it[column] }
+            }
+        }
+    }
+}

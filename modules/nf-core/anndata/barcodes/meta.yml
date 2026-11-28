@@ -1,0 +1,98 @@
+name: anndata_barcodes
+description: Module to subset AnnData object to cells with matching barcodes from the csv file
+keywords:
+  - single-cell
+  - barcodes
+  - anndata
+  - subsetting
+  - transcriptomics
+tools:
+  - "anndata":
+      description: "An annotated data matrix."
+      homepage: "https://anndata.readthedocs.io"
+      documentation: "https://anndata.readthedocs.io"
+      tool_dev_url: "https://github.com/theislab/anndata"
+      doi: "10.21105/joss.04371"
+      licence:
+        - "BSD-3-clause"
+      identifier: biotools:anndata
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test' ]
+    - h5ad:
+        type: file
+        description: Anndata object as H5AD file
+        pattern: "*.h5ad"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590" # HDF5
+    - barcodes:
+        type: file
+        description: |
+          CSV file containing barcodes. Barcodes are written in plain text. One column, no header
+        pattern: "*.csv"
+        ontologies:
+          - edam: "http://edamontology.org/format_3752" # CSV
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test' ]
+          pattern: "*.h5ad"
+      - "*.h5ad":
+          type: file
+          description: |
+            AnnData file containing all cells with barcodes that match those in the input barcodes csv file
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590" # HDF5
+  versions_anndata:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750" # YAML
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750"
+authors:
+  - "@nictru"
+  - "@chaochaowong"
+  - "@LeonHafner"
+maintainers:
+  - "@nictru"
+  - "@LeonHafner"
+containers:
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/anndata_pandas_python_pyyaml:93d618c1024b5277
+      build_id: bd-93d618c1024b5277_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/4b/4b0f6f9c90d50393dcd95d4e81bbea5589f955451d85cd1de039efcc4ac20bdf/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/anndata_pandas_python_pyyaml:422ad17310d54a68
+      build_id: bd-422ad17310d54a68_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b9/b96b65e01abfc4d601ccf14c496c574a5a84dff839d5573cafcea7faa7beb6f6/data
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/anndata_pandas_python_pyyaml:9b9e216971a5f2f8
+      build_id: bd-9b9e216971a5f2f8_1
+      scan_id: sc-cbf8221a0fecddf3_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/anndata_pandas_python_pyyaml:02ea787e122713f6
+      build_id: bd-02ea787e122713f6_1
+      scan_id: sc-f1c17e3a39991260_1
+  conda:
+    linux/amd64:
+      lock_file: modules/nf-core/anndata/barcodes/.conda-lock/linux_amd64-bd-9b9e216971a5f2f8_1.txt
+    linux/arm64:
+      lock_file: modules/nf-core/anndata/barcodes/.conda-lock/linux_arm64-bd-02ea787e122713f6_1.txt

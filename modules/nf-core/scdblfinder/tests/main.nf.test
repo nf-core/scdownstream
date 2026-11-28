@@ -1,0 +1,113 @@
+nextflow_process {
+
+    name "Test Process SCDBLFINDER"
+    script "../main.nf"
+    config "./nextflow.config"
+    process "SCDBLFINDER"
+
+    tag "modules"
+    tag "modules_nfcore"
+    tag "scdblfinder"
+
+    test("homo sapiens - pbmc1k - h5ad") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/pbmc1k.h5ad', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def calls = path(process.out.predictions[0][1]).parquet
+            assert calls.columnNames == ['__index__', 'test_scdblfinder']
+            assert calls.rowMaps.size() == 1000
+            assert calls.rowMaps.every { it.__index__ instanceof String && it.test_scdblfinder instanceof Boolean }
+            def scores = path(process.out.scores[0][1]).parquet
+            assert scores.rowMaps.size() == 1000
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "scDblFinder.class" in obs.colnames
+                assert "scDblFinder.score" in obs.colnames
+            }
+            assert calls.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            assert calls.rowMaps.collect { it.test_scdblfinder } == adata.obs.get('scDblFinder.class').data.collect { it == 'doublet' }
+            assert scores.rowMaps.collect { it['scDblFinder.score'] } == adata.obs.get('scDblFinder.score').data
+            assert snapshot(
+                sanitizeOutput(process.out, unstableKeys: ['h5ad', 'scores']),
+                scores.rowMaps.size(),
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("homo sapiens - pbmc1k - h5ad - doublet rate and batch column") {
+
+        when {
+            params {
+                module_args = 'dbr = 0.08, samples = "batch"'
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/pbmc1k.h5ad', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def batchCalls = path(process.out.predictions[0][1]).parquet
+            assert batchCalls.columnNames == ['__index__', 'test_scdblfinder']
+            assert batchCalls.rowMaps.size() == 1000
+            assert batchCalls.rowMaps.every { it.__index__ instanceof String && it.test_scdblfinder instanceof Boolean }
+            def batchScores = path(process.out.scores[0][1]).parquet
+            assert batchScores.rowMaps.size() == 1000
+            def adata = anndata(process.out.h5ad[0][1])
+            with(adata) {
+                assert "scDblFinder.class" in obs.colnames
+                assert "scDblFinder.score" in obs.colnames
+            }
+            assert batchCalls.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            assert batchCalls.rowMaps.collect { it.test_scdblfinder } == adata.obs.get('scDblFinder.class').data.collect { it == 'doublet' }
+            assert batchScores.rowMaps.collect { it['scDblFinder.score'] } == adata.obs.get('scDblFinder.score').data
+            assert snapshot(
+                sanitizeOutput(process.out, unstableKeys: ['h5ad', 'scores']),
+                batchScores.rowMaps.size(),
+                adata.yaml
+            ).match()
+        }
+
+    }
+
+    test("homo sapiens - pbmc1k - h5ad - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/pbmc1k.h5ad', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(sanitizeOutput(process.out)).match()
+        }
+
+    }
+
+}

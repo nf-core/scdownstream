@@ -1,0 +1,83 @@
+name: "adata_readrds"
+description: Convert a Seurat or SingleCellExperiment RDS object to AnnData h5ad
+keywords:
+  - anndata
+  - seurat
+  - single-cell
+  - rds
+tools:
+  - "anndata2ri":
+      description: "Interop between AnnData and SingleCellExperiment"
+      homepage: "https://github.com/theislab/anndata2ri"
+      documentation: "https://github.com/theislab/anndata2ri"
+      tool_dev_url: "https://github.com/theislab/anndata2ri"
+      licence: ["GPL-3.0-or-later"]
+  - "seurat":
+      description: "R toolkit for single-cell genomics"
+      homepage: "https://satijalab.org/seurat/"
+      documentation: "https://satijalab.org/seurat/"
+      tool_dev_url: "https://github.com/satijalab/seurat"
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - rds:
+        type: file
+        description: Seurat or SingleCellExperiment object in RDS format
+        pattern: "*.{rds,RDS}"
+        ontologies:
+          - edam: "http://edamontology.org/format_8910"
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData object converted from the RDS input
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/adata_readrds:6a8825a47645df3d
+      build_id: bd-6a8825a47645df3d_1
+      scan_id: sc-db18a5c6feb02acf_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/adata_readrds:6b7d4b50f153a954
+      build_id: bd-6b7d4b50f153a954_1
+      scan_id: sc-ab8181d19c667746_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/adata_readrds:a7b57b98665b50b8
+      build_id: bd-a7b57b98665b50b8_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/58/588733704c4eeb860ce326d92a1e82412d2706f0e13e2c9bc74be2e653a6de2b/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/adata_readrds:9b895e9ba62d6ec7
+      build_id: bd-9b895e9ba62d6ec7_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/44/44674d07016f488467307cdd7be2ffcddb01966a8e7ec88d82a7ec3696c2bc1f/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/adata/readrds/.conda-lock/linux_amd64-bd-6b7d4b50f153a954_1.txt
+    linux/arm64:
+      lock_file: modules/local/adata/readrds/.conda-lock/linux_arm64-bd-6a8825a47645df3d_1.txt

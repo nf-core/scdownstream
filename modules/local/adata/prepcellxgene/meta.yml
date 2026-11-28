@@ -1,0 +1,80 @@
+name: "adata_prepcellxgene"
+description: Prepare an AnnData object for CELLxGENE by cleaning and standardising fields
+keywords:
+  - cellxgene
+  - anndata
+  - single-cell
+tools:
+  - "scanpy":
+      description: "Single-cell analysis in Python"
+      homepage: "https://scanpy.readthedocs.io"
+      documentation: "https://scanpy.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/scanpy"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+
+  - apply_log1p:
+      type: boolean
+      description: Apply log1p to X before export; false when the caller supplies log-transformed expression
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData prepared for CELLxGENE upload
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:1ea7adbfe9ea8cad
+      build_id: bd-1ea7adbfe9ea8cad_1
+      scan_id: sc-d7bb1446e828dfb6_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:d617ddd4281a9506
+      build_id: bd-d617ddd4281a9506_1
+      scan_id: sc-4f85a1bc5a91ad19_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:3ba90f90ba814125
+      build_id: bd-3ba90f90ba814125_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8e/8e2e626f2e43e75b0f218a91d16c13ac7efd15c6e0618dbc8ce06cd84218ca99/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:4f27eb642f71a1e0
+      build_id: bd-4f27eb642f71a1e0_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5a/5a01d847cbde9acc7fac037c87664ef9b17e3d78323ffc75d1ccf8b0ab71f4c4/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/adata/prepcellxgene/.conda-lock/linux_amd64-bd-1ea7adbfe9ea8cad_1.txt
+    linux/arm64:
+      lock_file: modules/local/adata/prepcellxgene/.conda-lock/linux_arm64-bd-d617ddd4281a9506_1.txt

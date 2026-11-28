@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+
+import platform
+from pathlib import Path
+
+import pandas as pd
+import pyarrow as pa
+import scanpy as sc
+import yaml
+from threadpoolctl import threadpool_limits
+
+threadpool_limits(int("${task.cpus}"))
+sc.settings.n_jobs = int("${task.cpus}")
+
+adata = sc.read_h5ad("${h5ad}")
+prefix = "${prefix}"
+key_added = "${key_added}"
+input_layer = "${input_layer}"
+log_normalize = "${log_normalize}" == "true"
+
+if input_layer != "X" and input_layer not in adata.layers:
+    raise ValueError(
+        f"input_layer {input_layer!r} is not present in adata.layers (available: {list(adata.layers.keys())})"
+    )
+
+analysis_layer = None if input_layer == "X" else input_layer
+if log_normalize:
+    output_layer = "pca_log1p"
+    if output_layer in adata.layers:
+        raise ValueError(f"Normalisation output layer {output_layer!r} already exists")
+    source = adata.X if analysis_layer is None else adata.layers[analysis_layer]
+    adata.layers[output_layer] = source.copy()
+    sc.pp.normalize_total(adata, layer=output_layer)
+    sc.pp.log1p(adata, layer=output_layer)
+    analysis_layer = output_layer
+
+sc.pp.pca(
+    adata,
+    layer=analysis_layer,
+    random_state=0,
+    key_added=key_added,
+)
+
+adata.write_h5ad(f"{prefix}.h5ad", compression="gzip")
+df = pd.DataFrame(adata.obsm[key_added], index=adata.obs_names)
+df.columns = df.columns.astype(str)
+df.reset_index(names="__index__").to_parquet(
+    Path(f"X_{prefix}.parquet").resolve(), engine="pyarrow", index=False, compression="snappy"
+)
+
+# Versions
+versions = {
+    "${task.process}": {
+        "python": platform.python_version(),
+        "scanpy": sc.__version__,
+        "pandas": pd.__version__,
+        "pyarrow": pa.__version__,
+    }
+}
+
+with open("versions.yml", "w") as f:
+    yaml.dump(versions, f)

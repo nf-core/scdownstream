@@ -1,0 +1,104 @@
+name: scvitools_scar
+description: Module to use scAR to remove ambient RNA from single-cell RNA-seq data
+keywords:
+  - single-cell
+  - scRNA-seq
+  - ambient RNA removal
+tools:
+  - scvitools:
+      description: scvi-tools (single-cell variational inference tools) is a package
+        for end-to-end analysis of single-cell omics data
+      documentation: https://docs.scvi-tools.org/en/stable/
+      tool_dev_url: https://github.com/scverse/scvi-tools
+      licence: ["BSD-3-clause"]
+      identifier: ""
+  - scar:
+      description: scAR (single-cell Ambient Remover) is a deep learning model for removal
+        of the ambient signals in droplet-based single cell omics.
+      documentation: https://docs.scvi-tools.org/en/stable/user_guide/models/scar.html
+      tool_dev_url: https://github.com/Novartis/scar
+      licence: ["Novartis Terms of License"]
+      identifier: biotools:scar
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test' ]
+    - filtered:
+        type: file
+        description: AnnData file containing filtered data (without empty droplets)
+        pattern: "*.h5ad"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590" # HDF5 format
+    - unfiltered:
+        type: file
+        description: AnnData file containing unfiltered data (with empty droplets)
+        pattern: "*.h5ad"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590" # HDF5 format
+  - input_layer:
+      type: string
+      description: Layer to use as input. Defaults to `X`.
+  - output_layer:
+      type: string
+      description: Layer to save the denoised counts to. Defaults to `scar`.
+  - max_epochs:
+      type: integer
+      description: Maximum number of epochs to train the model. Defaults to the [heuristic default](https://docs.scvi-tools.org/en/stable/api/reference/scvi.model.get_max_epochs_heuristic.html#scvi.model.get_max_epochs_heuristic).
+  - n_batch:
+      type: integer
+      description: Number of batches to use for generating the ambient profile. Defaults to 1. This can be increased to prevent out-of-memory errors.
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test' ]
+      - "*.h5ad":
+          type: file
+          description: AnnData file containing decontaminated counts as `adata.X`
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590" # HDF5 format
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software version
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+topics:
+  versions:
+    - versions.yml:
+        type: string
+        description: The name of the process
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-cpu:7d9dc066507a13b9
+      build_id: bd-7d9dc066507a13b9_1
+      scan_id: sc-70cd01ed290b3ef6_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-cpu:f0c65d8a2e3eacb6
+      build_id: bd-f0c65d8a2e3eacb6_1
+      scan_id: sc-334695d2957138bf_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-cpu:64763eddaba78159
+      build_id: bd-64763eddaba78159_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a9/a9c3d959a39e8340f3131712a900bc77a78e3a3b777e5887b8fe7f835f19136a/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-cpu:970bedcb57d41349
+      build_id: bd-970bedcb57d41349_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/48/4867a52f4a6f4a5216a3c21e2aead3f7eee65495b517c7b332e3bdf8cea13b30/data
+  conda:
+    linux/amd64:
+      lock_file: modules/nf-core/scvitools/scar/.conda-lock/linux_amd64-bd-f0c65d8a2e3eacb6_1.txt
+    linux/arm64:
+      lock_file: modules/nf-core/scvitools/scar/.conda-lock/linux_arm64-bd-7d9dc066507a13b9_1.txt

@@ -1,0 +1,95 @@
+name: "dropletutils_emptydrops"
+description: Distinguish cell-containing droplets from empty droplets with DropletUtils emptyDrops
+keywords:
+  - empty-droplets
+  - cell-calling
+  - single-cell
+  - scrnaseq
+tools:
+  - "dropletutils":
+      description: "Utilities for handling single-cell droplet data"
+      homepage: "https://bioconductor.org/packages/DropletUtils"
+      documentation: "https://bioconductor.org/packages/release/bioc/vignettes/DropletUtils/inst/doc/DropletUtils.html"
+      tool_dev_url: "https://github.com/MarioniLab/DropletUtils"
+      doi: "10.1186/s13059-019-1662-y"
+      licence: ["GPL-3.0-only"]
+      identifier: biotools:dropletutils
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: Unfiltered AnnData object in h5ad format with raw counts in `X`
+        pattern: "*.{h5ad}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590"
+  - lower:
+      type: integer
+      description: Total UMI count at or below which barcodes are treated as empty droplets for the ambient profile
+  - fdr:
+      type: float
+      description: FDR threshold at or below which barcodes are called as cells
+
+output:
+  barcodes:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - ${prefix}_barcodes.csv:
+          type: file
+          description: Headerless CSV with one cell barcode per line
+          pattern: "*_barcodes.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752"
+  results:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - ${prefix}_results.csv:
+          type: file
+          description: Full emptyDrops result table with one row per barcode
+          pattern: "*_results.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-dropletutils_bioconductor-rhdf5_bioconductor-singlecellexperiment:2b198d4d68c1a6e0
+      build_id: bd-2b198d4d68c1a6e0_1
+      scan_id: sc-044bdf970726ee8f_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-dropletutils_bioconductor-rhdf5_bioconductor-singlecellexperiment:5675e860623fe5a3
+      build_id: bd-5675e860623fe5a3_1
+      scan_id: sc-300e928b58f4559c_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-dropletutils_bioconductor-rhdf5_bioconductor-singlecellexperiment:ecefe38694fd9cec
+      build_id: bd-ecefe38694fd9cec_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a7/a793e5c432cc0bc8e7a739507b666e9e1739b74af56d04637200bd5aab343428/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/bioconductor-anndatar_bioconductor-dropletutils_bioconductor-rhdf5_bioconductor-singlecellexperiment:a532133a11196b18
+      build_id: bd-a532133a11196b18_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/e6/e673ea29922a06ad01fb336f02019b679b037bae278c23bc173bf4a4d1fcd747/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/dropletutils/emptydrops/.conda-lock/linux_amd64-bd-2b198d4d68c1a6e0_1.txt

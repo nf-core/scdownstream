@@ -1,0 +1,80 @@
+name: "scanorama_integrate"
+description: Integrate single-cell batches with Scanorama
+keywords:
+  - integration
+  - batch-correction
+  - single-cell
+tools:
+  - "scanorama":
+      description: "Batch correction and integration of single-cell datasets"
+      homepage: "https://github.com/brianhie/scanorama"
+      documentation: "https://github.com/brianhie/scanorama"
+      tool_dev_url: "https://github.com/brianhie/scanorama"
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+    - batch_col:
+        type: string
+        description: obs column with batch labels
+    - input_layer:
+        type: string
+        description: AnnData layer to read expression from (`X` or a layer name)
+    - log_normalize:
+        type: boolean
+        description: When true, log-normalise counts from input_layer before integration; when false, use input_layer as pre-normalised expression
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.h5ad":
+          type: file
+          description: Integrated AnnData with Scanorama embedding in obsm
+          pattern: "*.h5ad"
+  obsm:
+    - "X_*.parquet":
+        type: file
+        description: Parquet integrated embedding with explicit __index__ cell identifiers
+        pattern: "X_*.parquet"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy_scanorama:f20e88c532f183ec
+      build_id: bd-f20e88c532f183ec_1
+      scan_id: sc-4ad0884af4c96030_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy_scanorama:5e6eb52ef92baea2
+      build_id: bd-5e6eb52ef92baea2_1
+      scan_id: sc-5469258b2f93a37a_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy_scanorama:32d7d6ddc4feefb7
+      build_id: bd-32d7d6ddc4feefb7_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d4/d4d1a29e31ad52096d89f97168addd59180de59cc0239c35721ea6ff113b6b6d/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/pyarrow_python_pyyaml_scanpy_scanorama:1e4abb770bcf7ca1
+      build_id: bd-1e4abb770bcf7ca1_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1f/1f2ae96119e022cecb83d5b3166d783528ce4dd2f999c37b2e76e64daadd6ffa/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scanorama/integrate/.conda-lock/linux_amd64-bd-f20e88c532f183ec_1.txt
+    linux/arm64:
+      lock_file: modules/local/scanorama/integrate/.conda-lock/linux_arm64-bd-5e6eb52ef92baea2_1.txt

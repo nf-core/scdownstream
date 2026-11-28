@@ -1,0 +1,98 @@
+name: scvitools_solo
+description: Detect doublets in single-cell RNA-Seq data
+keywords:
+  - scvi
+  - solo
+  - doublets
+tools:
+  - scvitools:
+      description: "A scalable toolkit for probabilistic modeling applied to single-cell
+        omics data"
+      homepage: "https://scvi-tools.org"
+      documentation: "https://docs.scvi-tools.org/en/stable/"
+      tool_dev_url: "https://github.com/scverse/scvi-tools"
+      licence:
+        - "MIT"
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: H5AD anndata object
+        pattern: "*.h5ad"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590" # HDF5 format
+  - batch_key:
+      type: string
+      description: Column in adata.obs to use as batch. If not provided, the entire dataset is treated as a single batch.
+  - max_epochs:
+      type: integer
+      description: Maximum number of epochs to train the model. Defaults to the [heuristic default](https://docs.scvi-tools.org/en/stable/api/reference/scvi.model.get_max_epochs_heuristic.html#scvi.model.get_max_epochs_heuristic).
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: H5AD anndata object without doublets
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590" # HDF5 format
+  predictions:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.parquet":
+          type: file
+          description: Boolean doublet classifications with unique cell IDs in a physical __index__ column
+          pattern: "*.parquet"
+          ontologies: []
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+topics:
+  versions:
+    - versions.yml:
+        type: string
+        description: The name of the process
+authors:
+  - "@LeonHafner"
+maintainers:
+  - "@LeonHafner"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-cpu:7d9dc066507a13b9
+      build_id: bd-7d9dc066507a13b9_1
+      scan_id: sc-70cd01ed290b3ef6_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-cpu:f0c65d8a2e3eacb6
+      build_id: bd-f0c65d8a2e3eacb6_1
+      scan_id: sc-334695d2957138bf_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-cpu:64763eddaba78159
+      build_id: bd-64763eddaba78159_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a9/a9c3d959a39e8340f3131712a900bc77a78e3a3b777e5887b8fe7f835f19136a/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python_scvi-tools_pyarrow_pytorch-cpu:970bedcb57d41349
+      build_id: bd-970bedcb57d41349_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/48/4867a52f4a6f4a5216a3c21e2aead3f7eee65495b517c7b332e3bdf8cea13b30/data
+  conda:
+    linux/amd64:
+      lock_file: modules/nf-core/scvitools/solo/.conda-lock/linux_amd64-bd-f0c65d8a2e3eacb6_1.txt
+    linux/arm64:
+      lock_file: modules/nf-core/scvitools/solo/.conda-lock/linux_arm64-bd-7d9dc066507a13b9_1.txt

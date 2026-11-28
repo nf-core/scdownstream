@@ -5,33 +5,98 @@
         "https://github.com/nf-core/modules.git": {
             "modules": {
                 "nf-core": {
-                    "fastqc": {
+                    "anndata/barcodes": {
                         "branch": "master",
-                        "git_sha": "285a50500f9e02578d90b3ce6382ea3c30216acd",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["h5ad_removebackground_barcodes_cellbender_anndata"],
+                        "patch": "modules/nf-core/anndata/barcodes/anndata-barcodes.diff"
+                    },
+                    "atlasgeneannotationmanipulation/gtf2featureannotation": {
+                        "branch": "master",
+                        "git_sha": "7b3452a23773f687ededb4befd037920e5a51341",
                         "installed_by": ["modules"]
+                    },
+                    "cellbender/merge": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/cellbender/merge/cellbender-merge.diff"
+                    },
+                    "cellbender/removebackground": {
+                        "branch": "master",
+                        "git_sha": "416bcdbf15649b918f1c38d3921f3182e97af530",
+                        "installed_by": ["h5ad_removebackground_barcodes_cellbender_anndata"],
+                        "patch": "modules/nf-core/cellbender/removebackground/cellbender-removebackground.diff"
+                    },
+                    "doubletdetection": {
+                        "branch": "master",
+                        "git_sha": "fcf2d1ae0a45af93c0ca5010a48ff257aa8340d3",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/doubletdetection/doubletdetection.diff"
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "b7ebe95761cd389603f9cc0e0dc384c0f663815a",
+                        "git_sha": "98403d15b0e50edae1f3fec5eae5e24982f1fade",
                         "installed_by": ["modules"]
+                    },
+                    "quarto/notebook": {
+                        "branch": "master",
+                        "git_sha": "02e51c74857608c8d30af2282e7aa42146a5784f",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/quarto/notebook/quarto-notebook.diff"
+                    },
+                    "scanpy/scrublet": {
+                        "branch": "master",
+                        "git_sha": "fa506994bc44f45c9b76f42b6b021973a9f343f1",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/scanpy/scrublet/scanpy-scrublet.diff"
+                    },
+                    "scdblfinder": {
+                        "branch": "master",
+                        "git_sha": "df69bf63a03a506f513f76b18d04ad4985f002eb",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/scdblfinder/scdblfinder.diff"
+                    },
+                    "scvitools/scar": {
+                        "branch": "master",
+                        "git_sha": "416bcdbf15649b918f1c38d3921f3182e97af530",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/scvitools/scar/scvitools-scar.diff"
+                    },
+                    "scvitools/solo": {
+                        "branch": "master",
+                        "git_sha": "416bcdbf15649b918f1c38d3921f3182e97af530",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/scvitools/solo/scvitools-solo.diff"
+                    },
+                    "untar": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/untar/untar.diff"
                     }
                 }
             },
             "subworkflows": {
                 "nf-core": {
+                    "h5ad_removebackground_barcodes_cellbender_anndata": {
+                        "branch": "master",
+                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
+                        "installed_by": ["subworkflows"]
+                    },
                     "utils_nextflow_pipeline": {
                         "branch": "master",
-                        "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
+                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nfcore_pipeline": {
                         "branch": "master",
-                        "git_sha": "92de218a329bfc9a9033116eb5f65fd270e72ba3",
+                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
                         "installed_by": ["subworkflows"]
                     },
-                    "utils_nfvalidation_plugin": {
+                    "utils_nfschema_plugin": {
                         "branch": "master",
-                        "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
+                        "git_sha": "a7b27fd25bfa8dcc07d299e88bd790585901a436",
                         "installed_by": ["subworkflows"]
                     }
                 }

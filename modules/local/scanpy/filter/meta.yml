@@ -1,0 +1,120 @@
+name: "scanpy_filter"
+description: Filter cells and genes by QC thresholds and optionally plot QC histograms
+keywords:
+  - filtering
+  - quality-control
+  - scanpy
+  - single-cell
+tools:
+  - "scanpy":
+      description: "Single-cell analysis in Python"
+      homepage: "https://scanpy.readthedocs.io"
+      documentation: "https://scanpy.readthedocs.io"
+      tool_dev_url: "https://github.com/scverse/scanpy"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - h5ad:
+        type: file
+        description: AnnData object in h5ad format
+        pattern: "*.{h5ad}"
+  - symbol_col:
+      type: string
+      description: var column containing gene symbols
+  - min_genes:
+      type: integer
+      description: Minimum genes expressed per cell
+  - min_cells:
+      type: integer
+      description: Minimum cells expressing a gene
+  - min_counts_gene:
+      type: integer
+      description: Minimum counts required for a gene
+  - min_counts_cell:
+      type: integer
+      description: Minimum counts required for a cell
+  - max_mito_percentage:
+      type: number
+      description: Maximum mitochondrial gene percentage per cell
+  - min_ribo_percentage:
+      type: number
+      description: Minimum ribosomal gene percentage per cell
+  - max_hb_percentage:
+      type: number
+      description: Maximum haemoglobin gene percentage per cell
+  - log1p_total_counts_nmads:
+      type: number
+      description: NMAD threshold for log1p total counts outlier filtering
+  - log1p_n_genes_by_counts_nmads:
+      type: number
+      description: NMAD threshold for log1p genes-by-counts outlier filtering
+  - pct_counts_in_top_20_genes_nmads:
+      type: number
+      description: NMAD threshold for percentage counts in top 20 genes
+  - pct_counts_mt_nmads:
+      type: number
+      description: NMAD threshold for mitochondrial percentage outlier filtering
+  - mito_genes:
+      type: file
+      description: Optional list of mitochondrial gene symbols
+      pattern: "*.{txt,tsv,csv}"
+  - plot:
+      type: boolean
+      description: Whether to write QC histogram plots and MultiQC JSON
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.h5ad":
+          type: file
+          description: Filtered AnnData object
+          pattern: "*.h5ad"
+  plots:
+    - "*_qc_histograms.png":
+        type: file
+        description: Optional QC metric histograms with filter thresholds
+        pattern: "*_qc_histograms.png"
+  multiqc_files:
+    - "*_qc_histograms_mqc.json":
+        type: file
+        description: Optional MultiQC custom content for QC histograms
+        pattern: "*_qc_histograms_mqc.json"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@nictru"
+maintainers:
+  - "@nictru"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:d617ddd4281a9506
+      build_id: bd-d617ddd4281a9506_1
+      scan_id: sc-4f85a1bc5a91ad19_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:1ea7adbfe9ea8cad
+      build_id: bd-1ea7adbfe9ea8cad_1
+      scan_id: sc-d7bb1446e828dfb6_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:3ba90f90ba814125
+      build_id: bd-3ba90f90ba814125_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8e/8e2e626f2e43e75b0f218a91d16c13ac7efd15c6e0618dbc8ce06cd84218ca99/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/python-igraph_python_pyyaml_scanpy:4f27eb642f71a1e0
+      build_id: bd-4f27eb642f71a1e0_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5a/5a01d847cbde9acc7fac037c87664ef9b17e3d78323ffc75d1ccf8b0ab71f4c4/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/scanpy/filter/.conda-lock/linux_amd64-bd-1ea7adbfe9ea8cad_1.txt
+    linux/arm64:
+      lock_file: modules/local/scanpy/filter/.conda-lock/linux_arm64-bd-d617ddd4281a9506_1.txt

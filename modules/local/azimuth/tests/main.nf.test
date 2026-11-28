@@ -1,0 +1,183 @@
+nextflow_process {
+
+    name "Test Process CELLTYPES_AZIMUTH"
+    script "modules/local/azimuth/main.nf"
+    process "CELLTYPES_AZIMUTH"
+
+    tag "modules"
+    tag "modules_local"
+    tag "fragment_embeddings"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert file(process.out.obsm[0][1]).name == 'X_azimuth.parquet'
+            assert file(process.out.obs[0][1]).name == 'test_azimuth.parquet'
+            def embedding = path(process.out.obsm[0][1]).parquet
+            assert embedding.rowCount == adata.n_obs
+            assert embedding.columnNames[0] == '__index__'
+            assert embedding.columnNames.drop(1) == (0..<(embedding.columnNames.size() - 1)).collect { it.toString() }
+            assert embedding.schemaDetails.fields[0].logicalType.type == 'STRING'
+            assert embedding.schemaDetails.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.compressionCodecs == ['SNAPPY']
+            assert embedding.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            def annotations = path(process.out.obs[0][1]).parquet
+            assert annotations.rowCount == adata.n_obs
+            assert annotations.columnNames == ['__index__',
+                'annotation:azimuth:broad:per_cell', 'annotation:azimuth:medium:per_cell',
+                'annotation:azimuth:fine:per_cell', 'annotation:azimuth:fine:per_cell:confidence',
+                'annotation:azimuth:full_hierarchy:per_cell']
+            assert annotations.schemaDetails.fields[0].logicalType.type == 'STRING'
+            assert annotations.compressionCodecs == ['SNAPPY']
+            assert annotations.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            annotations.columnNames.drop(1).each { column ->
+                assert annotations.rowMaps.collect { it[column] } == adata.obs.get(column).data
+            }
+            with(adata) {
+                assert "annotation:azimuth:broad:per_cell" in obs.colnames
+                assert "annotation:azimuth:medium:per_cell" in obs.colnames
+                assert "annotation:azimuth:fine:per_cell" in obs.colnames
+                assert "annotation:azimuth:fine:per_cell:confidence" in obs.colnames
+                assert "annotation:azimuth:full_hierarchy:per_cell" in obs.colnames
+                assert "X_azimuth" in obsm
+            }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.obs.colnames
+            ).match()
+        }
+
+    }
+
+    test("Should run with a symbol column other than index") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "symbols",
+                        "X"
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            assert file(process.out.obsm[0][1]).name == 'X_azimuth.parquet'
+            assert file(process.out.obs[0][1]).name == 'test_azimuth.parquet'
+            def embedding = path(process.out.obsm[0][1]).parquet
+            assert embedding.rowCount == adata.n_obs
+            assert embedding.columnNames[0] == '__index__'
+            assert embedding.columnNames.drop(1) == (0..<(embedding.columnNames.size() - 1)).collect { it.toString() }
+            assert embedding.schemaDetails.fields[0].logicalType.type == 'STRING'
+            assert embedding.schemaDetails.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.compressionCodecs == ['SNAPPY']
+            assert embedding.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            def annotations = path(process.out.obs[0][1]).parquet
+            assert annotations.rowCount == adata.n_obs
+            assert annotations.columnNames[0] == '__index__'
+            assert annotations.schemaDetails.fields[0].logicalType.type == 'STRING'
+            assert annotations.compressionCodecs == ['SNAPPY']
+            assert annotations.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            annotations.columnNames.drop(1).each { column ->
+                assert annotations.rowMaps.collect { it[column] } == adata.obs.get(column).data
+            }
+            with(adata) {
+                assert "annotation:azimuth:broad:per_cell" in obs.colnames
+                assert "annotation:azimuth:medium:per_cell" in obs.colnames
+                assert "annotation:azimuth:fine:per_cell" in obs.colnames
+                assert "annotation:azimuth:fine:per_cell:confidence" in obs.colnames
+                assert "annotation:azimuth:full_hierarchy:per_cell" in obs.colnames
+                assert "X_azimuth" in obsm
+            }
+            assert snapshot(
+                path(process.out.versions[0]).yaml,
+                adata.obs.colnames
+            ).match()
+        }
+
+    }
+
+    test("Should fail with a symbol column that does not exist") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "not_a_column",
+                        "X"
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+        }
+
+    }
+
+    test("Should run without failures - stub") {
+
+        options '-stub'
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'test' ],
+                        file(params.pipelines_testdata_base_path + '/pbmc/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        "index",
+                        "X"
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert file(process.out.obsm[0][1]).name == 'X_azimuth.parquet'
+            assert file(process.out.obs[0][1]).name == 'test_azimuth.parquet'
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}
