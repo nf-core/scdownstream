@@ -111,6 +111,38 @@ nextflow_process {
         }
     }
 
+    test("Should export shared genes after pseudobulk sample filtering") {
+        tag "pseudobulk_gene_intersection"
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                def fixture = 'https://raw.githubusercontent.com/nictru/test-datasets/80a11d44b1f0f224e3663a3e5bf3e743643098ab/extension_base_gene_presence/merged.h5ad'
+                input[0] = [[id: 'test'], file(fixture, checkIfExists: true)]
+                input[1] = 'raw_counts'
+                input[2] = 'synthetic_donor'
+                input[3] = 'synthetic_label'
+                input[4] = 'synthetic_condition'
+                input[5] = 1
+                input[6] = 13000
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def adata = anndata(process.out.h5ad[0][1])
+            // Eleven profiles reach 13,000 counts across all genes. None reach it across shared genes.
+            assert adata.n_obs == 11
+            assert adata.n_vars == 341
+            assert adata.var.get('intersection').data.every { it == 'TRUE' }
+            assert adata.obs.get('total_counts').data.every { (it as double) >= 13000 }
+        }
+    }
+
     test("Should aggregate pseudobulk profiles with decoupler") {
 
         when {
