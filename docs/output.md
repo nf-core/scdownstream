@@ -241,8 +241,8 @@ The results are stored in subdirectories named after the integration tool used.
         - `*_volcano.png`: Multi-panel volcano figure (one panel per group, or a single `{A} vs {B}` panel when there are exactly two groups).
         - `*.pkl`: Serialised `rank_genes_groups` results merged into the final AnnData `uns` slot (when `--save_intermediates`).
       - `pseudobulk/aggregation/`
-        - `*.h5ad`: Pseudobulk count matrices per cell-type stratum.
-        - `*_samples.tsv`: Pseudobulk sample metadata (donor, cell type, condition, cell and count totals).
+        - `*.h5ad`: Pseudobulk count matrices per cell-type stratum. After sample filtering, the pipeline keeps genes marked as shared in the input's `var["intersection"]`. Inputs without this column retain their feature set. Pseudobulk differential expression uses the exported matrix.
+        - `*_samples.tsv`: Pseudobulk sample metadata (donor, cell type, condition, cell and count totals). In both the TSV and H5AD sample metadata, `total_counts` records the full library total used for sample filtering, before restriction to shared genes.
       - `pseudobulk/pydeseq2/`
         - `*_results.parquet`: PyDESeq2 result tables per contrast.
         - `*_volcano.png`: Volcano plots for each PyDESeq2 contrast.

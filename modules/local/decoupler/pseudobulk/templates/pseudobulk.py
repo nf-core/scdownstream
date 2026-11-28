@@ -54,6 +54,14 @@ dc.pp.filter_samples(
 if pdata.n_obs == 0:
     raise ValueError("No pseudobulk samples passed filtering thresholds")
 
+if "intersection" in pdata.var:
+    shared_genes = pdata.var["intersection"]
+    if shared_genes.dtype != bool:
+        raise ValueError("var['intersection'] must be a Boolean mask")
+    if not shared_genes.any():
+        raise ValueError("No shared genes remain for pseudobulk export")
+    pdata = pdata[:, shared_genes.to_numpy()].copy()
+
 obs = pdata.obs.copy()
 obs["donor"] = obs[donor_col].astype(str)
 obs["celltype"] = obs[celltype_col].astype(str)
