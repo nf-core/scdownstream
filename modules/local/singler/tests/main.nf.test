@@ -43,15 +43,17 @@ nextflow_process {
         }
 
         then {
-            def predictions = parquet(process.out.obs[0][1])
             assert process.success
+            assert process.out.obs.size() == 1
+            def (predictionsMeta, predictionsFile) = process.out.obs[0]
+            def predictions = path(predictionsFile).parquet
             assert predictions.columnNames[0] == '__index__'
             assert predictions.compressionCodecs == ['SNAPPY']
-            assert predictions.rows.every { it.__index__ instanceof String }
+            assert predictions.rowMaps.every { it.__index__ instanceof String }
             def dataColumns = predictions.columnNames.findAll { it != '__index__' }
-            assert dataColumns.findAll { it.startsWith('annotation:') }.every { column -> predictions.rows.every { it[column] == null || it[column] instanceof String } }
+            assert dataColumns.findAll { it.startsWith('annotation:') }.every { column -> predictions.rowMaps.every { it[column] == null || it[column] instanceof String } }
             assert dataColumns.any { it.startsWith('scores') }
-            assert dataColumns.findAll { !it.startsWith('annotation:') }.every { column -> predictions.rows.every { it[column] == null || it[column] instanceof Number } }
+            assert dataColumns.findAll { !it.startsWith('annotation:') }.every { column -> predictions.rowMaps.every { it[column] == null || it[column] instanceof Number } }
             with(predictions) {
                 assert rowCount > 0
                 assert columnNames.any { it == "annotation:singler:test:per_cell" }
@@ -60,7 +62,7 @@ nextflow_process {
             assert process.out.distribution.size() == 1
             assert process.out.heatmap.size() == 1
             assert snapshot(
-                process.out.obs,
+                [[predictionsMeta, predictions.compactFingerprint]],
                 file(process.out.distribution[0][1]).name,
                 file(process.out.heatmap[0][1]).name,
                 path(process.out.versions[0]).yaml
@@ -97,14 +99,16 @@ nextflow_process {
         }
 
         then {
-            def predictions = parquet(process.out.obs[0][1])
             assert process.success
+            assert process.out.obs.size() == 1
+            def (predictionsMeta, predictionsFile) = process.out.obs[0]
+            def predictions = path(predictionsFile).parquet
             assert predictions.columnNames[0] == '__index__'
             assert predictions.compressionCodecs == ['SNAPPY']
             def dataColumns = predictions.columnNames.findAll { it != '__index__' }
-            assert dataColumns.findAll { it.startsWith('annotation:') }.every { column -> predictions.rows.every { it[column] == null || it[column] instanceof String } }
+            assert dataColumns.findAll { it.startsWith('annotation:') }.every { column -> predictions.rowMaps.every { it[column] == null || it[column] instanceof String } }
             assert dataColumns.any { it.startsWith('scores') }
-            assert dataColumns.findAll { !it.startsWith('annotation:') }.every { column -> predictions.rows.every { it[column] == null || it[column] instanceof Number } }
+            assert dataColumns.findAll { !it.startsWith('annotation:') }.every { column -> predictions.rowMaps.every { it[column] == null || it[column] instanceof Number } }
             with(predictions) {
                 assert rowCount > 0
                 assert columnNames.any { it == "annotation:singler:hpca:per_cell" }
@@ -113,7 +117,7 @@ nextflow_process {
             assert process.out.distribution.size() == 1
             assert process.out.heatmap.size() == 1
             assert snapshot(
-                process.out.obs,
+                [[predictionsMeta, predictions.compactFingerprint]],
                 file(process.out.distribution[0][1]).name,
                 file(process.out.heatmap[0][1]).name,
                 path(process.out.versions[0]).yaml
@@ -150,8 +154,10 @@ nextflow_process {
         }
 
         then {
-            def predictions = parquet(process.out.obs[0][1])
             assert process.success
+            assert process.out.obs.size() == 1
+            def (predictionsMeta, predictionsFile) = process.out.obs[0]
+            def predictions = path(predictionsFile).parquet
             with(predictions) {
                 assert rowCount > 0
                 assert columnNames.any { it == "annotation:singler:hpca:per_cell" }
@@ -160,7 +166,7 @@ nextflow_process {
             assert process.out.distribution.size() == 1
             assert process.out.heatmap.size() == 1
             assert snapshot(
-                process.out.obs,
+                [[predictionsMeta, predictions.compactFingerprint]],
                 file(process.out.distribution[0][1]).name,
                 file(process.out.heatmap[0][1]).name,
                 path(process.out.versions[0]).yaml
@@ -231,13 +237,15 @@ nextflow_process {
         }
 
         then {
-            def predictions = parquet(process.out.obs[0][1])
             assert process.success
+            assert process.out.obs.size() == 1
+            def (predictionsMeta, predictionsFile) = process.out.obs[0]
+            def predictions = path(predictionsFile).parquet
             assert predictions.columnNames[0] == '__index__'
             def dataColumns = predictions.columnNames.findAll { it != '__index__' }
             assert dataColumns.any { it.startsWith('scores') && it.contains('hpca') }
             assert dataColumns.any { it.startsWith('scores') && it.contains('monaco_immune') }
-            assert dataColumns.findAll { !it.startsWith('annotation:') }.every { column -> predictions.rows.every { it[column] == null || it[column] instanceof Number } }
+            assert dataColumns.findAll { !it.startsWith('annotation:') }.every { column -> predictions.rowMaps.every { it[column] == null || it[column] instanceof Number } }
             with(predictions) {
                 assert rowCount > 0
                 // one set of label columns per reference
@@ -250,7 +258,7 @@ nextflow_process {
             assert process.out.distribution[0][1].size() == 2
             assert process.out.heatmap[0][1].size() == 2
             assert snapshot(
-                process.out.obs,
+                [[predictionsMeta, predictions.compactFingerprint]],
                 path(process.out.versions[0]).yaml
             ).match()
         }

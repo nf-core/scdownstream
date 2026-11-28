@@ -45,6 +45,11 @@ nextflow_pipeline {
                 stable_name,
                 stable_path
             ).match()
+
+            def predictions = getAllFilesFromDir(params.outdir, include: [
+                '02_quality_control/doublet_detection/scdblfinder/*_scdblfinder.predictions.parquet'
+            ])
+            assert snapshot(predictions.collect { path(it.toString()).parquet.fingerprint }).match('scDblFinder predictions')
         }
     }
 }

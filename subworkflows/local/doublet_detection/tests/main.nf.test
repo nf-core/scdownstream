@@ -76,23 +76,23 @@ nextflow_workflow {
                 def table = workflow.out.obs.find { path(it[1]).fileName.toString() == "test_${method}.scores.parquet" }[1]
                 assert path(table).size() > 0
             }
-            def annotations = parquet(workflow.out.obs.find { path(it[1]).fileName.toString() == 'test.obs.parquet' }[1])
+            def annotations = path(workflow.out.obs.find { path(it[1]).fileName.toString() == 'test.obs.parquet' }[1]).parquet
             def inputCells = anndata("$outputDir/02_quality_control/doublet_detection/scdblfinder/test_scdblfinder.h5ad").obs.index.values
             ['solo', 'scrublet', 'scdblfinder', 'doubletdetection'].each { detector ->
                 def column = "test_${detector}".toString()
                 def suffix = detector == 'scdblfinder' ? '.predictions.parquet' : '.parquet'
-                def table = parquet("$outputDir/02_quality_control/doublet_detection/${detector}/${column}${suffix}")
+                def table = path("$outputDir/02_quality_control/doublet_detection/${detector}/${column}${suffix}").parquet
                 assert table.columnNames == ['__index__', column]
-                assert table.schema.fields.find { it.name == column }.physicalType == 'BOOLEAN'
-                assert table.schema.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
+                assert table.schemaDetails.fields.find { it.name == column }.physicalType == 'BOOLEAN'
+                assert table.schemaDetails.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
                 assert table.compressionCodecs == ['SNAPPY']
-                def rows = table.rows
+                def rows = table.rowMaps
                 assert rows.size() == 384
                 assert rows.every { it.__index__ instanceof String && it[column] instanceof Boolean }
                 assert rows.collect { it.__index__ } == inputCells
-                assert rows.collect { it[column] } == annotations.rows.collect { it["${detector}_predicted_doublet".toString()] }
+                assert rows.collect { it[column] } == annotations.rowMaps.collect { it["${detector}_predicted_doublet".toString()] }
             }
-            assert annotations.rows.findAll { row -> ['solo', 'scrublet', 'scdblfinder', 'doubletdetection'].count { row["${it}_predicted_doublet".toString()] } < 2 }.collect { it.__index__ } == adata.obs.index.values
+            assert annotations.rowMaps.findAll { row -> ['solo', 'scrublet', 'scdblfinder', 'doubletdetection'].count { row["${it}_predicted_doublet".toString()] } < 2 }.collect { it.__index__ } == adata.obs.index.values
             assert !adata.obs.colnames.any { it.startsWith('test_') || it.endsWith('_predicted_doublet') }
             assert !adata.obs.colnames.any { it in ['solo_class', 'scrublet_score', 'scdblfinder_score', 'doubletdetection_score'] }
             assert workflow.out.multiqc_files.size() == 1
@@ -129,12 +129,12 @@ nextflow_workflow {
             assert adata.n_obs == 384
             assert workflow.out.obs.size() == 2
             assert !adata.obs.colnames.any { it.startsWith('scdblfinder_') || it.startsWith('scDblFinder.') || it == 'test_scdblfinder' }
-            def table = parquet("$outputDir/02_quality_control/doublet_detection/scdblfinder/test_scdblfinder.predictions.parquet")
-            def annotations = parquet(workflow.out.obs.find { path(it[1]).fileName.toString() == 'test.obs.parquet' }[1])
+            def table = path("$outputDir/02_quality_control/doublet_detection/scdblfinder/test_scdblfinder.predictions.parquet").parquet
+            def annotations = path(workflow.out.obs.find { path(it[1]).fileName.toString() == 'test.obs.parquet' }[1]).parquet
             assert table.columnNames == ['__index__', 'test_scdblfinder']
-            assert table.rows.collect { it.__index__ } == adata.obs.index.values
-            assert table.rows.every { it.test_scdblfinder instanceof Boolean }
-            assert table.rows.collect { it.test_scdblfinder } == annotations.rows.collect { it.scdblfinder_predicted_doublet }
+            assert table.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            assert table.rowMaps.every { it.test_scdblfinder instanceof Boolean }
+            assert table.rowMaps.collect { it.test_scdblfinder } == annotations.rowMaps.collect { it.scdblfinder_predicted_doublet }
             assert snapshot(adata.yaml).match()
         }
 

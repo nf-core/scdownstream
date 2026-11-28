@@ -74,14 +74,14 @@ nextflow_process {
         then {
             assert process.success
             def mapped = anndata(process.out.h5ad[0][1])
-            def predictions = parquet(process.out.obs[0])
+            def predictions = path(process.out.obs[0]).parquet
             assertAll(
                 { assert mapped.obs.get('label').unique() == ['Unknown'].toSet() },
                 { assert !mapped.layers.contains('counts') },
                 { assert mapped.obs.get('label:scANVI').unique().every { it && it != 'unknown' } },
                 { assert predictions.rowCount == 64 },
-                { assert predictions.rows.collect { it.__index__ } == mapped.obs.index.values },
-                { assert parquet(process.out.obsm[0]).columnNames == ['__index__'] + (0..<20).collect { it.toString() } },
+                { assert predictions.rowMaps.collect { it.__index__ } == mapped.obs.index.values },
+                { assert path(process.out.obsm[0]).parquet.columnNames == ['__index__'] + (0..<20).collect { it.toString() } },
                 { assert path(process.out.model[0][1]).exists() },
                 { assert path(process.out.versions[0]).exists() }
             )

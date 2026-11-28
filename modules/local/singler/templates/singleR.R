@@ -1,5 +1,8 @@
 #!/usr/bin/env Rscript
 
+# Use the same reference label ordering in every locale.
+invisible(Sys.setlocale("LC_COLLATE", "C"))
+
 library(SingleR)
 library(yaml)
 library(ggplot2)

@@ -28,21 +28,21 @@ nextflow_process {
             assertAll(
             { assert process.success },
             {
-                def predictions = parquet(process.out.predictions[0][1])
+                def predictions = path(process.out.predictions[0][1]).parquet
                 assert file(process.out.predictions[0][1]).name == 'test_scrublet.parquet'
                 assert predictions.columnNames == ['__index__', 'test_scrublet']
-                assert predictions.schema.fields.find { it.name == 'test_scrublet' }.physicalType == 'BOOLEAN'
+                assert predictions.schemaDetails.fields.find { it.name == 'test_scrublet' }.physicalType == 'BOOLEAN'
                 assert predictions.compressionCodecs == ['SNAPPY']
-                def rows = predictions.rows
+                def rows = predictions.rowMaps
                 assert rows.size() > 0
                 assert rows.every { it.__index__ instanceof String && it.test_scrublet instanceof Boolean }
                 assert rows.collect { it.__index__ }.toSet().size() == rows.size()
                 assert rows.findAll { !it.test_scrublet }.collect { it.__index__ } == anndata(process.out.h5ad[0][1]).obs.index.values
-                def scores = parquet(process.out.scores[0][1])
+                def scores = path(process.out.scores[0][1]).parquet
                 assert scores.columnNames == ['__index__', 'scrublet_score']
                 assert scores.compressionCodecs == ['SNAPPY']
-                assert scores.rows.collect { it.__index__ } == rows.collect { it.__index__ }
-                assert scores.rows.every { it.scrublet_score instanceof Number }
+                assert scores.rowMaps.collect { it.__index__ } == rows.collect { it.__index__ }
+                assert scores.rowMaps.every { it.scrublet_score instanceof Number }
             },
             { assert snapshot(
                 sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions", "scores"]),
@@ -72,7 +72,7 @@ nextflow_process {
             assertAll(
             { assert process.success },
             {
-                def unbatchedScores = parquet(process.out.scores[0][1])
+                def unbatchedScores = path(process.out.scores[0][1]).parquet
                 assert unbatchedScores.columnNames == ['__index__', 'scrublet_score']
                 assert snapshot(
                 sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions", "scores"]),
@@ -102,8 +102,8 @@ nextflow_process {
             assertAll(
             { assert process.success },
             {
-                def emptyBatchScores = parquet(process.out.scores[0][1])
-                assert emptyBatchScores.rows.collect { it.__index__ } == parquet(process.out.predictions[0][1]).rows.collect { it.__index__ }
+                def emptyBatchScores = path(process.out.scores[0][1]).parquet
+                assert emptyBatchScores.rowMaps.collect { it.__index__ } == path(process.out.predictions[0][1]).parquet.rowMaps.collect { it.__index__ }
                 assert snapshot(
                 sanitizeOutput(process.out, unstableKeys: ["h5ad", "predictions", "scores"]),
                 process.out.versions.collect { path(it).yaml }

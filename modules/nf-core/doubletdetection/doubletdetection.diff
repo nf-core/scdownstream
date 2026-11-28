@@ -243,11 +243,11 @@ Changes in 'doubletdetection/tests/main.nf.test':
                  { assert path(process.out.predictions.get(0).get(1)).exists() },
 +                {
 +                    assert file(process.out.predictions[0][1]).name == 'test_doubletdetection.parquet'
-+                    def predictions = parquet(process.out.predictions[0][1])
++                    def predictions = path(process.out.predictions[0][1]).parquet
 +                    assert predictions.columnNames == ['__index__', 'test_doubletdetection']
-+                    assert predictions.schema.fields.find { it.name == 'test_doubletdetection' }.physicalType == 'BOOLEAN'
++                    assert predictions.schemaDetails.fields.find { it.name == 'test_doubletdetection' }.physicalType == 'BOOLEAN'
 +                    assert predictions.compressionCodecs == ['SNAPPY']
-+                    def rows = predictions.rows
++                    def rows = predictions.rowMaps
 +                    def adata = anndata(process.out.h5ad[0][1])
 +                    assert rows.size() == adata.n_obs
 +                    assert rows.every { it.__index__ instanceof String && it.test_doubletdetection instanceof Boolean }
@@ -258,11 +258,11 @@ Changes in 'doubletdetection/tests/main.nf.test':
 +                    }
 +                    assert rows.collect { it.test_doubletdetection } == calls
 +                    assert adata.obs.get('doublet_score').data.every { it instanceof Number }
-+                    def scores = parquet(process.out.scores[0][1])
++                    def scores = path(process.out.scores[0][1]).parquet
 +                    assert scores.columnNames == ['__index__', 'doubletdetection_score']
 +                    assert scores.compressionCodecs == ['SNAPPY']
-+                    assert scores.rows.collect { it.__index__ } == rows.collect { it.__index__ }
-+                    assert scores.rows.collect { it.doubletdetection_score } == adata.obs.get('doublet_score').data
++                    assert scores.rowMaps.collect { it.__index__ } == rows.collect { it.__index__ }
++                    assert scores.rowMaps.collect { it.doubletdetection_score } == adata.obs.get('doublet_score').data
 +                },
  
                  { assert snapshot(

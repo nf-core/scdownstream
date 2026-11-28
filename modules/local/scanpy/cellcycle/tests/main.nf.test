@@ -30,16 +30,16 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
-            def fragment = parquet(process.out.obs[0][1])
+            def fragment = path(process.out.obs[0][1]).parquet
             assert file(process.out.obs[0][1]).name == 'test_cellcycle.parquet'
             assert fragment.columnNames == ['__index__', 'S_score', 'G2M_score', 'phase']
             assert fragment.compressionCodecs == ['SNAPPY']
             assert fragment.rowCount == adata.n_obs
-            assert fragment.schema.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
-            assert fragment.schema.fields.find { it.name == 'phase' }.logicalType.type == 'STRING'
-            assert fragment.schema.fields.find { it.name == 'S_score' }.physicalType == 'DOUBLE'
-            assert fragment.schema.fields.find { it.name == 'G2M_score' }.physicalType == 'DOUBLE'
-            def rows = fragment.rows
+            assert fragment.schemaDetails.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
+            assert fragment.schemaDetails.fields.find { it.name == 'phase' }.logicalType.type == 'STRING'
+            assert fragment.schemaDetails.fields.find { it.name == 'S_score' }.physicalType == 'DOUBLE'
+            assert fragment.schemaDetails.fields.find { it.name == 'G2M_score' }.physicalType == 'DOUBLE'
+            def rows = fragment.rowMaps
             assert rows.every { it.__index__ instanceof String }
             assert rows.collect { it.__index__ }.toSet().size() == fragment.rowCount
             assert rows.collect { it.__index__ } == adata.obs.index.values.toList()

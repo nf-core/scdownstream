@@ -27,12 +27,12 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 {
-                    def predictions = parquet(process.out.predictions[0][1])
+                    def predictions = path(process.out.predictions[0][1]).parquet
                     assert file(process.out.predictions[0][1]).name == 'test_solo.parquet'
                     assert predictions.columnNames == ['__index__', 'test_solo']
-                    assert predictions.schema.fields.find { it.name == 'test_solo' }.physicalType == 'BOOLEAN'
+                    assert predictions.schemaDetails.fields.find { it.name == 'test_solo' }.physicalType == 'BOOLEAN'
                     assert predictions.compressionCodecs == ['SNAPPY']
-                    def rows = predictions.rows
+                    def rows = predictions.rowMaps
                     assert rows.size() > 0
                     assert rows.every { it.__index__ instanceof String && it.test_solo instanceof Boolean }
                     assert rows.collect { it.__index__ }.toSet().size() == rows.size()

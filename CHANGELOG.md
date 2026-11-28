@@ -90,6 +90,8 @@ Initial release of nf-core/scdownstream, created with the [nf-core](https://nf-c
 
 ### `Fixed`
 
+- Fix Conda compatibility for LIANA and EXPIMAP and align CellTypist and QC plotting dependencies with the tested containers, by @nictru and Codex [[#431](https://github.com/nf-core/scdownstream/pull/431)].
+- Update the Parquet test plugin and use its built-in fingerprints for decoded Parquet snapshots, by @nictru and Codex [[#431](https://github.com/nf-core/scdownstream/pull/431)].
 - Restrict pseudobulk exports and downstream analyses to genes shared by the input samples after applying sample filters, by @nictru and Codex.
 - Match pretrained scANVI checkpoints to the query label column, unlabeled category, and counts layer, by @nictru and Codex.
 - Record per-sample gene presence in the merged H5AD and require it to derive the gene intersection during atlas extension, by @nictru and Codex [[#425](https://github.com/nf-core/scdownstream/issues/425)].

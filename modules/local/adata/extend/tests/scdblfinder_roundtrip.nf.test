@@ -37,14 +37,14 @@ nextflow_process {
             assert process.success
             def output = path(process.out.h5ad[0][1])
             def adata = anndata(output)
-            def fragment = parquet(output.parent.resolve('obs/test:doublets_scdblfinder.predictions.parquet'))
+            def fragment = output.parent.resolve('obs/test:doublets_scdblfinder.predictions.parquet').parquet
             def column = 'test:doublets_scdblfinder'
             assert fragment.columnNames == ['__index__', column]
-            assert fragment.rows.collect { it.__index__ } == adata.obs.rownames.toList()
+            assert fragment.rowMaps.collect { it.__index__ } == adata.obs.rownames.toList()
             assert !adata.obs.colnames.contains('__index__')
             assert column in adata.obs.colnames
-            assert fragment.rows.every { it[column] instanceof Boolean }
-            assert adata.obs.get(column).data.collect { it.toString().toLowerCase() } == fragment.rows.collect { it[column].toString() }
+            assert fragment.rowMaps.every { it[column] instanceof Boolean }
+            assert adata.obs.get(column).data.collect { it.toString().toLowerCase() } == fragment.rowMaps.collect { it[column].toString() }
         }
     }
 }

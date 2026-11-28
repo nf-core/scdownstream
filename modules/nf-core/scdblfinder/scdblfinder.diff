@@ -425,24 +425,24 @@ Changes in 'scdblfinder/tests/main.nf.test':
 -            assert calls.drop(1).every { line -> line.endsWith(",TRUE") || line.endsWith(",FALSE") }
 -            def scores = new File(process.out.scores[0][1].toString()).readLines()
 -            assert scores.size() == 1001
-+            def calls = parquet(process.out.predictions[0][1])
++            def calls = path(process.out.predictions[0][1]).parquet
 +            assert calls.columnNames == ['__index__', 'test_scdblfinder']
-+            assert calls.rows.size() == 1000
-+            assert calls.rows.every { it.__index__ instanceof String && it.test_scdblfinder instanceof Boolean }
-+            def scores = parquet(process.out.scores[0][1])
-+            assert scores.rows.size() == 1000
++            assert calls.rowMaps.size() == 1000
++            assert calls.rowMaps.every { it.__index__ instanceof String && it.test_scdblfinder instanceof Boolean }
++            def scores = path(process.out.scores[0][1]).parquet
++            assert scores.rowMaps.size() == 1000
              def adata = anndata(process.out.h5ad[0][1])
              with(adata) {
                  assert "scDblFinder.class" in obs.colnames
                  assert "scDblFinder.score" in obs.colnames
              }
-+            assert calls.rows.collect { it.__index__ } == adata.obs.index.values
-+            assert calls.rows.collect { it.test_scdblfinder } == adata.obs.get('scDblFinder.class').data.collect { it == 'doublet' }
-+            assert scores.rows.collect { it['scDblFinder.score'] } == adata.obs.get('scDblFinder.score').data
++            assert calls.rowMaps.collect { it.__index__ } == adata.obs.index.values
++            assert calls.rowMaps.collect { it.test_scdblfinder } == adata.obs.get('scDblFinder.class').data.collect { it == 'doublet' }
++            assert scores.rowMaps.collect { it['scDblFinder.score'] } == adata.obs.get('scDblFinder.score').data
              assert snapshot(
                  sanitizeOutput(process.out, unstableKeys: ['h5ad', 'scores']),
 -                scores.size(),
-+                scores.rows.size(),
++                scores.rowMaps.size(),
                  adata.yaml
              ).match()
          }
@@ -456,24 +456,24 @@ Changes in 'scdblfinder/tests/main.nf.test':
 -            assert calls.drop(1).every { line -> line.endsWith(",TRUE") || line.endsWith(",FALSE") }
 -            def scores = new File(process.out.scores[0][1].toString()).readLines()
 -            assert scores.size() == 1001
-+            def batchCalls = parquet(process.out.predictions[0][1])
++            def batchCalls = path(process.out.predictions[0][1]).parquet
 +            assert batchCalls.columnNames == ['__index__', 'test_scdblfinder']
-+            assert batchCalls.rows.size() == 1000
-+            assert batchCalls.rows.every { it.__index__ instanceof String && it.test_scdblfinder instanceof Boolean }
-+            def batchScores = parquet(process.out.scores[0][1])
-+            assert batchScores.rows.size() == 1000
++            assert batchCalls.rowMaps.size() == 1000
++            assert batchCalls.rowMaps.every { it.__index__ instanceof String && it.test_scdblfinder instanceof Boolean }
++            def batchScores = path(process.out.scores[0][1]).parquet
++            assert batchScores.rowMaps.size() == 1000
              def adata = anndata(process.out.h5ad[0][1])
              with(adata) {
                  assert "scDblFinder.class" in obs.colnames
                  assert "scDblFinder.score" in obs.colnames
              }
-+            assert batchCalls.rows.collect { it.__index__ } == adata.obs.index.values
-+            assert batchCalls.rows.collect { it.test_scdblfinder } == adata.obs.get('scDblFinder.class').data.collect { it == 'doublet' }
-+            assert batchScores.rows.collect { it['scDblFinder.score'] } == adata.obs.get('scDblFinder.score').data
++            assert batchCalls.rowMaps.collect { it.__index__ } == adata.obs.index.values
++            assert batchCalls.rowMaps.collect { it.test_scdblfinder } == adata.obs.get('scDblFinder.class').data.collect { it == 'doublet' }
++            assert batchScores.rowMaps.collect { it['scDblFinder.score'] } == adata.obs.get('scDblFinder.score').data
              assert snapshot(
                  sanitizeOutput(process.out, unstableKeys: ['h5ad', 'scores']),
 -                scores.size(),
-+                batchScores.rows.size(),
++                batchScores.rowMaps.size(),
                  adata.yaml
              ).match()
          }
