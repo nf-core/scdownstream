@@ -45,10 +45,10 @@ nextflow_process {
             def meta = process.out.h5ad[0][0]
             def adata = anndata(process.out.h5ad[0][1])
             def producer = anndata(meta.producer_path)
-            def fragment = parquet(meta.fragment_path)
+            def fragment = path(meta.fragment_path).parquet
             assert file(meta.fragment_path).name == 'roundtrip:leiden_leiden.parquet'
             assert fragment.columnNames == ['__index__', 'roundtrip_cluster']
-            assert fragment.schema.fields.every { it.logicalType.type == 'STRING' }
+            assert fragment.schemaDetails.fields.every { it.logicalType.type == 'STRING' }
             assert fragment.compressionCodecs == ['SNAPPY']
             assert adata.n_obs == producer.n_obs
             assert adata.n_vars == producer.n_vars
@@ -56,7 +56,7 @@ nextflow_process {
             assert adata.var.index.values.toList() == producer.var.index.values.toList()
             assert !adata.obs.colnames.contains('__index__')
             assert 'roundtrip_cluster' in adata.obs.colnames
-            def rows = fragment.rows
+            def rows = fragment.rowMaps
             assert rows.collect { it.__index__ } == adata.obs.index.values.toList()
             assert rows.collect { it.roundtrip_cluster } == adata.obs.get('roundtrip_cluster').data.toList()
             assert adata.obs.get('roundtrip_cluster').data.toList() == producer.obs.get('roundtrip_cluster').data.toList()

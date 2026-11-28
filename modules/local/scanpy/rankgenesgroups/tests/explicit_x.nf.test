@@ -36,11 +36,11 @@ nextflow_process {
             assert outputs.raw_absent.n_vars == 128
             assert outputs.raw_absent.obs.index.values == outputs.raw_conflicting.obs.index.values
             assert outputs.values().every { 'rank_genes_groups' in it.uns }
-            def tables = process.out.results.collectEntries { meta, table -> [(meta.id): parquet(table)] }
+            def tables = process.out.results.collectEntries { meta, table -> [(meta.id): path(table).parquet] }
             assert tables.raw_absent.rowCount == 256
             assert tables.raw_absent.columnNames == tables.raw_conflicting.columnNames
-            assert tables.raw_absent.schema == tables.raw_conflicting.schema
-            def sortRows = { table -> table.rows.sort { a, b -> (a.group <=> b.group) ?: (a.gene <=> b.gene) } }
+            assert tables.raw_absent.schemaDetails == tables.raw_conflicting.schemaDetails
+            def sortRows = { table -> table.rowMaps.sort { a, b -> (a.group <=> b.group) ?: (a.gene <=> b.gene) } }
             assert sortRows(tables.raw_absent) == sortRows(tables.raw_conflicting)
             def markers = process.out.markers.collectEntries { marker -> [(file(marker).name): file(marker).text.readLines().drop(1).sort()] }
             assert markers['raw_absent_characteristic_genes_markers.csv'] == markers['raw_conflicting_characteristic_genes_markers.csv']
@@ -70,11 +70,11 @@ nextflow_process {
             assert process.out.markers.size() == 2
             assert process.out.plots.flatten().size() == 4
             assert process.out.multiqc_files.flatten().size() == 4
-            def tables = process.out.results.collectEntries { meta, table -> [(meta.id): parquet(table)] }
+            def tables = process.out.results.collectEntries { meta, table -> [(meta.id): path(table).parquet] }
             assert tables.raw_absent.rowCount == 256
             assert tables.raw_absent.columnNames == tables.raw_conflicting.columnNames
-            assert tables.raw_absent.schema == tables.raw_conflicting.schema
-            def sortRows = { table -> table.rows.sort { a, b -> (a.group <=> b.group) ?: (a.gene <=> b.gene) } }
+            assert tables.raw_absent.schemaDetails == tables.raw_conflicting.schemaDetails
+            def sortRows = { table -> table.rowMaps.sort { a, b -> (a.group <=> b.group) ?: (a.gene <=> b.gene) } }
             assert sortRows(tables.raw_absent) == sortRows(tables.raw_conflicting)
             def markers = process.out.markers.collectEntries { marker -> [(file(marker).name): file(marker).text.readLines().drop(1).sort()] }
             assert markers['raw_absent_characteristic_genes_markers.csv'] == markers['raw_conflicting_characteristic_genes_markers.csv']

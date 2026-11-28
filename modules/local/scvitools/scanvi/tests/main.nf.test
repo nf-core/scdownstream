@@ -64,20 +64,20 @@ nextflow_process {
             }
             assert file(process.out.obsm[0]).name == 'X_test_scanvi.parquet'
             assert file(process.out.obs[0]).name == 'test_scanvi.parquet'
-            def embedding = parquet(process.out.obsm[0])
+            def embedding = path(process.out.obsm[0]).parquet
             assert embedding.rowCount == adata.n_obs
             assert embedding.columnNames == ['__index__'] + (0..<30).collect { it.toString() }
-            assert embedding.schema.fields[0].logicalType.type == 'STRING'
-            assert embedding.schema.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.schemaDetails.fields[0].logicalType.type == 'STRING'
+            assert embedding.schemaDetails.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
             assert embedding.compressionCodecs == ['SNAPPY']
-            assert embedding.rows.collect { it.__index__ } == adata.obs.index.values
-            def labels = parquet(process.out.obs[0])
+            assert embedding.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            def labels = path(process.out.obs[0]).parquet
             assert labels.columnNames == ['__index__', 'label:scANVI']
             assert labels.rowCount == adata.n_obs
-            assert labels.schema.fields[0].logicalType.type == 'STRING'
+            assert labels.schemaDetails.fields[0].logicalType.type == 'STRING'
             assert labels.compressionCodecs == ['SNAPPY']
-            assert labels.rows.collect { it.__index__ } == adata.obs.index.values
-            assert labels.rows.collect { it['label:scANVI'] } == adata.obs.get('label:scANVI').data
+            assert labels.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            assert labels.rowMaps.collect { it['label:scANVI'] } == adata.obs.get('label:scANVI').data
             assert snapshot(
                 file(process.out.h5ad[0][1]).name,
                 file(process.out.model[0][1]).name,
@@ -164,20 +164,20 @@ nextflow_process {
             }
             assert file(process.out.obsm[0]).name == 'X_test_scanvi.parquet'
             assert file(process.out.obs[0]).name == 'test_scanvi.parquet'
-            def embedding = parquet(process.out.obsm[0])
+            def embedding = path(process.out.obsm[0]).parquet
             assert embedding.rowCount == adata.n_obs
             assert embedding.columnNames == ['__index__'] + (0..<30).collect { it.toString() }
-            assert embedding.schema.fields[0].logicalType.type == 'STRING'
-            assert embedding.schema.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.schemaDetails.fields[0].logicalType.type == 'STRING'
+            assert embedding.schemaDetails.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
             assert embedding.compressionCodecs == ['SNAPPY']
-            assert embedding.rows.collect { it.__index__ } == adata.obs.index.values
-            def labels = parquet(process.out.obs[0])
+            assert embedding.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            def labels = path(process.out.obs[0]).parquet
             assert labels.columnNames == ['__index__', 'label:scANVI']
             assert labels.rowCount == adata.n_obs
-            assert labels.schema.fields[0].logicalType.type == 'STRING'
+            assert labels.schemaDetails.fields[0].logicalType.type == 'STRING'
             assert labels.compressionCodecs == ['SNAPPY']
-            assert labels.rows.collect { it.__index__ } == adata.obs.index.values
-            assert labels.rows.collect { it['label:scANVI'] } == adata.obs.get('label:scANVI').data
+            assert labels.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            assert labels.rowMaps.collect { it['label:scANVI'] } == adata.obs.get('label:scANVI').data
             assert snapshot(
                 file(process.out.h5ad[0][1]).name,
                 file(process.out.model[0][1]).name,

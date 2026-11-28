@@ -30,14 +30,14 @@ nextflow_process {
             assert process.success
             def input = anndata("${file(process.out.h5ad[0][1]).parent}/input/counts.h5ad")
             def output = anndata(process.out.h5ad[0][1])
-            def embedding = parquet(process.out.obsm[0])
+            def embedding = path(process.out.obsm[0]).parquet
             assert output.obs.index.values == input.obs.index.values
             assert output.var.index.values == input.var.index.values
             assert 'X_emb' in output.obsm
             assert embedding.rowCount == output.n_obs
-            assert embedding.rows.collect { it.__index__ } == input.obs.index.values
+            assert embedding.rowMaps.collect { it.__index__ } == input.obs.index.values
             assert embedding.columnNames == ['__index__'] + (0..<512).collect { it.toString() }
-            assert embedding.schema.fields.drop(1).every { it.physicalType == 'FLOAT' }
+            assert embedding.schemaDetails.fields.drop(1).every { it.physicalType == 'FLOAT' }
             assert file(process.out.obsm[0]).name == 'X_pbmc.parquet'
             def versions = path(process.out.versions[0]).yaml.SCCONCEPT_EMBED
             assert snapshot(output.n_obs, output.n_vars, versions['sc-concept']).match()

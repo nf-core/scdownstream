@@ -37,14 +37,14 @@ nextflow_process {
                 assert entropy_values.every { it >= 0.0 && it <= 1.0 }
                 assert entropy_values.every { !it.isNaN() && !it.isInfinite() }
             }
-            def fragment = parquet(process.out.obs[0])
+            def fragment = path(process.out.obs[0]).parquet
             assert file(process.out.obs[0]).name == 'test_entropy.parquet'
             assert fragment.columnNames == ['__index__', 'test:entropy']
             assert fragment.compressionCodecs == ['SNAPPY']
             assert fragment.rowCount == adata.n_obs
-            assert fragment.schema.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
-            assert fragment.schema.fields.find { it.name == 'test:entropy' }.physicalType == 'DOUBLE'
-            def rows = fragment.rows
+            assert fragment.schemaDetails.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
+            assert fragment.schemaDetails.fields.find { it.name == 'test:entropy' }.physicalType == 'DOUBLE'
+            def rows = fragment.rowMaps
             assert rows.collect { it.__index__ } == adata.obs.index.values.toList()
             assert rows.every { it.__index__ instanceof String }
             assert rows.collect { it.__index__ }.toSet().size() == fragment.rowCount
@@ -88,10 +88,10 @@ nextflow_process {
                 assert entropy_values.every { it == 0.0 }
                 assert entropy_values.every { !it.isNaN() && !it.isInfinite() }
             }
-            def fragment = parquet(process.out.obs[0])
+            def fragment = path(process.out.obs[0]).parquet
             assert fragment.columnNames == ['__index__', 'single:entropy']
             assert fragment.rowCount == adata.n_obs
-            assert fragment.rows.every { it['single:entropy'] == 0.0 }
+            assert fragment.rowMaps.every { it['single:entropy'] == 0.0 }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml

@@ -43,13 +43,13 @@ nextflow_process {
                 assert "X_emb" in obsm
             }
             assert file(process.out.obsm[0]).name == 'X_test.parquet'
-            def embedding = parquet(process.out.obsm[0])
+            def embedding = path(process.out.obsm[0]).parquet
             assert embedding.rowCount == adata.n_obs
             assert embedding.columnNames == ['__index__'] + (0..<30).collect { it.toString() }
-            assert embedding.schema.fields[0].logicalType.type == 'STRING'
-            assert embedding.schema.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.schemaDetails.fields[0].logicalType.type == 'STRING'
+            assert embedding.schemaDetails.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
             assert embedding.compressionCodecs == ['SNAPPY']
-            assert embedding.rows.collect { it.__index__ } == adata.obs.index.values
+            assert embedding.rowMaps.collect { it.__index__ } == adata.obs.index.values
             assert snapshot(
                     // Hashes are not stable due to floating point inaccuracies
                     path(process.out.versions[0]).yaml,
@@ -128,13 +128,13 @@ nextflow_process {
             assert 'log1p' in adata.layers
             assert adata.obs.get('n_genes_by_counts').data.every { it > 0 }
             assert file(process.out.obsm[0]).name == 'X_counts.parquet'
-            def embedding = parquet(process.out.obsm[0])
+            def embedding = path(process.out.obsm[0]).parquet
             assert embedding.rowCount == adata.n_obs
             assert embedding.columnNames == ['__index__'] + (0..<5).collect { it.toString() }
-            assert embedding.schema.fields[0].logicalType.type == 'STRING'
-            assert embedding.schema.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.schemaDetails.fields[0].logicalType.type == 'STRING'
+            assert embedding.schemaDetails.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
             assert embedding.compressionCodecs == ['SNAPPY']
-            assert embedding.rows.collect { it.__index__ } == adata.obs.index.values
+            assert embedding.rowMaps.collect { it.__index__ } == adata.obs.index.values
         }
     }
 

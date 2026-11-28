@@ -41,7 +41,7 @@ nextflow_pipeline {
             // stable_path: All files in ${params.outdir}/ with stable content
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore').collect { output ->
                 def filename = output.toString()
-                filename.endsWith('_scdblfinder.predictions.parquet') ? ParquetSnapshot.content(filename, parquet(filename)) : output
+                filename.endsWith('_scdblfinder.predictions.parquet') ? path(filename).parquet.fingerprint : output
             }
             assert snapshot(
                 removeNextflowVersion("$outputDir/pipeline_info/nf_core_scdownstream_software_mqc_versions.yml"),

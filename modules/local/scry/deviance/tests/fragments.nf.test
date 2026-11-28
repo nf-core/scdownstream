@@ -40,17 +40,17 @@ nextflow_process {
             assert process.success
             def output = path(process.out.h5ad[0][1])
             def adata = anndata(output)
-            def fragment = parquet(output.parent.resolve('var/deviance_subset_CD4_T_features.parquet'))
-            assert fragment.rows.collect { it.__index__ } == adata.var.rownames.toList()
+            def fragment = output.parent.resolve('var/deviance_subset_CD4_T_features.parquet').parquet
+            assert fragment.rowMaps.collect { it.__index__ } == adata.var.rownames.toList()
             assert !adata.var.colnames.contains('__index__')
             assert adata.n_vars == 3000
             def flag = 'deviance:subset:CD4_T:highly_deviant'
             def score = 'deviance:subset:CD4_T:binomial_deviance'
             assert [flag, score].every { it in adata.var.colnames }
-            assert fragment.rows.every { it[flag] instanceof Boolean && it[score] instanceof Number }
-            assert adata.var.get(flag).data.collect { it.toString().toLowerCase() } == fragment.rows.collect { it[flag].toString() }
+            assert fragment.rowMaps.every { it[flag] instanceof Boolean && it[score] instanceof Number }
+            assert adata.var.get(flag).data.collect { it.toString().toLowerCase() } == fragment.rowMaps.collect { it[flag].toString() }
             assert adata.var.get(score).data.every { it instanceof Number }
-            assert adata.var.get(score).data.toList() == fragment.rows.collect { it[score] }
+            assert adata.var.get(score).data.toList() == fragment.rowMaps.collect { it[score] }
         }
     }
 }

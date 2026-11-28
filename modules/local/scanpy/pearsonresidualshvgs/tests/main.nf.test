@@ -35,10 +35,10 @@ nextflow_process {
             assert !process.out.h5ad[0][1].toString().tokenize('/').last().contains(':')
             assert !process.out.var[0].toString().tokenize('/').last().contains(':')
             assert "highly_variable" in adata.var.colnames
-            def fragment = parquet(process.out.var[0])
+            def fragment = path(process.out.var[0]).parquet
             assert fragment.columnNames == ['__index__', 'highly_variable:pearson_residuals']
             assert fragment.compressionCodecs == ['SNAPPY']
-            assert fragment.rows.every { it['highly_variable:pearson_residuals'] instanceof Boolean }
+            assert fragment.rowMaps.every { it['highly_variable:pearson_residuals'] instanceof Boolean }
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml

@@ -68,10 +68,10 @@ nextflow_workflow {
             assert workflow.success
             def grnFragments = workflow.out.uns.findAll { entry -> file(entry).name == 'test_grn.parquet' }
             assert grnFragments.size() == 1
-            def fragment = parquet(grnFragments[0])
+            def fragment = path(grnFragments[0]).parquet
             assert fragment.columnNames == ['__index__', 'group', 'TF', 'target', 'importance']
-            assert fragment.schema.fields.find { it.name == 'importance' }.physicalType == 'DOUBLE'
-            def rows = fragment.rows
+            assert fragment.schemaDetails.fields.find { it.name == 'importance' }.physicalType == 'DOUBLE'
+            def rows = fragment.rowMaps
             // Cluster 5 has 3 cells and falls below grn_min_cells
             assert rows.collect { it.group }.toSet() == ['0', '1', '2', '3', '4'].toSet()
             rows.groupBy { it.group }.each { _group, links -> assert links.size() <= 200 }

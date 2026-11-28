@@ -30,17 +30,17 @@ nextflow_process {
         then {
             def adata = anndata(process.out.h5ad[0][1])
             assert process.success
-            def fragment = parquet(process.out.obs[0][1])
+            def fragment = path(process.out.obs[0][1]).parquet
             assert file(process.out.obs[0][1]).name == 'test_sex.parquet'
             assert fragment.columnNames == ['__index__', 'sex_y_fraction', 'sex_xist_fraction', 'sex_cell_call', 'predicted_sex']
             assert fragment.compressionCodecs == ['SNAPPY']
             assert fragment.rowCount == adata.n_obs
-            assert fragment.schema.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
-            assert fragment.schema.fields.find { it.name == 'sex_cell_call' }.logicalType.type == 'STRING'
-            assert fragment.schema.fields.find { it.name == 'predicted_sex' }.logicalType.type == 'STRING'
-            assert fragment.schema.fields.find { it.name == 'sex_y_fraction' }.physicalType == 'DOUBLE'
-            assert fragment.schema.fields.find { it.name == 'sex_xist_fraction' }.physicalType == 'DOUBLE'
-            def rows = fragment.rows
+            assert fragment.schemaDetails.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
+            assert fragment.schemaDetails.fields.find { it.name == 'sex_cell_call' }.logicalType.type == 'STRING'
+            assert fragment.schemaDetails.fields.find { it.name == 'predicted_sex' }.logicalType.type == 'STRING'
+            assert fragment.schemaDetails.fields.find { it.name == 'sex_y_fraction' }.physicalType == 'DOUBLE'
+            assert fragment.schemaDetails.fields.find { it.name == 'sex_xist_fraction' }.physicalType == 'DOUBLE'
+            def rows = fragment.rowMaps
             assert rows.collect { it.__index__ } == adata.obs.index.values.toList()
             assert rows.every { it.sex_cell_call in ['male', 'female', 'both', 'unknown'] }
             assert rows.collect { it.predicted_sex }.toSet().size() == 1

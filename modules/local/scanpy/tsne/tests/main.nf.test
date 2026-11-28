@@ -33,13 +33,13 @@ nextflow_process {
                 assert obsm.any { it.endsWith("_tsne") }
             }
             assert file(process.out.obsm[0]).name == 'X_test_tsne.parquet'
-            def embedding = parquet(process.out.obsm[0])
+            def embedding = path(process.out.obsm[0]).parquet
             assert embedding.rowCount == adata.n_obs
             assert embedding.columnNames == ['__index__', '0', '1']
-            assert embedding.schema.fields[0].logicalType.type == 'STRING'
-            assert embedding.schema.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.schemaDetails.fields[0].logicalType.type == 'STRING'
+            assert embedding.schemaDetails.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
             assert embedding.compressionCodecs == ['SNAPPY']
-            assert embedding.rows.collect { it.__index__ } == adata.obs.index.values
+            assert embedding.rowMaps.collect { it.__index__ } == adata.obs.index.values
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml
@@ -165,13 +165,13 @@ nextflow_process {
                 assert obsm.contains("X_custom")
             }
             assert file(process.out.obsm[0]).name == 'X_test_tsne.parquet'
-            def embedding = parquet(process.out.obsm[0])
+            def embedding = path(process.out.obsm[0]).parquet
             assert embedding.rowCount == adata.n_obs
             assert embedding.columnNames == ['__index__', '0', '1']
-            assert embedding.schema.fields[0].logicalType.type == 'STRING'
-            assert embedding.schema.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.schemaDetails.fields[0].logicalType.type == 'STRING'
+            assert embedding.schemaDetails.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
             assert embedding.compressionCodecs == ['SNAPPY']
-            assert embedding.rows.collect { it.__index__ } == adata.obs.index.values
+            assert embedding.rowMaps.collect { it.__index__ } == adata.obs.index.values
         }
 
     }

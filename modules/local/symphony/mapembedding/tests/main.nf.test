@@ -51,14 +51,14 @@ nextflow_process {
             assert "X_emb" in adata.obsm
             assert "X_symphony" in adata.obsm
             assert file(process.out.obsm[0]).name == 'X_symphony.parquet'
-            def embedding = parquet(process.out.obsm[0])
+            def embedding = path(process.out.obsm[0]).parquet
             assert embedding.rowCount == adata.n_obs
             assert embedding.columnNames[0] == '__index__'
             assert embedding.columnNames.drop(1) == (0..<(embedding.columnNames.size() - 1)).collect { it.toString() }
-            assert embedding.schema.fields[0].logicalType.type == 'STRING'
-            assert embedding.schema.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.schemaDetails.fields[0].logicalType.type == 'STRING'
+            assert embedding.schemaDetails.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
             assert embedding.compressionCodecs == ['SNAPPY']
-            assert embedding.rows.collect { it.__index__ } == adata.obs.index.values
+            assert embedding.rowMaps.collect { it.__index__ } == adata.obs.index.values
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.yaml

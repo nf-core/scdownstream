@@ -645,10 +645,10 @@ nextflow_workflow {
             assert workflow.out.obs.size() == 1
             assert workflow.out.obs.every { entry -> entry[0] == meta }
             assert !adata.obs.colnames.any { it in ['sex_y_fraction', 'sex_xist_fraction', 'sex_cell_call', 'predicted_sex'] }
-            def fragment = parquet(sexFragments[0][1])
+            def fragment = path(sexFragments[0][1]).parquet
             assert fragment.columnNames == ['__index__', 'sex_y_fraction', 'sex_xist_fraction', 'sex_cell_call', 'predicted_sex']
             assert fragment.rowCount == adata.n_obs
-            assert fragment.rows.collect { it.__index__ } == adata.obs.index.values.toList()
+            assert fragment.rowMaps.collect { it.__index__ } == adata.obs.index.values.toList()
             assert snapshot(workflow.out.obs.collect { path(it[1]).fileName.toString() }.sort()).match()
         }
 

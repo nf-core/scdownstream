@@ -46,11 +46,11 @@ nextflow_process {
                 'design_edgepython_TypeB_Disease_results.parquet'
             ]
             assert tables.every { file(it).size() > 0 }
-            def table = parquet(tables.find { file(it).name.contains('_TypeA_') })
+            def table = path(tables.find { file(it).name.contains('_TypeA_') }).parquet
             assert table.rowCount == 3000
             assert table.columnNames.take(7) == ['gene', 'log2fc', 'pvalue', 'padj', 'group', 'contrast', 'stratum']
-            assert table.schema.fields.find { it.name == 'log2fc' }.physicalType == 'DOUBLE'
-            def row = table.rows.find { it.gene == 'FOXN3' }
+            assert table.schemaDetails.fields.find { it.name == 'log2fc' }.physicalType == 'DOUBLE'
+            def row = table.rowMaps.find { it.gene == 'FOXN3' }
             assert row != null
             assert row.group == 'Disease'
             assert row.contrast == 'Disease vs Healthy'
@@ -107,10 +107,10 @@ nextflow_process {
                 'design_edgepython_TypeB_Disease_results.parquet'
             ]
             assert tables.every { file(it).size() > 0 }
-            def table = parquet(tables.find { file(it).name.contains('_TypeA_') })
+            def table = path(tables.find { file(it).name.contains('_TypeA_') }).parquet
             assert table.rowCount == 3000
             assert table.columnNames.take(7) == ['gene', 'log2fc', 'pvalue', 'padj', 'group', 'contrast', 'stratum']
-            def row = table.rows.find { it.gene == 'H4C15' }
+            def row = table.rowMaps.find { it.gene == 'H4C15' }
             assert row != null
             assert row.group == 'Disease'
             assert row.contrast == 'Disease vs Healthy'

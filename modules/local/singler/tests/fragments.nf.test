@@ -42,16 +42,16 @@ nextflow_process {
             assert process.success
             def output = path(process.out.h5ad[0][1])
             def adata = anndata(output)
-            def fragment = parquet(output.parent.resolve('obs/test_singler_predictions.parquet'))
+            def fragment = output.parent.resolve('obs/test_singler_predictions.parquet').parquet
             def columns = fragment.columnNames.findAll { it != '__index__' }
-            assert fragment.rows.collect { it.__index__ } == adata.obs.rownames.toList()
+            assert fragment.rowMaps.collect { it.__index__ } == adata.obs.rownames.toList()
             assert !adata.obs.colnames.contains('__index__')
             assert columns.every { it in adata.obs.colnames }
             def annotations = columns.findAll { it.startsWith('annotation:') }
             assert annotations.toSet() == ['annotation:singler:hpca:per_cell', 'annotation:singler:hpca:per_cell:pruned'].toSet()
             annotations.each { column ->
                 def values = adata.obs.get(column).data
-                fragment.rows.eachWithIndex { row, index ->
+                fragment.rowMaps.eachWithIndex { row, index ->
                     if (row[column] != null) {
                         assert row[column] instanceof String
                         assert values[index] == row[column]
@@ -62,9 +62,9 @@ nextflow_process {
             assert numeric.any { it.startsWith('scores') }
             assert numeric.any { it.startsWith('delta.next') }
             numeric.each { column ->
-                assert fragment.rows.every { it[column] == null || it[column] instanceof Number }
+                assert fragment.rowMaps.every { it[column] == null || it[column] instanceof Number }
                 assert adata.obs.get(column).data.every { it instanceof Number }
-                assert adata.obs.get(column).data.toList() == fragment.rows.collect { it[column] }
+                assert adata.obs.get(column).data.toList() == fragment.rowMaps.collect { it[column] }
             }
         }
     }

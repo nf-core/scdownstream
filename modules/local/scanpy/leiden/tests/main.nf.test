@@ -37,13 +37,13 @@ nextflow_process {
                 def n_clusters = obs.get("leiden").n_unique()
                 assert n_clusters >= 5 && n_clusters <= 30 : "Expected 5-30 Leiden clusters, got ${n_clusters}"
             }
-            def fragment = parquet(process.out.obs[0])
+            def fragment = path(process.out.obs[0]).parquet
             assert file(process.out.obs[0]).name == 'test_leiden.parquet'
             assert fragment.columnNames == ['__index__', 'leiden']
             assert fragment.compressionCodecs == ['SNAPPY']
             assert fragment.rowCount == adata.n_obs
-            assert fragment.schema.fields.every { it.logicalType.type == 'STRING' }
-            def rows = fragment.rows
+            assert fragment.schemaDetails.fields.every { it.logicalType.type == 'STRING' }
+            def rows = fragment.rowMaps
             assert rows.every { it.__index__ instanceof String }
             assert rows.collect { it.__index__ }.toSet().size() == fragment.rowCount
             assert rows.collect { it.__index__ } == adata.obs.index.values.toList()

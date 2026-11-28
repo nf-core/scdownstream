@@ -32,13 +32,13 @@ nextflow_process {
         then {
             assert process.success
             assert file(process.out.uns[0]).name == 'test_grn.parquet'
-            def fragment = parquet(process.out.uns[0])
+            def fragment = path(process.out.uns[0]).parquet
             assert fragment.columnNames == ['__index__', 'group', 'TF', 'target', 'importance']
             assert fragment.compressionCodecs == ['SNAPPY']
-            assert fragment.schema.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
-            assert fragment.schema.fields.find { it.name == 'group' }.logicalType.type == 'STRING'
-            assert fragment.schema.fields.find { it.name == 'importance' }.physicalType == 'DOUBLE'
-            def rows = fragment.rows
+            assert fragment.schemaDetails.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
+            assert fragment.schemaDetails.fields.find { it.name == 'group' }.logicalType.type == 'STRING'
+            assert fragment.schemaDetails.fields.find { it.name == 'importance' }.physicalType == 'DOUBLE'
+            def rows = fragment.rowMaps
             assert rows.collect { it.group }.toSet() == ['TypeA', 'TypeB'].toSet()
             rows.groupBy { it.group }.each { _group, links ->
                 assert links.size() <= 200
@@ -83,7 +83,7 @@ nextflow_process {
 
         then {
             assert process.success
-            def rows = parquet(process.out.uns[0]).rows
+            def rows = path(process.out.uns[0]).parquet.rowMaps
             assert rows.size() > 0
             assert rows.collect { it.TF }.toSet().every { it in ['CD74', 'S100A8'] }
             assert rows.collect { it.target }.toSet().size() == 1

@@ -36,15 +36,15 @@ nextflow_process {
             }
             def label = 'annotation:celltypist:Adult_COVID19_PBMC:per_cell'
             def confidence = "${label}:confidence".toString()
-            def fragment = parquet(process.out.obs[0][1])
+            def fragment = path(process.out.obs[0][1]).parquet
             assert file(process.out.obs[0][1]).name == 'test_celltypist.parquet'
             assert fragment.columnNames == ['__index__', label, confidence]
             assert fragment.compressionCodecs == ['SNAPPY']
             assert fragment.rowCount == adata.n_obs
-            assert fragment.schema.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
-            assert fragment.schema.fields.find { it.name == label }.logicalType.type == 'STRING'
-            assert fragment.schema.fields.find { it.name == confidence }.physicalType in ['FLOAT', 'DOUBLE']
-            def rows = fragment.rows
+            assert fragment.schemaDetails.fields.find { it.name == '__index__' }.logicalType.type == 'STRING'
+            assert fragment.schemaDetails.fields.find { it.name == label }.logicalType.type == 'STRING'
+            assert fragment.schemaDetails.fields.find { it.name == confidence }.physicalType in ['FLOAT', 'DOUBLE']
+            def rows = fragment.rowMaps
             assert rows.every { it.__index__ instanceof String }
             assert rows.collect { it.__index__ }.toSet().size() == fragment.rowCount
             assert rows.collect { it.__index__ } == adata.obs.index.values.toList()
@@ -85,7 +85,7 @@ nextflow_process {
                 assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell" in obs.colnames
                 assert "annotation:celltypist:Adult_COVID19_PBMC:per_cell:confidence" in obs.colnames
             }
-            assert parquet(process.out.obs[0][1]).rowCount == adata.n_obs
+            assert path(process.out.obs[0][1]).parquet.rowCount == adata.n_obs
             assert snapshot(
                 path(process.out.versions[0]).yaml,
                 adata.obs.colnames
@@ -147,7 +147,7 @@ nextflow_process {
                 assert "annotation:celltypist:Immune_All_Low:per_cell" in obs.colnames
                 assert "annotation:celltypist:Immune_All_Low:per_cell:confidence" in obs.colnames
             }
-            assert parquet(process.out.obs[0][1]).columnNames == [
+            assert path(process.out.obs[0][1]).parquet.columnNames == [
                 '__index__',
                 'annotation:celltypist:Immune_All_Low:per_cell',
                 'annotation:celltypist:Immune_All_Low:per_cell:confidence'

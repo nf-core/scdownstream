@@ -323,10 +323,10 @@ nextflow_process {
             assert process.success
             def adata = anndata(process.out.h5ad[0][1])
             assert "highly_variable" in adata.var.colnames
-            def fragment = parquet(process.out.var[0])
+            def fragment = path(process.out.var[0]).parquet
             assert fragment.columnNames == ['__index__', 'highly_variable:subset:T_cells']
             assert fragment.compressionCodecs == ['SNAPPY']
-            assert fragment.rows.every { it['highly_variable:subset:T_cells'] instanceof Boolean }
+            assert fragment.rowMaps.every { it['highly_variable:subset:T_cells'] instanceof Boolean }
         }
 
     }
@@ -357,9 +357,9 @@ nextflow_process {
             assert process.success
             def adata = anndata(process.out.h5ad[0][1])
             assert "highly_variable" in adata.var.colnames
-            def fragment = parquet(process.out.var[0])
+            def fragment = path(process.out.var[0]).parquet
             assert fragment.columnNames == ['__index__', 'highly_variable']
-            assert fragment.rows.every { it.highly_variable instanceof Boolean }
+            assert fragment.rowMaps.every { it.highly_variable instanceof Boolean }
         }
 
     }
@@ -390,9 +390,9 @@ nextflow_process {
             assert process.success
             def adata = anndata(process.out.h5ad[0][1])
             assert "highly_variable" in adata.var.colnames
-            def fragment = parquet(process.out.var[0])
+            def fragment = path(process.out.var[0]).parquet
             assert fragment.columnNames == ['__index__', 'highly_variable']
-            assert fragment.rows.every { it.highly_variable instanceof Boolean }
+            assert fragment.rowMaps.every { it.highly_variable instanceof Boolean }
         }
 
     }
@@ -425,9 +425,9 @@ nextflow_process {
             assert adata.n_vars == 3000
             assert "highly_variable" in adata.var.colnames
             assert adata.var.highly_variable.unique() == ['TRUE'].toSet()
-            def fragment = parquet(process.out.var[0])
+            def fragment = path(process.out.var[0]).parquet
             assert fragment.columnNames == ['__index__', 'highly_variable:subset:NK_cells']
-            assert fragment.rows.every { it['highly_variable:subset:NK_cells'] == true }
+            assert fragment.rowMaps.every { it['highly_variable:subset:NK_cells'] == true }
         }
 
     }

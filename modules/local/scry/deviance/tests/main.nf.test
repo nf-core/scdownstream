@@ -37,7 +37,7 @@ nextflow_process {
             }
             assert snapshot(
                 process.out.h5ad,
-                ParquetSnapshot.content(process.out.var[0], parquet(process.out.var[0])),
+                path(process.out.var[0]).parquet.fingerprint,
                 path(process.out.versions[0]).yaml,
                 adata.yaml
             ).match()
@@ -74,7 +74,7 @@ nextflow_process {
             }
             assert snapshot(
                 process.out.h5ad,
-                ParquetSnapshot.content(process.out.var[0], parquet(process.out.var[0])),
+                path(process.out.var[0]).parquet.fingerprint,
                 path(process.out.versions[0]).yaml,
                 adata.yaml
             ).match()
@@ -112,7 +112,7 @@ nextflow_process {
             }
             assert snapshot(
                 process.out.h5ad,
-                ParquetSnapshot.content(process.out.var[0], parquet(process.out.var[0])),
+                path(process.out.var[0]).parquet.fingerprint,
                 path(process.out.versions[0]).yaml,
                 adata.yaml
             ).match()
@@ -177,11 +177,11 @@ nextflow_process {
                 assert "binomial_deviance" in var.colnames
                 assert n_vars == 100
             }
-            def var_fragment = parquet(process.out.var[0])
+            def var_fragment = path(process.out.var[0]).parquet
             assert var_fragment.columnNames[0] == '__index__'
             assert var_fragment.compressionCodecs == ['SNAPPY']
-            assert var_fragment.rows.every { it['deviance:subset:CD4_T:highly_deviant'] instanceof Boolean }
-            assert var_fragment.rows.every { it['deviance:subset:CD4_T:binomial_deviance'] instanceof Number }
+            assert var_fragment.rowMaps.every { it['deviance:subset:CD4_T:highly_deviant'] instanceof Boolean }
+            assert var_fragment.rowMaps.every { it['deviance:subset:CD4_T:binomial_deviance'] instanceof Number }
             def cols = var_fragment.columnNames.findAll { it != '__index__' }
             assert cols.contains('deviance:subset:CD4_T:binomial_deviance')
             assert cols.contains('deviance:subset:CD4_T:highly_deviant')
@@ -218,10 +218,10 @@ nextflow_process {
                 assert "binomial_deviance" in var.colnames
                 assert n_vars == 100
             }
-            def var_fragment = parquet(process.out.var[0])
+            def var_fragment = path(process.out.var[0]).parquet
             assert var_fragment.columnNames[0] == '__index__'
-            assert var_fragment.rows.every { it['deviance:highly_deviant'] instanceof Boolean }
-            assert var_fragment.rows.every { it['deviance:binomial_deviance'] instanceof Number }
+            assert var_fragment.rowMaps.every { it['deviance:highly_deviant'] instanceof Boolean }
+            assert var_fragment.rowMaps.every { it['deviance:binomial_deviance'] instanceof Number }
             def cols = var_fragment.columnNames.findAll { it != '__index__' }
             assert cols.contains('deviance:binomial_deviance')
             assert cols.contains('deviance:highly_deviant')
@@ -258,10 +258,10 @@ nextflow_process {
                 assert "binomial_deviance" in var.colnames
                 assert n_vars == 100
             }
-            def var_fragment = parquet(process.out.var[0])
+            def var_fragment = path(process.out.var[0]).parquet
             assert var_fragment.columnNames[0] == '__index__'
-            assert var_fragment.rows.every { it['deviance:highly_deviant'] instanceof Boolean }
-            assert var_fragment.rows.every { it['deviance:binomial_deviance'] instanceof Number }
+            assert var_fragment.rowMaps.every { it['deviance:highly_deviant'] instanceof Boolean }
+            assert var_fragment.rowMaps.every { it['deviance:binomial_deviance'] instanceof Number }
             def cols = var_fragment.columnNames.findAll { it != '__index__' }
             assert cols.contains('deviance:binomial_deviance')
             assert cols.contains('deviance:highly_deviant')

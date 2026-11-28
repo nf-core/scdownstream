@@ -32,25 +32,25 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert file(process.out.obsm[0][1]).name == 'X_azimuth.parquet'
             assert file(process.out.obs[0][1]).name == 'test_azimuth.parquet'
-            def embedding = parquet(process.out.obsm[0][1])
+            def embedding = path(process.out.obsm[0][1]).parquet
             assert embedding.rowCount == adata.n_obs
             assert embedding.columnNames[0] == '__index__'
             assert embedding.columnNames.drop(1) == (0..<(embedding.columnNames.size() - 1)).collect { it.toString() }
-            assert embedding.schema.fields[0].logicalType.type == 'STRING'
-            assert embedding.schema.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.schemaDetails.fields[0].logicalType.type == 'STRING'
+            assert embedding.schemaDetails.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
             assert embedding.compressionCodecs == ['SNAPPY']
-            assert embedding.rows.collect { it.__index__ } == adata.obs.index.values
-            def annotations = parquet(process.out.obs[0][1])
+            assert embedding.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            def annotations = path(process.out.obs[0][1]).parquet
             assert annotations.rowCount == adata.n_obs
             assert annotations.columnNames == ['__index__',
                 'annotation:azimuth:broad:per_cell', 'annotation:azimuth:medium:per_cell',
                 'annotation:azimuth:fine:per_cell', 'annotation:azimuth:fine:per_cell:confidence',
                 'annotation:azimuth:full_hierarchy:per_cell']
-            assert annotations.schema.fields[0].logicalType.type == 'STRING'
+            assert annotations.schemaDetails.fields[0].logicalType.type == 'STRING'
             assert annotations.compressionCodecs == ['SNAPPY']
-            assert annotations.rows.collect { it.__index__ } == adata.obs.index.values
+            assert annotations.rowMaps.collect { it.__index__ } == adata.obs.index.values
             annotations.columnNames.drop(1).each { column ->
-                assert annotations.rows.collect { it[column] } == adata.obs.get(column).data
+                assert annotations.rowMaps.collect { it[column] } == adata.obs.get(column).data
             }
             with(adata) {
                 assert "annotation:azimuth:broad:per_cell" in obs.colnames
@@ -92,22 +92,22 @@ nextflow_process {
             def adata = anndata(process.out.h5ad[0][1])
             assert file(process.out.obsm[0][1]).name == 'X_azimuth.parquet'
             assert file(process.out.obs[0][1]).name == 'test_azimuth.parquet'
-            def embedding = parquet(process.out.obsm[0][1])
+            def embedding = path(process.out.obsm[0][1]).parquet
             assert embedding.rowCount == adata.n_obs
             assert embedding.columnNames[0] == '__index__'
             assert embedding.columnNames.drop(1) == (0..<(embedding.columnNames.size() - 1)).collect { it.toString() }
-            assert embedding.schema.fields[0].logicalType.type == 'STRING'
-            assert embedding.schema.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
+            assert embedding.schemaDetails.fields[0].logicalType.type == 'STRING'
+            assert embedding.schemaDetails.fields.drop(1).every { it.physicalType in ['FLOAT', 'DOUBLE'] }
             assert embedding.compressionCodecs == ['SNAPPY']
-            assert embedding.rows.collect { it.__index__ } == adata.obs.index.values
-            def annotations = parquet(process.out.obs[0][1])
+            assert embedding.rowMaps.collect { it.__index__ } == adata.obs.index.values
+            def annotations = path(process.out.obs[0][1]).parquet
             assert annotations.rowCount == adata.n_obs
             assert annotations.columnNames[0] == '__index__'
-            assert annotations.schema.fields[0].logicalType.type == 'STRING'
+            assert annotations.schemaDetails.fields[0].logicalType.type == 'STRING'
             assert annotations.compressionCodecs == ['SNAPPY']
-            assert annotations.rows.collect { it.__index__ } == adata.obs.index.values
+            assert annotations.rowMaps.collect { it.__index__ } == adata.obs.index.values
             annotations.columnNames.drop(1).each { column ->
-                assert annotations.rows.collect { it[column] } == adata.obs.get(column).data
+                assert annotations.rowMaps.collect { it[column] } == adata.obs.get(column).data
             }
             with(adata) {
                 assert "annotation:azimuth:broad:per_cell" in obs.colnames
